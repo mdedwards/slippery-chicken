@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> slippery-chicken
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:35:38 Wed Aug  5 2020 CEST
+;;; $$ Last modified:  19:00:17 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7831,6 +7831,8 @@ NIL
   (unless (and bars (listp bars) (every #'rthm-seq-bar-p bars))
     (error "slippery-chicken-edit::bars-to-sc: first argument should be a ~
             list of rthm-seq-bar objects: ~&~a" bars))
+  ;; MDE Thu Sep 24 18:51:20 2020, Heidhausen -- attach tempo to first event
+  (setf (tempo-change (get-nth-event 0 (first bars))) tempo)
   ;; MDE Wed Sep 19 13:39:54 2018 --
   (loop for bar in bars with psf = (list section-id player) do
      ;; MDE Fri Oct 12 08:59:02 2018 -- don't forget this or multi-bar-rests
@@ -7925,7 +7927,8 @@ NIL
    :instrument-palette instrument-palette
    :ensemble `(((,player (,instrument :midi-channel 1))))
    :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-   :set-map '((1 (1)))  
+   :set-map '((1 (1)))
+   :tempo-map '((1 (q 60)))
    :rthm-seq-palette '((1 ((((4 4) w)))))
    :rthm-seq-map `((1 ((,player (1)))))))
 
@@ -7960,22 +7963,22 @@ NIL
           (make-slippery-chicken
            '+mini+
            :ensemble '(((sax (alto-sax :midi-channel 1))
-			(vn (violin :midi-channel 1))))
+                        (vn (violin :midi-channel 1))))
            :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
            :set-map '((1 (1 1 1 1 1))
                       (2 (1 1 1 1 1))
                       (3 (1 1 1 1 1)))
            :rthm-seq-palette '((1 ((((4 4) h q e s s))
                                    :pitch-seq-palette ((1 2 3 4 5))))
-			       (2 ((((4 4) (w)))))
-			       (3 ((((4 4) (h) q e (s) s))
-				   :pitch-seq-palette ((1 2 5)))))
-	   :rthm-seq-map '((1 ((sax (1 1 1 1 1))
-			       (vn (2 2 2 2 2))))
-			   (2 ((sax (2 2 2 2 2))
-			       (vn (2 2 2 2 2))))
-			   (3 ((sax (3 3 3 3 3))
-			       (vn (2 2 2 2 2))))))))
+                               (2 ((((4 4) (w)))))
+                               (3 ((((4 4) (h) q e (s) s))
+                                   :pitch-seq-palette ((1 2 5)))))
+           :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                               (vn (2 2 2 2 2))))
+                           (2 ((sax (2 2 2 2 2))
+                               (vn (2 2 2 2 2))))
+                           (3 ((sax (3 3 3 3 3))
+                               (vn (2 2 2 2 2))))))))
     (get-nearest-note mini 11 1 'sax))
 =>
 EVENT: start-time: 42.000, end-time: 43.000, 
@@ -8055,81 +8058,71 @@ data: Q
   ;;; ****
   (let (nearest-note)
     (multiple-value-bind (ev-a num-a) ; find nearest note after
-	(get-nearest-note-after sc bar-num event-num player)
-      ;(print (list ev-a num-a))
+        (get-nearest-note-after sc bar-num event-num player)
       (multiple-value-bind (ev-b num-b) ; find nearest note after
-	  (get-nearest-note-before sc bar-num event-num player)
-	      ;(print (list ev-b num-b))
-	(cond ((null ev-a)
-	       (setf nearest-note (list ev-b num-b)))
-	      ((null ev-b)
-	       (setf nearest-note (list ev-a num-a)))
-	      ((>= num-a (abs num-b))
-	       (setf nearest-note (list ev-b num-b)))
-	      ((> (abs num-b) num-a)
-	       (setf nearest-note (list ev-a num-a)))
-	      (t nil))))
+          (get-nearest-note-before sc bar-num event-num player)
+        (if (>= num-a (abs num-b))
+            (setf nearest-note (list ev-b num-b))
+            (setf nearest-note (list ev-a num-a)))))
     (if nearest-note
-	(values-list nearest-note)
-	(error "~%get-nearest-note:: no nearest note for ~a at bar ~a ev ~a"
-	       player bar-num event-num))))
+        (values-list nearest-note)
+        (error "~%get-nearest-note:: no nearest note for ~a at bar ~a ev ~a"
+               player bar-num event-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tue 11 Aug 2020 17:56:59 BST
 ;;; See get-nearest-note, above. It works the same but only ever goes forwards
 ;;; in time.
 (defmethod get-nearest-note-after ((sc slippery-chicken)
-				   bar-num event-num player)
+                                   bar-num event-num player)
   (let (nearest-note-after (nea-count 0))
     (loop named up-loop
-	  for bn from bar-num to (num-bars sc)
-	  for bar = (get-bar sc bn player)
-	  with first-e
-	  do 
-	     (if (= bn bar-num)
-	       (setf first-e event-num)
-	       (setf first-e 1))
-	     (loop for en from first-e to (num-rhythms bar)
-		   for e = (get-nth-event (1- en) bar nil) ; 0 based
-		   do
-		      (when (and e (not (is-rest e)))
-			(setf nearest-note-after e)
-			(return-from up-loop))
-		      (incf nea-count))
-	    thereis nearest-note-after)
+          for bn from bar-num to (num-bars sc)
+          for bar = (get-bar sc bn player)
+          with first-e
+          do 
+             (if (= bn bar-num)
+               (setf first-e event-num)
+               (setf first-e 1))
+             (loop for en from first-e to (num-rhythms bar)
+                   for e = (get-nth-event (1- en) bar nil) ; 0 based
+                   do
+                      (when (and e (not (is-rest e)))
+                        (setf nearest-note-after e)
+                        (return-from up-loop))
+                      (incf nea-count))
+            thereis nearest-note-after)
     (if nearest-note-after
-	(values nearest-note-after nea-count)
-	(progn (warn "~%get-nearest-note-after:: no note after for ~a at bar ~a ev ~a"
-		     player bar-num event-num)
-	       nil))))
+        (values nearest-note-after nea-count)
+        (error "~%get-nearest-note-after:: no note after for ~a at bar ~a ev ~a"
+               player bar-num event-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tue 11 Aug 2020 17:56:59 BST
 ;;; See get-nearest-note, above. It works the same but only ever goes backwards
 ;;; in time.
 (defmethod get-nearest-note-before ((sc slippery-chicken)
-				   bar-num event-num player)
+                                   bar-num event-num player)
   (let (nearest-note-before (neb-count 0))
     (loop named down-loop
-	  for bn from bar-num downto 1
-	  for bar = (get-bar sc bn player)
-	  with first-e
-	  do
-	     (if (= bn bar-num)
-	       (setf first-e event-num)
-	       (setf first-e (num-rhythms bar)))
-	     (loop for en from first-e above 0
-		   for e = (get-nth-event (1- en) bar nil) ; 0 based
-		   do
-		      (when (and e (not (is-rest e)))
-			(setf nearest-note-before e)
-			(return-from down-loop))
-		      (decf neb-count))
-	    thereis nearest-note-before)
+          for bn from bar-num downto 1
+          for bar = (get-bar sc bn player)
+          with first-e
+          do
+             (if (= bn bar-num)
+               (setf first-e event-num)
+               (setf first-e (num-rhythms bar)))
+             (loop for en from first-e above 0
+                   for e = (get-nth-event (1- en) bar nil) ; 0 based
+                   do
+                      (when (and e (not (is-rest e)))
+                        (setf nearest-note-before e)
+                        (return-from down-loop))
+                      (decf neb-count))
+            thereis nearest-note-before)
     (if nearest-note-before
-	(values nearest-note-before neb-count)
-	(progn (warn "~%get-nearest-note-before:: no note before for ~a at bar ~a ev ~a"
-		     player bar-num event-num)
-	       nil))))
+        (values nearest-note-before neb-count)
+        (error "~%get-nearest-note-after:: no note after for ~a at bar ~a ev ~a"
+               player bar-num event-num))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken-edit.lsp

@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> rhythm -> event
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:04:35 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  15:55:32 Tue Oct 27 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -89,7 +89,8 @@
    ;; these will be set automatically in sc-make-sequenz; this is a list of
    ;; two-element lists specifying the channel and the program; should be 1 or
    ;; two of them, depending on whether an instrument who generated this event
-   ;; plays microtonal chords (i.e. plays on two midi channels).
+   ;; plays microtonal chords (i.e. plays on two midi channels). See also
+   ;; add-midi-program-changes method 
    (midi-program-changes :accessor midi-program-changes :type list 
                          :initarg :midi-program-changes :initform nil)
    ;; MDE Tue Apr 26 15:13:54 2016 -- each message should be a 3-element list
@@ -213,9 +214,6 @@
     (setf (pitch-or-chord e) (pitch-or-chord e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 23.12.11 SAR: Added robodoc info
-
 ;;; ****m* event/set-midi-channel
 ;;; DESCRIPTION
 ;;; Set the MIDI-channel and microtonal MIDI-channel for the pitch object
@@ -697,9 +695,6 @@
            ~%they will not be written into the antescofo score." e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 18:07:41 EST 2011 Added robodoc info
-
 ;;; ****m* event/setf tempo-change
 ;;; DESCRIPTION
 ;;; Store the tempo when a change is made. 
@@ -1151,9 +1146,6 @@ data: 132
             (pitch-or-chord e)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 20:04:27 EST 2011 Added robodoc info
-
 ;;; ****m* event/enharmonic
 ;;; DESCRIPTION
 ;;; Change the pitch of the pitch object within the given event object to its
@@ -1324,7 +1316,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod sharp-to-flat ((e event) &optional clone written)
-;;;****
+;;; ****
   (let* ((event (if clone (clone e) e))
          (slot (if written
                    'written-pitch-or-chord
@@ -1380,7 +1372,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod flat-to-sharp ((e event) &optional clone written)
-;;;****
+;;; ****
   (let* ((event (if clone (clone e) e))
          (slot (if written
                    'written-pitch-or-chord
@@ -1389,10 +1381,8 @@ NIL
          (fts (flat-to-sharp poc)))
     (setf (slot-value event slot) fts)
     event))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 20:32:23 EST 2011 Added robodoc info
-
 ;;; ****m* event/pitch-
 ;;; DESCRIPTION
 ;;; Determine the interval in half-steps between two pitches. 
@@ -1428,7 +1418,6 @@ NIL
 (defmethod pitch- ((e1 event) (e2 event))
 ;;; ****
   (pitch- (pitch-or-chord e1) (pitch-or-chord e2)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3797,9 +3786,6 @@ data: C4
             (if force-list (list (frequency poc)) (frequency poc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  2 14:01:53 BST 2012: Added robodoc entry
-
 ;;; ****m* event/replace-mark
 ;;; DESCRIPTION
 ;;; Replace a specified mark of a given event object with a second specified
@@ -4136,7 +4122,7 @@ NIL
   (push (list channel controller-number value) (midi-control-changes e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* chord/pitch-or-chord=
+;;; ****m* event/pitch-or-chord=
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 
@@ -4215,7 +4201,7 @@ NIL
                        enharmonics-are-equal frequency-tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* chord/single-pitch-chord-to-pitch
+;;; ****m* event/single-pitch-chord-to-pitch
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 
@@ -4248,6 +4234,50 @@ NIL
     (when (= (length (data (pitch-or-chord e))) 1)
           (setf (pitch-or-chord e) (first (data (pitch-or-chord e))))))
   e)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/add-midi-program-changes
+;;; DATE
+;;; 8th October 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Add programme change data to an event.
+;;; 
+;;; ARGUMENTS
+;;; - the event object to add to
+;;; - the MIDI channel to add the program change to. This can either by a single
+;;;   integer or a list of (usually 2) integers (for microtonal channels)
+;;; - the program change. If a number, just use this directly. If a symbol, get
+;;;   the program change for the instrument associated with this ID in the given
+;;;   instrument-palette
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the instrument-palette object to get the program change numbers from for
+;;;   the given instrument if a symbol is passed as the 3rd argument. Default: 
+;;;   +slippery-chicken-standard-instrument-palette+
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod add-midi-program-changes
+    ((e event) chan pc
+     &optional (ins-palette +slippery-chicken-standard-instrument-palette+))
+;;; ****
+  (let ((change (typecase pc
+                  (integer pc)
+                  (symbol (let ((ins (get-data pc ins-palette)))
+                            (when ins (midi-program ins))))
+                  (t (error "event::add-midi-program-changes: ~a is invalid"
+                            pc))))
+        (chans (force-list chan)))
+    (loop for c in chans do
+         (push (list c change) (midi-program-changes e))))
+  (midi-program-changes e))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -4604,8 +4634,6 @@ W
   (find-next-grace-note list-of-events start-index t warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
-
 ;;; ****f* event/make-punctuation-events
 ;;; DESCRIPTION
 ;;; Given a list of numbers, a rhythm, and a note name or list of note names,
@@ -4663,9 +4691,6 @@ rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q,
               (loop repeat (1- d) collect (clone rest)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
-
 ;;; ****f* event/make-events
 ;;; DESCRIPTION
 ;;; Make a list of events using the specified data, whereby a list indicates a
@@ -4715,7 +4740,7 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
              (unless (= 2 (length data))
                (error "event::make-events: ~
                           Only single rhythms (for rests) or ~
-                          (note/chord,rhythm) 2-element sublists are ~
+                          (note/chord,rhythm) ~%2-element sublists are ~
                           acceptable: ~a"
                       data))
              (make-event (if (typep p 'named-object)
@@ -4748,8 +4773,6 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
     events))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
-;;; 
 ;;; ****f* event/make-events2
 ;;; DESCRIPTION
 ;;; Like make-events, but rhythms and pitches are given in separate lists to
@@ -4813,9 +4836,74 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
                          :microtones-midi-channel microtones-midi-channel)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 23.12.11 SAR Added robodoc info
-
+;;; ****f* event/make-events3
+;;; DATE
+;;; September 12th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Make a list of events using various approaches. Either with separate lists
+;;; of pitches and rhythms make-events and make-events2 will be called according
+;;; to the type of arguments given. Note that when specifying pitches, octaves
+;;; don't have to be retyped if they don't change.
+;;; 
+;;; ARGUMENTS
+;;; Two required arguments but their type and function vary according to
+;;; requirements. See examples below. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - A whole number value to indicate the MIDI channel on which to play back
+;;;   the event.
+;;; - A whole number value to indicate the MIDI channel on which to play back
+;;;   microtonal pitch material for the event. NB: See player.lsp/make-player
+;;;   for details on microtones in MIDI output. 
+;;; 
+;;; RETURN VALUE
+;;; a list of events
+;;; 
+;;; EXAMPLE
+#|
+;; simple list of pitch/rhythm pairs but no chords or rests (so no need for list
+;; pairs)
+(make-events3 '(g4 s a s b 32 c 32) nil)
+;; pitch and rhythms in pairs in a single list, including chords and rests
+(make-events3 '((g4 q) e s ((d4 fs4 a4) s)) nil)
+;; using separate lists for rhythms and pitches, tied rhythms, single pitches, a
+;; chord, and both nil and r to indicate rests
+(make-events3 '(q e e. h+s 32 q+te) '(cs4 d4 (e4 g4 b5) nil a3 r))
+;; just one pitch but various rhythms (but here we can't use tied rhythms) 
+(make-events3 '(q e e. s e s s s s) 'cs6)
+;; just one rhythm but various pitches/chords and all in octave 4 without having
+;; to retype (here we can't use tied rhythms either)
+(make-events3 's '(c4 d e (f a) r bf)) ; r = rest here too
+|#
+;;; SYNOPSIS
+(defun make-events3 (data1 data2 &key (midi-channel 1)
+                                   (microtones-midi-channel 2))
+;;; ****
+  ;;    list of rhythms and list of pitches
+  (cond ((and (consp data1) (consp data2))
+         (make-events2 data1 data2 midi-channel microtones-midi-channel))
+        ;; list of rhythms but only one pitch
+        ((and (consp data1) data2 (symbolp data2))
+         (make-events2 data1 (ml data2 (length data1))
+                       midi-channel microtones-midi-channel))
+        ;; list of pitches but only one rhythm
+        ((and (consp data2) data1 (atom data1))
+         (make-events2 (ml data1 (length data2)) data2
+                       midi-channel microtones-midi-channel))
+        ;; simple list of pitch/rhythm pairs but no chords or rests thus no need
+        ;; for 2-element sublists
+        ((and (simple-listp data1) (not data2))
+         (make-events (split-into-sub-groups2 data1 2)
+                      midi-channel microtones-midi-channel))
+        ;; list of pitch/rhythm pairs e.g. quarter note, two rests, and a
+        ;; chord: '((g4 q) e s ((d4 fs4 a4) s)). if you need rests this is the
+        ;; way to go.
+        ((and (consp data1) (not data2))
+         (make-events data1 midi-channel microtones-midi-channel))
+        (t (error "make-snippet: can't make events from ~a and ~a"
+                  data1 data2))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* event/event-p
 ;;; DESCRIPTION
 ;;; Test to confirm that a given object is an event object.

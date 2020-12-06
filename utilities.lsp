@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none: no classes defined
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:32:16 Tue Jun 23 2020 CEST
+;;; $$ Last modified:  15:04:00 Fri Nov 20 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -465,9 +465,6 @@
          (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 12:45:48 BST 2012: Added robodoc entry
-
 ;;; e.g (split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 2 3 2 1)) ->
 ;;; ((1 2) (3 4) (5 6 7) (8 9) (10))
 
@@ -1256,9 +1253,6 @@
           result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 16:09:37 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/replace-elements
 ;;; DESCRIPTION
 ;;; Replace the elements in list between start and end (inclusive) with the new
@@ -5414,8 +5408,6 @@ Here's where I pasted the data into the .RPP Reaper file:
                       (directory-namestring (truename *load-pathname*)))
                      file)))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Thu 6 Feb 2020 17:41:19 GMT
 ;;; Taken from Stackoverflow, many thanks Barmar
@@ -5662,6 +5654,45 @@ yes_foo, 1 2 3 4;
                            (expt (- 1.0 (abs (- one p))) expt)))
          (sum (apply #'+ proximities)))
     (loop for p in proximities collect (/ p sum))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun minlen4 (list &optional (warn t))
+  (let* ((e1 (first list))
+         (e2 (second list))
+         (e3 (third list))
+         (len (length list))
+         (result (case len
+                   (1 (list e1 e1 e1 e1))
+                   (2 (list e1 e2 e1 e2))
+                   (3 (list e1 e2 e3 e2))
+                   (t list))))
+    (when (and warn (< len 4))
+      (warn "utilities::minlen4: the caller needs at least  ~
+                        4 list elements.~%Using ~a instead of ~a"
+            result list))
+    result))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Sep 24 15:22:11 2020, Heidhausen
+(defun positions (item sequence &key (test #'eq))
+  (loop with start = 0
+     for pos = (position item sequence :test test :start start)
+     while pos
+     collect pos
+     do (setq start (1+ pos))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Sep 24 15:22:17 2020, Heidhausen
+;;; positions starts with the first end point, not with 0
+;;; if skip, the positions refer to markers in the list that shouldn't be
+;;; returned  
+(defun subseqs (list positions &optional skip) 
+  (loop for i1 in (cons (if skip -1 0) positions)
+     for i2 in (econs positions nil) ; so we go to the end
+       ;; skip the elements at the positions
+     for subseq = (subseq list (if skip (1+ i1) i1) i2)
+     when subseq collect subseq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> slippery-chicken
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:32:51 Wed Aug  5 2020 CEST
+;;; $$ Last modified:  15:35:23 Mon Sep 28 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -441,7 +441,9 @@
     (change-bar-line-type sc (num-bars (piece sc)) 2)
     ;; have to call this again now that we've got the real tempo-map
     (update-slots sc (tempo-map sc) 0.0 0.0 1 nil nil (warn-ties sc))
-    (update-instruments-total-duration sc)
+    ;; MDE Sat Sep 26 16:48:21 2020, Heidhausen -- now also generate other stats
+    ;; such as lowest/highest pitch played (2nd arg was default nil previously) 
+    (update-instruments-total-duration sc t)
     ;; (print (get-data 1 (set-palette sc)))
     ;; 25.3.11 the make-slippery-chicken function might set this to nil thus
     ;; overriding the class default
@@ -1295,6 +1297,8 @@
             ;; (print (total-degrees ins))
             (when and-other-slots
               (unless (is-rest-bar bar)
+                ;; MDE Sat Sep 26 16:03:20 2020, Heidhausen
+                (update-lowest-highest-played ins (lowest bar) (highest bar))
                 (incf (total-bars ins))
                 (incf (total-notes ins) (notes-needed bar))
                 (incf (total-degrees ins) (total-degrees bar))))
@@ -4542,8 +4546,7 @@ seq-num 5, VN, replacing G3 with B6
                        (play-chance-env-exp 0.5)
                        (time-scaler 1.0)
                        (normalise .99)
-		       scaled-by
-		       scaled-to
+                       scaled-by
                        (simulate nil)
                        (from-sequence 1)
                        (num-sequences nil)
@@ -4869,8 +4872,9 @@ seq-num 5, VN, replacing G3 with B6
                          :data-format data-format
                          :header-type header-type
                          :play play :channels channels :statistics t
-			 :scaled-to scaled-to
-			 :scaled-by scaled-by)
+                         ;; we have normalise so don't need scaled-to 
+                         ;; :scaled-to scaled-to
+                         :scaled-by scaled-by)
         (loop 
            for player in events and player-name in players 
            and snd-trans in snd-transitions
@@ -4895,7 +4899,7 @@ seq-num 5, VN, replacing G3 with B6
                             ;; the first event into consideration, not just
                             ;; max-start-time...
                             events-before-max-start))
-	   (format t "~%Processing player ~a/~a: ~a (resting players will ~
+           (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
                    player-count num-players (nth (1- player-count) players))
            (when (and (numberp num-sections) (= 1 num-sections))
@@ -4919,7 +4923,7 @@ seq-num 5, VN, replacing G3 with B6
                 (setf events-this-rs (length rs))
               ;; (print rs)
                 ;; (print rthm-seqs) (print rs-count)
-		(format t "~%    Processing rthm-seq ~a (~a events)~%"
+                (format t "~%    Processing rthm-seq ~a (~a events)~%"
                         ;; print the rthm-seq id if we're only doing one
                         ;; section otherwise the rthm-seq count
                         ;; MDE Tue Apr  3 09:54:46 2012 -- make sure we don't
@@ -5117,6 +5121,44 @@ seq-num 5, VN, replacing G3 with B6
               total-skipped total-events 
               (* 100.0 (/ total-skipped total-events))))
     total-events))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-last-bar
+;;; DATE
+;;; September 28th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the last bars for each of the players
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; 
+;;; RETURN VALUE
+;;; a list of rthm-seq-bar objects
+;;; 
+;;; SYNOPSIS
+(defmethod get-last-bar ((sc slippery-chicken))
+;;; ****
+  (get-bar sc (num-bars sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-last-event
+;;; DATE
+;;; September 28th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the last events (of the last bars) for each of the players
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; 
+;;; RETURN VALUE
+;;; a list of event objects
+;;; 
+;;; SYNOPSIS
+(defmethod get-last-event ((sc slippery-chicken))
+;;; ****
+  (mapcar #'get-last-event (get-last-bar sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -6291,7 +6333,7 @@ data: NIL
                          :all-bar-nums t
                          :use-custom-markup t
                          :rehearsal-letters-font-size 24
-                         :lp-version "2.12.1"
+                         :lp-version "2.20.0"
                          :group-barlines nil
                          :page-turns t
                          :players '(fl cl)
@@ -6338,7 +6380,7 @@ data: NIL
        (use-custom-markup t)
        (rehearsal-letters-font-size 18)
        ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95") 
-       (lp-version "2.18.2")
+       (lp-version "2.20.0")
        ;; 24.7.11 (Pula) barlines through whole staff group or just a stave
        (group-barlines t)
        ;; 5.11.11 set to t if you want lilypond to optimize page breaks for

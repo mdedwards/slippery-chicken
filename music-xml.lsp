@@ -5,7 +5,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  11:35:16 Sat Dec  7 2019 CET
+;;; $$ Last modified:  11:37:32 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -537,11 +537,21 @@
                                   '((5 4) (3 2) (6 4))
                                   :test #'equal)
                           "actual" "both")))
+    ;; MDE Wed Sep 23 19:05:44 2020, Heidhausen -- according to Dorico 3, you
+    ;; can't actually have more than 6 tuplets in a bar! However it does
+    ;; display them if there are more. According to the musicxml spec. "The
+    ;; number attribute is used to distinguish nested tuplets." 
     (if actual                          ; if arg1=nil then it's a stop tuplet
         (progn
           (format stream "~&          <tuplet type=\"start\" bracket=\"yes\" ~
                                        number=\"~a\" show-number=\"~a\"~a"
-                  bracket-number show-number
+                  ;; given the above, an easy hack would be to mod the given
+                  ;; bracket-number (which is just the nth bracket we've seen in
+                  ;; the bar, rather than whether this is the 1st, 2nd, 3rd,
+                  ;; etc. bracket of a nested tuplet). we're not going to have
+                  ;; more than 6 in a bar anyway, right?
+                  (1+ (mod bracket-number 6))
+                  show-number
                   (if write-actual-normal ">" " />"))
           (when write-actual-normal
             (format stream "~&          <tuplet-actual>~
@@ -555,7 +565,7 @@
                             ~&          </tuplet>"
                     actual write-actual-normal normal write-actual-normal)))
         (format stream "~&          <tuplet type=\"stop\" number=\"~a\" />"
-                bracket-number))))
+                (1+ (mod bracket-number 6))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun xml-write-marks (list stream)

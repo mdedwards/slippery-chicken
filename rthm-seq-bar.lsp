@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   rthm-seq-bar 
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:42:45 Sat Jul 11 2020 CEST
+;;; $$ Last modified:  13:52:41 Wed Oct  7 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1705,7 +1705,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 7 16:38:23 2012 -- this is a better version of
 ;;; figure-out-and-auto-set-tuplets. Way back when I wrote that method we
-;;; didn't have rhythm's tuplet-scaler slot. Now that's there things should be
+;;; didn't have rhythm's tuplet-scaler slot. Now that's there, things should be
 ;;; easier. This still won't handle all tuplet possibilities, especially nested
 ;;; tuplets, but should still be useful.
 
@@ -1721,7 +1721,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; - A function to be performed on fail. Default = #'error.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns T if successful. 
+;;; Returns T if successful, and the rsb as a second value in any case
 ;;; 
 ;;; EXAMPLE
 #|
@@ -1750,19 +1750,21 @@ data: ((2 4) - S S - S - S S S - S S)
          (setf start count))
        (push r bag)
        (incf dur (duration r))
+     ;; these tests avoid placing tuplets at arbitrary points in the bar
+     ;; e.g. after an opening 32nd
        ;; (print dur)
-     ;; (print r)
        (when (or (float-int-p dur 0.00001)
-                 (float-int-p (* 2.0 dur) 0.00001)) ; i.e. 0.5
-         ;; (print 'here)
+                 (float-int-p (* 2.0 dur) 0.00001) ; i.e. 0.5
+                 ;; MDE Wed Sep 23 16:37:37 2020, Heidhausen
+                 (float-int-p (* 4.0 dur) 0.00001)) ; i.e. 0.25 or 0.75
          (when (and (/= 1 (tuplet-scaler (first bag)))
                     (/= 1 (tuplet-scaler (first (last bag)))))
            (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
            (add-tuplet-bracket rsb (list tuplet start count))
            (setf tuplet nil))
          (setf bag nil)))
-  ;; (print rsb)
-  (check-tuplets rsb on-fail))
+  ;; MDE Wed Sep 23 18:01:59 2020, Heidhausen -- return rsb also
+  (values (check-tuplets rsb on-fail) rsb))
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2117,6 +2119,10 @@ rhythm symbol for clarity:
     (sounding-duration rsb)
     (setf (num-rhythms rsb) (length rhythms)
           (is-rest-bar rsb)
+          ;; bear in mind that a list of rhythms with no pitch-or-chord (whether
+          ;; is-rest it T or NIL for each rhythm)  will result in is-rest-bar
+          ;; being NIL. This is so that events can be made in various ways,
+          ;; filling in pitch info later perhaps, then udpating
           (if (not rhythms)
               t
               (when (and (= 1 (num-rhythms rsb))
@@ -5469,6 +5475,26 @@ collect (midi-channel (pitch-or-chord p))))
      sum (get-degree e :average t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Sep 26 15:18:45 2020, Heidhausen
+(defmethod lowest ((rsb rthm-seq-bar))
+  ;; need to call lowest e because e could be a chord
+  (loop with lowest for e in (rhythms rsb) for lp = (lowest e) do
+       (unless (is-rest e)
+         (when (or (not lowest) (pitch< lp lowest))
+           (setq lowest lp)))
+       finally (return lowest)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Sep 26 15:18:45 2020, Heidhausen
+(defmethod highest ((rsb rthm-seq-bar))
+  ;; need to call highest e because e could be a chord
+  (loop with highest for e in (rhythms rsb) for hp = (highest e) do
+       (unless (is-rest e)
+         (when (or (not highest) (pitch> hp highest))
+           (setq highest hp)))
+     finally (return highest)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jun 28 14:21:50 2014 -- called by consolidate-notes
 (defmethod update-events-player ((rsb rthm-seq-bar) player)
   (loop for e in (rhythms rsb) do
@@ -6757,6 +6783,8 @@ rsb-rb)
 ;;;   :start-time and :tempo. If not NIL, this will mean start-time is ignored
 ;;;   when writing MIDI files. Default = nil.
 ;;; - :tempo. The tempo in beats per minute (or a tempo object)
+;;; - :max-start-time. A maximum time in seconds above which we stop processing
+;;;   (and returning) events. 
 ;;; 
 ;;; RETURN VALUE
 ;;; two values: the list of events with their times updated, and the time the
@@ -6771,7 +6799,7 @@ rsb-rb)
 |#
 ;;; SYNOPSIS
 (defun events-update-time (events &key (start-time 0.0) start-time-qtrs
-                                    (tempo 60.0))
+                                    max-start-time (tempo 60.0))
 ;;; ****
   (unless (typep tempo 'tempo)
     (setf tempo (make-tempo tempo)))
@@ -6784,23 +6812,29 @@ rsb-rb)
                        start-time-qtrs
                        (/ start-time (if (tempo-p tempo)
                                          (beat-dur tempo)
-                                         (/ 60.0 tempo))))))
+                                         (/ 60.0 tempo)))))
+        result)
     (loop for event in events do
        ;; MDE Mon Sep 30 18:18:34 2019 -- do this here too so that we can access
        ;; most probable midi channels of rests (for pedals etc.). This is a good
        ;; place as this gets called eventually via update-slots, which is called
        ;; at init
          (set-last-midi-channel event)
-         (setf (start-time event) time
-               (start-time-qtrs event) time-qtrs
-               (duration-in-tempo event) (* (duration event) qtr-dur)
-               (compound-duration-in-tempo event) 
-               (* (compound-duration event) qtr-dur)
-               (end-time event) (+ (start-time event) 
-                                   (compound-duration-in-tempo event)))
-         (incf time-qtrs (duration event))
-         (incf time (duration-in-tempo event)))
-    (values events time)))
+         (if (or (not max-start-time) (<= time max-start-time))
+             (progn
+               (setf (start-time event) time
+                     (start-time-qtrs event) time-qtrs
+                     (duration-in-tempo event) (* (duration event) qtr-dur)
+                     (compound-duration-in-tempo event) 
+                     (* (compound-duration event) qtr-dur)
+                     (end-time event) (+ (start-time event) 
+                                         (compound-duration-in-tempo event)))
+               (push event result)
+               (incf time-qtrs (duration event))
+               (incf time (duration-in-tempo event)))
+             ;; we've reached max-start-time
+             (return)))
+    (values (nreverse result) time)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 14 07:05:07 2017 -- rthm is a power-of-two. Sometimes we

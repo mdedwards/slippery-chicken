@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  None: no classes defined.
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  14:55:01 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  16:28:22 Thu Oct  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -86,6 +86,9 @@
      ;; signalled if the were no pitches in a set for an instrument which should
      ;; be playing. We can now have a rest-sequence generated instead
      (pitch-seq-no-pitches-error t)
+     ;; MDE Thu Oct  8 16:27:19 2020, Heidhausen -- issue a warning if we scale
+     ;; a rhythm/event to longer than 10xwhole?
+     (rhythm-scale-warning t)
      ;; MDE Sat Aug  3 16:39:40 2019 -- should shorten-large-fast-leaps issue a
      ;; warning or not?
      (shorten-large-fast-leaps-warning t)

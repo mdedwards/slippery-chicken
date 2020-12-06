@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  None: base class of all slippery-chicken classes.
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified:  16:51:08 Wed Apr  8 2020 CEST
+;;; $$ Last modified:  17:20:12 Fri Sep 25 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,7 +105,6 @@
   (clone-with-new-class no 'named-object))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; In order for this to work, every class must be able to be initialised with
 ;;; all slots nil.
 (defmethod clone-with-new-class ((no named-object) new-class)

@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> sndfile-palette -> sndfilenet
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  14:02:11 Mon Apr 13 2020 CEST
+;;; $$ Last modified:  12:27:02 Thu Nov 12 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -56,7 +56,8 @@
 (defclass sndfilenet (sndfile-palette)
   ;; the next sndfile-ext object for the purposes of the OSC sndfilenet
   ;; functionality 
-  ((next-sfe :accessor next-sfe :initarg :next-sfe :initform nil)
+  ((next-sfes :accessor next-sfes :initarg :next-sfes :initform nil)
+   (all-refs :accessor all-refs :initform nil :type list)
    ;; whether we'll have the followers slots for the sndfiles i.e. whether
    ;; we're going to call max-play (and hence process-followers) for this
    ;; palette. Set to nil if you don't want to use with max-play, though for
@@ -75,15 +76,18 @@
   (declare (ignore new-class))
   (let ((palette (call-next-method)))
     (setf (slot-value palette 'with-followers) (with-followers sfn)
-          (slot-value palette 'next-sfe) (when (next-sfe sfn)
-                                           (clone (next-sfe sfn))))
+          (slot-value palette 'next-sfes) (my-copy-list (next-sfes sfn))
+          (slot-value palette 'all-refs) (copy-list (all-refs sfn)))
     palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((sfn sndfilenet) stream)
   (format stream "~%SNDFILENET:      with-followers: ~a~
-                  ~%                 next-sfe: ~a"
-          (with-followers sfn) (next-sfe sfn)))
+                  ~%                 next-sfes (ids): ~a~
+                  ~%                 all-refs: ~a"
+   (with-followers sfn)
+   (loop for sfe in (next-sfes sfn) collect (id sfe))
+   (all-refs sfn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-for-init ((sfn sndfilenet)
@@ -94,10 +98,17 @@
 #+clm
 (defmethod verify-and-store :after ((sfn sndfilenet))
   (auto-cue-nums sfn)
+  ;; we can flatten here because we can only have top-level groups
+  (setf (slot-value sfn 'all-refs) (flatten (get-all-refs sfn)))
   (reset sfn)
   ;; MDE Sat Dec 22 20:59:44 2012 (in the sndfile-palette class)
   (when (with-followers sfn)
     (process-followers sfn)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod (setf all-refs) (value (sfn sndfilenet))
+  (warn "sndfilenet::(setf all-refs): don't setf all-refs. Ignorning."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Dec 19 14:29:35 2012 -- for MaxMSP/OSC interface
@@ -118,9 +129,8 @@
 (defmethod auto-cue-nums ((sfn sndfilenet))
 ;;; ****
   ;; to be sure: don't assume we'll always have non-nested data.
-  (let ((refs (get-all-refs sfn)) 
-        (cue-num 1))
-    (loop for ref in refs 
+  (let ((cue-num 1))
+    (loop for ref in (all-refs sfn)
          for snds = (get-data-data ref sfn)
          do
          (loop for snd in snds do
@@ -129,53 +139,44 @@
     cue-num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* sndfilenet/osc-send-cue-nums
+;;; ****m* sndfilenet/preload-cues
 ;;; DESCRIPTION
-;;; Send via OSC the cue number of each sound file in a form that a Max sflist~
-;;; can process and store (which will include the path and start/stop data: see
-;;; sndfile-ext::max-cue for details).
+;;; Return a list of preload commands for each sound file in a form that a Max
+;;; sflist~ can process and store (which will include the path and start/stop
+;;; data: see sndfile-ext::max-cue for details).
 ;;; 
 ;;; E.g. preload 231 triplet-mphonic-001.wav 0. 3300.612305 0 1. 
-;;; 
-;;; Note that the individual preload data is sent by this method explicitly over
-;;; the UDP network. This means you'll need a [udpreceive] somewhere in the max
-;;; patch to catch these and that [osc-sc-eval] won't send these out of its
-;;; outlet, rather the number of cues will be output there. Also note that the
-;;; usual IDs prepended to results from osc-eval are not included in the preload
-;;; sent over UDP so a separate parser looking for this data will be needed,
-;;; e.g. 
-;;;
-;;; [udpreceive 8091][fromsymbol][route preload][prepend preload][sflist~ mysfl]
 ;;; 
 ;;; ARGUMENTS
 ;;; - the sndfilenet object.
 ;;; 
 ;;; RETURN VALUE
-;;; The number of cue numbers sent.  NB This is not the same as the last cue
-;;; number as cues start from 2.
+;;; The list of preload strings that osc-call can then pass on to the sflist~
 ;;; 
 ;;; SYNOPSIS
 #+(and darwin sbcl)
-(defmethod osc-send-cue-nums ((sfn sndfilenet))
+(defmethod preload-cues ((sfn sndfilenet))
 ;;; ****
-  ;; to be sure: don't assume we'll always have non-nested data.
-  (let ((refs (get-all-refs sfn)) 
-        (cue-nums 0))
-    (loop for ref in refs 
-         for snds = (get-data-data ref sfn)
-         do
-         (loop for snd in snds do
-              (when (use snd)
-                ;; something like ("preload" 2 "/path/to/snd.wav" 300.0 1100.0)
-                (osc-send-list (max-cue snd) nil) ; no warning 
-                (incf cue-nums))))
-    cue-nums))
+  ;; to be sure: don't assume we'll always have non-nested data, even though
+  ;; that's a requirement of our parent class 
+  (let ((cue-nums 0))
+    (loop for ref in (all-refs sfn)
+       for snds = (get-data-data ref sfn)
+       appending
+         (loop for snd in snds
+            when (use snd)
+            collect
+            ;; something like ("preload" 2 "/path/to/snd.wav" 300.0 100.0)
+              (prog1
+                  (max-cue snd)
+                (incf cue-nums))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 21 09:38:46 2012 
 ;;; ****m* sndfilenet/reset
 ;;; DESCRIPTION
-;;; Reset the followers' slot circular list to the beginning or to <where>
+;;; Reset the followers' slot circular list to the beginning or to <where> and
+;;; the starting sounds for each group also.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the sndfilenet object.
@@ -191,47 +192,56 @@
 ;;; T
 ;;; 
 ;;; SYNOPSIS
-(defmethod reset ((sfn sndfilenet) &optional where (warn t))
+(defmethod reset ((sfn sndfilenet) &optional (where 0) (warn t))
 ;;; ****
-  (let ((refs (get-all-refs sfn)))
-    (loop for ref in refs 
-       for snds = (get-data-data ref sfn)
-       do
+  (loop for ref in (all-refs sfn)
+     for snds = (get-data-data ref sfn)
+     do
        (loop for snd in snds do
             (setf (group-id snd) ref)
-            (reset snd where warn))))
+          ;; resets the sndfile-ext object's followers slot to <where>
+            (reset snd where warn)))
   ;; MDE Fri Oct 20 20:11:48 2017
-  (setf (next-sfe sfn) (first (data (get-first sfn))))
+  ;; (setf (next-sfes sfn) (first (data (get-first sfn))))
+  ;; MDE Tue Nov 10 19:27:01 2020, Heidhausen -- next-sfes is now a list of
+  ;; sndfile-ext objects that we start with (and then extract the next to play
+  ;; from its followers slot). Start with the sfe at position where (or modulo'd
+  ;; at least)
+  (setf (next-sfes sfn) (loop for ref in (all-refs sfn)
+                           for sfe-list = (get-data-data ref sfn)
+                           collect
+                             (nth (mod where (length sfe-list)) sfe-list)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* sndfilenet/(setf next-sfe)
+        #|
+;;; ****m* sndfilenet/(setf next-sfes)
 ;;; DATE
 ;;; October 21st 2017, Essen
 ;;; 
 ;;; DESCRIPTION
-;;; A setf :after method. Set the next-sfe slot to be a sndfile-ext object. If
+;;; A setf :after method. Set the next-sfes slot to be a sndfile-ext object. If
 ;;; it is already, leave it as is. If it's an integer, assume it's a cue number
 ;;; and get the right object, otherwise get the object with this ID.
 ;;;
-;;; If this is causing problems, use (setf (slot-value sfn 'next-sfe) ... )
+;;; If this is causing problems, use (setf (slot-value sfn 'next-sfes) ... )
 ;;;
 ;;; If we're trying to set using a reference/id like '(group1 snd3) then it
 ;;; will have to be a two-element list.
 ;;; 
 ;;; SYNOPSIS
-(defmethod (setf next-sfe) :after (value (sfn sndfilenet))
+(defmethod (setf next-sfes) :after (value (sfn sndfilenet))
 ;;; ****
   (let ((sfe (typecase value
                (integer (get-snd-with-cue-num sfn value))
                (list (get-snd (first value) (second value) sfn))
                ((or symbol string)
-                (error "sndfilenet::(setf next-sfe): Both group and ~
+                (error "sndfilenet::(setf next-sfes): Both group and ~
                         sound file ID are needed: ~a" value))
                (t nil)))) ; so if it's an sfe already, leave it alone
     (when sfe 
-      (setf (slot-value sfn 'next-sfe) sfe))))
-
+      (setf (slot-value sfn 'next-sfes) sfe))))
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 21 09:38:52 2012
 ;;; ****m* sndfilenet/get-snd-with-cue-num
@@ -253,9 +263,8 @@
 ;;; SYNOPSIS
 (defmethod get-snd-with-cue-num ((sfn sndfilenet) cue-num)
 ;;; ****
-  (let ((refs (get-all-refs sfn))
-        (result nil))
-    (loop for ref in refs 
+  (let ((result nil))
+    (loop for ref in (all-refs sfn)
        for snds = (get-data-data ref sfn)
        do
        (loop for snd in snds do
@@ -265,13 +274,15 @@
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* sndfilenet/max-play
+;;; ****m* sndfilenet/max-play-from-id
 ;;; DESCRIPTION
 ;;; This generates the data necessary to play the next sound in the current
 ;;; sound's followers list. See the sndfile-ext method for details.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The sndfilenet object.
+;;; - The group ID to play the next sound from, i.e. the topmost ID to group of
+;;;   sounds 
 ;;; - The fade (in/out) duration in seconds.
 ;;; - The maximum loop duration in seconds.
 ;;; - The time to trigger the next file, as a percentage of the current
@@ -284,19 +295,23 @@
 ;;; A list of values returned by the sndfile-ext method.
 ;;;
 ;;; SYNOPSIS
-(defmethod max-play ((sfn sndfilenet) fade-dur max-loop start-next
-                     &optional print)
+(defmethod max-play-from-id ((sfn sndfilenet) id fade-dur max-loop start-next
+                             &optional print)
 ;;; ****
-  (if (next-sfe sfn) ; next-sfe is a sndfile-ext object
-      (let* ((current (next-sfe sfn))
-             (next (get-next current)))
-        ;; (print current)
-        (setf (next-sfe sfn) next)
-        (when print
-          (format t "~&cue ~a (~a): ~a --> ~a"
-                  (cue-num current) (id current) (start current) (end current)))
-        (max-play current fade-dur max-loop start-next))
-      (warn "sndfilenet::max-play: no next-sfe!")))
+  ;; NB next-sfes is a list of sndfile-ext objects
+  (if (next-sfes sfn)                    
+      (let* ((id-pos (position id (all-refs sfn))))
+        (if id-pos
+            (let* ((current (nth id-pos (next-sfes sfn)))
+                   (next (get-next current)))
+              (setf (nth id-pos (next-sfes sfn)) next)
+              (when print
+                (format t "~&sndfilenet::max-play: cue ~a (~a): ~a --> ~a"
+                        (cue-num current) (id current) (start current)
+                        (end current)))
+              (max-play current fade-dur max-loop start-next print))
+            (warn "max-play-from-id: can't find ~a in ~a" id (id sfn))))
+      (warn "sndfilenet::max-play: no next-sfes!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; check that follower references refer to other sndfiles in the palette, then
@@ -305,39 +320,38 @@
 ;;; some CPU cycles by processing here rather than when max asks for the next
 ;;; sndfile.
 (defmethod process-followers ((sfn sndfilenet) &optional
-                                                      (on-fail #'error))
-  (let ((refs (get-all-refs sfn))
-        (result t))
-    (loop for ref in refs 
+                                                 (on-fail #'error))
+  (let ((result t))
+    (loop for ref in (all-refs sfn)
        for snds = (get-data-data ref sfn)
        do
-       (loop for snd in snds with follower with fsnd do
-            (if (followers snd)
-                (setf (followers snd)
-                      (loop for i below (sclist-length (followers snd)) do
-                           (setf fsnd nil)
-                           (loop for j from i
-                              below (sclist-length (followers snd))
-                              do
-                              (setf follower (get-nth j (followers snd))
-                                    fsnd (get-snd-short sfn follower snd))
-                              ;;(print follower) (print fsnd)
-                              ;; MDE Sat Dec 22 20:36:14 2012 -- got to make
-                              ;; sure the user actually wants to use this sound
-                              ;; in this piece
-                              (when (and fsnd (use fsnd))
-                                (return fsnd)))
-                           (when (and follower (not fsnd))
-                             (setf result nil)
-                             (when on-fail
-                               (funcall 
-                                on-fail "sndfilenet::process-followers: ~
-                                         No such sound file: ~a"
-                                follower)))
+         (loop for snd in snds with follower with fsnd do
+              (if (followers snd)
+                  (setf (followers snd) ; convert symbols to sndfile-exts
+                        (loop for i below (sclist-length (followers snd)) do
+                             (setf fsnd nil)
+                             (loop for j from i
+                                below (sclist-length (followers snd))
+                                do
+                                  (setf follower (get-nth j (followers snd))
+                                        fsnd (get-snd-short sfn follower snd))
+                                ;; (print follower) (print fsnd)
+                                ;; MDE Sat Dec 22 20:36:14 2012 -- got to make
+                                ;; sure the user actually wants to use this
+                                ;; sound in this piece
+                                  (when (and fsnd (use fsnd))
+                                    (return fsnd)))
+                             (when (and follower (not fsnd))
+                               (setf result nil)
+                               (when on-fail
+                                 (funcall 
+                                  on-fail "sndfilenet::process-followers: ~
+                                           No such sound file (~a)~%in group ~a"
+                                  follower ref)))
                            when (and fsnd (use fsnd)) collect fsnd))
-                (warn "sndfilenet::process-followers: ~a has no followers ~
+                  (warn "sndfilenet::process-followers: ~a has no followers ~
                        so if triggered will cause max-play to stop."
-                      (id snd)))))
+                        (id snd)))))
     (reset sfn)
     result))
 
@@ -360,19 +374,18 @@
 ;;; SYNOPSIS
 (defmethod auto-followers ((sfn sndfilenet))
 ;;; ****
-  (let ((refs (get-all-refs sfn)))
-    (loop for ref in refs and next-ref in (wrap-list refs 1)
-       for sfs = (reverse (get-data-data ref sfn))
-       for nsfs = (make-cscl (reverse (get-data-data next-ref sfn)) :copy nil)
-       do 
-         (loop for sf in sfs
-            for followers = (reverse
-                             (cons
-                              (get-next nsfs)
-                              (remove-with-id sfs (id sf))))
-            do 
-              (setf (slot-value sf 'followers) (make-cscl followers
-                                                          :copy nil)))))
+  (loop for ref in (all-refs sfn) and next-ref in (wrap-list (all-refs sfn) 1)
+     for sfs = (reverse (get-data-data ref sfn))
+     for nsfs = (make-cscl (reverse (get-data-data next-ref sfn)) :copy nil)
+     do 
+       (loop for sf in sfs
+          for followers = (reverse
+                           (cons
+                            (get-next nsfs)
+                            (remove-with-id sfs (id sf))))
+          do 
+            (setf (slot-value sf 'followers) (make-cscl followers
+                                                        :copy nil))))
   (setf (with-followers sfn) t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -402,11 +415,10 @@
                               &optional (depth 1000) verbose)
 ;;; ****
   (loop with ok = t
-     with refs = (get-all-refs sfn)
      ;; an equal spread of all sndfiles in the palette would be ideal but let's
      ;; not worry until one of those is played twice as many times as that 
      with threshold = (round (* 2.0 (/ depth (num-snds sfn))))
-     for ref in refs
+     for ref in (all-refs sfn)
      for snds = (get-data-data ref sfn)
      do
      (loop for snd in snds

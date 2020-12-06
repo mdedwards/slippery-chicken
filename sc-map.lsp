@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   sc-map
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  17:09:17 Fri Jul 10 2020 CEST
+;;; $$ Last modified:  17:18:41 Fri Sep 18 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -199,9 +199,6 @@
   (setf (palette scm) p))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Mar  3 18:37:04 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-map/get-all-data-from-palette
 ;;; DESCRIPTION
 ;;; Given an sc-map object that has been bound to a palette object of any type,
@@ -584,9 +581,6 @@ data: (C2 B2 A3 G4 F5 E6)
       (get-data (nth nth (data refs)) p nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb 22 17:07:42 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-map/get-nth-from-map
 ;;; DESCRIPTION
 ;;; Get the element located at the nth position within a given sc-map

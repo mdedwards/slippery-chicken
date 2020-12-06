@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> rthm-seq-palette
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  17:40:56 Mon Jun  8 2020 CEST
+;;; $$ Last modified:  15:49:30 Tue Oct 27 2020 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1246,6 +1246,7 @@ T
 |#
 ;;; SYNOPSIS
 (defun make-rsp-from-unit-multipliers-simp (id unit seqs)
+;;; ****
   (make-rsp id (loop for seq in seqs and id from 1 collect
                     (make-rthm-seq-from-unit-multipliers-simp id unit seq))))
   

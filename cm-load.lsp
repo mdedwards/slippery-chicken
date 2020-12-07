@@ -38,8 +38,7 @@
 ;;;                   slippery-chicken is distributed in the hope that it will
 ;;;                   be useful, but WITHOUT ANY WARRANTY; without even the
 ;;;                   implied warranty of MERCHANTABILITY or FITNESS FOR A
-;;;                   PARTICULAR PURPOSE.  See the GNU General Public License
-;;;                   for more details.
+;;;                   PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 ;;;
 ;;;                   You should have received a copy of the GNU General Public
 ;;;                   License along with slippery-chicken; if not, write to the
@@ -236,6 +235,139 @@
            ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(new tuning
+  :name 'twelfth-tone-ekm
+  :octaves '(-1 10)
+  :cents '((100/6 c
+            (cn :accidental n)
+            (bs :accidental s :octave -1))
+           (100/6 (cts :accidental ts))
+           (100/6 (cxs :accidental xs))
+           (100/6 (cqs :accidental qs))
+           (100/6 (crs :accidental rs)
+            ;; flat with 1/6th down can't be notated yet so leave out...
+            ;; (dfxf :accidental fxf)
+            )
+           (100/6 (cfts :accidental fts)
+            ;; flat with 1/12th down can't be notated yet so leave out...
+            ;; (dftf :accidental ftf)
+            )
+           (100/6 (cs :accidental s)
+            (df :accidental f))
+           (100/6 (csts :accidental sts)
+            (dftf :accidental ftf))
+           (100/6 (ctrs :accidental trs)
+            (drf :accidental rf))
+           (100/6 (dqf :accidental qf))
+           (100/6 (dxf :accidental xf))
+           (100/6 (dtf :accidental tf))
+
+           (100/6 d
+            (dn :accidental  n))
+           (100/6 (dts :accidental ts))
+           (100/6 (dxs :accidental xs))
+           (100/6 (dqs :accidental qs))
+           (100/6 (drs :accidental rs))
+           (100/6 (dfts :accidental fts))
+           (100/6 (ds :accidental s)
+            (ef :accidental f))
+           (100/6 (dsts :accidental sts)
+            (eftf :accidental ftf))
+           (100/6 (dtrs :accidental trs)
+            (erf :accidental rf))
+           (100/6 (eqf :accidental qf))
+           (100/6 (exf :accidental xf))
+           (100/6 (etf :accidental tf))
+
+           (100/6 e
+            (en :accidental  n)
+            (ff :accidental f))
+           (100/6 (ets :accidental ts))
+           (100/6 (exs :accidental xs))
+           (100/6 (eqs :accidental qs)
+            (fqf :accidental qf))
+           (100/6 (fxf :accidental xf))
+           (100/6 (ftf :accidental tf))
+
+           (100/6 f
+            (fn :accidental  n)
+            ;; MDE Mon May 28 12:20:26 2018 -- Es has sharp!
+            (es :accidental  s))
+           (100/6 (fts :accidental ts))
+           (100/6 (fxs :accidental xs))
+           (100/6 (fqs :accidental qs))
+           (100/6 (frs :accidental rs)
+            ;; (gfxf :accidental fxf)
+            )
+           (100/6 (ffts :accidental fts)
+            ;; (gftf :accidental ftf)
+            )
+           (100/6 (fs :accidental s)
+            (gf :accidental f))
+           (100/6 (fsts :accidental sts)
+            (gftf :accidental ftf))
+           (100/6 (rfs :accidental trs)
+            (grf :accidental rf))
+           (100/6 (gqf :accidental qf))
+           (100/6 (gxf :accidental xf))
+           (100/6 (gtf :accidental tf))
+
+           (100/6 g
+            (gn :accidental  n))
+           (100/6 (gts :accidental ts))
+           (100/6 (gxs :accidental xs))
+           (100/6 (gqs :accidental qs))
+           (100/6 (grs :accidental rs)
+            ;; (afxf :accidental fxf)
+            )
+           (100/6 (gfts :accidental fts)
+            ;; (aftf :accidental ftf)
+            )
+           (100/6 (gs :accidental s)
+            (af :accidental f))
+           (100/6 (gsts :accidental sts)
+            (aftf :accidental ftf))
+           (100/6 (gtrs :accidental trs)
+            (arf :accidental rf))
+           (100/6 (aqf :accidental qf))
+           (100/6 (axf :accidental xf))
+           (100/6 (atf :accidental tf))
+
+           (100/6 a
+            (an :accidental  n))
+           (100/6 (ats :accidental ts))
+           (100/6 (axs :accidental xs))
+           (100/6 (aqs :accidental qs))
+           (100/6 (ars :accidental rs)
+            ;; (bfxf :accidental fxf)
+            )
+           (100/6 (afts :accidental fts)
+            ;; (bftf :accidental ftf)
+            )
+           (100/6 (as :accidental s)
+            (bf :accidental f))
+           (100/6 (asts :accidental sts)
+            (bftf :accidental ftf))
+           (100/6 (atrs :accidental trs)
+            (brf :accidental rf))
+           (100/6 (bqf :accidental qf))
+           (100/6 (bxf :accidental xf))
+           (100/6 (btf :accidental tf))
+
+           (100/6 b
+            (bn :accidental  n)
+            (cf :accidental  f :octave +1))
+           (100/6 (bts :accidental ts))
+           (100/6 (bxs :accidental xs))
+           (100/6 (bqs :accidental qs)
+            (cqf :accidental qf :octave 1))
+           (100/6 (cxf :accidental xf :octave 1))
+           (100/6 (ctf :accidental tf :octave 1))
+           ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (setf *scale* (find-object 'quarter-tone))
 ;; (setf *scale* (find-object 'chromatic-scale))

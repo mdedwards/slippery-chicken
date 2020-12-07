@@ -6420,7 +6420,8 @@ data: NIL
        ;; MDE Thu Feb  2 14:45:21 2017 -- fixed width rhythmic notation
        fixed-width
        ;; sim to rehearsal letters
-       (tempi-all-players t))
+       (tempi-all-players t)
+       (ekmelic-style "gost"))
 ;;; ****
   (declare (special cl-user::+slippery-chicken-src-path+))
   (setf dummy-staves (force-list dummy-staves))
@@ -6602,6 +6603,11 @@ data: NIL
       (with-open-file 
           (out def-file-path :direction :output :if-does-not-exist :create
                :if-exists :rename-and-delete)
+        (when (equal cm::*scale* (cm::find-object 'twelfth-tone-ekm))
+          ;; including 72 edo ekmelily file
+          (format out "~&\\include \"ekmel.ily\"")
+          ; defining accidental style
+          (format out "~&\\ekmelicStyle \"~a\"~%" ekmelic-style))
         ;; print would print the " marks hence princ
         (princ "\\include \"english.ly\"" out)
         (format out "~%~%\\paper { ~%  #(set-paper-size \"~a\"~a)" 

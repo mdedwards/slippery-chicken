@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  12:27:02 Thu Nov 12 2020 CET
+;;; $$ Last modified:  18:42:50 Tue Dec  8 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -139,6 +139,10 @@
     cue-num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Dec  8 18:40:33 2020, Heidhausen -- this used to be called
+;;; osc-send-cue-nums but we no longer send separate lists via OSC rather we
+;;; return a list and let osc-eval handle the nested lists
+
 ;;; ****m* sndfilenet/preload-cues
 ;;; DESCRIPTION
 ;;; Return a list of preload commands for each sound file in a form that a Max

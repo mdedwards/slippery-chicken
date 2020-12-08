@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:45:26 Mon Nov  9 2020 CET
+;;; $$ Last modified:  18:42:54 Tue Dec  8 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -14539,7 +14539,8 @@
       ;; (print sfn)
       ;; 5 because 4 and 5 aren't :use(d)
       (= 5 (cue-num (get-snd 'sndfile-group-3 'test-sndfile-6 sfn)))
-      (= 4 (length (osc-send-cue-nums sfn)))
+      ;; (= 4 (length (osc-send-cue-nums sfn)))
+      (= 4 (length (preload-cues sfn)))
       ;; MDE Fri Jan  4 11:24:14 2013 -- remember two of the above have :use
       ;; nil so won't be issued a cue num
       (equalp 'test-sndfile-6 (id (get-snd-with-cue-num sfn 5)))
@@ -14553,10 +14554,13 @@
       (equalp 'test-sndfile-1 (id (get-next sf5)))
       ;; (equalp 'test-sndfile-6 (get-next sf5))
       ;; MDE Mon Oct 23 17:37:30 2017
-      (setf (next-sfe sfn) 3)
-      (eq 'test-sndfile-2 (id (next-sfe sfn)))
-      (setf (next-sfe sfn) '(sndfile-group-2 test-sndfile-3))
-      (= 4 (cue-num (next-sfe sfn))))))
+      ;; MDE Tue Nov 10 20:45:47 2020, Heidhausen -- can no longer setf
+      ;; next-sfe(s) directly
+      ;; (setf (next-sfe sfn) 3)
+      ;; (eq 'test-sndfile-2 (id (next-sfe sfn)))
+      ;; (setf (next-sfe sfn) '(sndfile-group-2 test-sndfile-3))
+      ;; (= 4 (cue-num (next-sfe sfn)))
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; instruments.lsp tests

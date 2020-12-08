@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:57:34 Tue Oct 27 2020 CET
+;;; $$ Last modified:  18:50:25 Tue Dec  8 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1855,11 +1855,13 @@ data: CQS4
                               "N")))
              (nacc
                (if (equal cm::*scale* (cm::find-object 'twelfth-tone-ekm))
-                   ; we have to handle twelfth-tone-ekm in a different call than
-                   ; the usual slippery-chicken scales, because the 'twelth-tone
-                   ; and 'twelfth-tone-ekm share equal names for different accidentals
-                   ; (for instance fts in twelfth-tone-ekm means +5/12 (Five Twelfth-tone Sharp),
-                   ; but in twelfth-tone it means -5/12 (Flat Twelfth-tone Sharp))
+                   ;; Levin Zimmermann, Dec. 2020: we have to handle
+                   ;; twelfth-tone-ekm in a different call than the usual
+                   ;; slippery-chicken scales, because the 'twelth-tone and
+                   ;; 'twelfth-tone-ekm share equal names for different
+                   ;; accidentals (for instance fts in twelfth-tone-ekm means
+                   ;; +5/12 (Five Twelfth-tone Sharp), but in twelfth-tone it
+                   ;; means -5/12 (Flat Twelfth-tone Sharp))
                    (case (rm-package accidental)
                      (s 's)
                      (f 'f)

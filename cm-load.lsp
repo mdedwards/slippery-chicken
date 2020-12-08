@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    7th February 2003
 ;;;
-;;; $$ Last modified:  12:21:03 Mon May 28 2018 CEST
+;;; $$ Last modified:  18:53:05 Tue Dec  8 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -38,7 +38,8 @@
 ;;;                   slippery-chicken is distributed in the hope that it will
 ;;;                   be useful, but WITHOUT ANY WARRANTY; without even the
 ;;;                   implied warranty of MERCHANTABILITY or FITNESS FOR A
-;;;                   PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+;;;                   PARTICULAR PURPOSE.  See the GNU General Public License
+;;;                   for more details.
 ;;;
 ;;;                   You should have received a copy of the GNU General Public
 ;;;                   License along with slippery-chicken; if not, write to the
@@ -235,7 +236,8 @@
            ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; Thanks to Levin Zimmermann for this. See also
+;;; http://www.ekmelic-music.org/en/extra/ekmelily.htm
 (new tuning
   :name 'twelfth-tone-ekm
   :octaves '(-1 10)
@@ -245,14 +247,8 @@
            (100/6 (cts :accidental ts))
            (100/6 (cxs :accidental xs))
            (100/6 (cqs :accidental qs))
-           (100/6 (crs :accidental rs)
-            ;; flat with 1/6th down can't be notated yet so leave out...
-            ;; (dfxf :accidental fxf)
-            )
-           (100/6 (cfts :accidental fts)
-            ;; flat with 1/12th down can't be notated yet so leave out...
-            ;; (dftf :accidental ftf)
-            )
+           (100/6 (crs :accidental rs))
+           (100/6 (cfts :accidental fts))
            (100/6 (cs :accidental s)
             (df :accidental f))
            (100/6 (csts :accidental sts)

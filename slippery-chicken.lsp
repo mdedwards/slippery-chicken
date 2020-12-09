@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:35:23 Mon Sep 28 2020 CEST
+;;; $$ Last modified:  14:23:16 Wed Dec  9 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -890,7 +890,6 @@
 |#
 ;;; 
 ;;; SYNOPSIS
-#+cmn
 (defmethod cmn-display ((sc slippery-chicken) 
                         &key
                         (respell-notes t)
@@ -909,7 +908,7 @@
                         (empty-staves nil)
                         (write-section-info nil)
                         (group-separation 2)
-                        (system-separation cmn::line-mark)
+                        (system-separation #+cmn cmn::line-mark)
                         (process-event-fun nil)
                         (display-sets nil)
                         (rehearsal-letters-all-players nil)
@@ -958,7 +957,7 @@
   ;; 26/4/10: some processes turn notes into rests so turn bars of rests only
   ;; into rest-bars proper 
   (cleanup-rest-bars sc)
-  (cmn-display (piece sc)
+  #+cmn (cmn-display (piece sc)
                :auto-bar-nums auto-bar-nums
                :start-bar start-bar
                :display-marks-in-part display-marks-in-part

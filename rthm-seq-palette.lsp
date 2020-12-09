@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  15:49:30 Tue Oct 27 2020 CET
+;;; $$ Last modified:  12:02:41 Wed Dec  9 2020 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -482,7 +482,6 @@ rthm-seq SEQ3
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+cmn
 (defmethod get-cmn-data ((rsp rthm-seq-palette) 
                          ;; MDE Fri Jan 13 19:58:53 2012 -- no accidentals!
                          &optional (no-accidentals nil) 
@@ -490,6 +489,7 @@ rthm-seq SEQ3
                          ignore8)
   (declare (ignore ignore2 ignore3 ignore4 ignore5 ignore6 ignore7
                    ignore8))
+  #+cmn
   (loop 
      for rs in (data rsp) 
      if (is-ral (data rs))
@@ -502,7 +502,6 @@ rthm-seq SEQ3
 
 ;;; SAR Mon Jan 30 21:15:10 GMT 2012: Added robodoc info
 
-#+cmn
 ;;; ****m* rthm-seq-palette/cmn-display
 ;;; DESCRIPTION
 ;;; Generate printable music notation output (.EPS) of the given
@@ -585,6 +584,7 @@ rthm-seq SEQ3
 ;;; ****
   (format t "~&Generating rthm-seqs...")
   ;; MDE Fri Jan 13 20:01:58 2012 -- no accidentals
+  #+cmn
   (let* ((cmn-data (get-cmn-data rsp no-accidentals)) 
          (sys
           (loop 

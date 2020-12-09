@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:55:32 Tue Oct 27 2020 CET
+;;; $$ Last modified:  12:00:30 Wed Dec  9 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2811,7 +2811,6 @@ NIL
 ;;; I think cmn should understand the (duration ...) function but seems to fail
 ;;; with this, so use its rq function instead.
 
-#+cmn
 (defmethod get-cmn-data ((e event) &optional bar-num from-pitch-info-only
                          process-event-fun (in-c t) 
                          display-marks-in-part
@@ -2819,6 +2818,7 @@ NIL
   (declare (ignore ignore1 ignore2))
   ;; (print in-c)
   ;; (print (display-tempo e))
+  #+cmn
   (let ((porc (if (or (and (not in-c)
                            (written-pitch-or-chord e))
                       ;; don't transpose piccolo, db etc.

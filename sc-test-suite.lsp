@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:42:54 Tue Dec  8 2020 CET
+;;; $$ Last modified:  14:25:06 Wed Dec  9 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1373,7 +1373,7 @@
       (write-xml r5)
       (write-xml r6)
       (get-lp-data (make-event 'c4 'e) t)
-      (get-cmn-data (make-event 'c4 'm))
+      #+cmn (get-cmn-data (make-event 'c4 'm))
       (get-lp-data (make-event 'c4 'm) t)
       (get-lp-data (make-event 'c4 'l) t)
       (get-lp-data (make-event 'c4 'b) t)
@@ -3729,6 +3729,7 @@
       (write-lp-data-for-all mini :respell-notes nil)
       (file-write-ok "/tmp/_slippery-chicken-piece-score.ly" 190))))
 
+#+cmn
 (sc-deftest test-cmn-display-pitch-list ()
   (sc-test-check
     (typep (cmn-display-pitch-list (init-pitch-list '(c4 d4 e4)))
@@ -6186,7 +6187,7 @@
     (sc-test-check
       (equal '(seq3) (rsp-id (get-nth-bar 1 (get-data 'seq3 mrsp))))
       ;; MDE Mon Apr 15 17:37:34 2013 -- 
-      (file-write-ok "/tmp/rsp-test.eps" 23000)
+      #+cmn (file-write-ok "/tmp/rsp-test.eps" 23000)
       (equalp (list (first mrsp-multipliers)
                     (second mrsp-multipliers)
                     (third mrsp-multipliers)
@@ -7338,7 +7339,7 @@
           (= 1 (get-midi-channel (get-note mini 1 1 'cl)))
           (reset-midi-channels mini)
           (= 5 (get-midi-channel (get-note mini 1 1 'cl)))
-          (file-write-ok "/tmp/sp.eps" 900000)
+          #+cmn (file-write-ok "/tmp/sp.eps" 900000)
           (file-write-ok "/tmp/_mini-template-score.ly" 160)
           (file-write-ok "/tmp/mini-template.mid" 700)
           ;; MDE Wed Jun 29 13:54:00 2016 -- try import/export here too
@@ -7489,8 +7490,8 @@
              :rthm-seq-map `((1 ,(make-rm-rsm '(cl vn va vc cb) 5 3))))))
       (probe-delete "/tmp/_mini-template-score.ly")
       (midi-play mini)
-      (cmn-display mini :display-sets t :write-section-info nil
-                   :empty-staves nil :in-c nil)
+      #+cmn (cmn-display mini :display-sets t :write-section-info nil
+                         :empty-staves nil :in-c nil)
       (write-lp-data-for-all mini)
       (sc-test-check
         (equalp 'fs1 (id (first (data (get-data 's1 (set-palette mini))))))

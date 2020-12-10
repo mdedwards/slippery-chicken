@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:00:30 Wed Dec  9 2020 CET
+;;; $$ Last modified:  16:17:20 Thu Dec 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2743,10 +2743,17 @@ NIL
           (when (marks-before e)
             (loop for thing in (marks-before e) do
                ;; handle clefs here rather than in lp-get-mark
-                 (if (and (listp thing) (eq (first thing) 'clef))
-                     (push 
-                      (get-lp-clef (second thing))
-                      result)
+                 (if (listp thing)
+                     (case (first thing)
+                       (clef (push (get-lp-clef (second thing)) result))
+                       ;; MDE Thu Dec 10 16:11:12 2020, Heidhausen -- we have to
+                       ;; differentiate between rgb marks for individual notes
+                       ;; (which use \tweak) and events (e.g. chords) which
+                       ;; should use \override  
+                       (rgb (push (lp-get-mark
+                                   (list 'rgb (econs (second thing) t)))
+                                  result))
+                       (t (push (lp-get-mark thing) result)))
                      (push (lp-get-mark thing) result))))
           (push note result)
           ;; MDE Thu Jul  2 15:52:52 2015 -- make sure we write an integer

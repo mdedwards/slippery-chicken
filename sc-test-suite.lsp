@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:25:06 Wed Dec  9 2020 CET
+;;; $$ Last modified:  07:49:08 Thu Dec 10 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7246,6 +7246,7 @@
                 (BQS0 A6 CS7 E7 B7))))))
 
 ;;; MDE Fri Aug 24 15:43:18 2018 
+#+clm
 (sc-deftest test-set-palette-from-spectra ()
   (let ((sp (set-palette-from-spectra 
              (concatenate

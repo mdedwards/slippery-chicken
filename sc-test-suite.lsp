@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  07:49:08 Thu Dec 10 2020 CET
+;;; $$ Last modified:  16:19:01 Thu Dec 10 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19238,10 +19238,12 @@
     (add-mark p3 'wedge)
     (add-mark p4 'square)
     (setf (pitch-or-chord e3) (make-chord (list p3 p4)))
+    ;; so this should make the whole chord blue
     (add-mark e3 '(rgb (0 0 1)))
     (change-pitch mini 1 4 'vn '(c6 ef7))
     ;; access chord notes
     (add-mark-to-note mini 1 '(4 1) 'vn 'triangle-up)
+    ;; but these make individual chord notes different colours
     (add-mark-to-note mini 1 '(4 1) 'vn '(rgb (.5 .5 .5)))
     (add-mark-to-note mini 1 '(4 2) 'vn '(rgb (0 1 0)))
     (add-mark-to-note mini 1 5 'vn 'flag-head)

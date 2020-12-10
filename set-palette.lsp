@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  17:06:17 Fri Jun  5 2020 CEST
+;;; $$ Last modified:  07:47:43 Thu Dec 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1314,6 +1314,7 @@ data: (C4 F4 A4 C5)
 ;;; lost 
 (defmethod print-for-init ((sp set-palette)
                            &key (stream t) (call 'make-set-palette))
+  (declare (ignore sp stream call))
   (print "not yet implemented for this class"))
 
 #|(call-next-method ; assoc-list method
@@ -2397,6 +2398,8 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
 ;;; DESCRIPTION
 ;;; Create a set-palette by analysing a sound file at regular intervals and
 ;;; using the detected frequency components as pitches in a set.
+;;;
+;;; NB CLM is needed for this method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the sndfile to analyse
@@ -2451,6 +2454,7 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
 NIL
 |#
 ;;; SYNOPSIS
+#+clm 
 (defun set-palette-from-spectra (sndfile
                                  &key
                                    id

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:23:16 Wed Dec  9 2020 CET
+;;; $$ Last modified:  10:29:37 Thu Dec 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6609,8 +6609,10 @@ data: NIL
           (format out "~&\\ekmelicStyle \"~a\"~%" ekmelic-style))
         ;; print would print the " marks hence princ
         (princ "\\include \"english.ly\"" out)
-        (format out "~%~%\\paper { ~%  #(set-paper-size \"~a\"~a)" 
-                paper (if landscape " 'landscape" ""))
+        ;; MDE Thu Dec 10 10:28:42 2020, Heidhausen -- way of setting landscape
+        ;; has changed  
+        (format out "~%~%\\paper { ~%  #(set-paper-size \"~a~a\")" 
+                paper (if landscape "landscape" ""))
         (when page-turns
           (terpri out)
           (princ "  #(define page-breaking ly:page-turn-breaking)" out))
@@ -6634,8 +6636,10 @@ data: NIL
               (format out "~%  line-width = ~a\\cm" line-width)))
         (unless indent
           (format out "~%  indent = 0.0"))
-        (when between-system-space 
-          (format out "~%  system-system-spacing #'basic-distance  = ~a\\cm"
+        (when between-system-space
+          ;; MDE Thu Dec 10 09:56:23 2020, Heidhausen -- changes to lilypond
+          ;; (format out "~%  system-system-spacing #'basic-distance  = ~a\\cm"
+          (format out "~%  system-system-spacing.basic-distance  = ~a\\cm"
                   between-system-space))
         (when footer
           (format out "~%  oddFooterMarkup = \\markup \\tiny \\fill-line ~

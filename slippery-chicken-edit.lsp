@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:00:17 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  09:38:55 Fri Dec 11 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -581,8 +581,6 @@
           (setf (nth i last-notes) last-attack)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sun Apr 22 10:03:14 BST 2012: Added robodoc entry.
-
 ;;; ****m* slippery-chicken-edit/respell-notes
 ;;; DESCRIPTION
 ;;; Pass through the entire given slippery-chicken object and change some of
@@ -653,14 +651,10 @@
   (respell-notes-aux sc (when (listp corrections) corrections)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Apr 24 19:24:12 BST 2012: Added robodoc entry
-
 ;;; MDE Wed Apr 18 11:57:11 2012 -- added pitches keyword
 
 ;;; DJR Tue 18 Feb 2020 13:33:03 GMT -- multiple players allowed plus arguments
 ;;; for start, end and players can now be nil. Also updated doc.
-
 
 ;;; ****m* slippery-chicken-edit/enharmonics
 ;;; DESCRIPTION

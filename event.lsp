@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:17:20 Thu Dec 10 2020 CET
+;;; $$ Last modified:  15:04:13 Sat Dec 12 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -807,7 +807,7 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf pitch-or-chord) (value (e event))
-  ;; 13.2.11 really have to change the written note too
+  ;;  13.2.11 really have to change the written note too
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))
          ;; MDE Tue Nov 20 17:51:34 2018 -- diff should actually always be an
@@ -817,6 +817,7 @@ data: 132
          (diff (when wporc (decimal-places (pitch- wporc porc) 4))))
     ;; (print diff)
     (setf-pitch-aux e value 'pitch-or-chord)
+    ;; (print (pitch-or-chord e))
     (when (pitch-or-chord e)
       (setf (is-rest e) nil
             ;; MDE Thu Mar 20 15:55:52 2014 -- can't believe it's taken this
@@ -826,7 +827,7 @@ data: 132
     (when wporc
       (setf (slot-value e 'written-pitch-or-chord)
             (if (pitch-or-chord e)
-                (transpose (pitch-or-chord e) diff)
+                (transpose (pitch-or-chord e) diff :destructively nil)
                 nil))))
   value)
 
@@ -873,7 +874,6 @@ data: 132
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod setf-pitch-aux ((e event) value slot)
   ;; (print '***setf-pitch-aux)  (print e) (print value) (print slot)
   (typecase value
@@ -909,7 +909,6 @@ data: 132
                   (make-pitch value :midi-channel (get-midi-channel e))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod print-object :before ((i event) stream)
   (format stream "~%EVENT: start-time: ~,3f, end-time: ~,3f, ~
                   ~%       duration-in-tempo: ~,3f, ~
@@ -937,12 +936,10 @@ data: 132
           (written-pitch-or-chord i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod clone ((e event))
   (clone-with-new-class e 'event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod clone-with-new-class :around ((e event) new-class)
   (declare (ignore new-class))
   (let ((rthm (call-next-method)))
@@ -950,7 +947,6 @@ data: 132
     rthm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Used e.g. in rthm-seq-bar
 ;;; Don't forget to copy the appropriate slots over in the scale method above
 ;;; as well!  
@@ -3968,6 +3964,14 @@ NIL
         (values count num-pitches))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod rm-duplicates ((e event) &optional ignore)
+  (declare (ignore ignore))
+  (when (is-chord e)
+    ;; this will take care of written- also
+    (setf (pitch-or-chord e) (rm-duplicates (pitch-or-chord e)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/round-to-nearest
 ;;; DESCRIPTION
 ;;; Round the written and sounding pitch/chord objects to the nearest in the
@@ -3981,17 +3985,29 @@ NIL
 ;;; :scale. The scale to use when rounding. (Common Music tuning object or
 ;;; symbol). If a symbol, then 'chromatic-scale, 'twelfth-tone, or 'quarter-tone
 ;;; only at present. Default is the current scale as set by (in-scale :...).
+;;; :rm-duplicates. T or NIL to remove duplicate pitches, should the event
+;;; contain a chord and rounding created duplicate pitches.
 ;;; 
 ;;; RETURN VALUE
 ;;; the modified event object
 ;;; 
 ;;; SYNOPSIS
-(defmethod round-to-nearest ((e event) &key (scale cm::*scale*))
+(defmethod round-to-nearest ((e event) &key (scale cm::*scale*)
+                                         (rm-duplicates t))
 ;;; ****
+  #|
   (when (pitch-or-chord e)
-    (round-to-nearest (pitch-or-chord e) :scale scale))
+    (round-to-nearest (pitch-or-chord e) :scale scale))
   (when (written-pitch-or-chord e)
     (round-to-nearest (written-pitch-or-chord e) :scale scale))
+  |#
+  (unless (is-rest e)
+    (let ((rounded (round-to-nearest (clone (pitch-or-chord e)) :scale scale)))
+      (when (and (is-chord e) rm-duplicates)
+        (rm-duplicates rounded))
+      ;; (print rounded)
+      (setf (pitch-or-chord e) rounded)))
+  ;; (print (pitch-or-chord e))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

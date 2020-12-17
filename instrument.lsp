@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:01:58 Sat Sep 26 2020 CEST
+;;; $$ Last modified:  17:49:30 Thu Dec 17 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -591,7 +591,10 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
   (unless just-total-duration
     (setf (total-bars ins) 0
           (total-notes ins) 0
-          (total-degrees ins) 0))
+          (total-degrees ins) 0
+          ;; MDE Thu Dec 17 17:48:06 2020, Heidhausen -- 
+          (lowest-played ins) nil
+          (highest-played ins) nil))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  18:50:25 Tue Dec  8 2020 CET
+;;; $$ Last modified:  15:08:30 Sat Dec 12 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -393,9 +393,9 @@ D4
 |#
 ;;; SYNOPSIS
 (defmethod transpose ((p pitch) semitones &key (as-symbol nil) (package :sc)
-                      ignore)
+                      destructively)
 ;;; ****
-  (declare (ignore ignore))
+  (declare (ignore destructively))
   (let ((new-note (transpose-note (data p) semitones))
         new-pitch)
     (unless new-note

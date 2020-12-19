@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:04:00 Fri Nov 20 2020 CET
+;;; $$ Last modified:  18:52:37 Sat Dec 19 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1810,7 +1810,6 @@
        collect (float (+ y-min (* (- y env-y-min) y-scaler))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* utilities/exaggerate-env
 ;;; DESCRIPTION
 ;;; Makes the y values in an envelope more radically pushed towards its

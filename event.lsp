@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:04:13 Sat Dec 12 2020 CET
+;;; $$ Last modified:  19:18:32 Sat Dec 19 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2985,7 +2985,8 @@ NIL
 ;;; SYNOPSIS
 (defmethod is-single-pitch ((e event))
 ;;; ****
-  (typep (pitch-or-chord e) 'pitch))
+  ;; MDE Sat Dec 19 19:14:29 2020, Heidhausen -- one-note chords also
+  (= 1 (num-notes e)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4029,7 +4030,7 @@ NIL
 (defmethod num-notes ((e event))
 ;;; ****
   (cond ((is-rest e) 0)
-        ((is-single-pitch e) 1)
+        ((pitch-p (pitch-or-chord e)) 1)
         (t (sclist-length (pitch-or-chord e)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

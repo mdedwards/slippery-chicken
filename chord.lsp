@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:20:52 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  12:25:51 Sat Dec 19 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1891,7 +1891,8 @@ data: (
 (defmethod rm-duplicates ((c chord) &optional symbols-only)
   ;; MDE Mon Dec  2 17:40:08 2013 -- sim to rm-octaves below
   ;; (setf (slot-value c 'data) (rm-pitch-duplicates (data c) symbols-only)))
-  (setf (data c) (rm-pitch-duplicates (data c) symbols-only)))
+  (setf (data c) (rm-pitch-duplicates (data c) symbols-only))
+  c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  3 10:52:54 2012 

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:51:14 Thu Dec 17 2020 CET
+;;; $$ Last modified:  12:26:34 Sat Dec 19 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1106,9 +1106,10 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Oct 19 16:13:47 2018 
 (defmethod force-in-range ((ins instrument) (c chord) &key sounding)
-    (setf (data c) (loop for p in (data c) collect
-                        (force-in-range ins p :sounding sounding)))
-    c)
+  (setf (data c) (loop for p in (data c) collect
+                      (force-in-range ins p :sounding sounding)))
+  ;; MDE Sat Dec 19 12:26:27 2020, Heidhausen
+  (rm-duplicates c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Oct 19 16:22:11 2018

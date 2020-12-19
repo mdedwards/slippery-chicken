@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:18:32 Sat Dec 19 2020 CET
+;;; $$ Last modified:  19:25:04 Sat Dec 19 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -992,9 +992,13 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod porc-equal ((e1 event) (e2 event))
-  (or (and (is-single-pitch e1)
-           (is-single-pitch e2)
-           (pitch= (pitch-or-chord e1) (pitch-or-chord e2)))
+  (or (and                              ;(is-single-pitch e1)
+                                        ;(is-single-pitch e2)
+       ;; MDE Sat Dec 19 19:23:58 2020, Heidhausen -- single note chords are now
+       ;; is-single-pitch T
+       (pitch-p (pitch-or-chord e1))
+       (pitch-p (pitch-or-chord e2))
+       (pitch= (pitch-or-chord e1) (pitch-or-chord e2)))
       (and (is-chord e1)
            (is-chord e2)
            (chord-equal (pitch-or-chord e1) (pitch-or-chord e2)))))

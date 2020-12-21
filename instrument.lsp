@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  12:26:34 Sat Dec 19 2020 CET
+;;; $$ Last modified:  18:01:53 Mon Dec 21 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1450,7 +1450,7 @@ dqs3 dqf3 cqs3)
                (unless clx
                  (error "instrument::best-clef-aux: clef ~a not yet ~
                          implemented here." clef))
-               (setf clo (first (data clx))
+               (setq clo (first (data clx))
                      chi (second (data clx)))
                (and (pitch-in-range chord-highest clo chi)
                     (pitch-in-range chord-lowest clo chi))))
@@ -1481,7 +1481,7 @@ dqs3 dqf3 cqs3)
         (if (not ins)
             (in-clef-range hi low current-clef)
             (progn
-              (setf result
+              (setq result
                     (loop 
                        with best
                        with alternative
@@ -1493,37 +1493,42 @@ dqs3 dqf3 cqs3)
                                        (clefs-in-c ins)
                                        (clefs ins))
                        do
-                       (when (in-clef-range hi low clef)
-                         (setf ledgers (needs-ledgers hi low clef))
+                         ;; MDE Mon Dec 21 17:57:44 2020, Heidhausen -- if we
+                         ;; only process notes that are in a clef's range then
+                         ;; we'll fail to get a clef for chords involving
+                         ;; extreme lows and highs (e.g. c2,e5 on cello)
+                       (when t ; (in-clef-range hi low clef)
+                         (setq ledgers (needs-ledgers hi low clef))
                          (cond ((and ledgers
                                      (or (not alternative)
                                          (< ledgers (second alternative))))
-                                (setf alternative (list clef ledgers)))
+                                (setq alternative (list clef ledgers)))
                                ;; alternative would be better but this is the
                                ;; current clef and we're in range 
                                ((and ledgers alternative
                                      (not best)
                                      (>= ledgers (second alternative)))
-                                (setf best (first alternative)
+                                ;; (print 'here)
+                                (setq best (first alternative)
                                       alternative (list clef ledgers)))
                                ((and (not ledgers)
                                      (equal best current-clef)
                                      (not alternative))
-                                (setf alternative (list clef 0)))
+                                (setq alternative (list clef 0)))
                                ;; we've already got a best and perhaps an
                                ;; alternative but this is the current clef and
                                ;; there's no need for ledgers 
                                ((and (not ledgers)
                                      (equal clef current-clef)
                                      best)
-                                (setf alternative (list best 0)
+                                (setq alternative (list best 0)
                                       best clef))
                                ((and (not ledgers) 
                                      (not (equal best current-clef)))
-                                (setf best clef))
+                                (setq best clef))
                                ((and (not ledgers)
                                      (equal best current-clef))
-                                (setf alternative (list clef 0)))))
+                                (setq alternative (list clef 0)))))
                        (when verbose
                          (format t "~&clef ~a ledgers ~a best ~a alt ~a"
                                  clef ledgers best alternative))
@@ -1534,7 +1539,7 @@ dqs3 dqf3 cqs3)
                                  (if best
                                      (list best (first alternative))
                                      (list (first alternative) nil)))))
-              (unless result
+              (when (or (not result) (equalp result '(nil nil)))
                 (error "~&instrument::best-clef: didn't work for ~a, ~a: ~
                        clefs: ~a"
                        (if chord 

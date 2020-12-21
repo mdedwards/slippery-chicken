@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:29:37 Thu Dec 10 2020 CET
+;;; $$ Last modified:  18:29:39 Mon Dec 21 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -9725,28 +9725,28 @@ data: (11 15)
         (new-current-clef current-clef)
         (oldest (if (= note-count 2)
                     0
-                  (1+ note-count))))
+                    (1+ note-count))))
     (loop 
-        with i = oldest
-        with clefs with c1 ;; with event ;; with c2 
-        repeat 3 do
-          (setf clefs (nth i last-clefs)
-                ;; remember: c is a list of two clefs
-                c1 (first clefs)
-                ;; c2 (second clefs)
-                ;; event (nth i last-events)
-                )
-          (when (and c1
-                     (not (equal new-current-clef c1))
-                     ;; we need all three to do the change!
-                     (or (not change)
-                         (equal c1 change)))
-            (incf change-count)
-            (setf change c1))
-          (if (= 2 i) 
-              (setf i 0)
-            (incf i)))
-    (if (= 3 change-count)
+       with i = oldest
+       with clefs with c1 ;; with event ;; with c2 
+       repeat 3 do
+         (setf clefs (nth i last-clefs)
+               ;; remember: c is a list of two clefs
+               c1 (first clefs)
+               ;; c2 (second clefs)
+               ;; event (nth i last-events)
+               )
+         (when (and c1
+                    (not (equal new-current-clef c1))
+                    ;; we need all three to do the change!
+                    (or (not change)
+                        (equal c1 change)))
+           (incf change-count)
+           (setf change c1))
+         (if (= 2 i) 
+             (setf i 0)
+             (incf i)))
+    (if (= 3 change-count) ; (= 3 change-count)
         (let* ((e (nth oldest last-events))
                (psym (get-pitch-symbol e (not in-c))))
           (add-clef e change)
@@ -9754,41 +9754,40 @@ data: (11 15)
             (format t "~&backup...change clef!!!: ~a before ~a"
                     change psym))
           (setf new-current-clef change))
-      (loop 
-          with i = oldest
-          with clefs with c1 with c2 with event with psym
-          repeat 3 do
-            (setf clefs (nth i last-clefs)
-                  ;; remember: c is a list of two clefs
-                  c1 (first clefs)
-                  c2 (second clefs)
-                  event (nth i last-events)
-                  psym (when event
-                         (get-pitch-symbol event)))
-            (when (and c1 psym
-                       (or (and (not (equal new-current-clef c1))
-                                (not (equal new-current-clef c2))
-                                ;; could be we just set a clef and now c1,c2
-                                ;; are no longer current so make sure we're not
-                                ;; in the current clef's range before changing
-                                ;; it 
-                                (not (best-clef-aux 
-                                      nil
-                                      (if (written-pitch-or-chord event)
-                                          (written-pitch-or-chord event)
-                                        (pitch-or-chord event))
-                                      nil current-clef verbose)))
-                           (and (not (equal new-current-clef c1))
-                                (not c2))))
-              ;; we really need a new clef now!
-              (when verbose
-                (format t "~&change clef!!!: ~a before ~a" c1 psym))
-              (add-clef event c1)
-              ;; (cmn::cmn-get-clef c1))
-              ;; this should stop us from adding multiple clefs before the
-              ;; same note 
-              (setf (first (nth i last-clefs)) nil
-                    new-current-clef c1))))
+        (loop 
+           with i = oldest
+           with clefs with c1 with c2 with event with psym
+           repeat 3 do
+             (setf clefs (nth i last-clefs)
+                   ;; remember: c is a list of two clefs
+                   c1 (first clefs)
+                   c2 (second clefs)
+                   event (nth i last-events)
+                   psym (when event (get-pitch-symbol event)))
+             (when (and c1 psym
+                        (or (and (not (equal new-current-clef c1))
+                                 (not (equal new-current-clef c2))
+                                 ;; could be we just set a clef and now c1,c2
+                                 ;; are no longer current so make sure we're not
+                                 ;; in the current clef's range before changing
+                                 ;; it 
+                                 (not (best-clef-aux 
+                                       nil
+                                       (if (written-pitch-or-chord event)
+                                           (written-pitch-or-chord event)
+                                           (pitch-or-chord event))
+                                       nil current-clef verbose)))
+                            (and (not (equal new-current-clef c1))
+                                 (not c2))))
+               ;; we really need a new clef now!
+               (when verbose
+                 (format t "~&change clef!!!: ~a before ~a" c1 psym))
+               (add-clef event c1)
+               ;; (cmn::cmn-get-clef c1))
+               ;; this should stop us from adding multiple clefs before the
+               ;; same note 
+               (setf (first (nth i last-clefs)) nil
+                     new-current-clef c1))))
     (when verbose
       (format t "~&change-count: ~a, last-clefs: ~a" change-count last-clefs))
     new-current-clef))

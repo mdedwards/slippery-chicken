@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:29:39 Mon Dec 21 2020 CET
+;;; $$ Last modified:  10:14:25 Tue Dec 22 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -9707,6 +9707,34 @@ data: (11 15)
     sequenz))
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Dec 21 18:39:09 2020, Heidhausen
+(defun too-high-for-clef (pitch clef)
+  (pitch> (make-pitch pitch)
+          (make-pitch (case clef
+                        ;; too high is more than 6 ledger lines
+                        (bass 'g5)
+                        (treble 'e7)
+                        (percussion 'e7)
+                        (alto 'f6)
+                        (tenor 'd6)
+                        (double-bass 'e4)
+                        (double-treble 'e8)))))
+
+(defun too-low-for-clef (pitch clef)
+  (pitch< (make-pitch pitch)
+          (make-pitch (case clef
+                        ;; too low is different somehow: more than 3/4/5 ledger
+                        ;; lines (by feel)
+                        (bass 'c0)
+                        (treble 'c3)
+                        (percussion 'c3)
+                        (alto 'e2)
+                        (tenor 'd2)
+                        (double-bass 'c-1)
+                        (double-treble 'g4)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; If we get three notes whose best clef without ledger lines is not the
 ;;; current, change it. If any note has only a best clef that is different to
 ;;; current, change it
@@ -9777,6 +9805,10 @@ data: (11 15)
                                            (written-pitch-or-chord event)
                                            (pitch-or-chord event))
                                        nil current-clef verbose)))
+                            ;; MDE Mon Dec 21 18:44:57 2020, Heidhausen
+                            ;; todo: here
+                            (too-high-for-clef (highest event) current-clef)
+                            (too-low-for-clef (lowest event) current-clef)
                             (and (not (equal new-current-clef c1))
                                  (not c2))))
                ;; we really need a new clef now!

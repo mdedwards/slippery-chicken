@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  12:37:04 Tue Dec 29 2020 CET
+;;; $$ Last modified:  17:41:25 Tue Dec 29 2020 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -152,7 +152,7 @@
      ;; use for auto-clefs. For years this was the best-clef-aux function but
      ;; we're now generally using best-clef-aux-new. Some might prefer the old
      ;; routine however, hence this option here.
-     (best-clef-aux-fun best-clef-aux) 
+     (best-clef-aux-fun best-clef-aux-new) 
      (asco-msg-rest-warning t)
      ;; if we've added, say, an antescofo~ label to an event with a rehearal
      ;; letter, we'll get a warning as we can only have one antescofo label per

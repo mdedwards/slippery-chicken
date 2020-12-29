@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:14:25 Tue Dec 22 2020 CET
+;;; $$ Last modified:  12:05:27 Tue Dec 29 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -9799,7 +9799,8 @@ data: (11 15)
                                  ;; are no longer current so make sure we're not
                                  ;; in the current clef's range before changing
                                  ;; it 
-                                 (not (best-clef-aux 
+                                 (not (funcall
+                                       (get-sc-config 'best-clef-aux-fun)
                                        nil
                                        (if (written-pitch-or-chord event)
                                            (written-pitch-or-chord event)

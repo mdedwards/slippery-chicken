@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  19:16:27 Tue Jul 14 2020 CEST
+;;; $$ Last modified:  12:23:12 Tue Dec 29 2020 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -234,6 +234,7 @@
 (sc-compile-and-load "chord.lsp")
 (sc-compile-and-load "event.lsp")
 (sc-compile-and-load "instrument.lsp")
+;; (sc-compile-and-load "globals.lsp")
 (sc-compile-and-load "time-sig.lsp")
 (sc-compile-and-load "rthm-seq-bar.lsp")
 (sc-compile-and-load "change-data.lsp")

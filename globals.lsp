@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  16:28:22 Thu Oct  8 2020 CEST
+;;; $$ Last modified:  12:37:04 Tue Dec 29 2020 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -148,6 +148,11 @@
      ;; the asco-msgs slot of a rest event (because they will only be written
      ;; to an antescofo~ file if this happens to be a rest in the part we're
      ;; following and we can't know this in advance).
+     ;; MDE Tue Dec 29 11:59:33 2020, Heidhausen -- which auxiliary routine to
+     ;; use for auto-clefs. For years this was the best-clef-aux function but
+     ;; we're now generally using best-clef-aux-new. Some might prefer the old
+     ;; routine however, hence this option here.
+     (best-clef-aux-fun best-clef-aux) 
      (asco-msg-rest-warning t)
      ;; if we've added, say, an antescofo~ label to an event with a rehearal
      ;; letter, we'll get a warning as we can only have one antescofo label per

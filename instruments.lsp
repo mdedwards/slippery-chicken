@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:27:40 Thu Dec 17 2020 CET
+;;; $$ Last modified:  17:25:51 Mon Dec 28 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -295,7 +295,7 @@
      (accordion
       (:staff-name "accordion" :staff-short-name "acc"
        :lowest-written e1 :highest-written bf7
-       :clefs (bass treble double-treble double-bass) :starting-clef treble
+       :clefs (treble bass double-treble double-bass) :starting-clef treble
        ;; clearly a better function should be provided at some point
        :chords t :chord-function piano-chord-fun 
        :microtones nil :midi-program 22))

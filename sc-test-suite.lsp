@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:19:01 Thu Dec 10 2020 CET
+;;; $$ Last modified:  17:12:46 Tue Dec 29 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8792,6 +8792,7 @@
 
 ;;; SAR Fri Apr 20 10:35:49 BST 2012
 (sc-deftest test-sc-edit-auto-clefs ()
+  (set-sc-config 'best-clef-aux-fun #'best-clef-aux)
   (progn
     (setf (starting-clef
            (get-data 'cello +slippery-chicken-standard-instrument-palette+))
@@ -9293,13 +9294,51 @@
           :set-map '((1 (1 1 1 1)))
           :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
                                   :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-          :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+          :rthm-seq-map '((1 ((vc (1 1 1 1)))))))
+        (vc (get-standard-ins 'cello))
+        (acc (get-standard-ins 'accordion))
+        (ob (get-standard-ins 'oboe)))
     (sc-test-check
+      (set-sc-config 'best-clef-aux-fun #'best-clef-aux)
       (auto-clefs mini)
       (equalp (marks-before (get-event mini 1 6 'vc)) '((clef treble)))
-      (not (marks-before (get-event mini 1 8 'vc)))
       (move-clef mini 1 6 1 8 'vc)
       (not (marks-before (get-event mini 1 6 'vc)))
+      ;; MDE Tue Dec 29 12:40:52 2020, Heidhausen -- test both methods
+      (set-sc-config 'best-clef-aux-fun #'best-clef-aux-new)
+      ;; MDE Tue Dec 29 16:48:12 2020, Heidhausen -- while we're here, test
+      ;; best-clef a bit
+      (equalp '(treble bass)
+              (best-clef vc (make-chord '(e4 fs4)) nil 'bass nil))
+      (equalp '(treble bass)
+              (best-clef vc (make-chord '(e4 fs4)) nil 'treble nil))
+      (equalp '(tenor bass)
+              (best-clef vc (make-chord '(e4 fs4)) nil 'tenor nil))
+      (equalp '(tenor bass)
+              (best-clef vc (make-chord '(c2 e5)) nil 'tenor nil))
+      (equalp '(treble nil)
+              ;; this doesn't get to the -aux routine as oboe has only one clef
+              ;; (if it did, it should trigger an error because bass is not one
+              ;; of its clefs
+              (best-clef ob (make-chord '(e4 fs4)) nil 'bass nil))
+      (equalp '(treble nil)
+              (best-clef ob (make-pitch 'c7) nil 'bass nil))
+      (equalp '(treble nil)
+              (best-clef ob (make-pitch 'c2) nil 'bass nil))
+      (equalp '(treble bass)
+              (best-clef acc (make-chord '(e4 fs4)) nil 'treble nil))
+      (equalp '(treble bass)
+              (best-clef acc (make-chord '(e4 fs4)) nil 'bass nil))
+      (equalp '(double-bass bass)
+              (best-clef acc (make-chord '(e1 fs1)) nil 'treble nil))
+      (equalp '(bass nil)
+              (best-clef acc (make-chord '(e2 fs2)) nil 'treble nil))
+      (auto-clefs mini)
+      ;; MDE Mon Dec 28 18:04:15 2020, Heidhausen -- changes to best-clef-aux
+      (equalp (marks-before (get-event mini 1 3 'vc)) '((clef treble)))
+      (not (marks-before (get-event mini 1 8 'vc)))
+      (move-clef mini 1 3 1 8 'vc)
+      (not (marks-before (get-event mini 1 3 'vc)))
       (equalp (marks-before (get-event mini 1 8 'vc)) '((clef treble))))))
 
 ;;; SAR Fri Apr 20 17:43:19 BST 2012
@@ -17963,8 +18002,8 @@
        '(6 10 20.0 40.0 50 20.0)))))
 
 ;;; SAR Mon May 14 17:14:21 BST 2012
-;;; SAR Mon Jul  2 18:10:42 BST 2012: Changed to fix new fail
 (sc-deftest test-sc-get-clefs ()
+  (set-sc-config 'best-clef-aux-fun #'best-clef-aux)
   (progn
     (setf (starting-clef
            (get-data 'cello +slippery-chicken-standard-instrument-palette+))
@@ -19420,7 +19459,7 @@
       (file-write-ok "/tmp/tmp.mid" 13000))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Thu May 23 12:01:49 2019 -- afu tests
+;;; MDE Thu May 23 12:01:49 2019 -- afu tests
 (sc-deftest test-afu ()
   (let ((afu (make-afu :level 3 :minimum -3 :maximum 3)))
     (sc-test-check

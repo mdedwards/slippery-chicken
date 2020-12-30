@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:52:40 Wed Dec 30 2020 CET
+;;; $$ Last modified:  18:36:41 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6244,6 +6244,9 @@ data: NIL
 ;;;   processes will be applied. Default = NIL.
 ;;; - :extend-hairpins. If you want hairpin (cresc/dim) to extend beyond the
 ;;;    previous barline (or beyond the note) set to T. Default = NIL.
+;;; - :min-hairpin. If you're getting Lilypond warnings about hairpins being too
+;;;   short (and then not showing up in the score, or dynamics overlapping), you
+;;;   can set this value to, e.g. 10.
 ;;; - :stemlet-length. NIL or a decimal number < 1.0 that indicates the scaled
 ;;;   length of stems over rests in LilyPond output, should this feature be
 ;;;   desired. 0.75 is a recommended value for this. NIL = no stems over
@@ -6403,6 +6406,8 @@ data: NIL
        ;; MDE Thu Jan 9 09:20:33 2014 -- if you want hairpin (cresc/dim) to
        ;; extend beyond the note set to T
        (extend-hairpins nil)
+       ;; MDE Wed Dec 30 18:29:28 2020, Heidhausen
+       (min-hairpin nil)
        ;; MDE Wed Jul  8 10:45:02 2015 -- tuplet numbers on beams don't usually
        ;; include a bracket but we can force this if we like
        (force-bracket nil)
@@ -6720,7 +6725,7 @@ data: NIL
             (concatenate 'string path (format nil "~a-~a.ly"
                                               title-hyphens pname))
             :all-bar-nums all-bar-nums
-            :extend-hairpins extend-hairpins
+            :extend-hairpins extend-hairpins :min-hairpin min-hairpin
             :process-event-fun process-event-fun
             :rehearsal-letters-font-size rehearsal-letters-font-size
             :start-bar-numbering start-bar-numbering
@@ -6756,7 +6761,7 @@ data: NIL
                                        start-bar-numbering
                                        ;; MDE Sat Mar 10 16:53:16 2012 
                                        process-event-fun
-                                       extend-hairpins
+                                       extend-hairpins min-hairpin
                                        rehearsal-letters-font-size)
   (unless start-bar
     (setf start-bar 1))
@@ -6781,6 +6786,8 @@ data: NIL
         (format out "~&\\override Score.BarNumber #'self-alignment-X = #0"))
       (when extend-hairpins
         (format out "~&\\override Hairpin #'to-barline = ##f"))
+      (when min-hairpin
+        (format out "~&\\override Hairpin #'minimum-length = #~a" min-hairpin))
       ;; just write this in all parts, whether there's pedalling or not--does
       ;; no harm  
       (format out "~&\\set Staff.pedalSustainStyle=#'mixed")

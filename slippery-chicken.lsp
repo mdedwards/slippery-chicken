@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:45:59 Wed Dec 30 2020 CET
+;;; $$ Last modified:  17:52:40 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5138,6 +5138,9 @@ seq-num 5, VN, replacing G3 with B6
 (defmethod get-last-bar ((sc slippery-chicken))
 ;;; ****
   (get-bar sc (num-bars sc)))
+
+(defmethod get-last-bar-for-player ((sc slippery-chicken) player)
+  (get-bar sc (num-bars sc) player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/get-last-event

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:26:41 Wed Dec 30 2020 CET
+;;; $$ Last modified:  18:03:43 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6947,6 +6947,9 @@ NIL
     ;; we pass all players so that new ones can clone existing ones (the
     ;; existing ones won't be replaced)
     (add-rest-player-sections-aux (piece sc) (players sc))
+    ;; MDE Wed Dec 30 17:47:03 2020, Heidhausen -- if we don't do this then we
+    ;; might be missing bars rests at the end of the new part.
+    (setf (bar-line-type (get-last-bar-for-player sc player-id)) 2)
     (staff-groupings-inc sc)
     ;; todo: check the new player's events have the right player slot
     (get-player (ensemble sc) player-id)))

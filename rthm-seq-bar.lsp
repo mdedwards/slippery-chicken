@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  13:52:41 Wed Oct  7 2020 CEST
+;;; $$ Last modified:  17:28:23 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4007,7 +4007,6 @@ data: (2 4)
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod lp-rehearsal-letter ((rsb rthm-seq-bar) font-size)
   (if (eq t (rehearsal-letter rsb)) ; auto-increment
       "\\mark \\default"
@@ -4015,7 +4014,6 @@ data: (2 4)
               font-size (rehearsal-letter rsb))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod lp-rest-bar ((rsb rthm-seq-bar) &optional time-sig) ; if we have it
   (unless time-sig 
     (setf time-sig (get-time-sig rsb)))
@@ -4027,14 +4025,12 @@ data: (2 4)
                   ""))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod lp-time-sig ((rsb rthm-seq-bar) &optional time-sig) ; if we have it
   (unless time-sig 
     (setf time-sig (get-time-sig rsb)))
   (format nil "\\time ~a/~a " (num time-sig) (denom time-sig)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 #+cmn
 (defmethod get-cmn-data ((rsb rthm-seq-bar) &optional process-event-fun in-c
                          display-marks-in-part display-time

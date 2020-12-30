@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  18:52:37 Sat Dec 19 2020 CET
+;;; $$ Last modified:  18:01:34 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3924,6 +3924,9 @@ WARNING:
 (defun file-from-sc-dir (file)
   (declare (special cl-user::+slippery-chicken-home-dir+))
   (concatenate 'string cl-user::+slippery-chicken-home-dir+ file))
+
+(defun run-tests (&optional full)
+  (load-from-test-suite-dir (if full "sc-test-full.lsp" "sc-test-suite.lsp")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri May  4 11:01:14 2012 

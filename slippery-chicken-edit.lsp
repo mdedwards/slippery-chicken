@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:16:18 Mon Dec 21 2020 CET
+;;; $$ Last modified:  13:00:25 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6922,20 +6922,22 @@ NIL
 ;;; - a player object or symbol ID for the new player
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - a symbol ID for an existing instrument in the instrument-palette (the next
-;;;   argument). This is actually required unless the default of 'computer is
-;;;   acceptable or a player object is passed as second argument.
-;;; - an instrument-palette object in which the instrument exists. Default is
-;;;   the standard palette.
-;;; - the midi-channel for the new player
-;;; - the microtones-midi-channel for the new player
+;;; keyword arguments:
+;;; - :instrument. a symbol ID for an existing instrument in the
+;;;   instrument-palette (the next argument). This is actually required unless
+;;;   the default of 'computer is acceptable or a player object is passed as
+;;;   second argument.
+;;; - :instrument-palette. an instrument-palette object in which the instrument
+;;;   exists. Default is the standard palette.
+;;; - :midi-channel. the midi-channel for the new player
+;;; - microtones-midi-channel. the microtones-midi-channel for the new player
 ;;; 
 ;;; RETURN VALUE
 ;;; the new player object from the ensemble slot of the slippery-chicken object
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-player ((sc slippery-chicken) player
-                       &optional (instrument 'computer)
+                       &key (instrument 'computer)
                          (instrument-palette
                           +slippery-chicken-standard-instrument-palette+)
                          ;; MDE Tue Jul 14 19:08:15 2020, Heidhausen
@@ -6943,8 +6945,10 @@ NIL
                          (microtones-midi-channel -1))
 ;;; ****
   (let ((player-id (if (player-p player) (id player) player)))
-    (add-player (ensemble sc) player instrument instrument-palette
-                midi-channel microtones-midi-channel)
+    (add-player (ensemble sc) player :instrument instrument
+                :instrument-palette instrument-palette
+                :midi-channel midi-channel
+                :microtones-midi-channel microtones-midi-channel)
     ;; MDE Wed Aug  5 14:34:43 2020, Heidhausen -- ins-hier!
     (setf (instruments-hierarchy sc)
           (econs (instruments-hierarchy sc) player-id))
@@ -7707,8 +7711,10 @@ NIL
                                      (midi-channel 1)
                                      (microtones-midi-channel -1))
 ;;; ****
-  (add-player sc new-player new-ins (instrument-palette sc) midi-channel
-              microtones-midi-channel)
+  (add-player sc new-player :instrument new-ins
+              :instrument-palette (instrument-palette sc)
+              :midi-channel midi-channel
+              :microtones-midi-channel microtones-midi-channel)
   (double-events sc existing-player new-player start-bar start-event end-bar
                  end-event :consolidate-rests nil :auto-beam nil)
   (let ((upper (doctor-env upper-curve (num-bars sc)))
@@ -7868,8 +7874,9 @@ NIL
         ;; We don't need to do this if we've already added a new section.
         (unless new-section
           (progn
-            (setf player-obj (add-player (ensemble sc) player instrument
-                                         instrument-palette)
+            (setf player-obj (add-player (ensemble sc) player
+                                         :instrument instrument
+                                         :instrument-palette instrument-palette)
                   ;; MDE Thu Nov 7 18:44:23 2019 -- set the player's
                   ;; midi-channel otherwise we'll put programme changes on
                   ;; channel 1

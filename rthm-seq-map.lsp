@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  19:19:54 Tue Jul 14 2020 CEST
+;;; $$ Last modified:  13:01:50 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -623,9 +623,10 @@ data: (5 3 2)
 ;;;   ensemble slot of a slippery-chicken object)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - the rthm-seq-palette references to use for the new player. See above.
-;;;   Default NIL.
-;;; - T or NIL to cycle the references. See above. Default NIL.
+;;; keyword arguments:
+;;; - :data. the rthm-seq-palette references to use for the new player or a
+;;;   function. See above. Default NIL.
+;;; - :cycle. T or NIL to cycle the references. See above. Default NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; the same rthm-seq-map object but with the new player now added.
@@ -654,10 +655,9 @@ data: (5 3 2)
 
 |#
 ;;; SYNOPSIS
-(defmethod add-player ((rsm rthm-seq-map) player &optional data cycle
-                                                   ignore1 ignore2)
+(defmethod add-player ((rsm rthm-seq-map) player &key data cycle)
 ;;; ****
-  (declare (ignore ignore1 ignore2))
+  ;; (declare (ignore ignore1 ignore2))
   ;; (print '*****************************************) (print rsm)
   (when (member player (players rsm))
     (error "rthm-seq-map::add-player: ~a already in the map: can't add."
@@ -695,9 +695,8 @@ data: (5 3 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Oct 29 17:07:56 2018 -- surely we must do this too?
-(defmethod add-player :after ((rsm rthm-seq-map) player &optional data cycle
-                                                          ignore1 ignore2)
-  (declare (ignore data cycle ignore1 ignore2))
+(defmethod add-player :after ((rsm rthm-seq-map) player &key ignore)
+  (declare (ignore ignore))
   (add-player-to-players rsm player))
 
 (defmethod add-player-to-players ((rsm rthm-seq-map) player)

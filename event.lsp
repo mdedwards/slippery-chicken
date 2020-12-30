@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:25:04 Sat Dec 19 2020 CET
+;;; $$ Last modified:  16:34:44 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4846,14 +4846,14 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 (defun make-events2 (rhythms pitches
                      &optional (midi-channel 1) (microtones-midi-channel 2))
 ;;; ****
-  (let ((rhythms (rhythm-list rhythms))
+  (let ((rthms (rhythm-list rhythms))
         (ps (my-copy-list pitches))
         (poc nil))
-    (loop for r in rhythms do
+    (loop for r in rthms do
          (unless (is-tied-to r)
            (unless ps
-             (error "event::make-events2: not enough pitches for rhythms: ~a ~a"
-                    rhythms pitches))
+             (error "event::make-events2: not enough pitches for rhythms: ~
+                     ~%~a~%~a" rhythms pitches))
            (setf poc (pop ps)))
          collect
        ;; remember that the fact that r is already a rhythm just means the

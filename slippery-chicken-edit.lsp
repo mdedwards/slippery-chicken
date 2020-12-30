@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  13:00:25 Wed Dec 30 2020 CET
+;;; $$ Last modified:  16:26:41 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -100,8 +100,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Thu Apr 19 11:52:43 BST 2012: Conforming robodoc
-
 ;;; ****m* slippery-chicken-edit/add-event-to-bar
 ;;; DESCRIPTION
 ;;; Add an event object to a specified bar either at the end of that bar or at
@@ -169,8 +167,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sat Apr 21 14:29:43 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken-edit/replace-events
 ;;; DESCRIPTION
 ;;; Replace one or more consecutive existing event objects with new event
@@ -247,9 +243,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Aug  8 12:17:43 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/add-tuplet-bracket-to-bar
 ;;; DESCRIPTION
 
@@ -365,15 +358,17 @@
        (add-tuplet-bracket bar (rest bi) delete-all-tuplets-first)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sat Apr 21 17:17:33 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken-edit/replace-multi-bar-events
 ;;; DESCRIPTION
 ;;; Replace specified consecutive event objects across several bars. 
 ;;;
 ;;; The new rhythms provided must produce full bars for all bars specified;
-;;; i.e., if only a quarter note is provided as the new event for a 2/4 bar,
-;;; the method will not automatically fill up the remainder of the bar.
+;;; i.e., if only a quarter note is provided as the new event for a 2/4 bar, the
+;;; method will not automatically fill up the remainder of the bar. In that case
+;;; you'll get a warning and the procedure will exit. This means if you don't
+;;; know how many bars you want to replace events for, you can pass a large
+;;; number and ignore the warning and providing you've filled the bars, all
+;;; should be well.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
@@ -387,7 +382,7 @@
 ;;;   complete event objects; as a list of 2-item lists that are
 ;;;   note-name/rhythm pairs, e.g: '((c4 q) (d4 e)); or as a list with two
 ;;;   sub-lists, the first being just the sequence of rhythms and the second
-;;;   being just the sequence of pitches, e.g: '((q e ) (c4 d4)). For the
+;;;   being just the sequence of pitches, e.g: '((q e) (c4 d4)). For the
 ;;;   latter, :interleaved must be set to NIL. (see :interleaved below). Pitch 
 ;;;   data is the usual cs4 or (cs4 cd3) for chords, and NIL or 'r indicate a
 ;;;   rest. NB: All pitches are sounding pitches; written pitches will be
@@ -509,9 +504,6 @@
                             :tuplet-bracket tuplet-bracket))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Apr 25 13:09:27 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/auto-accidentals
 ;;; DESCRIPTION
 ;;; Automatically determine which notes in each bar need accidentals and which
@@ -4329,8 +4321,6 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sat Apr 21 14:20:22 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/remove-extraneous-dynamics
 ;;; DESCRIPTION
 ;;; A post-generation editing method: If two or more consecutive event objects
@@ -6914,7 +6904,7 @@ NIL
 ;;; empty bars in the right meter, tempo etc.
 ;;;
 ;;; NB As this method may be called several times successively, it's the
-;;; caller's duty to call (update slots sc) in order to have timing and other
+;;; caller's duty to call (update-slots sc) in order to have timing and other
 ;;; data updated correctly.
 ;;; 
 ;;; ARGUMENTS

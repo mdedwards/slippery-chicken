@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  14:31:11 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  16:24:47 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -819,8 +819,10 @@ BAR-HOLDER:
        for transposition = (get-transposition-at-bar player bar-num sc)
        do
          (unless new-events
-           (error "piece::replace-multi-bar-events: ~
-                 no new-events (~a, bar ~a)!" player bar-num))
+           (warn "piece::replace-multi-bar-events: no new-events ~
+                  (~a, bar ~a)! ~%Bar incomplete perhaps? Exiting."
+                 player bar-num)
+           (return))
          (unless bar
            (error "piece::replace-multi-bar-events: ~
                  Can't get bar ~a for ~a"

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:05:27 Tue Dec 29 2020 CET
+;;; $$ Last modified:  13:45:59 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1178,7 +1178,6 @@
     rsm-clone))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken/update-slots
 ;;; DESCRIPTION
 ;;; Called by initialize-instance and others. Updates timings of events and

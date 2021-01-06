@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  20:37:40 Tue Nov 10 2020 CET
+;;; $$ Last modified:  12:09:08 Wed Jan  6 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -217,8 +217,13 @@
     (if (search "/" string)
         (when (probe-file string)
           (push string files))
-        (loop for path in (paths sfp) do
-             (if (pathname-type string)
+        (loop for path in (paths sfp)
+           for extension = (pathname-type string)
+           do
+             ;; MDE Wed Jan  6 12:06:09 2021, Heidhausen -- can't just assume
+             ;; that if there's a dot in the filename that it's the extension 
+             (if (and extension (member extension (extensions sfp)
+                                        :test #'string=))
                  (progn
                    (setf full-path (format nil "~a~a"
                                            path string))
@@ -233,7 +238,7 @@
       ;; MDE Mon Apr 9 12:29:26 2012 -- changing from warn to error as this
       ;; is a show-stopper if we call clm-play.
       (0 (warn "sndfile-palette::find-sndfile: ~
-                Cannot find sound file '~a'. Will skip."
+                Cannot find sound file so skipping:~%'~a'"
                 string))
       (1 (first files))
       (t (warn "sndfile-palette::find-sndfile: Sound file '~a' exists in ~

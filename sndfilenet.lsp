@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  18:42:50 Tue Dec  8 2020 CET
+;;; $$ Last modified:  12:10:14 Wed Jan  6 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -213,12 +213,13 @@
   ;; at least)
   (setf (next-sfes sfn) (loop for ref in (all-refs sfn)
                            for sfe-list = (get-data-data ref sfn)
-                           collect
-                             (nth (mod where (length sfe-list)) sfe-list)))
+                           when sfe-list collect
+                             (nth (mod where (length sfe-list))
+                                  sfe-list)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        #|
+#|
 ;;; ****m* sndfilenet/(setf next-sfes)
 ;;; DATE
 ;;; October 21st 2017, Essen
@@ -353,8 +354,8 @@
                                            No such sound file (~a)~%in group ~a"
                                   follower ref)))
                            when (and fsnd (use fsnd)) collect fsnd))
-                  (warn "sndfilenet::process-followers: ~a has no followers ~
-                       so if triggered will cause max-play to stop."
+                  (warn "sndfilenet::process-followers: ~a ~%  has no ~
+                         followers so if triggered will cause max-play to stop."
                         (id snd)))))
     (reset sfn)
     result))
@@ -475,6 +476,9 @@
 ;;; - :warn-not-found. T or NIL to indicate whether a warning should be printed
 ;;;   to the Lisp listener if the specified sound file cannot be found. 
 ;;;   T = print warning. Default = T.
+;;; - :with-followers. T or NIL to indicate whether the :followers slot of the
+;;;   sndfile-ext objects should be processed. This means the sndfilenet object
+;;;   will then be ready for use with max-play. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -497,7 +501,7 @@
 |#
 ;;; SYNOPSIS
 (defun make-sfn (id sfn &key paths (extensions '("wav" "aiff" "aif" "snd"))
-                          auto-freq with-followers (warn-not-found t))
+                          auto-freq (with-followers t) (warn-not-found t))
 ;;; ****
   (make-instance 'sndfilenet :id id :data sfn :paths paths
                  :with-followers with-followers :extensions extensions

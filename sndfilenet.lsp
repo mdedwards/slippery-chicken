@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  12:10:14 Wed Jan  6 2021 CET
+;;; $$ Last modified:  14:30:46 Wed Jan  6 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -479,6 +479,10 @@
 ;;; - :with-followers. T or NIL to indicate whether the :followers slot of the
 ;;;   sndfile-ext objects should be processed. This means the sndfilenet object
 ;;;   will then be ready for use with max-play. Default = T.
+;;; - :auto-followers. T or NIL to indicate whether the auto-followers method
+;;;   should be called once the object is initialised. Note that if this is T,
+;;;   then all the followers slots of the sndfile-ext objects will be deleted as
+;;;   part of the process. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -501,12 +505,21 @@
 |#
 ;;; SYNOPSIS
 (defun make-sfn (id sfn &key paths (extensions '("wav" "aiff" "aif" "snd"))
-                          auto-freq (with-followers t) (warn-not-found t))
+                          auto-freq (with-followers t) (warn-not-found t)
+                          auto-followers)
 ;;; ****
-  (make-instance 'sndfilenet :id id :data sfn :paths paths
-                 :with-followers with-followers :extensions extensions
-                 :auto-freq auto-freq
-                 :warn-not-found warn-not-found))
+  (let ((sfn (make-instance
+              'sndfilenet :id id :data sfn :paths paths
+              ;; MDE Wed Jan  6 14:29:44 2021, Heidhausen -- so if we want
+              ;; auto-followers this will be nil so that we don't call
+              ;; process-followers in verify-and-store
+              :with-followers (unless auto-followers with-followers)
+              :extensions extensions
+              :auto-freq auto-freq
+              :warn-not-found warn-not-found)))
+    ;; MDE Wed Jan  6 14:27:03 2021, Heidhausen
+    (when auto-followers (auto-followers sfn))
+    sfn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sndfilenet-p (thing)

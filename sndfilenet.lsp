@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  14:30:46 Wed Jan  6 2021 CET
+;;; $$ Last modified:  17:45:51 Thu Jan  7 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -53,17 +53,13 @@
 #+sbcl (require "sb-bsd-sockets")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; MDE Wed Jan  6 15:13:35 2021, Heidhausen -- removed the with-followers slot
+;; as followers are now always processed if they're given for any sndfiles
 (defclass sndfilenet (sndfile-palette)
   ;; the next sndfile-ext object for the purposes of the OSC sndfilenet
   ;; functionality 
   ((next-sfes :accessor next-sfes :initarg :next-sfes :initform nil)
-   (all-refs :accessor all-refs :initform nil :type list)
-   ;; whether we'll have the followers slots for the sndfiles i.e. whether
-   ;; we're going to call max-play (and hence process-followers) for this
-   ;; palette. Set to nil if you don't want to use with max-play, though for
-   ;; now, that would imply it's best to use the parent class instead of this.
-   (with-followers :accessor with-followers :type boolean
-                   :initarg :with-followers :initform t)))
+   (all-refs :accessor all-refs :initform nil :type list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -75,17 +71,14 @@
 (defmethod clone-with-new-class :around ((sfn sndfilenet) new-class)
   (declare (ignore new-class))
   (let ((palette (call-next-method)))
-    (setf (slot-value palette 'with-followers) (with-followers sfn)
-          (slot-value palette 'next-sfes) (my-copy-list (next-sfes sfn))
+    (setf (slot-value palette 'next-sfes) (my-copy-list (next-sfes sfn))
           (slot-value palette 'all-refs) (copy-list (all-refs sfn)))
     palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((sfn sndfilenet) stream)
-  (format stream "~%SNDFILENET:      with-followers: ~a~
-                  ~%                 next-sfes (ids): ~a~
+  (format stream "~%SNDFILENET:      next-sfes (ids): ~a~
                   ~%                 all-refs: ~a"
-   (with-followers sfn)
    (loop for sfe in (next-sfes sfn) collect (id sfe))
    (all-refs sfn)))
 
@@ -102,8 +95,9 @@
   (setf (slot-value sfn 'all-refs) (flatten (get-all-refs sfn)))
   (reset sfn)
   ;; MDE Sat Dec 22 20:59:44 2012 (in the sndfile-palette class)
-  (when (with-followers sfn)
-    (process-followers sfn)))
+  ;; MDE Wed Jan  6 15:11:50 2021, Heidhausen -- always process followers! (but
+  ;; no warnings)
+  (process-followers sfn nil)) 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -198,6 +192,7 @@
 ;;; SYNOPSIS
 (defmethod reset ((sfn sndfilenet) &optional (where 0) (warn t))
 ;;; ****
+  ;; (format t "~&resetting sndfilenet ~a" (id sfn))
   (loop for ref in (all-refs sfn)
      for snds = (get-data-data ref sfn)
      do
@@ -354,9 +349,11 @@
                                            No such sound file (~a)~%in group ~a"
                                   follower ref)))
                            when (and fsnd (use fsnd)) collect fsnd))
-                  (warn "sndfilenet::process-followers: ~a ~%  has no ~
-                         followers so if triggered will cause max-play to stop."
-                        (id snd)))))
+                  (when on-fail
+                    (funcall on-fail 
+                             "sndfilenet::process-followers: ~a ~%  has no ~
+                        followers so if triggered will cause max-play to stop."
+                     (id snd))))))
     (reset sfn)
     result))
 
@@ -372,14 +369,19 @@
 ;;; 
 ;;; ARGUMENTS
 ;;; - a sndfilenet object
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - a list of references for which auto-followers should be generated. Default
+;;; = NIL = all groups (which applies also if T is passed here).
 ;;; 
 ;;; RETURN VALUE
 ;;; T
 ;;;
 ;;; SYNOPSIS
-(defmethod auto-followers ((sfn sndfilenet))
+(defmethod auto-followers ((sfn sndfilenet) &optional refs)
 ;;; ****
-  (loop for ref in (all-refs sfn) and next-ref in (wrap-list (all-refs sfn) 1)
+  (when (or (eq refs t) (not refs)) (setq refs (all-refs sfn)))
+  (loop for ref in refs and next-ref in (wrap-list refs 1)
      for sfs = (reverse (get-data-data ref sfn))
      for nsfs = (make-cscl (reverse (get-data-data next-ref sfn)) :copy nil)
      do 
@@ -391,7 +393,7 @@
           do 
             (setf (slot-value sf 'followers) (make-cscl followers
                                                         :copy nil))))
-  (setf (with-followers sfn) t))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sndfilenet/analyse-followers
@@ -431,10 +433,13 @@
         for max = (second (first sndaf))
         for this-ok = (<= max threshold)
         do
+        ;; (print sndaf)
         (unless this-ok
           (warn "sndfilenet::analyse-followers: (~a ~a) ~%generates ~
-                 unbalanced results, e.g. ~a ~%occurs more than ~a times: ~&~a"
-                ref (id snd) (first (first sndaf)) threshold
+                 unbalanced results, e.g. ~a ~%occurs ~a/~a times ~
+                 (threshold ~a). ~%(Bear in mind that followers of followers ~
+                 are followed.) ~&~a"
+                ref (id snd) (first (first sndaf)) max depth threshold
                 (if verbose sndaf ""))
           (setf ok nil)))
      finally (return ok)))
@@ -476,13 +481,13 @@
 ;;; - :warn-not-found. T or NIL to indicate whether a warning should be printed
 ;;;   to the Lisp listener if the specified sound file cannot be found. 
 ;;;   T = print warning. Default = T.
-;;; - :with-followers. T or NIL to indicate whether the :followers slot of the
-;;;   sndfile-ext objects should be processed. This means the sndfilenet object
-;;;   will then be ready for use with max-play. Default = T.
 ;;; - :auto-followers. T or NIL to indicate whether the auto-followers method
 ;;;   should be called once the object is initialised. Note that if this is T,
 ;;;   then all the followers slots of the sndfile-ext objects will be deleted as
 ;;;   part of the process. Default = NIL.
+;;; - :analyse-followers. T or NIL to indicate whether to call the
+;;;   analyse-followers after initialisation (and possibly auto-followers is
+;;;   called). Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -505,20 +510,17 @@
 |#
 ;;; SYNOPSIS
 (defun make-sfn (id sfn &key paths (extensions '("wav" "aiff" "aif" "snd"))
-                          auto-freq (with-followers t) (warn-not-found t)
-                          auto-followers)
+                          auto-freq (warn-not-found t)
+                          auto-followers analyse-followers)
 ;;; ****
   (let ((sfn (make-instance
               'sndfilenet :id id :data sfn :paths paths
-              ;; MDE Wed Jan  6 14:29:44 2021, Heidhausen -- so if we want
-              ;; auto-followers this will be nil so that we don't call
-              ;; process-followers in verify-and-store
-              :with-followers (unless auto-followers with-followers)
               :extensions extensions
               :auto-freq auto-freq
               :warn-not-found warn-not-found)))
     ;; MDE Wed Jan  6 14:27:03 2021, Heidhausen
-    (when auto-followers (auto-followers sfn))
+    (when auto-followers (auto-followers sfn auto-followers))
+    (when analyse-followers (analyse-followers sfn))
     sfn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

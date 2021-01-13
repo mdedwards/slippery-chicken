@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:36:41 Wed Dec 30 2020 CET
+;;; $$ Last modified:  15:40:33 Wed Jan 13 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -9124,7 +9124,7 @@ data: (11 15)
     ;; are there the same number of sections?
     (unless (= set-map-len rthm-seq-map-len)
       (error "slippery-chicken::check-maps: Different number of sections ~
-              in the maps: set-map ~a rthm-seq-map ~a"
+              in the maps: ~%set-map ~a rthm-seq-map ~a"
              set-map-len rthm-seq-map-len))
     ;; there should be a set for every rthm-seq
     (loop 

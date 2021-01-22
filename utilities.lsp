@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  18:01:34 Wed Dec 30 2020 CET
+;;; $$ Last modified:  13:46:25 Fri Jan 22 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5403,12 +5403,17 @@ Here's where I pasted the data into the .RPP Reaper file:
                                (if subdir subdir "")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan 21 14:08:55 2021, Heidhausen
+(defun path-from-same-dir (file)
+  (concatenate 'string
+               (trailing-slash
+                (directory-namestring (truename *load-pathname*)))
+               file))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 15 13:50:21 2019
 (defun load-from-same-dir (file)  
-  (load (concatenate 'string
-                     (trailing-slash
-                      (directory-namestring (truename *load-pathname*)))
-                     file)))
+  (load (path-from-same-dir file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Thu 6 Feb 2020 17:41:19 GMT

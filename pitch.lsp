@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:08:30 Sat Dec 12 2020 CET
+;;; $$ Last modified:  13:46:45 Fri Jan 22 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1661,6 +1661,7 @@ data: CQS4
            (note-octave (when id (force-octave id)))
            (no-brackets (remove-accidental-in-parentheses-indicator id))
            (freq (when f (coerce f 'double-float))))
+      ;; (print id)
       (when (and (numberp freq)
                  (<= freq 0.0))
         (error "~a~%pitch::update-pitch: weird frequency (~a)"
@@ -1678,7 +1679,7 @@ data: CQS4
       (when (or freq (midi-note p) (data p) id) ; (not (= (degree p))))
         (when freq
           (setf (frequency p) freq))
-        (when (and freq (not id))
+        (when (and freq (not id))         
           (let ((note (freq-to-note freq)))
             (unless note
               (error "pitch::update-pitch: ~
@@ -2087,7 +2088,6 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (and (micro-tone p) (not (qtr-tone p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Doesn't return a cmn note object, rather a list with the note and correct
 ;;; accidental info, unless just-list is nil!
 
@@ -2382,7 +2382,12 @@ data: D7
   ;; MDE Thu Oct 18 16:14:17 2018 -- don't use note-to-freq as the note may no
   ;; longer exist in the current scale
   ;; (setf (frequency p) (note-to-freq (data p)))
-  (setf (id p) (freq-to-note (frequency p) scale))
+  ;; (print (frequency p))
+  ;; MDE Fri Jan 22 13:45:07 2021, Heidhausen -- when rounding quarter-tones
+  ;; (i.e. pitch bend of 0.5!) they go down in sbcl and up in ccl, due to slight
+  ;; rounding errors. Solution: rounding to the nearest cent first, which seems
+  ;; reasonable 
+  (setf (id p) (freq-to-note (decimal-places (frequency p) 2) scale))
   ;;           (midi-to-freq (round (midi-note-float p))))
   p)
 

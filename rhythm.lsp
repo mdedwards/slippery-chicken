@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  16:29:10 Thu Oct  8 2020 CEST
+;;; $$ Last modified:  15:18:58 Thu Jan 21 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2166,7 +2166,7 @@ data: (
 ;;; SYNOPSIS
 (defun rhythm-list (rthms &optional circular)
 ;;; ****                                ;
-  ;; MDE Sat Jun  8 18:51:09 2013 -- need to remove things like { ;
+  ;; MDE Sat Jun  8 18:51:09 2013 -- need to remove things like {
   (let* ((rs (first (parse-rhythms rthms 0)))
          (result
           (loop for r in rs 

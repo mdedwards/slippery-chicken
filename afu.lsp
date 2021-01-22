@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    May 18th 2019
 ;;;
-;;; $$ Last modified:  15:34:30 Sat Nov 21 2020 CET
+;;; $$ Last modified:  11:25:19 Fri Jan 22 2021 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -80,9 +80,9 @@
    ;; inflate-proportionally method for details.
    (exponent :accessor exponent :initarg :exponent :initform nil)
    ;; the minimum number we want to generate
-   (minimum :accessor minimum :type float :initarg :minimum :initform 0.0)
+   (minimum :accessor minimum :type number :initarg :minimum :initform 0.0)
    ;; the maximum number we want to generate
-   (maximum :accessor maximum :type float :initarg :maximum :initform 1.0)))
+   (maximum :accessor maximum :type number :initarg :maximum :initform 1.0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod initialize-instance :after ((a afu) &rest initargs)

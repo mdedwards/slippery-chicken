@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:12:46 Tue Dec 29 2020 CET
+;;; $$ Last modified:  14:05:55 Fri Jan 22 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3877,9 +3877,9 @@
       (chord= (make-chord '(cqs4 eqs4))
               (round-to-nearest (make-chord '(270 340))))
       ;; nearest is down, not up
-      (pitch= (make-pitch 'd7) (round-to-nearest (make-pitch 'dqs7)
+      (pitch= (make-pitch 'ef7) (round-to-nearest (make-pitch 'dqs7)
                                                  :scale 'chromatic-scale))
-      (pitch= (make-pitch 'ef0) (round-to-nearest (make-pitch 'eqf0)
+      (pitch= (make-pitch 'e0) (round-to-nearest (make-pitch 'eqf0)
                                                  :scale 'chromatic-scale))
       (pitch= (pitch-or-chord (round-to-nearest e1)) (make-pitch 'c4))
       (chord= (pitch-or-chord (round-to-nearest e2)) (make-chord '(aqs2 bqs5)))
@@ -3895,8 +3895,9 @@
       (in-scale :chromatic)
       (pitch= (round-to-nearest (make-pitch 63)) (make-pitch 'b1))
       (pitch= (round-to-nearest (make-pitch 270)) (make-pitch 'cs4))
-      (chord= (pitch-or-chord (round-to-nearest e2)) (make-chord '(bf2 b5))
-              (in-scale :quarter-tone)))))
+      ;; (print e2)
+      (chord= (pitch-or-chord (round-to-nearest e2))
+              (make-chord '(a2 c6)) (in-scale :quarter-tone)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; pitch-seq tests
@@ -5339,7 +5340,11 @@
       (setq tmp (avoid-common-elements
                  (shuffle (list-permutations '(1 2 3 4 5 6 7) 3) :fix t)))
       (= 210 (length tmp))
-      (equalp (first tmp) '(7 3 1))
+      ;; (print tmp)
+      ;; MDE Fri Jan 22 14:05:14 2021, Heidhausen -- because we shuffled, the
+      ;; random states will be different between lisp implementations 
+      #+sbcl (equalp (first tmp) '(7 3 1))
+      #+ccl (equalp (first tmp) '(6 5 2))
       (setq tmp (avoid-common-elements
                  (list-permutations '(1 2 3 4 5 6 7) 3)
                  :all-on-fail nil))
@@ -8316,7 +8321,7 @@
   (let ((e (make-ensemble 'e '((flt ((flute piccolo) :midi-channel 1))
                                (clr ((b-flat-clarinet)))))))
     (sc-test-check
-      (add-player e 'bsn 'bassoon)
+      (add-player e 'bsn :instrument 'bassoon)
       (equalp (players e) '(flt clr bsn))
       (= 3 (num-players e))
       (player-p (get-player e 'bsn)))))
@@ -13020,20 +13025,20 @@
                         (rs2 ((((2 4) e s s q))))
                         (rs3 ((((2 4) s s q e)))))))))
     (sc-test-check
-      (add-player m 'cl 1)
+      (add-player m 'cl :data 1)
       (equalp '(1 1 1 1) (get-data-data '(sec1 cl) m))
-      (add-player m 'ob '(1 2 3 4 5))
+      (add-player m 'ob :data '(1 2 3 4 5))
       (equalp '(1 2 3 4) (get-data-data '(sec1 ob) m))
-      (add-player m 'ob2 '(1 2 3))
+      (add-player m 'ob2 :data '(1 2 3))
       (equalp '(1 2 3 nil) (get-data-data '(sec1 ob2) m))
-      (add-player m 'ob3 '(1 2 3) t)
+      (add-player m 'ob3 :data '(1 2 3) :cycle t)
       (equalp '(1 2 3 1) (get-data-data '(sec1 ob3) m))
-      (add-player m 'bsn #'(lambda (rsm section-ref num-refs player)
-                             (ml (case section-ref
-                                   (sec1 'rs1)
-                                   (sec3 'rs3)
-                                   (t 'rs1a))
-                                 num-refs)))
+      (add-player m 'bsn :data #'(lambda (rsm section-ref num-refs player)
+                                   (ml (case section-ref
+                                         (sec1 'rs1)
+                                         (sec3 'rs3)
+                                         (t 'rs1a))
+                                       num-refs)))
       (add-player m 'db)
       (equalp '(nil nil nil nil) (get-data-data '(sec1 db) m))
       (equalp '(nil nil nil) (get-data-data '(sec2 b db) m))
@@ -14564,7 +14569,9 @@
                                                (sndfile-group-2 test-sndfile-4))
                                    :use nil)
                    test-sndfile-6)))
-               :with-followers t
+               ;; MDE Wed Jan  6 15:15:54 2021, Heidhausen -- no longer have
+               ;; this slot
+               ;; :with-followers t
                :paths (list (concatenate 'string
                                          cl-user::+slippery-chicken-home-dir+  
                                          "test-suite/test-sndfiles-dir-1/")
@@ -14590,7 +14597,7 @@
       (equalp 'test-sndfile-6 (id (get-next sf5)))
       (setf (followers sf5) '((sndfile-group-1 test-sndfile-1)
                               (sndfile-group-2 test-sndfile-3)))
-      (process-followers sfn)
+      (process-followers sfn #'warn)
       (= 2 (sclist-length (followers sf5)))
       (equalp 'test-sndfile-1 (id (get-next sf5)))
       ;; (equalp 'test-sndfile-6 (get-next sf5))
@@ -17752,7 +17759,7 @@
       (equalp '(nil nil nil)
               (get-data-data '(1 a tp) rsm))
       ;; test add-player in the sc class
-      (player-p (add-player mini 'trb 'tenor-trombone))
+      (player-p (add-player mini 'trb :instrument 'tenor-trombone))
       (eq 'trb (player (get-event mini 1 1 'trb)))
       (equalp '(vn trb) (players mini))
       ;; MDE Sat Nov  3 10:13:54 2018
@@ -19028,7 +19035,7 @@
         (eq 'fqs4 (get-pitch-symbol (get-note mini 25 8 'vla)))
         (in-scale :chromatic)
         (round-to-nearest mini)
-        (eq 'fs4 (get-pitch-symbol (get-note mini 25 8 'vla)))
+        (eq 'f4 (get-pitch-symbol (get-note mini 25 8 'vla)))
         (in-scale :quarter-tone)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -19219,28 +19226,66 @@
              (loop repeat 201 collect (eq (active al) (active ale))))
       (reset al 2)
       (equalp (loop repeat 35 collect (active al 1))
-              '(NIL NIL NIL NIL NIL NIL T NIL NIL NIL T NIL NIL NIL NIL NIL NIL
-                NIL NIL NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL NIL NIL
-                NIL NIL))
+              '(NIL NIL NIL NIL NIL NIL T NIL NIL NIL T NIL NIL NIL NIL
+                NIL NIL NIL NIL NIL NIL NIL NIL T NIL NIL NIL NIL NIL
+                NIL NIL NIL NIL NIL NIL))
       (reset al 0)
       (equalp (loop repeat 35 collect (active al 1))
-              '(T NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL T NIL NIL NIL
-                NIL NIL NIL NIL NIL NIL NIL NIL NIL T NIL NIL NIL T NIL NIL NIL
-                NIL))
+              '(T NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL T NIL
+                NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL T NIL NIL NIL
+                T NIL NIL NIL NIL))
       (reset al 1)
       (equalp (loop repeat 35 collect (active al 1))
-              '(NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL T
-                NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL T
-                NIL))
+              '(NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
+                NIL NIL T NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL NIL
+                NIL NIL NIL NIL T NIL))
       (equalp (loop repeat 101 collect (active ale2))
-              '(T NIL NIL T NIL NIL NIL NIL NIL T NIL NIL NIL T T NIL NIL NIL T
-                NIL T T NIL NIL T T T NIL T T T T NIL T T NIL T T NIL T T T T
-                NIL T T T T T T NIL NIL NIL T NIL NIL NIL NIL NIL NIL T NIL
-                NIL NIL T T NIL NIL NIL T NIL T T NIL NIL NIL T T NIL NIL T T
-                NIL T T T T T T NIL T T T T T T T T T T NIL))
+              '(T NIL NIL T NIL NIL NIL NIL NIL T NIL NIL NIL T T NIL
+                NIL NIL T NIL T T NIL NIL T T T NIL T T T T NIL T T NIL
+                T T NIL T T T T NIL T T T T T T NIL NIL NIL T NIL NIL
+                NIL NIL NIL NIL T NIL NIL NIL T T NIL NIL NIL T NIL T T
+                NIL NIL NIL T T NIL NIL T T NIL T T T T T T NIL T T T T
+                T T T T T T NIL))
       (equalp (loop repeat 31 collect (active ale3))
-              '(NIL NIL NIL NIL T T T T NIL NIL NIL NIL NIL NIL T T T NIL NIL
-                NIL NIL NIL T T T T T NIL T NIL NIL)))))
+              '(NIL NIL NIL NIL T T T T NIL NIL NIL NIL NIL NIL T T T
+                NIL NIL NIL NIL NIL T T T T T NIL T NIL NIL))
+      (reset al)
+      (equalp (loop for i from 0 to 1 by 0.01 collect (flicker-round al i))
+      '(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0
+        0 0 1 0 0 0 1 1 0 0 0 1 1 1 0 0 1 1 1 0 1 1 1 1 0 1 1 1 1 0 1 1 1 1 0 1
+        1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1))
+      (reset al)
+      (equalp (loop for i from 0 to 1 by 0.01 collect
+                   (flicker-round al i .1 .9))
+      '(0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 1 0 1 0 0 0 0
+        1 0 0 0 1 0 1 1 0 0 1 1 0 0 1 0 1 1 0 0 1 1 0 1 1 0 1 1 0 0 1 1 0 1 1 0
+        1 1 0 1 1 1 0 1 1 1 1 1 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1))
+      (reset al)
+      (equalp (loop for i from 0 to 1 by 0.01 collect
+                   (flicker-round al i .1 .9))
+              '(0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 1 0 1
+                0 0 0 0 1 0 0 0 1 0 1 1 0 0 1 1 0 0 1 0 1 1 0 0 1 1 0 1 1 0 1 1
+                0 0 1 1 0 1 1 0 1 1 0 1 1 1 0 1 1 1 1 1 0 1 1 1 0 1 1 1 1 1 1 1
+                1 1 1 1 1))
+      (reset al)
+      (equalp (loop for i from 0 to 1 by 0.01 collect
+                   ;; this should be the same as pure rounding
+                   (flicker-round al i .5 .5))
+              '(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1
+                1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+                1 1 1 1 1))
+      (equalp (loop for i from 1010 to 1011 by 0.01 collect
+                   (flicker-round al i))
+              '(1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010
+                1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010
+                1010 1010 1010 1010 1011 1010 1010 1011 1010 1010 1010 1010 1011
+                1010 1010 1010 1011 1011 1010 1010 1010 1011 1011 1011 1010 1010
+                1011 1011 1011 1010 1011 1011 1011 1011 1010 1011 1011 1011 1011
+                1010 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011
+                1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011
+                1011 1011 1011 1011 1011 1011 1011 1011 1011)))))
+ 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jan 18 12:11:49 2016 -- no need for sc-test-check here as problems

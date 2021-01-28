@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  16:31:39 Thu Jan 28 2021 CET
+;;; $$ Last modified:  16:36:20 Thu Jan 28 2021 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -61,7 +61,7 @@
 (defclass reaper-item (sndfile)
   ((istring :accessor istring :type string :allocation :class
             ;; read in the text for an item
-            :initform (read-from-file (path-from-same-dir "reaper-item.txt")))
+            :initform (read-from-file (file-from-sc-dir "src/reaper-item.txt")))
    ;; these are the actual mouse-draggable fades in seconds
    (fade-in :accessor fade-in :type number :initarg :fade-in :initform 0.005)
    (fade-out :accessor fade-out :type number :initarg :fade-out :initform 0.005)
@@ -102,7 +102,8 @@
                    :initform 4)
      ;; the reaper text read in from a file 
      (tstring :accessor tstring :type string :allocation :class
-           :initform (read-from-file (path-from-same-dir "reaper-track.txt")))))
+              :initform (read-from-file (file-from-sc-dir
+                                         "src/reaper-track.txt")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; the reaper-item objects are in the data slot; the id will be used as a file
@@ -121,7 +122,8 @@
    (cursor :accessor cursor :type number :initarg :cursor :initform 0.0)
    ;; the reaper header text, read in from a file
    (header :accessor header :type string :allocation :class
-           :initform (read-from-file (path-from-same-dir "reaper-header.txt")))
+           :initform (read-from-file (file-from-sc-dir
+                                      "src/reaper-header.txt")))
    ;; this will be set when create-tracks is called. It'll be an assoc-list with
    ;; all the reaper-items sorted into data lists associated with the track
    ;; names generated/given when the reaper-items were initialised.

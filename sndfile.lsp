@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  12:31:22 Mon Jan 25 2021 CET
+;;; $$ Last modified:  16:59:35 Thu Jan 28 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -334,10 +334,14 @@ T
           (error "sndfile::update: start < 0???: ~a" sf))
         (when (and end (<= end st))
           (error "sndfile::update: end <= start???: ~a" sf))
+        ;; MDE Thu Jan 28 16:55:48 2021, Heidhausen -- signal a warning only and
+        ;; adjust  
         (when (and (snd-duration sf) (> end (snd-duration sf)))
-          (error "sndfile::update: ~
-                  Given end point (or duration) is > sound duration: ~a ~%~a"
-                 end sf)))
+          (warn "sndfile::update: ~
+                 Given end point (or duration) is > sound duration: ~a ~%~a"
+                end sf)
+          (setf (slot-value sf 'end) (snd-duration sf))
+          (set-dur sf)))
       (setf (data-consistent sf) t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:05:55 Fri Jan 22 2021 CET
+;;; $$ Last modified:  16:48:59 Thu Jan 28 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -17681,7 +17681,8 @@
       #+cmn (file-write-ok "/tmp/mini.eps" 30000)
       (file-write-ok "/tmp/mini-1-vn-sines-to-sines2-seq1-3-psync.wav" 2000000)
       (file-write-ok "/tmp/mini-1-vn-vc-sines-seq1-3.wav" 2000000)
-      (file-write-ok "/tmp/mini-1-vn-vc-sines-to-sines2-seq1-3-psync.wav" 2000000)
+      (file-write-ok "/tmp/mini-1-vn-vc-sines-to-sines2-seq1-3-psync.wav"
+                     2000000)
       (file-write-ok "/tmp/sine1mini-1-vn-vc-seq1-3.wav" 2000000)
       (file-write-ok "/tmp/sine2mini-2-vn-vc-seq1-3.wav" 2000000))))
 
@@ -19819,6 +19820,27 @@
                           :file "/tmp/sc-max-coll-1.txt")
       (file-write-ok "/tmp/sc-max-coll-1.txt" 64))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan 28 16:40:13 2021, Heidhausen -- reaper tests
+(sc-deftest test-reaper ()
+  (multiple-value-bind
+        (items end-time)
+      (make-reaper-items1 (get-sndfiles
+                           (concatenate 'string
+                                        cl-user::+slippery-chicken-home-dir+
+                                        "test-suite/test-sndfiles-dir-2"))
+                          '(w (w) (q) h.+h+e (h) (e) h (q.) w (w) (w) (e))
+                          :input-start '(0 .1 .2)
+                          :tempo 60
+                          :play-rate '(1 1.02 1 .98 1.01 1 1.02)
+                          :preserve-pitch t)
+    (let ((rf (make-reaper-file 'otest items :cursor end-time)))
+      (probe-delete "/tmp/reaper-test.rpp")
+      (sc-test-check
+        (write-reaper-file rf :file "/tmp/reaper-test.rpp")
+        (assoc-list-p (tracks rf))
+        (file-write-ok "/tmp/reaper-test.rpp" 4200)))))
+          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*
 ;;; (setf *sc-test-all-tests* (remove 'test-rs-chop *sc-test-all-tests*)) 

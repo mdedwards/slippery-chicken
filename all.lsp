@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  18:00:17 Wed Dec 30 2020 CET
+;;; $$ Last modified:  16:30:56 Thu Jan 28 2021 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -284,6 +284,7 @@
 #+clm (sc-compile-and-load "control-wave-ins.lsp")
 (sc-compile-and-load "wolfram.lsp" t)
 (sc-compile-and-load "afu.lsp")
+(sc-compile-and-load "reaper.lsp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

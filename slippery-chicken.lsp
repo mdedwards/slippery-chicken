@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:40:33 Wed Jan 13 2021 CET
+;;; $$ Last modified:  16:01:30 Thu Jan 28 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4637,14 +4637,14 @@ seq-num 5, VN, replacing G3 with B6
     (error "slippery-chicken::clm-play: from-sequence keyword should only ~
             be used ~%when num-sections = 1."))
   #| 
-  ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it ;
-  ;; just causes problems now we've updated num-seqs to handle sub-sections ;
-  (when (and num-sections (= 1 num-sections) (not num-sequences))
-  (let ((ns (num-seqs sc section)))
-  (unless ns 
-  (error "slippery-chicken::clm-play: can't get number of sequences ~
-                for section ~a." section))
-  (setf num-sequences (- ns (1- from-sequence)))))
+  ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it ; ;
+  ;; just causes problems now we've updated num-seqs to handle sub-sections ; ;
+  (when (and num-sections (= 1 num-sections) (not num-sequences)) ;
+  (let ((ns (num-seqs sc section)))     ;
+  (unless ns                            ;
+  (error "slippery-chicken::clm-play: can't get number of sequences ~ ;
+  for section ~a." section))            ;
+  (setf num-sequences (- ns (1- from-sequence))))) ;
   |#
   (unless (listp players)
     (setf players (list players)))
@@ -4698,15 +4698,15 @@ seq-num 5, VN, replacing G3 with B6
          (snds2 (when sound-file-palette-ref2
                   (make-cscl
                    (loop for sfpr in sound-file-palette-ref2
-                   append (get-snds sfpr
-                             (if sndfile-palette
-                                 sndfile-palette
-                                 (sndfile-palette sc)))))))
+                      append (get-snds sfpr
+                                       (if sndfile-palette
+                                           sndfile-palette
+                                           (sndfile-palette sc)))))))
          #|
-         ;; DJR Mon 16 Sep 2019 01:26:11 BST
-         ;; We'll sort this later. See below.
-         (snd-transitions (loop for num-events in events-per-player collect
-                               (fibonacci-transition num-events)))
+         ;; DJR Mon 16 Sep 2019 01:26:11 BST ;
+         ;; We'll sort this later. See below. ;
+         (snd-transitions (loop for num-events in events-per-player collect ;
+         (fibonacci-transition num-events))) ;
          |#
          (sndl nil)
          (snd-group nil)
@@ -4802,15 +4802,15 @@ seq-num 5, VN, replacing G3 with B6
     ;; are we setting snd-transitions by default with finonacci-transitions or
     ;; with a custom envelope?
     (if (and snd-transitions sound-file-palette-ref2)
-          (setf snd-transitions
-                (loop for num-events in events-per-player
-                   collect
-                     (loop for n below num-events
-                        collect
-                          (round (interpolate n (new-lastx snd-transitions
-                                                    num-events))))))
-          (setf snd-transitions (loop for num-events in events-per-player collect
-                               (fibonacci-transition num-events))))
+        (setf snd-transitions
+              (loop for num-events in events-per-player
+                 collect
+                   (loop for n below num-events
+                      collect
+                        (round (interpolate n (new-lastx snd-transitions
+                                                         num-events))))))
+        (setf snd-transitions (loop for num-events in events-per-player
+                                 collect (fibonacci-transition num-events))))
     (when (and check-overwrite (probe-file output))
       (setf output-ok 
             (yes-or-no-p "File exists: ~%~a  ~%Overwrite (yes or no) > " 
@@ -4881,239 +4881,245 @@ seq-num 5, VN, replacing G3 with B6
            ;; 15/12/06 this while clause causes a player not to process when
            ;; the previous overstepped the max-start-time while happy
            do
-           (setf snd-trans (copy-list snd-trans)
-                 event-count-player 0
-                 ;; 15/12/06 reset happy to the new player processes
-                 happy t
-                 events-before-max-start
-                 (count-events-before-max-start 
-                  player (- (+ max-start-time first-event-start) time-offset))
-                 this-play-chance-env 
-                 (new-lastx play-chance-env
-                            ;; 10/1/07 we want to use the whole
-                            ;; play-chance-env when we use max-start-time:
-                            ;; (1- events-this-player)))
-                            ;; got to take time-offset and the start time of
-                            ;; the first event into consideration, not just
-                            ;; max-start-time...
-                            events-before-max-start))
-           (format t "~%Processing player ~a/~a: ~a (resting players will ~
+             (setf snd-trans (copy-list snd-trans)
+                   event-count-player 0
+                   ;; 15/12/06 reset happy to the new player processes
+                   happy t
+                   events-before-max-start
+                   (count-events-before-max-start 
+                    player (- (+ max-start-time first-event-start) time-offset))
+                   this-play-chance-env 
+                   (new-lastx play-chance-env
+                              ;; 10/1/07 we want to use the whole
+                              ;; play-chance-env when we use max-start-time:
+                              ;; (1- events-this-player)))
+                              ;; got to take time-offset and the start time of
+                              ;; the first event into consideration, not just
+                              ;; max-start-time...
+                              events-before-max-start))
+             (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
-                   player-count num-players (nth (1- player-count) players))
-           (when (and (numberp num-sections) (= 1 num-sections))
-             ;; MDE Tue Apr 3 09:54:46 2012 -- make sure we don't crash
-             ;; if the requested instrument is sitting this section out
-             (let ((rss (get-data-from-palette
-                         (flatten (list section player-name))
-                         (rthm-seq-map sc)
-                         nil)))         ; no warning
-               ;; this code will only work when we're processing 1 section
-               (setf rthm-seqs 
-                     (when rss
-                       (subseq 
-                        rss
-                        (1- from-sequence)
-                        (1- (+ from-sequence section1-num-seqs)))))))
-           (when reset-snds-each-player
-             (when snds (reset snds))
-             (when snds2 (reset snds2)))
-           (loop for rs in player and rs-count from 0 while happy do
-                (setf events-this-rs (length rs))
-              ;; (print rs)
+                     player-count num-players (nth (1- player-count) players))
+             (when (and (numberp num-sections) (= 1 num-sections))
+               ;; MDE Tue Apr 3 09:54:46 2012 -- make sure we don't crash
+               ;; if the requested instrument is sitting this section out
+               (let ((rss (get-data-from-palette
+                           (flatten (list section player-name))
+                           (rthm-seq-map sc)
+                           nil)))       ; no warning
+                 ;; this code will only work when we're processing 1 section
+                 (setf rthm-seqs 
+                       (when rss
+                         (subseq 
+                          rss
+                          (1- from-sequence)
+                          (1- (+ from-sequence section1-num-seqs)))))))
+             (when reset-snds-each-player
+               (when snds (reset snds))
+               (when snds2 (reset snds2)))
+             (loop for rs in player and rs-count from 0 while happy do
+                  (setf events-this-rs (length rs))
+                ;; (print rs)
                 ;; (print rthm-seqs) (print rs-count)
-                (format t "~%    Processing rthm-seq ~a (~a events)~%"
-                        ;; print the rthm-seq id if we're only doing one
-                        ;; section otherwise the rthm-seq count
-                        ;; MDE Tue Apr  3 09:54:46 2012 -- make sure we don't
-                        ;; crash if the requested instrument is sitting this
-                        ;; section out
-                        ;; MDE Wed Feb 24 19:54:51 2016 -- now rs is the list 
-                        ;; of events but we need to know the id of the original 
-                        ;; rthm-seq hence the nth. In any case the following 
-                        ;; test was wrong; instead we can just see if we've got 
-                        ;; a list of events in rs
-                        (let ((tmp (when (and rthm-seqs rs)
-                                     (nth rs-count rthm-seqs))))
-                          (if tmp 
-                              (id tmp)
-                              (1+ rs-count)))
-                        events-this-rs)
-                (when reset-snds-each-rs
-                  (when snds (reset snds))
-                  (when snds2 (reset snds2)))
-                (loop for event in rs and rs-event-count from 0 while happy
-                   do
+                  (format t "~%    Processing rthm-seq ~a (~a events)~%"
+                          ;; print the rthm-seq id if we're only doing one
+                          ;; section otherwise the rthm-seq count
+                          ;; MDE Tue Apr  3 09:54:46 2012 -- make sure we don't
+                          ;; crash if the requested instrument is sitting this
+                          ;; section out
+                          ;; 
+                          ;; MDE Wed Feb 24 19:54:51 2016 -- now rs is the list
+                          ;; of events but we need to know the id of the
+                          ;; original rthm-seq hence the nth. In any case the
+                          ;; following test was wrong; instead we can just see
+                          ;; if we've got a list of events in rs
+                          (let ((tmp (when (and rthm-seqs rs)
+                                       (nth rs-count rthm-seqs))))
+                            (if tmp 
+                                (id tmp)
+                                (1+ rs-count)))
+                          events-this-rs)
+                  (when reset-snds-each-rs
+                    (when snds (reset snds))
+                    (when snds2 (reset snds2)))
+                  (loop for event in rs and rs-event-count from 0 while happy
+                     do
                      ;; (print 'event)
-                     (setq snd-group (pop snd-trans)
-                           ;; MDE Mon Nov  4 11:11:07 2013 
-                           freqs (let ((f (frequency (pitch-or-chord event))))
-                                   (if (listp f) f (list f)))
-                           sndl (if snds
-                                  ;; MDE Fri Oct  2 09:48:39 2015 
-                                  (get-sndfiles-from-user-fun
-                                   event
-                                   (if (and snds2 (= 1 snd-group))
-                                       snds2 snds)
-                                   snd-selector)
-                                  ;; MDE Tue Aug  8 16:21:34 2017 -- anything
-                                  ;; so long as we can make the loop below work
-                                  (ml nil (length freqs)))
-                           duration (* duration-scaler
-                                       (compound-duration-in-tempo event))
-                           skip-this-event 
-                           ;; MDE Sat Nov 9 15:20:11 2013 -- only when we've
-                           ;; got events to output
-                           (unless (zerop events-before-max-start)
-                             (> (random-rep 100.0)
-                                (interpolate event-count-player 
-                                             this-play-chance-env
-                                             :exp play-chance-env-exp)))
-                           ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
-                           ;; keyword above. 
-                           srts (if do-src
-                                    ;; MDE Tue Apr 17 12:52:40 2012 -- update:
-                                    ;; we now have the pitch-synchronous
-                                    ;; option so need to handle chords so
-                                    ;; we'll not call the pitch method here
-                                    ;; but the event. This will return a list,
-                                    ;; even for a single pitch, so we'll have
-                                    ;; to loop through them.
-                                    (src-for-sample-freq 
-                                     (if srt-freq
-                                         srt-freq
-                                         (if (and sndl
-                                                  (not (every #'not sndl)))
-                                             sndl 261.626))
-                                     ;; MDE Tue Apr 17 12:54:06 2012 -- see
-                                     ;; comment above. this used to be
-                                     ;; (pitch-or-chord event)
-                                     event)
-                                    '(1.0)))
+                       (setq snd-group (pop snd-trans)
+                             ;; MDE Mon Nov  4 11:11:07 2013 
+                             freqs (let ((f (frequency (pitch-or-chord event))))
+                                     (if (listp f) f (list f)))
+                             sndl (if snds
+                                      ;; MDE Fri Oct  2 09:48:39 2015 
+                                      (get-sndfiles-from-user-fun
+                                       event
+                                       (if (and snds2 (= 1 snd-group))
+                                           snds2 snds)
+                                       snd-selector)
+                                      ;; MDE Tue Aug 8 16:21:34 2017 -- anything
+                                      ;; so long as we can make the loop below
+                                      ;; work
+                                      (ml nil (length freqs)))
+                             duration (* duration-scaler
+                                         (compound-duration-in-tempo event))
+                             skip-this-event 
+                             ;; MDE Sat Nov 9 15:20:11 2013 -- only when we've
+                             ;; got events to output
+                             (unless (zerop events-before-max-start)
+                               (> (random-rep 100.0)
+                                  (interpolate event-count-player 
+                                               this-play-chance-env
+                                               :exp play-chance-env-exp)))
+                             ;; MDE Tue Apr 10 13:10:37 2012 -- see note to
+                             ;; do-src keyword above.
+                             srts (if do-src
+                                      ;; MDE Tue Apr 17 12:52:40 2012 -- update:
+                                      ;; we now have the pitch-synchronous
+                                      ;; option so need to handle chords so
+                                      ;; we'll not call the pitch method here
+                                      ;; but the event. This will return a list,
+                                      ;; even for a single pitch, so we'll have
+                                      ;; to loop through them.
+                                      (src-for-sample-freq 
+                                       (if srt-freq
+                                           srt-freq
+                                           (if (and sndl
+                                                    (not (every #'not sndl)))
+                                               sndl 261.626))
+                                       ;; MDE Tue Apr 17 12:54:06 2012 -- see
+                                       ;; comment above. this used to be
+                                       ;; (pitch-or-chord event)
+                                       event)
+                                      '(1.0)))
                      ;; (print srts)
                      ;; (print freqs)
-                     (loop for srt in srts and freq in freqs and snd in sndl do
-                        ;; (print srt) (print src-scaler)
-                        ;; (print snd)
-                        (setf srt (* src-scaler srt))
-                        (when (<= srt 0.0)
-                          (error "slippery-chicken::clm-play: illegal sample ~
-                             rate conversion: ~a" srt))
-                      ;; MDE Mon Apr  9 12:31:07 2012
-                        (when snd
-                          (unless (duration snd)
-                            (error "~a~%slippery-chicken::clm-play: ~
+                       (loop for srt in srts and freq in freqs and snd in sndl
+                          do
+                          ;; (print srt) (print src-scaler)
+                          ;; (print snd)
+                            (setf srt (* src-scaler srt))
+                            (when (<= srt 0.0)
+                              (error "slippery-chicken::clm-play: illegal ~
+                                      sample rate conversion: ~a" srt))
+                          ;; MDE Mon Apr  9 12:31:07 2012
+                            (when snd
+                              (unless (duration snd)
+                                (error "~a~%slippery-chicken::clm-play: ~
                                     sound duration is NIL!" snd)))
-                      ;; given the srt, what's the longest output dur
-                      ;; this sound can make?  
-                        (setf available-dur 
-                              (if snd 
-                                  (/ (duration snd) srt)
-                                  most-positive-short-float)
-                              wanted-duration-string ""
-                              input-start (if snd (start snd) 0.0))
-                        (when skip-this-event
-                          (incf total-skipped))
-                        ;;(unless snd
+                          ;; given the srt, what's the longest output dur
+                          ;; this sound can make?  
+                            (setf available-dur 
+                                  (if snd 
+                                      (/ (duration snd) srt)
+                                      most-positive-short-float)
+                                  wanted-duration-string ""
+                                  input-start (if snd (start snd) 0.0))
+                            (when skip-this-event
+                              (incf total-skipped))
+                          ;;(unless snd
                           ;;(error "slippery-chicken::clm-play: snd is nil!"))
-                        (when inc-start
-                          (unless snd
-                            (error "~%slippery-chicken::clm-play: can't do ~
-                                    inc-start with no sndfile-palette."))
-                          (setf latest-possible-start
-                                (- (end snd) (* srt duration)))
-                          (unless (and (< latest-possible-start (start snd))
-                                       (not (zerop (will-be-used snd))))
-                            (incf input-start 
-                                  (* (has-been-used snd)
-                                     (/ (- latest-possible-start (start snd))
-                                        (will-be-used snd)))))
-                          (incf (has-been-used snd)))
-                        (when (> duration available-dur)
-                          (setf wanted-duration duration
-                                wanted-duration-string 
-                                (if duration-run-over
-                                    (format nil " (~,3f available but ~
+                            (when inc-start
+                              (unless snd
+                                (error "~%slippery-chicken::clm-play: can't do ~
+                                        inc-start with no sndfile-palette."))
+                              (setf latest-possible-start
+                                    (- (end snd) (* srt duration)))
+                              (unless (and (< latest-possible-start (start snd))
+                                           (not (zerop (will-be-used snd))))
+                                (incf input-start 
+                                      (* (has-been-used snd)
+                                         (/ (- latest-possible-start
+                                               (start snd))
+                                            (will-be-used snd)))))
+                              (incf (has-been-used snd)))
+                            (when (> duration available-dur)
+                              (setf wanted-duration duration
+                                    wanted-duration-string 
+                                    (if duration-run-over
+                                        (format nil " (~,3f available but ~
                                                     duration-run-over is t)"
-                                            available-dur)
-                                    (format nil " (wanted ~,3f)"
-                                            wanted-duration)))
-                          (unless duration-run-over
-                            (setf duration available-dur)))
-                        (when (< duration 0)
-                          (warn "slippery-chicken::clm-play: ~
+                                                available-dur)
+                                        (format nil " (wanted ~,3f)"
+                                                wanted-duration)))
+                              (unless duration-run-over
+                                (setf duration available-dur)))
+                            (when (< duration 0)
+                              (warn "slippery-chicken::clm-play: ~
                                  Duration < 0  ?????~%"))
-                        (unless (start-time event)
-                          (error "~a~%slippery-chicken::clm-play: ~
+                            (unless (start-time event)
+                              (error "~a~%slippery-chicken::clm-play: ~
                                    no start time!!!" event))
-                        (setf output-start (+ time-offset
-                                              (- (start-time event)
-                                                 first-event-start)))
-                        (when (> output-start max-start-time)
-                          (setf happy nil))
-                        ;; (print-simple event)
-                        (when happy
-                          (format t "        ~a/~a Events: ~a~
+                            (setf output-start (+ time-offset
+                                                  (- (start-time event)
+                                                     first-event-start)))
+                            (when (> output-start max-start-time)
+                              (setf happy nil))
+                          ;; (print-simple event)
+                            (when happy
+                              (format t "        ~a/~a Events: ~a~
                                  ~%             ~a ~a~
                                  ~%             start-time ~,3f, input-start: ~
                                  ~,3f, ~
                                  ~%             duration ~,3f~a, ~
                                  ~%             amp ~,2f, srt ~,2f ~
                                  (pitch-or-chord ~,3fHz, sample freq ~,3f)~%"
-                                  event-count total-events
-                                  (if skip-this-event "Skipped" 
-                                      "Written (not skipped)")
-                                  (if snd (path snd) "")
-                                  (if snds2
-                                      (format nil "(snd-group ~a)" 
-                                              (1+ snd-group))
-                                      "")
-                                  output-start 
-                                  input-start duration wanted-duration-string
-                                  (if snd (amplitude snd) 1.0) 
-                                  srt 
-                                  ;; MDE Tue Apr 17 13:14:45 2012 -- added
-                                  ;; frequency method to chord also so that this
-                                  ;; doesn't fail
-                                  (frequency (pitch-or-chord event))
-                                  ;; freq
-                                  (if snd (frequency snd) "n/a")))
-                        (unless (or simulate skip-this-event (not happy)
-                                    (zerop duration))
-                          ;; MDE Mon Nov  4 13:11:08 2013 -- we can now call
-                          ;; user-defined CLM instruments (as long as they can
-                          ;; take the following arguments). We can pass along
-                          ;; further arguments or provide a function that will
-                          ;; create these for us.
-                          (apply clm-ins
-                                 (append 
-                                  (list (if snd (path snd) "no path")
-                                        output-start
-                                        :duration duration
-                                        :start input-start
-                                        :srt srt
-                                        :frequency freq
-                                        :width src-width
-                                        :amp (if snd (amplitude snd) 1.0)
-                                        :amp-env amp-env
-                                        :degree
-                                        ;; 2/8/05: place both mono and stereo
-                                        ;; files in space randomly NB A sound
-                                        ;; is always put between two speakers
-                                        ;; but it could be two of any number;
-                                        ;; see samp5.lsp for details.
-                                        ;; MDE Sat Oct  3 18:48:18 2015 -- we
-                                        ;; now also allow a :pan-fun
-                                        (if pan-fun
-                                            (funcall pan-fun event)
-                                            (nth (random 7) pan-vals))
-                                        :rev-amt rev-amt
-                                        :printing print-secs)
-                                  (if (functionp clm-ins-args)
-                                      (funcall clm-ins-args event
-                                               event-count)
-                                      clm-ins-args)))))
-                   (incf event-count-player)
-                   (incf event-count))))))
+                                      event-count total-events
+                                      (if skip-this-event "Skipped" 
+                                          "Written (not skipped)")
+                                      (if snd (path snd) "")
+                                      (if snds2
+                                          (format nil "(snd-group ~a)" 
+                                                  (1+ snd-group))
+                                          "")
+                                      output-start 
+                                      input-start duration
+                                      wanted-duration-string
+                                      (if snd (amplitude snd) 1.0) 
+                                      srt 
+                                      ;; MDE Tue Apr 17 13:14:45 2012 -- added
+                                      ;; frequency method to chord also so that
+                                      ;; this doesn't fail
+                                      (frequency (pitch-or-chord event))
+                                      ;; freq
+                                      (if snd (frequency snd) "n/a")))
+                            (unless (or simulate skip-this-event (not happy)
+                                        (zerop duration))
+                              ;; MDE Mon Nov 4 13:11:08 2013 -- we can now call
+                              ;; user-defined CLM instruments (as long as they
+                              ;; can take the following arguments). We can pass
+                              ;; along further arguments or provide a function
+                              ;; that will create these for us.
+                              (apply clm-ins
+                                     (append 
+                                      (list (if snd (path snd) "no path")
+                                            output-start
+                                            :duration duration
+                                            :start input-start
+                                            :srt srt
+                                            :frequency freq
+                                            :width src-width
+                                            :amp (if snd (amplitude snd) 1.0)
+                                            :amp-env amp-env
+                                            :degree
+                                            ;; 2/8/05: place both mono and
+                                            ;; stereo files in space randomly NB
+                                            ;; A sound is always put between two
+                                            ;; speakers but it could be two of
+                                            ;; any number; see samp5.lsp for
+                                            ;; details.  MDE Sat Oct 3 18:48:18
+                                            ;; 2015 -- we now also allow a
+                                            ;; :pan-fun
+                                            (if pan-fun
+                                                (funcall pan-fun event)
+                                                (nth (random 7) pan-vals))
+                                            :rev-amt rev-amt
+                                            :printing print-secs)
+                                      (if (functionp clm-ins-args)
+                                          (funcall clm-ins-args event
+                                                   event-count)
+                                          clm-ins-args)))))
+                       (incf event-count-player)
+                       (incf event-count))))))
     (unless (zerop total-events)
       (format t "~%~%~d/~d events skipped (~f%)"
               total-skipped total-events 

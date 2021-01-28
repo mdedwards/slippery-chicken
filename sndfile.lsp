@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  19:18:35 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  12:31:22 Mon Jan 25 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -133,7 +133,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((sf sndfile) stream)
-  (format stream "~%~%SNDFILE: path: ~a, ~
+  (format stream "~%SNDFILE: path: ~a, ~
                     ~%         snd-duration: ~a, channels: ~a, frequency: ~a~
                     ~%         start: ~a, end: ~a, amplitude: ~a, duration ~a~
                     ~%         will-be-used: ~a, has-been-used: ~a~

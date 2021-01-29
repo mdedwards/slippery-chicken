@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:57:40 Thu Jan 28 2021 CET
+;;; $$ Last modified:  13:16:02 Fri Jan 29 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2606,16 +2606,99 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; aux function for parse-wavelab-marker-file-for...
-
-(defun get-parameter (string &optional (separator #\=))
+;;; MDE Fri Jan 29 13:03:32 2021, Heidhausen -- added downcase optional arg
+(defun get-parameter (string &optional (separator #\=) (downcase t))
   (flet ((trim-whitespace (string)
-           (string-downcase
-            (string-trim '(#\Space #\Tab #\Newline) string))))
+           (let ((trimmed (string-trim '(#\Space #\Tab #\Newline) string)))
+             (if downcase
+                 (string-downcase trimmed)
+                 trimmed))))
     (let ((sep-pos (position separator string)))
       (when sep-pos
         (let ((param (trim-whitespace (subseq string 0 sep-pos)))
               (value (trim-whitespace (subseq string (1+ sep-pos)))))
           (values param value))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/get-parameters
+;;; DATE
+;;; January 29th 2021
+;;; 
+;;; DESCRIPTION
+;;; A general routine for searching text files for parameters and their
+;;; values. Here we search a file line by line, matching parameters and
+;;; returning them in a list of parameter-value pairs. This is limited, however,
+;;; to one parameter per line, and values of one word (i.e. numbers, strings,
+;;; etc. not containing space).
+;;; 
+;;; ARGUMENTS
+;;; - the text file to search
+;;; - either a single string or list thereof to search for (case-sensitive)
+;;; - the separator character which divides the parameter name from its value
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the parameter-value separator (character)
+;;; 
+;;; RETURN VALUE
+;;; A list of parameter-value pairs
+;;; 
+;;; EXAMPLE
+#|
+;;; search a reaper file, where parameters are followed simply by space rather
+;;; than = or : E.g. a current reaper file has lines like:
+      SNAPOFFS 0
+      LENGTH 0.36292517006803
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 2 0 0 2 0 1 1
+      FADEOUT 2 0 0 2 0 -1 -1
+      MUTE 0 0
+      MIXFLAG 1
+      BEAT 2
+      SEL 1
+      IGUID {3B79D8DF-AC08-EC4F-B93C-CAFE24FA1CBB}
+      IID 3
+      NAME sunni-mosque.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.67933106575964
+      PLAYRATE 1 1 0 -1 0 0.0025
+;;; hence:
+(get-parameters "~/projects/sndfilenet/reaper/sunni-mosque-split.RPP"
+                '("SOFFS" "LENGTH") #\ )
+-->
+362 parameters read
+(("LENGTH" 0.36292517) ("SOFFS" 0.67933106) ("LENGTH" 0.38848072)
+ ("SOFFS" 1.0422562) ("LENGTH" 1.4923356) ("SOFFS" 1.430737)
+ ("LENGTH" 1.9968253) ("SOFFS" 2.9230726) ("LENGTH" 0.5023356)
+ ("SOFFS" 4.919898) ("LENGTH" 0.4907483) ("SOFFS" 5.4222336)
+ ("LENGTH" 0.17068027) ("SOFFS" 5.912982) ("LENGTH" 3.6765532)
+...
+|#
+;;; SYNOPSIS
+(defun get-parameters (file parameters &optional (separator #\=))
+;;; ****
+  (let ((count 0)
+        (results '()))
+    (setq parameters (force-list parameters))
+    (with-open-file 
+        (input file :direction :input :if-does-not-exist :error)
+      (loop 
+         (multiple-value-bind
+               (line eof)
+             (read-line input nil)
+           (setq line (trim-leading-trailing-whitespace line))
+           ;;(print line)
+           (multiple-value-bind
+                 (param value)
+               (get-parameter line separator nil) ; don't downcase
+             ;; (print param)
+             (loop for p in parameters do
+                  (when (string= param p)
+                    (push (list p (read-from-string value)) results)
+                    (incf count)))
+             (when eof (return))))))
+    (format t "~%~%~a parameters read~%" count)
+    (nreverse results)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; aux function for parse-wavelab-marker-file-for...

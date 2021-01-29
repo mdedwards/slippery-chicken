@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  16:36:20 Thu Jan 28 2021 CET
+;;; $$ Last modified:  12:37:38 Fri Jan 29 2021 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -72,7 +72,8 @@
    (preserve-pitch :accessor preserve-pitch :type boolean
                    :initarg :preserve-pitch :initform t)
    ;; the output start-time (in seconds, in the reaper file) NB the input file
-   ;; start time is the start slot of the sndfile class
+   ;; start time is the start slot of the sndfile class (in reaper the SOFFS
+   ;; line)  
    (start-time :accessor start-time :type number :initarg :start-time
                :initform 0.0)
    ;; the name visible in the reaper item: by default the sndfile name
@@ -214,6 +215,7 @@
 
 ;;; write an item's data to a stream, using the istring slot as a template
 (defmethod write-item ((ri reaper-item) stream)
+  ;; start: SOFFS, duration: LENGTH
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
           (fade-out ri) (name ri) (start ri) (play-rate  ri)
           (preserve-pitch ri) (path ri)))

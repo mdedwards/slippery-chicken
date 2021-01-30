@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:48:59 Thu Jan 28 2021 CET
+;;; $$ Last modified:  17:27:47 Sat Jan 30 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -14567,6 +14567,7 @@
                                                ;; just check to make sure 4
                                                ;; isn't used 
                                                (sndfile-group-2 test-sndfile-4))
+
                                    :use nil)
                    test-sndfile-6)))
                ;; MDE Wed Jan  6 15:15:54 2021, Heidhausen -- no longer have

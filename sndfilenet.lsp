@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  17:45:51 Thu Jan  7 2021 CET
+;;; $$ Last modified:  17:34:58 Sat Jan 30 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -381,18 +381,64 @@
 (defmethod auto-followers ((sfn sndfilenet) &optional refs)
 ;;; ****
   (when (or (eq refs t) (not refs)) (setq refs (all-refs sfn)))
-  (loop for ref in refs and next-ref in (wrap-list refs 1)
-     for sfs = (reverse (get-data-data ref sfn))
-     for nsfs = (make-cscl (reverse (get-data-data next-ref sfn)) :copy nil)
-     do 
-       (loop for sf in sfs
-          for followers = (reverse
-                           (cons
-                            (get-next nsfs)
-                            (remove-with-id sfs (id sf))))
-          do 
-            (setf (slot-value sf 'followers) (make-cscl followers
-                                                        :copy nil))))
+  (let ((al (make-al)))
+    ;; MDE Sat Jan 30 12:59:56 2021, Heidhausen -- changed the method of
+    ;; selecting followers here as merely reusing the list in original order
+    ;; wasn't creating enough variety.
+    (flet ((make-followers (list)
+             ;;(print 'make-followers) (print (mapcar #'id list))
+             (let ((count 0)
+                   (cscl (make-cscl list))
+                   (len (length list))
+                   (result '()))
+               ;; use circularly in case not enough elements
+               (loop for sf = (get-next cscl) 
+                  until (= count (if (> len 6) 6 len)) ; max 6 followers
+                  for f = (when (active al 5) sf)
+                  do
+                    (when (and f (not (member f result :test
+                                              #'(lambda (sf1 sf2)
+                                                  (string= (path sf1)
+                                                           (path sf2))))))
+                      (push f result)
+                      (incf count)))
+               ;; (print (mapcar #'id result))
+               result)))
+      (loop for ref in refs             ; i.e. for each sndfile group
+         for next-ref in (wrap-list refs 1)
+         for sfs = (get-data-data ref sfn)
+         for nsfs = (make-followers (get-data-data next-ref sfn))
+         do
+           (if nsfs
+               (setq nsfs (make-cscl nsfs :copy nil))
+               (error "sndfilenet::auto-followers: couldn't get followers ~
+                       for next-ref (~a)" next-ref))
+           (loop for sf in sfs
+              for followers = (reverse
+                               (cons
+                                ;; remember that the reference to the snd in
+                                ;; another group must be a list using the group
+                                ;; id as first element
+                                (list next-ref (get-next nsfs))
+                                (remove-with-id (make-followers sfs) (id sf))))
+              do
+                (unless followers
+                  (error "sndfilenet::auto-followers: couldn't get any ~
+                          followers for ~a" (id sf)))
+                (setf (slot-value sf 'followers)
+                      ;; just the ids
+                      (make-cscl
+                       ;; now just get the IDs: if we store the sndfile-ext
+                       ;; objects themselves here, then some will have empty
+                       ;; :followers as they're only updated later (sometimes
+                       ;; I'd really like proper pointers in lisp :/ )
+                       (mapcar #'(lambda (x)
+                                   ;; 
+                                   (if (listp x)
+                                       (list (first x) (id (second x)))
+                                       (id x)))
+                               followers)))))))
+  (process-followers sfn)
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:16:02 Fri Jan 29 2021 CET
+;;; $$ Last modified:  11:18:12 Sat Jan 30 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5663,6 +5663,12 @@ yes_foo, 1 2 3 4;
        ;; skip the elements at the positions
      for subseq = (subseq list (if skip (1+ i1) i1) i2)
      when subseq collect subseq))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; if the list length is odd, the first half will be one shorter than the 2nd.
+(defun halves (list)
+  (let ((middle (floor (length list) 2)))
+    (list (subseq list 0 middle) (subseq list middle))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

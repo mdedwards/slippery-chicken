@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  11:55:04 Wed Nov 11 2020 CET
+;;; $$ Last modified:  15:51:50 Sat Jan 30 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -580,11 +580,13 @@ NIL
                  while sf
                  collect (id sf)
                  do
+                   ;; (print (id sf))
                    (setf sf (get-next sf)))))
     ;; MDE Fri Oct 20 11:34:08 2017 
     (unless (= depth (length sfes))
-      (warn "sndfile-ext::analyse-followers: couldn't get ~a results:~%~a"
-            depth sfes))
+      (warn "sndfile-ext::analyse-followers: couldn't get ~a results for ~a, ~
+             just:~%~a~%~a"
+            depth (id sfe) sfes sfe))
     (count-elements sfes)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

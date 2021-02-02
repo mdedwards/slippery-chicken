@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:28:23 Wed Dec 30 2020 CET
+;;; $$ Last modified:  20:56:16 Tue Feb  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4497,7 +4497,7 @@ data: (2 4)
               (setf porc (if written
                              (written-pitch-or-chord event)
                            (pitch-or-chord event)))
-              (if (is-single-pitch event)
+              (if (is-single-pitch-object event)
                   (when (or (pitch= enharmonic porc nil)
                             (and octaves-too
                                  (is-octave enharmonic porc nil)))
@@ -4606,13 +4606,19 @@ collect (get-pitch-symbol r))))
                      (pitch-or-chord e))
                ;; p-enh (enharmonic p nil)
                next-attack (get-nth-attack (1+ attack-num) rsb nil))
-           ;; 9.2.11
-           (unless p
+         ;; MDE Tue Feb  2 20:49:07 2021, Heidhausen -- is-single-pitch now
+         ;; returns t for one-note chord objects
+         (when (chord-p p)
+           (setq p (get-pitch p 1)))
+         ;; 9.2.11
+         ;; MDE Tue Feb  2 20:48:47 2021, Heidhausen -- should be a pitch object
+         ;; not just any old thing 
+           (unless (pitch-p p) ;p
              (error "rthm-seq-bar::respell-bar: expected a pitch in this ~
                      bar's events but one of them ~%was nil--it could be ~
                      that you've created your own events and forgotten to ~&~
                      assign both written and sounding pitches for notes ~
-                     played on a transposing ~%instrument: ~%~a!" rsb))
+                     played on a transposing ~%instrument: ~%~a~%~%~a" p rsb))
            (when (enharmonics-exist rsb p t written)
              (enharmonic e :written written)
              ;; don't need p as it was anymore so get the (enharmonic) pitch

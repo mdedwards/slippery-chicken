@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:34:44 Wed Dec 30 2020 CET
+;;; $$ Last modified:  20:55:43 Tue Feb  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2923,7 +2923,7 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns NIL if not a chord           ;
+;; Returns NIL if not a chord
 (let ((e (make-event 'c4 'q)))
   (is-chord e))
 
@@ -2935,7 +2935,7 @@ NIL
 
 => 3
 
-;; A rest is not a chord                ;
+;; A rest is not a chord     
 (let ((e (make-rest 'q)))
   (is-chord e))
 
@@ -2991,7 +2991,12 @@ NIL
 ;;; ****
   ;; MDE Sat Dec 19 19:14:29 2020, Heidhausen -- one-note chords also
   (= 1 (num-notes e)))
-  
+
+;;; MDE Tue Feb  2 20:55:16 2021, Heidhausen -- for old times' sake
+(defmethod is-single-pitch-object ((e event))
+;;; ****
+  (pitch-p (pitch-or-chord e)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 15:46:23 EST 2011: Added robodoc info

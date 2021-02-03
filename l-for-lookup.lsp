@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  17:07:59 Thu May 28 2020 CEST
+;;; $$ Last modified:  14:59:18 Wed Feb  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1505,6 +1505,9 @@ data: (
 (defun remix-in (list &key (remix-in-fib-seed 13) (mirror nil) (test #'eql)
                         (replace nil))
   ;; ****
+  (when (> 4 (length (remove-duplicates list :test test)))
+    (error "l-for-lookup::remix-in: you should have at least four different ~
+            elements ~%in the argument list: ~a" list))
   (let* ((fib-tran (make-cscl (fibonacci-transition remix-in-fib-seed)))
          (lst (if mirror (append list (reverse (butlast list))) list))
          ;; the third unique element in the list

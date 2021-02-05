@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  12:25:51 Sat Dec 19 2020 CET
+;;; $$ Last modified:  20:11:24 Thu Feb  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1770,12 +1770,19 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 14 15:24:07 2012 
 (defmethod print-simple ((c chord) &optional (stream t) (separator " "))
+  ;; (format stream "~a" (print-to-string c) separator)
+  (princ (print-to-string c separator) stream)
+  c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Feb  4 20:05:47 2021, Heidhausen
+(defmethod print-to-string ((c chord) &optional (separator " "))
   (let ((result (format nil "~a: " (id c))))
     (loop for p in (data c) do
          (setf result (concatenate 'string result (print-simple p nil)
                                    separator)))
-    (format stream "~&~a" result)
-    c))
+    (format nil "~&~a" result)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 10 16:17:59 2012 -- pitches can be pitch objects or any data

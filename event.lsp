@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:55:43 Tue Feb  2 2021 CET
+;;; $$ Last modified:  15:05:02 Sat Feb  6 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -536,9 +536,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.4.11: remove existing dynamics if we're about to add one
-(defmethod add-mark :before ((e event) mark &optional warn-rest warn-again)
-  (declare (ignore warn-rest warn-again))
-  (when (is-dynamic mark)
+(defmethod add-mark :before ((e event) mark &optional (update-amplitude t)
+                                              warn-again)
+  (declare (ignore warn-again update-amplitude))
+  ;; we ignore update-amplitude in the before method because if we're really
+  ;; adding a dynamic then we really need to delete existing dynamics beforehand
+  (when (is-dynamic mark) ; (and update-amplitude (is-dynamic mark))
     (remove-dynamics e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -574,10 +577,7 @@
            ;; MDE Thu Jun 20 17:24:08 2019 -- sost doesn't react with Disklavier
            ;; Enspire 3.10.00 
            (sost (pedal 127 66))
-           (sost-up (pedal 0 66))
-           (t (when (and update-amplitude (is-dynamic mark))
-                (setf (slot-value e 'amplitude)
-                      (dynamic-to-amplitude mark))))))))
+           (sost-up (pedal 0 66))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/add-mark
@@ -607,8 +607,11 @@
                             &optional (update-amplitude t) warn-again)
 ;;; ****
   (declare (ignore warn-again))
+  ;; (format t "~&event: ~a ~a" mark update-amplitude)
   (pedals-to-controllers e update-amplitude)
-  ;; (print mark)
+  (when (and update-amplitude (is-dynamic mark))
+    (setf (slot-value e 'amplitude)
+          (dynamic-to-amplitude mark)))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

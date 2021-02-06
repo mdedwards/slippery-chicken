@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  15:18:58 Thu Jan 21 2021 CET
+;;; $$ Last modified:  14:53:11 Sat Feb  6 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -623,6 +623,7 @@ rhythm::add-mark: add AT to rest?
 ;;; SYNOPSIS
 (defmethod add-mark ((r rhythm) mark &optional warn-rest warn-again)
 ;;; ****
+  ;; (format t "~&rhythm: ~a ~a" mark warn-rest)
   (when mark
     (when (and warn-rest (is-rest r))
       (warn "~a~&rhythm::add-mark: add ~a to rest?" r mark))

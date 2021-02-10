@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  16:36:00 Wed Feb 10 2021 CET
+;;; $$ Last modified:  16:38:42 Wed Feb 10 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -459,13 +459,12 @@
                                      set-pitches-rm-used)
                      with chord-fun =
                        (when (chords instrument)
-                         (let ((cf (symbol-function
-                                    (chord-function instrument))))
+                         (let ((cf (chord-function instrument)))
                            (unless cf (error "pitch-seq::get-notes: chord slot ~
                                               for ~a is T but chord-function ~
                                               is NIL. Please set this."
                                              (id instrument)))
-                           cf))
+                           (symbol-function cf)))
                      with used-notes = (used-notes set)
                      with uns-ref = (list seq-num (id instrument))
                      with last = last-note-previous-seq

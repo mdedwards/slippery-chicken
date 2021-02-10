@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:01:30 Thu Jan 28 2021 CET
+;;; $$ Last modified:  16:16:54 Wed Feb 10 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4083,7 +4083,10 @@ seq-num 5, VN, replacing G3 with B6
                         ;; notes  
                         (force-velocity nil))
 ;;; ****
-  (when update-amplitudes ; MDE Mon Jun 13 12:32:30 2016 
+  (when update-amplitudes ; MDE Mon Jun 13 12:32:30 2016
+    (format t "~&slippery-chicken::midi-play: updating amplitudes to reflect ~
+                dynamic marks. ~%Set :update-ampltidues to NIL if you don't ~
+                want this (e.g. you've set amplitudes directly).")
     (update-amplitudes sc)
     (handle-hairpins sc))
   (when (and players voices)

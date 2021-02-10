@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:48:59 Tue Dec 29 2020 CET
+;;; $$ Last modified:  15:26:17 Wed Feb 10 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -571,7 +571,7 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
                   ~%            nodes: ~a, ~
                   ~%            harmonic-pitches: ~a~
                   ~%            largest-fast-leap: ~a, tessitura: ~a~
-                  ~%            lowest played: ~a, highest played: ~a"
+                  ~%            lowest-played: ~a, highest-played: ~a"
             (pitch-slot (lowest-written ins))
             (pitch-slot (highest-written ins))
             (pitch-slot (lowest-sounding ins))

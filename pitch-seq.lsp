@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  16:38:42 Wed Feb 10 2021 CET
+;;; $$ Last modified:  09:14:32 Thu Feb 11 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -460,10 +460,12 @@
                      with chord-fun =
                        (when (chords instrument)
                          (let ((cf (chord-function instrument)))
-                           (unless cf (error "pitch-seq::get-notes: chord slot ~
-                                              for ~a is T but chord-function ~
-                                              is NIL. Please set this."
-                                             (id instrument)))
+                           (unless cf
+                             (error "pitch-seq::get-notes: chord slot ~
+                                     for ~a is T but chord-function ~
+                                     is NIL. Using default-chord-function."
+                                    (id instrument))
+                             (setq cf 'default-chord-function))
                            (symbol-function cf)))
                      with used-notes = (used-notes set)
                      with uns-ref = (list seq-num (id instrument))

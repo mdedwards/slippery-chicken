@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - OSC</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="./show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** --> 
+
+      <h2>slippery chicken and OSC</h2>
+
+      <p class="nb">Available on Mac OSX and Linux with SBCL only:</p>
+      
+      <p>Using the <a href="../robodoc/osc-sc_lsp.html#osc2dsc2fosc2dcall">
+       <code>(osc-call)</code></a> function, <em>slippery chicken</em> can
+       receive and evaluate any arbitrary Lisp code sent over a UDP network
+       (i.e. via OSC).  The primary application here is to integrate
+       <em>slippery chicken</em> and e.g. MaxMSP.  One possibility would be to
+       combine the two software systems to generate scores on the fly via an
+       interface controlled by musicians.  See the video below for an example
+       of this in practice. </p>
+
+            <br />      <br />
+      <iframe width="560" height="315"
+      src="http://www.youtube.com/embed/oj20Cbiqhvs" frameborder="0"
+      allowfullscreen></iframe>
+                  <br />      <br />             <br />      <br />
+
+      <p>For an example MaxMSP patch, see <a
+        href="../examples/osc-test.maxpat">osc-test.maxpat</a> (in the examples
+        folder of the documentation).  You'll also need
+        <a href="../examples/osc-sc-eval.maxpat">osc-sc-eval.maxpat</a>.
+
+       Simon Bahr got this working in PD using the <i>zexy</i>
+       and <i>mrpeach</i> libraries. The abstraction you can use
+       is <a href="../examples/osc-sc-eval.pd">osc-test.pd</a> (also in the
+       examples folder) and the test is
+      <a href="../examples/osc-test.pd">osc-sc-eval.pd</a>.</p>
+
+
+      <p>To get <em>slippery chicken</em> to accept and process Lisp calls over
+      OSC, make sure you're in the <em>slippery chicken</em> package and simply
+      type <a href="../robodoc/osc-sc_lsp.html#osc2dsc2fosc2dcall">
+      <code>(osc-call)</code></a>. At this point the Lisp interpreter gives up
+      control to OSC but will process commands as they are received (and print
+      them if you call with <code>:print t</code>).  Send a quit
+      message (to the osc-sc-eval abstraction if using MaxMSP) to return to the
+      Lisp interpreter.</p>
+
+      <p>For those who don't have MaxMSP but would like to use another OSC host
+      to communicate with <em>slippery chicken</em>, the following screen shot
+      of the osc-sc-eval MaxMSP abstraction should help: <br /> <br />
+
+      <img src="osc-sc-eval.png" alt="osc-sc-eval max patch" class="border" />
+
+
+      </p>
+
+      <h3>Return values</h3>
+      <p>Lisp returns the results of function calls via OSC as a list, so the
+      most appropriate receiving object (e.g. what's connected to the left
+      outlet of osc-sc-eval.maxpat) to display the results is a message
+      box. However, connecting straight to any object that can handle numbers is
+      fine if your function returns a number. Any function which returns T or
+      NIL will automatically be modified to return 1 or 0 instead by
+      slippery-chicken's <code>osc-eval</code> Lisp function. More complex
+      return objects will probably just return the printed version of their
+      internal structure, which is not so useful, so we're really limited to
+      simple return types such as lists, symbols, and numbers.
+
+<!--      <p>The video below shows Michael demonstrating the OSC interface
+      between MaxMSP and <em>slippery chicken</em>.  The MaxMSP software was
+      developed for a new piece where the score is generated according to
+      criteria selected by the musician.</p>-->
+
+
+
+      <!-- **************************************************************** --> 
+      <!-- This spacer <br> is necessary as a buffer between the content and
+           the footer. It cannot be added as padding to #push, since #push has
+           to be the same size as #footer in order for the dynamic placement to
+           work properly --> <br /><br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

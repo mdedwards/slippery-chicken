@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./../../src/sndfile.lsp</title>
+<!-- Source: ./../../src/sndfile.lsp -->
+<!-- Generated with ROBODoc Version 4.99.43 (Oct  1 2016) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="linked2dnamed2dobject2fsndfile"></a>
+<a name="robo283"></a><h2 class=robodoc>linked-named-object/sndfile [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo291">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>sndfile</strong>
+
+ File:             <a href="#robo_top_of_doc">sndfile.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo589">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo291">linked-named-object</a> -&gt; <strong>sndfile</strong>
+
+ Version:          1.0.11
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Implementation of the <strong>sndfile</strong> class that holds
+                   information about a sound file as well as specifying
+                   desired parameters
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    March 21st 2001
+
+ $$ Last modified:  19:18:35 Thu Sep 24 2020 CEST
+
+ SVN ID: $Id$
+</pre>
+
+
+<a name="sndfile2fmake2dsndfile"></a>
+<a name="robo827"></a><h2 class=robodoc>sndfile/make-sndfile [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo283">sndfile</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Create a <a href="#robo283">sndfile</a> object to hold data about an existing sound file,
+ specifying at least the path and file name of that sound file. Optional
+ arguments allow for the specification of segments within the given sound
+ file and its perceived fundamental frequency (for src-based
+ transposition). 
+
+ If the first argument ("path") is a list, then this <a href="#robo283">sndfile</a> object has been
+ created from within a <a href="./sndfile-palette_lsp.html#robo297">sndfile-palette</a> object. In this case, the first item
+ in the list will be the full path to the sound file, as defined in the
+ <a href="./sndfile-palette_lsp.html#robo297">sndfile-palette</a> object; the second item in the list is the list given by
+ the user containing the data slots to be used, whereby the first item of
+ that list must be the ID of the object.
+
+ NB: This function creates an object of the class <a href="#robo283">sndfile</a>, which is contains
+     data concerning an existing sound file. It does not create an actual
+     sound file. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A path and file name of an existing sound file; or a list as explained
+   above. 
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :id. An ID for the <a href="#robo283">sndfile</a>. Will be set automatically if created from
+   within a <a href="./sndfile-palette_lsp.html#robo297">sndfile-palette</a>.  Default nil.
+ - :data. The given file name, including path and extension, usually set
+   automatically to be the given path if nil.  Default nil. 
+ - :duration. A number in seconds which is the duration of the segment of
+   the specified sound file which the user would like to use. This should
+   not be specified if :end has been specified. Default nil.
+ - :end. A number in seconds which is the end time within the source sound
+   file for the segment of the file which the user would like to use. This
+   should not be specified if :duration has been specified. Default nil.
+ - :start. A number in seconds which is the start time within the source
+   sound file for the segment of the file which the user would like to
+   use. Defaults to 0.0.
+ - :frequency. A number or note-name symbol. This frequency will serve as
+   the reference <a href="./pitch_lsp.html#robo279">pitch</a> for any src transpositions of this file. This can be
+   any value, but will most likely be specified if the source sound file has
+   a perceptible fundamental <a href="./pitch_lsp.html#robo279">pitch</a>. If given as a number, this number will
+   be handled as a frequency in Hertz. Default = 'C4.
+ - :amplitude. An number that is the amplitude which the user would like to
+   designate for this sound file. This number may be of any value, as
+   slippery chicken normalizes all sound file events; however, standard
+   practice would suggest that this should fall <a href="./utilities_lsp.html#robo865">between</a> 0.0 and 1.0.
+   Default = 1.0
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A <a href="#robo283">sndfile</a> object.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Example specifying the full path, a start and end time, and a base frequency 
+(<strong>make-sndfile</strong> "/path/to/<a href="#robo283">sndfile</a>-1.aiff"
+              :start 0.3
+              :end 1.1
+              :frequency 654)
+
+=&gt; 
+
+SNDFILE: path: /path/to/<a href="#robo283">sndfile</a>-1.aiff, 
+         snd-duration: 3.011043, channels: 1, frequency: 654
+         start: 0.3, end: 1.1, amplitude: 1.0, duration 0.8
+         will-be-used: 0, has-been-used: 0
+         data-consistent: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: /path/to/<a href="#robo283">sndfile</a>-1.aiff
+
+;; Example using the <a href="./sndfile-palette_lsp.html#robo297">sndfile-palette</a> list as the first argument
+(<strong>make-sndfile</strong> '("/path/to/<a href="#robo283">sndfile</a>-1.aiff" 
+                (nil :start 0.3 :end 1.1)))
+
+=&gt; 
+
+SNDFILE: path: /path/to/<a href="#robo283">sndfile</a>-1.aiff, 
+         snd-duration: 3.011043, channels: 1, frequency: 261.62555
+         start: 0.3, end: 1.1, amplitude: 1.0, duration 0.8
+         will-be-used: 0, has-been-used: 0
+         data-consistent: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "/Volumes/JIMMY/SlipperyChicken/<a href="#robo283">sndfile</a>-2.aiff", tag: NIL, 
+data: /path/to/<a href="#robo283">sndfile</a>-1.aiff
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>make-sndfile</strong> (path &amp;key id data duration end (start 0.0)
+                     (frequency nil)
+                     (amplitude 1.0))
+</pre>
+
+
+<a name="sndfile2freset2dusage"></a>
+<a name="robo828"></a><h2 class=robodoc>sndfile/reset-usage [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo283">sndfile</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Reset the WILL-BE-USED and HAS-BEEN-USED slots of the given <a href="#robo283">sndfile</a> object
+ to 0. These slots keep track of how many times a sound will be used and has
+ been used, which is useful for purposes such as incrementing
+ start-time. These slots are set internally and are not intended to be set by
+ the user.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo283">sndfile</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns 0.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; First set the values of the WILL-BE-USED and HAS-BEEN-USED slots, as these
+;; are 0 when a new <a href="#robo283">sndfile</a> object is created using <a href="#robo827">make-sndfile</a>. Set the
+;; values, print them; <a href="./l-for-lookup_lsp.html#robo275">reset</a> both using <strong>reset-usage</strong>, and print again to see
+;; the change.
+(let ((sf-1 (<a href="#robo827">make-sndfile</a> "/path/to/<a href="#robo283">sndfile</a>-1.aiff"))))
+  (setf (will-be-used sf-1) 11)
+  (setf (has-been-used sf-1) 13)
+  (print (will-be-used sf-1))
+  (print (has-been-used sf-1))
+  (<strong>reset-usage</strong> sf-1)
+  (print (will-be-used sf-1))
+  (print (has-been-used sf-1)))
+
+=&gt;
+11 
+13 
+0 
+0
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>reset-usage</strong> ((sf <a href="#robo283">sndfile</a>))
+</pre>
+
+
+<a name="sndfile2fstereo"></a>
+<a name="robo830"></a><h2 class=robodoc>sndfile/stereo [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo283">sndfile</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Test whether the CHANNELS slot of a given <a href="#robo283">sndfile</a> object is set to 2.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo283">sndfile</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns T if the CHANNELS slot is set to 2, otherwise returns NIL.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; The method <a href="#robo827">make-sndfile</a> creates a <a href="#robo283">sndfile</a> object with the CHANNELS slot set
+;; to NIL. Make a <a href="#robo283">sndfile</a> object, test to see whether the value of the CHANNELS
+;; slot is 2; set the CHANNELS slot to 2 and test again.
+(let ((sf-1 (<a href="#robo827">make-sndfile</a> "/path/to/<a href="#robo283">sndfile</a>-1.aiff")))
+  (print (<strong>stereo</strong> sf-1))
+  (setf (channels sf-1) 2)
+  (print (<strong>stereo</strong> sf-1)))
+
+=&gt;
+NIL 
+T
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>stereo</strong> ((sf <a href="#robo283">sndfile</a>))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/sndfile.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Tue Oct 27 2020 15:57:59
+</p>
+</div> <!-- footer -->
+</body>
+</html>

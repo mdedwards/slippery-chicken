@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - licence</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="./sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="./show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("./");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+
+      <!-- **************************************************************** --> 
+    
+      <h3>Licence</h3> 
+      <p>Copyright (c) 2000-2012 Michael Edwards.</p>
+
+      <p><em>slippery chicken</em> is free open-source software released for
+      non-commercial use
+      under the terms of the <a
+       href="http://www.gnu.org/copyleft/gpl.html">GNU General Public
+      License</a> as published by the Free Software Foundation.</p>
+
+      <!-- taken from JUCE: http://www.rawmaterialsoftware.com/jucelicense.php
+      --> <p>If you'd like to avoid the restrictions of this licence and use
+      slippery-chicken for a closed-source product, you can purchase a
+      commercial licence. Please <a
+       href="http://www.sumtone.com/redirect-mailto.php?u=m&d=michael-edwards.org">get
+      in touch</a> for more details. </p>
+
+
+      <!-- **************************************************************** --> 
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

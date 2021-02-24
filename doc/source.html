@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - source code</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="./sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="./show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("./");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** --> 
+
+      <h2>Please Use GitHub</h2>
+      <div class="nb">
+        Since 2017 slippery chicken uses github to manage its code
+        repository. From 2020, due to increasing problems relating to Mac OSX
+        apps, slippery-chicken will only be available as a source code
+        download. The information and instructions below can be considered
+        deprecated. See <a href="https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand'">
+        the github wiki entry</a> for how to install slippery chicken
+        and <a href="https://github.com/mdedwards/slippery-chicken/wiki/using-github">using
+        github</a> for more information. 
+      </div>
+      
+      <h2>Software downloads</h2>
+
+      <p><a href="#downloads">Below</a>, you'll find the source code, OSX app,
+      and pre-compiled Lisp images for <em>slippery chicken</em>.  The
+      <b>sc-</b> files are the full source code and documentation; please
+      follow the <a href="./installation.html">installation instructions</a> to
+      install from source.
+
+      <h3>Pre-compiled Lisp images</h3> <p>Available up to and including version
+      1.0.8: The <b>-precompiled</b> files
+      include <a href="http://ccl.clozure.com/">Clozure Common Lisp</a> and a
+      pre-compiled image of <em>slippery chicken</em>.  This is the easiest
+      version to install and is recommended for newcomers to Lisp and
+      <em>slippery chicken</em> who run OSX 64-bit or Windows 7 32-bit.  This
+      will allow CMN, <a href="http://www.lilypond.org">Lilypond</a>, and MIDI
+      file writing but no sound file writing with CLM.
+
+      <h3>OSX application</h3>
+      <p>The .app downloads work on Macintosh OSX only and
+        include CM, CLM, and CMN along with <em>slippery chicken</em>, but to reduce
+        download size, no documentation.  The .app requires Emacs and a C
+        compiler (both free) however; see the readme file that comes with the
+        app for more details.</p>
+
+      <h3>Documentation</h3>
+      <p>The documentation is always <a
+         href="http://www.michael-edwards.org/sc/">available online</a> but if
+        you want a local copy please download the source code below 
+      (i.e. sc-*.tar.gz, not the app).
+      <!-- 
+        or use subversion to check out the latest: open a terminal on a UNIX
+         machine and  
+        enter <code>svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/doc</code>
+        All the documentation will be downloaded into the newly created doc
+        folder.  (Windows users can use <a
+         href="http://tortoisesvn.net/">tortoise SVN</a>.) -->
+
+<h3>Subversion access</h3>
+<p>Subversion server access at the University of Edinburgh is no longer
+available. Source code is however clonable from <a
+href="https://github.com/mdedwards/slippery-chicken">github</a>. 
+
+<!-- <p>Anyone wishing to have access to the latest
+       source code and other project files can regularly update these via <a
+        href="http://svnbook.red-bean.com/en/1.7/index.html">svn</a>.  Simply
+       open a terminal on a UNIX machine (or use <a
+        href="http://tortoisesvn.net/">tortoise SVN</a> on Windows) and
+       enter<br><code>svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest</code></p>
+
+       <p>If you're running the OSX application you can also update your source
+       code by calling <code>(update-app-src)</code>.  <a
+        href="./robodoc/utilities_lsp.html#utilities2fupdate2dapp2dsrc">More
+       details</a>.</p>
+-->
+
+      <h3>Installation instructions, bugs, documentation, etc.</h3>
+      <p>Please see the <a href="./installation.html">installation
+      instructions</a> and <a href="./bugs.html">bug report</a> page, as well as
+      the <a href="./manual/index.html">manual</a> for more details.  Please also
+      note that the software is available for non-commercial use only; see the
+      <a href="./licence.html">licence page</a> for more details and note that by
+      downloading the software you are agreeing to abide by the terms of this
+      licence.  </p>
+
+<h2 id="downloads">Downloads</h2>
+      <p id="bottom">
+
+      <!- filesplice start -->
+<h4>1.0.11</h4>
+<a href="download.php?archive=sc-1.0.11.tar.gz">sc-1.0.11.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-OSX-1.0.11.app.tar.gz">slippery-chicken-OSX-1.0.11.app.tar.gz</a>
+<h4>1.0.10</h4>
+<a href="download.php?archive=sc-1.0.10.tar.gz">sc-1.0.10.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-OSX-1.0.10.app.tar.gz">slippery-chicken-OSX-1.0.10.app.tar.gz</a>
+<h4>1.09</h4>
+<a href="download.php?archive=sc-1.09.tar.gz">sc-1.09.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-OSX-1.09.app.tar.gz">slippery-chicken-OSX-1.09.app.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.09-OSX-64bit-precompiled.tar.gz">slippery-chicken-1.09-OSX-64bit-precompiled.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.09-win7-32bit-precompiled.zip">slippery-chicken-1.09-win7-32bit-precompiled.zip</a>
+<h4>1.0.8</h4>
+<a href="download.php?archive=sc-1.0.8.tar.gz">sc-1.0.8.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-OSX-1.0.8.app.tar.gz">slippery-chicken-OSX-1.0.8.app.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.8-OSX-64bit-precompiled.tar.gz">slippery-chicken-1.0.8-OSX-64bit-precompiled.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.8-win7-32bit-precompiled.zip">slippery-chicken-1.0.8-win7-32bit-precompiled.zip</a>
+<h4>1.0.7</h4>
+<a href="download.php?archive=sc-1.0.7.tar.gz">sc-1.0.7.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-OSX-1.0.7.app.tar.gz">slippery-chicken-OSX-1.0.7.app.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.7-OSX-64bit-precompiled.tar.gz">slippery-chicken-1.0.7-OSX-64bit-precompiled.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.7-win7-32bit-precompiled.zip">slippery-chicken-1.0.7-win7-32bit-precompiled.zip</a>
+<h4>1.0.6</h4>
+<a href="download.php?archive=sc-1.0.6.tar.gz">sc-1.0.6.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-OSX-1.0.6.app.tar.gz">slippery-chicken-OSX-1.0.6.app.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.6-OSX-64bit-precompiled.tar.gz">slippery-chicken-1.0.6-OSX-64bit-precompiled.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.6-win7-32bit-precompiled.zip">slippery-chicken-1.0.6-win7-32bit-precompiled.zip</a>
+<h4>1.0.5</h4>
+<a href="download.php?archive=sc-1.0.5.tar.gz">sc-1.0.5.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-OSX-1.0.5.app.tar.gz">slippery-chicken-OSX-1.0.5.app.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.5-OSX-64bit-precompiled.tar.gz">slippery-chicken-1.0.5-OSX-64bit-precompiled.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.5-win7-32bit-precompiled.zip">slippery-chicken-1.0.5-win7-32bit-precompiled.zip</a>
+<h4>1.0.4</h4>
+<a href="download.php?archive=sc-1.0.4.tar.gz">sc-1.0.4.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-OSX-1.0.4.app.tar.gz">slippery-chicken-OSX-1.0.4.app.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.4-OSX-64bit-precompiled.tar.gz">slippery-chicken-1.0.4-OSX-64bit-precompiled.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.4-win7-32bit-precompiled.zip">slippery-chicken-1.0.4-win7-32bit-precompiled.zip</a>
+
+<h4>1.0.3</h4>
+<a href="download.php?archive=sc-1.0.3.tar.gz">sc-1.0.3.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.3-OSX.app.tar.gz">slippery-chicken-OSX-1.0.3.app.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.3-OSX-64bit-precompiled.tar.gz">slippery-chicken-1.0.3-OSX-64bit-precompiled.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.3-win7-32bit-precompiled.zip">slippery-chicken-1.0.3-win7-32bit-precompiled.zip</a>
+
+
+<h4>1.0.2</h4>
+<a href="download.php?archive=sc-1.0.2.tar.gz">sc-1.0.2.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.2.app.tar.gz">slippery-chicken-1.0.2.app.tar.gz</a>
+
+
+<h4>1.0.1</h4>
+<a href="download.php?archive=sc-1.0.1.tar.gz">sc-1.0.1.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.1.app.tar.gz">slippery-chicken-1.0.1.app.tar.gz</a>
+
+<h4>1.0.0</h4>
+<a href="download.php?archive=sc-1.0.0.tar.gz">sc-1.0.0.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.0.app.tar.gz">slippery-chicken-1.0.0.app.tar.gz</a>
+
+<h4>1.0.0-beta3</h4>
+<a href="download.php?archive=sc-1.0.0-beta3.tar.gz">sc-1.0.0-beta3.tar.gz</a>
+<br /><a href="download.php?archive=slippery-chicken-1.0.0-beta3.app.tar.gz">slippery-chicken-1.0.0-beta3.app.tar.gz</a>
+
+<h4>1.0.0-beta2</h4>
+<a href="download.php?archive=sc-1.0.0-beta2.tar.gz">sc-1.0.0-beta2.tar.gz</a>
+
+<h4>1.0.0-beta1</h4>
+<a href="download.php?archive=sc-1.0.0-beta1.tar.gz">sc-1.0.0-beta1.tar.gz</a>
+
+<!- filesplice end -->
+
+      </p>
+
+            <!--
+      <p>The software is not yet publicly available, but please watch this
+        space if you are interested. The reason for holding back is mainly a
+        practical one: at more than 34,000 lines (c. 550 A4 pages) of code, the
+        project has not yet been completely documented, tested, and packaged in
+        some easily-installable form. Funding has been obtained to undertake
+        this; we are aiming for an <b>open-source release in May
+        2012</b>. Please bear in mind that there is no Graphical User Interface
+        (Lisp programming is essential) and no plans to make one, as this would
+        be against the typical and beneficial workflow of the text-based
+        programming approach. Given that the software interfaces with various
+        parts of the open-source software systems Common Music (CM: Heinrich
+        Taube), Common Lisp Music (CLM), and Common Music Notation (CMN: both
+        Bill Schottstaedt), installation will be dependent on these systems if
+        the user wants to take advantage of them. <em>slippery chicken</em> is,
+        however, platform-independent: It has been used on MS Windows,
+        Macintosh OS 9 and X, and UNIX (Linux) computers, and with various Lisp
+        implementations (SBCL, CCL, MCL, CLisp, Allegro, etc.).</p>
+
+
+      <p>This will be the link once we're live: -->
+
+      <!--      <br /><a href="./sc-0.9.0.tar.gz" onclick="_gaq.push(['_trackEvent', 'downloads', 'sc-1.0.0.tar.gz']);">sc-1.0.0.tar.gz</a> -->
+
+      
+      <!-- **************************************************************** --> 
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

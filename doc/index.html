@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - slippery chicken</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="./sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="./show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("./");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+
+      <!-- **************************************************************** -->
+
+      <p><i>slippery chicken</i> is an open-source <a target="_blank"
+           href="http://en.wikipedia.org/wiki/Common_Lisp">Common Lisp</a>
+           environment for declarative or generative <a target="_blank"
+           href="http://en.wikipedia.org/wiki/Algorithmic_music">algorithmic
+           composition<a> building on <a target="_blank"
+           href="http://ccrma.stanford.edu/software/clm">CLM</a>, <a target="_blank"
+           href="http://ccrma.stanford.edu/software/cmn">CMN</a>, <a target="_blank"
+           href="http://commonmusic.sourceforge.net/">CM</a>, <a target="_blank"
+           href="http://musicxml.com/">MusicXML</a> and <a target="_blank"
+           href="http://www.lilypond.org">Lilypond</a> for score, sound file,
+           and/or MIDI file outputs and the integration of these into closely
+           aligned hybrid acoustic-electronic pieces of music.
+
+      <br><br><p><i>slippery chicken</i> enables a top-down approach to music
+        composition.  The software was originally tailor-made to encapsulate
+        the author's personal composition techniques, however many
+        general-purpose algorithmic composition tools have been programmed that
+        should be useful to a range of composers. The main goal of the project
+        is to facilitate a melding of electronic and instrumental sound worlds,
+        not just at the sonic but also at the structural level.  Pure
+        instrumental or electronic composition is of course possible
+        too. Techniques for the innovative combination of rhythm and pitch
+        data--arguably one of the most difficult aspects of making convincing
+        musical algorithms--are offered.  <i>slippery chicken</i> has no
+        graphical user interface and there are no plans to make one. Whilst it
+        is clear that this will be off-putting to some, there are many benefits
+        to interacting with such a system through the programming language it
+        was created in, not least of which is the infinite-extensibility that
+        such an approach infers.</p>
+
+      <p>For more information, see the
+      <a href="liner.html">liner notes</a> to the 
+      <a href="music.html#release"><em>slippery chicken</em> recording</a>, the
+      <a href="overview.html">overview</a>, and
+        the <i>about</i>, <i>documentation</i>, and <i>downloads</i> link menus
+        above right.</p>
+
+
+      <!-- **************************************************************** -->
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br /><br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

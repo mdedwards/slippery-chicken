@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - credits</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="./sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="./show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("./");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+
+      <!-- **************************************************************** --> 
+      <h2>Credits</h2> 
+      <h3>Michael Edwards</h3>
+      <p>Software concept, design, and programming by <a
+      href="http://www.michael-edwards.org">Michael Edwards</a>.</p>
+
+      <h3>Sean Reed</h3>
+      <p>Thanks to <a href="http://www.seanreed.ie">Sean Reed</a>, who was
+        responsible for documenting and testing the software prior to
+        release.</p>
+
+      <h3>AHRC</h3> 
+      <p>The documentation, testing, and release of <em>slippery chicken</em>
+        was made possible by a grant from the UK Arts &amp; Humanities Research
+        Council <a href="http://www.ahrc.ac.uk">(AHRC)</a> [grant number
+        AH/J004529/1].  Work on <em>slippery chicken</em> in 2004/5 was
+        supported by an AHRC <em>Small Grant in the Creative and Performing
+        Arts</em>.</p>
+      
+      <h3>ZKM</h3> 
+      <p>Many thanks to Johannes Goebel, former director of
+        the <a href="http://on1.zkm.de/zkm/institute/musik/">ZKM | Institute
+        for Music and Acoustics</a>. In 2000 and 2001 Michael Edwards was
+        awarded ZKM Guest Artist stipends to work on this project. The bulk of
+        the design and programming was completed for the main algorithmic
+        system of <em>slippery chicken</em> during this time.  </p>
+
+      <h3>Rick Taube</h3> 
+      <p>Many thanks to Rick Taube for allowing his
+        software <a href="http://commonmusic.sourceforge.net/"><em>Common
+        Music</em></a> to be packaged with <em>slippery chicken</em>, and for
+        some core routines to be included.</p>
+
+      <h3>Timothy Donaldsdon</h3>
+      <p>Thanks to <a href="http://www.timothydonaldson.com">Tim</a> for the
+      website design and logo. </p>
+
+      <h3>Russell Ovans</h3> 
+      <p>Gratitude must also be extended
+       to <a href="http://www.amazon.com/Russell-Ovans/e/B005JKE7RI/">Russell
+       Ovans</a> for providing advice and feedback on the project, particularly
+       in the area of software testing.</p>
+
+      <!-- **************************************************************** --> 
+
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br />
+
+      <div id="push"></div>
+      
+    </div>
+
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

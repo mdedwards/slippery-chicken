@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./../../src/music-xml.lsp</title>
+<!-- Source: ./../../src/music-xml.lsp -->
+<!-- Generated with ROBODoc Version 4.99.43 (Oct  1 2016) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="sc2fmusic2dxml"></a>
+<a name="robo13"></a><h2 class=robodoc>sc/music-xml [ Modules ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_modules.html#robo_top_of_doc">Modules</a> ]</p>
+
+
+<a name="music2dxml2fxml2dget2dmark"></a>
+<a name="robo286"></a><h2 class=robodoc>music-xml/xml-get-mark [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo13">music-xml</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> xml-get-mark:
+ Translation function for <a href="#robo13">music-xml</a> marks (dynamics, accents, etc.). Not
+ generally called by the user but the list of symbols that can be used will
+ be useful. If &lt;silent&gt; then non-existing marks will not produce
+ warnings/errors (but we'll return nil). 
+ default to the config setting
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">                  ;; if returns a string then xml-articulation will be called,
+                  ;; otherwise (dir ...) (tech ...)
+                  ;; also possible: (art "accent" "below") or a list of
+                  ;; strings, in which case there'll be 2+ xml-articulation
+                  (a "accent")       ; accent
+                  (s "staccato")
+                  (as '("accent" "staccato"))
+                  (at '("accent" "tenuto"))
+                  (ts "detached-legato")
+                  (te "tenuto")
+                  ;; tech means xml-technical will be called; see bottom of
+                  ;; this function
+                  (lhp '(tech "stopped" a))
+                  (bartok '(tech "snap-pizzicato" a))
+                  ;; todo: could also <a href="./sc-set_lsp.html#robo562">add</a> the &lt;sound&gt; tag here to change
+                  ;; midi-programme (see MozartTrio.xml for e.g.)
+                  ;; dir means xml-direction will be called
+                  (pizz '(wds "pizz." a))
+                  (ord '(wds "ord."))
+                  (pizzp '(wds "(pizz.)"))
+                  (clb '(wds "clb"))
+                  (cl '(wds "cl"))
+                  (col-legno '(wds "col legno"))
+                  (clt '(wds "clt"))
+                  (arco '(wds "arco"))
+                  (batt '(wds "batt"))
+                  (spe '(wds "spe"))
+                  (sp '(wds "sul pont."))
+                  (st '(wds "sul tasto"))
+                  (mv '(wds "molto vib"))
+                  (sv '(wds "senza vib"))
+                  (poco-crini '(wds "poco crini"))
+                  (nail '(tech "fingernails" a))
+                  (stopped (no-xml-mark 'stopped))
+                  ;; so unmeasured tremolo is implicit
+                  (t3 '(orn "tremolo" nil 3))
+                  (flag '(tech "harmonic" a))
+                  ;; MDE Fri Dec  7 18:11:29 2018 -- dorico still doesn't handle
+                  ;; the little circles to start/end a hairpin 
+                  (niente '(wds "niente"))
+                  (pppp  '(dyn "pppp"))
+                  (ppp  '(dyn "ppp"))
+                  (pp  '(dyn "pp"))
+                  (p  '(dyn "p"))
+                  (mp  '(dyn "mp"))
+                  (mf  '(dyn "mf"))
+                  (f  '(dyn "f"))
+                  (ff  '(dyn "ff"))
+                  (fff  '(dyn "fff"))
+                  (ffff  '(dyn "ffff"))
+                  ;; todo: find out how to put dynamics in parentheses; for now
+                  ;; just put in the dynamic without
+                  (pppp-p '(dyn "pppp"))
+                  (ppp-p '(dyn "ppp"))
+                  (pp-p '(dyn "pp"))
+                  (p-p '(dyn "p"))
+                  (mp-p '(dyn "mp"))
+                  (mf-p '(dyn "mf"))
+                  (f-p '(dyn "f"))
+                  (ff-p '(dyn "ff"))
+                  (fff-p '(dyn "fff"))
+                  (ffff-p '(dyn "ffff"))
+                  (sfz '(dyn "sfz"))
+                  (downbow '(tech "down-bow" a))
+                  (upbow '(tech "up-bow" a))
+                  (open '(tech "fingering" a 0))
+                  (I '(wds "I"))
+                  (II '(wds "II"))
+                  (III '(wds "III"))
+                  (IV '(wds "IV"))
+                  (V '(wds "V"))
+                  (VI '(wds "VI"))
+                  (VII '(wds "VII"))
+                  (VIII '(wds "VIII"))
+                  ;; guitar string numbers; todo: find a way of circling them
+                  (c1 "1")
+                  (c2 "2")
+                  (c3 "3")
+                  (c4 "4")
+                  (c5 "5")
+                  (c6 "6")
+                  ;; music xml doesn't seem to have separate slur and phrase
+                  ;; marks so we'll simply use the slur tag with number=1 for
+                  ;; slurs and number=2 for phrases
+                  (beg-sl '(not "slur" "number=\"1\" type=\"start\""))
+                  (end-sl '(not "slur" "number=\"1\" type=\"stop\""))
+                  (beg-phrase '(not "slur" "number=\"2\" type=\"start\""))
+                  (end-phrase '(not "slur" "number=\"2\" type=\"stop\""))
+                  (beg-gliss '(not "glissando" "number=\"1\" type=\"start\" line-type=\"solid\""))
+                  (end-gliss '(not "glissando" "number=\"1\" type=\"stop\" line-type=\"solid\""))
+                  (beg-8va '(dir "octave-shift"
+                             ;; it really is down, probably because what's
+                             ;; notated is an 8ve lower than sounding
+                             "dash-length=\"7.5\" size=\"8\" space-length=\"7.5\" type=\"down\""))
+                  (end-8va '(dir "octave-shift" "size=\"8\" type=\"stop\""))
+                  (beg-8vb '(dir "octave-shift"
+                             "dash-length=\"7.5\" size=\"-8\" space-length=\"7.5\" type=\"up\""))
+                  (end-8vb '(dir "octave-shift" "size=\"-8\" type=\"stop\""))
+                  (beg-15ma '(dir "octave-shift"
+                              "dash-length=\"7.5\" size=\"15\" space-length=\"7.5\" type=\"down\""))
+                  (end-15ma '(dir "octave-shift" "size=\"15\" type=\"stop\""))
+                  (beg-15mb '(dir "octave-shift"
+                              "dash-length=\"7.5\" size=\"-15\" space-length=\"7.5\" type=\"up\""))
+                  (end-15mb '(dir "octave-shift" "size=\"-15\" type=\"stop\""))
+                  ;; note heads
+                  (circled-x '(hd "circle-x"))
+                  (x-head '(hd "x"))
+                  (triangle '(hd "triangle"))
+                  (triangle-up '(hd "inverted triangle"))
+                  (airy-head (no-xml-mark 'airy-head))
+                  (none '(hd "none"))
+                  ;; the On and Off versions were for <a href="./lilypond_lsp.html#robo12">lilypond</a>; here we only
+                  ;; need the On version (or preferably, just improv but for
+                  ;; compatibility...) 
+                  (improvOn '(hd "slash"))
+                  (improvOff nil)
+                  (wedge '(hd "fa"))
+                  (square '(hd "la"))
+                  ;; todo: look at xml doc for harmonic and sort out a way of
+                  ;; representing artificial harms in xml
+                  (flag-head '(hd "diamond"))
+                  (flag-dots-on (no-xml-mark 'flag-dots-on))
+                  (flag-dots-off (no-xml-mark 'flag-dots-off))
+                  (<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a>-f (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a>-f))
+                  (<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a>-n (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a>-n))
+                  (<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a>-s (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a>-s))
+                  (beg-<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a>-a (xml-beg-<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a> stream))
+                  (end-<a href="./slippery-chicken-edit_lsp.html#robo740">trill</a>-a (xml-<a href="./event_lsp.html#robo169">end-trill</a> stream))
+                  (slash (no-xml-mark 'slash))
+                  (arp '(not "arpeggiate" "default-x=\"-12\"  number=\"1\""))
+                  (arrow-up (no-xml-mark 'arrow-up))
+                  (arrow-down (no-xml-mark 'arrow-down))
+                  (cresc-beg '(dir "wedge" nil
+                               "spread=\"0\" type=\"crescendo\"" b))
+                  (cresc-end '(dir "wedge" nil
+                               "spread=\"15\" type=\"stop\"" b))
+                  (dim-beg '(dir "wedge" nil
+                             "spread=\"15\" type=\"diminuendo\"" b))
+                  (dim-end '(dir "wedge" nil
+                             "spread=\"0\" type=\"stop\"" b))
+                  (&lt;&lt; (no-xml-mark '&lt;&lt;))
+                  (&gt;&gt; (no-xml-mark '&gt;&gt;))
+                  ;; we could faff around with lexical variables and manipulate
+                  ;; the niente property of "wedge" but as this would be
+                  ;; post-gen anyway we can do it in the notation software
+                  (hairpin0 (no-xml-mark 'hairpin0))
+                  (pause (xml-pause stream))
+                  ;; seems there is a fermata-shape element but damned if I can
+                  ;; find out where it could go and be interpreted correctly.
+                  ;; MDE Mon Mar 27 13:09:50 2017 -- see xml-pause above
+                  (long-pause (xml-pause stream)); "lunga"))
+                  (short-pause (xml-pause stream)); "breva"))
+                  (aeolian-light (no-xml-mark 'aeolianLight))
+                  (aeolian-dark (no-xml-mark 'aeolianDark))
+                  ;; this one uses the graphic for close bracket
+                  (bracket-end (no-xml-mark 'bracketEnd))
+                  (mphonic (no-xml-mark 'mphonic))
+                  (mphonic-arr (no-xml-mark 'mphoniArr))
+                  (mphonic-cons (no-xml-mark 'mphonicCons))
+                  (mphonic-diss (no-xml-mark 'mphonicDiss))
+                  (mphonic-cluster (no-xml-mark 'mphonicCluster))
+                  (sing (no-xml-mark 'sing))
+                  (high-<a href="./sine_lsp.html#robo17">sine</a> (no-xml-mark 'high-<a href="./sine_lsp.html#robo17">sine</a>))
+                  (noise (no-xml-mark 'noise))
+                  (focus (no-xml-mark 'focus))
+                  (balance (no-xml-mark 'balance))
+                  (alternate (no-xml-mark 'alternate))
+                  (sing-arr (no-xml-mark 'singArr))
+                  (arrow-up-down (no-xml-mark 'arrowUpDown))
+                  ;; no need to fiddle with these: can do in notation software,
+                  ;; no? 
+                  (start-arrow (no-xml-mark 'start-arrow))
+                  (<a href="./event_lsp.html#robo168">end-arrow</a> (no-xml-mark 'end-arrow))
+                  (harm '(tech "harmonic" a "&lt;natural /&gt;"))
+                  (sost '(wds "sost."))
+                  (sost-up '(wds "sost.*"))
+                  (sost^ (no-xml-mark 'sost^)) ;"\\sostenutoOff\\sostenutoOn ")
+                  (ped '(dir "pedal" nil "line=\"yes\" type=\"start\""))
+                  (ped^ '(dir "pedal" nil "line=\"yes\" type=\"change\""))
+                  (ped-up '(dir "pedal" nil "line=\"yes\" type=\"stop\""))
+                  (uc '(wds "una corda" nil b))
+                  (tc '(wds "tre corde" nil b))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/music-xml.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Tue Oct 27 2020 15:57:59
+</p>
+</div> <!-- footer -->
+</body>
+</html>

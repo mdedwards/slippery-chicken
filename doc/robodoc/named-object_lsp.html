@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./../../src/named-object.lsp</title>
+<!-- Source: ./../../src/named-object.lsp -->
+<!-- Generated with ROBODoc Version 4.99.43 (Oct  1 2016) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="sc2fnamed2dobject"></a>
+<a name="robo589"></a><h2 class=robodoc>sc/named-object [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>named-object</strong>
+
+ File:             <a href="#robo_top_of_doc">named-object.lsp</a>
+
+ Class Hierarchy:  None: base class of all <a href="./slippery-chicken_lsp.html#robo590">slippery-chicken</a> classes.
+
+ Version:          1.0.11
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Implementation of the <strong>named-object</strong> class which is the
+                   base class for all of the <a href="./slippery-chicken_lsp.html#robo590">slippery-chicken</a> classes.
+
+                   The data slot of the <strong>named-object</strong> class and its
+                   subclasses generally holds the original data passed when
+                   creating the object. In anything but the simplest of
+                   classes this may quickly become out-of-date as the object
+                   is manipulated, but is nevertheless retained so that a)
+                   the user can see what data was used to create an object,
+                   and b) the user can derive new objects from an object's
+                   original data. Data relevant to a specific subclass is
+                   often stored in slots other than :data, e.g. bars,
+                   rhythms, etc. so the user should not be alarmed if the
+                   data slot itself does not seem to reflect changes made to
+                   an object.   
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    4th December 2000
+
+ $$ Last modified:  17:20:12 Fri Sep 25 2020 CEST
+
+ SVN ID: $Id$
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/named-object.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Tue Oct 27 2020 15:57:59
+</p>
+</div> <!-- footer -->
+</body>
+</html>

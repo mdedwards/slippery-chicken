@@ -1,0 +1,514 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - rhythms</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>Rhythms</h2> 
+
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated example files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/rhythms-examples.lsp">rhythms-examples.lsp</a></li>  
+        </ul>
+        <p class="close"><a href="#" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p> 
+        <br />
+      </div>
+
+      <p>This page addresses the fundamentals of rhythms in
+        <em>slippery chicken</em>, such as naming conventions and how various
+        rhythm modifiers are represented. This manual, including the tutorials
+        and other pages, will use the American terms for rhythms. Details on
+        the differences between British and American note value terminology can
+        be found
+        at <a href="http://en.wikipedia.org/wiki/Note_value">http://en.wikipedia.org/wiki/Note_value</a>.</p>
+
+      <p>Documentation on <code>rthm-seq-palettes</code>
+        and <code>rthm-seq-maps</code> can be found on
+        a <a href="./rsp-rsm.html">separate page</a>.</p>
+
+      <h3 id="durations"><a href="#durations" id="durations-div-show"
+                            onclick="showHide('durations-div');return
+                            false;">+</a>
+        Durations</h3>
+      <div id="durations-div" class="more">
+        <h4>Numeric representation</h4>
+        <p>Rhythmic durations in <em>slippery chicken</em> can be represented
+          either numerically or through the use of alphabetic rhythm-naming
+          conventions similar to those of Common Music and Common Music
+          Notation. The numeric representations for rhythmic durations are
+          determined by their relationship to a whole note, which is defined to
+          be <code>1</code>. Correspondingly, a half note is
+          <code>2</code> (two divisions of a whole), a quarter note
+          is <code>4</code> (four divisions of a whole), an eighth note
+          is <code>8</code>, a sixteenth note is <code>16</code>, a
+          thirty-second note is <code>32</code>, and so forth. </p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((4 4) 1)
+                          (2 4 8 16 32 32)))))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/rhythms-numbers.png" 
+                       alt="rhythms-numbers.png" width="286" /></td></tr>
+        </table>
+      
+        <h4>Alphabetic representation</h4> <p>Alphabetic representations exist
+        for the most frequently used rhythmic durations. These are
+        <code>w</code> = whole, <code>h</code> = half, <code>q</code> =
+        quarter, <code>e</code> = eighth, and <code>s</code> = sixteenth. Grace
+        notes are indicated by <code>g</code>. Further long durations are also
+        available: <code>b</code> = breve (double whole),
+        <code>l</code> = longa (4x whole), <code>m</code> = maxima (8x whole).
+        </p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((4 4) w)
+                          (h q e s s)))))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/rhythms-letters.png" 
+                       alt="rhythms-letters.png" width="240" /></td></tr>
+        </table>
+
+        <p class="close"><a href="#" id="durations-div-hide" class="hideLink"
+              onclick="showHide('durations-div');return false;">close</a></p> 
+      </div>
+
+      <h3 id="rests"><a href="#rests-rests" id="rests-div-show"
+                        onclick="showHide('rests-div');return false;">+</a> 
+        Rests</h3>
+      <div id="rests-div" class="more">
+        <p>Rhythmic values in parentheses represent rests of the given
+          duration. As with all note durations, these can be represented as
+          numbers or letters.</p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((4 4) h (q) e (16) 16)))))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/rhythms-rests.png"
+                       alt="rhythms-rests.png" width="180" /></td></tr>
+        </table>
+
+        <p><em>slippery chicken</em> does not automatically consolidate
+          rests. Thus, two or more consecutive rests in the code will appear as
+          the same number and type of consecutive rests in the printable
+          output.</p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((4 4) (s) (s) e s (s) (s) (s) (e) (e) q)))))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rhythms-no-consolidate-rests.png"
+                       alt="rhythms-no-consolidate-rests.png" width="236"
+                       /></td></tr>
+        </table>
+
+        <p class="close"><a href="#" id="rests-div-hide" class="hideLink"
+              onclick="showHide('rests-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="dots"><a href="#dots" id="dots-div-show"
+                       onclick="showHide('dots-div');return false;">+</a>
+        Dots</h3>
+      <div id="dots-div" class="more">
+
+      <p>Dotted values are indicated by placing a period after the rhythmic
+          value. When using the alphabetic rhythm representations, the period
+          can be placed immediately after the letter. Thus, a dotted eighth is
+          indicated as <code>e.</code>, a dotted quarter as <code>q.</code>
+          etc. When using numbers to represent rhythmic durations, the period
+          must be preceded by a backslash to prevent Lisp from reading the dot
+          as a decimal point. Thus, a dotted eighth is indicated as
+          <code>8\.</code>, a dotted quarter as <code>4\.</code> etc. Any
+          number of successive dots can be added simultaneously
+          (e.g. <code>e..</code> for a double-dotted eighth). Alternatively
+          such rhythms may be entered as strings, e.g. "8."</p>
+
+        <p>Dots function the same way for rests as for notes. </p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((4 4) e. s (e..) 32 (8\.) 16 8\.. 32)))))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/rhythms-dots.png"
+                       alt="rhythms-dots.png" width="266" /></td></tr>
+        </table>
+
+        <p class="close"><a href="#" id="dots-div-hide" class="hideLink"
+              onclick="showHide('dots-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="ties"><a href="#ties" id="ties-div-show"
+                       onclick="showHide('ties-div');return false;">+</a>
+        Ties</h3>
+      <div id="ties-div" class="more">
+
+        <p>Ties from one rhythm to the <em>next</em> rhythm are indicated by
+          placing a plus sign immediately between two rhythmic values with no
+          space between them, such as <code>q+e</code> or
+          <code>4+8</code>. Ties from one rhythm to the <em>previous</em>
+          rhythm are indicated by placing a plus sign immediately before a
+          free-standing rhythmic value, e.g., for placing ties over bar lines.
+          When using the alphabetic representations, the plus sign for a tie to
+          a previous rhythm can be placed immediately before the letter, such
+          as <code>+e</code> or <code>+q</code> etc. When using numbers to
+          represent rhythmic durations, the plus sign for a tie to a previous
+          rhythm must be preceded by a backslash to prevent Lisp from reading
+          it as a "positive" sign. Thus, a free-standing eighth tied to the
+          previous rhythm is indicated as <code>\+8</code>, a free-standing
+          quarter tied to the previous rhythm as <code>\+4</code> etc. </p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((4 4) q+e e 4+8 8) ; ties from rhythm to the next
+                          (+q +e e 4 \+8 8))))) ; ties to the previous </pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/rhythms-ties.png"
+                       alt="rhythms-ties.png" width="287" /></td></tr>
+        </table>
+
+        <p class="close"><a href="#" id="ties-div-hide" class="hideLink"
+              onclick="showHide('ties-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="tuplets"><a href="#tuplets" id="tuplets-div-show"
+                          onclick="showHide('tuplets-div');return false;">+</a>
+        Tuplets</h3>
+      <div id="tuplets-div" class="more">
+        <p>Tuplet rhythms can also be represented either numerically or using
+          the alphabetic naming conventions. As with straight rhythms, numeric
+          indications for tuplet durations are determined by their relationship
+          to a whole note (<code>1</code>). Thus, since there are 12 triplet
+          eighths in a whole note, a triplet eighth can be indicated
+          by <code>12</code>. A septuplet sixteenth is 1/28th of a whole note,
+          and can therefore be indicated as <code>28</code>; a septuplet eighth
+          as <code>14</code>, etc.</p>
+
+        <p>The alphabetic nomenclature for triplets and quintuplets consists of
+          adding a <code>t</code> (for triplet) or an <code>f</code> (for
+          quintuplet, or "five"-tuplet) to the rhythm name. Thus, a triplet
+          eighth can be notated <code>te</code> or <code>t8</code>, a
+          quintuplet sixteenth as <code>fs</code> or <code>f16</code>, a
+          quintuplet eighth as <code>f8</code>, etc.</p>
+
+        <h4>Tuplets must be entered as actual durations</h4>
+        <p>As opposed to some other text-based notation systems, such as
+          LilyPond, where the tuplet rhythms are entered as their note-type in
+          the score (straight eighth, sixteenth etc.) and then automatically
+          scaled to their tuplet durations when tuplet indicators such as
+          brackets are added, tuplet durations in <em>slippery chicken</em>
+          must be entered as their <em>actual</em> durations. Thus, a triplet
+          eighth must always be notated as <code>12</code>
+          or <code>t8</code>/<code>te</code> rather than just <code>8</code>
+          or <code>e</code> inside of tuplet brackets (brackets are explained
+          below). This is because <em>slippery chicken</em> processes
+          tuplet <em>durations</em> separately from tuplet <em>brackets and
+          numbers</em>, rather than using brackets as a flag to scale their
+          enclosed durations. This is particularly important when creating
+          nested tuplets (as described below.)</p>
+
+<!--
+        <h4>Tuplets without brackets and numbers</h4>
+        <p>Tuplet durations can therefore be entered without specifying tuplet
+          brackets and numbers. </p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((2 4) - 12 12 - (12) - 20 20 (10) 20 -)))))</pre>
+
+        <table class="image">
+          <tr><td><img class="fragment"
+                       src="./resources/rhythms-tuplets-no-brackets-nums.png"
+                       alt="rhythms-tuplets-no-brackets-nums.png" width="189"
+                       /></td></tr>
+        </table>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((2 4) - te t8 - (te) - fs fs (f8) f16 -)))))</pre>
+
+        <table class="image">
+          <tr><td><img class="fragment"
+                       src="./resources/rhythms-tuplets-no-brackets.png"
+                       alt="rhythms-tuplets-no-brackets.png" width="189"
+                       /></td></tr>
+        </table>
+
+        <h4>Partial-beat tuplets</h4>
+        <p>This feature also makes it possible for partial-beat tuplets to be
+          placed anywhere in a measure, so long as the sum of all durations in
+          that measure produces a complete measure. This can lead to confusion,
+          so caution is advised if employing this feature of the software.</p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((2 4) te e ts s ts s ts ts)))))</pre>
+
+        <table class="image">
+          <tr><td><img class="fragment"
+                       src="./resources/rhythms-tuplets-partial-beat.png"
+                       alt="rhythms-tuplets-partial-beat.png" width="211"
+                       /></td></tr>
+                     </table>
+                     -->
+
+        <h4>Tuplet brackets and numbers</h4>
+
+        <p>Since <em>slippery chicken</em> version 1.0.6, tuplets must be
+        accompanied by brackets and tuplet numbers. These will then appear in
+        the printed score, e.g. as a "3" in a bracket above a triplet figure.
+        Curly brackets <code>{}</code> indicate the scope of a tuplet. The
+        first number after the opening curly bracket is the number of the
+        tuplet; <code>3</code> indicates a triplet, <code>5</code> a
+        quintuplet, <code>7</code> a septuplet etc. Explicit ratios such as 7/6
+        may also be used; in this case 7:6 will appear in the bracket as
+        opposed to merely 7. There must be white space before and after each
+        curly bracket of a tuplet, otherwise <em>slippery chicken</em> will
+        exit with an error message.</p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((2 4) { 3 te te (te) } 
+                          { 5 - fs fs (f8) f16 - } )))))</pre>
+ 
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rhythms-tuplets-brackets.png"
+                       alt="rhythms-tuplets-brackets.png" width="186"
+                       /></td></tr>
+        </table>
+
+        <p>Tuplet brackets can also be placed on partial-beat tuplets, so long
+        as the sum of all durations in that measure produces a complete
+        measure. However, all tuplet brackets must span at least two events
+        (notes/rests); tuplet brackets cannot be placed over just one
+        rhythm.</p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((2 4) s { 3 te ts } e { 3 t32 t32 } s 
+                          { 3 ts ts }))))) </pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rhythms-tuplets-brackets-partial.png"
+                       alt="rhythms-tuplets-brackets-partial.png" width="272"
+                       /></td></tr>
+        </table>
+
+        <p>Dots, ties, and rests are indicated the same way for tuplets as for
+          straight rhythmic values, for both alphabetic and numeric forms.</p>
+
+        <h4>Nested tuplets</h4>
+        <p>Nested tuplets can also be created using <em>slippery
+            chicken</em>. As mentioned above, it is particularly important to
+            remember that the actual durations of the rhythms must be entered,
+            and that straight rhythms are not automatically scaled by enclosing
+            them in tuplet brackets.</p>
+
+        <p>For example, to create triplet sixteenths within a triplet eighth,
+          one can start by calculating the duration of the triplet eighth,
+          which is <code>12</code> (1/12 of a whole note). When one triplet
+          eighth is divided into three equal parts, i.e., a triplet within a
+          triplet, each of the resulting triplet sixteenths have a duration of
+          1/3 of 1/12, or 1/36, and are thus indicated by <code>36</code>: </p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((2 4) { 3 12 12 12 } 
+                          { 3  12 12 { 3 36 36 36 } } ))))) </pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rhythms-tuplets-nested.png"
+                       alt="rhythms-tuplets-nested.png" width="238"
+                       /></td></tr>
+        </table>
+
+        <p class="close"><a href="#" id="tuplets-div-hide" class="hideLink"
+              onclick="showHide('tuplets-div');return false;">close</a></p>
+      </div>
+
+      <h4 id="rqq">Alternative Tuplet Notation: RQQ</h4>
+
+        <p>The RQQ (Rational Aliquot Quarter?) approach will probably be
+        familiar to composers who have worked with IRCAM's Patchwork/OpenMusic,
+        especially those with a <em>New Complexity</em> leaning. I first came
+        across it in <em>Patchwork</em> in 1995, when I noticed that this piece
+        of IRCAM software used Bill Schottstaedt's CMN (also a core part of
+        <em>slippery chicken</em>) for the definition of rhythms and their
+        rendering into notation. RQQ was Bill's invention, in response to a
+        request from (if Bill's memory serves him correctly) Walter Hewlett
+        (son of Bill, of Hewlett-Packard fame). IRCAM, specifically Gerard
+        Assayag, then made some improvements and incorporated it into their own
+        software.</p>
+
+        <p>With RQQ notation, any arbitrarily nested rhythmic structure can be
+        expressed in simple proportions. In <em>slippery chicken</em> this kind
+        of notation can be used in the definition of <code>rthm-seqs</code> and
+        freely mixed with the kind of notation we've been discussing thus
+        far:</p>
+
+        <pre class="source">
+:rthm-seq-palette '((1 ((((4 4) (4 (1 1 1 1))))))
+                    (2 ((((4 4) (4 (1 1 1 (1 (1 1))))))))
+                    (3 ((((4 4) (4 (1 1 (2 (1 1 1))))))))
+                    (4 ((((4 4) { 3 (te) { 3 (18) 36 } { 3 - 36 36 36 - } }
+                                (1 ((4 (1 (1) 1 1 1)) (5 (1 1 1 1))))
+                                (1 (1 (3 (1 1 1 1))))
+                                { 5 fs x 5 })))))</pre>
+ 
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rqq.png"
+                       alt="rqq.png" width="686"
+                       /></td></tr>
+        </table>
+
+        <p>Here the definition of rhythms is made via integer divisions of a
+        given number of quarter notes. The first example is the simplest. This
+        is a 4/4 bar of four quarter notes, but instead of <code>q q q q</code>
+        we write <code>(4 (1 1 1 1))</code>. The first 4 in this list indicates
+        that we're going to divide up 4 quarter notes. The following list of
+        ones indicates that the four quarter note duration will be divided into
+        four equal rhythms (i.e. totalling a whole note). So as bar 1 of the
+        notation shows, we simply get four quarter notes.</p>
+
+        <p>The second example/bar <code>(4 (1 1 1 (1 (1 1))))</code> proceeds
+        similarly but this is where the nesting comes in: the last quarter note
+        is subdivided into two equal parts (i.e. eighth notes), as indicated by
+        the extra level of nesting here: the list <code>(1 (1 1))</code>.</p>
+
+        <p>The third example <code>(4 (1 1 (2 (1 1 1))))))))</code> shows how
+        this type of rhythmic notation can quickly and easily lead to tuplets
+        and much more complex rhythmic structures (so-called irrational
+        rhythms): Here the 4/4 bar is divided into three parts in the
+        proportions 1:1:2. The final 2 (or half note) is itself subdivided into
+        three equal parts, hence the triplet quarter notes in the generated
+        notation.</p>
+
+        <p>The fourth example takes quite a leap. It shows first of all how
+        standard <em>slippery chicken</em> rhythm notation can be mixed with
+        RQQ notation: The first and last beats of normal notation frame two
+        separate beats of RQQ notation. Each of these occupies a quarter note
+        (hence the 1 at the start of both lists) but their subdivisions are
+        quite different. <code>((4 (1 (1) 1 1 1)) (5 (1 1 1 1))))</code> is
+        interesting first of all as it shows that rests can be indicated in RQQ
+        notation just as in normal <em>slippery chicken</em> notation, i.e. by
+        placing the rhythmic value in a single element list, here
+        <code>(1)</code>. The first RQQ quarter note then is divided into nine
+        equal parts (as indicated by the 4 and then the 5 at the start of the
+        two sublists and the rendering of this beat as an overall 9:8
+        tuplet). The four is further subdivided into five equal parts, hence
+        the 5:4 quintuplet bracket in the notation. The five is conversely
+        divided into four equal parts, hence the 4:5 tuplet. The second RQQ
+        quarter (third beat) division (<code>(1 (1 (3 (1 1 1 1))))</code>)
+        necessitates no tuplets as the 1 and 3 indicate that the beat will be
+        divided into durations of a sixteenth and a dotted eighth
+        respectively. Note that the 1 here has no further subdivisions, hence
+        it is rendered in notation as a simple sixteenth, whereas the 3 is
+        further subdivided into four equal parts (<code>(1 1 1 1)</code>). The
+        <em>slippery chicken</em> software recognises that this can be rendered
+        as four dotted 32nds, as opposed to a 4:3 tuplet bracket (also
+        acceptable but unnecessary).</p>
+
+      <p class="nb"><em>slippery chicken's</em> RQQ processing does its best to
+      work out if some rhythms are better expressed with dots rather than
+      tuplets; it also tries hard to get beaming correct. Anyone with experience
+      of nested tuplets knows that it's not always obvious how to do these
+      things, so sometimes the procedure exits with an error
+      (usually it comes from <code>get-tuplet-ratio</code>). Some time in the
+      glorious future we'll have code that works in every case even if it can't
+      decide the best number of dots and beams, but for now, I apologise if your
+      particular RQQ case leaves you stranded.
+        </p>
+
+<! ---------------------------------------------------------------------- ->
+
+      <h3 id="beams"><a href="#beams" id="beams-div-show"
+                        onclick="showHide('beams-div');return false;">+</a>
+        Beams</h3>
+      <div id="beams-div" class="more">
+        <p>By default, <em>slippery chicken</em> produces scores with no
+          beams. However, the user can specify where beams are to be placed in
+          the typeset output by inserting <code>-</code> (hyphen/minus) signs
+          among the rhythm items of the given <code>rthm-seq</code>. Beams are
+          specified by placing a hyphen before the first rhythm of the group of
+          rhythms that are to be beamed together, thus beginning the beam, and
+          a second hyphen after the last rhythm of the group, thereby ending
+          the beam. </p>
+
+        <p>Beams can be placed to span over rests that occur between two notes
+          in the same beat, but cannot be made to extend over rests that begin
+          or end a beat in CMN--in Lilypond this is possible, as are "Stemlets"
+          over rests.</p>
+      
+        <pre class="source">
+:rthm-seq-palette '((1 ((((4 4) - e e - - s s s s - e - s s - 
+                           (s) - s (s) s -)))))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/rhythms-beams.png"
+                       alt="rhythms-beams.png" width="273" /></td></tr>
+        </table>
+
+        <p class="close"><a href="#" id="beams-div-hide" class="hideLink"
+              onclick="showHide('beams-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="repeater"><a href="#repeater" id="repeater-div-show"
+                        onclick="showHide('repeater-div');return false;">+</a>
+        Repeat rhythms shorthand</h3>
+      <div id="repeater-div" class="more">
+
+        <p>The sequential repetition of a given rhythm can be notated using
+          the <em>repeater</em> shorthand with the multiplication symbol
+          <code>x</code>. The following example produces a bar with 16
+          consecutive sixteenth-notes: </p>
+
+        <pre class="source">
+(make-rthm-seq-bar '((4 4) s x 16))</pre>
+
+        <p class="close"><a href="#" id="repeater-div-hide" class="hideLink"
+              onclick="showHide('repeater-div');return false;">close</a></p>
+      </div>
+
+      <!-- **************************************************************** -->
+      <!-- This spacer <br> is necessary as a buffer between the content and
+           the footer. It cannot be added as padding to #push, since #push has
+           to be the same size as #footer in order for the dynamic placement to
+           work properly --> 
+      <br /><br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

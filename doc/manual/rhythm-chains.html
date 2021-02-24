@@ -1,0 +1,1030 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - rhythm chains</title> 
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>Rhythm Chains</h2>
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated example files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/rhythm-chains-examples.lsp">The Lisp code
+              used in the examples on this page. </a></li> 
+        </ul>
+        <p class="close"><a href="#files" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p>
+        <br />
+      </div>
+
+      <p class="nb">NB: An exercise relating to the material covered
+        in this tutorial can be found on
+        the <a href="./exercises.html#chains">Exercises</a> page.</p>
+
+      <p>The <code>rthm-chain</code> class provides a means of algorithmically
+        generating two-voice <code>rthm-seq-palettes</code>
+        and <code>rthm-seq-maps</code> that can be inserted directly into
+        a <code>slippery-chicken</code> object. It creates the two voices by
+        automatically assembling sequences of user-defined rhythmic
+        fragments of either one, two, or three beats. </p>
+
+      <p>One of the class's more versatile features is its diversification of
+        the user-defined source material through the automatic insertion of
+        rests and the automatic repetition of what it calls <em>sticking</em>
+        rhythms at certain points in the new material. Both of these features
+        can be influenced by the user through the specification of patterns for
+        the insertion.</p>
+
+      <p>The class also offers the user arguments that control the level of
+        activity in the two voices (more notes vs. more rests) by means of
+        envelopes.</p>
+
+      <h3 id="procession"><a href="#procession" id="procession-div-show"
+                           onclick="showHide('procession-div');return
+                                    false;">+</a> 
+        The "procession" algorithm</h3>
+      <div id="procession-div" class="more">
+        <p>The primary sequence-generating function at the core of
+          the <code>rthm-chain</code> class is the <code>procession</code>
+          algorithm. This function is used by default to internally determine
+          the resulting order of the user-defined fragments in the resulting
+          palettes and maps by extrapolating a list of a specified length from
+          items of a specified starting list.</p>
+
+        <h4>Using procession with a list</h4>
+        <p>The <code>procession</code> algorithm is purely deterministic; i.e.,
+          it incorporates no randomness. It starts with the first three
+          elements of the initial list and gradually adds successive elements
+          from that list until all of the elements have been added. The initial
+          list must therefore have at least four elements. </p>
+
+        <pre class="source">
+(procession 73 '(a b c d e))
+
+=> 
+(A B A B C A C A A D B C B D B C B C D A D A A E C D C E B D B D E C D C C
+ E A B A E B D B D E A C A A E B D B E C D C D E A B A A E C D C E B D B)</pre>
+
+        <h4>Using procession with an integer</h4>
+        <p>Instead of passing a list to the function as its second argument,
+          the user can instead pass an integer. In this case, the function will
+          generate its output from a list of consecutive integers
+          from <code>1</code> to the integer passed as the second argument.</p>
+
+        <pre class="source">
+(procession 73 4)
+
+=>
+(1 2 1 2 3 1 3 1 1 4 2 3 2 4 2 3 2 3 4 1 3 1 1 4 2 3 2 4 1 3 1 3 4 2 3 2 2
+ 4 1 3 1 4 2 3 2 3 4 1 2 1 1 4 2 3 2 4 1 3 1 3 4 2 3 2 2 4 1 3 1 4 1 3 1)</pre>
+
+        <p class="close"><a href="#procession" id="procession-div-hide"
+              class="hideLink" onclick="showHide('procession-div');return
+              false;">close</a></p>
+      </div>
+
+      <h3 id="keywords"><a href="#keywords" id="keywords-div-show"
+                           onclick="showHide('keywords-div');return
+                                    false;">+</a> 
+        The procession keyword arguments</h3>
+      <div id="keywords-div" class="more">
+        <p>The <code>procession</code> function has three optional arguments
+          that contribute to determining the sequence that is generated,
+          namely <code>:peak</code>, <code>:expt</code>,
+          and <code>:orders</code>. </p>
+
+        <h4>:peak</h4>
+        <p>The value passed to the <code>:peak</code> argument has an influence
+          on the position at which the last item of the original list first
+          appears in the new list. It takes a floating-point number
+          between <code>0.0</code> and <code>1.0</code> as its value,
+          representing a span of 0% to 100% of the way through the new list,
+          and it defaults to <code>0.7</code>.</p>
+
+        <p>It is important to note that this value is an approximate value
+          only. Shorter initial lists will reflect this percentage value less
+          accurately, and the position of the final item in the resulting list
+          will also be dependent on other factors, such as the values of
+          the <code>:orders</code> argument discussed below.</p>
+
+        <h4>:expt</h4>
+        <p>The value passed to the <code>:expt</code> argument determines the
+          curve of the interval at which each subsequent element of the
+          original list is added to the new list. This too is an approximate
+          argument, and its accuracy will again be influenced by aspects such
+          as the lengths of the original and resulting lists.</p>
+
+        <p>In general, the higher this number is, the steeper the exponential
+          curve will be. A steeper curve means that subsequent elements of the
+          original list will be introduced less frequently towards the
+          beginning of the new list, and then more frequently towards the
+          end. This argument also takes a floating-point number, and it
+          defaults to <code>1.3</code>.</p>
+
+        <h4>:orders</h4>
+        <p>This argument takes a list of sublists that represent the patterns
+          by which elements from the original list are introduced to the list
+          returned by the <code>procession</code> function.</p> 
+
+        <p>Each consists of all of and only the
+          numbers <code>1</code>, <code>2</code>, and <code>3</code>. These
+          numbers represent the three least used elements in the new list at
+          each pass through the function's list-generating loop. The patterns
+          are cyclically applied and default to 
+          <code>'((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3))</code>.</p>
+
+        <br />
+
+        <p>The following is an example of the use of
+          the <code>procession</code> algorithm using all three of these
+          keywords: </p>
+
+        <pre class="source">
+(procession 500 '(a b c d e f g h i j k l m n o p q r s t u v w x y z) 
+            :peak 0.9 
+            :expt 0.7 
+            :orders '((1 3 2 2 3 1) (3 1 1 2 3 3) (1 2 1 3 2 2)))
+
+=> (A C B B C A E A A D E E B D B F D D C F E E F C G A A F G G B C B G C C D H
+    F F H D H E E G H H G H G I H H A I B B I A J D D I J J F I F J I I C J E E
+    J C K G G J K K I J I K J J A K B B K A L D D K L L F K F L K K C L H H L C
+    M E E L M M G L G M L L A M I I M A N B B M N N D M D N M M F N H H N F O J
+    J N O O K N K O N N L O M M O L P N N O P P C O C P O O E P O O P E P G G I
+    P P A P A Q P P B Q D D Q B Q F F H Q Q I J I Q J J K R Q Q R K R L L Q R R
+    M Q M R Q Q N S R R S N S O O R S S P R P S R R C S R R S C T E E S T T G S
+    G T S S H T S S T H T A A Q T T B T B U T T D U T T U D U F F I U U K L K U
+    L L M V U U V M V N N U V V O U O V U U P V U U V P W Q Q V W W R V R W V V
+    S W V V W S W T T V W W C E C W E E G X W W X G X H H W X X I W I X W W J X
+    U U X J Y V V X Y Y A X A Y X X B Y X X Y B Y D D X Y Y F X F Y X X K Z Y Y
+    Z K Z M M Y Z Z N Y N Z Y Y O Z P P Z O Z Q Q R Z Z S T S Z T T W Z Y Y Z W
+    Z C C G Z Z H I H J I I L U R R U L Z A A V Z Z B D B E D D F J G G J F N K
+    K M N N O P)</pre>
+
+        <p class="close"><a href="#keywords" id="keywords-div-hide"
+              class="hideLink" onclick="showHide('keywords-div');return
+              false;">close</a></p>
+      </div>
+
+      <h3 id="mrch"><a href="#mrch" id="mrch-div-show"
+                       onclick="showHide('mrch-div');return false;">+</a> 
+        General attributes of the make-rthm-chain function</h3>
+      <div id="mrch-div" class="more">
+        <h4>A rthm-seq-map and a rthm-seq-palette</h4>
+        <p>The user can create a new object of the <code>rthm-chain</code>
+          class using the
+          function <code>make-rthm-chain</code>. The <code>rthm-chain</code>
+          class is a subclass of the <code>rthm-seq-map</code> class, one of
+          whose slots is designed to contain
+          a <code>rthm-seq-palette</code>. The <code>make-rthm-chain</code>
+          function therefore creates an object that defines
+          a <code>rthm-seq-map</code> and automatically generates an
+          accompanying <code>rthm-seq-palette</code> for that map. This palette
+          can be accessed using <code>(palette rthm-chain-object)</code>.</p>
+
+        <p>The map itself and the contents of the map's <code>palette</code>
+          slot can both be passed directly to the <code>:rthm-seq-map</code>
+          and <code>:rthm-seq-palette</code> arguments of
+          the <code>make-slippery-chicken</code> function, as described
+          below.</p>
+
+        <h4>Internal implementation of the procession algorithm</h4>
+        <p>By default, the <code>make-rthm-chain</code> function will use
+          the <code>procession</code> algorithm to generate its sequences. The
+          user must therefore define at least four 1-beat and four 2- and
+          3-beat rhythm fragments within the corresponding arguments of the
+          function call (see below). Due to the way these rhythms are processed
+          and assembled, the rhythm fragments defined must not contain any
+          individual rhythms that overlap beats.</p>
+
+        <h4>Keyword arguments</h4>
+        <p>The <code>make-rthm-chain</code> function has 17 optional keyword
+          arguments. These influence traits such as the activity levels of the
+          two voices (rests vs. notes), the automatic rest insertion, and the
+          automatic insertion of "sticking rhythms", as described below.</p> 
+
+        <p class="close"><a href="#mrch" id="mrch-div-hide"
+              class="hideLink" onclick="showHide('mrch-div');return
+              false;">close</a></p>
+      </div>
+
+      <h3 id="example"><a href="#example" id="example-div-show"
+                       onclick="showHide('example-div');return false;">+</a> 
+        Explaining make-rthm-chain through a simple example</h3>
+      <div id="example-div" class="more">
+        <p>The following simple example demonstrates the argument
+          requirements, syntax, and usage of the <code>make-rthm-chain</code>
+          function. </p>
+
+        <pre class="source">
+(let* ((rch
+        (make-rthm-chain
+         'test-rch 143
+         '((((e) e) ; 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s))
+           (({ 3 (te) te (te) }) ; what we transition to
+            ({ 3 - te (te) te - })
+            ({ 3 (te) - te te - })
+            ({ 3 (te) (te) te }))
+           (((q)) ; the second transition
+            (- s e s -)
+            ({ 3 te (tq) })
+            (s (e.)))
+           ((- e e -) ; the third transition
+            (- s s s - (s))
+            ((32) 32 (e.))
+            ((q))))
+         '((((q q) ; the 2/4 bars: 4 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.))
+            (({ 3 te+te te+te te+te }) ; what we transition to
+             (q - s e. -)
+             (q (s) e.)
+             (q (s) - s e -))
+            ((q - e e -) ; the second transition
+             ((e) q.)
+             (q - s (e) s -)
+             ((s) q e.)))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))
+            (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+             (- e. s - (q) (s) - s e -)
+             ({ 3 te+te te } (q) q)
+             ({ 3 - te te te - } (e) e { 3 (te) (te) te }))
+            ((h.) ; the second transition
+             (h (q))
+             (- e e - +q (q))
+             (s (e.) (h)))))
+         :players '(fl cl)))
+       (mini
+        (progn
+          (create-psps (palette rch))
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (cl (b-flat-clarinet :midi-channel 2))))
+           :set-palette '((1 ((e2 a2 cs4 fs4 gs4 a4 b4 e5 gs5 b5 e6))))
+           :set-map `((1 ,(ml 1 (num-rthm-seqs rch))))
+           :tempo-map '((1 (q 120)))
+           :rthm-seq-palette (palette rch)
+           :rthm-seq-map rch))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <p>The first two arguments passed to the <code>make-rthm-chain</code>
+          function consist of a user-defined ID for the <code>rthm-chain</code>
+          object being created and an integer that determines the length of the
+          resulting musical passage, in the form of the number of bars, that
+          the function is to generate. Remember that these bars will only be
+          one, two, or three beats long.</p>
+
+        <h4>The user-defined source rhythm fragments</h4>
+        <h5>1-beat fragments</h5>
+        <p>The next two arguments are the lists of source fragments defined by
+          the user. The first list must consist of 1-beat fragments, and there
+          must be at least four of these. These rhythms will be used to create
+          the first voice of the resulting object, and can be thought of
+          as the fast-moving voice.</p>
+
+        <pre class="source">
+         '((((e) e) ; 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s)))</pre>
+
+        <h5>2- and 3-beat fragments</h5>
+        <p>The next argument to the <code>make-rthm-chain</code> function takes
+          a list of two sublists. The first of these sublists takes at least
+          four 2-beat rhythmic fragments, and the second takes at least four
+          3-beat rhythmic fragments.</p> 
+
+        <p>These fragments will form the second voice of the resulting object,
+          and can be thought of as the slower-moving counterpoint (though the
+          user can, of course, also fill these lists with fast rhythms if
+          preferred). Remember that the rhythms defined here must not overlap
+          beats. If longer durations are desired, the beats should be divided
+          up and connected using ties. </p>
+
+        <pre class="source">
+         '((((q q) ; the 2/4 bars: 4 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.)))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))))</pre>
+
+        <h4>player IDs</h4>
+        <p>Although the <code>:players</code> argument is technically optional,
+          the user will generally want to specify the player IDs in the call
+          to <code>make-rthm-chain</code> for best results. These IDs must be
+          the same as those specified in the <code>ensemble</code> of
+          the <code>slippery-chicken</code> object in which
+          this <code>rthm-chain</code> object will be used.</p>
+
+        <pre class="source">
+         :players '(fl cl))))</pre>
+
+        <pre class="source">
+  (let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (cl (b-flat-clarinet :midi-channel 2))))</pre>
+
+        <h4>Automatic pitch-seqs</h4>
+        <p>The object created by <code>make-rthm-chain</code> will contain
+          a <code>rthm-seq-palette</code> with individual <code>rthm-seq</code>
+          objects, but the <code>pitch-seq-palettes</code> of
+          those <code>rthm-seqs</code> will be initially empty. A convenient
+          and quick way of creating <code>pitch-seqs</code> for the pitchless
+          rhythms in this, or indeed any, <code>rthm-seq-palette</code> is
+          the <code>create-psps</code> method. </p>
+
+        <p>The <code>create-psps</code> method must be called separately,
+          after the creation of the <code>rthm-seq-palette</code> object for
+          which it is to create <code>pitch-seqs</code>. It takes one
+          argument, namely the <code>rthm-seq-palette</code> that it is to
+          handle, which in this case is accessed using the "palette" slot
+          accessor, as described above.</p> 
+
+        <p>The <code>pitch-seqs</code> generated by this method are created
+          from combinations of a list of default <code>pitch-seqs</code> if not
+          otherwise specified. The user can, however, modify these lists to
+          shape the resulting pitch curves to his or her own taste. See the
+          documentation for
+          <a href="../robodoc/rthm-seq-palette_lsp.html#rthm2dseq2dpalette2fcreate2dpsps">create-psps</a>
+          for more detail. </p>
+
+        <pre class="source">
+  (create-psps (palette rch))</pre>
+
+        <h4>Implementing the resulting palette and map</h4>  
+        <p>The resulting palette and map can then be passed directly to
+        the <code>:rthm-seq-palette</code> and <code>:rthm-seq-map</code>
+        arguments of the <code>make-slippery-chicken</code> function, as seen
+        here: </p>
+        
+        <pre class="source">
+           :rthm-seq-palette (palette rch)
+           :rthm-seq-map rch)))</pre>
+
+        <p>The first system of the piece created by the above code will look
+          like this in LilyPond output:</p>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-two-voices.png"
+                       alt="rthm-chains-two-voices.png"
+                       width="783"/></td></tr> 
+        </table>
+
+        <p class="close"><a href="#example" id="example-div-hide"
+              class="hideLink" onclick="showHide('example-div');return
+              false;">close</a></p>
+      </div>
+
+      <h3 id="fib"><a href="#fib" id="fib-div-show"
+                      onclick="showHide('fib-div');return false;">+</a> Using
+                      fibonacci-transitions instead of procession</h3> <div
+                      id="fib-div" class="more">
+
+     <p>The user also has the option of using the
+     <code>fibonacci-transitions</code> algorithm instead of the
+     <code>procession</code> algorithm to generate the resulting sequences. In
+     order for the <code>make-rthm-chain</code> function to know to apply the
+     <code>fibonacci-transitions</code> algorithm instead, the user must set
+     one or both of the keyword arguments <code>:1-beat-fibonacci</code> (the
+     1-beat fragments) and <code>:slow-fibonacci</code> (the 2- and 3-beat
+     fragments) to <code>T</code>.</p>
+
+        <pre class="source">
+         :1-beat-fibonacci t
+         :slow-fibonacci t</pre>
+
+        <h4>The rest remains the same</h4> <p>All other aspects of usage in
+        conjunction with the <code>fibonacci-transition</code> function remain
+        the same, e.g.:</p>
+
+        <pre class="source">
+(let* ((rch
+        (make-rthm-chain
+         'test-rch 143
+         '((((e) e) ; 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s)))
+         '((((q q) ; the 2/4 bars: 4 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.)))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))))
+         :players '(fl cl)
+         :1-beat-fibonacci t
+         :slow-fibonacci t)))
+  (create-psps (palette rch))
+  (let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (cl (b-flat-clarinet :midi-channel 2))))
+           :set-palette '((1 ((e2 a2 cs4 fs4 gs4 a4 b4 e5 gs5 b5 e6))))
+           :set-map `((1 ,(ml 1 (num-rthm-seqs rch))))
+           :tempo-map '((1 (q 120)))
+           :rthm-seq-palette (palette rch)
+           :rthm-seq-map rch)))
+    (midi-play mini)
+    (cmn-display mini)
+    (write-lp-data-for-all mini)))</pre>
+
+        <p>The following is the LilyPond output of the same first system as the
+          first example, this time using <code>fibonacci-transitions</code> for
+          both the 1-beat and the slow voices:</p>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-fib.png"
+                       alt="rthm-chains-fib.png"
+                       width="785"/></td></tr> 
+        </table>
+
+        <p class="close"><a href="#fib" id="fib-div-hide"
+              class="hideLink" onclick="showHide('fib-div');return
+              false;">close</a></p>
+      </div>
+
+      <h3 id="fib2"><a href="#fib2" id="fib2-div-show"
+                     onclick="showHide('fib2-div');return false;">+</a>
+        An extra level of fibonacci-transitions</h3>
+      <div id="fib2-div" class="more">
+        <p>The <code>make-rthm-chain</code> function has an additional feature
+          that allows the user to specify a further level of
+          fibonacci-transitioning in the musical data that it generates. By
+          specifying one or more additional sublists of fragments, the function
+          will automatically perform a transition from the elements of the
+          initial sets to the elements of each consecutive set.</p>
+
+        <p>This approach requires that each subsequent sublist have the same
+          number of elements. It also requires that both the 2-beat and 3-beat
+          fragments defined have the same number of additional sublists (the
+          number of 1-beat sublists can differ from that of the 2- and 3-beat
+          sublists). This approach can be used with both
+          the <code>procession</code> and
+          the <code>fibonacci-transitions</code> algorithms as the initial
+          sequence generators. </p>
+
+        <pre class="source">
+(let* ((rch
+        (make-rthm-chain
+         'test-rch 143
+         '((((e) e) ; 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s))
+           (({ 3 (te) te (te) }) ; what we transition to
+            ({ 3 - te (te) te - })
+            ({ 3 (te) - te te - })
+            ({ 3 (te) (te) te }))
+           (((q)) ; the second transition
+            (- s e s -)
+            ({ 3 te (tq) })
+            (s (e.)))
+           ((- e e -) ; the third transition
+            (- s s s - (s))
+            ((32) 32 (e.))
+            ((q))))
+         '((((q q) ; the 2/4 bars: 4 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.))
+            (({ 3 te+te te+te te+te }) ; what we transition to
+             (q - s e. -)
+             (q (s) e.)
+             (q (s) - s e -))
+            ((q - e e -) ; the second transition
+             ((e) q.)
+             (q - s (e) s -)
+             ((s) q e.)))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))
+            (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+             (- e. s - (q) (s) - s e -)
+             ({ 3 te+te te } (q) q)
+             ({ 3 - te te te - } (e) e { 3 (te) (te) te }))
+            ((h.) ; the second transition
+             (h (q))
+             (- e e - +q (q))
+             (s (e.) (h)))))
+         :players '(fl cl))))
+  (create-psps (palette rch))
+  (let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (cl (b-flat-clarinet :midi-channel 2))))
+           :set-palette '((1 ((e2 a2 cs4 fs4 gs4 a4 b4 e5 gs5 b5 e6))))
+           :set-map `((1 ,(ml 1 (num-rthm-seqs rch))))
+           :tempo-map '((1 (q 120)))
+           :rthm-seq-palette (palette rch)
+           :rthm-seq-map rch)))
+    (midi-play mini)
+    (cmn-display mini)
+    (write-lp-data-for-all mini)))</pre>
+
+        <p>The following two snippets show the difference in bars 23 to 38
+          between the first procession example, and the code above.</p>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-no-extra-fib.png"
+                       alt="rthm-chains-no-extra-fib.png"
+                       width="815"/></td></tr> 
+          <caption>Before: Bars 23 to 38 of the first example, using
+            <code>procession</code> with just one set of fragments for each of
+            the 1-beat, 2-beat, and 3-beat lists. </caption>
+        </table>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-extra-fib.png"
+                       alt="rthm-chains-extra-fib.png"
+                       width="810"/></td></tr> 
+          <caption>After: Using <code>procession</code> with the same initial
+            fragments, but specifying new fragments through and to which
+            <code>make-rthm-chain</code> will transition.</caption>
+        </table>
+
+        <p class="fib2"><a href="#fib2" id="fib2-div-hide" class="hideLink"
+                            onclick="showHide('fib2-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="pg"><a href="#pg" id="pg-div-show"
+                     onclick="showHide('pg-div');return false;">+</a>
+        Some useful post-generation editing methods</h3>
+      <div id="pg-div" class="more">
+        <p>Because of the fragmented nature of the source material for this
+          featured algorithm, the resulting music may often be the point of
+          departure for slightly more extensive use of post-generation editing
+          methods. For example, the user may want to consolidate tied notes or
+          multiple consecutive rests, add ties between existing notes or extend
+          short notes over subsequent rests, or consolidate the very short bars
+          into longer ones for easier reading. A number of methods are
+          available to assist the user to these ends. </p>
+
+        <p class="close"><a href="#pg" id="pg-div-hide" class="hideLink"
+                            onclick="showHide('pg-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="consol-notes"><a href="#consol-notes" id="consol-notes-div-show"
+                      onclick="showHide('consol-notes-div');return false;">+</a> 
+        consolidate-notes</h4>
+      <div id="consol-notes-div" class="more">
+        <p>The <code>consolidate-notes</code> method combines any tied notes of
+          a specified bar into one longer duration. This is a complex algorithm
+          and is not fool-proof; for example, it does not split new durations
+          evenly at the beats of the bar. But it can still be a very valuable
+          aid in assembling a more legible score.</p>
+
+        <p>This method can be particularly useful
+          with <code>rthm-chain</code> objects that were created from 2- and
+          3-beat fragments containing ties between beats, as can be seen in the
+          following before-and-after snippets of the same passage. </p> 
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-consol-notes-before.png"
+                       alt="rthm-chains-consol-notes-before.png"
+                       width="809"/></td></tr> 
+          <caption>Before: Ties in the triplet figures of bars 72, 75, and
+            76</caption> 
+        </table>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-consol-notes-after.png"
+                       alt="rthm-chains-consol-notes-after.png"
+                       width="813"/></td></tr> 
+          <caption>After: The same passage with <code>consolidate-notes</code>
+            applied to bar 72 of the clarinet part. (This could of course then
+          be applied to subsequent bars) </caption> 
+        </table>
+
+        <p>The <code>consolidate-notes</code> method takes a
+          single <code>rthm-seq-bar</code> object as its only argument. When
+          applied to an existing <code>slippery-chicken</code> object, the bar
+          object is best specified using the <code>get-bar</code> method,
+          which takes the <code>slippery-chicken</code> object, the bar
+          number, and the player ID as its own arguments, as can be seen
+          here:</p> 
+
+        <pre class="source">
+(consolidate-notes (get-bar mini 72 'cl))</pre>
+
+        <p>This method is often automatically called from within other
+          methods. In such cases, it can usually be disabled by setting
+          the <code>:consolidate-notes</code> keyword argument
+          to <code>NIL</code>, if the user so desires.</p>
+
+        <p class="close"><a href="#consol-notes" id="consol-notes-div-hide"
+              class="hideLink" onclick="showHide('consol-notes-div');return
+              false;">close</a></p>
+      </div>
+
+      <h4 id="consol-rests"><a href="#consol-rests" id="consol-rests-div-show"
+                               onclick="showHide('consol-rests-div');return
+                               false;">+</a>
+        consolidate-rests-max</h4>
+      <div id="consol-rests-div" class="more">
+        <p>This method performs a similar consolidation routine to that
+          of <code>consolidate-notes</code>, but applied to rests instead. As
+          with the note-consolidating algorithm, this algorithm too is quite
+          complex and not fool-proof, with the similar <em>caveat</em> that the
+          resulting, longer rests are not split evenly at beats. </p>
+
+        <p>The result of calling this method on bar 2 of the flute part in the
+          second <code>rthm-chain</code> object created above can be seen in
+          these before-and-after snippets of the score:</p>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-fib.png"
+                       alt="rthm-chains-fib.png"
+                       width="809"/></td></tr> 
+          <caption>Before: Two eighth rests in bar 2 of the flute</caption> 
+        </table>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-consol-rests-max-after.png"
+                       alt="rthm-chains-consol-rests-max-after.png"
+                       width="813"/></td></tr> 
+          <caption>After: The same passage with <code>consolidate-rests-max</code>
+            applied to bar 2 of the flute part</caption> 
+        </table>        
+
+        <p>As with the <code>consolidate-notes</code> method, this method takes
+          a single <code>rthm-seq-bar</code> object as its only argument. This
+          too can best be retrieved using the same <code>get-bar</code> syntax
+          spelled out above:</p>
+
+        <pre class="source">
+(consolidate-rests-max (get-bar mini 2 'fl))</pre>
+
+        <p>This method too is built-in to many other methods, and can
+          generally be disabled in those methods by specifying
+          the <code>:consolidate-rests</code> keyword with the
+          value <code>NIL</code>. </p>
+
+        <p class="close"><a href="#consol-rests" id="consol-rests-div-hide"
+                            class="hideLink"
+                            onclick="showHide('consol-rests-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="ties"><a href="#ties" id="ties-div-show"
+                       onclick="showHide('ties-div');return
+                                false;">+</a> 
+        tie-over-notes</h4>
+      <div id="ties-div" class="more">
+
+        <p>One of the <code>rthm-chain</code> class's primary features, the
+          automatic insertion of rests of various durations, may result in
+          music that is initially a little <em>pointillistic</em>. One option
+          for smoothing out passages of jagged short notes is the use of the
+          <code>tie-over-rests</code> and related methods.</p>
+
+        <p>The <code>tie-over-rests</code> method changes all consecutive rests
+          immediately following a specified note into notes of the same pitch
+          as the note specified and ties them all together. It takes as its
+          arguments the <code>slippery-chicken</code> object to be modified,
+          the number of the bar in which the tie is to begin, the number of the
+          note from which the tie is to begin, and the player ID.</p>
+        
+        <pre class="source">
+(tie-over-rests mini 72 4 'fl)</pre>
+
+        <p>This brief before-and-after example demonstrates the effect of
+          using <code>tie-over-rests</code> on some of the notes from the
+          original object. </p>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-consol-notes-before.png"
+                       alt="rthm-chains-fib.png"
+                       width="813"/></td></tr> 
+          <caption>Before: The musical data as produced initially</caption> 
+        </table>  
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-tie-over-rests.png"
+                       alt="rthm-chains-tie-over-rests.png"
+                       width="809"/></td></tr> 
+          <caption>After: Applying <code>tie-over-rests</code> to some of the
+            notes of the original.</caption> 
+        </table>
+
+        <p>By default, the <code>tie-over-rests</code> method also applies
+          the <code>consolidate-notes</code> algorithm automatically to the
+          bars affected. This behavior can be disabled by setting the
+          method's <code>:consolidate-notes</code> keyword argument
+          to <code>NIL</code>, e.g.:</p>
+
+        <pre class="source">
+(tie-over-rests mini 72 4 'fl :consolidate-notes nil)</pre>
+
+        <p>It is important to note that this method changes the number
+          of <em>notes</em> (non-rest <code>event</code> objects) in the
+          specified bar and potentially any subsequent bars that begin with
+          rests. Because of this, it may be necessary, when applying the method
+          several times in the same player of a piece, to apply it
+          in <em>backwards</em> order and set
+          the <code>:consolidate-notes</code> argument
+          to <code>NIL</code>. </p>
+
+        <p>It is also important to note that this method only affects
+          the <em>printable</em> output. In order for any new ties to also be
+          reflected in the MIDI output, the user must subsequently call
+          the <code>handle-ties</code> method for the
+          entire <code>slippery-chicken</code> object.</p>
+
+        <pre class="source">
+(handle-ties mini)</pre>
+
+        <p class="close"><a href="#ties" id="ties-div-hide" class="hideLink"
+                            onclick="showHide('ties-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="map"><a href="#map" id="map-div-show"
+                       onclick="showHide('map-div');return false;">+</a>
+        map-over-bars</h4>
+      <div id="map-div" class="more">
+        <p>Many of the post-generation editing methods only apply to one bar at
+          a time. If the user would like to apply such a method to a longer
+          passage of consecutive measures, the
+          method <code>map-over-bars</code> can be very helpful.</p>
+
+        <p>This method takes as its arguments the <code>slippery-chicken</code>
+          object to be affected, the start bar, end bar, and player ID (or list
+          of IDs) for the part(s) to be affected, the method (or function) that
+          is to be applied, and any additional optional arguments which that
+          method or function may possess. </p>
+
+        <pre class="source">
+(map-over-bars mini 72 77 'cl #'consolidate-notes)</pre>
+
+        <p>The result of this call to <code>map-over-bars</code> with the same
+          passage used in the <code>consolidate-notes</code> example above can
+          be seen in the score snippets here:</p>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-consol-notes-before.png"
+                       alt="rthm-chains-fib.png"
+                       width="813"/></td></tr> 
+          <caption>Before: The musical data as produced initially</caption> 
+        </table>  
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-map-over-bars.png"
+                       alt="rthm-chains-map-over-bars.png"
+                       width="809"/></td></tr> 
+          <caption>After: Using <code>map-over-bars</code> to
+            apply <code>consolidate-notes</code> to several consecutive bars of
+            the clarinet part.</caption>
+        </table>        
+
+        
+        <p class="close"><a href="#map" id="map-div-hide" class="hideLink"
+                            onclick="showHide('map-div');return
+                                     false;">close</a></p>
+      </div>
+
+      <h4 id="re-bar"><a href="#re-bar" id="re-bar-div-show"
+                         onclick="showHide('re-bar-div');return false;">+</a>
+        re-bar</h4>
+      <div id="re-bar-div" class="more">
+        <p>The <code>re-bar</code> method is handy for redistributing
+          musical material consisting of several short bars into fewer, longer
+          bars. It is discussed in more detail in the tutorial
+          for <a href="./intraphrasal-loops.html">Second Law and
+          Intraphrasal-Looping</a>, but will be reviewed briefly here as
+          well.</p> 
+
+        <p>The <code>re-bar</code> method will only combine shorter bars into
+          longer ones; it will not divide longer bars into shorter bars in
+          order to conform to a strict time signature. In its simplest form, it
+          takes as its arguments the <code>slippery-chicken</code> object to be
+          re-barred, and a time signature passed to
+          the <code>min-time-sig</code> keyword argument, which serves as
+          the <em>target</em> time signature of for the re-barring process.</p> 
+
+        <pre class="source">
+(re-bar mini :min-time-sig '(4 4))</pre>
+
+        <p>It is important to note that because the method functions by merely
+          combining consecutive bars, it will not always be possible to produce
+          bars of the exact time signature given here (depending on the time
+          signatures of the original bars), and the user should consider the
+          value passed to this argument to be a generally descriptive target
+          rather than a precise value.</p>
+
+        <p>The following two score snippets provide a before-and-after view of
+          applying the <code>re-bar</code> method to the
+          first <code>rthm-chain</code> object above.</p>
+
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-two-voices.png"
+                       alt="rthm-chains-two-voices.png"
+                       width="783"/></td></tr> 
+          <caption>Before: The material as originally produced from its source
+            fragments.</caption>
+        </table>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-re-bar.png"
+                       alt="rthm-chains-re-bar.png"
+                       width="809"/></td></tr> 
+          <caption>After: The same material after applying <code>re-bar</code>
+            with a target time signature of 4/4.</caption>
+        </table>
+        
+        <p class="close"><a href="#re-bar" id="re-bar-div-hide" class="hideLink"
+                            onclick="showHide('re-bar-div');return
+                                     false;">close</a></p>
+      </div>
+
+      <h3 id="add"><a href="#add" id="add-div-show"
+                       onclick="showHide('add-div');return false;">+</a>
+        add-voice</h3>
+      <div id="add-div" class="more">
+        <p>The final <code>rthm-chain</code> method to be discussed here is
+          <code>add-voice</code>. This method allows the user to
+          automatically generate a new voice for the same original
+          two-voice <code>rthm-seq-palette</code> and <code>rthm-seq-map</code>
+          using the same fragment material specified in the initial call to
+          <code>make-rthm-chain</code>.</p>
+
+        <p>When calling <code>add-voice</code>, the user must specify
+          the <code>rthm-chain</code> object that is to be extended, the ID of
+          the existing player from whose part the new voice is to be derived
+          (coupled with the section ID of the <code>rthm-chain</code>
+          object's <code>rthm-seq-map</code>, which defaults
+          to <code>1</code>), and the player ID for the new part, e.g.: </p>
+
+        <pre class="source">
+(add-voice rch '(1 fl) 'ob)</pre>
+        
+        <p>The <code>add-voice</code> method must be called before 
+          <code>create-psps</code> is called, if the user intends to
+          automatically generate <code>pitch-seq-palettes</code> for all
+          parts, e.g.:</p>
+
+        <pre class="source">
+  (add-voice rch '(1 fl) 'ob)
+  (create-psps (palette rch))</pre>
+
+        <p>If the <code>rthm-chain</code> object generated is to be used
+          immediately in a call to <code>make-slippery-chicken</code> (as will
+          usually be the case), the <code>:ensemble</code> defined for that
+          function must also include a player with the same ID specified in
+          the call to <code>add-voice</code>, e.g.:</p>
+
+        <pre class="source">
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (ob (oboe :midi-channel 2))
+                        (cl (b-flat-clarinet :midi-channel 3))))</pre>
+
+        <p>The method generates its new part from the original
+          part by first analyzing the time signatures of
+          the <code>rthm-seq</code> objects of that source part. It collects
+          the sequences of that first part into groups of same meter in the
+          order they occur, and creates a new voice from
+          different <code>rthm-seqs</code> of identical meter to the source
+          voice.  </p>
+
+        <p>The following is a small amount of source code and an accompanying
+          score fragment of the music generated by that code produced by
+          LilyPond: </p>
+
+        <pre class="source">
+(let* ((rch
+        (make-rthm-chain
+         'test-rch 173
+         '((((e) e) ; 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s)))
+         '((((q q) ; the 2/4 bars: 4 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.)))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))))
+         :players '(fl cl))))
+  (add-voice rch '(1 fl) 'ob)
+  (create-psps (palette rch))
+  (let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (ob (oboe :midi-channel 2))
+                        (cl (b-flat-clarinet :midi-channel 3))))
+           :set-limits-high '((fl (0 e6 100 e6))
+                              (ob (0 b5 100 b5))
+                              (cl (0 d5 100 d5)))
+           :set-limits-low '((fl (0 gs5 100 gs5))
+                             (ob (0 a4 100 a4))
+                             (cl (0 e3 100 e3)))
+           :tempo-map '((1 (q 72)))
+           :set-palette '((1 ((cs4 fs4 gs4 a4 b4 e5 gs5 b5 e6))))
+           :set-map `((1 ,(ml 1 (num-rthm-seqs rch))))
+           :rthm-seq-palette (palette rch)
+           :rthm-seq-map rch)))
+    (midi-play mini)
+    (cmn-display mini)
+    (write-lp-data-for-all mini)))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/rthm-chains-add-voice.png"
+                       alt="rthm-chains-add-voice.png"
+                       width="809"/></td></tr> 
+        </table>
+
+        <p class="close"><a href="#add" id="add-div-hide" class="hideLink"
+                            onclick="showHide('add-div');return
+                            false;">close</a></p>
+      </div>
+
+      <!-- **************************************************************** -->
+      <!-- This spacer <br> is necessary as a buffer between the content and the
+           footer. It cannot be added as padding to #push, since #push has to be
+           the same size as #footer in order for the dynamic placement to work
+           properly --> <br /><br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

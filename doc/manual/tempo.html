@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - changing the tempo</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>Changing the tempo</h2> 
+
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated example files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/tempo-examples.lsp">tempo-examples.lsp</a></li>  
+        </ul>
+        <p class="close"><a href="#" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p> 
+	<br />
+      </div>
+
+      <p><em>slippery chicken</em> provides two options for managing tempo and
+	tempo changes over the course of a piece. The
+	first, <code>tempo-map</code>, allows the user to set static changes at
+	the beginning of specified sequences within a composition. The
+	second, <code>tempo-curve</code>, allows for gradual, interpolated
+	changes in tempo over an x-axis as specified through a list of
+	breakpoint pairs. These two approaches cannot be used in
+	combination.</p>
+    
+      <h3 id="tempo-map"> <a href="#tempo-map" id="tempo-map-div-show"
+                             onclick="showHide('tempo-map-div');return
+                           false;">+</a> 
+	tempo-map</h3>
+      <div id="tempo-map-div" class="more">
+	<p>The <code>tempo-map</code> takes a list of bar numbers coupled with
+	  two-item tempo indications. The bar numbers can be given either as
+	  simple bar numbers (integers) or as references to a bar in the form
+	  (section-number sequence-number bar-number) (see below). The tempo
+	  indications are given as a beat type (rhythmic unit) paired with a
+	  beats-per-minute number, such as (q 84), (as also described in
+	  the <a href="./coreUsage.html#tempo">core usage</a> guide). Text
+	  descriptions for the given tempo can also be included, as is
+	  described in the source code documentation for the
+	  <a href="../robodoc/tempo_lsp.html#tempo2fmake2dtempo">tempo</a>
+          class.</p>  
+
+	<p>Thus, to produce a piece whose tempo starts at quarter=60, then
+          changes to eighth=72 at bar 15, and changes again to
+          dotted-quarter=176 with the text description "prestissimo" at bar 84,
+          the user would enter the following:</p>
+
+	<pre class="source">
+:tempo-map '((1 (q 60)) (15 (e 72)) (84 (q. 176 "prestissimo")))</pre>
+
+	<p>In the context of a call to the <code>make-slippery-chicken</code>
+	  function, that may, for example, be incorporated like this:</p>
+
+	<pre class="source">
+(let* ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-map '((1 (q 60)) (15 (e 72)) (84 (q. 176 "prestissimo")))
+	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map (list (list 1 (loop repeat 100 collect 1)))
+	:rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map (list (list 1 
+				  (list 
+				   (list 'vn (loop repeat 100 collect 1)))))))) 
+  (midi-play mini)
+  (cmn-display mini))</pre>
+
+	<p>Using the references approach, to indicate a tempo map that starts
+	  with quarter=60, then changes to eighth=72 at the first bar of the
+	  first sequence of the second section, then again to
+	  dotted-quarter=176 with the text description "prestissimo" at the
+	  first bar of the third sequence of the third section, the user would
+	  enter:</p> 
+
+	<pre class="source">
+:tempo-map '((1 (q 60)) ((2 1 1) (e 72)) ((3 3 1) (q. 176 "prestissimo")))</pre>
+
+	<p class="close"><a href="#" id="tempo-map-div-hide" class="hideLink"
+              onclick="showHide('tempo-map-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="tempo-curve"><a href="#tempo-curve" id="tempo-curve-div-show"
+                              onclick="showHide('tempo-curve-div');return
+				       false;">+</a>
+	tempo-curve</h3>
+      <div id="tempo-curve-div" class="more">
+	<p>Instead of using references to static bar numbers, interpolated
+          changes to the tempo over the course of a given piece can be
+          indicated using a list of breakpoint pairs, as seen in this example
+          here:</p>
+	
+	<pre class="source">
+:tempo-curve '(10 q (0 60 30 144 75 52 100 120))</pre>
+
+	<p>The first argument to <code>tempo-curve</code>, the <code>10</code>
+          in this example, is the frequency at which the interpolated tempo is
+          printed in the score. In this instance, the current tempo will be
+          printed every 10 bars. The second argument is the beat type (rhythmic
+          unit) on which the tempo is to be based, in this example a
+          quarter-note, or <code>q</code>. The last argument is a list of
+          breakpoint pairs, the first of each pair being a number representing
+          the x-axis, and the second being the beats-per-minute value. The
+          x-axis scale is arbitrary; any scale chosen by the user will be
+          fitted to the number of sequences in the compositions, though the
+          curve should start at 0.</p>
+
+	<p>As with other x-axis curves (or "envelopes") in 
+          <em>slippery chicken</em>, the x-axis of the <code>tempo-curve</code>
+          is scaled to the number of <em>sequences</em> in the given
+          composition, not, for example, bars, notes, or time. More can be
+          found on envelopes in general on
+          the <a href="./envelopes.html">envelopes</a> page of the manual.</p> 
+
+	<p>In the context of a call to the <code>make-slippery-chicken</code>
+	  function, this feature may, for example, be incorporated like
+	  this:</p>
+
+	<pre class="source">
+(let* ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-curve '(10 q (0 60 30 144 75 52 100 120))
+	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map (list (list 1 (loop repeat 100 collect 1)))
+	:rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map (list (list 1 
+				  (list 
+				   (list 'vn (loop repeat 100 collect 1)))))))) 
+  (midi-play mini)
+  (cmn-display mini))</pre>
+      
+	<p class="close"><a href="#" id="tempo-curve-div-hide" class="hideLink"
+              onclick="showHide('tempo-curve-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="tempo-chop"><a href="#tempo-chop" id="tempo-chop-div-show"
+                             onclick="showHide('tempo-chop-div');return
+				      false;">+</a> 
+        A note on tempo changes and the chop method</h3>
+      <div id="tempo-chop-div" class="more">
+	<p>As described in the documentation
+          on <a href="./intraphrasal-loops.html">intra-phrasal looping</a>,
+          the <code>chop</code> method, when applied to
+          a <code>rthm-seq-palette</code> object, produces a series of
+          new <code>rthm-seq</code> objects that are each one bar long, with
+          durations that are each a fragment of the original, and whose time
+          signatures correspond to the duration of the fragment created. Thus,
+          the example in the <em>Second Law</em> tutorial initially produces
+          only 1/8 and 1/4 bars, as these are the only time signatures that can
+          result from the specified <em>chop points</em>.</p>
+      
+	<p>Any list passed to the <code>tempo-map</code> of such a piece would
+          require bar numbers that refer to these original, very short bars,
+          and any integer passed as the first argument
+          to <code>tempo-curve</code> would also refer to these short
+          bars. This means that if the material is <em>re-barred</em> using
+          the <code>re-bar</code> method, as in the <em>Second Law</em>
+          tutorial, the tempo indications still remain attached to their
+          original locations, rather than being re-adjusted to the new
+          bars.</p>
+
+        <h4>Placing tempo marks using post-generation editing</h4>
+        <p><em>slippery chicken</em> allows for various indications, including
+          tempo marks, to be added to and removed from a piece <em>after</em>
+          the creation of the <code>slippery-chicken</code> object. This makes
+          it possible to place tempo indications according to new bar numbers
+          after the <code>re-bar</code> method has been applied. See the
+          documentation on <a href="./post-gen-editing.html">post-generation
+          data editing</a> for more detail.</p>
+      
+	<p class="close"><a href="#" id="tempo-chop-div-hide" class="hideLink"
+              onclick="showHide('tempo-chop-div');return false;">close</a></p>
+      </div>
+
+      <!-- **************************************************************** --> 
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br /><br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

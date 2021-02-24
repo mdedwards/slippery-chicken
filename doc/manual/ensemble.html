@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - players and the ensemble</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>Players and the ensemble</h2> 
+
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated example files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/ensemble-examples.lsp">ensemble-examples.lsp</a></li>   
+        </ul>
+        <p class="close"><a href="#" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p> 
+        <br />
+      </div>
+
+      <p>This page addresses topics relating to <em>players</em> and
+        the <em>ensemble</em>. A separate page is available for information
+        specific to <a href="./instruments.html">instruments and
+        instrument-palettes</a>.</p>
+      
+      <h3 id="players"><a href="#players" id="players-div-show"
+                          onclick="showHide('players-div');return false;">+</a>
+        Players</h3>
+      <div id="players-div" class="more">
+        <p><em>slippery chicken</em> distinguishes between <em>players</em>,
+          which make up the <em>ensemble</em>, and <em>instruments</em>,
+          several of which can be assigned to the same player. For example, the
+          same player can double on clarinet and bass clarinet, or one
+          percussionist may switch from xylophone to vibraphone at some point
+          during the composition. No player can play more than one instrument
+          at a given time.</p>
+
+        <p>The players are defined as a list of lists in
+          the <code>ensemble</code> block of
+          the <code>make-slippery-chicken</code> function
+          (see <a href="#ensemble"
+          onclick="jumpShow('ensemble-div')">below</a>). Each player definition
+          consists of a user-chosen ID for the player coupled with a list of
+          the instruments associated with that player and a value for at least
+          the keyword argument <code>:midi-channel</code>, which belongs to
+          the <a href="../robodoc/player_lsp.html#player2fmake2dplayer"><code>make-player</code></a>
+          function.</p>
+
+        <p class="nb">NB: While the <code>:midi-channel</code> argument is not
+          strictly required for players with only one instrument if there is to
+          be no MIDI output, it <em>is</em> required for players with more than
+          one instrument regardless of whether a MIDI file is created or not,
+          and will thus be treated as a required argument for the scope of this
+          manual.</p>
+
+        <h4>IDs</h4>
+        <p>The IDs used for the players can consist of any arbitrary
+          alpha-numeric symbols, and are defined by the user for each
+          piece. These IDs must be unique within the scope of the piece.  They
+          will be used as a reference from within the <code>rthm-seq-map</code>
+          (see the page on
+          <a href="./rsp-rsm.html#rsm">rthm-seq-palettes and rthm-seq-maps</a>
+          for more detail). If LilyPond is to be used for printable output, the
+          names chosen for the players cannot contain numbers
+          (e.g. <code>violin-1</code>), as LilyPond's parser does not accept
+          them. One option is to use hyphenated alphabetical characters
+          instead, such as <code>violin-one</code>.</p>
+
+        <h4>Assigning instruments and chromatic MIDI channels</h4>
+        <p>The players can only be assigned existing <code>instrument</code>
+          objects from a current <code>instrument-palette</code> (see the page
+          on <a href="./instruments.html">instruments and
+          instrument-palettes</a> for more detail). The names of the
+          instruments listed here must be the IDs of the
+          given <code>instrument</code> objects exactly as they are defined in
+          the <code>instrument-palette</code> being used.</p>
+
+        <p>The MIDI channel for players with only chromatic material is
+          assigned by simply passing an integer to
+          the <code>:midi-channel</code> argument. </p>
+
+        <h5>Single instruments</h5>
+        <p>If only one instrument is assigned to a player, the given instrument
+          can be entered in the same list as the subsequent MIDI channel
+          arguments, with no further nesting. An example of a player definition
+          with just one instrument (<tt>flute</tt> in this case), which is
+          designated for playback on MIDI-channel 1 and which will have no
+          microtones, might look like this: </p>
+
+        <pre class="source">
+(fl (flute :midi-channel 1))</pre>
+
+        <h5>Doubling instruments</h5>
+        <p>If a player is to double on more than one instrument, the names of
+          the given instrument objects must be enclosed in a nested list. A
+          player definition for a performer that doubles on B-flat clarinet and
+          bass clarinet and who will be playing back on MIDI channel 2, with no
+          microtones, may look like this: </p>
+
+        <pre class="source">
+(cl ((b-flat-clarinet bass-clarinet) :midi-channel 2))</pre>
+
+        <p>If any of the players in the <code>:ensemble</code> block are
+          assigned more than one instrument, the user must also define
+          an <code>instrument-change-map</code> within the call
+          to <code>make-slippery-chicken</code>, as
+          described <a href="#change-map"
+          onclick="jumpShow('change-map-div')">below</a>.</p>
+
+        <h4>Microtonal MIDI channels</h4> <p>If any of the instruments assigned
+        to a player are set as being microtone-capable within their respective
+        definitions in the current <code>instrument-palette</code> (see the page
+        on <a href="./instruments.html">instruments and instrument-palettes</a>)
+        and there are microtonal pitches in any of the pitch sets being used for
+        the piece, the player definitions should also specify a value for the
+        <code>:microtones-midi-channel</code> argument. (If this isn't specified
+        then chromatic and microtonal pitches will be written on the same
+        <code>:midi-channel</code>. See also the section on <a href="#mt-chans"
+        onclick="jumpShow('mt-chans-div')">MIDI and microtones</a> below.)</p>
+
+        <pre class="source">
+(fl ((flute piccolo) :midi-channel 1 :microtones-midi-channel 2))</pre>
+
+
+        <p class="close"><a href="#" id="players-div-hide" class="hideLink"
+              onclick="showHide('players-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="ensemble"><a href="#ensemble" id="ensemble-div-show"
+                           onclick="showHide('ensemble-div');return
+                                    false;">+</a>
+        The ensemble</h3>
+      <div id="ensemble-div" class="more">
+        <p>Ensembles in <em>slippery chicken</em> are assembled
+          from <code>players</code>, each of which may be assigned one or more
+          <code>instruments</code>. When creating
+          an <a href="../robodoc/ensemble_lsp.html"><code>ensemble</code></a>
+          within a call to the <code>make-slippery-chicken</code> function, the
+          ensemble is defined using the <code>:ensemble</code> keyword, which
+          directly sets the value of the corresponding <code>ensemble</code>
+          slot of the resulting <code>slippery-chicken</code> object.</p>
+
+        <p>Defining the ensemble is very straightforward. The list of
+          individual player definitions is wrapped in an additional set of
+          parentheses and passed as a list to the <code>:ensemble</code>
+          keyword of the <code>make-slippery-chicken</code> function, as
+          such: </p>
+
+        <pre class="source">
+:ensemble '(((fl ((alto-flute piccolo) 
+                  :midi-channel 1 :microtones-midi-channel 2))
+             (cl ((b-flat-clarinet bass-clarinet)
+                  :midi-channel 3 :microtones-midi-channel 4))
+             (hn (french-horn :midi-channel 5 :microtones-midi-channel 6))
+             (perc (marimba :midi-channel 7))
+             (solo (violin :midi-channel 8 :microtones-midi-channel 9))
+             (vln (violin :midi-channel 11 :microtones-midi-channel 12))
+             (vla (viola :midi-channel 13 :microtones-midi-channel 14))
+             (vc (cello :midi-channel 15 :microtones-midi-channel 16))))</pre>
+
+        <p>Each of the players defined within an ensemble must have a different
+          ID. However, different players can play multiple instances of the
+          same instrument, as can be seen above in the <code>solo</code>
+          and <code>vln</code> players.</p>
+
+        <h4>Influence on score order and pitch selection</h4>
+        <p>The order in which the players are listed in
+          the <code>ensemble</code> block will be the order in which the
+          instruments appear in the score. If not otherwise specified (see the
+          section on
+          <a href="#hierarchy"
+          onclick="jumpShow('hierarchy-div')">instruments-hierarchy</a> below),
+          the order in which the players are listed in
+          the <code>ensemble</code> block will also be the order in
+          which <em>slippery chicken</em> automatically selects pitches for the
+          corresponding instruments (see the documentation
+          on <a href="./pitches.html#selection">how <em>slippery chicken</em>
+          selects pitches</a>). In the above example, for instance, pitches in
+          each section would first be selected for the <code>fl</code> player
+          (either <code>alto-flute</code> or <code>piccolo</code>, depending on
+          the section), then for the <code>cl</code> player etc.</p>
+
+        <p class="nb">NB: An 
+          <a href="../robodoc/ensemble_lsp.html#ensemble2fmake2densemble">ensemble</a>
+          object created in outside of the scope of and prior to the call to
+          the <code>make-slippery-chicken</code> can also be passed to
+          the <code>make-slippery-chicken</code> function, for example as a
+          variable.</p>
+
+        <p class="close"><a href="#" id="ensemble-div-hide" class="hideLink"
+              onclick="showHide('ensemble-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="change-map"><a href="#change-map" id="change-map-div-show"
+                             onclick="showHide('change-map-div');return
+                             false;">+</a> 
+        The instrument-change-map</h3>
+      <div id="change-map-div" class="more">
+        <p>If any of the players have been defined as doubling on more than one
+          instrument, <em>slippery chicken</em> will need
+          an <code>instrument-change-map</code> to determine when in the piece
+          the doubling players play which of their assigned instruments,
+          e.g.: </p>
+
+        <pre class="source">
+:instrument-change-map '((1 ((fl ((1 flute) (3 piccolo) (5 flute)))
+                             (cl ((1 b-flat-clarinet) (2 bass-clarinet)
+                                  (6 b-flat-clarinet)))))
+                         (2 ((fl ((2 piccolo) (4 flute)))
+                             (cl ((2 bass-clarinet) 
+                                  (3 b-flat-clarinet))))))</pre>
+
+        <p>The <code>instrument-change-map</code> takes at its top level a list
+          of section IDs. These must be identical to the IDs used in the
+          <code>set-map</code> and the <code>rthm-seq-map</code> (see the pages
+          on <a href="./pitches.html#set-maps">pitches</a> and <a
+           href="./rsp-rsm.html#rsm">rthm-seq-palettes and rthm-seq-maps</a>
+          for more details). </p>
+
+        <p>Each section ID is then associated with a list of player IDs that
+          are each coupled with a list of 2-item lists consisting of the number
+          of a specific <em>sequence</em> within the given section paired with
+          the ID of the <code>instrument</code> object that is to be played
+          beginning with that sequence. Instruments cannot be changed
+          mid-sequence, rather only at the beginning of a new sequence. As with
+          the player definitions, the instrument IDs here must be identical to
+          those stipulated in the <code>instrument-palette</code> being used
+          for the piece. </p>
+
+        <p>In the above example, the <code>fl</code> player begins with
+          the <code>flute</code> at sequence 1 of section 1, then changes to
+          the <code>piccolo</code> at the beginning of sequence 3 of the same
+          section, and back to the <code>flute</code> at sequence 5, and so
+          forth. </p>
+
+        <p>An <code>instrument-change-map</code> is always required for all
+          players that are assigned more than one instrument within the
+          ensemble block, even if the user does not end up having them change
+          instruments during the piece. All doubling players must have at least
+          an indication for which instrument is to be played in sequence one of
+          section one. </p>
+
+        <p class="close"><a href="#" id="change-map-div-hide" class="hideLink"
+              onclick="showHide('change-map-div');return false;">close</a></p> 
+      </div>
+
+      <h3 id="hierarchy"><a href="#hierarchy-map" id="hierarchy-div-show"
+                            onclick="showHide('hierarchy-div');return
+                            false;">+</a> 
+        instruments-hierarchy</h3>
+      <div id="hierarchy-div" class="more">
+        <p><em>slippery chicken</em> automatically selects pitches for the
+          instruments one player after the next. By default, the order in which
+          it does this follows the order in which the players are listed in
+          the <code>ensemble</code> block (see the documentation
+          on <a href="./pitches.html#selection">how <em>slippery chicken</em>
+          selects pitches</a> for more detail on this process). When choosing
+          pitches for each instrument, <em>slippery chicken</em> takes into
+          account which pitches it has already assigned to other instruments
+          that are also playing in that sequence, which limits the pitches
+          available to instruments of similar ranges as each player is
+          processed. The order in which the instruments are allocated pitches
+          can therefore be very important.</p>
+
+        <p>Should the user wish to specify a different order for the automatic
+          pitch-selection, the <code>:instruments-hierarchy</code> keyword of
+          the <code>make-slippery-chicken</code> function can be used. This
+          order will not affect the order of instruments in the printable
+          score. This feature may be helpful, for example, when composing for a
+          solo player with ensemble, where the user may desire the solo player
+          to be given first preference of pitches even though it appears in the
+          middle of the score layout. </p>
+
+        <p>Using the ensemble defined 
+          <a href="#ensemble" onclick="jumpShow('ensemble-div')">above</a>,
+          such an <code>instruments-hierarchy</code> might be specified, for
+          example, as such:</p>
+
+        <pre class="source">
+:instruments-hierarchy '(solo vln fl cl vla hn perc vc)</pre>
+
+        <p class="close"><a href="#" id="hierarchy-div-hide" class="hideLink"
+              onclick="showHide('hierarchy-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="mt-chans"><a href="#mt-chans" id="mt-chans-div-show"
+                           onclick="showHide('mt-chans-div');return
+                                    false;">+</a>
+        MIDI and microtones</h3>
+      <div id="mt-chans-div" class="more">
+
+        <p><em>slippery chicken</em> handles microtonal pitch material in MIDI
+          output using pitch-bend values. Since MIDI pitch-bend always affects
+          an entire channel at once, <em>slippery chicken</em> outputs
+          microtonal pitches for each player on a separate MIDI channel to that
+          of the player's chromatic pitches, allowing for playback of chords
+          consisting of both chromatic and microtonal pitches. If a given player
+          is to play microtones in a piece, the user must therefore specify the
+          microtone channel in the <code>ensemble</code> block of the
+          <code>make-slippery-chicken</code> function using the
+          <code>:microtones-midi-channel</code> keyword argument. If this isn't
+          set, then the <code>:midi-channel</code> will be used for all pitches
+          and chords may not be inflected correctly.</p>
+
+        <p class="nb">NB: The generation of musical material that includes
+          microtones also requires that the <code>microtones</code> slot of
+          the given <code>instrument</code> object is set to <code>T</code> and
+          the given set contains microtonal pitches.</p>
+
+        <pre class="source">
+:ensemble '(((vln (violin :midi-channel 1 :microtones-midi-channel 2))
+             (vla (viola :midi-channel 3 :microtones-midi-channel 4))
+             (vc (cello :midi-channel 5 :microtones-midi-channel 6))))</pre>
+
+        <p class="nb">NB: Since slippery chicken version 1.0.9, midi channels
+        can be automatically allocated. If the :midi-channel and
+        :microtones-midi-channel slots are left out then they will be
+        automatically allocated incrementally, e.g.:</p>
+        <pre class="source">
+:ensemble '(((vln-one violin)
+             (vln-two violin)
+             (vla viola)
+             (vc cello)
+             (db double-bass)))         </pre>
+        <p class="nb">In this case the channel slots' values will depend on
+        whether the current scale is chromatic or not. If chromatic, then
+        :midi-channel and :microtones-midi-channel will both be the same. If not
+        chromatic, then :microtones-midi-channel will be one higher than
+        :midi-channel and each player will occupy two midi channels. In either
+        case, midi channel 10 (the percussion channel) will always be
+        omitted. This implies that if there are more players than can be
+        accommodated by the 15 available midi channels given the current scale,
+        then at some point we loop back to channel 1 and start incrementing
+        again. This might cause problems during midi file generation, depending
+        on whether you generate data for all players at once or in several
+        passes. 
+        
+        <h4>Simultaneous microtones will be of same type</h4>
+        <p>Since <em>slippery chicken</em> currently only uses one channel per
+          player for microtones, all simultaneously occurring pitches on the
+          microtone channel will be of the same type (quarter-tone, sixth-tone,
+          or twelfth-tone) regardless of their type in the score. Thus,
+          microtonal chords containing mixed microtone types will not render
+          correctly in the MIDI output. This does not affect the printable
+          output. Linear microtonal pitch sequences consisting of only one
+          pitch at a time are not affected by this limitation. </p>
+
+        <p class="nb">NB: Internally, slippery chicken always generates the
+          pitch-bend values for MIDI output upwards from the nearest lower
+          chromatic pitch, even though this might not be the note-name of the
+          pitch printed in the score. For example, the MIDI note number
+          generated for <code>GQS4</code> is calculated as a half-semitone
+          upwards from <code>G4</code>, while <code>GQF4</code> is calculated
+          as a half-semitone upwards from <code>FS4</code>. This allows chords
+          consisting of simultaneous microtonal sharps and flats of the same
+          type to be rendered correctly in the MIDI output.</p>
+
+        <p class="nb">NB: Due to an issue with Common Music, which <em>slippery
+          chicken</em> uses to generate MIDI, the microtone MIDI channels
+          currently contain no pitch-bend data. A work-around for this is to
+          open the MIDI file in a sequencer and shift the entire channel by the
+          desired pitch-bend value.</p>
+
+        <p class="nb"></p>
+
+        <p class="close"><a href="#" id="mt-chans-div-hide" class="hideLink"
+              onclick="showHide('mt-chans-div');return
+                       false;">close</a></p>
+      </div>
+      
+      <!-- **************************************************************** --> 
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br /><br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

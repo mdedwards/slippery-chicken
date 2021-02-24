@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    15th December 2011
 ;;;
-;;; $$ Last modified:  16:19:24 Fri Jan 10 2020 CET
+;;; $$ Last modified:  19:15:39 Wed Feb 24 2021 CET
 ;;;
 ;;; SVN ID: $Id: rthm-seq-bar.lsp 509 2011-12-14 20:35:27Z reed@seanreed.ie $
 ;;;
@@ -164,7 +164,7 @@
   (equal-within-tolerance x y 0.0001))
 
 (defun test-suite-file (filename)
-  (concatenate 'string  cl-user::+slippery-chicken-home-dir+ "test-suite/"
+  (concatenate 'string  cl-user::+slippery-chicken-home-dir+ "tests/"
                filename))
 
 ;;; SAR Tue Jul 10 13:55:11 BST 2012 -- Added new functions probe-delete-multi

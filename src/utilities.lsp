@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  11:18:12 Sat Jan 30 2021 CET
+;;; $$ Last modified:  19:10:16 Wed Feb 24 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4000,7 +4000,7 @@ WARNING:
   (declare (special cl-user::+slippery-chicken-home-dir+))
   (format t "~%~%*******  Loading ~a~%" file)
   (load 
-     (format nil "~atest-suite/~a" cl-user::+slippery-chicken-home-dir+ file)))
+     (format nil "~atests/~a" cl-user::+slippery-chicken-home-dir+ file)))
 
 ;;; e.g. (FILE-FROM-SC-DIR "test-suite/blah.lsp") 
 ;;; -> "/Users/medward2/lisp/sc/test-suite/blah.lsp"

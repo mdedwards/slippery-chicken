@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:57:54 Sat Feb  6 2021 CET
+;;; $$ Last modified:  19:18:11 Wed Feb 24 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7256,7 +7256,7 @@
   (let ((sp (set-palette-from-spectra 
              (concatenate
               'string cl-user::+slippery-chicken-home-dir+ 
-              "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff"))))
+              "tests/test-sndfiles-dir-1/test-sndfile-3.aiff"))))
     (print-simple sp) ; just to make sure it works
     (sc-test-check
       (= 7 (sclist-length sp)))))
@@ -7972,7 +7972,7 @@
 #+clm
 (sc-deftest test-create-analysis-data ()
   (let ((sf (concatenate 'string cl-user::+slippery-chicken-home-dir+ 
-                         "test-suite/test-sndfiles-dir-2/test-sndfile-4.aiff"))
+                         "tests/test-sndfiles-dir-2/test-sndfile-4.aiff"))
         (df "/tmp/data.txt"))
     (sc-test-check
       (clm::create-analysis-data sf :outputfile df)
@@ -8075,16 +8075,16 @@
 #+clm
 (sc-deftest test-sndfile-make-sndfile ()
   (let ((sf-1 (make-sndfile 
-               (get-test-sf-path "test-suite/sndfile-1.aiff")
+               (get-test-sf-path "tests/sndfile-1.aiff")
                :start 0.3 :end 1.1 :frequency 653))
         (sf-2 (make-sndfile 
                ;; MDE Wed Dec 26 14:34:53 2012 -- need class name first now
                (list 'sndfile
-                     (get-test-sf-path "test-suite/sndfile-1.aiff")
+                     (get-test-sf-path "tests/sndfile-1.aiff")
                      (list nil :start 0.7 :end 1.3 :frequency 'c4))))) 
     (sc-test-check
       (equalp (data sf-1)
-              (get-test-sf-path "test-suite/sndfile-1.aiff"))
+              (get-test-sf-path "tests/sndfile-1.aiff"))
       (= 0.3 (start sf-1))
       (= 1.1 (end sf-1))
       (= 653 (frequency sf-1))
@@ -8096,7 +8096,7 @@
 #+clm
 (sc-deftest test-sndfile-stereo ()
   (let ((sf-1 (make-sndfile 
-               (get-test-sf-path "test-suite/sndfile-1.aiff"))))
+               (get-test-sf-path "tests/sndfile-1.aiff"))))
     (sc-test-check
       (not (stereo sf-1))
       (setf (channels sf-1) 8)
@@ -8108,7 +8108,7 @@
 #+clm
 (sc-deftest test-sndfile-reset-usage ()
   (let ((sf-1 (make-sndfile 
-               (get-test-sf-path "test-suite/sndfile-1.aiff"))))
+               (get-test-sf-path "tests/sndfile-1.aiff"))))
     (sc-test-check
       (= 0 (will-be-used sf-1))
       (= 0 (has-been-used sf-1))
@@ -8130,7 +8130,7 @@
   (flet ((msf (dir sf)
            (make-sndfile 
             (get-test-sf-path
-             (format nil "test-suite/test-sndfiles-dir-~a/test-sndfile-~a.aiff"
+             (format nil "tests/test-sndfiles-dir-~a/test-sndfile-~a.aiff"
                      dir sf))
             :frequency 'detect)))
     (let ((sf1 (msf 1 1))
@@ -14298,10 +14298,10 @@
                    test-sndfile-6)))
                :paths (list (concatenate 'string
                                          cl-user::+slippery-chicken-home-dir+ 
-                                         "test-suite/test-sndfiles-dir-1/")
+                                         "tests/test-sndfiles-dir-1/")
                             (concatenate 'string
                                          cl-user::+slippery-chicken-home-dir+ 
-                                         "test-suite/test-sndfiles-dir-2/")))))
+                                         "tests/test-sndfiles-dir-2/")))))
     ;; (setf +sfp+ msfp)
     ;; MDE Wed Sep 30 15:25:07 2015 -- test writing and reading back in
     (with-open-file (out "/tmp/test-sndfile-palette.lsp"
@@ -14380,21 +14380,21 @@
                    test-sndfile-6)))
                :paths (list (concatenate 'string
                                          cl-user::+slippery-chicken-home-dir+  
-                                         "test-suite/test-sndfiles-dir-1/")
+                                         "tests/test-sndfiles-dir-1/")
                             (concatenate 'string
                                          cl-user::+slippery-chicken-home-dir+ 
-                                         "test-suite/test-sndfiles-dir-2/")))))
+                                         "tests/test-sndfiles-dir-2/")))))
     (sc-test-check
       (equalp (find-sndfile msfp 'test-sndfile-3)
               (concatenate 
                'string 
                cl-user::+slippery-chicken-home-dir+
-               "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff")) 
+               "tests/test-sndfiles-dir-1/test-sndfile-3.aiff")) 
       (equalp (find-sndfile msfp 'test-sndfile-4)
               (concatenate
                'string 
                cl-user::+slippery-chicken-home-dir+
-               "test-suite/test-sndfiles-dir-2/test-sndfile-4.aiff"))))) 
+               "tests/test-sndfiles-dir-2/test-sndfile-4.aiff"))))) 
 
 ;;; SAR Thu Jun 14 13:14:03 BST 2012
 #+clm
@@ -14403,7 +14403,7 @@
                      (concatenate 
                       'string 
                       cl-user::+slippery-chicken-home-dir+
-                      "test-suite/24-7.mrk")
+                      "tests/24-7.mrk")
                      "24-7"
                      :snds-per-group 2
                      ;; MDE Fri Oct  5 14:08:28 2012 
@@ -14411,21 +14411,21 @@
                      :paths (list (concatenate 
                                    'string 
                                    cl-user::+slippery-chicken-home-dir+
-                                   "test-suite"))
+                                   "tests"))
                      :sampling-rate 44100
                      :extensions '("wav")))
          (sfpfwmf-2 (make-sfp-from-wavelab-marker-file 
                      (concatenate 
                       'string 
                       cl-user::+slippery-chicken-home-dir+
-                      "test-suite/24-7.mrk")
+                      "tests/24-7.mrk")
                      "24-7"
                      :snds-per-group 2
                      :random-every 3
                      :paths (list (concatenate 
                                    'string 
                                    cl-user::+slippery-chicken-home-dir+
-                                   "test-suite"))
+                                   "tests"))
                      :sampling-rate 44100
                      :extensions '("wav")))
          ;; MDE Fri Oct  5 14:12:44 2012 -- check we can combine palettes
@@ -14492,12 +14492,12 @@
                     (concatenate 
                      'string 
                      cl-user::+slippery-chicken-home-dir+
-                     "test-suite/24-7.mrk")
+                     "tests/24-7.mrk")
                     "24-7"
                     :paths (list (concatenate 
                                   'string 
                                   cl-user::+slippery-chicken-home-dir+
-                                  "test-suite"))
+                                  "tests"))
                     :sampling-rate 44100
                     :extensions '("wav")
                     :print nil)))
@@ -14518,11 +14518,11 @@
   (let ((sfp1 (make-sfp-from-folder
                (concatenate 'string
                             cl-user::+slippery-chicken-home-dir+
-                            "test-suite/test-sndfiles-dir-1")))
+                            "tests/test-sndfiles-dir-1")))
         (sfp2 (make-sfp-from-folder
                (concatenate 'string
                             cl-user::+slippery-chicken-home-dir+
-                            "test-suite/test-sndfiles-dir-1")
+                            "tests/test-sndfiles-dir-1")
                :auto-freq t)))
     (sc-test-check
       (= 3 (num-snds sfp1))
@@ -14575,10 +14575,10 @@
                ;; :with-followers t
                :paths (list (concatenate 'string
                                          cl-user::+slippery-chicken-home-dir+  
-                                         "test-suite/test-sndfiles-dir-1/")
+                                         "tests/test-sndfiles-dir-1/")
                             (concatenate 'string
                                          cl-user::+slippery-chicken-home-dir+ 
-                                         "test-suite/test-sndfiles-dir-2/"))))
+                                         "tests/test-sndfiles-dir-2/"))))
          (sf5 (get-snd 'sndfile-group-3 'test-sndfile-5 sfn)))
     ;; (print sf5)
     (sc-test-check
@@ -15463,13 +15463,13 @@
                   (cm::midi-file-high-low 
                    (concatenate 'string 
                                 cl-user::+slippery-chicken-home-dir+
-                                "test-suite/test-midifile.mid"))))
+                                "tests/test-midifile.mid"))))
     (= 60
        (nth-value 1
                   (cm::midi-file-high-low 
                    (concatenate 'string 
                                 cl-user::+slippery-chicken-home-dir+
-                                "test-suite/test-midifile.mid"))))))
+                                "tests/test-midifile.mid"))))))
 
 ;;; SAR Mon Jun  4 18:52:16 BST 2012
 (sc-deftest test-cm-midi-file-one-note ()
@@ -15488,10 +15488,10 @@
   (let* ((f1 (concatenate 'string 
                           cl-user::+slippery-chicken-home-dir+
                           ;; no tracks in this one
-                          "test-suite/queen.mid"))
+                          "tests/queen.mid"))
          (f2 (concatenate 'string 
                           cl-user::+slippery-chicken-home-dir+
-                          "test-suite/var5.mid"))
+                          "tests/var5.mid"))
          (el1 (midi-file-to-events f1))
          (el2 (midi-file-to-events f2 :track 1))
          (el3 (midi-file-to-events f2 :track 2)))
@@ -16103,7 +16103,7 @@
      (read-from-file
       (concatenate 'string 
                    cl-user::+slippery-chicken-home-dir+
-                   "test-suite/lisp-lorem-ipsum.txt")) 
+                   "tests/lisp-lorem-ipsum.txt")) 
      '(Lorem ipsum dolor sit amet consectetur adipiscing elit Cras
        consequat convallis justo vitae consectetur Mauris in nibh vel
        est tempus lobortis Suspendisse potenti Sed mauris massa
@@ -16127,7 +16127,7 @@
       (concatenate 
        'string 
        cl-user::+slippery-chicken-home-dir+
-       "test-suite/24-7loops1.mrk"))
+       "tests/24-7loops1.mrk"))
      '((25.674559 25.829296 26.116327 26.649048 27.038843)
        (32.211884 32.33669 32.481815 32.618233 32.716915 32.902676 33.227757
         33.61959)
@@ -16194,7 +16194,7 @@
       (concatenate 
        'string 
        cl-user::+slippery-chicken-home-dir+
-       "test-suite/24-7loops1.txt"))
+       "tests/24-7loops1.txt"))
      '((25.674559 25.829296 26.116327 26.649048 27.038843)
        (32.211884 32.33669 32.481815 32.618233 32.716915 32.902676 33.227757
         33.61959)
@@ -16257,13 +16257,13 @@
 (sc-deftest test-utilities-wavelab-to-audacity-marker-file ()
   (let ((out (concatenate 'string
                   cl-user::+slippery-chicken-home-dir+ 
-                  "test-suite/24-7loops3.txt")))
+                  "tests/24-7loops3.txt")))
     (probe-delete out)
     (sc-test-check
       (wavelab-to-audacity-marker-file 
        (concatenate 'string
                     cl-user::+slippery-chicken-home-dir+ 
-                    "test-suite/24-7loops3.mrk")
+                    "tests/24-7loops3.mrk")
        44100)
       (file-write-ok out 635))
     (probe-delete out)))
@@ -17473,7 +17473,7 @@
 (sc-deftest test-clm-play ()
   (declare (special cl-user::+slippery-chicken-home-dir+))
   (in-scale :chromatic)
-  (let* ((tsdir (format nil "~atest-suite"
+  (let* ((tsdir (format nil "~atests"
                         cl-user::+slippery-chicken-home-dir+))
          (mini
           (make-slippery-chicken
@@ -17550,7 +17550,7 @@
 (sc-deftest test-clm-play-1-section-and-nils ()
   (declare (special cl-user::+slippery-chicken-home-dir+))
   (in-scale :chromatic)
-  (let* ((tsdir (format nil "~atest-suite"
+  (let* ((tsdir (format nil "~atests"
                         cl-user::+slippery-chicken-home-dir+))
          (mini
           (make-slippery-chicken
@@ -17625,7 +17625,7 @@
                       (sine-250.wav :frequency 250))))
             (,(concatenate 'string
                            cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite")))
+                           "tests")))
           :ensemble '(((vn (violin :midi-channel 1))
                        (vc (cello :midi-channel 2))))
           :tempo-map '((1 (q 60)))
@@ -17729,7 +17729,7 @@
            :sndfile-palette
            `(((grp-1
                (test-sndfile-1.aiff test-sndfile-2.aiff test-sndfile-3.aiff)))
-             (,(file-from-sc-dir "test-suite/test-sndfiles-dir-1/"))))))
+             (,(file-from-sc-dir "tests/test-sndfiles-dir-1/"))))))
     (sc-test-check
       (= 29 (num-sequences (set-map mini)) (num-sequences (rthm-seq-map mini)))
       (= 6 (num-seqs mini 1))
@@ -18527,7 +18527,7 @@
     (clm-loops 
      (concatenate 'string 
                   cl-user::+slippery-chicken-home-dir+
-                  "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff")
+                  "tests/test-sndfiles-dir-1/test-sndfile-3.aiff")
      '(0.180 2.164 4.371 7.575 9.4 10.864)
      :fibonacci-transitions '(1 2 3 4 5)
      :max-perms 7
@@ -18548,7 +18548,7 @@
    (clm-loops
     (concatenate 'string
                  cl-user::+slippery-chicken-home-dir+ 
-                 "test-suite/test-sndfiles-dir-1/test-sndfile-1.aiff")
+                 "tests/test-sndfiles-dir-1/test-sndfile-1.aiff")
     '(0.028 .288 .56 .83 1.103 1.652 1.927)
     ;; :stop-after 0.5
     :num-shuffles 4
@@ -18576,7 +18576,7 @@
     (not (clm-loops-all
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+
-                       "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff")
+                       "tests/test-sndfiles-dir-1/test-sndfile-3.aiff")
           '((0.794 0.961 1.061 1.161 1.318 1.436 1.536 )
             (0.787 0.887 0.987 1.153 1.310 1.510 )
             (0.749 0.889 1.056 1.213 1.413 )
@@ -18610,7 +18610,7 @@
                 (concatenate
                  'string 
                  cl-user::+slippery-chicken-home-dir+
-                 "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff")
+                 "tests/test-sndfiles-dir-1/test-sndfile-3.aiff")
                 :min-points 3
                 :max-points 7
                 :min-dur 0.1
@@ -18655,7 +18655,7 @@
                   "/tmp/outfile.txt" 
                   (concatenate 'string 
                                cl-user::+slippery-chicken-home-dir+
-                               "test-suite/pink5s.wav")
+                               "tests/pink5s.wav")
                   :min-dur min-dur :if-outfile-exists :overwrite)))
            (ok t))
       (loop for min-dur in min-durs and rlp in rlps 
@@ -18886,7 +18886,7 @@
   (let* ((sf1 (make-sndfile-ext 
               (concatenate 'string
                            cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite/sndfile-1.aiff")
+                           "tests/sndfile-1.aiff")
               :start 0.3 :end 1.1 :frequency 653)))
     (max-play sf1 20 100 10)))
 
@@ -18894,7 +18894,7 @@
   (let* ((sf1 (make-sndfile-ext 
               (concatenate 'string
                            cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite/sndfile-1.aiff")
+                           "tests/sndfile-1.aiff")
               :cue-num 2 :start 0.3 :end 1.1 :frequency 653
               :followers '(blah wah))))
     ;; (print sf1)
@@ -18907,23 +18907,23 @@
   (let ((sf1 (make-sndfile-ext 
               (concatenate 'string
                            cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite/sndfile-1.aiff")
+                           "tests/sndfile-1.aiff")
               :start 0.3 :end 1.1 :frequency 653))
         (sf2 (make-sndfile-ext 
               (concatenate 
                'string
                cl-user::+slippery-chicken-home-dir+ 
-               "test-suite/test-sndfiles-dir-1/test-sndfile-1.aiff")))
+               "tests/test-sndfiles-dir-1/test-sndfile-1.aiff")))
         (sf3 (make-sndfile-ext 
               (concatenate 'string
                            cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite/sndfile-1.aiff")
+                           "tests/sndfile-1.aiff")
               :pitch 3 :pitch-curve 4 :bandwidth 10 :energy 2
               :harmonicity-curve 0))
         (sf4 (make-sndfile-ext 
               (concatenate 'string
                            cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite/sndfile-1.aiff")
+                           "tests/sndfile-1.aiff")
               :followers '(blah blah blah) :pitch 3 :pitch-curve 4
               :bandwidth 10 :energy 2 :harmonicity-curve 1))
         (mct (max-cue-test))
@@ -18934,7 +18934,7 @@
       (equalp (data sf1)
               (concatenate 'string
                            cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite/sndfile-1.aiff"))
+                           "tests/sndfile-1.aiff"))
       (= 0.3 (start sf1))
       (= 1.1 (end sf1))
       (= 653 (frequency sf1))
@@ -19829,7 +19829,7 @@
       (make-reaper-items1 (get-sndfiles
                            (concatenate 'string
                                         cl-user::+slippery-chicken-home-dir+
-                                        "test-suite/test-sndfiles-dir-2"))
+                                        "tests/test-sndfiles-dir-2"))
                           '(w (w) (q) h.+h+e (h) (e) h (q.) w (w) (w) (e))
                           :input-start '(0 .1 .2)
                           :tempo 60

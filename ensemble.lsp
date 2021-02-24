@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:12:22 Sat Sep 26 2020 CEST
+;;; $$ Last modified:  12:59:04 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -460,20 +460,22 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;;   becomes the id of the player we'll create. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - The id of the instrument in the already existing instrument-palette.
-;;;   This is required if the player argument is a symbol.  Default NIL.
-;;; - An instrument-palette object.  Default =
+;;; keyword arguments:
+;;; - :instrument. The id of the instrument in the already existing
+;;;   instrument-palette. This is required if the player argument is a symbol.
+;;;   Default NIL. 
+;;; - :instrument-palette. An instrument-palette object.  Default =
 ;;;   +slippery-chicken-standard-instrument-palette+.
-;;; - the midi-channel for the new player
-;;; - the microtones-midi-channel for the new player
+;;; - :midi-channel the midi-channel for the new player
+;;; - :microtones-midi-channel the microtones-midi-channel for the new player
 ;;;
 ;;; RETURN VALUE
 ;;; The player object added.
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-player ((e ensemble) player 
-                       &optional
-                         instrument-id
+                       &key
+                         instrument
                          (instrument-palette
                           +slippery-chicken-standard-instrument-palette+)
                          ;; MDE Tue Jul 14 19:08:15 2020, Heidhausen
@@ -482,7 +484,7 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; ****
   (let ((player (if (player-p player)
                     player
-                    (make-player player instrument-palette instrument-id
+                    (make-player player instrument-palette instrument
                                  :midi-channel midi-channel
                                  :microtones-midi-channel
                                  microtones-midi-channel))))

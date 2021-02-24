@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  19:18:46 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  15:51:50 Sat Jan 30 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -286,7 +286,7 @@
                     ~%             volume-curve: ~a, loop-it: ~a, ~
                     bitrate: ~a, srate: ~a, ~
                     ~%             num-frames: ~a, bytes: ~a, group-id: ~a~
-                    ~%             followers: ~a"
+                    ~%             followers (ids): ~a"
           (use sfe) (cue-num sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
           (bandwidth-curve sfe) (continuity sfe) (continuity-curve sfe)
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
@@ -319,7 +319,6 @@
     (get-next (followers sfe))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/reset
 ;;; DESCRIPTION
 ;;; Reset the <followers> circular list to the first or any other following
@@ -504,15 +503,15 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod max-play ((sfe sndfile-ext) fade-dur max-loop start-next
-                     &optional ignore)
+                     &optional print)
 ;;; ****
-  (declare (ignore ignore))
   ;; remember snd-duration slot is the full duration of the sndfile but
   ;; duration is that which takes start and end into consideration. Also, if
   ;; we're going to loop a file, the duration doesn't play a role, rather the
   ;; max-loop arg does.
   (let* ((dur (if (loop-it sfe) max-loop (duration sfe)))
          ;; fade is 40% duration if sndfile not long enough
+         (loop-val (if (loop-it sfe) 1 0))
          (min-ramp (* .4 dur))
          (fits (>= dur (* 2.0 fade-dur)))
          (fd (if fits fade-dur min-ramp))
@@ -522,8 +521,13 @@ NIL
          (fade-out (- dur fd)))
     ;; for now speed is just 1.0
     ;; sn is in ms but fs and fade-out are in secs
-  (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0
-        (* 1000.0 fd) (* 1000.0 fade-out) sn (amplitude sfe))))
+    ;; MDE Mon Nov  9 13:43:54 2020, Heidhausen -- two lists so we handle the
+    ;; list as one entity in osc-eval
+    (when print
+      (format t "~&sndfile-ext::max-play: dur: ~a, channels: ~a, loop: ~a, ~
+                 fade: ~a" dur (channels sfe) loop-val fd))
+    (list (list (cue-num sfe) (channels sfe) loop-val 1.0
+                (* 1000.0 fd) (* 1000.0 fade-out) sn (amplitude sfe)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -576,11 +580,13 @@ NIL
                  while sf
                  collect (id sf)
                  do
+                   ;; (print (id sf))
                    (setf sf (get-next sf)))))
     ;; MDE Fri Oct 20 11:34:08 2017 
     (unless (= depth (length sfes))
-      (warn "sndfile-ext::analyse-followers: couldn't get ~a results:~%~a"
-            depth sfes))
+      (warn "sndfile-ext::analyse-followers: couldn't get ~a results for ~a, ~
+             just:~%~a~%~a"
+            depth (id sfe) sfes sfe))
     (count-elements sfes)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

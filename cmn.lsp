@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  08:42:38 Thu Mar 26 2020 CET
+;;; $$ Last modified:  15:12:27 Wed Dec  9 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -102,7 +102,7 @@
                ;; (print rehearsal-letter)
                ;; (print write-bar-nums)
                (text (format nil "~D" rehearsal-letter)
-                     (font-name "Verdana-Bold")
+                     (font-name "Courier-Bold")
                      (font-size 14)
                      (dx -0.2)
                      (dy 1.7))))
@@ -123,7 +123,7 @@
                 ;; same as rehearsal-letters! ;
   (measure-number bar-num
                 ;; (dy 1.5)             ;
-                (font-name "Verdana-Bold")
+                (font-name "Courier-Bold")
                 (font-size *cmn-bar-num-size-for-sc*)
                 ;; (frame :box)         ;
                 ))))
@@ -146,7 +146,7 @@
   ;; (print bar-num)
   (when bar-num
     (text (format nil "~D" bar-num)
-          (font-name "Verdana-Bold")
+          (font-name "Courier-Bold")
           (font-size (sc::get-sc-config 'cmn-bar-num-size-for-sc))
           (dx (sc::get-sc-config 'cmn-bar-num-dx-for-sc))
           (dy (sc::get-sc-config 'cmn-bar-num-dy-for-sc)))))
@@ -497,7 +497,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun sc-cmn-text (text &key (dy 1.0) (dx 0.0) (font "Verdana")
+(defun sc-cmn-text (text &key (dy 1.0) (dx 0.0) (font "Courier")
                               (font-size 8))
   (unless text
     (error "cmn::sc-cmn-text: text is nil!"))
@@ -762,10 +762,10 @@
        (full-last-line nil)
        (automatic-line-breaks automatic-line-breaks)
        (first-measure-number start-bar-numbering)
-       (staff-name-font "Verdana")
+       (staff-name-font "Courier")
        (staff-name-font-scaler .6)
-       (default-font '("Verdana" "Verdana-Italic" "Verdana-Bold" 
-                       "Verdana-BoldItalic"))
+       (default-font '("Courier" "Courier-Italic" "Courier-Bold" 
+                       "Courier-BoldItalic"))
        (slur-curvature .35)
        (slur-thickness .05)
        (tie-curvature .25)

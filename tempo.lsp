@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified:  17:29:22 Fri Mar 24 2017 GMT
+;;; $$ Last modified:  10:04:42 Mon Jan 25 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -286,13 +286,16 @@ data: 60
 (defun make-tempo (bpm &key (beat 4) id description)
 ;;; ****
   ;; MDE Tue Jun 28 16:20:35 2016 -- see ARGUMENTS description
-  (when (>= bpm 10000)
+  (when (and (numberp bpm) (>= bpm 10000))
     (setq bpm (usecs-to-bpm bpm)))
-  (if (listp bpm)
-      (make-instance 'tempo :bpm (first bpm) :beat (second bpm) 
-                     :description (third bpm) :id id)
-      (make-instance 'tempo :bpm bpm :beat beat :id id 
-                     :description description)))
+  ;; MDE Mon Jan 25 10:00:43 2021, Heidhausen -- just return the first arg if
+  ;; it's already a tempo object 
+  (typecase bpm
+    (tempo bpm)
+    (list (make-instance 'tempo :bpm (first bpm) :beat (second bpm) 
+                         :description (third bpm) :id id))
+    (t (make-instance 'tempo :bpm bpm :beat beat :id id 
+                      :description description))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

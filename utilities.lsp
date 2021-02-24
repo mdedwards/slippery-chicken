@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:40:26 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  11:18:12 Sat Jan 30 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1253,9 +1253,6 @@
           result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 16:09:37 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/replace-elements
 ;;; DESCRIPTION
 ;;; Replace the elements in list between start and end (inclusive) with the new
@@ -1813,7 +1810,6 @@
        collect (float (+ y-min (* (- y env-y-min) y-scaler))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* utilities/exaggerate-env
 ;;; DESCRIPTION
 ;;; Makes the y values in an envelope more radically pushed towards its
@@ -2610,16 +2606,99 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; aux function for parse-wavelab-marker-file-for...
-
-(defun get-parameter (string &optional (separator #\=))
+;;; MDE Fri Jan 29 13:03:32 2021, Heidhausen -- added downcase optional arg
+(defun get-parameter (string &optional (separator #\=) (downcase t))
   (flet ((trim-whitespace (string)
-           (string-downcase
-            (string-trim '(#\Space #\Tab #\Newline) string))))
+           (let ((trimmed (string-trim '(#\Space #\Tab #\Newline) string)))
+             (if downcase
+                 (string-downcase trimmed)
+                 trimmed))))
     (let ((sep-pos (position separator string)))
       (when sep-pos
         (let ((param (trim-whitespace (subseq string 0 sep-pos)))
               (value (trim-whitespace (subseq string (1+ sep-pos)))))
           (values param value))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/get-parameters
+;;; DATE
+;;; January 29th 2021
+;;; 
+;;; DESCRIPTION
+;;; A general routine for searching text files for parameters and their
+;;; values. Here we search a file line by line, matching parameters and
+;;; returning them in a list of parameter-value pairs. This is limited, however,
+;;; to one parameter per line, and values of one word (i.e. numbers, strings,
+;;; etc. not containing space).
+;;; 
+;;; ARGUMENTS
+;;; - the text file to search
+;;; - either a single string or list thereof to search for (case-sensitive)
+;;; - the separator character which divides the parameter name from its value
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the parameter-value separator (character)
+;;; 
+;;; RETURN VALUE
+;;; A list of parameter-value pairs
+;;; 
+;;; EXAMPLE
+#|
+;;; search a reaper file, where parameters are followed simply by space rather
+;;; than = or : E.g. a current reaper file has lines like:
+      SNAPOFFS 0
+      LENGTH 0.36292517006803
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 2 0 0 2 0 1 1
+      FADEOUT 2 0 0 2 0 -1 -1
+      MUTE 0 0
+      MIXFLAG 1
+      BEAT 2
+      SEL 1
+      IGUID {3B79D8DF-AC08-EC4F-B93C-CAFE24FA1CBB}
+      IID 3
+      NAME sunni-mosque.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.67933106575964
+      PLAYRATE 1 1 0 -1 0 0.0025
+;;; hence:
+(get-parameters "~/projects/sndfilenet/reaper/sunni-mosque-split.RPP"
+                '("SOFFS" "LENGTH") #\ )
+-->
+362 parameters read
+(("LENGTH" 0.36292517) ("SOFFS" 0.67933106) ("LENGTH" 0.38848072)
+ ("SOFFS" 1.0422562) ("LENGTH" 1.4923356) ("SOFFS" 1.430737)
+ ("LENGTH" 1.9968253) ("SOFFS" 2.9230726) ("LENGTH" 0.5023356)
+ ("SOFFS" 4.919898) ("LENGTH" 0.4907483) ("SOFFS" 5.4222336)
+ ("LENGTH" 0.17068027) ("SOFFS" 5.912982) ("LENGTH" 3.6765532)
+...
+|#
+;;; SYNOPSIS
+(defun get-parameters (file parameters &optional (separator #\=))
+;;; ****
+  (let ((count 0)
+        (results '()))
+    (setq parameters (force-list parameters))
+    (with-open-file 
+        (input file :direction :input :if-does-not-exist :error)
+      (loop 
+         (multiple-value-bind
+               (line eof)
+             (read-line input nil)
+           (setq line (trim-leading-trailing-whitespace line))
+           ;;(print line)
+           (multiple-value-bind
+                 (param value)
+               (get-parameter line separator nil) ; don't downcase
+             ;; (print param)
+             (loop for p in parameters do
+                  (when (string= param p)
+                    (push (list p (read-from-string value)) results)
+                    (incf count)))
+             (when eof (return))))))
+    (format t "~%~%~a parameters read~%" count)
+    (nreverse results)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; aux function for parse-wavelab-marker-file-for...
@@ -3929,6 +4008,9 @@ WARNING:
   (declare (special cl-user::+slippery-chicken-home-dir+))
   (concatenate 'string cl-user::+slippery-chicken-home-dir+ file))
 
+(defun run-tests (&optional full)
+  (load-from-test-suite-dir (if full "sc-test-full.lsp" "sc-test-suite.lsp")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri May  4 11:01:14 2012 
 (defun safe-subseq (seq start &optional end)
@@ -4339,32 +4421,6 @@ RETURNS:
        (loop for l in resultd collect (cumulative l))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun pdivide-reaper-markers (&rest args)
-;;; ****
-  (multiple-value-bind
-        (times durations generations)
-      (apply #'pdivide args)
-    (declare (ignore durations))
-    (flet ((find-level (time)
-             (loop for g in (reverse generations) and i from 1 do
-                  (when (member time g
-                                :test #'(lambda (x y)
-                                          (equal-within-tolerance x y .001)))
-                    (return i)))))
-      (loop
-         ;; hard-coded colours for now: white for level 1, yellow 2, blue 3,
-         ;; red 4  
-         with colours = '(33554431 33554176 16777471 0)
-         for time in (rest times)
-         for level = (find-level time)
-         for i from 1
-         do
-           (format t "~&  MARKER ~a ~,3f \"level ~a\" 0 ~a 1"
-                   i time level (nth (min 3 (1- level)) colours)))
-      t)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/pexpand
 ;;; DESCRIPTION
 ;;; Instead of dividing an overall duration (pdivide) we start with a
@@ -4607,100 +4663,6 @@ RETURNS:
      (setf last el)
      finally
      (return (nreverse result))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/pexpand-reaper-markers
-;;; DATE
-;;; September 4th 2015, Edinburgh
-;;; 
-;;; DESCRIPTION
-;;; Using the pexpand function, we write marker information in a format which
-;;; can be read by the Reaper (version 4/5+) DAW software. Though we can think
-;;; of the outputs of pexpand to be in beats, seconds, bars, or any arbitrary
-;;; scale, the timings of Reaper markers are in seconds, hence the need here
-;;; for an initial tempo. In other words, we treat the output of pexpand to be
-;;; beat counts; if you would prefer to interpret these as bars, simply divide
-;;; the tempo by the number of beats per bar. If there are to be tempo changes
-;;; in the mix/piece Reaper itself will update the markers' positions when the
-;;; new tempo is inserted in the project window--this is fine when you are
-;;; thinking in beats/bars but beware of changing tempo in Reaper if you are
-;;; thinking of markers with fixed timings (seconds).
-;;;
-;;; Copy the output of this into the Reaper file verbatim (no enclosing < >
-;;; marks) before the <PROJBAY tag.
-;;; 
-;;; ARGUMENTS
-;;; - the tempo in BPM
-;;; - the number of generations: see the pexpand function
-;;; - (&rest) the proportions: see the pexpand function
-;;; 
-;;; RETURN VALUE
-;;; Always T
-;;; 
-;;; EXAMPLE
-#|
-
-(pexpand-reaper-markers 144 2 6 3 5 4)
-->
-  MARKER 1 7.5 "level 4" 0 0 1
-  MARKER 2 15.0 "level 4" 0 0 1
-  MARKER 3 22.5 "level 4" 0 0 1
-  MARKER 4 30.0 "level 4" 0 0 1
-  MARKER 5 37.5 "level 4" 0 0 1
-...
-  MARKER 108 810.0 "level 1" 0 0 1
-  MARKER 109 817.5 "level 4" 0 0 1
-  MARKER 110 825.0 "level 4" 0 0 1
-  MARKER 111 832.5 "level 4" 0 0 1
-  MARKER 112 840.0 "level 4" 0 0 1
-  MARKER 113 847.5 "level 4" 0 0 1
-  MARKER 114 855.0 "level 3" 0 0 1
-...
-  MARKER 319 2392.5 "level 4" 0 0 1
-  MARKER 320 2400.0 "level 3" 0 0 1
-  MARKER 321 2407.5 "level 4" 0 0 1
-  MARKER 322 2415.0 "level 4" 0 0 1
-  MARKER 323 2422.5 "level 4" 0 0 1
-
-
-Here's where I pasted the data into the .RPP Reaper file:
-
-  <TEMPOENVEX
-    ACT 0
-    VIS 1 0 1
-    LANEHEIGHT 0 0
-    ARM 0
-    DEFSHAPE 1 -1 -1
-  >
-  MARKER 1 7.5 "level 4" 0 0 1
-  MARKER 2 15 "level 4" 0 0 1
-  MARKER 3 22.5 "level 4" 0 0 1
-  MARKER 4 30 "level 4" 0 0 1
-...
-  MARKER 320 2400 "level 3" 0 0 1
-  MARKER 321 2407.5 "level 4" 0 0 1
-  MARKER 322 2415 "level 4" 0 0 1
-  MARKER 323 2422.5 "level 4" 0 0 1
-  <PROJBAY
-  >
-  <TRACK {EBF9837F-BE25-9542-B720-A1862C0DF380}
-
-|#
-;;; SYNOPSIS
-(defun pexpand-reaper-markers (tempo generations &rest proportions)
-;;; ****
-  (loop with pexp = (cddr (apply #'pexpand (cons generations proportions)))
-     with beat-dur = (/ 60.0 tempo)
-     ;; hard-coded colours for now: white for level 1, yellow 2, blue 3, red 4
-     with colours = '(33554431 33554176 16777471 0)
-     for beat-num in pexp by #'cddr
-     for letters in (rest pexp) by #'cddr
-     for level = (length letters)
-     for i from 1
-     do
-       (format t "~&  MARKER ~a ~a \"level ~a\" 0 ~a 1"
-               i (* beat-dur (1- beat-num)) level (nth (1- level) colours)))
-  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/a-weighting
@@ -5404,14 +5366,17 @@ Here's where I pasted the data into the .RPP Reaper file:
                                (if subdir subdir "")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan 21 14:08:55 2021, Heidhausen
+(defun path-from-same-dir (file)
+  (concatenate 'string
+               (trailing-slash
+                (directory-namestring (truename *load-pathname*)))
+               file))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 15 13:50:21 2019
 (defun load-from-same-dir (file)  
-  (load (concatenate 'string
-                     (trailing-slash
-                      (directory-namestring (truename *load-pathname*)))
-                     file)))
-
-
+  (load (path-from-same-dir file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Thu 6 Feb 2020 17:41:19 GMT
@@ -5698,6 +5663,12 @@ yes_foo, 1 2 3 4;
        ;; skip the elements at the positions
      for subseq = (subseq list (if skip (1+ i1) i1) i2)
      when subseq collect subseq))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; if the list length is odd, the first half will be one shorter than the 2nd.
+(defun halves (list)
+  (let ((middle (floor (length list) 2)))
+    (list (subseq list 0 middle) (subseq list middle))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  08:37:26 Thu Mar 26 2020 CET
+;;; $$ Last modified:  13:42:12 Fri Jan 22 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -389,6 +389,7 @@
   ;; MDE Mon May 14 21:01:10 2012 -- 
   (when (and scale (symbolp scale))
     (setf scale (find-scale scale)))
+  ;; (print scale)
   (rm-package (cm::note freq :hz t :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  16:29:10 Thu Oct  8 2020 CEST
+;;; $$ Last modified:  14:53:11 Sat Feb  6 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -623,6 +623,7 @@ rhythm::add-mark: add AT to rest?
 ;;; SYNOPSIS
 (defmethod add-mark ((r rhythm) mark &optional warn-rest warn-again)
 ;;; ****
+  ;; (format t "~&rhythm: ~a ~a" mark warn-rest)
   (when mark
     (when (and warn-rest (is-rest r))
       (warn "~a~&rhythm::add-mark: add ~a to rest?" r mark))
@@ -2166,7 +2167,7 @@ data: (
 ;;; SYNOPSIS
 (defun rhythm-list (rthms &optional circular)
 ;;; ****                                ;
-  ;; MDE Sat Jun  8 18:51:09 2013 -- need to remove things like { ;
+  ;; MDE Sat Jun  8 18:51:09 2013 -- need to remove things like {
   (let* ((rs (first (parse-rhythms rthms 0)))
          (result
           (loop for r in rs 

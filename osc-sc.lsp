@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  08:49:33 Thu Mar 26 2020 CET
+;;; $$ Last modified:  10:20:22 Thu Nov 12 2020 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -79,6 +79,9 @@
 ;;; For an example MaxMSP patch, see osc-test.maxpat in the examples folder of
 ;;; the documentation: http://michael-edwards.org/sc/examples/osc-test.maxpat
 ;;; You'll also need http://michael-edwards.org/sc/examples/osc-sc-eval.maxpat
+;;;
+;;; Note that as of November 2020, functions that return lists can also be
+;;; processed: each element will be sent back to Max et al via UDP.
 ;;; 
 ;;; NB: Currently only works in SBCL.
 ;;;     Some lists (e.g. those including strings/symbols) might not be

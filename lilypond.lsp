@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  23:39:20 Tue Jun 16 2020 CEST
+;;; $$ Last modified:  16:17:08 Thu Dec 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -333,30 +333,36 @@
            ;; with all - and _ characters removed. If in any doubt, look at the
            ;; "music = { " block in your Lilypond -def.ly file
            (staff (format nil "\\change Staff = \"~a\"" (second mark)))
-           (rgb ; list of three rgb values between 0.0 and 1.0
+           (rgb  ; list of three rgb values between 0.0 and 1.0
+            ;; MDE Thu Dec 10 16:13:35 2020, Heidhausen -- if there's a 4th
+            ;; element (e.g. t) in the rgb list, use override (e.g. to colour a
+            ;; whole chord) otherwise just tweak (for individual chord note
+            ;; colours)
             (let* ((rgb (second mark))
                    (r (first rgb))
                    (g (second rgb))
-                   (b (third rgb)))
+                   (b (third rgb))
+                   (override (fourth rgb)))
               (format 
-                 nil
-                 #|"\\once \\override NoteHead #'color = #(rgb-color ~a ~a ~a) ~
+               nil
+               (if override
+                   "\\once \\override NoteHead #'color = #(rgb-color ~a ~a ~a) ~
                   \\once \\override Beam #'color = #(rgb-color ~a ~a ~a) ~
                   \\once \\override Accidental #'color = #(rgb-color ~a ~a ~a) ~
                   \\once \\override Flag #'color = #(rgb-color ~a ~a ~a) ~
-                 \\once \\override Stem #'color = #(rgb-color ~a ~a ~a) "|#
-                 ;; MDE Tue Jun 16 23:33:15 2020, Heidhausen -- use tweak
-                 ;; instead and set individual properties rather tweaking the
-                 ;; whole note as that causes things like text to change color
-                 ;; too, I believe. NB if you set the rgb of a note in a chord,
-                 ;; whether the beam, flag etc. are that colour depends on which
-                 ;; note those are attached to.
-                 "\\tweak NoteHead.color #(rgb-color ~a ~a ~a) 
+                  \\once \\override Stem #'color = #(rgb-color ~a ~a ~a) "
+                   ;; MDE Tue Jun 16 23:33:15 2020, Heidhausen -- use tweak
+                   ;; instead and set individual properties rather tweaking the
+                   ;; whole note as that causes things like text to change color
+                   ;; too, I believe. NB if you set the rgb of a note in a
+                   ;; chord, whether the beam, flag etc. are that colour depends
+                   ;; on which note those are attached to.
+                   "\\tweak NoteHead.color #(rgb-color ~a ~a ~a) 
                   \\tweak Beam.color #(rgb-color ~a ~a ~a) ~
                   \\tweak Accidental.color #(rgb-color ~a ~a ~a) ~
                   \\tweak Flag.color #(rgb-color ~a ~a ~a) ~
-                  \\tweak Stem.color  #(rgb-color ~a ~a ~a) "
-                 r g b r g b r g b r g b r g b)))
+                  \\tweak Stem.color  #(rgb-color ~a ~a ~a) ")
+               r g b r g b r g b r g b r g b)))
            ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures 
            ;; e.g. '(key fs major), but note that they will appear _after_ the
            ;; note they're attached to.

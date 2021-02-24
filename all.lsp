@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  19:16:27 Tue Jul 14 2020 CEST
+;;; $$ Last modified:  19:57:33 Mon Feb  1 2021 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -95,20 +95,20 @@
 (defun sc (&optional (logo t))
   (setf *package* (find-package :sc))
   (let* ((title (format nil "slippery chicken ~a"
-                       +slippery-chicken-version+))
-        (sc-logo (concatenate 'string +slippery-chicken-src-path+
-                              "sc-ascii-logo.txt"))
+                        +slippery-chicken-version+))
+         (sc-logo (concatenate 'string +slippery-chicken-src-path+
+                               "sc-ascii-logo.txt"))
          (in (open sc-logo :if-does-not-exist nil)))
     (when logo
       (if in 
           (progn
             (loop for line = (read-line in nil)
-                  while line do (format t "~a~%" line))
-             (close in))
+               while line do (format t "~&~a" line))
+            (close in))
           (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%"
                   title)))
-  #+sbcl t
-  #-sbcl (values)))
+    #+sbcl t
+    #-sbcl (values)))
 
 ;;; old stuff; could have used pathname functions for this....
 (defun get-path-minus-file-and-last-dir (file)
@@ -234,6 +234,7 @@
 (sc-compile-and-load "chord.lsp")
 (sc-compile-and-load "event.lsp")
 (sc-compile-and-load "instrument.lsp")
+;; (sc-compile-and-load "globals.lsp")
 (sc-compile-and-load "time-sig.lsp")
 (sc-compile-and-load "rthm-seq-bar.lsp")
 (sc-compile-and-load "change-data.lsp")
@@ -283,6 +284,7 @@
 #+clm (sc-compile-and-load "control-wave-ins.lsp")
 (sc-compile-and-load "wolfram.lsp" t)
 (sc-compile-and-load "afu.lsp")
+(sc-compile-and-load "reaper.lsp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

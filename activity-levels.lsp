@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  19:28:24 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  18:01:00 Tue Jan 19 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -213,6 +213,65 @@
                  (get-next l))
                (not (zerop result))))
             (t (active-error))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* activity-levels/flicker-round
+;;; DATE
+;;; January 19th 2021
+;;; 
+;;; DESCRIPTION
+;;; Rounding is a cut-and-dry operation, usually. The part after the floating
+;;; point determines whether we round up or down: 0.5 or above goes up,
+;;; otherwise down. In some circumstances it might be preferable to have an area
+;;; in the middle that alternates between up and down. This method uses the
+;;; range between the two optional threshold arguments to select rounding up or
+;;; down: closer to the lower threshold will mean rounding down takes place more
+;;; often than up, but up will still happen occasionally. Similarly as we
+;;; approach the high threshold, rounding up will occur more often. All
+;;; deterministically of course. On the other hand, values outside the
+;;; thresholds will merely round as usual. So if you always want to
+;;; 'flicker-round' then set the thresholds to 0 and 1. If you never want to
+;;; round, call round (!) or set the tresholds to 0.5 and 0.5.
+;;; 
+;;; ARGUMENTS
+;;; - the activity-levels object
+;;; - the floating point number to 'flicker-round'
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; the low and high threshold values: floating point numbers between 0.0 and
+;;; 1.0, where the first optional argument should be less than the second, of
+;;; course. 
+;;; 
+;;; RETURN VALUE
+;;; An integer 
+;;; 
+;;; EXAMPLE
+#|
+(let ((al (make-al)))
+  (loop for i from 1010 to 1011 by 0.01 collect (flicker-round al i)))
+-->
+(1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010
+ 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010 1010
+ 1011 1010 1010 1011 1010 1010 1010 1010 1011 1010 1010 1010 1011 1011 1010
+ 1010 1010 1011 1011 1011 1010 1010 1011 1011 1011 1010 1011 1011 1011 1011
+ 1010 1011 1011 1011 1011 1010 1011 1011 1011 1011 1011 1011 1011 1011 1011
+ 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011
+ 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011)
+|#
+;;; SYNOPSIS
+(defmethod flicker-round ((al activity-levels) float
+                          &optional (threshold-low 0.3) (threshold-high 0.7))
+;;; ****
+  (unless (<= threshold-low threshold-high)
+    (error "~&activity-levels::flicker-round: low threshold (~a) should be < ~
+            ~%high threshold (~a)." threshold-low threshold-high))
+  (let* ((rem (rem float 1))
+         (in-range (and (>= rem threshold-low) (<= rem threshold-high)))
+         (level (when in-range
+                  (rescale rem threshold-low threshold-high 1 9))))
+    (if in-range
+        (if (active al level) (ceiling float) (floor float))
+        (round float))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

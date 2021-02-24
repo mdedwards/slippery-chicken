@@ -1,0 +1,21 @@
+"    <ITEM
+      POSITION ~a
+      SNAPOFFS 0
+      LENGTH ~a
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 2 ~a 0 2 0 1 1
+      FADEOUT 2 ~a 0 2 0 -1 -1
+      MUTE 0 0
+      SEL 0
+      IID 1
+      NAME ~a
+      VOLPAN 1 0 1 -1
+      SOFFS ~a
+      PLAYRATE ~a ~a 0 -1 0 0.0025
+      CHANMODE 0
+      <SOURCE WAVE
+        FILE \"~a\"
+      >
+    >
+"

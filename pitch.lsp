@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:57:34 Tue Oct 27 2020 CET
+;;; $$ Last modified:  13:46:45 Fri Jan 22 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -393,9 +393,9 @@ D4
 |#
 ;;; SYNOPSIS
 (defmethod transpose ((p pitch) semitones &key (as-symbol nil) (package :sc)
-                      ignore)
+                      destructively)
 ;;; ****
-  (declare (ignore ignore))
+  (declare (ignore destructively))
   (let ((new-note (transpose-note (data p) semitones))
         new-pitch)
     (unless new-note
@@ -1661,6 +1661,7 @@ data: CQS4
            (note-octave (when id (force-octave id)))
            (no-brackets (remove-accidental-in-parentheses-indicator id))
            (freq (when f (coerce f 'double-float))))
+      ;; (print id)
       (when (and (numberp freq)
                  (<= freq 0.0))
         (error "~a~%pitch::update-pitch: weird frequency (~a)"
@@ -1678,7 +1679,7 @@ data: CQS4
       (when (or freq (midi-note p) (data p) id) ; (not (= (degree p))))
         (when freq
           (setf (frequency p) freq))
-        (when (and freq (not id))
+        (when (and freq (not id))         
           (let ((note (freq-to-note freq)))
             (unless note
               (error "pitch::update-pitch: ~
@@ -1853,7 +1854,30 @@ data: CQS4
                           (if (> (length str) 1)
                               (subseq str 1)
                               "N")))
-             (nacc (case (rm-package accidental)
+             (nacc
+               (if (equal cm::*scale* (cm::find-object 'twelfth-tone-ekm))
+                   ;; Levin Zimmermann, Dec. 2020: we have to handle
+                   ;; twelfth-tone-ekm in a different call than the usual
+                   ;; slippery-chicken scales, because the 'twelth-tone and
+                   ;; 'twelfth-tone-ekm share equal names for different
+                   ;; accidentals (for instance fts in twelfth-tone-ekm means
+                   ;; +5/12 (Five Twelfth-tone Sharp), but in twelfth-tone it
+                   ;; means -5/12 (Flat Twelfth-tone Sharp))
+                   (case (rm-package accidental)
+                     (s 's)
+                     (f 'f)
+                     (n nil)
+                     ;; in the case of microtones, the nearest chromatic is
+                     ;; always lower
+                     (qs nil)
+                     (qf 'f)
+                     ;; twelfth-tone scale-ekm accidentals
+                     (ts nil) (xs nil) (rs 's) (fts 's) (sts 's) (ftf 'f)
+                     (trs 's) (rs 's) (rf 'f) (xf nil) (tf nil)
+                     (t (error "pitch::set-white-note: unrecognised ~
+                               accidental ~a"
+                               accidental)))
+                   (case (rm-package accidental)
                      (s 's)
                      (f 'f)
                      (n nil)
@@ -1867,8 +1891,8 @@ data: CQS4
                      (ts nil) (ss nil) (ssf 's) (stf 's) (sts 's) (fts 'f)
                      (sss 's) (ssf 's) (fss 'f) (sf nil) (tf nil)
                      (t (error "pitch::set-white-note: unrecognised ~
-                                accidental ~a"
-                               accidental))))
+                               accidental ~a"
+                               accidental)))))
              (note-pos (position (rm-package note-letter) '(c d e f g a b))))
         (unless note-pos
           (error "pitch::set-white-note: ~
@@ -2012,14 +2036,15 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (declare (ignore ignore1 ignore2 ignore3))
   ;; MDE Mon Jun 25 17:05:24 2012 
   ;; MDE Tue Aug 27 14:23:09 2013 issue a warning instead of an error.
-  (when (micro-but-not-quarter-tone-p p)
-    (when (zerop (lp-resolutions p))
-      (warn "pitch::get-lp-data: Lilypond cannot display ~a. ~
-             Resolving to the nearest ~%quarter tone. (Warning issued only ~
-             once; other pitches may resolve~%automatically.)"  
-            (data p)))
-    (incf (lp-resolutions p))
-    (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone))))
+  (unless (equal cm::*scale* (cm::find-object 'twelfth-tone-ekm))
+    (when (micro-but-not-quarter-tone-p p)
+      (when (zerop (lp-resolutions p))
+        (warn "pitch::get-lp-data: Lilypond cannot display ~a. ~
+               Resolving to the nearest ~%quarter tone. (Warning issued only ~
+               once; other pitches may resolve~%automatically.)"
+              (data p)))
+      (incf (lp-resolutions p))
+      (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone)))))
   ;; MDE Tue Jun 16 13:50:43 2020, Heidhausen -- if we don't do this then we
   ;; can't have different noteheads in chords
   (multiple-value-bind 
@@ -2063,7 +2088,6 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (and (micro-tone p) (not (qtr-tone p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Doesn't return a cmn note object, rather a list with the note and correct
 ;;; accidental info, unless just-list is nil!
 
@@ -2358,7 +2382,12 @@ data: D7
   ;; MDE Thu Oct 18 16:14:17 2018 -- don't use note-to-freq as the note may no
   ;; longer exist in the current scale
   ;; (setf (frequency p) (note-to-freq (data p)))
-  (setf (id p) (freq-to-note (frequency p) scale))
+  ;; (print (frequency p))
+  ;; MDE Fri Jan 22 13:45:07 2021, Heidhausen -- when rounding quarter-tones
+  ;; (i.e. pitch bend of 0.5!) they go down in sbcl and up in ccl, due to slight
+  ;; rounding errors. Solution: rounding to the nearest cent first, which seems
+  ;; reasonable 
+  (setf (id p) (freq-to-note (decimal-places (frequency p) 2) scale))
   ;;           (midi-to-freq (round (midi-note-float p))))
   p)
 

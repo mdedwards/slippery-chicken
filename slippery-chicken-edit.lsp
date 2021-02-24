@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:00:17 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  18:03:43 Wed Dec 30 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -100,8 +100,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Thu Apr 19 11:52:43 BST 2012: Conforming robodoc
-
 ;;; ****m* slippery-chicken-edit/add-event-to-bar
 ;;; DESCRIPTION
 ;;; Add an event object to a specified bar either at the end of that bar or at
@@ -169,8 +167,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sat Apr 21 14:29:43 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken-edit/replace-events
 ;;; DESCRIPTION
 ;;; Replace one or more consecutive existing event objects with new event
@@ -247,9 +243,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Aug  8 12:17:43 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/add-tuplet-bracket-to-bar
 ;;; DESCRIPTION
 
@@ -365,15 +358,17 @@
        (add-tuplet-bracket bar (rest bi) delete-all-tuplets-first)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sat Apr 21 17:17:33 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken-edit/replace-multi-bar-events
 ;;; DESCRIPTION
 ;;; Replace specified consecutive event objects across several bars. 
 ;;;
 ;;; The new rhythms provided must produce full bars for all bars specified;
-;;; i.e., if only a quarter note is provided as the new event for a 2/4 bar,
-;;; the method will not automatically fill up the remainder of the bar.
+;;; i.e., if only a quarter note is provided as the new event for a 2/4 bar, the
+;;; method will not automatically fill up the remainder of the bar. In that case
+;;; you'll get a warning and the procedure will exit. This means if you don't
+;;; know how many bars you want to replace events for, you can pass a large
+;;; number and ignore the warning and providing you've filled the bars, all
+;;; should be well.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
@@ -387,7 +382,7 @@
 ;;;   complete event objects; as a list of 2-item lists that are
 ;;;   note-name/rhythm pairs, e.g: '((c4 q) (d4 e)); or as a list with two
 ;;;   sub-lists, the first being just the sequence of rhythms and the second
-;;;   being just the sequence of pitches, e.g: '((q e ) (c4 d4)). For the
+;;;   being just the sequence of pitches, e.g: '((q e) (c4 d4)). For the
 ;;;   latter, :interleaved must be set to NIL. (see :interleaved below). Pitch 
 ;;;   data is the usual cs4 or (cs4 cd3) for chords, and NIL or 'r indicate a
 ;;;   rest. NB: All pitches are sounding pitches; written pitches will be
@@ -509,9 +504,6 @@
                             :tuplet-bracket tuplet-bracket))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Apr 25 13:09:27 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/auto-accidentals
 ;;; DESCRIPTION
 ;;; Automatically determine which notes in each bar need accidentals and which
@@ -581,8 +573,6 @@
           (setf (nth i last-notes) last-attack)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sun Apr 22 10:03:14 BST 2012: Added robodoc entry.
-
 ;;; ****m* slippery-chicken-edit/respell-notes
 ;;; DESCRIPTION
 ;;; Pass through the entire given slippery-chicken object and change some of
@@ -653,14 +643,10 @@
   (respell-notes-aux sc (when (listp corrections) corrections)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Apr 24 19:24:12 BST 2012: Added robodoc entry
-
 ;;; MDE Wed Apr 18 11:57:11 2012 -- added pitches keyword
 
 ;;; DJR Tue 18 Feb 2020 13:33:03 GMT -- multiple players allowed plus arguments
 ;;; for start, end and players can now be nil. Also updated doc.
-
 
 ;;; ****m* slippery-chicken-edit/enharmonics
 ;;; DESCRIPTION
@@ -3613,66 +3599,61 @@ NIL
 ;;; SYNOPSIS
 (defmethod auto-clefs ((sc slippery-chicken) 
                        &key verbose in-c players 
-                       (delete-clefs t)
-                       (delete-marks-before nil))
+                         (delete-clefs t)
+                         (delete-marks-before nil))
 ;;; ****
-  ;; MDE Fri Apr 20 14:27:07 2012 -- 
-  (unless players
-    (setf players (players sc)))
-  ;; MDE Fri Apr 20 14:25:54 2012 
-  (unless (listp players)
-    (setf players (list players)))
-  (loop 
-     for player in players
+  ;; MDE Mon Dec 21 15:14:50 2020, Heidhausen
+  (loop for player in (force-list (if players players (players sc)))
      do
-     (let ((note-count -1)
-           (current-clef nil)
-           ;; (last-events '(nil nil nil)) wasn't reinitializing each time!
-           (last-events (ml nil 3))
-           (last-clefs (ml nil 3)))
-       (when verbose
-         (format t "~%~%auto-clefs: player: ~a" player))
-       (loop 
-          for bar-num from (start-bar (piece sc)) to (end-bar (piece sc))
-          for bar = (get-bar sc bar-num player)
-          for section-ref = (butlast (player-section-ref bar))
-          for ins = (get-current-instrument-for-player 
-                     section-ref player (1+ (nth-seq bar)) sc)
-          do
-          (when verbose
-            (format t "~&bar ~a" bar-num))
-          (unless current-clef
-            (setf current-clef (starting-clef ins)))
-          (loop 
-             for event in (rhythms bar)
-             with clefs with written with pitch
-             do
-             (when delete-marks-before
-               (setf (marks-before event) nil))
-             ;; 1.2.11 delete clefs first
-             (when delete-clefs 
-               (delete-clefs event nil)) ; don't warn if there's no clef
-             (when (needs-new-note event)
-               (if (= 2 note-count)
-                   (setf note-count 0)
-                   (incf note-count))
-               (when verbose
-                 (format t "~&note-count: ~a" note-count))
-               (setf written (written-pitch-or-chord event)
-                     pitch (if (and written 
-                                    (or (not in-c)
-                                        (from-8ve-transposing-ins event)))
-                               written
-                               (pitch-or-chord event))
-                     clefs (best-clef ins pitch in-c current-clef 
-                                      verbose)
-                     (nth note-count last-clefs) clefs
-                     (nth note-count last-events) event
-                     current-clef (auto-clefs-handle-last-3
-                                   ;; for some reason lisp isn't passing
-                                   ;; last-clefs, rather last-events twice...
-                                   last-events last-clefs note-count
-                                   current-clef verbose in-c)))))))
+       (let ((note-count -1)
+             (current-clef nil)
+             ;; (last-events '(nil nil nil)) wasn't reinitializing each time!
+             (last-events (ml nil 3))
+             (last-clefs (ml nil 3)))
+         (when verbose
+           (format t "~%~%auto-clefs: player: ~a" player))
+         (loop 
+            for bar-num from (start-bar (piece sc)) to (end-bar (piece sc))
+            for bar = (get-bar sc bar-num player)
+            for section-ref = (butlast (player-section-ref bar))
+            for ins = (get-current-instrument-for-player 
+                       section-ref player (1+ (nth-seq bar)) sc)
+            do
+              (when verbose
+                (format t "~&bar ~a" bar-num))
+              (unless current-clef
+                (setf current-clef (starting-clef ins)))
+              (loop 
+                 for event in (rhythms bar)
+                 with clefs with written with pitch
+                 do
+                   (when delete-marks-before
+                     (setf (marks-before event) nil))
+                 ;; 1.2.11 delete clefs first
+                   (when delete-clefs 
+                     (delete-clefs event nil)) ; don't warn if there's no clef
+                   (when (needs-new-note event)
+                     (if (= 2 note-count)
+                         (setf note-count 0)
+                         (incf note-count))
+                     (when verbose
+                       (format t "~&note-count: ~a" note-count))
+                     (setf written (written-pitch-or-chord event)
+                           pitch (if (and written 
+                                          (or (not in-c)
+                                              (from-8ve-transposing-ins event)))
+                                     written
+                                     (pitch-or-chord event))
+                           clefs (best-clef ins pitch in-c current-clef 
+                                            verbose)
+                           (nth note-count last-clefs) clefs
+                           (nth note-count last-events) event
+                           current-clef (auto-clefs-handle-last-3
+                                         ;; for some reason lisp isn't passing
+                                         ;; last-clefs, rather last-events
+                                         ;; twice...
+                                         last-events last-clefs note-count
+                                         current-clef verbose in-c)))))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4340,8 +4321,6 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sat Apr 21 14:20:22 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/remove-extraneous-dynamics
 ;;; DESCRIPTION
 ;;; A post-generation editing method: If two or more consecutive event objects
@@ -6925,7 +6904,7 @@ NIL
 ;;; empty bars in the right meter, tempo etc.
 ;;;
 ;;; NB As this method may be called several times successively, it's the
-;;; caller's duty to call (update slots sc) in order to have timing and other
+;;; caller's duty to call (update-slots sc) in order to have timing and other
 ;;; data updated correctly.
 ;;; 
 ;;; ARGUMENTS
@@ -6933,20 +6912,22 @@ NIL
 ;;; - a player object or symbol ID for the new player
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - a symbol ID for an existing instrument in the instrument-palette (the next
-;;;   argument). This is actually required unless the default of 'computer is
-;;;   acceptable or a player object is passed as second argument.
-;;; - an instrument-palette object in which the instrument exists. Default is
-;;;   the standard palette.
-;;; - the midi-channel for the new player
-;;; - the microtones-midi-channel for the new player
+;;; keyword arguments:
+;;; - :instrument. a symbol ID for an existing instrument in the
+;;;   instrument-palette (the next argument). This is actually required unless
+;;;   the default of 'computer is acceptable or a player object is passed as
+;;;   second argument.
+;;; - :instrument-palette. an instrument-palette object in which the instrument
+;;;   exists. Default is the standard palette.
+;;; - :midi-channel. the midi-channel for the new player
+;;; - microtones-midi-channel. the microtones-midi-channel for the new player
 ;;; 
 ;;; RETURN VALUE
 ;;; the new player object from the ensemble slot of the slippery-chicken object
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-player ((sc slippery-chicken) player
-                       &optional (instrument 'computer)
+                       &key (instrument 'computer)
                          (instrument-palette
                           +slippery-chicken-standard-instrument-palette+)
                          ;; MDE Tue Jul 14 19:08:15 2020, Heidhausen
@@ -6954,8 +6935,10 @@ NIL
                          (microtones-midi-channel -1))
 ;;; ****
   (let ((player-id (if (player-p player) (id player) player)))
-    (add-player (ensemble sc) player instrument instrument-palette
-                midi-channel microtones-midi-channel)
+    (add-player (ensemble sc) player :instrument instrument
+                :instrument-palette instrument-palette
+                :midi-channel midi-channel
+                :microtones-midi-channel microtones-midi-channel)
     ;; MDE Wed Aug  5 14:34:43 2020, Heidhausen -- ins-hier!
     (setf (instruments-hierarchy sc)
           (econs (instruments-hierarchy sc) player-id))
@@ -6964,6 +6947,9 @@ NIL
     ;; we pass all players so that new ones can clone existing ones (the
     ;; existing ones won't be replaced)
     (add-rest-player-sections-aux (piece sc) (players sc))
+    ;; MDE Wed Dec 30 17:47:03 2020, Heidhausen -- if we don't do this then we
+    ;; might be missing bars rests at the end of the new part.
+    (setf (bar-line-type (get-last-bar-for-player sc player-id)) 2)
     (staff-groupings-inc sc)
     ;; todo: check the new player's events have the right player slot
     (get-player (ensemble sc) player-id)))
@@ -7718,8 +7704,10 @@ NIL
                                      (midi-channel 1)
                                      (microtones-midi-channel -1))
 ;;; ****
-  (add-player sc new-player new-ins (instrument-palette sc) midi-channel
-              microtones-midi-channel)
+  (add-player sc new-player :instrument new-ins
+              :instrument-palette (instrument-palette sc)
+              :midi-channel midi-channel
+              :microtones-midi-channel microtones-midi-channel)
   (double-events sc existing-player new-player start-bar start-event end-bar
                  end-event :consolidate-rests nil :auto-beam nil)
   (let ((upper (doctor-env upper-curve (num-bars sc)))
@@ -7879,8 +7867,9 @@ NIL
         ;; We don't need to do this if we've already added a new section.
         (unless new-section
           (progn
-            (setf player-obj (add-player (ensemble sc) player instrument
-                                         instrument-palette)
+            (setf player-obj (add-player (ensemble sc) player
+                                         :instrument instrument
+                                         :instrument-palette instrument-palette)
                   ;; MDE Thu Nov 7 18:44:23 2019 -- set the player's
                   ;; midi-channel otherwise we'll put programme changes on
                   ;; channel 1

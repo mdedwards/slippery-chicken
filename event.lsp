@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:55:32 Tue Oct 27 2020 CET
+;;; $$ Last modified:  15:05:02 Sat Feb  6 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -536,9 +536,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.4.11: remove existing dynamics if we're about to add one
-(defmethod add-mark :before ((e event) mark &optional warn-rest warn-again)
-  (declare (ignore warn-rest warn-again))
-  (when (is-dynamic mark)
+(defmethod add-mark :before ((e event) mark &optional (update-amplitude t)
+                                              warn-again)
+  (declare (ignore warn-again update-amplitude))
+  ;; we ignore update-amplitude in the before method because if we're really
+  ;; adding a dynamic then we really need to delete existing dynamics beforehand
+  (when (is-dynamic mark) ; (and update-amplitude (is-dynamic mark))
     (remove-dynamics e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -574,10 +577,7 @@
            ;; MDE Thu Jun 20 17:24:08 2019 -- sost doesn't react with Disklavier
            ;; Enspire 3.10.00 
            (sost (pedal 127 66))
-           (sost-up (pedal 0 66))
-           (t (when (and update-amplitude (is-dynamic mark))
-                (setf (slot-value e 'amplitude)
-                      (dynamic-to-amplitude mark))))))))
+           (sost-up (pedal 0 66))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/add-mark
@@ -607,8 +607,11 @@
                             &optional (update-amplitude t) warn-again)
 ;;; ****
   (declare (ignore warn-again))
+  ;; (format t "~&event: ~a ~a" mark update-amplitude)
   (pedals-to-controllers e update-amplitude)
-  ;; (print mark)
+  (when (and update-amplitude (is-dynamic mark))
+    (setf (slot-value e 'amplitude)
+          (dynamic-to-amplitude mark)))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -807,7 +810,7 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf pitch-or-chord) (value (e event))
-  ;; 13.2.11 really have to change the written note too
+  ;;  13.2.11 really have to change the written note too
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))
          ;; MDE Tue Nov 20 17:51:34 2018 -- diff should actually always be an
@@ -817,6 +820,7 @@ data: 132
          (diff (when wporc (decimal-places (pitch- wporc porc) 4))))
     ;; (print diff)
     (setf-pitch-aux e value 'pitch-or-chord)
+    ;; (print (pitch-or-chord e))
     (when (pitch-or-chord e)
       (setf (is-rest e) nil
             ;; MDE Thu Mar 20 15:55:52 2014 -- can't believe it's taken this
@@ -826,7 +830,7 @@ data: 132
     (when wporc
       (setf (slot-value e 'written-pitch-or-chord)
             (if (pitch-or-chord e)
-                (transpose (pitch-or-chord e) diff)
+                (transpose (pitch-or-chord e) diff :destructively nil)
                 nil))))
   value)
 
@@ -873,7 +877,6 @@ data: 132
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod setf-pitch-aux ((e event) value slot)
   ;; (print '***setf-pitch-aux)  (print e) (print value) (print slot)
   (typecase value
@@ -909,7 +912,6 @@ data: 132
                   (make-pitch value :midi-channel (get-midi-channel e))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod print-object :before ((i event) stream)
   (format stream "~%EVENT: start-time: ~,3f, end-time: ~,3f, ~
                   ~%       duration-in-tempo: ~,3f, ~
@@ -937,12 +939,10 @@ data: 132
           (written-pitch-or-chord i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod clone ((e event))
   (clone-with-new-class e 'event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod clone-with-new-class :around ((e event) new-class)
   (declare (ignore new-class))
   (let ((rthm (call-next-method)))
@@ -950,7 +950,6 @@ data: 132
     rthm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Used e.g. in rthm-seq-bar
 ;;; Don't forget to copy the appropriate slots over in the scale method above
 ;;; as well!  
@@ -996,9 +995,13 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod porc-equal ((e1 event) (e2 event))
-  (or (and (is-single-pitch e1)
-           (is-single-pitch e2)
-           (pitch= (pitch-or-chord e1) (pitch-or-chord e2)))
+  (or (and                              ;(is-single-pitch e1)
+                                        ;(is-single-pitch e2)
+       ;; MDE Sat Dec 19 19:23:58 2020, Heidhausen -- single note chords are now
+       ;; is-single-pitch T
+       (pitch-p (pitch-or-chord e1))
+       (pitch-p (pitch-or-chord e2))
+       (pitch= (pitch-or-chord e1) (pitch-or-chord e2)))
       (and (is-chord e1)
            (is-chord e2)
            (chord-equal (pitch-or-chord e1) (pitch-or-chord e2)))))
@@ -2743,10 +2746,17 @@ NIL
           (when (marks-before e)
             (loop for thing in (marks-before e) do
                ;; handle clefs here rather than in lp-get-mark
-                 (if (and (listp thing) (eq (first thing) 'clef))
-                     (push 
-                      (get-lp-clef (second thing))
-                      result)
+                 (if (listp thing)
+                     (case (first thing)
+                       (clef (push (get-lp-clef (second thing)) result))
+                       ;; MDE Thu Dec 10 16:11:12 2020, Heidhausen -- we have to
+                       ;; differentiate between rgb marks for individual notes
+                       ;; (which use \tweak) and events (e.g. chords) which
+                       ;; should use \override  
+                       (rgb (push (lp-get-mark
+                                   (list 'rgb (econs (second thing) t)))
+                                  result))
+                       (t (push (lp-get-mark thing) result)))
                      (push (lp-get-mark thing) result))))
           (push note result)
           ;; MDE Thu Jul  2 15:52:52 2015 -- make sure we write an integer
@@ -2811,7 +2821,6 @@ NIL
 ;;; I think cmn should understand the (duration ...) function but seems to fail
 ;;; with this, so use its rq function instead.
 
-#+cmn
 (defmethod get-cmn-data ((e event) &optional bar-num from-pitch-info-only
                          process-event-fun (in-c t) 
                          display-marks-in-part
@@ -2819,6 +2828,7 @@ NIL
   (declare (ignore ignore1 ignore2))
   ;; (print in-c)
   ;; (print (display-tempo e))
+  #+cmn
   (let ((porc (if (or (and (not in-c)
                            (written-pitch-or-chord e))
                       ;; don't transpose piccolo, db etc.
@@ -2916,7 +2926,7 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns NIL if not a chord           ;
+;; Returns NIL if not a chord
 (let ((e (make-event 'c4 'q)))
   (is-chord e))
 
@@ -2928,7 +2938,7 @@ NIL
 
 => 3
 
-;; A rest is not a chord                ;
+;; A rest is not a chord     
 (let ((e (make-rest 'q)))
   (is-chord e))
 
@@ -2982,8 +2992,14 @@ NIL
 ;;; SYNOPSIS
 (defmethod is-single-pitch ((e event))
 ;;; ****
-  (typep (pitch-or-chord e) 'pitch))
-  
+  ;; MDE Sat Dec 19 19:14:29 2020, Heidhausen -- one-note chords also
+  (= 1 (num-notes e)))
+
+;;; MDE Tue Feb  2 20:55:16 2021, Heidhausen -- for old times' sake
+(defmethod is-single-pitch-object ((e event))
+;;; ****
+  (pitch-p (pitch-or-chord e)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 15:46:23 EST 2011: Added robodoc info
@@ -3961,6 +3977,14 @@ NIL
         (values count num-pitches))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod rm-duplicates ((e event) &optional ignore)
+  (declare (ignore ignore))
+  (when (is-chord e)
+    ;; this will take care of written- also
+    (setf (pitch-or-chord e) (rm-duplicates (pitch-or-chord e)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/round-to-nearest
 ;;; DESCRIPTION
 ;;; Round the written and sounding pitch/chord objects to the nearest in the
@@ -3974,17 +3998,29 @@ NIL
 ;;; :scale. The scale to use when rounding. (Common Music tuning object or
 ;;; symbol). If a symbol, then 'chromatic-scale, 'twelfth-tone, or 'quarter-tone
 ;;; only at present. Default is the current scale as set by (in-scale :...).
+;;; :rm-duplicates. T or NIL to remove duplicate pitches, should the event
+;;; contain a chord and rounding created duplicate pitches.
 ;;; 
 ;;; RETURN VALUE
 ;;; the modified event object
 ;;; 
 ;;; SYNOPSIS
-(defmethod round-to-nearest ((e event) &key (scale cm::*scale*))
+(defmethod round-to-nearest ((e event) &key (scale cm::*scale*)
+                                         (rm-duplicates t))
 ;;; ****
+  #|
   (when (pitch-or-chord e)
-    (round-to-nearest (pitch-or-chord e) :scale scale))
+    (round-to-nearest (pitch-or-chord e) :scale scale))
   (when (written-pitch-or-chord e)
     (round-to-nearest (written-pitch-or-chord e) :scale scale))
+  |#
+  (unless (is-rest e)
+    (let ((rounded (round-to-nearest (clone (pitch-or-chord e)) :scale scale)))
+      (when (and (is-chord e) rm-duplicates)
+        (rm-duplicates rounded))
+      ;; (print rounded)
+      (setf (pitch-or-chord e) rounded)))
+  ;; (print (pitch-or-chord e))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4006,7 +4042,7 @@ NIL
 (defmethod num-notes ((e event))
 ;;; ****
   (cond ((is-rest e) 0)
-        ((is-single-pitch e) 1)
+        ((pitch-p (pitch-or-chord e)) 1)
         (t (sclist-length (pitch-or-chord e)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4818,14 +4854,14 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 (defun make-events2 (rhythms pitches
                      &optional (midi-channel 1) (microtones-midi-channel 2))
 ;;; ****
-  (let ((rhythms (rhythm-list rhythms))
+  (let ((rthms (rhythm-list rhythms))
         (ps (my-copy-list pitches))
         (poc nil))
-    (loop for r in rhythms do
+    (loop for r in rthms do
          (unless (is-tied-to r)
            (unless ps
-             (error "event::make-events2: not enough pitches for rhythms: ~a ~a"
-                    rhythms pitches))
+             (error "event::make-events2: not enough pitches for rhythms: ~
+                     ~%~a~%~a" rhythms pitches))
            (setf poc (pop ps)))
          collect
        ;; remember that the fact that r is already a rhythm just means the

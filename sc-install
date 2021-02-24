@@ -126,11 +126,11 @@ tar xf clm.tar.gz
 curl https://ccrma.stanford.edu/software/cmn/cmn.tar.gz -o cmn.tar.gz
 tar xf cmn.tar.gz
 git clone https://github.com/slime/slime.git
-mkdir sc/
-mkdir sc/bin
+git clone -n https://github.com/mdedwards/slippery-chicken.git --depth 1
+mv slippery-chicken sc
 cd sc
-git clone https://github.com/mdedwards/slippery-chicken/src
-mv slippery-chicken src
+mkdir bin
+git checkout HEAD src
 echo ""
 echo "slippery chicken installation complete. You can start it by typing sbcl
 at the prompt, or starting the emacs text editor and running slime there.

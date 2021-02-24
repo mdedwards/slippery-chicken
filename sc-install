@@ -1,0 +1,137 @@
+#!/bin/bash
+
+read -p "Unless already installed, this script will install several 
+open-source programmes (csh, gcc, git, curl, sbcl, emacs, slime)
+on your file system. If this is OK, type y? " -n 1 -r
+if [[ ! $REPLY =~ ^[y]$ ]]
+then
+    # handle exits from shell or function but don't exit interactive shell
+    [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 
+fi
+
+
+if [[ -d lisp ]] ; then
+    echo ""
+    echo "You already have an existing lisp directory here."
+    echo "Please move or delete and run this script again."
+  exit   
+fi
+
+mkdir lisp
+cd lisp
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+# we should start getting into which linux (e.g. apt-get is debian/ubuntu,
+# red-hat equivalent is yum, and freebsd is pkg_add, apparently (and freebsd12.0
+# would be e.g. what $OSTYPE returns)). This could be useful once we want to go
+# there: awk -F= '/^NAME/{print $2}' /etc/os-release
+    INSTALL="sudo apt-get install"
+    # clm needs alsa headers
+    $INSTALL libasound2-dev
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    INSTALL="brew install"
+    if ! command -v brew &> /dev/null
+    then
+        echo "brew could not be found; please install from https://brew.sh/"
+        exit
+    fi
+else echo "unhandled operating system"
+fi
+
+if ! command -v lilypond &> /dev/null
+then
+    echo "lilypond could not be found. Please install from http://lilypond.org"
+fi
+
+if ! command -v csh &> /dev/null
+then
+    echo "csh could not be found; Will attempt to install."
+    $INSTALL csh
+fi
+
+if ! command -v gcc &> /dev/null
+then
+    echo "gcc could not be found; Will attempt to install."
+    $INSTALL gcc
+fi
+
+if ! command -v git &> /dev/null
+then
+    echo "git could not be found. Will attempt to install."
+    $INSTALL git
+fi
+
+if ! command -v curl &> /dev/null
+then
+    echo "curl could not be found. Will attempt to install."
+    $INSTALL curl
+fi
+
+if ! command -v sbcl &> /dev/null
+then
+    echo "sbcl could not be found. Will attempt to install."
+    $INSTALL sbcl
+fi
+
+if ! command -v emacs &> /dev/null
+then
+    echo "emacs could not be found. Will attempt to install."
+    $INSTALL emacs
+fi
+
+LISPINI=~/.sbclrc
+if [[ -f $LISPINI ]] ; then
+  echo "copying $LISPINI to $LISPINI.bu"
+  cp $LISPINI $LISPINI.bu
+fi
+
+LISP=`which sbcl`
+
+CWD=$(pwd)
+cat > $LISPINI << EOF
+(load "$CWD/clm-5/all.lisp")
+(in-package :cl-user)
+(load "$CWD/cmn/cmn-all.lisp")
+(load "$CWD/sc/src/all.lsp")
+(in-package :clm)
+(setf *clm-srate* 44100
+      *clm-channels* 2
+      ;; wave files by default (NB quicktime and itunes on macintel don't
+      ;; understand 32bit float sound files (though CLM can play them).
+      *clm-header-type* mus-riff
+      *clm-play* nil
+      *clm-data-format* mus-lfloat
+      *clm-file-name* "/tmp/clm.wav"
+      ;; constant power panning
+      *clm-locsig-type* mus-interp-sinusoidal
+      *clm-reverb-channels* 2
+      *clm-statistics* t
+      *clm-delete-reverb* t)
+(cl-user::sc)
+EOF
+
+EMACSINI=~/.emacs
+if [[ -f $EMACSINI ]] ; then
+  echo "copying $EMACSINI to $EMACSINI.bu"
+  cp $EMACSINI $EMACSINI.bu
+fi
+cat >> $EMACSINI  << EOF
+(add-to-list 'load-path "$CWD/slime/")
+(require 'slime)
+(setq inferior-lisp-program "$LISP")
+EOF
+
+curl https://ccrma.stanford.edu/software/clm/clm-5.tar.gz -o clm.tar.gz
+tar xf clm.tar.gz
+curl https://ccrma.stanford.edu/software/cmn/cmn.tar.gz -o cmn.tar.gz
+tar xf cmn.tar.gz
+git clone https://github.com/slime/slime.git
+mkdir sc/
+mkdir sc/bin
+cd sc
+git clone https://github.com/mdedwards/slippery-chicken
+mv slippery-chicken src
+echo ""
+echo "slippery chicken installation complete. You can start it by typing sbcl
+at the prompt, or starting the emacs text editor and running slime there.
+See https://tinyurl.com/53xubvm9 for more details."

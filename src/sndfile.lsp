@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sndfile
 ;;;
-;;; Version:          1.0.11
+;;; Version:          1.0.12
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

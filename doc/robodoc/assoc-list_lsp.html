@@ -32,56 +32,56 @@
 
 
 <a name="assoc2dlist2fadd"></a>
-<a name="robo30"></a><h2 class=robodoc>assoc-list/add [ Methods ]</h2>
+<a name="robo31"></a><h2 class=robodoc>assoc-list/add [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Add a new element to the given <a href="#robo110">assoc-list</a> object. By default the new element
+<pre> Add a new element to the given <a href="#robo111">assoc-list</a> object. By default the new element
  is added at the end of the data list but the optional argument can change
  this. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A key/data pair as a list, or a <a href="./named-object_lsp.html#robo589">named-object</a>.
- - The <a href="#robo110">assoc-list</a> object to which it is to be added.
+<pre> - A key/data pair as a list, or a <a href="./named-object_lsp.html#robo590">named-object</a>.
+ - The <a href="#robo111">assoc-list</a> object to which it is to be added.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to <strong>add</strong> items to the front of the data list. Default = NIL = to
  the end
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns T if the specified <a href="./named-object_lsp.html#robo589">named-object</a> is successfully added to the given
- <a href="#robo110">assoc-list</a>. 
+<pre> Returns T if the specified <a href="./named-object_lsp.html#robo590">named-object</a> is successfully added to the given
+ <a href="#robo111">assoc-list</a>. 
 
- Returns an error if an attempt is made to <strong>add</strong> NIL to the given <a href="#robo110">assoc-list</a>
- or if the given <a href="./named-object_lsp.html#robo589">named-object</a> is already present in the given <a href="#robo110">assoc-list</a>. 
+ Returns an error if an attempt is made to <strong>add</strong> NIL to the given <a href="#robo111">assoc-list</a>
+ or if the given <a href="./named-object_lsp.html#robo590">named-object</a> is already present in the given <a href="#robo111">assoc-list</a>. 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam)
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam)
                                    (four roses)
                                    (wild turkey)))))
   (<strong>add</strong> '(makers mark) al))
 
 =&gt; T
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam)
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam)
                                    (four roses)
                                    (wild turkey)))))
   (<strong>add</strong> '(makers mark) al)
-  (<a href="#robo34">get-data</a> 'makers al))
+  (<a href="./recursive-assoc-list_lsp.html#robo386">get-data</a> 'makers al))
 
 =&gt;
 NAMED-OBJECT: id: MAKERS, tag: NIL, 
 data: MARK
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam)
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam)
                                    (four roses)
                                    (wild turkey)))))
   (<strong>add</strong> '(makers mark) al)
-  (<a href="#robo39">get-position</a> 'makers al))
+  (<a href="#robo40">get-position</a> 'makers al))
 
 =&gt; 3
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam)
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam)
                                    (four roses)
                                    (wild turkey)))))
   (<strong>add</strong> '(knob creek) al))
@@ -89,34 +89,34 @@ data: MARK
 =&gt; T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>add</strong> (<a href="./named-object_lsp.html#robo589">named-object</a> (al assoc-list) &amp;optional front)
+<pre class="source">(defmethod <strong>add</strong> (<a href="./named-object_lsp.html#robo590">named-object</a> (al assoc-list) &amp;optional front)
 </pre>
 
 
 <a name="assoc2dlist2fadd2dto2dlist2ddata"></a>
-<a name="robo31"></a><h2 class=robodoc>assoc-list/add-to-list-data [ Methods ]</h2>
+<a name="robo32"></a><h2 class=robodoc>assoc-list/add-to-list-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Add an element of any type to the end of the data (list) associated with a
- given key of a given <a href="#robo110">assoc-list</a>.
+ given key of a given <a href="#robo111">assoc-list</a>.
 
  The data associated with the given key must already be a list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - An item of any type.
- - A given key that must be present in the given <a href="#robo110">assoc-list</a>.
- - The given <a href="#robo110">assoc-list</a>.
+ - A given key that must be present in the given <a href="#robo111">assoc-list</a>.
+ - The given <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the whole <a href="./named-object_lsp.html#robo589">named-object</a> to which the new element was added.
+<pre> Returns the whole <a href="./named-object_lsp.html#robo590">named-object</a> to which the new element was added.
 
  This method will abort with an error if a key is sought which does not
- exist within the given <a href="#robo110">assoc-list</a>. For such cases, use
- <a href="#robo32">add-to-list-data-force</a> instead.
+ exist within the given <a href="#robo111">assoc-list</a>. For such cases, use
+ <a href="#robo33">add-to-list-data-force</a> instead.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix)
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix)
                                    (dog (fido spot))
                                    (cow bessie)))))
   (<strong>add-to-list-data</strong> 'rover 'dog al))
@@ -131,31 +131,31 @@ data: (FIDO SPOT ROVER)
 
 
 <a name="assoc2dlist2fadd2dto2dlist2ddata2dforce"></a>
-<a name="robo32"></a><h2 class=robodoc>assoc-list/add-to-list-data-force [ Methods ]</h2>
+<a name="robo33"></a><h2 class=robodoc>assoc-list/add-to-list-data-force [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Similar to <a href="#robo31">add-to-list-data</a>, but if the given key doesn't already exist in
- the given <a href="#robo110">assoc-list</a>, it is first added, then the given new element is
+<pre> Similar to <a href="#robo32">add-to-list-data</a>, but if the given key doesn't already exist in
+ the given <a href="#robo111">assoc-list</a>, it is first added, then the given new element is
  added to that as a 1-element list. 
 
- If the given key already exists within the given <a href="#robo110">assoc-list</a>, its data must
+ If the given key already exists within the given <a href="#robo111">assoc-list</a>, its data must
  already be in the form of a list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A (new) element of any type.
- - A given key that may or may not be present in the given <a href="#robo110">assoc-list</a>.
- - The the given <a href="#robo110">assoc-list</a>.
+ - A given key that may or may not be present in the given <a href="#robo111">assoc-list</a>.
+ - The the given <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the whole <a href="./named-object_lsp.html#robo589">named-object</a> to which the element was added when used
- with a key that already exists within the given <a href="#robo110">assoc-list</a>.
+<pre> Returns the whole <a href="./named-object_lsp.html#robo590">named-object</a> to which the element was added when used
+ with a key that already exists within the given <a href="#robo111">assoc-list</a>.
 
  Returns T when used with a key that does not already exist in the given
- <a href="#robo110">assoc-list</a>. 
+ <a href="#robo111">assoc-list</a>. 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix)
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix)
                                    (dog (fido spot))
                                    (cow bessie)))))
   (<strong>add-to-list-data-force</strong> 'rover 'dog al))
@@ -164,11 +164,11 @@ data: (FIDO SPOT ROVER)
 NAMED-OBJECT: id: DOG, tag: NIL, 
 data: (FIDO SPOT ROVER)
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix)
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix)
                                    (dog (fido spot))
                                    (cow bessie)))))
   (<strong>add-to-list-data-force</strong> 'wilbur 'pig al)
-  (<a href="#robo37">get-keys</a> al))
+  (<a href="#robo38">get-keys</a> al))
 
 =&gt; (CAT DOG COW PIG)
 </pre>
@@ -178,9 +178,9 @@ data: (FIDO SPOT ROVER)
 
 
 <a name="assoc2dlist2fascending2dids3f"></a>
-<a name="robo33"></a><h2 class=robodoc>assoc-list/ascending-ids? [ Methods ]</h2>
+<a name="robo34"></a><h2 class=robodoc>assoc-list/ascending-ids? [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 19th 2020, Heidhausen
 </pre>
@@ -189,23 +189,23 @@ data: (FIDO SPOT ROVER)
  missing, optionally starting from particular integer.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo110">assoc-list</a> object
+<pre> - the <a href="#robo111">assoc-list</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - an integer representing the <a href="./event_lsp.html#robo192">lowest</a> required ID
+<pre> - an integer representing the <a href="./chord_lsp.html#robo90">lowest</a> required ID
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T or NIL
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>ascending-ids?</strong> (<a href="#robo41">make-assoc-list</a> 'test '((1 dog) (2 cat) (3 horse)))) -&gt; T
+<pre class="source">(<strong>ascending-ids?</strong> (<a href="#robo42">make-assoc-list</a> 'test '((1 dog) (2 cat) (3 horse)))) -&gt; T
 ;;; 3 is missing
-(<strong>ascending-ids?</strong> (<a href="#robo41">make-assoc-list</a> 'test '((1 dog) (2 cat) (4 horse)))) -&gt; NIL
+(<strong>ascending-ids?</strong> (<a href="#robo42">make-assoc-list</a> 'test '((1 dog) (2 cat) (4 horse)))) -&gt; NIL
 ;; doesn't start at 2
-(<strong>ascending-ids?</strong> (<a href="#robo41">make-assoc-list</a> 'test '((1 dog) (2 cat) (3 horse))) 2) -&gt; NIL
+(<strong>ascending-ids?</strong> (<a href="#robo42">make-assoc-list</a> 'test '((1 dog) (2 cat) (3 horse))) 2) -&gt; NIL
 ;; missing several integers
-(<strong>ascending-ids?</strong> (<a href="#robo41">make-assoc-list</a> 'test '((4 dog) (2 cat) (7 horse))) 2) -&gt; NIL
-(<strong>ascending-ids?</strong> (<a href="#robo41">make-assoc-list</a> 'test '((4 dog) (2 cat) (3 horse))) 2) -&gt; T
+(<strong>ascending-ids?</strong> (<a href="#robo42">make-assoc-list</a> 'test '((4 dog) (2 cat) (7 horse))) 2) -&gt; NIL
+(<strong>ascending-ids?</strong> (<a href="#robo42">make-assoc-list</a> 'test '((4 dog) (2 cat) (3 horse))) 2) -&gt; T
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>ascending-ids?</strong> ((al assoc-list) &amp;optional starting-from)
@@ -213,36 +213,36 @@ data: (FIDO SPOT ROVER)
 
 
 <a name="assoc2dlist2fget2ddata"></a>
-<a name="robo34"></a><h2 class=robodoc>assoc-list/get-data [ Methods ]</h2>
+<a name="robo35"></a><h2 class=robodoc>assoc-list/get-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the <a href="./named-object_lsp.html#robo589">named-object</a> (id, tag and data) that is identified by a
- specified key within a given <a href="#robo110">assoc-list</a>. 
+<pre> Return the <a href="./named-object_lsp.html#robo590">named-object</a> (id, tag and data) that is identified by a
+ specified key within a given <a href="#robo111">assoc-list</a>. 
 
  NB: This method returns the named object itself, not just the data
-     associated with the key (use <a href="#robo35">get-data-data</a> for that). 
+     associated with the key (use <a href="#robo36">get-data-data</a> for that). 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A symbol that is the key (id) of the <a href="./named-object_lsp.html#robo589">named-object</a> sought.
- - The <a href="#robo110">assoc-list</a> object in which it is be sought.
+<pre> - A symbol that is the key (id) of the <a href="./named-object_lsp.html#robo590">named-object</a> sought.
+ - The <a href="#robo111">assoc-list</a> object in which it is be sought.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether a warning is printed if the specified key
-   cannot be found within the given <a href="#robo110">assoc-list</a>. T = print. Default = T.  
+   cannot be found within the given <a href="#robo111">assoc-list</a>. T = print. Default = T.  
    Mostly we define whether we want to warn in the instance itself, but  
    sometimes it would be good to warn or not on a call basis, hence the 
    optional argument. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./named-object_lsp.html#robo589">named-object</a> is returned if the specified key is found within the given
- <a href="#robo110">assoc-list</a> object. 
+<pre> A <a href="./named-object_lsp.html#robo590">named-object</a> is returned if the specified key is found within the given
+ <a href="#robo111">assoc-list</a> object. 
 
  NIL is returned and a warning is printed if the specified key is not found
- in the given <a href="#robo110">assoc-list</a> object. 
+ in the given <a href="#robo111">assoc-list</a> object. 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-data</strong> 'four al))
@@ -251,27 +251,27 @@ data: (FIDO SPOT ROVER)
 NAMED-OBJECT: id: FOUR, tag: NIL, 
 data: ROSES
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-data</strong> 'jack al))
 
 =&gt; NIL
 WARNING:
-   assoc-list::get-data: Could not find data with key JACK in <a href="#robo110">assoc-list</a> with
+   assoc-list::get-data: Could not find data with key JACK in <a href="#robo111">assoc-list</a> with
    id TEST
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-data</strong> 'jack al t))
 
 =&gt; NIL 
 WARNING:
-   assoc-list::get-data: Could not find data with key JACK in <a href="#robo110">assoc-list</a> with
+   assoc-list::get-data: Could not find data with key JACK in <a href="#robo111">assoc-list</a> with
    id TEST
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-data</strong> 'jack al nil))
@@ -284,41 +284,41 @@ WARNING:
 
 
 <a name="assoc2dlist2fget2ddata2ddata"></a>
-<a name="robo35"></a><h2 class=robodoc>assoc-list/get-data-data [ Methods ]</h2>
+<a name="robo36"></a><h2 class=robodoc>assoc-list/get-data-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> (Short-cut for (data (<a href="#robo34">get-data</a> ...))
- Get the data associated with the given key of the given <a href="#robo110">assoc-list</a>. 
+<pre> (Short-cut for (data (<a href="./recursive-assoc-list_lsp.html#robo386">get-data</a> ...))
+ Get the data associated with the given key of the given <a href="#robo111">assoc-list</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo110">assoc-list</a> key symbol associated with the data list which is sought. 
- - The <a href="#robo110">assoc-list</a> in which it is to be sought.
+<pre> - The <a href="#robo111">assoc-list</a> key symbol associated with the data list which is sought. 
+ - The <a href="#robo111">assoc-list</a> in which it is to be sought.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether to print a warning if no such <a href="./named-object_lsp.html#robo589">named-object</a>
-   can be found within the given <a href="#robo110">assoc-list</a> (default = T). 
+<pre> - T or NIL to indicate whether to print a warning if no such <a href="./named-object_lsp.html#robo590">named-object</a>
+   can be found within the given <a href="#robo111">assoc-list</a> (default = T). 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> If the given key is found within the given <a href="#robo110">assoc-list</a>, the data associated
+<pre> If the given key is found within the given <a href="#robo111">assoc-list</a>, the data associated
  with that key is returned.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-data-data</strong> 'jim al))
 
 =&gt; BEAM 
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-data-data</strong> 'jack al))
 
 =&gt; NIL
 WARNING:
-   assoc-list::get-data: Could not find data with key JACK in <a href="#robo110">assoc-list</a> with
+   assoc-list::get-data: Could not find data with key JACK in <a href="#robo111">assoc-list</a> with
    id TEST 
 </pre>
 <p class="item_name">SYNOPSIS</p>
@@ -327,22 +327,22 @@ WARNING:
 
 
 <a name="assoc2dlist2fget2dfirst"></a>
-<a name="robo36"></a><h2 class=robodoc>assoc-list/get-first [ Methods ]</h2>
+<a name="robo37"></a><h2 class=robodoc>assoc-list/get-first [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Returns the first <a href="./named-object_lsp.html#robo589">named-object</a> in the DATA slot of the given <a href="#robo110">assoc-list</a>
+<pre> Returns the first <a href="./named-object_lsp.html#robo590">named-object</a> in the DATA slot of the given <a href="#robo111">assoc-list</a>
  object.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo110">assoc-list</a> object.
+<pre> - An <a href="#robo111">assoc-list</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./named-object_lsp.html#robo589">named-object</a> that is the first object in the DATA slot of the given
- <a href="#robo110">assoc-list</a> object.
+<pre> A <a href="./named-object_lsp.html#robo590">named-object</a> that is the first object in the DATA slot of the given
+ <a href="#robo111">assoc-list</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam)
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam)
                                    (four roses)
                                    (wild turkey)))))
   (<strong>get-first</strong> al))
@@ -357,35 +357,35 @@ data BEAM
 
 
 <a name="assoc2dlist2fget2dkeys"></a>
-<a name="robo37"></a><h2 class=robodoc>assoc-list/get-keys [ Methods ]</h2>
+<a name="robo38"></a><h2 class=robodoc>assoc-list/get-keys [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get a simple list of the keys in a given association list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo110">assoc-list</a>.
+<pre> - An <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - Optional argument: T or NIL (default T) to indicate whether a warning  
-   should be printed when the first argument is a recursive <a href="#robo110">assoc-list</a>. 
+   should be printed when the first argument is a recursive <a href="#robo111">assoc-list</a>. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of the keys only of all top-level association list pairs in the
- given <a href="#robo110">assoc-list</a>. 
+ given <a href="#robo111">assoc-list</a>. 
 
- <strong>get-keys</strong> is a method of the <a href="#robo110">assoc-list</a> class and therefore returns only
- top-level keys if accessing a recursive <a href="#robo110">assoc-list</a>.
+ <strong>get-keys</strong> is a method of the <a href="#robo111">assoc-list</a> class and therefore returns only
+ top-level keys if accessing a recursive <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix) 
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix) 
                                    (dog fido) 
                                    (cow bessie)))))
   (<strong>get-keys</strong> al))
 
 =&gt; (CAT DOG COW)
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix) 
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix) 
                                    (dog ((scottish terrier)
                                          (german shepherd)
                                          (irish wolfhound))) 
@@ -400,9 +400,9 @@ data BEAM
 
 
 <a name="assoc2dlist2fget2dnearest"></a>
-<a name="robo38"></a><h2 class=robodoc>assoc-list/get-nearest [ Methods ]</h2>
+<a name="robo39"></a><h2 class=robodoc>assoc-list/get-nearest [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 4/8/2015
 </pre>
@@ -412,10 +412,10 @@ data BEAM
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - they key (number)
- - the <a href="#robo110">assoc-list</a> object
+ - the <a href="#robo111">assoc-list</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="./named-object_lsp.html#robo589">named-object</a>
+<pre> a <a href="./named-object_lsp.html#robo590">named-object</a>
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-nearest</strong> (key (al assoc-list) &amp;optional ignore1 ignore2)
@@ -423,17 +423,17 @@ data BEAM
 
 
 <a name="assoc2dlist2fget2dposition"></a>
-<a name="robo39"></a><h2 class=robodoc>assoc-list/get-position [ Methods ]</h2>
+<a name="robo40"></a><h2 class=robodoc>assoc-list/get-position [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Returns the index position (zero-based) of a <a href="./named-object_lsp.html#robo589">named-object</a> within a given 
- <a href="#robo110">assoc-list</a>. 
+<pre> Returns the index position (zero-based) of a <a href="./named-object_lsp.html#robo590">named-object</a> within a given 
+ <a href="#robo111">assoc-list</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo110">assoc-list</a> key symbol (<a href="./named-object_lsp.html#robo589">named-object</a> id) of the object for which the 
+<pre> - The <a href="#robo111">assoc-list</a> key symbol (<a href="./named-object_lsp.html#robo590">named-object</a> id) of the object for which the 
    position is sought.
- - The <a href="#robo110">assoc-list</a> in which it is to be sought.
+ - The <a href="#robo111">assoc-list</a> in which it is to be sought.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - Optional argument: An indexing integer. In this case, <strong>get-position</strong> will 
@@ -441,28 +441,28 @@ data BEAM
    objects located at indices lower than the given integer (default = 0). 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The integer index of the <a href="./named-object_lsp.html#robo589">named-object</a> within the given <a href="#robo110">assoc-list</a>.
+<pre> The integer index of the <a href="./named-object_lsp.html#robo590">named-object</a> within the given <a href="#robo111">assoc-list</a>.
 
- NIL is returned if the object is not present in the <a href="#robo110">assoc-list</a> starting
+ NIL is returned if the object is not present in the <a href="#robo111">assoc-list</a> starting
  with the index number given as the start argument (i.e., in the entire list
  if the optional start argument is omitted).  
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-position</strong> 'four al))
 
 =&gt; 1
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-position</strong> 'jack al))
 
 =&gt; NIL
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((jim beam) 
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam) 
                                    (four roses) 
                                    (wild turkey)))))
   (<strong>get-position</strong> 'jim al 1))
@@ -475,15 +475,15 @@ data BEAM
 
 
 <a name="assoc2dlist2fmake2dassoc2dlist"></a>
-<a name="robo41"></a><h2 class=robodoc>assoc-list/make-assoc-list [ Functions ]</h2>
+<a name="robo42"></a><h2 class=robodoc>assoc-list/make-assoc-list [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> A function that provides a shortcut to creating an <a href="#robo110">assoc-list</a>, filling it
+<pre> A function that provides a shortcut to creating an <a href="#robo111">assoc-list</a>, filling it
  with data, and assigning a name to it.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The name of the <a href="#robo110">assoc-list</a> to be created.
+<pre> - The name of the <a href="#robo111">assoc-list</a> to be created.
  - The data with which to fill it.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -492,7 +492,7 @@ data BEAM
    index which doesn't exist is used for look-up.  T = warn. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the <a href="#robo110">assoc-list</a> as a <a href="./named-object_lsp.html#robo589">named-object</a>.
+<pre> Returns the <a href="#robo111">assoc-list</a> as a <a href="./named-object_lsp.html#robo590">named-object</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>make-assoc-list</strong> 'looney-tunes '((bugs bunny)
@@ -501,7 +501,7 @@ data BEAM
 =&gt; 
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo282">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo283">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL
                      this: NIL
                      next: NIL
@@ -522,19 +522,19 @@ data: PIG)
 
 
 <a name="assoc2dlist2fmap2ddata"></a>
-<a name="robo42"></a><h2 class=robodoc>assoc-list/map-data [ Methods ]</h2>
+<a name="robo43"></a><h2 class=robodoc>assoc-list/map-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Map a function over the data in the <a href="#robo110">assoc-list</a>, i.e. call the given
- function/method on each data slot of each <a href="./named-object_lsp.html#robo589">named-object</a> in the <a href="#robo110">assoc-list</a>
- data slot. See also recursive-assoc-list's <a href="./recursive-assoc-list_lsp.html#robo402">rmap</a> method which does pretty
- much the same but acting recursively on each <a href="./named-object_lsp.html#robo589">named-object</a> (unless it is
+<pre> Map a function over the data in the <a href="#robo111">assoc-list</a>, i.e. call the given
+ function/method on each data slot of each <a href="./named-object_lsp.html#robo590">named-object</a> in the <a href="#robo111">assoc-list</a>
+ data slot. See also recursive-assoc-list's <a href="./recursive-assoc-list_lsp.html#robo403">rmap</a> method which does pretty
+ much the same but acting recursively on each <a href="./named-object_lsp.html#robo590">named-object</a> (unless it is
  itself recursive), rather than the named-object's data.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo110">assoc-list</a> to which the function is to be applied.
- - The function to be applied.  This must take the data in the <a href="#robo110">assoc-list</a> as
+<pre> - The <a href="#robo111">assoc-list</a> to which the function is to be applied.
+ - The function to be applied.  This must take the data in the <a href="#robo111">assoc-list</a> as
    a first argument. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -544,7 +544,7 @@ data: PIG)
 <pre> Returns a list of the values returned by the function call on the data.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'al-test
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'al-test
                            '((1 (1 2 3 4))
                              (2 (5 6 7 8))
                              (3 (9 10 11 12))))))
@@ -559,25 +559,25 @@ data: PIG)
 
 
 <a name="assoc2dlist2fnmap2ddata"></a>
-<a name="robo43"></a><h2 class=robodoc>assoc-list/nmap-data [ Methods ]</h2>
+<a name="robo44"></a><h2 class=robodoc>assoc-list/nmap-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> November 1st 2018, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> A destructive version of map-data: replace the data slot with the
- <a href="./named-object_lsp.html#robo589">named-object</a> returned by the 2nd argument after it is passed one
- <a href="./named-object_lsp.html#robo589">named-object</a> after another. 
+ <a href="./named-object_lsp.html#robo590">named-object</a> returned by the 2nd argument after it is passed one
+ <a href="./named-object_lsp.html#robo590">named-object</a> after another. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> See the <a href="#robo42">map-data</a> method in this class.
+<pre> See the <a href="#robo43">map-data</a> method in this class.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the <a href="#robo110">assoc-list</a> object with modified data in its elements.
+<pre> the <a href="#robo111">assoc-list</a> object with modified data in its elements.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((1 (2 3))
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((1 (2 3))
                                    (2 (4 5 6))
                                    (3 (7))))))
   (<strong>nmap-data</strong> al #'(lambda (no) (length (data no))))
@@ -600,9 +600,9 @@ data: 1
 
 
 <a name="assoc2dlist2freindex"></a>
-<a name="robo45"></a><h2 class=robodoc>assoc-list/reindex [ Methods ]</h2>
+<a name="robo46"></a><h2 class=robodoc>assoc-list/reindex [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 14th June 2017, Edinburgh
 </pre>
@@ -611,13 +611,13 @@ data: 1
  number.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo110">assoc-list</a> object
+<pre> - the <a href="#robo111">assoc-list</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - the integer to start reindexing at
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the <a href="#robo110">assoc-list</a> object
+<pre> the <a href="#robo111">assoc-list</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>reindex</strong> ((al assoc-list) &amp;optional (start 1))
@@ -625,23 +625,23 @@ data: 1
 
 
 <a name="assoc2dlist2fremove2ddata"></a>
-<a name="robo46"></a><h2 class=robodoc>assoc-list/remove-data [ Methods ]</h2>
+<a name="robo47"></a><h2 class=robodoc>assoc-list/remove-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> February 1st 2016
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Convenience function to allow objects to be removed from an <a href="#robo110">assoc-list</a> (and
+<pre> Convenience function to allow objects to be removed from an <a href="#robo111">assoc-list</a> (and
  subclasses e.g. palettes and maps) 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo110">assoc-list</a> object
- - as many keys as you like for the members of the <a href="#robo110">assoc-list</a>. If none are
+<pre> - the <a href="#robo111">assoc-list</a> object
+ - as many keys as you like for the members of the <a href="#robo111">assoc-list</a>. If none are
    passed then all are removed. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo110">assoc-list</a> object's new data list, i.e. with elements removed. Could of
+<pre> The <a href="#robo111">assoc-list</a> object's new data list, i.e. with elements removed. Could of
  course be NIL if you've not passed any keys.
 </pre>
 <p class="item_name">SYNOPSIS</p>
@@ -650,26 +650,26 @@ data: 1
 
 
 <a name="assoc2dlist2fremove2dwhen"></a>
-<a name="robo47"></a><h2 class=robodoc>assoc-list/remove-when [ Methods ]</h2>
+<a name="robo48"></a><h2 class=robodoc>assoc-list/remove-when [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> June 28th 2017, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Use a function to test each object in an <a href="#robo110">assoc-list</a> and if the test returns
- T, then remove the object. Works in <a href="./recursive-assoc-list_lsp.html#robo44">recursive-assoc-list</a> class too. 
+<pre> Use a function to test each object in an <a href="#robo111">assoc-list</a> and if the test returns
+ T, then remove the object. Works in <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> class too. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - an <a href="#robo110">assoc-list</a> object
- - a function that returns T or NIL after interrogating a <a href="./named-object_lsp.html#robo589">named-object</a> or
+<pre> - an <a href="#robo111">assoc-list</a> object
+ - a function that returns T or NIL after interrogating a <a href="./named-object_lsp.html#robo590">named-object</a> or
    subclass's slots
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> a list of the IDs of the objects removed.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'mixed-bag 
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'mixed-bag 
                             '((jim beam)
                               (wild turkey)
                               (four roses)))))
@@ -681,20 +681,20 @@ data: 1
 
 
 <a name="assoc2dlist2freplace2ddata"></a>
-<a name="robo48"></a><h2 class=robodoc>assoc-list/replace-data [ Methods ]</h2>
+<a name="robo49"></a><h2 class=robodoc>assoc-list/replace-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> A convenience method that's essentially the same as <a href="./recursive-assoc-list_lsp.html#robo404">set-data</a> but without
+<pre> A convenience method that's essentially the same as <a href="#robo50">set-data</a> but without
  having to pass the new ID in a list along with the new value. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - The key (number, symbol, string) to the existing data.
  - The new value to be associated with this key (any data).
- - The <a href="#robo110">assoc-list</a> object
+ - The <a href="#robo111">assoc-list</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="./named-object_lsp.html#robo589">named-object</a> for the datum.
+<pre> The <a href="./named-object_lsp.html#robo590">named-object</a> for the datum.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>replace-data</strong> (key new-value (al assoc-list))
@@ -702,27 +702,27 @@ data: 1
 
 
 <a name="assoc2dlist2fset2ddata"></a>
-<a name="robo49"></a><h2 class=robodoc>assoc-list/set-data [ Methods ]</h2>
+<a name="robo50"></a><h2 class=robodoc>assoc-list/set-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Replace the <a href="./named-object_lsp.html#robo589">named-object</a> associated with a specified key within a given
- <a href="#robo110">assoc-list</a> object. This method replaces the whole <a href="./named-object_lsp.html#robo589">named-object</a>, not just
+<pre> Replace the <a href="./named-object_lsp.html#robo590">named-object</a> associated with a specified key within a given
+ <a href="#robo111">assoc-list</a> object. This method replaces the whole <a href="./named-object_lsp.html#robo590">named-object</a>, not just
  the data of that object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A key present within the given <a href="#robo110">assoc-list</a> object.
+<pre> - A key present within the given <a href="#robo111">assoc-list</a> object.
  - A key/data pair as a list.
- - The <a href="#robo110">assoc-list</a> object in which to find and replace the <a href="./named-object_lsp.html#robo589">named-object</a>
+ - The <a href="#robo111">assoc-list</a> object in which to find and replace the <a href="./named-object_lsp.html#robo590">named-object</a>
    associated with the specified key.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the new <a href="./named-object_lsp.html#robo589">named-object</a>.
+<pre> Returns the new <a href="./named-object_lsp.html#robo590">named-object</a>.
  
- Returns NIL when the given key is not present within the given <a href="#robo110">assoc-list</a>.
+ Returns NIL when the given key is not present within the given <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix)
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix)
                                    (dog fido)
                                    (cow bessie)))))
   (<strong>set-data</strong> 'dog '(dog spot) al))
@@ -731,17 +731,17 @@ data: 1
 NAMED-OBJECT: id: DOG, tag: NIL, 
 data: SPOT
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix)
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix)
                                    (dog fido)
                                    (cow bessie)))))
   (<strong>set-data</strong> 'pig '(pig wilbur) al))
 
 =&gt; NIL
 WARNING:
-   assoc-list::set-data: Could not find data with key PIG in <a href="#robo110">assoc-list</a> with id
+   assoc-list::set-data: Could not find data with key PIG in <a href="#robo111">assoc-list</a> with id
    TEST 
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix)
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix)
                                    (dog fido)
                                    (cow bessie)))))
   (<strong>set-data</strong> 'dog '(pig wilbur) al))
@@ -756,17 +756,17 @@ data: WILBUR
 
 
 <a name="assoc2dlist2fset2dnth2dof2ddata"></a>
-<a name="robo50"></a><h2 class=robodoc>assoc-list/set-nth-of-data [ Methods ]</h2>
+<a name="robo51"></a><h2 class=robodoc>assoc-list/set-nth-of-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Replace a given member of a given data list within a given <a href="#robo110">assoc-list</a>.
+<pre> Replace a given member of a given data list within a given <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The key (<a href="./named-object_lsp.html#robo589">named-object</a> id) associated with the data to be changed.
+<pre> - The key (<a href="./named-object_lsp.html#robo590">named-object</a> id) associated with the data to be changed.
  - The zero-based integer index of the member of the list to be changed.
  - The new value.
- - The <a href="#robo110">assoc-list</a> in which the change is to be made.
+ - The <a href="#robo111">assoc-list</a> in which the change is to be made.
  
  The data to be modified must already be in the form of a list.
 
@@ -777,18 +777,18 @@ data: WILBUR
 <pre> Returns the new value only.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix)
+<pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix)
                                    (dog (fido spot rover))
                                    (cow bessie)))))
   (<strong>set-nth-of-data</strong> 'dog 0 'snoopy al))
 
 =&gt; SNOOPY
 
-(let ((al (<a href="#robo41">make-assoc-list</a> 'test '((cat felix)
+(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((cat felix)
                                    (dog (fido spot rover))
                                    (cow bessie)))))
   (<strong>set-nth-of-data</strong> 'dog 0 'snoopy al) 
-  (<a href="#robo34">get-data</a> 'dog al))
+  (<a href="./recursive-assoc-list_lsp.html#robo386">get-data</a> 'dog al))
 
 =&gt; 
 NAMED-OBJECT: id: DOG, tag: NIL, 
@@ -800,18 +800,18 @@ data: (SNOOPY SPOT ROVER)
 
 
 <a name="circular2dsclist2fassoc2dlist"></a>
-<a name="robo110"></a><h2 class=robodoc>circular-sclist/assoc-list [ Classes ]</h2>
+<a name="robo111"></a><h2 class=robodoc>circular-sclist/assoc-list [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo593">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo594">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>assoc-list</strong>
 
  File:             <a href="#robo_top_of_doc">assoc-list.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo589">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo291">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo282">sclist</a> -&gt;
-                   <a href="./circular-sclist_lsp.html#robo593">circular-sclist</a> -&gt; <strong>assoc-list</strong> 
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo590">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo292">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo283">sclist</a> -&gt;
+                   <a href="./circular-sclist_lsp.html#robo594">circular-sclist</a> -&gt; <strong>assoc-list</strong> 
 
- Version:          1.0.11
+ Version:          1.0.12
 
  Project:          slippery chicken (algorithmic composition)
 
@@ -830,7 +830,7 @@ data: (SNOOPY SPOT ROVER)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/assoc-list.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Tue Oct 27 2020 15:57:59
+<p>Generated from ./../../src/assoc-list.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Thu Feb 25 2021 17:24:22
 </p>
 </div> <!-- footer -->
 </body>

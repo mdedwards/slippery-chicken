@@ -42,7 +42,7 @@
 
  Class Hierarchy:  none: no classes defined
 
- Version:          1.0.11
+ Version:          1.0.12
 
  Project:          slippery chicken (algorithmic composition)
 
@@ -52,14 +52,14 @@
 
  Creation date:    June 24th 2002
 
- $$ Last modified:  15:40:26 Thu Sep 24 2020 CEST
+ $$ Last modified:  19:10:16 Wed Feb 24 2021 CET
 
  SVN ID: $Id$
 </pre>
 
 
 <a name="utilities2fa2dweighting"></a>
-<a name="robo858"></a><h2 class=robodoc>utilities/a-weighting [ Functions ]</h2>
+<a name="robo862"></a><h2 class=robodoc>utilities/a-weighting [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -82,10 +82,10 @@
  - :linear.  If T return amplitude values as linear scalers rather than
     logarithmic decibel values.  NB If this is NIL then returned values are
     likely to be negative (db) values.  Default = T.  
- - :<a href="./chord_lsp.html#robo88">invert</a>.  As the weighting routine tries to tell us what relative
+ - :<a href="./pitch-seq_lsp.html#robo319">invert</a>.  As the weighting routine tries to tell us what relative
     loudness we'll perceive given constant amplitudes, low and high
     frequencies will return negative values as we perceive them Xdb less
-    than our most sensitive frequency area.  If :<a href="./chord_lsp.html#robo88">invert</a> t, just flip this
+    than our most sensitive frequency area.  If :<a href="./pitch-seq_lsp.html#robo319">invert</a> t, just flip this
     negatives to positives so that if :linear T you get a scaler to make
     lower/higher frequences equally loud as the most sensitive frequencies.
 </pre>
@@ -94,11 +94,11 @@
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; Decibels:
-(<strong>a-weighting</strong> 50 :<a href="./chord_lsp.html#robo88">invert</a> nil :linear nil) =&gt; -30.274979
-(<strong>a-weighting</strong> 50 :<a href="./chord_lsp.html#robo88">invert</a> t :linear nil) =&gt; 30.274979
+(<strong>a-weighting</strong> 50 :<a href="./pitch-seq_lsp.html#robo319">invert</a> nil :linear nil) =&gt; -30.274979
+(<strong>a-weighting</strong> 50 :<a href="./pitch-seq_lsp.html#robo319">invert</a> t :linear nil) =&gt; 30.274979
 ;;; Linear amplitude scalers:
 (<strong>a-weighting</strong> 50) =&gt; 32.639904
-(<strong>a-weighting</strong> 50 :<a href="./chord_lsp.html#robo88">invert</a> nil) =&gt; 0.030637344
+(<strong>a-weighting</strong> 50 :<a href="./pitch-seq_lsp.html#robo319">invert</a> nil) =&gt; 0.030637344
 ;;; Exaggeration:
 (<strong>a-weighting</strong> 50 :expt 1.1) =&gt; 46.251286
 ;;; Smoothing:
@@ -106,9 +106,9 @@
 
 ;;; Looping through the MIDI note range by tritones returning decibel values:
 (loop for midi from 0 to 127 by 6
-     for freq = (<a href="./cm_lsp.html#robo138">midi-to-freq</a> midi)
-     collect (list (<a href="./cm_lsp.html#robo139">midi-to-note</a> midi)
-                   (<strong>a-weighting</strong> freq :linear nil :<a href="./chord_lsp.html#robo88">invert</a> nil)))
+     for freq = (<a href="./cm_lsp.html#robo139">midi-to-freq</a> midi)
+     collect (list (<a href="./cm_lsp.html#robo140">midi-to-note</a> midi)
+                   (<strong>a-weighting</strong> freq :linear nil :<a href="./pitch-seq_lsp.html#robo319">invert</a> nil)))
 =&gt;
 ((C-1 -76.85258) (FS-1 -65.94491) (C0 -55.819363) (FS0 -46.71565)
  (C1 -38.714867) (FS1 -31.724197) (C2 -25.598646) (FS2 -20.247103)
@@ -119,8 +119,8 @@
 
 ;;; Similar but returning linear amplitude scalers:
 (loop for midi from 0 to 127 by 6
-     for freq = (<a href="./cm_lsp.html#robo138">midi-to-freq</a> midi)
-     collect (list (<a href="./cm_lsp.html#robo139">midi-to-note</a> midi) (<strong>a-weighting</strong> freq)))
+     for freq = (<a href="./cm_lsp.html#robo139">midi-to-freq</a> midi)
+     collect (list (<a href="./cm_lsp.html#robo140">midi-to-note</a> midi) (<strong>a-weighting</strong> freq)))
 =&gt;
 ((C-1 6960.316) (FS-1 1982.6475) (C0 617.9711) (FS0 216.6619) (C1 86.246864)
  (FS1 38.56647) (C2 19.051636) (FS2 10.288571) (C3 6.041312) (FS3 3.827355)
@@ -129,12 +129,12 @@
  (C9 1.1730213) (FS9 1.5455086))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>a-weighting</strong> (f &amp;key expt (linear t) (<a href="./chord_lsp.html#robo88">invert</a> t))
+<pre class="source">(defun <strong>a-weighting</strong> (f &amp;key expt (linear t) (<a href="./pitch-seq_lsp.html#robo319">invert</a> t))
 </pre>
 
 
 <a name="utilities2fall2dmembers"></a>
-<a name="robo859"></a><h2 class=robodoc>utilities/all-members [ Functions ]</h2>
+<a name="robo863"></a><h2 class=robodoc>utilities/all-members [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -162,14 +162,14 @@
 
 
 <a name="utilities2falmost2dflatten"></a>
-<a name="robo860"></a><h2 class=robodoc>utilities/almost-flatten [ Functions ]</h2>
+<a name="robo864"></a><h2 class=robodoc>utilities/almost-flatten [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 4th 2013
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Similar to <a href="#robo881">flatten</a> but allows one level of nesting
+<pre> Similar to <a href="#robo885">flatten</a> but allows one level of nesting
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> A list with an arbitrary level of nesting.
@@ -187,7 +187,7 @@
 
 
 <a name="utilities2falmost2dzero"></a>
-<a name="robo861"></a><h2 class=robodoc>utilities/almost-zero [ Functions ]</h2>
+<a name="robo865"></a><h2 class=robodoc>utilities/almost-zero [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -213,7 +213,7 @@
 
 
 <a name="utilities2famp2db"></a>
-<a name="robo862"></a><h2 class=robodoc>utilities/amp2db [ Methods ]</h2>
+<a name="robo866"></a><h2 class=robodoc>utilities/amp2db [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -221,7 +221,7 @@
  decibel value.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A decimal number <a href="#robo865">between</a> &gt;0.0 and 1.0.
+<pre> - A decimal number <a href="#robo869">between</a> &gt;0.0 and 1.0.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A decimal number that is a value in decibel.
@@ -237,15 +237,15 @@
 
 
 <a name="utilities2famplitude2dto2ddynamic"></a>
-<a name="robo863"></a><h2 class=robodoc>utilities/amplitude-to-dynamic [ Functions ]</h2>
+<a name="robo867"></a><h2 class=robodoc>utilities/amplitude-to-dynamic [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Convert a specified digital amplitude <a href="#robo865">between</a> 0.0 and 1.0 to a
- corresponding dynamic <a href="#robo865">between</a> niente and ffff.
+<pre> Convert a specified digital amplitude <a href="#robo869">between</a> 0.0 and 1.0 to a
+ corresponding dynamic <a href="#robo869">between</a> niente and ffff.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A decimal number <a href="#robo865">between</a> 0.0 and 1.0.
+<pre> - A decimal number <a href="#robo869">between</a> 0.0 and 1.0.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether to print a warning if the specified
@@ -265,14 +265,14 @@
 
 
 <a name="utilities2fauto2dscale2denv"></a>
-<a name="robo864"></a><h2 class=robodoc>utilities/auto-scale-env [ Functions ]</h2>
+<a name="robo868"></a><h2 class=robodoc>utilities/auto-scale-env [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> August 29th 2013
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Automatically <a href="./rthm-seq-bar_lsp.html#robo485">scale</a> both the x and y values of an envelope to fit within
+<pre> Automatically <a href="./rhythm_lsp.html#robo430">scale</a> both the x and y values of an envelope to fit within
  the given ranges. Normally we'll assume that the minimum and maximum Y
  values are present in the original envelope and so the automatically scaled
  envelope will represent these with the new minimum and maximum
@@ -325,7 +325,7 @@
 
 
 <a name="utilities2fbetween"></a>
-<a name="robo865"></a><h2 class=robodoc>utilities/between [ Functions ]</h2>
+<a name="robo869"></a><h2 class=robodoc>utilities/between [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -343,7 +343,7 @@
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether the random seed should be fixed.
  - T or NIL to indicate whether, when fixed-random is set to T, we should
-   <a href="./l-for-lookup_lsp.html#robo275">reset</a> the random number generator (to guarantee the same random
+   <a href="./sndfile-ext_lsp.html#robo818">reset</a> the random number generator (to guarantee the same random
    sequences). This would generally only be called once, perhaps at the
    start of a generation procedure.
 </pre>
@@ -357,7 +357,7 @@
 
 =&gt; (43 63 26 47 28 2 99 93 66 23)
 
-;;; Setting fixed-random to T and using zerop to <a href="./l-for-lookup_lsp.html#robo275">reset</a> the random when i is 0 
+;;; Setting fixed-random to T and using zerop to <a href="./sndfile-ext_lsp.html#robo818">reset</a> the random when i is 0 
 (loop repeat 5 
    collect (loop for i from 0 to 9 collect (<strong>between</strong> 1 100 t (zerop i))))
 
@@ -371,24 +371,24 @@
 
 
 <a name="utilities2fbetween2dextremes"></a>
-<a name="robo866"></a><h2 class=robodoc>utilities/between-extremes [ Functions ]</h2>
+<a name="robo870"></a><h2 class=robodoc>utilities/between-extremes [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> April 23rd 2016, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Given a &lt;progress&gt; value of <a href="#robo865">between</a> 0 and 1, we'll return whatever that
- proportion is of the difference <a href="#robo865">between</a> &lt;min&gt; and &lt;max&gt; added to min. NB No
+<pre> Given a &lt;progress&gt; value of <a href="#robo869">between</a> 0 and 1, we'll return whatever that
+ proportion is of the difference <a href="#robo869">between</a> &lt;min&gt; and &lt;max&gt; added to min. NB No
  randomness here.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the minimum value (returned when &lt;progress&gt; is 0.0)
  - the maximum value (returned when &lt;progress&gt; is 1.0)
- - a value <a href="#robo865">between</a> 
+ - a value <a href="#robo869">between</a> 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a number <a href="#robo865">between</a> min and max
+<pre> a number <a href="#robo869">between</a> min and max
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(BETWEEN-EXTREMES 0.5 1 0.5)
@@ -402,7 +402,7 @@
 
 
 <a name="utilities2fcombine2dinto2dsymbol"></a>
-<a name="robo867"></a><h2 class=robodoc>utilities/combine-into-symbol [ Functions ]</h2>
+<a name="robo871"></a><h2 class=robodoc>utilities/combine-into-symbol [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -427,7 +427,7 @@
 
 
 <a name="utilities2fdb2amp"></a>
-<a name="robo868"></a><h2 class=robodoc>utilities/db2amp [ Functions ]</h2>
+<a name="robo872"></a><h2 class=robodoc>utilities/db2amp [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -438,7 +438,7 @@
 <pre> - A number that is a value in decibel.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A decimal number <a href="#robo865">between</a> &gt;0.0 and 1.0.
+<pre> A decimal number <a href="#robo869">between</a> &gt;0.0 and 1.0.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>db2amp</strong> -3)
@@ -451,7 +451,7 @@
 
 
 <a name="utilities2fdecimal2dplaces"></a>
-<a name="robo869"></a><h2 class=robodoc>utilities/decimal-places [ Functions ]</h2>
+<a name="robo873"></a><h2 class=robodoc>utilities/decimal-places [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -479,7 +479,7 @@
 
 
 <a name="utilities2fdecimate2denv"></a>
-<a name="robo870"></a><h2 class=robodoc>utilities/decimate-env [ Functions ]</h2>
+<a name="robo874"></a><h2 class=robodoc>utilities/decimate-env [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -487,17 +487,17 @@
  is first stretched along the x-axis to fit the new number of points
  required.  Then we proceed by one of three methods:
  
- 1) average: for every new output x value, <a href="#robo890">interpolate</a> 100 times from -0.5
+ 1) average: for every new output x value, <a href="#robo895">interpolate</a> 100 times from -0.5
  to +0.5 around the point, then average the y value.  This will catch
  clustering but round out spikes caused by them
  
  2) points: also an averaging method but only using the existing points in
  the original envelope (unless none is present for a new x value, whereupon
- interpolation is used): Take an average of the (several) points <a href="#robo899">nearest</a> the
+ interpolation is used): Take an average of the (several) points <a href="#robo904">nearest</a> the
  new output point. This might not recreate the extremes of the original
  envelope but clustering is captured, albeit averaged.
  
- 3) <a href="#robo890">interpolate</a>: for each new output point, <a href="#robo890">interpolate</a> the new y value from
+ 3) <a href="#robo895">interpolate</a>: for each new output point, <a href="#robo895">interpolate</a> the new y value from
  the original envelope.  This will leave out details in the case of
  clustering, but accurately catch peaks if there are enough output points.
  
@@ -509,7 +509,7 @@
  - the number of points required in the output list.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - the method to be applied (symbol): 'points, 'average, '<a href="#robo890">interpolate</a>.
+<pre> - the method to be applied (symbol): 'points, 'average, '<a href="#robo895">interpolate</a>.
    Default = 'points.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -526,7 +526,7 @@
 
 
 <a name="utilities2fdown2dup"></a>
-<a name="robo871"></a><h2 class=robodoc>utilities/down-up [ Functions ]</h2>
+<a name="robo875"></a><h2 class=robodoc>utilities/down-up [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -534,18 +534,18 @@
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> This is a routine used in morphing maps but may be useful elsewhere. It
- interpolates <a href="#robo865">between</a> two numbers over a given number of steps before
+ interpolates <a href="#robo869">between</a> two numbers over a given number of steps before
  returning back to the first number. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the number of steps over which the procedure should <a href="#robo890">interpolate</a>
+<pre> - the number of steps over which the procedure should <a href="#robo895">interpolate</a>
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :down. T or NIL: whether to first descend before ascending. Default = T
  - :up. T or NIL: whether to ascend after descending. Default = T
  - :start. The number to start at. Default = 1.0
- - :target. The number to <a href="#robo890">interpolate</a> towards. Default = 0.0.
+ - :target. The number to <a href="#robo895">interpolate</a> towards. Default = 0.0.
  - :cons. Whether to return :start as the first number in the result list.
  - :butlast. Whether to omit the :start when ascending. Default = T.
 </pre>
@@ -553,13 +553,13 @@
 <pre> A list of numbers.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(mapcar #'(lambda (x) (<a href="#robo869">decimal-places</a> x 2)) (<strong>down-up</strong> 20))
+<pre class="source">(mapcar #'(lambda (x) (<a href="#robo873">decimal-places</a> x 2)) (<strong>down-up</strong> 20))
 --&gt; (0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1 0.0 0.09 0.18 0.27 0.36 0.45 0.55 0.64
      0.73 0.82 0.91)
-(mapcar #'(lambda (x) (<a href="#robo869">decimal-places</a> x 2)) (<strong>down-up</strong> 20 :cons t))
+(mapcar #'(lambda (x) (<a href="#robo873">decimal-places</a> x 2)) (<strong>down-up</strong> 20 :cons t))
 --&gt; (1.0 0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8
      0.9)
-(mapcar #'(lambda (x) (<a href="#robo869">decimal-places</a> x 2)) (<strong>down-up</strong> 20 :butlast nil))
+(mapcar #'(lambda (x) (<a href="#robo873">decimal-places</a> x 2)) (<strong>down-up</strong> 20 :butlast nil))
 --&gt; (0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
      1.0)
 </pre>
@@ -570,22 +570,22 @@
 
 
 <a name="utilities2fdynamic2dto2damplitude"></a>
-<a name="robo872"></a><h2 class=robodoc>utilities/dynamic-to-amplitude [ Functions ]</h2>
+<a name="robo876"></a><h2 class=robodoc>utilities/dynamic-to-amplitude [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Convert a symbol that is a dynamic level <a href="#robo865">between</a> niente and ffff to a
- corresponding digital amplitude value <a href="#robo865">between</a> 0.0 and 1.0.
+<pre> Convert a symbol that is a dynamic level <a href="#robo869">between</a> niente and ffff to a
+ corresponding digital amplitude value <a href="#robo869">between</a> 0.0 and 1.0.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A symbol that is a dynamic level <a href="#robo865">between</a> niente and fff.
+<pre> - A symbol that is a dynamic level <a href="#robo869">between</a> niente and fff.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether to print a warning when the symbol specified
    is not recognized as a dynamic. T = warn. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A decimal number <a href="#robo865">between</a> 0.0 and 1.0.
+<pre> A decimal number <a href="#robo869">between</a> 0.0 and 1.0.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>dynamic-to-amplitude</strong> 'fff)
@@ -598,7 +598,7 @@
 
 
 <a name="utilities2fecons"></a>
-<a name="robo873"></a><h2 class=robodoc>utilities/econs [ Functions ]</h2>
+<a name="robo877"></a><h2 class=robodoc>utilities/econs [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -606,7 +606,7 @@
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A list.
- - An element to <a href="./sc-set_lsp.html#robo562">add</a> to the end of the list.
+ - An element to <a href="./sc-set_lsp.html#robo563">add</a> to the end of the list.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A new list.
@@ -622,7 +622,7 @@
 
 
 <a name="utilities2fenv2dplus"></a>
-<a name="robo874"></a><h2 class=robodoc>utilities/env-plus [ Functions ]</h2>
+<a name="robo878"></a><h2 class=robodoc>utilities/env-plus [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -643,12 +643,12 @@
 =&gt; (0 7.1 25 18.1 50 20.1 75 26.1 100 30.1)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>env-plus</strong> (env <a href="./sc-set_lsp.html#robo562">add</a>)
+<pre class="source">(defun <strong>env-plus</strong> (env <a href="./sc-set_lsp.html#robo563">add</a>)
 </pre>
 
 
 <a name="utilities2fenv2dsymmetrical"></a>
-<a name="robo875"></a><h2 class=robodoc>utilities/env-symmetrical [ Functions ]</h2>
+<a name="robo879"></a><h2 class=robodoc>utilities/env-symmetrical [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -686,13 +686,13 @@
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>env-symmetrical</strong> (env &amp;optional (centre .5) 
-                        (min most-negative-<a href="./sc-map_lsp.html#robo551">double</a>-float)
-                        (max most-positive-<a href="./sc-map_lsp.html#robo551">double</a>-float))
+                        (min most-negative-<a href="./sc-map_lsp.html#robo552">double</a>-float)
+                        (max most-positive-<a href="./sc-map_lsp.html#robo552">double</a>-float))
 </pre>
 
 
 <a name="utilities2fenv2gnuplot"></a>
-<a name="robo876"></a><h2 class=robodoc>utilities/env2gnuplot [ Functions ]</h2>
+<a name="robo880"></a><h2 class=robodoc>utilities/env2gnuplot [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -703,7 +703,7 @@
  start gnuplot and issue commands such as:
  gnuplot&gt; set terminal postscript default
  gnuplot&gt; set output '/tmp/env.ps'
- gnuplot&gt; <a href="./sclist_lsp.html#robo603">plot</a> '/tmp/env.txt' with lines.
+ gnuplot&gt; <a href="./sclist_lsp.html#robo604">plot</a> '/tmp/env.txt' with lines.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - The envelope as the usual list of x y pairs
@@ -720,7 +720,7 @@
 
 
 <a name="utilities2fenvelope2dboundaries"></a>
-<a name="robo877"></a><h2 class=robodoc>utilities/envelope-boundaries [ Functions ]</h2>
+<a name="robo881"></a><h2 class=robodoc>utilities/envelope-boundaries [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -752,11 +752,11 @@
 
 
 <a name="utilities2fequal2dwithin2dtolerance"></a>
-<a name="robo878"></a><h2 class=robodoc>utilities/equal-within-tolerance [ Functions ]</h2>
+<a name="robo882"></a><h2 class=robodoc>utilities/equal-within-tolerance [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Test whether the difference <a href="#robo865">between</a> two decimal numbers falls within a
+<pre> Test whether the difference <a href="#robo869">between</a> two decimal numbers falls within a
  specified tolerance.
 
  This test is designed to compensate for calculation discrepancies caused by
@@ -769,7 +769,7 @@
  - A second number.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A decimal value that is the maximum difference allowed <a href="#robo865">between</a> the two
+<pre> - A decimal value that is the maximum difference allowed <a href="#robo869">between</a> the two
    numbers that will still return T. Default = 0.000001d0.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -802,7 +802,7 @@
 
 
 <a name="utilities2fexaggerate2denv"></a>
-<a name="robo879"></a><h2 class=robodoc>utilities/exaggerate-env [ Functions ]</h2>
+<a name="robo883"></a><h2 class=robodoc>utilities/exaggerate-env [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -820,7 +820,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - easy-expt: because of the counterintuitive nature of the exponent, you
-   can pass values <a href="#robo865">between</a> -10 and +10 if this third argument is T. This
+   can pass values <a href="#robo869">between</a> -10 and +10 if this third argument is T. This
    will be scaled to useful though not over-extreme exponents of 1.9 (-10)
    to .1 (+10) with 0 equating to an exponent of 1, i.e. no change.
 </pre>
@@ -847,7 +847,7 @@
 
 
 <a name="utilities2ffactor"></a>
-<a name="robo880"></a><h2 class=robodoc>utilities/factor [ Functions ]</h2>
+<a name="robo884"></a><h2 class=robodoc>utilities/factor [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -873,7 +873,7 @@
 
 
 <a name="utilities2fflatten"></a>
-<a name="robo881"></a><h2 class=robodoc>utilities/flatten [ Functions ]</h2>
+<a name="robo885"></a><h2 class=robodoc>utilities/flatten [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -896,7 +896,7 @@
 
 
 <a name="utilities2fforce2dlength"></a>
-<a name="robo882"></a><h2 class=robodoc>utilities/force-length [ Functions ]</h2>
+<a name="robo886"></a><h2 class=robodoc>utilities/force-length [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -905,17 +905,17 @@
 <p class="item_name">DESCRIPTION</p>
 <pre> Create a new a list of a specified new length by adding or removing items
  at regular intervals from the original list. If adding items and the list
- contains numbers, linear interpolation will be used, but only <a href="#robo865">between</a> two
+ contains numbers, linear interpolation will be used, but only <a href="#robo869">between</a> two
  adjacent items; i.e. not with a partial increment.
 
- NB: The function can only create new lists that have a length <a href="#robo865">between</a> 1 and
-     1 less than <a href="./sc-map_lsp.html#robo551">double</a> the length of the original list.
+ NB: The function can only create new lists that have a length <a href="#robo869">between</a> 1 and
+     1 less than <a href="./sc-map_lsp.html#robo552">double</a> the length of the original list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A flat list.
  - A number that is the new length of the new list to be derived from the
-   original list. This number must be a value <a href="#robo865">between</a> 1 and 1 less than
-   <a href="./sc-map_lsp.html#robo551">double</a> the length of the original list.
+   original list. This number must be a value <a href="#robo869">between</a> 1 and 1 less than
+   <a href="./sc-map_lsp.html#robo552">double</a> the length of the original list.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <p class="item_name">EXAMPLE</p>
@@ -945,7 +945,7 @@
 
 
 <a name="utilities2fget2dclusters"></a>
-<a name="robo883"></a><h2 class=robodoc>utilities/get-clusters [ Functions ]</h2>
+<a name="robo887"></a><h2 class=robodoc>utilities/get-clusters [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -958,7 +958,7 @@
  they are.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> The maximum distance <a href="#robo865">between</a> two numbers in order for them to be considered
+<pre> The maximum distance <a href="#robo869">between</a> two numbers in order for them to be considered
  as part of the same cluster.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -982,7 +982,7 @@
 
 
 <a name="utilities2fget2dharmonics"></a>
-<a name="robo884"></a><h2 class=robodoc>utilities/get-harmonics [ Functions ]</h2>
+<a name="robo888"></a><h2 class=robodoc>utilities/get-harmonics [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -996,9 +996,9 @@
 <pre> keyword arguments
  - :start-partial. An integer that is the number of the first harmonic
     partial to return. Default = 1.
- - :min-freq. A number that is the <a href="./event_lsp.html#robo192">lowest</a> frequency in Hertz to
+ - :min-freq. A number that is the <a href="./chord_lsp.html#robo90">lowest</a> frequency in Hertz to
    return. Default = 20.
- - :max-freq. A number that is the <a href="./chord_lsp.html#robo87">highest</a> frequency in Hertz to
+ - :max-freq. A number that is the <a href="./chord_lsp.html#robo88">highest</a> frequency in Hertz to
    return. Default = 20000.
  - :start-freq-is-partial.  Rather than treating the first argument as the
    fundamental, treat it as the partial number indicated by this argument.
@@ -1008,18 +1008,18 @@
  - :skip. The increment for the harmonics.  If 1, then we ascend the
     harmonics series one partial at a time; 2 would mean skipping every other
     Default = 1.
- - :pitches. Return a list of <a href="./pitch_lsp.html#robo279">pitch</a> objects instead of frequencies. Default =
+ - :pitches. Return a list of <a href="./pitch_lsp.html#robo280">pitch</a> objects instead of frequencies. Default =
    NIL. 
  - :notes. Return a list of 2-element sublists: note symbols in the
-   chromatics <a href="./rthm-seq-bar_lsp.html#robo485">scale</a>, with cent deviations 
+   chromatics <a href="./rhythm_lsp.html#robo430">scale</a>, with cent deviations 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of numbers that are the frequencies in Hertz of harmonic partials
  above the same fundamental frequency, or with the respective keyword, as
- <a href="./pitch_lsp.html#robo279">pitch</a> objects or note symbols 
+ <a href="./pitch_lsp.html#robo280">pitch</a> objects or note symbols 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Get the first 15 harmonic partials above a fundamental <a href="./pitch_lsp.html#robo279">pitch</a> of 64 Hertz,
+<pre class="source">;;; Get the first 15 harmonic partials above a fundamental <a href="./pitch_lsp.html#robo280">pitch</a> of 64 Hertz,
 ;;; starting with partial 2, and specifying an upper cut-off of 1010 Hz.
 
 (<strong>get-harmonics</strong> 63 :start-partial 2 :max-freq 1010)
@@ -1035,8 +1035,69 @@
 </pre>
 
 
+<a name="utilities2fget2dparameters"></a>
+<a name="robo889"></a><h2 class=robodoc>utilities/get-parameters [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> January 29th 2021
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> A general routine for searching text files for parameters and their
+ values. Here we search a file line by line, matching parameters and
+ returning them in a list of parameter-value pairs. This is limited, however,
+ to one parameter per line, and values of one word (i.e. numbers, strings,
+ etc. not containing space).
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the text file to search
+ - either a single string or list thereof to search for (case-sensitive)
+ - the separator character which divides the parameter name from its value
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the parameter-value separator (character)
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A list of parameter-value pairs
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; search a reaper file, where parameters are followed simply by space rather
+;;; than = or : E.g. a current reaper file has lines like:
+      SNAPOFFS 0
+      LENGTH 0.36292517006803
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 2 0 0 2 0 1 1
+      FADEOUT 2 0 0 2 0 -1 -1
+      MUTE 0 0
+      MIXFLAG 1
+      BEAT 2
+      SEL 1
+      IGUID {3B79D8DF-AC08-EC4F-B93C-CAFE24FA1CBB}
+      IID 3
+      NAME sunni-mosque.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.67933106575964
+      PLAYRATE 1 1 0 -1 0 0.0025
+;;; hence:
+(<strong>get-parameters</strong> "~/projects/<a href="./sndfilenet_lsp.html#robo299">sndfilenet</a>/reaper/sunni-mosque-<a href="./rthm-seq_lsp.html#robo547">split</a>.RPP"
+                '("SOFFS" "LENGTH") #\ )
+--&gt;
+362 parameters read
+(("LENGTH" 0.36292517) ("SOFFS" 0.67933106) ("LENGTH" 0.38848072)
+ ("SOFFS" 1.0422562) ("LENGTH" 1.4923356) ("SOFFS" 1.430737)
+ ("LENGTH" 1.9968253) ("SOFFS" 2.9230726) ("LENGTH" 0.5023356)
+ ("SOFFS" 4.919898) ("LENGTH" 0.4907483) ("SOFFS" 5.4222336)
+ ("LENGTH" 0.17068027) ("SOFFS" 5.912982) ("LENGTH" 3.6765532)
+...
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>get-parameters</strong> (file parameters &amp;optional (separator #\=))
+</pre>
+
+
 <a name="utilities2fget2dsublist2dindices"></a>
-<a name="robo885"></a><h2 class=robodoc>utilities/get-sublist-indices [ Functions ]</h2>
+<a name="robo890"></a><h2 class=robodoc>utilities/get-sublist-indices [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1060,7 +1121,7 @@
 
 
 <a name="utilities2fget2dsublist2dlengths"></a>
-<a name="robo886"></a><h2 class=robodoc>utilities/get-sublist-lengths [ Functions ]</h2>
+<a name="robo891"></a><h2 class=robodoc>utilities/get-sublist-lengths [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1094,7 +1155,7 @@
 
 
 <a name="utilities2fhailstone"></a>
-<a name="robo887"></a><h2 class=robodoc>utilities/hailstone [ Functions ]</h2>
+<a name="robo892"></a><h2 class=robodoc>utilities/hailstone [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1124,7 +1185,7 @@
 
 
 <a name="utilities2fhz2ms"></a>
-<a name="robo888"></a><h2 class=robodoc>utilities/hz2ms [ Functions ]</h2>
+<a name="robo893"></a><h2 class=robodoc>utilities/hz2ms [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1148,7 +1209,7 @@
 
 
 <a name="utilities2finterleave"></a>
-<a name="robo889"></a><h2 class=robodoc>utilities/interleave [ Functions ]</h2>
+<a name="robo894"></a><h2 class=robodoc>utilities/interleave [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1175,7 +1236,7 @@
 
 
 <a name="utilities2finterpolate"></a>
-<a name="robo890"></a><h2 class=robodoc>utilities/interpolate [ Functions ]</h2>
+<a name="robo895"></a><h2 class=robodoc>utilities/interpolate [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1189,7 +1250,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :scaler. A number that is the <a href="#robo880">factor</a> by which to <a href="./rthm-seq-bar_lsp.html#robo485">scale</a> the values of
+ - :scaler. A number that is the <a href="#robo884">factor</a> by which to <a href="./rhythm_lsp.html#robo430">scale</a> the values of
    the break-point pairs in the given envelope before retrieving the
    interpolated value. Default = 1.
  - :exp. A number that is the exponent to which the result should be
@@ -1221,7 +1282,7 @@
 
 
 <a name="utilities2finvert2denv"></a>
-<a name="robo891"></a><h2 class=robodoc>utilities/invert-env [ Functions ]</h2>
+<a name="robo896"></a><h2 class=robodoc>utilities/invert-env [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -1248,7 +1309,7 @@
 
 
 <a name="utilities2flist2dto2dstring"></a>
-<a name="robo892"></a><h2 class=robodoc>utilities/list-to-string [ Functions ]</h2>
+<a name="robo897"></a><h2 class=robodoc>utilities/list-to-string [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1258,7 +1319,7 @@
 <pre> - A list.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A string that will serve as a separator <a href="#robo865">between</a> the elements. 
+<pre> - A string that will serve as a separator <a href="#robo869">between</a> the elements. 
    Default = " ".
  - T or NIL to indicate whether a list value of NIL is to be returned as
    "NIL" or NIL. T = "NIL" as a string. Default = T.
@@ -1292,7 +1353,7 @@
 
 
 <a name="utilities2flogarithmic2dsteps"></a>
-<a name="robo893"></a><h2 class=robodoc>utilities/logarithmic-steps [ Functions ]</h2>
+<a name="robo898"></a><h2 class=robodoc>utilities/logarithmic-steps [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1307,7 +1368,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - A number that will be used as the exponent when determining the
-   exponential interpolation <a href="#robo865">between</a> values. Default = 2.
+   exponential interpolation <a href="#robo869">between</a> values. Default = 2.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of numbers.
@@ -1325,7 +1386,7 @@
 
 
 <a name="utilities2fmiddle"></a>
-<a name="robo894"></a><h2 class=robodoc>utilities/middle [ Functions ]</h2>
+<a name="robo899"></a><h2 class=robodoc>utilities/middle [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1349,7 +1410,7 @@
 
 
 <a name="utilities2fmins2dsecs2dto2dsecs"></a>
-<a name="robo895"></a><h2 class=robodoc>utilities/mins-secs-to-secs [ Functions ]</h2>
+<a name="robo900"></a><h2 class=robodoc>utilities/mins-secs-to-secs [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1362,7 +1423,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - if a string is to be passed, then a character that denotes the separator
- <a href="#robo865">between</a> minutes and seconds. Default = #\:
+ <a href="#robo869">between</a> minutes and seconds. Default = #\:
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A decimal number that is a number in seconds.
@@ -1374,7 +1435,7 @@
 =&gt; 1019.534 
 (<strong>mins-secs-to-secs</strong> "3:06.829"))
 =&gt; 186.829
-;; using a different separator character <a href="#robo865">between</a> minutes and seconds
+;; using a different separator character <a href="#robo869">between</a> minutes and seconds
 (<strong>mins-secs-to-secs</strong> "3-36.29" #\-) 0.0001)
 =&gt; 216.29
 </pre>
@@ -1384,7 +1445,7 @@
 
 
 <a name="utilities2fmove2delements"></a>
-<a name="robo896"></a><h2 class=robodoc>utilities/move-elements [ Functions ]</h2>
+<a name="robo901"></a><h2 class=robodoc>utilities/move-elements [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -1419,7 +1480,7 @@
 
 
 <a name="utilities2fmove2dto2dend"></a>
-<a name="robo897"></a><h2 class=robodoc>utilities/move-to-end [ Functions ]</h2>
+<a name="robo902"></a><h2 class=robodoc>utilities/move-to-end [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -1457,7 +1518,7 @@
 
 
 <a name="utilities2fnconc2dsublists"></a>
-<a name="robo898"></a><h2 class=robodoc>utilities/nconc-sublists [ Functions ]</h2>
+<a name="robo903"></a><h2 class=robodoc>utilities/nconc-sublists [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1483,7 +1544,7 @@
 
 
 <a name="utilities2fnearest"></a>
-<a name="robo899"></a><h2 class=robodoc>utilities/nearest [ Functions ]</h2>
+<a name="robo904"></a><h2 class=robodoc>utilities/nearest [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -1514,7 +1575,7 @@
 
 
 <a name="utilities2fnearest2dpower2dof2d2"></a>
-<a name="robo900"></a><h2 class=robodoc>utilities/nearest-power-of-2 [ Functions ]</h2>
+<a name="robo905"></a><h2 class=robodoc>utilities/nearest-power-of-2 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1555,7 +1616,7 @@
 
 
 <a name="utilities2fnow2dstring"></a>
-<a name="robo901"></a><h2 class=robodoc>utilities/now-string [ Functions ]</h2>
+<a name="robo906"></a><h2 class=robodoc>utilities/now-string [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">AUTHOR</p>
@@ -1570,9 +1631,9 @@
  e.g. "20200328-132227"
 
  It is thought that this function might be useful when outputing multiple
- files during the test phase of a <a href="./piece_lsp.html#robo55">piece</a>. E.g.
- (<a href="./set-palette_lsp.html#robo623">cmn-display</a> +mini+
-              :file (concatenate 'string "my-<a href="./piece_lsp.html#robo55">piece</a>" (now-string) ".eps"))
+ files during the test phase of a <a href="./piece_lsp.html#robo56">piece</a>. E.g.
+ (<a href="./set-map_lsp.html#robo621">cmn-display</a> +mini+
+              :file (concatenate 'string "my-<a href="./piece_lsp.html#robo56">piece</a>" (now-string) ".eps"))
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> None
@@ -1598,12 +1659,12 @@
 
 
 <a name="utilities2foctave2dfreqs"></a>
-<a name="robo902"></a><h2 class=robodoc>utilities/octave-freqs [ Functions ]</h2>
+<a name="robo907"></a><h2 class=robodoc>utilities/octave-freqs [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> A boolean test to determine whether two specified frequencies are octave
- transpositions of the same <a href="./pitch_lsp.html#robo279">pitch</a> class. 
+ transpositions of the same <a href="./pitch_lsp.html#robo280">pitch</a> class. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A first number that is a frequency in Hertz.
@@ -1611,7 +1672,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether identical frequencies ("unison") are also
-   to be considered octave transpositions of the same <a href="./pitch_lsp.html#robo279">pitch</a> class. 
+   to be considered octave transpositions of the same <a href="./pitch_lsp.html#robo280">pitch</a> class. 
    T = unisons are also octaves. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -1640,28 +1701,28 @@
 
 
 <a name="utilities2fone2dto2dmany"></a>
-<a name="robo903"></a><h2 class=robodoc>utilities/one-to-many [ Functions ]</h2>
+<a name="robo908"></a><h2 class=robodoc>utilities/one-to-many [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> June 23rd 2020
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Find a <strong>one-to-many</strong> relationship <a href="#robo865">between</a> the first argument and a number of
+<pre> Find a <strong>one-to-many</strong> relationship <a href="#robo869">between</a> the first argument and a number of
  equally-spaced points given in the second argument. The first argument is a
- number <a href="#robo865">between</a> 0.0 and 1.0 (inclusive). We calculate the proximities from
+ number <a href="#robo869">between</a> 0.0 and 1.0 (inclusive). We calculate the proximities from
  this point to the number of points given and return them as a list,
  optionally raised to a given exponent. The list returned is scaled so that
  all values sum to 1.0, so this is particularly useful for, say, calculating
  a number of amplitude scalers for a multi-voice synthesis process.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the point: a number <a href="#robo865">between</a> 0.0 and 1.0 inclusive
+<pre> - the point: a number <a href="#robo869">between</a> 0.0 and 1.0 inclusive
  - the number of points to use in the calculation. This will also be the
    number of results returned. Alternatively this can be a list of numbers
-   <a href="#robo865">between</a> 0.0 and 1.0. This way you can pass your own points for e.g. an
-   unequally-spaced set. In this case though the <a href="./sndfile-ext_lsp.html#robo814">proximity</a> is still
-   determined from a maximum of 1.0, not the <a href="./chord_lsp.html#robo87">highest</a> number in the given
+   <a href="#robo869">between</a> 0.0 and 1.0. This way you can pass your own points for e.g. an
+   unequally-spaced set. In this case though the <a href="./sndfile-ext_lsp.html#robo817">proximity</a> is still
+   determined from a maximum of 1.0, not the <a href="./chord_lsp.html#robo88">highest</a> number in the given
    list. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -1694,7 +1755,7 @@
 
 
 <a name="utilities2fparse2daudacity2dlabel2dfile"></a>
-<a name="robo904"></a><h2 class=robodoc>utilities/parse-audacity-label-file [ Functions ]</h2>
+<a name="robo909"></a><h2 class=robodoc>utilities/parse-audacity-label-file [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -1716,13 +1777,13 @@
 
 
 <a name="utilities2fparse2daudacity2dlabel2dfile2dfor2dloops"></a>
-<a name="robo905"></a><h2 class=robodoc>utilities/parse-audacity-label-file-for-loops [ Functions ]</h2>
+<a name="robo910"></a><h2 class=robodoc>utilities/parse-audacity-label-file-for-loops [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Read an audacity label file and return its loop points as groups.
 
- NB: If this fails it's probably because there's a tab <a href="#robo865">between</a> time and
+ NB: If this fails it's probably because there's a tab <a href="#robo869">between</a> time and
      label instead of spaces: save in emacs to detab.
 
  NB: Beware that marker files created on different operating systems from
@@ -1764,7 +1825,7 @@
 
 
 <a name="utilities2fparse2dwavelab2dmarker2dfile2dfor2dloops"></a>
-<a name="robo906"></a><h2 class=robodoc>utilities/parse-wavelab-marker-file-for-loops [ Functions ]</h2>
+<a name="robo911"></a><h2 class=robodoc>utilities/parse-wavelab-marker-file-for-loops [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1783,7 +1844,7 @@
  - :sampling-rate. An integer that is the sampling rate of the sound file to
    which the marker file refers. This value will affect the resulting time
    points. Default = 44100.
- - :max-length. The maximum duration in seconds <a href="#robo865">between</a> two points: anything
+ - :max-length. The maximum duration in seconds <a href="#robo869">between</a> two points: anything
    greater than this will result in a warning being printed.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -1830,7 +1891,7 @@ WARNING:
 
 
 <a name="utilities2fpartial2dfreqs"></a>
-<a name="robo907"></a><h2 class=robodoc>utilities/partial-freqs [ Functions ]</h2>
+<a name="robo912"></a><h2 class=robodoc>utilities/partial-freqs [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -1876,7 +1937,7 @@ WARNING:
 
 
 <a name="utilities2fpdivide"></a>
-<a name="robo908"></a><h2 class=robodoc>utilities/pdivide [ Functions ]</h2>
+<a name="robo913"></a><h2 class=robodoc>utilities/pdivide [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1916,8 +1977,8 @@ WARNING:
    decreasing (numerator &gt; denominator e.g. 3/2) numbers, we can mix things
    up by dividing the resultant list into two halves and splicing their
    elements one after the other.  Default NIL.
- - :<a href="./permutations_lsp.html#robo308">shuffle</a>. Mix things up by shuffling the resultant list.  As this uses
-   the <a href="./permutations_lsp.html#robo308">shuffle</a> algorithm we have fixed-seed randomness so results will be
+ - :<a href="./permutations_lsp.html#robo309">shuffle</a>. Mix things up by shuffling the resultant list.  As this uses
+   the <a href="./permutations_lsp.html#robo309">shuffle</a> algorithm we have fixed-seed randomness so results will be
    the same upon each call within the same Lisp implementation/version.
    Default NIL. 
 </pre>
@@ -1991,19 +2052,19 @@ RETURNS:
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>pdivide</strong> (start levels &amp;key (duration 1.0) print reverse alternate
-                    halves <a href="./permutations_lsp.html#robo308">shuffle</a> increment)
+                    halves <a href="./permutations_lsp.html#robo309">shuffle</a> increment)
 </pre>
 
 
 <a name="utilities2fpexpand"></a>
-<a name="robo909"></a><h2 class=robodoc>utilities/pexpand [ Functions ]</h2>
+<a name="robo915"></a><h2 class=robodoc>utilities/pexpand [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Instead of dividing an overall duration (<a href="#robo908">pdivide</a>) we start with a
+<pre> Instead of dividing an overall duration (<a href="#robo913">pdivide</a>) we start with a
  proportion and expand outwards from there, keeping each newly created part
  in the same proportion.  This is repeated the number of times specified in
- the first argument.  Useful for generating maps (<a href="./section_lsp.html#robo57">section</a> structure).
+ the first argument.  Useful for generating maps (<a href="./section_lsp.html#robo58">section</a> structure).
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> The number of times to expand proportionally.
@@ -2017,10 +2078,10 @@ RETURNS:
  1) a list showing the cumulative count (e.g. bar numbers) of where major
  and minor sections occur.  Topmost sections will have the labels A, B, C,
  etc. with subsections such as A.A, A.B, ... C.C.C.C.  Of course, wherever a
- major <a href="./section_lsp.html#robo57">section</a> starts, an arbitrary number of subsections also begin, but
- only the most major <a href="./section_lsp.html#robo57">section</a> is present in the list.
+ major <a href="./section_lsp.html#robo58">section</a> starts, an arbitrary number of subsections also begin, but
+ only the most major <a href="./section_lsp.html#robo58">section</a> is present in the list.
  2) the structure of the sections and subsections in the form of a list of
- sublists for each, and containing the <a href="./section_lsp.html#robo57">section</a> labels paired with their
+ sublists for each, and containing the <a href="./section_lsp.html#robo58">section</a> labels paired with their
  length.  The bottommost subsection will have a length of the sum of the
  proportions, with higher subsection groupings showing multiples of this.
  3) the overall length of the structure produced (also the first element of
@@ -2103,16 +2164,16 @@ RETURNS:
 
 
 <a name="utilities2fpexpand2dfind"></a>
-<a name="robo910"></a><h2 class=robodoc>utilities/pexpand-find [ Functions ]</h2>
+<a name="robo916"></a><h2 class=robodoc>utilities/pexpand-find [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Find the cumulative number of where a label occurs in a list returned by
- <a href="#robo909">pexpand</a>.
+ <a href="#robo915">pexpand</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the label we're looking for
- - a list of the type returned by <a href="#robo909">pexpand</a> (first returned value).
+ - a list of the type returned by <a href="#robo915">pexpand</a> (first returned value).
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - a function to be called when the label cannot be found.  Default =
@@ -2126,118 +2187,36 @@ RETURNS:
 </pre>
 
 
-<a name="utilities2fpexpand2dreaper2dmarkers"></a>
-<a name="robo911"></a><h2 class=robodoc>utilities/pexpand-reaper-markers [ Functions ]</h2>
-
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
-<p class="item_name">DATE</p>
-<pre> September 4th 2015, Edinburgh
-</pre>
-<p class="item_name">DESCRIPTION</p>
-<pre> Using the <a href="#robo909">pexpand</a> function, we write marker information in a format which
- can be read by the Reaper (version 4/5+) DAW software. Though we can think
- of the outputs of <a href="#robo909">pexpand</a> to be in beats, seconds, bars, or any arbitrary
- <a href="./rthm-seq-bar_lsp.html#robo485">scale</a>, the timings of Reaper markers are in seconds, hence the need here
- for an initial <a href="./tempo_lsp.html#robo284">tempo</a>. In other words, we treat the output of <a href="#robo909">pexpand</a> to be
- beat counts; if you would prefer to interpret these as bars, simply divide
- the <a href="./tempo_lsp.html#robo284">tempo</a> by the number of beats per bar. If there are to be <a href="./tempo_lsp.html#robo284">tempo</a> changes
- in the mix/<a href="./piece_lsp.html#robo55">piece</a> Reaper itself will update the markers' positions when the
- new <a href="./tempo_lsp.html#robo284">tempo</a> is inserted in the project window--this is fine when you are
- thinking in beats/bars but beware of changing <a href="./tempo_lsp.html#robo284">tempo</a> in Reaper if you are
- thinking of markers with fixed timings (seconds).
-
- Copy the output of this into the Reaper file verbatim (no enclosing &lt; &gt;
- marks) before the &lt;PROJBAY tag.
-</pre>
-<p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="./tempo_lsp.html#robo284">tempo</a> in BPM
- - the number of generations: see the <a href="#robo909">pexpand</a> function
- - (&amp;rest) the proportions: see the <a href="#robo909">pexpand</a> function
-</pre>
-<p class="item_name">RETURN VALUE</p>
-<pre> Always T
-</pre>
-<p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>pexpand-reaper-markers</strong> 144 2 6 3 5 4)
--&gt;
-  MARKER 1 7.5 "level 4" 0 0 1
-  MARKER 2 15.0 "level 4" 0 0 1
-  MARKER 3 22.5 "level 4" 0 0 1
-  MARKER 4 30.0 "level 4" 0 0 1
-  MARKER 5 37.5 "level 4" 0 0 1
-...
-  MARKER 108 810.0 "level 1" 0 0 1
-  MARKER 109 817.5 "level 4" 0 0 1
-  MARKER 110 825.0 "level 4" 0 0 1
-  MARKER 111 832.5 "level 4" 0 0 1
-  MARKER 112 840.0 "level 4" 0 0 1
-  MARKER 113 847.5 "level 4" 0 0 1
-  MARKER 114 855.0 "level 3" 0 0 1
-...
-  MARKER 319 2392.5 "level 4" 0 0 1
-  MARKER 320 2400.0 "level 3" 0 0 1
-  MARKER 321 2407.5 "level 4" 0 0 1
-  MARKER 322 2415.0 "level 4" 0 0 1
-  MARKER 323 2422.5 "level 4" 0 0 1
-
-
-Here's where I pasted the data into the .RPP Reaper file:
-
-  &lt;TEMPOENVEX
-    ACT 0
-    VIS 1 0 1
-    LANEHEIGHT 0 0
-    ARM 0
-    DEFSHAPE 1 -1 -1
-  &gt;
-  MARKER 1 7.5 "level 4" 0 0 1
-  MARKER 2 15 "level 4" 0 0 1
-  MARKER 3 22.5 "level 4" 0 0 1
-  MARKER 4 30 "level 4" 0 0 1
-...
-  MARKER 320 2400 "level 3" 0 0 1
-  MARKER 321 2407.5 "level 4" 0 0 1
-  MARKER 322 2415 "level 4" 0 0 1
-  MARKER 323 2422.5 "level 4" 0 0 1
-  &lt;PROJBAY
-  &gt;
-  &lt;TRACK {EBF9837F-BE25-9542-B720-A1862C0DF380}
-</pre>
-<p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>pexpand-reaper-markers</strong> (<a href="./tempo_lsp.html#robo284">tempo</a> generations &amp;rest proportions)
-</pre>
-
-
 <a name="utilities2fpexpand2dsection2dlength"></a>
-<a name="robo912"></a><h2 class=robodoc>utilities/pexpand-section-length [ Functions ]</h2>
+<a name="robo918"></a><h2 class=robodoc>utilities/pexpand-section-length [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the length (integer) of any arbitrary <a href="./section_lsp.html#robo57">section</a> in the data returned
- by <a href="#robo909">pexpand</a>. 
+<pre> Return the length (integer) of any arbitrary <a href="./section_lsp.html#robo58">section</a> in the data returned
+ by <a href="#robo915">pexpand</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - The (rest of) the kind of list returned as the second value of a call to
-   <a href="#robo909">pexpand</a>.
- - The <a href="./section_lsp.html#robo57">section</a> ID we want the length of, either as a list or single symbol.
+   <a href="#robo915">pexpand</a>.
+ - The <a href="./section_lsp.html#robo58">section</a> ID we want the length of, either as a list or single symbol.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An integer or NIL if the <a href="./section_lsp.html#robo57">section</a> can't be found.
+<pre> An integer or NIL if the <a href="./section_lsp.html#robo58">section</a> can't be found.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>pexpand-section-length</strong> (rest (nth-value 1 (<a href="#robo909">pexpand</a> 2 3 6 4 5))) '(c a b))
+<pre class="source">(<strong>pexpand-section-length</strong> (rest (nth-value 1 (<a href="#robo915">pexpand</a> 2 3 6 4 5))) '(c a b))
 =&gt; 108
 
-(<strong>pexpand-section-length</strong> (rest (nth-value 1 (<a href="#robo909">pexpand</a> 2 3 6 4 5))) 'c)
+(<strong>pexpand-section-length</strong> (rest (nth-value 1 (<a href="#robo915">pexpand</a> 2 3 6 4 5))) 'c)
 =&gt; 1296
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>pexpand-section-length</strong> (<a href="#robo909">pexpand</a>-list <a href="./section_lsp.html#robo57">section</a>)
+<pre class="source">(defun <strong>pexpand-section-length</strong> (<a href="#robo915">pexpand</a>-list <a href="./section_lsp.html#robo58">section</a>)
 </pre>
 
 
 <a name="utilities2fpower2dof2d2"></a>
-<a name="robo913"></a><h2 class=robodoc>utilities/power-of-2 [ Functions ]</h2>
+<a name="robo919"></a><h2 class=robodoc>utilities/power-of-2 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2269,7 +2248,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fprime"></a>
-<a name="robo914"></a><h2 class=robodoc>utilities/prime [ Functions ]</h2>
+<a name="robo920"></a><h2 class=robodoc>utilities/prime [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -2291,7 +2270,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fpts2cm"></a>
-<a name="robo915"></a><h2 class=robodoc>utilities/pts2cm [ Functions ]</h2>
+<a name="robo921"></a><h2 class=robodoc>utilities/pts2cm [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2315,13 +2294,13 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2frandom2damount"></a>
-<a name="robo916"></a><h2 class=robodoc>utilities/random-amount [ Functions ]</h2>
+<a name="robo922"></a><h2 class=robodoc>utilities/random-amount [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Return a random number from within a total range of &lt;percent&gt; of the given
  number, centering around zero. Thus, if the &lt;number&gt; is 100, and the
- &lt;percent&gt; is 5, the results will be a random number <a href="#robo865">between</a> -2.5 and +2.5.
+ &lt;percent&gt; is 5, the results will be a random number <a href="#robo869">between</a> -2.5 and +2.5.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> A number.
@@ -2334,13 +2313,13 @@ Here's where I pasted the data into the .RPP Reaper file:
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; Using the default will return numbers within a 5% span of the given number, 
-;;; centering around zero. With 100 that means <a href="#robo865">between</a> -2.5 and +2.5.
+;;; centering around zero. With 100 that means <a href="#robo869">between</a> -2.5 and +2.5.
 (loop repeat 10 collect (<strong>random-amount</strong> 100))
 
 =&gt; (0.7424975 -1.4954442 -1.7126495 1.5918689 -0.43478793 -1.7916341 -1.9115914
     0.8541988 0.057197176 2.0713913)
 
-;;; Specifying 10% of 80 will return random numbers <a href="#robo865">between</a> -4.0 and +4.0
+;;; Specifying 10% of 80 will return random numbers <a href="#robo869">between</a> -4.0 and +4.0
 (loop repeat 10 collect (<strong>random-amount</strong> 80 10))
 
 =&gt; (-0.66686153 3.0387697 3.4737322 -2.3753185 -0.8495751 -0.47580242
@@ -2352,7 +2331,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2frandom2dfrom2dlist"></a>
-<a name="robo917"></a><h2 class=robodoc>utilities/random-from-list [ Functions ]</h2>
+<a name="robo923"></a><h2 class=robodoc>utilities/random-from-list [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2383,7 +2362,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2frandomise"></a>
-<a name="robo918"></a><h2 class=robodoc>utilities/randomise [ Functions ]</h2>
+<a name="robo924"></a><h2 class=robodoc>utilities/randomise [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2415,7 +2394,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fread2dfrom2dfile"></a>
-<a name="robo919"></a><h2 class=robodoc>utilities/read-from-file [ Functions ]</h2>
+<a name="robo925"></a><h2 class=robodoc>utilities/read-from-file [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2449,13 +2428,13 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2freflect2dlist"></a>
-<a name="robo920"></a><h2 class=robodoc>utilities/reflect-list [ Functions ]</h2>
+<a name="robo926"></a><h2 class=robodoc>utilities/reflect-list [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Order a list of numbers from least to greatest, then <a href="./rthm-seq-bar_lsp.html#robo494">transpose</a> the list so
- that if an element is the second <a href="./event_lsp.html#robo192">lowest</a>, it will be replaced by the second
- <a href="./chord_lsp.html#robo87">highest</a> etc.
+<pre> Order a list of numbers from least to greatest, then <a href="./event_lsp.html#robo220">transpose</a> the list so
+ that if an element is the second <a href="./chord_lsp.html#robo90">lowest</a>, it will be replaced by the second
+ <a href="./chord_lsp.html#robo88">highest</a> etc.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A list or numbers.
@@ -2474,7 +2453,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fremove2dall"></a>
-<a name="robo921"></a><h2 class=robodoc>utilities/remove-all [ Functions ]</h2>
+<a name="robo927"></a><h2 class=robodoc>utilities/remove-all [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2486,7 +2465,7 @@ Here's where I pasted the data into the .RPP Reaper file:
  - A second list that is the original list.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A predicate for testing equality <a href="#robo865">between</a> the elements of the two lists. 
+<pre> - A predicate for testing equality <a href="#robo869">between</a> the elements of the two lists. 
    Default = #'eq.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2503,7 +2482,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fremove2delements"></a>
-<a name="robo922"></a><h2 class=robodoc>utilities/remove-elements [ Functions ]</h2>
+<a name="robo928"></a><h2 class=robodoc>utilities/remove-elements [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2530,7 +2509,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fremove2dmore"></a>
-<a name="robo923"></a><h2 class=robodoc>utilities/remove-more [ Functions ]</h2>
+<a name="robo929"></a><h2 class=robodoc>utilities/remove-more [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2558,11 +2537,11 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2freplace2delements"></a>
-<a name="robo924"></a><h2 class=robodoc>utilities/replace-elements [ Functions ]</h2>
+<a name="robo930"></a><h2 class=robodoc>utilities/replace-elements [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Replace the elements in list <a href="#robo865">between</a> start and end (inclusive) with the new
+<pre> Replace the elements in list <a href="#robo869">between</a> start and end (inclusive) with the new
  list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -2589,7 +2568,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2frescale"></a>
-<a name="robo925"></a><h2 class=robodoc>utilities/rescale [ Functions ]</h2>
+<a name="robo931"></a><h2 class=robodoc>utilities/rescale [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -2625,7 +2604,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fround2dif2dclose"></a>
-<a name="robo926"></a><h2 class=robodoc>utilities/round-if-close [ Functions ]</h2>
+<a name="robo932"></a><h2 class=robodoc>utilities/round-if-close [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2636,12 +2615,12 @@ Here's where I pasted the data into the .RPP Reaper file:
 <pre> - A decimal number.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - If the given number is this amount or less than the <a href="#robo899">nearest</a> whole number,
-   round the given number to the <a href="#robo899">nearest</a> whole number.
+<pre> - If the given number is this amount or less than the <a href="#robo904">nearest</a> whole number,
+   round the given number to the <a href="#robo904">nearest</a> whole number.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> If the given number is within the tolerance, return the number, otherwise
- return the <a href="#robo899">nearest</a> whole number.
+ return the <a href="#robo904">nearest</a> whole number.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>round-if-close</strong> 1.999998)
@@ -2658,7 +2637,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fscale2denv"></a>
-<a name="robo927"></a><h2 class=robodoc>utilities/scale-env [ Functions ]</h2>
+<a name="robo933"></a><h2 class=robodoc>utilities/scale-env [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2667,17 +2646,17 @@ Here's where I pasted the data into the .RPP Reaper file:
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - An envelope in the form of a list of break-point pairs.
- - A number that is the <a href="#robo880">factor</a> by which the y values (data segment of the
+ - A number that is the <a href="#robo884">factor</a> by which the y values (data segment of the
    break-point pairs) are to be scaled.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :y-min. A number that is the minimum value for all y values after
-   scaling.  NB The -min/-max arguments are hard-<a href="./sclist_lsp.html#robo598">limits</a> only; they do not
-   <a href="#robo880">factor</a> into the arithmetic.
+   scaling.  NB The -min/-max arguments are hard-<a href="./sclist_lsp.html#robo599">limits</a> only; they do not
+   <a href="#robo884">factor</a> into the arithmetic.
  - :y-max. A number that is the maximum value for all y values after
    scaling.
- - :x-scaler. A number that is the <a href="#robo880">factor</a> by which to <a href="./rthm-seq-bar_lsp.html#robo485">scale</a> the x-axis
+ - :x-scaler. A number that is the <a href="#robo884">factor</a> by which to <a href="./rhythm_lsp.html#robo430">scale</a> the x-axis
    values of the break-point pairs.
  - :x-min. A number that is the minimum value for all x values after
    scaling. NB: This optional argument can only be used if a value has been
@@ -2712,15 +2691,15 @@ Here's where I pasted the data into the .RPP Reaper file:
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>scale-env</strong> (env y-scaler &amp;key x-scaler 
-                                    (x-min most-negative-<a href="./sc-map_lsp.html#robo551">double</a>-float)
-                                    (y-min most-negative-<a href="./sc-map_lsp.html#robo551">double</a>-float)
-                                    (x-max most-positive-<a href="./sc-map_lsp.html#robo551">double</a>-float)
-                                    (y-max most-positive-<a href="./sc-map_lsp.html#robo551">double</a>-float))
+                                    (x-min most-negative-<a href="./sc-map_lsp.html#robo552">double</a>-float)
+                                    (y-min most-negative-<a href="./sc-map_lsp.html#robo552">double</a>-float)
+                                    (x-max most-positive-<a href="./sc-map_lsp.html#robo552">double</a>-float)
+                                    (y-max most-positive-<a href="./sc-map_lsp.html#robo552">double</a>-float))
 </pre>
 
 
 <a name="utilities2fsecs2dto2dmins2dsecs"></a>
-<a name="robo928"></a><h2 class=robodoc>utilities/secs-to-mins-secs [ Functions ]</h2>
+<a name="robo934"></a><h2 class=robodoc>utilities/secs-to-mins-secs [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2738,7 +2717,7 @@ Here's where I pasted the data into the .RPP Reaper file:
  - :post-msecs. The string used to follow milliseconds. Default "" 
  - :same-width. Ensure minutes values are always two characters wide, like
    seconds, i.e with a leading 0.
- - :round. Round to the <a href="#robo899">nearest</a> second and don't print milliseconds. Default
+ - :round. Round to the <a href="#robo904">nearest</a> second and don't print milliseconds. Default
    NIL. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2769,11 +2748,11 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsemitones"></a>
-<a name="robo929"></a><h2 class=robodoc>utilities/semitones [ Functions ]</h2>
+<a name="robo935"></a><h2 class=robodoc>utilities/semitones [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the sample-rate conversion <a href="#robo880">factor</a> required for transposing an audio
+<pre> Return the sample-rate conversion <a href="#robo884">factor</a> required for transposing an audio
  file by a specific number of <strong>semitones</strong>. The number of <strong>semitones</strong> can be
  given as a decimal number, and may be positive or negative.
 </pre>
@@ -2781,7 +2760,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 <pre> - A number of <strong>semitones</strong>.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A number that is the <a href="#robo880">factor</a> required to <a href="./rthm-seq-bar_lsp.html#robo494">transpose</a> by an octave. 
+<pre> - A number that is the <a href="#robo884">factor</a> required to <a href="./event_lsp.html#robo220">transpose</a> by an octave. 
    Default = 2.0.
  - A number that is the number of <strong>semitones</strong> per octave. Default = 12. 
 </pre>
@@ -2799,7 +2778,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 =&gt; 1.1734605
 
-;;; Specifying a different <a href="#robo880">factor</a> for transposing by an octave 
+;;; Specifying a different <a href="#robo884">factor</a> for transposing by an octave 
 (<strong>semitones</strong> 3 4.0)
 
 =&gt; 1.4142135
@@ -2820,7 +2799,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsetf2dlast"></a>
-<a name="robo930"></a><h2 class=robodoc>utilities/setf-last [ Functions ]</h2>
+<a name="robo936"></a><h2 class=robodoc>utilities/setf-last [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2846,7 +2825,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsort2dsymbol2dlist"></a>
-<a name="robo931"></a><h2 class=robodoc>utilities/sort-symbol-list [ Functions ]</h2>
+<a name="robo937"></a><h2 class=robodoc>utilities/sort-symbol-list [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2869,7 +2848,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsplice"></a>
-<a name="robo932"></a><h2 class=robodoc>utilities/splice [ Functions ]</h2>
+<a name="robo938"></a><h2 class=robodoc>utilities/splice [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2896,7 +2875,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsplit2dgroups"></a>
-<a name="robo933"></a><h2 class=robodoc>utilities/split-groups [ Functions ]</h2>
+<a name="robo939"></a><h2 class=robodoc>utilities/split-groups [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2905,7 +2884,7 @@ Here's where I pasted the data into the .RPP Reaper file:
  being the value of any remainder.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A number that is to be <a href="./rthm-seq_lsp.html#robo546">split</a> into repetitions of a specified smaller
+<pre> - A number that is to be <a href="./rthm-seq_lsp.html#robo547">split</a> into repetitions of a specified smaller
    number (the second argument).
  - The number that is to be the repeating item in the new list. This number
    must be smaller than the first number.
@@ -2925,7 +2904,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsplit2dinto2dsub2dgroups"></a>
-<a name="robo934"></a><h2 class=robodoc>utilities/split-into-sub-groups [ Functions ]</h2>
+<a name="robo940"></a><h2 class=robodoc>utilities/split-into-sub-groups [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -2933,7 +2912,7 @@ Here's where I pasted the data into the .RPP Reaper file:
  original flat list, whose lengths are determined by the second argument to
  the function.
 
- NB: The lengths given in the second argument are not required to <a href="./sc-set_lsp.html#robo562">add</a> up to
+ NB: The lengths given in the second argument are not required to <a href="./sc-set_lsp.html#robo563">add</a> up to
      the length of the original list. If their sum is less than the original
      list, the resulting list of sublists will only contain a segment of the
      original elements. If their sum is greater than the length of the
@@ -2973,7 +2952,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsplit2dinto2dsub2dgroups2"></a>
-<a name="robo935"></a><h2 class=robodoc>utilities/split-into-sub-groups2 [ Functions ]</h2>
+<a name="robo941"></a><h2 class=robodoc>utilities/split-into-sub-groups2 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -3011,7 +2990,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsplit2dinto2dsub2dgroups3"></a>
-<a name="robo936"></a><h2 class=robodoc>utilities/split-into-sub-groups3 [ Functions ]</h2>
+<a name="robo942"></a><h2 class=robodoc>utilities/split-into-sub-groups3 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -3040,7 +3019,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsplit2dinto2dsub2dgroups4"></a>
-<a name="robo937"></a><h2 class=robodoc>utilities/split-into-sub-groups4 [ Functions ]</h2>
+<a name="robo943"></a><h2 class=robodoc>utilities/split-into-sub-groups4 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -3053,7 +3032,7 @@ Here's where I pasted the data into the .RPP Reaper file:
  remain. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the list to <a href="./rthm-seq_lsp.html#robo546">split</a> into sub-groups
+<pre> - the list to <a href="./rthm-seq_lsp.html#robo547">split</a> into sub-groups
  - a list of lengths, to be repeated
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -3075,19 +3054,19 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fsrt"></a>
-<a name="robo938"></a><h2 class=robodoc>utilities/srt [ Functions ]</h2>
+<a name="robo944"></a><h2 class=robodoc>utilities/srt [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Return the semitone transposition for a given sampling rate conversion
- <a href="#robo880">factor</a>.
+ <a href="#robo884">factor</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A number that is a sample-rate conversion <a href="#robo880">factor</a>.
+<pre> - A number that is a sample-rate conversion <a href="#robo884">factor</a>.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A number that is the <a href="#robo880">factor</a> required for transposing one octave. 
- - A number that is the number of <a href="./rthm-seq-bar_lsp.html#robo485">scale</a> degrees in an octave.
+<pre> - A number that is the <a href="#robo884">factor</a> required for transposing one octave. 
+ - A number that is the number of <a href="./rhythm_lsp.html#robo430">scale</a> degrees in an octave.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A number.
@@ -3098,7 +3077,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 =&gt; 9.4893
 
-;;; Using a sample-rate conversion <a href="#robo880">factor</a> of 4.0 for the octave and specifying
+;;; Using a sample-rate conversion <a href="#robo884">factor</a> of 4.0 for the octave and specifying
 ;;; 13 divisions of the octave
 (<strong>srt</strong> 1.73 4.0 13)
 
@@ -3109,13 +3088,13 @@ Here's where I pasted the data into the .RPP Reaper file:
       (log8ve 0.0)) ;; so we don't have to recalculate each time
   (defun <strong>srt</strong> (<strong>srt</strong> &amp;optional (octave-size 2.0) (divisions-per-octave 12)
               ;; MDE Tue Feb  7 16:59:45 2012 -- round so we don't get tiny
-              ;; fractions of <a href="#robo929">semitones</a> due to float inaccuracies?
+              ;; fractions of <a href="#robo935">semitones</a> due to float inaccuracies?
               (round-to 0.0001))
 </pre>
 
 
 <a name="utilities2fstring2dreplace"></a>
-<a name="robo939"></a><h2 class=robodoc>utilities/string-replace [ Functions ]</h2>
+<a name="robo945"></a><h2 class=robodoc>utilities/string-replace [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -3141,7 +3120,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fswap2delements"></a>
-<a name="robo940"></a><h2 class=robodoc>utilities/swap-elements [ Functions ]</h2>
+<a name="robo946"></a><h2 class=robodoc>utilities/swap-elements [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -3168,7 +3147,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 
 <a name="utilities2fupdate2dapp2dsrc"></a>
-<a name="robo941"></a><h2 class=robodoc>utilities/update-app-src [ Functions ]</h2>
+<a name="robo947"></a><h2 class=robodoc>utilities/update-app-src [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -3206,7 +3185,7 @@ Here's where I pasted the data into the .RPP Reaper file:
  svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/src
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> The full path to the <a href="./slippery-chicken_lsp.html#robo590">slippery-chicken</a> application, minus the last slash.
+<pre> The full path to the <a href="./slippery-chicken_lsp.html#robo591">slippery-chicken</a> application, minus the last slash.
  Remember that this can't include any spaces in file/folder names 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -3238,7 +3217,7 @@ At revision 3608.
 
 
 <a name="utilities2fwavelab2dto2daudacity2dmarker2dfile"></a>
-<a name="robo942"></a><h2 class=robodoc>utilities/wavelab-to-audacity-marker-file [ Functions ]</h2>
+<a name="robo948"></a><h2 class=robodoc>utilities/wavelab-to-audacity-marker-file [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -3268,11 +3247,11 @@ At revision 3608.
 
 
 <a name="utilities2fwrap2dlist"></a>
-<a name="robo943"></a><h2 class=robodoc>utilities/wrap-list [ Functions ]</h2>
+<a name="robo949"></a><h2 class=robodoc>utilities/wrap-list [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Shift the elements of a list to start at a specified position and <a href="./set-palette_lsp.html#robo643">wrap</a> to
+<pre> Shift the elements of a list to start at a specified position and <a href="./set-palette_lsp.html#robo646">wrap</a> to
  the beginning of the list to the list's tail.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -3294,7 +3273,7 @@ At revision 3608.
 
 
 <a name="utilities2fwrite2dlist2dto2dcoll"></a>
-<a name="robo944"></a><h2 class=robodoc>utilities/write-list-to-coll [ Functions ]</h2>
+<a name="robo950"></a><h2 class=robodoc>utilities/write-list-to-coll [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">AUTHOR</p>
@@ -3305,7 +3284,7 @@ At revision 3608.
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Turn a list of lists into a text file, formatted to be read by the MaxMSP
- [coll] object. This is a bit like <a href="./set-palette_lsp.html#robo626">gen-max-coll-file</a> (see set-<a href="./palette_lsp.html#robo_top_of_doc">palette.lsp</a>)
+ [coll] object. This is a bit like <a href="./set-palette_lsp.html#robo629">gen-max-coll-file</a> (see set-<a href="./palette_lsp.html#robo_top_of_doc">palette.lsp</a>)
  but instead works with any data in a list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -3322,7 +3301,7 @@ At revision 3608.
  :if-exists - what to do if the file already exists. This argument is passed
  to with-open-file. More info here: <a href="http://clhs.lisp.se/Body/m_w_open.htm">http://clhs.lisp.se/Body/m_w_open.htm</a>
  Default = :supercede
- :prefix - <a href="./sc-set_lsp.html#robo562">add</a> a string prefix to the item number. Default = NIL.
+ :prefix - <a href="./sc-set_lsp.html#robo563">add</a> a string prefix to the item number. Default = NIL.
  :alt-label - if you do not want the items labels to be consecutive numbers,
  then you can here either provide a list of lists or a function. If a list of
  lists, this must be the same length as the first argument. If a function, it
@@ -3374,7 +3353,7 @@ yes_foo, 1 2 3 4;
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/utilities.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Tue Oct 27 2020 15:57:59
+<p>Generated from ./../../src/utilities.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Thu Feb 25 2021 17:24:22
 </p>
 </div> <!-- footer -->
 </body>

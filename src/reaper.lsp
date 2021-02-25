@@ -1,7 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* sndfile/reaper-item
-;;; ****c* sclist/reaper-track
-;;; ****c* sclist/reaper-file
 ;;; NAME
 ;;; reaper
 ;;;
@@ -14,7 +12,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist ->
 ;;;                   reaper-file
 ;;;
-;;; Version:          1.0.11
+;;; Version:          1.0.12
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -25,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  12:37:38 Fri Jan 29 2021 CET
+;;; $$ Last modified:  17:16:28 Thu Feb 25 2021 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -88,7 +86,9 @@
 ;;; a holder for reaper-items that will all be placed on a single user-named
 ;;; reaper track. The reaper-items are in the data slot; the ID slot will
 ;;; determine the track name in reaper (lower case).
+;;; ****c* sclist/reaper-track
 (defclass reaper-track (sclist)
+;;; ****
   ;; the actual number of channels the track should have. the min-/max- variants
   ;; are for limiting/forcing this
     ((channels :accessor channels :type integer :initarg :channels
@@ -109,7 +109,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; the reaper-item objects are in the data slot; the id will be used as a file
 ;;; name (lower case)
+;;; ****c* sclist/reaper-file
 (defclass reaper-file (sclist)
+;;; ****
   ;; for the project settings
   ((record-path :accessor record-path :type string :initarg :record-path
                 :initform "/tmp/")

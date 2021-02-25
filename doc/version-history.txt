@@ -2,6 +2,193 @@ There are many changes made between each release; only the changes relevant to
 the user are included below.
 
 ================================================================================
+25/2/21: 1.0.12
+
+Directory structure reorganised a little to reflect the merging of the
+regression tests with the main github repo. Nothing significant in this move
+reflected in workflow expectations, but users should be aware that cloning or
+updating from git will result in a different directory structure as well as the
+downloading of the documentation.
+
+--------------------------------------------------------------------------------
+Date:   Thu Feb 11 09:15:39 2021 +0100
+
+pitch-seq::get-notes: instead of issuing an error, will use the
+default-chord-fun if instrument's chords slot is t but chord-function is NIL
+
+--------------------------------------------------------------------------------
+Date:    Sat Feb 6 15:05:57 2021 +0100
+
+moved dynamic updates from pedal-to-controllers into add-mark :after in the
+event class
+
+--------------------------------------------------------------------------------
+Date:    Fri Feb 5 11:05:27 2021 +0100
+
+added print-to-string for chord
+
+--------------------------------------------------------------------------------
+Date:    Wed Feb 3 15:00:28 2021 +0100
+
+ensured that remix-in gets a list with at least four different elements
+
+--------------------------------------------------------------------------------
+Date:    Tue Feb 2 20:57:37 2021 +0100
+
+changes to respell-bar and enharmonics-exist because they used the old
+is-single-pitch method, which allowed one-note chords
+
+--------------------------------------------------------------------------------
+Date:    Sat Jan 30 17:41:17 2021 +0100
+
+improvements to sndfilenet::auto-followers
+
+--------------------------------------------------------------------------------
+Date:    Sat Jan 30 17:41:06 2021 +0100
+
+improvements to sndfilenet::auto-followers
+
+--------------------------------------------------------------------------------
+Date:    Fri Jan 29 13:16:17 2021 +0100
+
+added get-parameters function (for getting parameter values out of text files
+(e.g. reaper))
+
+--------------------------------------------------------------------------------
+Date:    Thu Jan 28 17:02:30 2021 +0100
+
+warning instead of error when sndfile::duration slot given is > snd's duration
+
+--------------------------------------------------------------------------------
+Date:    Thu Jan 28 16:32:05 2021 +0100
+
+added reaper file writing routines (reaper.lsp)
+
+--------------------------------------------------------------------------------
+Date:    Fri Jan 22 14:07:27 2021 +0100
+
+some changes to reflect round-to-nearest improvements, plus ccl tests
+
+--------------------------------------------------------------------------------
+Date:    Fri Jan 22 14:01:39 2021 +0100
+
+due to rounding/float differences between sbcl and ccl, round-to-nearest now
+first rounds to the nearest cent before then finding the nearest note in the
+given scale
+
+--------------------------------------------------------------------------------
+Date:    Wed Jan 6 14:32:07 2021 +0100
+
+added :auto-followers to make-sfn (sndfilenet)
+
+--------------------------------------------------------------------------------
+Date:    Wed Jan 6 14:24:49 2021 +0100
+
+improvements to find-sndfile and sndfilenet::reset
+
+--------------------------------------------------------------------------------
+Date:    Wed Dec 30 18:39:39 2020 +0100
+
+added :min-hairpin to write-lp-data-for-all to allow hairpins to be made longer
+and avoid lilypond warnings / dynamic collisions
+
+--------------------------------------------------------------------------------
+Date:    Wed Dec 30 18:04:34 2020 +0100
+
+add-player now puts a double bar line at the end of the piece
+
+--------------------------------------------------------------------------------
+Date:    Wed Dec 30 13:07:13 2020 +0100
+
+add-player methods now use keyword args instead of optional
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 29 17:50:38 2020 +0100
+
+added best-clef tests
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 29 17:50:03 2020 +0100
+
+improvements to auto-clefs through provision of best-clef-aux-new and switching
+between this and the old method via set-sc-config 'best-clef-aux-fun
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 29 13:24:20 2020 +0100
+
+auto-clefs: separated in-clef-range and needs-ledgers out of
+orig. best-clef-aux
+
+--------------------------------------------------------------------------------
+Date:    Sat Dec 19 19:25:54 2020 +0100
+
+updated porc-equal to reflect new is-single-pitch
+
+--------------------------------------------------------------------------------
+Date:    Sat Dec 19 19:20:08 2020 +0100
+
+changed event::is-single-pitch to return t for one-note chord objects
+
+--------------------------------------------------------------------------------
+Date:    Sat Dec 19 12:27:49 2020 +0100
+
+force-in-range (ins chord) now removes duplicate pitches
+
+--------------------------------------------------------------------------------
+Date:    Thu Dec 17 17:50:50 2020 +0100
+
+instrument::reset-stats now also resets lowest/highest-played to nil
+
+--------------------------------------------------------------------------------
+Date:    Thu Dec 10 16:24:13 2020 +0100
+
+in lilypond, rgb marks added to events now use (again) override to apply colour
+to whole chords, whereas when rgb added to pitches within chords, we use tweak
+so as to be able to colour individual chord notes
+
+--------------------------------------------------------------------------------
+Date:    Thu Dec 10 10:33:23 2020 +0100
+
+lilypond has made changes to the way landscape scores and system spacing is
+defined; these are reflected in write-lp-data-for-all
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 8 18:44:33 2020 +0100
+
+osc-send-cue-nums method (sndfilenet.lsp) is now called preload-cues
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 8 18:30:51 2020 +0100
+
+Merge pull request #42 from levinericzimmermann/add-ekmelily
+
+added new scale twelfth-tone-ekm (thanks Levin!)
+
+--------------------------------------------------------------------------------
+Date:    Mon Dec 7 13:13:33 2020 +0100
+
+added new scale twelfth-tone-ekm (Levin)
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 1 17:22:15 2020 +0100
+
+changed default Verdana to Courier font in cmn.lsp as OSX Preview app was
+complaining font was missing
+
+--------------------------------------------------------------------------------
+Date:    Tue Nov 10 20:47:03 2020 +0100
+
+improvements to sndfilenet
+
+--------------------------------------------------------------------------------
+Date:    Mon Nov 9 13:38:22 2020 +0100
+
+changes to sc-sc-bsd, sndfile-ext, and sndfilenet to make osc-eval handle list
+results by sending mulitple udp messages
+
+
+
+================================================================================
 27/10/20: 1.0.11
 
 --------------------------------------------------------------------------------

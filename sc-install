@@ -91,6 +91,7 @@ mv slippery-chicken sc
 cd sc
 mkdir bin
 git checkout HEAD src
+cd ..
 
 # Write the sbcl init file ####################################################
 LISPINI=~/.sbclrc

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./../../src/reaper.lsp</title>
+<!-- Source: ./../../src/reaper.lsp -->
+<!-- Generated with ROBODoc Version 4.99.43 (Oct  1 2016) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="sclist2freaper2dfile"></a>
+<a name="robo605"></a><h2 class=robodoc>sclist/reaper-file [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo283">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+
+
+<a name="sclist2freaper2dtrack"></a>
+<a name="robo606"></a><h2 class=robodoc>sclist/reaper-track [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo283">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+
+
+<a name="sndfile2freaper2ditem"></a>
+<a name="robo831"></a><h2 class=robodoc>sndfile/reaper-item [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sndfile_lsp.html#robo284">sndfile</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> reaper
+
+ File:             <a href="#robo_top_of_doc">reaper.lsp</a>            
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo590">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo292">linked-named-object</a> -&gt; <a href="./sndfile_lsp.html#robo284">sndfile</a> -&gt;
+                   <strong>reaper-item</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo590">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo292">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo283">sclist</a> -&gt;
+                   <a href="#robo606">reaper-track</a>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo590">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo292">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo283">sclist</a> -&gt;
+                   <a href="#robo605">reaper-file</a>
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Class and routine definition for the generation of partial
+                   and/or complete reaper files from rhythms, soundfiles.
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    January 21st 2021
+
+ $$ Last modified:  17:16:28 Thu Feb 25 2021 CET
+
+ SVN ID: $Id: <a href="./sclist_lsp.html#robo_top_of_doc">sclist.lsp</a> 963 2010-04-08 20:58:32Z medward2 $
+</pre>
+
+
+<a name="utilities2fpdivide2dreaper2dmarkers"></a>
+<a name="robo914"></a><h2 class=robodoc>utilities/pdivide-reaper-markers [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./utilities_lsp.html#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Write to standard out (terminal/interpreter) marker data for a reaper file
+ generated from calls to the <a href="./utilities_lsp.html#robo913">pdivide</a> function.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> Takes the same arguments as the <a href="./utilities_lsp.html#robo913">pdivide</a> function
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> T
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>pdivide-reaper-markers</strong> (&amp;rest args)
+</pre>
+
+
+<a name="utilities2fpexpand2dreaper2dmarkers"></a>
+<a name="robo917"></a><h2 class=robodoc>utilities/pexpand-reaper-markers [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./utilities_lsp.html#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> September 4th 2015, Edinburgh
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Using the <a href="./utilities_lsp.html#robo915">pexpand</a> function, we write marker information in a format which
+ can be read by the Reaper (version 4/5+) DAW software. Though we can think
+ of the outputs of <a href="./utilities_lsp.html#robo915">pexpand</a> to be in beats, seconds, bars, or any arbitrary
+ <a href="./rhythm_lsp.html#robo430">scale</a>, the timings of Reaper markers are in seconds, hence the need here
+ for an initial <a href="./tempo_lsp.html#robo285">tempo</a>. In other words, we treat the output of <a href="./utilities_lsp.html#robo915">pexpand</a> to be
+ beat counts; if you would prefer to interpret these as bars, simply divide
+ the <a href="./tempo_lsp.html#robo285">tempo</a> by the number of beats per bar. If there are to be <a href="./tempo_lsp.html#robo285">tempo</a> changes
+ in the mix/<a href="./piece_lsp.html#robo56">piece</a> Reaper itself will update the markers' positions when the
+ new <a href="./tempo_lsp.html#robo285">tempo</a> is inserted in the project window--this is fine when you are
+ thinking in beats/bars but beware of changing <a href="./tempo_lsp.html#robo285">tempo</a> in Reaper if you are
+ thinking of markers with fixed timings (seconds).
+
+ Copy the output of this into the Reaper file verbatim (no enclosing &lt; &gt;
+ marks) before the &lt;PROJBAY tag.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="./tempo_lsp.html#robo285">tempo</a> in BPM
+ - the number of generations: see the <a href="./utilities_lsp.html#robo915">pexpand</a> function
+ - (&amp;rest) the proportions: see the <a href="./utilities_lsp.html#robo915">pexpand</a> function
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Always T
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(<strong>pexpand-reaper-markers</strong> 144 2 6 3 5 4)
+-&gt;
+  MARKER 1 7.5 "level 4" 0 0 1
+  MARKER 2 15.0 "level 4" 0 0 1
+  MARKER 3 22.5 "level 4" 0 0 1
+  MARKER 4 30.0 "level 4" 0 0 1
+  MARKER 5 37.5 "level 4" 0 0 1
+...
+  MARKER 108 810.0 "level 1" 0 0 1
+  MARKER 109 817.5 "level 4" 0 0 1
+  MARKER 110 825.0 "level 4" 0 0 1
+  MARKER 111 832.5 "level 4" 0 0 1
+  MARKER 112 840.0 "level 4" 0 0 1
+  MARKER 113 847.5 "level 4" 0 0 1
+  MARKER 114 855.0 "level 3" 0 0 1
+...
+  MARKER 319 2392.5 "level 4" 0 0 1
+  MARKER 320 2400.0 "level 3" 0 0 1
+  MARKER 321 2407.5 "level 4" 0 0 1
+  MARKER 322 2415.0 "level 4" 0 0 1
+  MARKER 323 2422.5 "level 4" 0 0 1
+
+
+Here's where I pasted the data into the .RPP Reaper file:
+
+  &lt;TEMPOENVEX
+    ACT 0
+    VIS 1 0 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 1 -1 -1
+  &gt;
+  MARKER 1 7.5 "level 4" 0 0 1
+  MARKER 2 15 "level 4" 0 0 1
+  MARKER 3 22.5 "level 4" 0 0 1
+  MARKER 4 30 "level 4" 0 0 1
+...
+  MARKER 320 2400 "level 3" 0 0 1
+  MARKER 321 2407.5 "level 4" 0 0 1
+  MARKER 322 2415 "level 4" 0 0 1
+  MARKER 323 2422.5 "level 4" 0 0 1
+  &lt;PROJBAY
+  &gt;
+  &lt;TRACK {EBF9837F-BE25-9542-B720-A1862C0DF380}
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>pexpand-reaper-markers</strong> (<a href="./tempo_lsp.html#robo285">tempo</a> generations &amp;rest proportions)
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/reaper.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Thu Feb 25 2021 17:24:22
+</p>
+</div> <!-- footer -->
+</body>
+</html>

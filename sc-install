@@ -38,6 +38,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 else echo "unhandled operating system"
 fi
 
+# Install the necessary goodies ###############################################
 if ! command -v lilypond &> /dev/null
 then
     echo "lilypond could not be found. Please install from http://lilypond.org"
@@ -79,6 +80,19 @@ then
     $INSTALL emacs
 fi
 
+# Get CLM, CMN, slime, and SC #################################################
+curl https://ccrma.stanford.edu/software/clm/clm-5.tar.gz -o clm.tar.gz
+tar xf clm.tar.gz
+curl https://ccrma.stanford.edu/software/cmn/cmn.tar.gz -o cmn.tar.gz
+tar xf cmn.tar.gz
+git clone https://github.com/slime/slime.git
+git clone -n https://github.com/mdedwards/slippery-chicken.git --depth 1
+mv slippery-chicken sc
+cd sc
+mkdir bin
+git checkout HEAD src
+
+# Write the sbcl init file ####################################################
 LISPINI=~/.sbclrc
 if [[ -f $LISPINI ]] ; then
   echo "copying $LISPINI to $LISPINI.bu"
@@ -110,6 +124,7 @@ cat > $LISPINI << EOF
 (cl-user::sc)
 EOF
 
+# Add lines for slime to .emacs ################################################
 EMACSINI=~/.emacs
 if [[ -f $EMACSINI ]] ; then
   echo "copying $EMACSINI to $EMACSINI.bu"
@@ -121,16 +136,6 @@ cat >> $EMACSINI  << EOF
 (setq inferior-lisp-program "$LISP")
 EOF
 
-curl https://ccrma.stanford.edu/software/clm/clm-5.tar.gz -o clm.tar.gz
-tar xf clm.tar.gz
-curl https://ccrma.stanford.edu/software/cmn/cmn.tar.gz -o cmn.tar.gz
-tar xf cmn.tar.gz
-git clone https://github.com/slime/slime.git
-git clone -n https://github.com/mdedwards/slippery-chicken.git --depth 1
-mv slippery-chicken sc
-cd sc
-mkdir bin
-git checkout HEAD src
 echo ""
 echo "slippery chicken installation complete. You can start it by typing sbcl
 at the prompt, or starting the emacs text editor and running slime there.

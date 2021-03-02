@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:18:11 Wed Feb 24 2021 CET
+;;; $$ Last modified:  16:50:38 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8223,7 +8223,7 @@
               +slippery-chicken-standard-instrument-palette+)))
     (sc-test-check
       (and 
-       (not (players-exist ens '(vln)))
+       (players-exist ens '(vln))
        (not (nth-value 1 (ignore-errors (players-exist ens '(vln))))))
       (and 
        (not (ignore-errors (players-exist ens '(vla))))

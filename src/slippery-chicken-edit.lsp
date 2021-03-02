@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:03:43 Wed Dec 30 2020 CET
+;;; $$ Last modified:  15:19:31 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6995,22 +6995,23 @@ NIL
 ;;; especially if your requirements are :strict (see below)), but it works
 ;;; like this:
 ;;; 
-;;; First, we assume that your existing music is more horizontal/harmonic than
-;;; linear/melodic, particularly because the mapping process treats each 'chord'
-;;; separately and potentially maps each chord onto different players---the
-;;; choice of whether to change ensemble is decided by an activity-levels object
-;;; by default (see :combo-change-fun below) but also by the number of notes in
-;;; any given chord and whether it's possible to play any subsequent chord on
-;;; the same instruments. The method also assumes that each 'player' in the
-;;; existing slippery-chicken object has a sequence of one or more chords which
-;;; can be separated into 'phrases' using the get-phrases method; that the new
-;;; ensemble uses player IDs that don't exist in the original ensemble (though
-;;; any player can use the same instruments, of course); and that using the
-;;; player IDs from the new ensemble we provide lists of sublists of possible
-;;; 'combos' that should be used to play the existing chords. These combos
-;;; should range from 2 players to however many we'll need to play the existing
-;;; chords. We pass these combos to the method and/or allow them to be created
-;;; by the 'lotsa-combos' ensemble method (see :combos below)
+;;; First, we assume that your existing music is more vertical/harmonic than
+;;; horizontal/linear/melodic, particularly because the mapping process treats
+;;; each chord separately and potentially maps each chord onto different
+;;; players---the choice of whether to change ensemble is decided by an
+;;; activity-levels object by default (see :combo-change-fun below) but also by
+;;; the number of notes in any given chord and whether it's possible to play any
+;;; subsequent chord on the same instruments. The method also assumes that each
+;;; 'player' in the existing slippery-chicken object has a sequence of one or
+;;; more chords which can be separated into 'phrases' using the get-phrases
+;;; method; that the new ensemble uses player IDs that don't exist in the
+;;; original ensemble (though any player can use the same instruments, of
+;;; course); and that using the player IDs from the new ensemble we provide
+;;; lists of sublists of possible 'combos' that should be used to play the
+;;; existing chords. These combos should range from 2 players to however many
+;;; we'll need to play the existing chords. We pass these combos to the method
+;;; and/or allow them to be created by the 'lotsa-combos' ensemble method (see
+;;; :combos below)
 ;;;
 ;;; Whether a chord is playable by a given combo is determined by the range of
 ;;; the chord and the instruments of any given combo, along with those
@@ -7051,6 +7052,11 @@ NIL
 ;;; - :add-more-combos. T or NIL to indicate whether the :combos slot should be
 ;;;   expanded via the 'lotsa-combos' method. If T then whatever is passed to
 ;;;   :combos will nevertheless be retained after the expansion. Default = NIL.
+;;; - :sub-combos. T or NIL to indicate whether the :combos slot should be
+;;;   expanded via the sub-groups function. This is quite different to
+;;;   :add-more-combos as that approach uses permutations of all the instruments
+;;;   in the ensemble whereas this approach uses permutations of sub-sets of the
+;;;   given :combos (only) instead.
 ;;; - :start-bar. The bar number to start orchestrating. Default = NIL which
 ;;;   will in turn default to 1
 ;;; - :end-bar. The bar number to stop orchestrating (inclusive). Default = NIL
@@ -7122,8 +7128,8 @@ NIL
 ;;; SYNOPSIS
 (let (successes)                        ; for stats
   (defmethod orchestrate ((sc slippery-chicken) new-ensemble original-players
-                          &key
-                            combos add-more-combos start-bar end-bar verbose
+                          &key combos add-more-combos sub-combos start-bar
+                            end-bar verbose
                             (artificial-harmonics t) (relax 0) (auto-clefs t)
                             (auto-beam t) (combo-change-fun #'combo-change?)
                             (chords t) sticky-stats)
@@ -7132,7 +7138,14 @@ NIL
       (setq successes (ml 0 5)))
     (unless (integer-between relax 0 3)
       (error "slippery-chicken::orchestrate: :relax should be between 0 and 3 ~
-            inclusive, not ~a" relax))
+             inclusive, not ~a" relax))
+    ;; MDE Tue Mar  2 15:15:45 2021, Heidhausen
+    (when (and add-more-combos sub-combos)
+      (error "slippery-chicken::orchestrate: either :add-more-combos or ~
+              :sub-combos may be T, but not both."))
+    (when (and sub-combos (not combos))
+      (error "slippery-chicken::orchestrate: :sub-combos can only by T when ~
+              :combos is a list of lists"))
     ;; reset our activity-levels object or whatever the given function does to
     ;; reset 
     (funcall combo-change-fun nil nil) 
@@ -7142,7 +7155,10 @@ NIL
                                  :end-bar end-bar :pad nil))
            (lotsa (when (or (not combos) add-more-combos)
                     (lotsa-combos new-ensemble 100)))
-           (all-combos (append combos lotsa))
+           (sub-groups (sub-groups combos))
+           (all-combos (append combos sub-groups lotsa))
+           ;; turned the given list of instruments into an assoc-list where the
+           ;; ids are the number of instruments in the combo(s)
            (combos-al (organise-combos new-ensemble all-combos))
            (num-passes (length phrases))
            combo combo-players combo-relax-val)
@@ -7245,7 +7261,11 @@ NIL
                         (artificial-harmonics t) (chords t))
   (let* ((num-notes (num-notes e))
          (cscl (get-data-data num-notes combos))
-         (current-combo (get-current cscl))
+         (current-combo (if cscl
+                            (get-current cscl)
+                            (error "slippery-chicken::get-combo: ~
+                                    Can't get a combo for ~a notes."
+                                   num-notes)))
          (change (funcall combo-change-fun current-combo combos))
          best best-combo best-success best-count partial partial-combo
          partial-success partial-count free frees possible success

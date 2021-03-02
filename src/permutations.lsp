@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  10:26:32 Sat Jun  6 2020 CEST
+;;; $$ Last modified:  14:42:54 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1347,7 +1347,6 @@ Rest: ((4 6 1) (2 3 4))
         (loop for j from (1+ i) below len collect (list e (nth j list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; More permutation routines; found at 
 ;;; http://groups.google.com.ai/group/comp.lang.lisp/browse_thread/thread/
 ;;; e9313dd883b48008/ce4e2243623a16e7?lnk=raot on 6/7/09

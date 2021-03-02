@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  12:59:04 Wed Dec 30 2020 CET
+;;; $$ Last modified:  16:48:39 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -402,7 +402,7 @@
 ;;; - A list of symbols that are the IDs of the players sought.
 ;;; 
 ;;; RETURN VALUE
-;;; NIL if the specified player ID is present within the given ensemble object,
+;;; T if the specified player IDs are present within the given ensemble object,
 ;;; otherwise drops into the debugger with an error.
 ;;; 
 ;;; EXAMPLE
@@ -419,7 +419,7 @@
             +slippery-chicken-standard-instrument-palette+)))
   (players-exist ens '(vln)))
 
-=> NIL
+=> T
 
 ;; Drops into the debugger with an error if no player with the specified ID is
 ;; found in the given ensemble object.
@@ -445,7 +445,8 @@ ensemble::players-exist: VLA is not a member of the ensemble
     (loop for player in players do
           (unless (member player e-players)
             (error "ensemble::players-exist: ~a is not a member of the ~
-                    ensemble" player)))))
+                    ensemble" player))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 20 12:16:58 2013 
@@ -587,6 +588,14 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; player up to one less than the number of players in the ensemble. This uses
 ;;; the shuffle method so is random, but as we use fixed-seed randomness we get
 ;;; repeatable results.
+;;;
+;;; NB This will return groups of players that are mere permutations of each
+;;; others (e.g. (vln vla vc) and (vla vln vc)). As the combo-chord-possible?
+;;; chord method will permutate these to try and find an instrumentation that is
+;;; possible, you might think there's no point accepting permutations in this
+;;; method. However, which combination (i.e. instruments in any given order) is
+;;; first deemed playable for any given chord will determine the voicing
+;;; selected, so different results can be expected.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the ensemble object

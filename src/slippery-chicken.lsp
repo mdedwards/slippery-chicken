@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:16:54 Wed Feb 10 2021 CET
+;;; $$ Last modified:  16:45:50 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6857,9 +6857,12 @@ data: NIL
 ;;;   score the left, right, top, and bottom margins, all in
 ;;;   millimetres. Default = '(20 20 20 20) 
 ;;; - :right-page-margins. Similar to :left-page-margins but for right pages.
-;;; - :players . Default = NIL = process all players.
-;;; - :start-bar . Default = NIL = 1.
-;;; - :end-bar . Default = NIL = the last bar in the slippery-chicken object.
+;;; - :players. Which players to write to the xml file. Default = NIL = process
+;;;   all players.
+;;; - :hide-players. Which players to leave out of the score.
+;;; - :start-bar. The bar number to start at. Default = NIL = 1.
+;;; - :end-bar. The bar number to end at. Default = NIL = the last bar in the
+;;;   slippery-chicken object. 
 ;;; - :respell-notes. NIL, T or a list to indicate whether the method should
 ;;;   also call the respell-notes method on the given slippery-chicken object
 ;;;   before generating the output to undertake enharmonic changes. If a list,
@@ -6884,7 +6887,7 @@ data: NIL
                         ;; left right top bottom, all mm
                         (left-page-margins '(20 20 20 20))
                         (right-page-margins '(20 20 20 20))
-                        players start-bar end-bar
+                        players hide-players start-bar end-bar
                         (respell-notes t)
                         (file (format nil "~a_~a.xml"
                                       (get-sc-config 'default-dir)
@@ -6995,6 +6998,11 @@ data: NIL
                    ~&  </credit>" (subtitle sc)))
     (format xml "~&  <part-list>")
     (let ((the-players (if players (force-list players) (players sc))))
+      ;; MDE Tue Mar  2 16:38:50 2021, Heidhausen 
+      (when hide-players
+        ;; reverse because in sbcl and ccl set-difference returns its first
+        ;; arg. in reverse order
+        (setq the-players (reverse (set-difference the-players hide-players))))
       (loop for p in the-players do
            (xml-score-part (get-player sc p) xml))
       (format xml "~&  </part-list>")
@@ -7942,24 +7950,24 @@ FS4 G4)
 #|
 ;;; Follow the violin part and generate group events for all other parts ;
 (let* ((mini
-(make-slippery-chicken
-'+mini+
-:title "antescofo test"
-:ensemble '(((vn (violin :midi-channel 1))
-(va (viola :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1)))
-:tempo-map '((1 60))
-:rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-:rthm-seq-map '((1 ((vn (1 1 1))
-(va (1 1 1))
-(vc (1 1 1))))))))
-  ;; Adding a label (probably wouldn't need one in bar 1, but to illustrate) ;
-(setf (asco-label (get-event mini 1 1 'vn)) "test-label")
-  ;; start the (fictitious) vocoder when the first cello note in bar 2 is played ;
-(push "max-receiver1 start-vocoder" (asco-msgs (get-event mini 2 1 'vc)))
-(write-antescofo mini 'vn :file "/tmp/asco-test.txt"))
+        (make-slippery-chicken
+         '+mini+
+         :title "antescofo test"
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1 1 1)))
+         :tempo-map '((1 60))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((vn (1 1 1))
+                             (va (1 1 1))
+                             (vc (1 1 1))))))))
+  ;; Adding a label (probably wouldn't need one in bar 1, but to illustrate) 
+  (setf (asco-label (get-event mini 1 1 'vn)) "test-label")
+  ;; start the (fictitious) vocoder when the first cello note in bar 2 is played 
+  (push "max-receiver1 start-vocoder" (asco-msgs (get-event mini 2 1 'vc)))
+  (write-antescofo mini 'vn :file "/tmp/asco-test.txt"))
 
 -->
 ******* section (1)

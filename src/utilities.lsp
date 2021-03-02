@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:10:16 Wed Feb 24 2021 CET
+;;; $$ Last modified:  14:55:36 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -571,6 +571,23 @@
 ;;; ****
   (loop for i from 0 by length while list collect
         (loop repeat length while list collect (pop list))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; max-perms is the maximum length of any single list-permutation we perform
+(defun sub-groups (groups &optional (max-perms 100))
+  (when (simple-listp groups) ; could be just one list we want sub-groups form
+    (setq groups (list groups)))
+  (loop for group in groups
+     for glen = (length group)
+     do
+       (when (> glen 8)
+         (warn "utilities:sub-groups: long lists; this might take a while"))
+     appending
+       (loop for len downfrom (1- glen) to 1
+          for lperms = (list-permutations group len)
+          appending (if (> (length lperms) max-perms)
+                      (subseq lperms 0 max-perms)
+                      lperms))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

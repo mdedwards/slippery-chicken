@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:55:36 Tue Mar  2 2021 CET
+;;; $$ Last modified:  10:40:16 Wed Mar  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -581,7 +581,7 @@
      for glen = (length group)
      do
        (when (> glen 8)
-         (warn "utilities:sub-groups: long lists; this might take a while"))
+         (warn "utilities::sub-groups: long lists; this might take a while"))
      appending
        (loop for len downfrom (1- glen) to 1
           for lperms = (list-permutations group len)

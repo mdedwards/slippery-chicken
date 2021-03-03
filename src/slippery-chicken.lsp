@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:45:50 Tue Mar  2 2021 CET
+;;; $$ Last modified:  17:51:58 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7000,6 +7000,7 @@ data: NIL
     (let ((the-players (if players (force-list players) (players sc))))
       ;; MDE Tue Mar  2 16:38:50 2021, Heidhausen 
       (when hide-players
+        (players-exist (ensemble sc) hide-players)
         ;; reverse because in sbcl and ccl set-difference returns its first
         ;; arg. in reverse order
         (setq the-players (reverse (set-difference the-players hide-players))))

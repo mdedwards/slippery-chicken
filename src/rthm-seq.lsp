@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  17:08:54 Sat Jun  6 2020 CEST
+;;; $$ Last modified:  17:16:46 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2617,9 +2617,9 @@ data: S
   (gen-stats rs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Sep  3 12:28:15 2013 
-
 ;;; ****m* rthm-seq/split-into-single-bars
+;;; DATE September 3rd 2013
+;;;
 ;;; DESCRIPTION
 ;;; Split a rthm-seq into single bar rthm-seqs.  The pitch-seq-palette will be
 ;;; used to set the pitch-seqs of the new rthm-seqs.

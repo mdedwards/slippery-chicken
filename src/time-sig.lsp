@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified:  16:54:19 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  11:24:48 Wed Mar  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -632,7 +632,8 @@ data: (2 4)
 ;;; SYNOPSIS
 (defun make-time-sig-from-duration (dur-secs
                                     &optional 
-                                    (tempo 60.0))
+                                      (tempo 60.0)
+                                      overrides)
 ;;; ****
   (let* ((quarters (quarters dur-secs tempo)))
     (unless (almost-zero (rem quarters 0.125))
@@ -647,43 +648,46 @@ data: (2 4)
           (when (and (> num 1)
                      (almost-zero (rem quarters div)))
             (return (make-time-sig
-                     (get-preferred-time-sig (list num denom))))))))
+                     (get-preferred-time-sig
+                      (list num denom) :overrides overrides)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Use more common time-sigs instead of more arcane.  argument and result is a
-;;; list like '(8 8).  If there's no preferred time-sig the argument will be
-;;; returned.
+;;; list like '(8 8). If there's no preferred time-sig the argument will be
+;;; returned. To override some of the the preferred time-sigs, or add new ones
+;;; without redefining the function, pass a list like <preferred> as the
+;;; :overriddes arg: this will be prepended and thus triggered first (so
+;;; duplicates are fine).
 (defun get-preferred-time-sig (given 
-                               &optional
-                               ;; these need to be given pairwise: the
-                               ;; preferred time-sig first, the one it should
-                               ;; substitute second 
-                               (preferred '(((1 16) (2 32))
-                                            ;; SAR Fri Jun 22 13:15:16 BST 2012
-                                            ;; ((1 8) (2 16))
-                                            ;; SAR Tue Oct  9 13:55:17 BST 2012
-                                            ;; ((2 8) (4 16))
-                                            ;; ((1 4) (4 16))
-                                            ((3 8) (6 16))
-                                            ((5 8) (10 16))
-                                            ((7 8) (14 16))
-                                            ((4 4) (16 16))
-                                            ;; SAR Sat Aug 18 18:50:24 BST 2012
-                                            ((9 8) (18 16))
-                                            ;; MDE Sat Dec 24 13:00:09 2011
-                                            ;; ((1 4) (2 8))
-                                            ((2 4) (4 8))
-                                            ((4 4) (8 8))
-                                            ((5 4) (10 8))
-                                            ;; MDE Sat Feb 11 11:44:53 2012 
-                                            ((7 4) (14 8)))))
-  (let ((result (loop
-                   for pair in preferred 
+                               &key
+                                 ;; these need to be given pairwise: the
+                                 ;; preferred time-sig first, the one it should
+                                 ;; substitute second 
+                                 (preferred '(((1 16) (2 32))
+                                              ((3 8) (6 16))
+                                              ((5 8) (10 16))
+                                              ((7 8) (14 16))
+                                              ((4 4) (16 16))
+                                              ((9 8) (18 16))
+                                              ;; MDE Sat Dec 24 13:00:09 2011
+                                              ;; ((1 4) (2 8))
+                                              ((2 4) (4 8))
+                                              ((4 4) (8 8))
+                                              ((5 4) (10 8))
+                                              ;; MDE Sat Feb 11 11:44:53 2012 
+                                              ((7 4) (14 8))))
+                                 overrides)
+  (let ((result (loop for pair in (if overrides
+                                      ;; MDE Wed Mar 3 11:10:33 2021, Heidhausen
+                                      ;; -- allow some pre-defined time-sigs to
+                                      ;; be overriden in the call
+                                      (append overrides preferred)
+                                      preferred)
                    for yes = (first pair)
                    for no = (second pair)
                    do
-                   (when (equal given no)
-                     (return yes)))))
+                     (when (equal given no)
+                       (return yes)))))
     (if result result given)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

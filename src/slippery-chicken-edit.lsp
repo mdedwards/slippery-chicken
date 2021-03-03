@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:19:31 Tue Mar  2 2021 CET
+;;; $$ Last modified:  17:07:05 Tue Mar  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5957,10 +5957,11 @@ T
 ;;; 
 ;;; SYNOPSIS
 (defmethod consolidate-all-rests ((sc slippery-chicken)
-                                  &optional (start-bar 1) end-bar players warn)
+                                  &optional (start-bar 1) end-bar players warn
+                                    beat)
 ;;; ****
   (map-over-bars sc start-bar end-bar players #'consolidate-rests-max
-                 :warn warn))
+                 :warn warn :beat beat))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

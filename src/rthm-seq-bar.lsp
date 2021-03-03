@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  14:34:24 Mon Mar  1 2021 CET
+;;; $$ Last modified:  12:50:47 Wed Mar  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -801,8 +801,9 @@ data: E.
   ;; more than a beat's worth of rthms 
   (let* ((beats (get-beats rsb beat 'silent))
          (cbeats '())
+         ;; MDE Wed Mar 3 12:50:10 2021, Heidhausen -- handle compound time-sigs
          ;; 21.7.11
-         (rest-beat (make-rest (if beat beat (get-beat-as-rhythm rsb))))
+         (rest-beat (make-rest (if beat beat (get-beat-as-rhythm rsb t))))
          (rest-dur nil)
          (count 1)
          (last-rhythm nil)

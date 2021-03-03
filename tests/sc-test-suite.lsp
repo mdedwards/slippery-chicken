@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:50:38 Tue Mar  2 2021 CET
+;;; $$ Last modified:  11:28:34 Wed Mar  3 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3187,6 +3187,14 @@
     (= 3 (num-beats-at-tempo (make-time-sig '(6 8)) (make-tempo 120 :beat 'q)))
     (= 12 (num-beats-at-tempo (make-time-sig '(6 8))
                               (make-tempo 150 :beat 's)))))
+
+(sc-deftest test-make-time-sig-from-duration ()
+  (sc-test-check
+    (equalp '(3 8) (data (make-time-sig-from-duration 1.5)))
+    (equalp '(3 4) (data (make-time-sig-from-duration 1.5 120)))
+    (equalp '(6 16) (data (make-time-sig-from-duration
+                           1.5 60 '(((6 16) (3 8))))))
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; pitch tests

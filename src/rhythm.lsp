@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  14:53:11 Sat Feb  6 2021 CET
+;;; $$ Last modified:  17:45:20 Wed Mar  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1515,7 +1515,7 @@ NIL
 ;;; tuplet-actual-normals come from rthm-seq-bar and contain data for all the
 ;;; tuplets in a given bar. see comments to tuplet-actual-normals method in rsb
 ;;; class 
-(defmethod write-xml ((r rhythm) &key stream (divisions 16383) basic accidental
+(defmethod write-xml ((r rhythm) &key stream (divisions 16382) basic accidental
                                    notehead tuplet-actual-normals)
   (let ((bracket (bracket r))
         (beam (beam r))
@@ -1533,7 +1533,8 @@ NIL
             (format stream "~&        <rest />"))
           (format stream "~&        <duration>~a</duration>"
                   ;; (floor (* (duration r) divisions)))
-                  (round (* (duration r) divisions)))
+                  ;; (round (* (duration r) divisions)))
+                  (* (rq r) divisions))
           (when (is-tied-to r)
             ;; tied is for notation, tie is for sound
             ;; the <tied> tag needs to come later, in <notations> (event class

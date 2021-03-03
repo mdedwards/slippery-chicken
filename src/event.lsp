@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:05:02 Sat Feb  6 2021 CET
+;;; $$ Last modified:  17:45:06 Wed Mar  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2408,7 +2408,7 @@ NIL
 ;;; finale's xml tag order within <note>is not arbitrary; unless you get it
 ;;; right you'll get error messages :/ it's pitch, duration, type, dot,
 ;;; accidental, time-mod, notehead, beam, notations
-(defmethod write-xml :around ((e event) &key stream (divisions 16383)
+(defmethod write-xml :around ((e event) &key stream (divisions 16382)
                                           tuplet-actual-normals)
   ;; marks-before and marks slots are really just for CMN and lilypond. clefs
   ;; &c (marks-before) must come before <note>, <notehead> within <note>,

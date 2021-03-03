@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  12:50:47 Wed Mar  3 2021 CET
+;;; $$ Last modified:  17:44:34 Wed Mar  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3496,7 +3496,7 @@ data: E
   (unless (time-sig-p value)
     (setf value (make-time-sig value)))
   #|
-(error "rthm-seq-bar::time-sig: Only time-sig objects may be setf'd ~
+  (error "rthm-seq-bar::time-sig: Only time-sig objects may be setf'd ~
             here: ~a"
   value))
         |#
@@ -3866,6 +3866,23 @@ data: (2 4)
                 (* 4 (/ (numerator ratio) tdur))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Mar 3 16:13:45 2021, Heidhausen -- for any arbitrary bar, get the
+;;; number of divisions we'll need of a 1/4 note for an integer representation
+;;; of any of the rhythms
+(defmethod get-divisions ((rsb rthm-seq-bar))
+  (let* ((denoms '()))
+    (loop for r in (rhythms rsb) do
+         (pushnew (denominator (rq r)) denoms))
+    (setq denoms (remove-if
+                  #'(lambda (x) (member x (remove x denoms) :test
+                                        #'(lambda (x y)
+                                            (factor y x))))
+                  denoms))
+    ;; we could go further here and see if we can divide by 2, but that's not
+    ;; necessary (and expensive)
+    (apply #'* denoms)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Mar 17 14:42:00 2017
 ;;; spec says "If maximum compatibility with Standard MIDI 1.0 files is
 ;;; important, do not have the divisions value exceed 16383" (divisions per
@@ -3879,8 +3896,11 @@ data: (2 4)
 ;;; on the actual rhythms in a bar and not just setting for all and sundry
 ;;; bars/pieces as we do now when we call this method via the slippery chicken
 ;;; class (and friends).
+;;;
+;;; MDE Wed Mar  3 17:43:06 2021, Heidhausen -- solved the divisions problem by
+;;; writing these on a per-bar basis using get-divisions method (above)
 (defmethod write-xml ((rsb rthm-seq-bar)
-                      &key stream (starting-clef 'treble) (divisions 16382)
+                      &key stream (starting-clef 'treble)
                         ;; list of semitones and diatonic transpositions; this
                         ;; will be nil if the instrument hasn't changed
                         ;; from the previous bar
@@ -3894,13 +3914,16 @@ data: (2 4)
           (bar-num rsb))
   (when start-repeat
     (xml-barline 3 stream "left" "forward"))
+  ;; MDE Wed Mar  3 16:14:50 2021, Heidhausen -- so in effect we now ignore the
+  ;; :divisions keyword
   ;; (fix-tuplets-for-xml rsb)
-  (let ((ts (get-time-sig rsb)))
+  (let ((ts (get-time-sig rsb))
+        (divisions (get-divisions rsb)))
     (format stream "~&      <attributes>")
-    (when (= (bar-num rsb) 1)
-      (format stream "~&        <divisions>~a</divisions>" divisions)
-      ;; todo: sc can have a key-sig but we're not writing one for now
-      (format stream "~&        <key><fifths>0</fifths></key>"))
+    ;; MDE Wed Mar  3 16:17:22 2021, Heidhausen -- now we write for every bar
+    (format stream "~&        <divisions>~a</divisions>" divisions)
+    ;; todo: sc can have a key-sig but we're not writing one for now
+    (format stream "~&        <key><fifths>0</fifths></key>")
     ;; strange: time sig has to come before clef in Finale otherwise you get a
     ;; bogus error message
     (when (write-time-sig rsb)

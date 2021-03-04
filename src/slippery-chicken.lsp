@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:51:58 Tue Mar  2 2021 CET
+;;; $$ Last modified:  09:08:41 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -787,7 +787,7 @@
 ;;;   argument, slippery chicken's own bar-number writing function will be
 ;;;   disabled. NB: It is recommended that a value not be passed for this
 ;;;   argument if a value is given for :start-bar-numbering. NIL = no secondary
-;;;   bar numbering. Default = NIL.
+;;;   bar numbering. Default = T.
 ;;; - :rehearsal-letters-all-players. T or NIL to indicate whether rehearsal
 ;;;   letters should be placed above the staves of all instruments in a score
 ;;;   (this can be useful when generating parts). If NIL, rehearsal letters are
@@ -918,7 +918,7 @@
                         (page-height 29.7)
                         (page-width 21.0)
                         (size 15)
-                        (auto-bar-nums nil)
+                        (auto-bar-nums t)
                         (page-nums t)
                         (in-c nil)
                         (auto-clefs t)

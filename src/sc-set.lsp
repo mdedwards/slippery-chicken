@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  14:58:36 Fri Sep 25 2020 CEST
+;;; $$ Last modified:  09:48:49 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1638,9 +1638,6 @@ data: E4
     (sort result #'<)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan 31 20:05:39 GMT 2012: Added robodoc info
-
 ;;; ****f* sc-set/make-sc-set 
 ;;; DESCRIPTION
 ;;; Create an sc-set object, which holds pitch-set information for harmonic and

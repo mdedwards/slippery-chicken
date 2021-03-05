@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:08:41 Thu Mar  4 2021 CET
+;;; $$ Last modified:  14:58:48 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1257,29 +1257,6 @@
       (set-write-bar-num sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken/update-instrument-slots
-;;; DATE
-;;; 23rd August 2013
-;;; 
-;;; DESCRIPTION
-;;; This will go through the generated slippery-chicken object's bar structure
-;;; and update each players' instruments' total-bars, total-notes,
-;;; total-duration, and total-degrees slots, for statistical purposes only.
-;;; This might be called by the user after performing one of the editing
-;;; routines that deletes or changes notes, etc.
-;;; 
-;;; ARGUMENTS
-;;; - The slippery-chicken object.
-;;; 
-;;; RETURN VALUE
-;;; T
-;;; 
-;;; SYNOPSIS
-(defmethod update-instrument-slots ((sc slippery-chicken))
-;;; ****
-  (update-instruments-total-duration sc t))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod update-instruments-total-duration ((sc slippery-chicken)
                                               &optional and-other-slots)
@@ -1302,6 +1279,29 @@
                 (incf (total-degrees ins) (total-degrees bar))))
             (incf (total-duration ins) (sounding-duration bar))))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/update-instrument-slots
+;;; DATE
+;;; 23rd August 2013
+;;; 
+;;; DESCRIPTION
+;;; This will go through the generated slippery-chicken object's bar structure
+;;; and update each players' instruments' total-bars, total-notes,
+;;; total-duration, and total-degrees slots, for statistical purposes only.
+;;; This might be called by the user after performing one of the editing
+;;; routines that deletes or changes notes, etc.
+;;; 
+;;; ARGUMENTS
+;;; - The slippery-chicken object.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defmethod update-instrument-slots ((sc slippery-chicken))
+;;; ****
+  (update-instruments-total-duration sc t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr 18 10:10:58 2012 -- currently only works for CMN.

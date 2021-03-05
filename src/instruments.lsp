@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:25:51 Mon Dec 28 2020 CET
+;;; $$ Last modified:  08:43:34 Fri Mar  5 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -232,9 +232,27 @@
        :chords nil :microtones t :midi-program 71))
      (french-horn
       (:staff-name "french horn" :staff-short-name "hn" 
-       :lowest-written c3 :highest-written c6 :transposition-semitones -7 
+       :lowest-written f2 :highest-written c6 :transposition-semitones -7 
        :largest-fast-leap 9
        ;; :clefs (treble bass) :starting-clef treble
+       :clefs (treble)
+       :chords nil 
+       :microtones t
+       :midi-program 61))
+     ;; MDE Fri Mar 5 08:42:59 2021, Heidhausen -- for typical orchestral
+     ;; scorings of 1+3 (high), 2+4 (low)
+     (french-horn-high
+      (:staff-name "french horn" :staff-short-name "hn" 
+       :lowest-written g3 :highest-written c6 :transposition-semitones -7 
+       :largest-fast-leap 9
+       :clefs (treble)
+       :chords nil 
+       :microtones t
+       :midi-program 61))
+     (french-horn-low
+      (:staff-name "french horn" :staff-short-name "hn" 
+       :lowest-written f2 :highest-written g5 :transposition-semitones -7 
+       :largest-fast-leap 9
        :clefs (treble)
        :chords nil 
        :microtones t

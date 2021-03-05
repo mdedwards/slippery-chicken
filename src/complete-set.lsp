@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  12:41:50 Sat May  2 2020 CEST
+;;; $$ Last modified:  11:50:03 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -83,10 +83,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Mar  5 16:47:47 2016 -- so that missing and complete are updated
 (defmethod transpose :after ((cs complete-set) semitones 
-                             &key do-related-sets
-                               ignore1 ignore2)
-  (declare (ignore semitones do-related-sets ignore1 ignore2))
-  (check-complete cs))
+                             &key do-related-sets (complete-error t))
+  (declare (ignore semitones do-related-sets))
+  ;; (format t "~&complete-set::transpose: complete-error: ~a" complete-error)
+  (check-complete cs complete-error))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Mar  5 17:26:03 2016 -- sim

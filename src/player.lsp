@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  09:31:33 Thu Jan 10 2019 CET
+;;; $$ Last modified:  15:16:19 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -503,7 +503,6 @@
         (total-bars data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* player/reset-instrument-stats
 ;;; DATE
 ;;; 23rd August 2013
@@ -531,6 +530,16 @@
                (reset-stats ins just-total-duration)
                finally (return t))
           (reset-stats data just-total-duration)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Mar  4 15:05:01 2021, Heidhausen
+(defmethod statistics ((p player) &optional (stream t))
+  (let* ((data (data p)))
+    (when data
+      (if (typep data 'assoc-list)
+          (loop for ins in (data data) do
+               (statistics ins stream))
+          (statistics data stream)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

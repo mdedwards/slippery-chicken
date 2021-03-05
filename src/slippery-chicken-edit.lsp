@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:07:05 Tue Mar  2 2021 CET
+;;; $$ Last modified:  14:44:57 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7201,7 +7201,7 @@ NIL
                          (when (or (and (not combo) (/= relax 3))
                                    (and combo (> combo-relax-val relax)))
                            (error "slippery-chicken::orchestrate: bar ~a: no ~
-                                 combo can play ~a."
+                                   combo can play ~%~a."
                                   (bar-num event) (get-pitch-symbol event)))
                          (incf (nth combo-relax-val successes))
                          (incf (nth 4 successes)) ; overall total 

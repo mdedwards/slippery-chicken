@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  09:13:51 Thu Feb 11 2021 CET
+;;; $$ Last modified:  15:17:36 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -609,6 +609,30 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Mar  4 15:02:33 2021, Heidhausen
+(defmethod statistics ((ins instrument) &optional (stream t))
+    (flet ((pitch-slot (value)
+           (if (pitch-p value)
+               (data value)
+               value)))
+    (format stream "lowest-written: ~a, highest-written: ~a~
+                    ~%    lowest-sounding: ~a, highest-sounding: ~a~
+                    ~%    total-bars: ~a total-notes: ~a~
+                    ~%    total-duration: ~a tessitura: ~a~
+                    ~%    total-degrees: ~a, microtones: ~a~
+                    ~%    lowest-played: ~a, highest-played: ~a"
+            (pitch-slot (lowest-written ins))
+            (pitch-slot (highest-written ins))
+            (pitch-slot (lowest-sounding ins))
+            (pitch-slot (highest-sounding ins))
+            (total-bars ins) 
+            (total-notes ins) (secs-to-mins-secs (total-duration ins))
+            (total-degrees ins) (microtones ins) 
+            (tessitura-note ins)
+            (when (lowest-played ins) (data (lowest-played ins)))
+            (when (highest-played ins) (data (highest-played ins))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod check-starting-clef ((ins instrument))
   (unless (is-clef (starting-clef ins))
@@ -1134,7 +1158,7 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 (defmethod try-ins-chord ((ins instrument) (c chord) (p pitch))
   ;; (print (get-pitch-symbols c))
   (if (chords ins)
-      (let* ((tls (clone-with-new-class c 'tl-set))
+      (let* ((tls (clone-with-new-class c 'complete-set)) ;'tl-set))
              (chd (progn
                     (limit-for-instrument tls ins)
                     (funcall (symbol-function (chord-function ins))

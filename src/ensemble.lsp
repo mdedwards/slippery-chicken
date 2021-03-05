@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  16:48:39 Tue Mar  2 2021 CET
+;;; $$ Last modified:  15:38:37 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -525,6 +525,11 @@ ensemble::players-exist: VLA is not a member of the ensemble
          (ids (loop for s in sorted collect (first s)))
          (nums (loop for s in sorted collect (second s))))
     (values ids nums)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Mar  4 15:02:33 2021, Heidhausen
+(defmethod statistics ((e ensemble) &optional (stream t))
+  (loop for player in (data e) do (statistics player stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* ensemble/balanced-load?

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  09:57:02 Fri Jun 21 2019 CEST
+;;; $$ Last modified:  10:06:17 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -687,6 +687,10 @@ data: C6
 ;;; - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
 ;;;   symbols) are to be automatically sorted from lowest to highest. T =
 ;;;   sort. Default = T.
+;;; - :tag. The tag (symbol, string) to be attached to the object; from the
+;;;   named-object base class. Default = NIL.
+;;; - :warn-dups. To or NIL to indicate whether a warning should be issued if
+;;;   duplicate pitches are found. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; A tl-set object.
@@ -767,16 +771,16 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 |#
 ;;; SYNOPSIS
-(defun make-tl-set (set &key id subsets related-sets
+(defun make-tl-set (set &key id tag subsets related-sets
                           limit-upper limit-lower
-                          (rm-dups t)
+                          (rm-dups t) (warn-dups t)
                           (transposition 0)
                           (auto-sort t))
 ;;; ****
   (make-instance 'tl-set :id id :data set :subsets subsets :rm-dups rm-dups
-                 :related-sets related-sets :auto-sort auto-sort
-                 :limit-upper limit-upper :limit-lower limit-lower
-                 :transposition transposition))
+                 :related-sets related-sets :auto-sort auto-sort :tag tag
+                 :limit-upper limit-upper :limit-lower limit-lower 
+                 :warn-dups warn-dups :transposition transposition))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

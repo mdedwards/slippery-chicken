@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:40:16 Wed Mar  3 2021 CET
+;;; $$ Last modified:  09:31:09 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2029,9 +2029,6 @@
      collect x collect (max min (min new-y max))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 11:01:20 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/env-plus
 ;;; DESCRIPTION
 ;;; Increase all y values of a given list of break-point pairs by a specified

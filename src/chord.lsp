@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  20:11:24 Thu Feb  4 2021 CET
+;;; $$ Last modified:  11:49:05 Thu Mar  4 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -929,7 +929,9 @@ data: (
 (defmethod transpose ((c chord) semitones
                       &key (destructively t) ; do-related-sets
                         ;; MDE Tue Aug 21 19:49:47 2018
-                        lowest highest)
+                        lowest highest
+                        ;; MDE Thu Mar  4 11:48:29 2021, Heidhausen
+                        (complete-error t))
 ;;; ****
   ;; (lowest (make-pitch 'c-1)) (highest (make-pitch 'b8)))
   ;; :destructively handled first by the :around method below, :do-related sets
@@ -949,7 +951,10 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod transpose :around ((c chord) semitones
                               &key (destructively t) do-related-sets
-                                lowest highest)
+                                lowest highest
+                                ;; MDE Thu Mar  4 11:48:29 2021, Heidhausen
+                                (complete-error t))
+
   (declare (ignore ignore))
   ;; (print 'around)
   ;; (print 'transpose)
@@ -958,6 +963,7 @@ data: (
   (call-next-method (if destructively c (clone c)) semitones
                     :lowest lowest :highest highest
                     :destructively destructively
+                    :complete-error complete-error
                     :do-related-sets do-related-sets))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:44:57 Thu Mar  4 2021 CET
+;;; $$ Last modified:  16:02:22 Fri Mar  5 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7035,6 +7035,13 @@ NIL
 ;;; the slippery-chicken object (which may have been changed after the original
 ;;; data was generated) this method works with players who double on two or more
 ;;; instruments.
+;;;
+;;; NB If all goes well, each note in a chord will be played by one
+;;; instrument. Of course orchestration often involves 'doubling' where each
+;;; note is played by more than one instrument. To achieve this, call
+;;; orchestrate multiple times, perhaps increasing the :relax value on
+;;; subsequent calls so that the method doesn't exit when it can't find a 2nd,
+;;; 3rd, or 4th (...) combo to play a given chord.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object whose existing players and event data will be

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  15:38:37 Thu Mar  4 2021 CET
+;;; $$ Last modified:  09:12:31 Fri Mar  5 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -516,7 +516,7 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; 
 ;;; SYNOPSIS
 (defmethod sort-players ((e ensemble) &key (stats-fun #'total-duration)
-                                        ignore)
+                                        ignore print)
 ;;; ****
   (let* ((all-stats (loop for player in (data e) collect
                          (list (id player) (funcall stats-fun player))))
@@ -524,6 +524,9 @@ ensemble::players-exist: VLA is not a member of the ensemble
          (sorted (sort stats #'(lambda (l1 l2) (> (second l1) (second l2)))))
          (ids (loop for s in sorted collect (first s)))
          (nums (loop for s in sorted collect (second s))))
+    (when print
+      (format t "~%Load hierarchy including total time playing (seconds):~%~a"
+              sorted))
     (values ids nums)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

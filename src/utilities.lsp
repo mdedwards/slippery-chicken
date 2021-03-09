@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  12:16:32 Tue Mar  9 2021 CET
+;;; $$ Last modified:  15:27:59 Tue Mar  9 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3849,7 +3849,8 @@ WARNING:
 ;;; SYNOPSIS
 (defun dynamic-to-amplitude (dynamic &optional (warn t))
 ;;; ****
-  (let ((pos (position dynamic '(niente pppp ppp pp p mp mf f ff fff ffff))))
+  (let ((pos (position (rm-package dynamic)
+                       '(niente pppp ppp pp p mp mf f ff fff ffff))))
     (if pos
         (/ pos 10.0)
         (when warn

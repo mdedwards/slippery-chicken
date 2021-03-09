@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  12:54:39 Tue Mar  9 2021 CET
+;;; $$ Last modified:  16:47:10 Tue Mar  9 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -334,6 +334,9 @@ data: (C4 F4 A4 C5)
 ;;;   note numbers, or semitone transposition factors should be generated. If
 ;;;   the latter then the middle note will be represented by 0 transposition.
 ;;;   Default = 'freq (frequencies).
+;;; - a list of references into the palette to define the order in which the
+;;;   sets are written. Default = NIL = sets will be written in the order in
+;;;   which they appear in the palette.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
@@ -369,23 +372,26 @@ data: (C4 F4 A4 C5)
 ;;; 
 ;;; SYNOPSIS
 (defmethod gen-max-coll-file ((sp set-palette) file &optional
-                                                      (format 'freq))
+                                                      (format 'freq)
+                                                      refs)
 ;;; ****
   (with-open-file
       (stream file
               :direction :output :if-exists :overwrite 
               :if-does-not-exist :create)
-    (gen-max-coll-file-aux sp stream (rm-package format) 0)))
+    (gen-max-coll-file-aux sp stream (rm-package format) 0 refs)))
 
-(defmethod gen-max-coll-file-aux ((sp set-palette) stream format index)
+(defmethod gen-max-coll-file-aux ((sp set-palette) stream format index refs)
   (reset sp)
-  (loop with data 
-     for s = (get-next sp)
-     for i below (sclist-length sp) 
+  (loop with data
+     for i below (if refs (length refs) (sclist-length sp))
+     for s = (if refs
+                 (get-data (nth i refs) sp)
+                 (get-next sp))
      do
        (if (set-palette-p (data s))
            (incf index (1- (gen-max-coll-file-aux (data s) stream format
-                                                  (+ index i))))
+                                                  (+ index i) refs)))
            (progn
              (setf data
                    (case format
@@ -905,13 +911,18 @@ data: (C4 F4 A4 C5)
                    ;; useful, but we'll use the faster method if we need all as
                    ;; it will no longer matter
                    (perms
-                    (if (eq permutate 'all)
-                        (permutate refs nil)
-                        (inefficiently-permutate
-                         refs
-                         :max (if (integerp permutate) permutate 2000)
-                         :sublists t
-                         :if-not-enough nil)))
+                    ;; MDE Tue Mar 9 16:01:07 2021, Heidhausen -- handle the
+                    ;; case where we're just sequencing a sub-palette
+                    (progn 
+                      (unless (first refs) ; i.e. the list (nil)
+                        (setq refs (get-keys sp)))
+                      (if (eq permutate 'all)
+                          (permutate refs nil)
+                          (inefficiently-permutate
+                           refs
+                           :max (if (integerp permutate) permutate 2000)
+                           :sublists t
+                           :if-not-enough nil))))
                    (denv-vals (get-env-vals denv))
                    (cenv-vals (get-env-vals cenv))
                    (scores

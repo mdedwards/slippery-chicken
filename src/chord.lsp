@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:49:05 Thu Mar  4 2021 CET
+;;; $$ Last modified:  11:26:23 Tue Mar  9 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1956,17 +1956,15 @@ data: (
 ;;; set to the chromatic scale):
 
 (get-interval-structure (make-chord '(c4 e4 g4)))
-
-=> (8.0 14.0)
+-> (8.0 14.0)
 
 ;;; Return semitones
-(get-interval-structure (make-chord '(c4 e4 g4)) t))
+(get-interval-structure (make-chord '(c4 e4 g4)) t)
+-> (4.0 7.0)
 
 ;;; Interval structure not from lowest but from pitch to pitch (ascending)
 (get-interval-structure (make-chord '(c4 e4 g4 b4)) t t)
-(4.0 3.0 4.0)
-
-=> (4.0 7.0)
+->(4.0 3.0 4.0)
 |#
 ;;; SYNOPSIS
 (defmethod get-interval-structure ((c chord) &optional

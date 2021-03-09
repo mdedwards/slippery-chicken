@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:02:22 Fri Mar  5 2021 CET
+;;; $$ Last modified:  15:57:43 Sat Mar  6 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -751,14 +751,16 @@
                        do
                        ;; MDE Mon Apr 23 13:21:16 2012 -- handle chords too
                          (when (and (event-p e) (is-chord e))
-                           (when (and transp written (not (written-pitch-or-chord e)))
+                           (when (and transp written
+                                      (not (written-pitch-or-chord e)))
                              (warn "~a~%slippery-chicken-edit::enharmonics: ~
                              no written-pitch-or-chord (bar ~a, ~a)." 
                                    e bar-num player))
-                           (loop for p in (data (if (and written transp
-                                                         (written-pitch-or-chord e))
-                                                    (written-pitch-or-chord e)
-                                                    (pitch-or-chord e)))
+                           (loop for p in (data
+                                           (if (and written transp
+                                                    (written-pitch-or-chord e))
+                                               (written-pitch-or-chord e)
+                                               (pitch-or-chord e)))
                               and chord-note-ref from 1
                               do
                                 (when 
@@ -774,11 +776,12 @@
                          (when (and (event-p e)
                                     (is-single-pitch e)
                                     (or (not pitches)
-                                        (pitch-member (if (and transp written)
-                                                          (written-pitch-or-chord e)
-                                                          (pitch-or-chord e))
-                                                      ;; enharmonics not equal!
-                                                      pitches nil)))
+                                        (pitch-member
+                                         (if (and transp written)
+                                             (written-pitch-or-chord e)
+                                             (pitch-or-chord e))
+                                         ;; enharmonics not equal!
+                                         pitches nil)))
                            ;; MDE Tue May 28 11:04:42 2013 -- :force-naturals
                            (enharmonic e :force-naturals force-naturals
                                        :written (and transp written)))))))

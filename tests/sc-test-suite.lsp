@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:28:34 Wed Mar  3 2021 CET
+;;; $$ Last modified:  14:44:31 Tue Mar  9 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7285,9 +7285,11 @@
     (probe-delete "/tmp/msp-mcf.txt")
     (probe-delete "/tmp/msp-mcfm.txt")
     (sc-test-check
-      (gen-max-coll-file msp "/tmp/msp-mcf.txt")
-      (gen-max-coll-file msp "/tmp/msp-mcfm.txt" t)
+      (gen-max-coll-file msp "/tmp/msp-mcf.txt" 'freq)
+      (gen-max-coll-file msp "/tmp/msp-mcfm.txt" 'midi)
+      (gen-max-coll-file msp "/tmp/msp-mcft.txt" 'transp)
       (file-write-ok "/tmp/msp-mcf.txt" 45)
+      (file-write-ok "/tmp/msp-mcft.txt" 45)
       (file-write-ok "/tmp/msp-mcfm.txt" 45))))
 
 ;;; MDE Sat May 18 13:32:24 2013 
@@ -13375,6 +13377,30 @@
     (equalp (subseqs '(a b c / d e / f)  '(3 6) nil)
             '((A B C) (/ D E) (/ F)))))
 
+
+(sc-deftest test-utilities-centre-list ()
+  (sc-test-check
+    (equalp '(-3 -2 -1 0 1 2 3) (centre-list '(0 1 2 3 4 5 6) t))
+    (equalp '(-3 -2 -1 0 1 2 3) (centre-list '(0 1 2 3 4 5 6) nil))
+    (equalp '(-3 -2 -1 0 1 2 3) (centre-list '(1 2 3 4 5 6 7) t))
+    (equalp '(-3 -2 -1 0 1 2 3) (centre-list '(1 2 3 4 5 6 7) nil))
+    (equalp '(-3 -2 -1 0 1 2) (centre-list '(1 2 3 4 5 6) t))
+    (equalp '(-2.5 -1.5 -0.5 0.5 1.5 2.5) (centre-list '(1 2 3 4 5 6) NIL))
+    (equalp '(-3 -2 -1 0 1 2 3) (centre-list '(11 12 13 14 15 16 17) nil))
+    (equalp '(-3 -2 -1 0 1 2 3) (centre-list '(11 12 13 14 15 16 17) t))
+    (equalp '(-3.0 -2.0 -1.0 0.0 1.0 2.0 3.0)
+            (centre-list '(11 12 13 14 15 16 17) nil))
+    (equalp '(-2.5 -1.5 -0.5 0.5 1.5 2.5)
+            (centre-list '(11 12 13 14 15 16) nil))
+    (equalp '(-13.5 9.7 4.5 10.5 11.5 -4.5 12.5 13.5)
+            (centre-list '(-11 12.2 7 13 14 -2 15 16) nil))
+    (equalp '(9.7 -13.5 4.5 10.5 11.5 12.5 13.5 -4.5)
+            (centre-list '(12.2 -11 7 13 14 15 16 -2) nil))
+    (equalp '(-24 -0.8000002 -6 0 1 -15 2 3)
+            (centre-list '(-11 12.2 7 13 14 -2 15 16) t))
+    (equalp '(-24 -26 -6 0 1 -15 2 3)
+            (centre-list '(-11 -13 7 13 14 -2 15 16) t))
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 19 19:45:20 2011 -- rthm-chain methods

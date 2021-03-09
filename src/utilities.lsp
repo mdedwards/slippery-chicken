@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:31:09 Thu Mar  4 2021 CET
+;;; $$ Last modified:  12:16:32 Tue Mar  9 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5304,6 +5304,59 @@ RETURNS:
            (range2 (float (- new-max new-min)))
            (prop (float (/ (- val min) range1))))
       (+ new-min (* prop range2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/centre-list
+;;; DATE
+;;; March 9th 2021, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Take a list of numbers and scale them so that they are symmetrical(ish)
+;;; around either the mid-point (exactly) or the middle element (in terms of
+;;; value). 
+;;; 
+;;; ARGUMENTS
+;;; - a list of numbers
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether the middle element should the zero point from
+;;; which the other elements are offset or (if NIL) to use the calculated middle
+;;; point. So if T, we won't centre around 0 but if NIL we will (i.e. if NIL
+;;; we'll go equally as far in the negative direction as positive). In each case
+;;; however, the returned list will by necessity range from negative to positive
+;;; values.
+;;; 
+;;; RETURN VALUE
+;;; A list of numbers.
+;;; 
+;;; EXAMPLE
+#|
+(centre-list '(1 2 3 4 5 6) t)
+-> (-3 -2 -1 0 1 2) 
+(centre-list '(1 2 3 4 5 6) NIL)
+-> (-2.5 -1.5 -0.5 0.5 1.5 2.5)
+(centre-list '(12.2 -11 7 13 14 15 16 -2) nil)
+-> '(9.7 -13.5 4.5 10.5 11.5 12.5 13.5 -4.5)
+|#
+;;; SYNOPSIS
+(defun centre-list (list &optional zero)
+;;; ****
+  (unless (every #'numberp list)
+    (error "utilities::centre-list: argument 1 must be a list of numbers: ~a"
+           list))
+  (let* ((sorted (sort (copy-list list) #'<))
+         (high (first sorted))
+         (low (first (last sorted)))
+         (range (- high low))
+         (len (length list))
+         ;; given a list of even length, this means we centre higher rather than
+         ;; lower 
+         (mid-el (nth (floor len 2) sorted))
+         (mid-point (+ low (/ range 2.0))))
+    (if zero
+        (loop for i in list collect (- i mid-el))
+        (loop for i in list collect (- i mid-point)))))
+  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmacro popnew (list avoid &key (test #'eq))

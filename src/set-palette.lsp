@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  07:47:43 Thu Dec 10 2020 CET
+;;; $$ Last modified:  12:54:39 Tue Mar  9 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -312,11 +312,6 @@ data: (C4 F4 A4 C5)
       finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Feb  7 14:22:54 GMT 2012: Added robodoc entry
-
-;;; SAR Tue Feb  7 14:19:26 GMT 2012: Edited robodoc entry
-
 ;;; ****m* set-palette/gen-max-coll-file
 ;;; DATE
 ;;; 26-Dec-2009
@@ -325,16 +320,20 @@ data: (C4 F4 A4 C5)
 ;;; Write a text file from a given set-palette object suitable for reading into
 ;;; Max/MSP's coll object. The resulting text file has one line for each set in
 ;;; the palette, with the coll index being the ID of the set. The rest of the
-;;; line is a list of frequency/amplitude pairs (or MIDI note numbers if
-;;; required).
+;;; line is a list of frequency/amplitude pairs (or MIDI note number/velocity if
+;;; required). 0.1 is the default amplitude for frequencies; 80 the default
+;;; velocity for MIDI; if 'transp is the format argument then no amplitude or
+;;; velocity data is written.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A set-palette object.
 ;;; - The name (and path) of the .txt file to write.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether MIDI note numbers or frequencies should be
-;;;   generated. T = MIDI. Default = NIL (frequencies).
+;;; - 'freq, 'midi', or 'transp to indicate whether frequencies in Hertz, MIDI
+;;;   note numbers, or semitone transposition factors should be generated. If
+;;;   the latter then the middle note will be represented by 0 transposition.
+;;;   Default = 'freq (frequencies).
 ;;; 
 ;;; RETURN VALUE
 ;;; 
@@ -353,7 +352,7 @@ data: (C4 F4 A4 C5)
                   (2 ((1 2) :transposition -2))))))))
   (gen-max-coll-file msp "/tmp/msp-mcf.txt"))
 
-;; Set the optional argument to T to generate MIDI note numbers instead
+;; Set the optional argument to 'midi to generate MIDI note numbers instead
 (let ((msp (make-set-palette 
             'test
             '((1 ((1
@@ -364,39 +363,45 @@ data: (C4 F4 A4 C5)
                   (2 ((1 2) :transposition 5))))
               (3 ((1 ((1 1) :transposition -2))
                   (2 ((1 2) :transposition -2))))))))
-  (gen-max-coll-file msp "/tmp/msp-mcf.txt" t))
+  (gen-max-coll-file msp "/tmp/msp-mcf.txt" 'midi))
 
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod gen-max-coll-file ((sp set-palette) file &optional midi)
+(defmethod gen-max-coll-file ((sp set-palette) file &optional
+                                                      (format 'freq))
 ;;; ****
   (with-open-file
       (stream file
               :direction :output :if-exists :overwrite 
               :if-does-not-exist :create)
-    (gen-max-coll-file-aux sp stream midi 0)))
+    (gen-max-coll-file-aux sp stream (rm-package format) 0)))
 
-(defmethod gen-max-coll-file-aux ((sp set-palette) stream midi index)
+(defmethod gen-max-coll-file-aux ((sp set-palette) stream format index)
   (reset sp)
   (loop with data 
      for s = (get-next sp)
      for i below (sclist-length sp) 
      do
-     (if (set-palette-p (data s))
-         (incf index (1- (gen-max-coll-file-aux (data s) stream midi 
-                                                (+ index i))))
-         (progn
-           (setf data (if midi 
-                          ;; nslider expects note/velocity pairs
-                          (loop for n in (get-midi s) collect n collect 80)
-                          ;; ioscbank~ in max expects freq/amp pairs
-                          (loop for f in (get-freqs s) 
-                             collect f collect 0.1)))
-           (when data
-             (format stream "~&~a,~{ ~,3f~^~};" ;;(+ 1 index i) 
-                     (combine-into-symbol (id sp) "-" (id s))
-                     data))))
+       (if (set-palette-p (data s))
+           (incf index (1- (gen-max-coll-file-aux (data s) stream format
+                                                  (+ index i))))
+           (progn
+             (setf data
+                   (case format
+                     (midi
+                      ;; nslider expects note/velocity pairs
+                      (loop for n in (get-midi s) collect n collect 80))
+                     (freq
+                      ;; ioscbank~ in max expects freq/amp pairs
+                      (loop for f in (get-freqs s) collect f collect 0.1))
+                     (transp (centre-list (get-midi s) t))
+                     (t (error "gen-max-coll-file-aux: format should be one of ~
+                              'freq 'midi or 'transp, not ~a" format))))
+             (when data
+               (format stream "~&~a,~{ ~,3f~^~};" ;;(+ 1 index i) 
+                       (combine-into-symbol (id sp) "-" (id s))
+                       data))))
      finally (return i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

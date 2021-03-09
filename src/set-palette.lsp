@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  16:47:10 Tue Mar  9 2021 CET
+;;; $$ Last modified:  17:25:03 Tue Mar  9 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -337,6 +337,8 @@ data: (C4 F4 A4 C5)
 ;;; - a list of references into the palette to define the order in which the
 ;;;   sets are written. Default = NIL = sets will be written in the order in
 ;;;   which they appear in the palette.
+;;; - T or NIL to indicate whether successive integers should be used as indices
+;;;   in the coll. Default = NIL = use combined set-palette and set IDs.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
@@ -373,15 +375,16 @@ data: (C4 F4 A4 C5)
 ;;; SYNOPSIS
 (defmethod gen-max-coll-file ((sp set-palette) file &optional
                                                       (format 'freq)
-                                                      refs)
+                                                      refs ints)
 ;;; ****
   (with-open-file
       (stream file
-              :direction :output :if-exists :overwrite 
+              :direction :output :if-exists :supersede
               :if-does-not-exist :create)
-    (gen-max-coll-file-aux sp stream (rm-package format) 0 refs)))
+    (gen-max-coll-file-aux sp stream (rm-package format) 0 refs ints)))
 
-(defmethod gen-max-coll-file-aux ((sp set-palette) stream format index refs)
+(defmethod gen-max-coll-file-aux ((sp set-palette) stream format index refs
+                                  ints)
   (reset sp)
   (loop with data
      for i below (if refs (length refs) (sclist-length sp))
@@ -389,9 +392,10 @@ data: (C4 F4 A4 C5)
                  (get-data (nth i refs) sp)
                  (get-next sp))
      do
+       ;; (print i)
        (if (set-palette-p (data s))
            (incf index (1- (gen-max-coll-file-aux (data s) stream format
-                                                  (+ index i) refs)))
+                                                  (+ index i) refs ints)))
            (progn
              (setf data
                    (case format
@@ -405,8 +409,10 @@ data: (C4 F4 A4 C5)
                      (t (error "gen-max-coll-file-aux: format should be one of ~
                               'freq 'midi or 'transp, not ~a" format))))
              (when data
-               (format stream "~&~a,~{ ~,3f~^~};" ;;(+ 1 index i) 
-                       (combine-into-symbol (id sp) "-" (id s))
+               (format stream "~&~a,~{ ~,3f~^~};"
+                       (if ints
+                           (+ 1 index i) 
+                           (combine-into-symbol (id sp) "-" (id s)))
                        data))))
      finally (return i)))
 

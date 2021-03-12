@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:31:48 Fri Mar 12 2021 CET
+;;; $$ Last modified:  12:40:49 Fri Mar 12 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -6360,8 +6360,11 @@
         (mscs3 (make-sc-set '(af5 cs4 cs3 e4 fs3 ef6 d2 c5)))
         (mscs4 (make-sc-set '(af5 cs4 cs3 e4 fs3 ef6 d2 c5) :auto-sort nil))
         ;; MDE Fri Jun 21 09:52:07 2019
-        (s5 (make-sc-set '(F0 AF1 EF2 BF3 DF4 C6 C7 G8 BF8 A10))))
+        (s5 (make-sc-set '(F0 AF1 EF2 BF3 DF4 C6 C7 G8 BF8 A10)))
+        ;; MDE Fri Mar 12 12:39:19 2021, Heidhausen -- try freqs
+        (s6 (make-sc-set '(100 200 300))))
     (sc-test-check
+      (equalp '(gqs2 gqs3 dqs4) (get-pitch-symbols s6))
       (equalp (loop for po in (data mscs1) collect (data po))
               '(d2 cs3 fs3 cs4 e4 c5 af5 ef6))
       ;; MDE Fri Jun 21 09:52:16 2019 -- test it works with very high 8ves

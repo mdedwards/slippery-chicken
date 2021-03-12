@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:26:23 Tue Mar  9 2021 CET
+;;; $$ Last modified:  12:37:52 Fri Mar 12 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2711,7 +2711,7 @@ data: (
 ;;; Create a chord object from a list of note-name symbols.
 ;;; 
 ;;; ARGUMENTS 
-;;; - A list of note-name symbols.
+;;; - A list of note-name symbols or frequencies.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:

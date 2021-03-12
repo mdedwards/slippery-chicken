@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  09:48:49 Thu Mar  4 2021 CET
+;;; $$ Last modified:  12:37:36 Fri Mar 12 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1644,8 +1644,8 @@ data: E4
 ;;; pitch manipulation.
 ;;; 
 ;;; ARGUMENTS
-;;; - A list of note-name symbols that is to be the set (pitch-set) for the
-;;;   given sc-set object.
+;;; - A list of note-name symbols or frequencies that is to be the set
+;;;   (pitch-set) for the given sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:

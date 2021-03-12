@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:44:45 Tue Mar  9 2021 CET
+;;; $$ Last modified:  10:31:48 Fri Mar 12 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15536,6 +15536,36 @@
       (= 808 (midi2qlist f2 nil 1 2))
       (= 440 (length el2))
       (= 368 (length el3)))))
+
+(sc-deftest test-diapason ()
+  (sc-test-check
+    (= 55/8 (set-diapason 440))
+    (= 55/8 (set-diapason nil))
+    (= 440 (note-to-freq 'a4))
+    (= 69 (note-to-midi 'a4))
+    (eq 'ef4 (midi-to-note 63))
+    ;; assuming quarter-tone scale, which should be right
+    (eq 'eqf4 (midi-to-note 63.5))
+    (equal-within-tolerance 320.24368 (midi-to-freq 63.5))
+    (equal-within-tolerance 261.62555 (midi-to-freq 60))
+    ;; 442
+    (= 221/32 (set-diapason 442))
+    (= 442 (get-sc-config 'diapason))
+    (= 442 (note-to-freq 'a4))
+    (= 884 (note-to-freq 'a5))
+    (= 442 (midi-to-freq 69))
+    (equal-within-tolerance 262.81476 (midi-to-freq 60))
+    ;; 432
+    (= 432 (set-sc-config 'diapason 432)) ; this must call set-diapason!
+    (= 432 (get-sc-config 'diapason))
+    (= 27/4 (set-diapason nil))
+    (= 432 (note-to-freq 'a4))
+    (= 864 (note-to-freq 'a5))
+    (= 432 (midi-to-freq 69))
+    (equal-within-tolerance 256.8687 (midi-to-freq 60))
+    (eq 'c4 (freq-to-note (midi-to-freq 60)))
+    (= 440 (set-sc-config 'diapason 440))
+    (= 55/8 (set-diapason nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; utilities tests

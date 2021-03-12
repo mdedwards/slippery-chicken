@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    7th February 2003
 ;;;
-;;; $$ Last modified:  18:53:05 Tue Dec  8 2020 CET
+;;; $$ Last modified:  10:21:48 Fri Mar 12 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -48,8 +48,6 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 02.12.11 SEAN: Changed robodoc header
-
 (in-package :cm)
 
 ;;; NB if any new tunings are added here, their microtone accidentals will have
@@ -59,6 +57,9 @@
 (new tuning
      :name 'quarter-tone
      :octaves '(-1 10)
+     ;; using nil as the hertz arg will merely return the lowest A freq
+     :lowest (sc::set-diapason nil)
+     :keynum-offset 6 ; because lowest is the A not the C
      ;; I never use 3/4 flat/sharp--no need.
      :cents '((50 c 
                   (cn :accidental n) 
@@ -108,6 +109,8 @@
 (new tuning
   :name 'twelfth-tone
   :octaves '(-1 10)
+  :lowest (sc::set-diapason nil)
+  :keynum-offset 18 ; because lowest is the A not the C
   :cents '((100/6 c
             (cn :accidental n)
             (bs :accidental s :octave -1))
@@ -232,8 +235,7 @@
            (100/6 (bqs :accidental qs)
             (cqf :accidental qf :octave 1))
            (100/6 (csf :accidental sf :octave 1))
-           (100/6 (ctf :accidental tf :octave 1))
-           ))
+           (100/6 (ctf :accidental tf :octave 1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Thanks to Levin Zimmermann for this. See also
@@ -241,6 +243,8 @@
 (new tuning
   :name 'twelfth-tone-ekm
   :octaves '(-1 10)
+  :lowest (sc::set-diapason nil)
+  :keynum-offset 18 ; because lowest is the A not the C
   :cents '((100/6 c
             (cn :accidental n)
             (bs :accidental s :octave -1))
@@ -359,11 +363,47 @@
            (100/6 (bqs :accidental qs)
             (cqf :accidental qf :octave 1))
            (100/6 (cxf :accidental xf :octave 1))
-           (100/6 (ctf :accidental tf :octave 1))
-           ))
+           (100/6 (ctf :accidental tf :octave 1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Mar 12 10:20:20 2021, Heidhausen -- until now we've always just
+;;; relied on CM's chromatic scale as defined in scale.lisp. But now we've got
+;;; to take new diapasons into account so I've merely lifted the code from
+;;; scale.lisp and mofified :lowest to reflect these.
+(setf *chromatic-scale*
+      (make-instance
+        <tuning>
+        :name "chromatic-scale"
+        :octaves '(-1 10)
+        :lowest (sc::set-diapason nil)
+        :keynum-offset 3
+        :default-octave 5
+        :cents
+        '((100 (c) (cn :accidental n) (bs :accidental s :octave -1)
+           (dff :accidental ff))
+          (100 (cs :accidental s) (df :accidental f)
+           (bss :accidental ss :octave -1))
+          (100 (d) (dn :accidental n) (css :accidental ss)
+           (eff :accidental ff))
+          (100 (ef :accidental f) (ds :letter d :accidental s)
+           (fff :letter f :accidental ff))
+          (100 (e) (en :accidental n) (ff :accidental f)
+           (dss :accidental ss))
+          (100 (f) (fn :accidental n) (es :accidental s)
+           (gff :accidental ff))
+          (100 (fs :accidental s) (gf :accidental f)
+           (ess :accidental ss))
+          (100 (g) (gn :accidental n) (fss :accidental ss)
+           (aff :accidental ff))
+          (100 (af :accidental f) (gs :accidental s))
+          (100 (a) (an :accidental n) (gss :accidental ss)
+           (bff :accidental ff))
+          (100 (bf :accidental f) (as :accidental s)
+           (cff :accidental ff :octave 1))
+          (100 (b) (bn :accidental n) (cf :accidental f :octave 1)
+           (ass :accidental ss)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setf *scale* (find-object 'quarter-tone))
 ;; (setf *scale* (find-object 'chromatic-scale))

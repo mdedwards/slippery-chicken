@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  17:25:03 Tue Mar  9 2021 CET
+;;; $$ Last modified:  16:33:52 Wed Mar 10 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -908,7 +908,7 @@ data: (C4 F4 A4 C5)
                     (if which (interpolate i which) nil))))
         (when verbose (format t "~%~%Looping:"))
         ;; MDE Sat Jan 30 15:01:54 2016 -- different selection method now
-        ;; working.  
+        ;; working.
         (if permutate
             (let* ((refs (get-all-refs sp))
                    ;; we'll generally use inefficiently-permutate when we're
@@ -921,7 +921,7 @@ data: (C4 F4 A4 C5)
                     ;; case where we're just sequencing a sub-palette
                     (progn 
                       (unless (first refs) ; i.e. the list (nil)
-                        (setq refs (get-keys sp)))
+                        (setq refs (get-keys sp nil)))
                       (if (eq permutate 'all)
                           (permutate refs nil)
                           (inefficiently-permutate
@@ -936,7 +936,7 @@ data: (C4 F4 A4 C5)
                        for i from 1
                        for sum =
                          (loop for ref in order
-                            for set = (get-data ref sp)
+                            for set = (get-data ref sp nil)
                             ;; these two are the targets
                             for dt in denv-vals
                             for ct in cenv-vals

@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  19:57:33 Mon Feb  1 2021 CET
+;;; $$ Last modified:  19:09:34 Thu Mar 11 2021 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -137,8 +137,8 @@
         (in (format nil "~a~asrc~a~a" (get-path-minus-file-and-last-dir dir)
                     +slippery-chicken-dir-separator+
                     +slippery-chicken-dir-separator+ file)))
-    (print out)
-    (print in)
+    ;; (print out)
+    ;; (print in)
     (if just-load
         (load in)
         (progn
@@ -234,7 +234,6 @@
 (sc-compile-and-load "chord.lsp")
 (sc-compile-and-load "event.lsp")
 (sc-compile-and-load "instrument.lsp")
-;; (sc-compile-and-load "globals.lsp")
 (sc-compile-and-load "time-sig.lsp")
 (sc-compile-and-load "rthm-seq-bar.lsp")
 (sc-compile-and-load "change-data.lsp")

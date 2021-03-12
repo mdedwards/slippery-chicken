@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  20:06:42 Tue Nov 10 2020 CET
+;;; $$ Last modified:  16:34:53 Wed Mar 10 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1786,7 +1786,7 @@ data: RIBBON
 ;;; MDE Wed Jul 29 16:19:33 2015
 (defmethod get-flat-data ((ral recursive-assoc-list))
   (loop for ref in (get-all-refs ral nil) collect
-       (get-data ref ral)))
+       (get-data ref ral nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

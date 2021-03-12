@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  17:41:25 Tue Dec 29 2020 CET
+;;; $$ Last modified:  10:03:25 Fri Mar 12 2021 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -57,6 +57,7 @@
 (setq *print-length* nil
       *print-level* nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****P* globals/+slippery-chicken-config-data+
 ;;; DESCRIPTION
 ;;; A global to hold various user-settable configuration settings.  Use e.g. 
@@ -179,7 +180,8 @@
      ;; pieces so allow that to be skipped if necessary.
      (update-slots-handles-ties t)
      ;; font size for CMN bar numbers
-     (cmn-bar-num-size-for-sc 6))))
+     (cmn-bar-num-size-for-sc 6)
+     (diapason 440))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -195,6 +197,10 @@
 
 (defun set-sc-config (key value)
   (declare (special +slippery-chicken-config-data+))
+  ;; MDE Fri Mar 12 09:49:15 2021, Heidhausen -- essentially a trigger for
+  ;; reloading our tunings  
+  (when (eq key 'diapason)
+    (set-diapason value))
   (data (replace-data key value +slippery-chicken-config-data+)))
 
 (defun default-dir-file (name)

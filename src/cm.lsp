@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  13:42:12 Fri Jan 22 2021 CET
+;;; $$ Last modified:  10:32:51 Fri Mar 12 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -49,8 +49,7 @@
 
 (in-package :slippery-chicken)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Thu Mar  1 15:16:40 GMT 2012: Added robodoc entry
 
 ;;; MDE Thu Feb  9 14:25:34 2012 
@@ -104,9 +103,62 @@
         sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; We use low-a-freq rather than a low C freq because it's (usually) easily
+;;; divisible and thus causes no visible rounding errors.
 
-;;; SAR Fri May  4 18:44:41 BST 2012: Added robodoc entry
+;;; ****f* cm/set-diapason
+;;; DATE
+;;; March 11th 2021
+;;; 
+;;; DESCRIPTION
+;;; Set the frequency of the note A4 (the diapason). By default, in slippery
+;;; chicken (and common music) this is 440 Hertz. If this function is called, it
+;;; will change the diapason for all currently defined scales, and thus will
+;;; affect all calculations in any scale that converts to or from frequency.
+;;;
+;;; NB Explicit calling of this function is discouraged. Use instead something
+;;; like this: (set-sc-config 'diapason 442)
+;;; 
+;;; ARGUMENTS
+;;; - the new frequency of the note A4 (middle A: i.e. the note played by the
+;;;   oboe when a western orchestra tunes). (For internal use, if this is NIL,
+;;;   the frequency of the lowest A will be returned.)
+;;; 
+;;; RETURN VALUE
+;;; The frequency in Hertz of the lowest A in the (new) tuning.
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
+(let ((low-a 440/64))                   ; 6.875Hz (lowest A)
+  (defun set-diapason (hertz)
+;;; ****
+    (declare (special +slippery-chicken-config-data+))
+    (if (not hertz)
+        low-a
+        (let ((new-low-a (/ hertz 64)))
+          (setq low-a new-low-a)
+          ;; just in case the user does explicitly call this function. NB don't
+          ;; call set-sc-config as that will call this function again, never
+          ;; ending.
+          (replace-data 'diapason hertz +slippery-chicken-config-data+)
+          ;; it would be nice to do this:
+          ;;
+          ;; (loop for scale in (cm::list-named-objects 'cm::tuning) do
+          ;;    (setf (cm::scale-lowest scale) new-low-a))
+          ;;
+          ;; but I can't see a mechanism to have all of CM's scale data
+          ;; affected/recalculated by setting just one slot (almost certainly
+          ;; for efficiency's sake). Even the :cents slots we provide for
+          ;; tunings get deleted at init and replaced by the freq scaler for a
+          ;; degree shift, I believe. So the easiest thing to do is change the
+          ;; low A freq and reload the tuning file.
+          (cl-user::sc-compile-and-load "cm-load.lsp" t)
+          new-low-a))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* cm/degrees-per-octave
 ;;; DESCRIPTION
 ;;; Return the number of scale degrees in the span of one octave within the
@@ -250,9 +302,6 @@
   (degree-to-note (midi-to-degree midi-note scale) scale))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri May  4 19:17:30 BST 2012: Added robodoc entry
-
 ;;; ****f* cm/midi-to-freq
 ;;; DESCRIPTION
 ;;; Get the frequency equivalent in Hertz to the specified MIDI note number. 
@@ -280,9 +329,6 @@
   (cm::hertz midi-note :in cm::*chromatic-scale*))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri May  4 19:22:20 BST 2012: Added robodoc entry
-
 ;;; ****f* cm/note-to-midi
 ;;; DESCRIPTION
 ;;; Get the MIDI note number equivalent for a chromatic note-name pitch
@@ -307,9 +353,6 @@
   (note-to-degree midi-note cm::*chromatic-scale*))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri May  4 19:25:41 BST 2012: Added robodoc entry
-
 ;;; ****f* cm/degrees-to-notes
 ;;; DESCRIPTION
 ;;; 
@@ -393,9 +436,6 @@
   (rm-package (cm::note freq :hz t :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri May  4 19:49:28 BST 2012: Added robodoc entry
-
 ;;; ****f* cm/note-to-freq
 ;;; DESCRIPTION
 ;;; Get the frequency in Hertz of the specified note-name pitch symbol.

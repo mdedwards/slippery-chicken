@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  16:33:52 Wed Mar 10 2021 CET
+;;; $$ Last modified:  14:53:13 Fri Mar 12 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -330,10 +330,10 @@ data: (C4 F4 A4 C5)
 ;;; - The name (and path) of the .txt file to write.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - 'freq, 'midi', or 'transp to indicate whether frequencies in Hertz, MIDI
-;;;   note numbers, or semitone transposition factors should be generated. If
-;;;   the latter then the middle note will be represented by 0 transposition.
-;;;   Default = 'freq (frequencies).
+;;; - 'freq, 'freq-only (no amplitudes), 'midi', or 'transp to indicate whether
+;;;   frequencies in Hertz, MIDI note numbers, or semitone transposition factors
+;;;   should be generated. If the latter then the middle note will be
+;;;   represented by 0 transposition.  Default = 'freq (frequencies).
 ;;; - a list of references into the palette to define the order in which the
 ;;;   sets are written. Default = NIL = sets will be written in the order in
 ;;;   which they appear in the palette.
@@ -405,6 +405,8 @@ data: (C4 F4 A4 C5)
                      (freq
                       ;; ioscbank~ in max expects freq/amp pairs
                       (loop for f in (get-freqs s) collect f collect 0.1))
+                     (freq-only
+                      (loop for f in (get-freqs s) collect f))
                      (transp (centre-list (get-midi s) t))
                      (t (error "gen-max-coll-file-aux: format should be one of ~
                               'freq 'midi or 'transp, not ~a" format))))

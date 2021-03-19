@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  09:14:32 Thu Feb 11 2021 CET
+;;; $$ Last modified:  14:37:46 Fri Mar 19 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -445,9 +445,9 @@
           (when (> num-set-pitches 0)
             (setf (notes ps)
                   (loop 
-                     ;; remember: the pitch curve is stored in the data slot but 
+                     ;; remember: the pitch curve is stored in the data slot but
                      ;; this has had parentheses removed from all elements; ()
-                     ;; indicate that a chord should happen and these are still 
+                     ;; indicate that a chord should happen and these are still
                      ;; intact in the original-data slot.
                      for i in (data ps)
                      for j in (original-data ps)
@@ -496,14 +496,14 @@
                              (setf note (funcall chord-fun i index
                                                set-pitches-rm-used ps
                                                instrument set))
-                           ;; (print note)
+                             ;; (print note)
                            ;; store the pitches we've used
                            (loop for pitch in 
                                 (if (chord-p note)
                                     (data note) 
                                     (list note))
                               do
-                                (ral-econs (data pitch) uns-ref used-notes))) 
+                                (ral-econs (data pitch) uns-ref used-notes)))
                          ;; it's a single pitch so just update used-notes
                          (ral-econs (data note) uns-ref used-notes))
                    ;; 16/4/07: avoid melodic 8ves where reasonable,

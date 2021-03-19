@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  12:29:54 Fri Mar 19 2021 CET
+;;; $$ Last modified:  14:37:25 Fri Mar 19 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -945,7 +945,7 @@
 ;;; see default-chord-function (instrument.lsp) for description of arguments.
 (defun guitar-chord-from-arbitrary-pitches (curve-num index pitch-list
                                             pitch-seq instrument set)
-  (declare (ignore set instrument pitch-seq index curve-num))
+  ;; (declare (ignore set instrument pitch-seq index curve-num))
   (let* ((tuning (loop for n in '(e2 a2 d3 g3 b3 e4) collect (make-pitch n)))
          (tuning-dist (cons 0 (loop with lowest = (first tuning)
                                  for p in (rest tuning)
@@ -963,7 +963,11 @@
            ;; by string 
            (when (>= (length temp) 2)
              (push temp poss))))
-    (nreverse poss)))
+    (setq poss (nreverse poss))
+    (if (first poss)
+        (make-chord (first poss))
+        (chord-fun-aux curve-num index pitch-list pitch-seq instrument set
+                       1 3 24))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:27:59 Tue Mar  9 2021 CET
+;;; $$ Last modified:  17:04:04 Thu Mar 18 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4659,6 +4659,16 @@ RETURNS:
         (cons (list id sum)
               (loop for l in list and letter in letters collect
                    (pexpand-aux l (econs id letter)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun pexpand-print (pexp)
+  (loop for num in pexp by #'cddr
+     for section in (rest pexp) by #'cddr
+     for indent = (* 2 (1- (length section)))
+     do
+       (terpri)
+       (loop repeat indent do (write-char #\ )) ; the space after \ is vital
+       (format t "~a: ~a" num (list-to-string section "-"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

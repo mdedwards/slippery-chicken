@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  08:43:34 Fri Mar  5 2021 CET
+;;; $$ Last modified:  12:29:54 Fri Mar 19 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -995,7 +995,10 @@
 ;;; **** 
     (declare (ignore index instrument pitch-list))
     (let* ((subset (get-data 'guitar (subsets set)))
-           (subset-pitches (data subset))
+           (subset-pitches (if subset
+                               (data subset)
+                               (error "guitar-chord-selection-fun: ~
+                                       no guitar subset!")))
            (tag (tag subset))
            ;; find out where the current number from the pitch curve is
            ;; relative to the lowest/highest in the curve; using this we can

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  12:02:41 Wed Dec  9 2020 CET
+;;; $$ Last modified:  15:38:55 Wed Mar 17 2021 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1178,7 +1178,7 @@ RTHM-SEQ: num-bars: 3
   (typep thing 'rthm-seq-palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* rthm-seq-palette/make-rthm-seq-from-unit-multipliers-simp
+;;; ****f* rthm-seq-palette/make-rsp-from-unit-multipliers-simp
 ;;; June 6th 2020
 ;;; 
 ;;; DESCRIPTION

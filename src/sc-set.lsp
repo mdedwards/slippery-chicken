@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  12:37:36 Fri Mar 12 2021 CET
+;;; $$ Last modified:  12:58:09 Sat Mar 20 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1254,6 +1254,10 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sc-set object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - either a subsets-id or related-sets-id in order to use the respective
+;;;   notes instead of all the notes of the set.
 ;;; 
 ;;; RETURN VALUE
 ;;; A chord object.
@@ -1276,15 +1280,16 @@ PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0
 
 |#
 ;;; SYNOPSIS
-(defmethod create-chord ((s sc-set))
+(defmethod create-chord ((s sc-set) &optional subsets-id related-sets-id)
 ;;; ****
-  (make-chord (data s)))
+  (make-chord (cond
+                (subsets-id (get-data-data subsets-id (subsets s)))
+                (related-sets-id (get-data-data related-sets-id
+                                                (related-sets s)))
+                (t (data s)))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Feb  6 17:42:16 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-set/create-event
 ;;; DESCRIPTION
 ;;; Create an event object (that is a chord) from a given sc-set object,
@@ -1299,6 +1304,8 @@ PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0
 ;;; OPTIONAL ARGUMENTS
 ;;; - A number that is the start-time in quarter-notes rather than seconds (see
 ;;;   event class documentation for more details)
+;;; - subsets-id, related-sets-id: pass an ID to use just the notes of the
+;;;   sub/related set, rather than all the notes of the set.
 ;;; 
 ;;; RETURN VALUE
 ;;; An event object.
@@ -1343,11 +1350,12 @@ data: Q
 |#
 ;;; SYNOPSIS
 (defmethod create-event ((s sc-set) rhythm start-time
-                         &optional start-time-qtrs)
+                         &optional start-time-qtrs subsets-id related-sets-id)
 ;;; ****
   (unless start-time-qtrs
     (setf start-time-qtrs start-time))
-  (let ((e (make-event (create-chord s) rhythm :start-time start-time)))
+  (let ((e (make-event (create-chord s subsets-id related-sets-id)
+                       rhythm :start-time start-time)))
     (setf (start-time-qtrs e) start-time-qtrs)
     e))
 

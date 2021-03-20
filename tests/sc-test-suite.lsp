@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:40:49 Fri Mar 12 2021 CET
+;;; $$ Last modified:  12:28:02 Sat Mar 20 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -13142,6 +13142,11 @@
                           (id nobj)
                           (pitch-list-to-symbols (data nobj))))
               '((NOT-PLAYABLE (DQS2 EQF3))))
+      ;; MDE Sat Mar 20 12:25:36 2021, Heidhausen
+      (chord-equal (make-chord '(d2 f2 a2))
+                   (create-chord mcs2 'low))
+      (chord-equal (make-chord '(dqs2 eqf3))
+                   (create-chord mcs2 nil 'not-playable))
       ;; MDE Fri Jun  2 11:18:45 2017
       (subsets-remove mcs2 'd2 'd4)
       (equalp '(f2 a2) (pitch-list-to-symbols

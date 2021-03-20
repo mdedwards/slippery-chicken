@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified:  18:42:21 Fri May  1 2020 CEST
+;;; $$ Last modified:  12:59:05 Sat Mar 20 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -81,6 +81,12 @@
 ;;; - A set-map object.
 ;;; - The path+file-name for the midi file to be written.
 ;;;
+;;; OPTIONAL ARGUMENTS
+;;; - the tempo in beats per minute. Default = 60.
+;;; - subsets-id, related-sets-id. If you want to generate a MIDI file of just
+;;;   a named subset or related-set, pass the ID here. NB this ID will have to
+;;;   exist for all sets.
+;;;
 ;;; RETURN VALUE  
 ;;; Returns T.
 ;;;
@@ -102,14 +108,17 @@
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod gen-midi-chord-seq ((sm set-map) midi-file &optional (tempo 60.0))
+(defmethod gen-midi-chord-seq ((sm set-map) midi-file
+                               &optional (tempo 60.0) subsets-id
+                                 related-sets-id)
 ;;; ****
   (reset sm)
   (let* ((sets (get-all-data-from-palette sm))
          (events (loop with rthm = (make-rhythm 'q)
                     for start-time from 0
                     for s in sets
-                    collect (create-event s rthm start-time))))
+                    collect (create-event s rthm start-time subsets-id
+                                          related-sets-id))))
     (cm::process-voices (list (list events))
                         midi-file (make-tempo tempo) nil 0))
   t)

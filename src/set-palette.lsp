@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  14:53:13 Fri Mar 12 2021 CET
+;;; $$ Last modified:  12:57:19 Sat Mar 20 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -430,10 +430,17 @@ data: (C4 F4 A4 C5)
 ;;; - the set-palette object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; keyword argument:
+;;; keyword arguments:
 ;;; - :midi-file. The path (string) of the midi file to write. Default is to
-;;; use the ID of the set-palette and write it into the default directory.
-;;; 
+;;;   use the ID of the set-palette and write it into the default directory.
+;;; - :tempo. The tempo of the MIDI file in beats per minute. Default = 60.
+;;; - :auto-open. Whether to open the midi file after generating (not available
+;;;   on all operating systems). Default is (get-sc-config
+;;;   'midi-play-auto-open) which itself defaults to sc-auto-open in the
+;;;   *features* list.
+;;; - :related-sets-id :subsets-id. If you want to generate a MIDI file of just
+;;;   a named subset or related-set, pass the ID here. NB this ID will have to
+;;;   exist for all sets.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -443,19 +450,39 @@ data: (C4 F4 A4 C5)
                       &key
                         (tempo 60.0)
                         (auto-open (get-sc-config 'midi-play-auto-open))
+                        ;; MDE Sat Mar 20 12:05:17 2021, Heidhausen
+                        related-sets-id subsets-id
                         (midi-file
                          (format nil "~a~a.mid"
                                  (get-sc-config 'default-dir)
                                  (string-downcase (string (id sp))))))
 ;;; ****
-  (gen-midi-chord-seq sp midi-file tempo)
+  (gen-midi-chord-seq sp midi-file tempo subsets-id related-sets-id)
   (when auto-open
     (system-open-file midi-file)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod gen-midi-chord-seq-aux ((sp set-palette) time subsets-id
+                                   related-sets-id)
+  (reset sp)
+  (loop with rthm = (make-rhythm 'q)
+     for i below (sclist-length sp) 
+     for set = (get-next sp)
+     if (set-palette-p (data set))
+     append 
+     (multiple-value-bind
+           (events sub-time)
+         (gen-midi-chord-seq-aux (data set) time subsets-id related-sets-id)
+       (incf time sub-time)
+       events)
+     into result
+     else collect (create-event set rthm time time subsets-id related-sets-id)
+     into result
+     and do (incf time)
+     finally (return (values result i))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Tue Feb  7 14:28:07 GMT 2012: Edited robodoc entry
-
 ;;; ****m* set-palette/gen-midi-chord-seq
 ;;; DESCRIPTION
 ;;; Generate a MIDI file in which each set of the given set-palette object is
@@ -464,7 +491,13 @@ data: (C4 F4 A4 C5)
 ;;; ARGUMENTS 
 ;;; - A set-palette object.
 ;;; - The name and path for the MIDI file to be generated.
-;;; 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - the tempo in beats per minute. Default = 60.
+;;; - subsets-id, related-sets-id. If you want to generate a MIDI file of just
+;;;   a named subset or related-set, pass the ID here. NB this ID will have to
+;;;   exist for all sets.
+;;;
 ;;; RETURN VALUE  
 ;;; Always returns T
 ;;;
@@ -491,37 +524,15 @@ data: (C4 F4 A4 C5)
 ;;; 
 ;;; SYNOPSIS
 (defmethod gen-midi-chord-seq ((sp set-palette) midi-file
-                               &optional (tempo 60.0))
+                               &optional (tempo 60.0)
+                                 subsets-id related-sets-id)
 ;;; ****
-  (let ((events (gen-midi-chord-seq-aux sp 0)))
+  (let ((events (gen-midi-chord-seq-aux sp 0 subsets-id related-sets-id)))
     (cm::process-voices (list (list events))
                         midi-file (make-tempo tempo) nil 0)
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod gen-midi-chord-seq-aux ((sp set-palette) time)
-  (reset sp)
-  (loop with rthm = (make-rhythm 'q)
-     for i below (sclist-length sp) 
-     for set = (get-next sp)
-     if (set-palette-p (data set))
-     append 
-     (multiple-value-bind
-           (events sub-time)
-         (gen-midi-chord-seq-aux (data set) time)
-       (incf time sub-time)
-       events)
-     into result
-     else collect (create-event set rthm time time)
-     into result
-     and do (incf time)
-     finally (return (values result i))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Feb  7 14:32:56 GMT 2012: Edited robodoc info
-
 ;;; ****m* set-palette/force-micro-tone
 ;;; DESCRIPTION
 ;;; Change the value of the MICRO-TONE slot of all pitch objects in a given

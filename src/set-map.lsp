@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified:  12:59:05 Sat Mar 20 2021 CET
+;;; $$ Last modified:  15:12:08 Sat Mar 20 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -56,9 +56,34 @@
 (defclass set-map (sc-map) ())
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; ****m* set-map/midi-play
+;;; DESCRIPTION
+;;; Write a MIDI file containing the sets in order of the set-map.
+;;; 
+;;; ARGUMENTS
+;;; - the set-map object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :midi-file. The path (string) of the midi file to write. Default is to
+;;;   use the ID of the set-palette and write it into the default directory.
+;;; - :tempo. The tempo of the MIDI file in beats per minute. Default = 60.
+;;; - :auto-open. Whether to open the midi file after generating (not available
+;;;   on all operating systems). Default is (get-sc-config
+;;;   'midi-play-auto-open) which itself defaults to sc-auto-open in the
+;;;   *features* list.
+;;; - :related-sets-id :subsets-id. If you want to generate a MIDI file of just
+;;;   a named subset or related-set, pass the ID here. NB this ID will have to
+;;;   exist for all sets.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
 (defmethod midi-play ((sm set-map)
                       &key
+                        ;; MDE Sat Mar 20 12:05:17 2021, Heidhausen
+                        related-sets-id subsets-id
                         (tempo 60.0)
                         (auto-open (get-sc-config 'midi-play-auto-open))
                         (midi-file
@@ -66,7 +91,7 @@
                                  (get-sc-config 'default-dir)
                                  (string-downcase (string (id sm))))))
 ;;; ****
-  (gen-midi-chord-seq sm midi-file tempo)
+  (gen-midi-chord-seq sm midi-file tempo subsets-id related-sets-id)
   (when auto-open
     (system-open-file midi-file))
   midi-file)
@@ -117,8 +142,8 @@
          (events (loop with rthm = (make-rhythm 'q)
                     for start-time from 0
                     for s in sets
-                    collect (create-event s rthm start-time subsets-id
-                                          related-sets-id))))
+                    collect (create-event s rthm start-time start-time
+                                          subsets-id related-sets-id))))
     (cm::process-voices (list (list events))
                         midi-file (make-tempo tempo) nil 0))
   t)

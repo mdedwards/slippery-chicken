@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  12:57:19 Sat Mar 20 2021 CET
+;;; $$ Last modified:  18:28:05 Tue Mar 23 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -116,9 +116,6 @@
          (print-simple (get-data ref sp) stream separator))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Feb  7 12:12:24 GMT 2012: Added robodoc entry
-
 #+cmn
 ;;; ****m* set-palette/cmn-display
 ;;; DESCRIPTION
@@ -148,7 +145,8 @@
 ;;;   offset of any text in the output.
 ;;; - :font-size. A number indicating the size of any text font used in the
 ;;;   output. This affects text only and not the music (see :size below for
-;;;   changing the size of the music). If 0 then no text will be displayed.
+;;;   changing the size of the music). If 0 then no text will be
+;;;   displayed. Default = 10.0.
 ;;; - :break-line-each-set. T or NIL to indicate whether each set-palette
 ;;;   object should be printed on a separate staff or consecutively on the same
 ;;;   staff. T = one staff per set-palette object. Default = T.
@@ -190,7 +188,7 @@
 ;; include-missing-non-chromatic 
 (let ((msp (make-set-palette 
             'test
-            '((1 ((1
+         p   '((1 ((1
                    ((c3 g3 cs4 e4 fs4 a4 bf4 c5 d5 f5 gf5 af5 ef6)))
                   (2
                    ((c3 g3 cs4 e4 fs4 a4 bf4 c5 d5 f5 gf5 af5 ef6)
@@ -2310,6 +2308,55 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+cmn
+(defun cmn-display-sets-aux (set-list
+                             &optional 
+                               (4stave nil)
+                               (text-x-offset -0.5)
+                               (text-y-offset 2.0)
+                               (break-line-each-set t)
+                               (font-size 10.0)
+                               include-missing-chromatic
+                               include-missing-non-chromatic
+                               transposition
+                               (use-octave-signs t)
+                               ;; leave parents alone: used recursively 
+                               parents)
+  (loop for i below (length set-list)
+     for current = (nth i set-list)
+     if (set-palette-p (data current))
+     ;; keep track of the levels of recursion in the set-palette
+     do (push (id current) parents)
+     and append (cmn-display-sets-aux (data (data current)) 4stave
+                                      text-x-offset 
+                                      text-y-offset
+                                      break-line-each-set font-size
+                                      include-missing-chromatic
+                                      include-missing-non-chromatic
+                                      transposition use-octave-signs 
+                                      parents)
+     into result
+     and do (pop parents)
+     ;; cmn-treble-bass-system is part of the complete-set class
+     ;; returns a list: treble-clef notes, bass-clef notes
+     else collect (cmn-treble-bass-system 
+                   (if transposition
+                       (transpose (clone current) transposition)
+                       current)
+                   4stave
+                   (make-sp-name parents
+                                 (id current)
+                                 (tag current))
+                   text-x-offset text-y-offset
+                   break-line-each-set
+                   font-size
+                   include-missing-chromatic
+                   include-missing-non-chromatic
+                   use-octave-signs)
+     into result
+     finally (return result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jan 30 13:01:14 2016 -- these two used to be methods but I've now
 ;;; generalised the procedure for set lists so that we can use the
 ;;; functionality in e.g. set-maps too
@@ -2364,55 +2411,6 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
     (when auto-open
       (system-open-file file))
     t))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+cmn
-(defun cmn-display-sets-aux (set-list
-                             &optional 
-                               (4stave nil)
-                               (text-x-offset -0.5)
-                               (text-y-offset 2.0)
-                               (break-line-each-set t)
-                               (font-size 10.0)
-                               include-missing-chromatic
-                               include-missing-non-chromatic
-                               transposition
-                               (use-octave-signs t)
-                               ;; leave parents alone: used recursively 
-                               parents)
-  (loop for i below (length set-list)
-     for current = (nth i set-list)
-     if (set-palette-p (data current))
-     ;; keep track of the levels of recursion in the set-palette
-     do (push (id current) parents)
-     and append (cmn-display-sets-aux (data (data current)) 4stave
-                                      text-x-offset 
-                                      text-y-offset
-                                      break-line-each-set font-size
-                                      include-missing-chromatic
-                                      include-missing-non-chromatic
-                                      transposition use-octave-signs 
-                                      parents)
-     into result
-     and do (pop parents)
-     ;; cmn-treble-bass-system is part of the complete-set class
-     ;; returns a list: treble-clef notes, bass-clef notes
-     else collect (cmn-treble-bass-system 
-                   (if transposition
-                       (transpose (clone current) transposition)
-                       current)
-                   4stave
-                   (make-sp-name parents
-                                 (id current)
-                                 (tag current))
-                   text-x-offset text-y-offset
-                   break-line-each-set
-                   font-size
-                   include-missing-chromatic
-                   include-missing-non-chromatic
-                   use-octave-signs)
-     into result
-     finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jan 30 13:29:39 2016 

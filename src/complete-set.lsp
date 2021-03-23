@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  11:50:03 Thu Mar  4 2021 CET
+;;; $$ Last modified:  18:35:48 Tue Mar 23 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -238,7 +238,6 @@
                               :text-y-offset 
                               (+ offset-offset text-y-offset)
                               :use-octave-signs use-octave-signs)))
-                 ;; (print (cmn::descry cmn-ch))
                  ;; remember push only works when the variable is a list,
                  ;; rather than a variable referring to another variable which
                  ;; is a list. 
@@ -261,7 +260,11 @@
                (push-aux note-list text 4 offset-offset))
              (push-quad-treble (note-list &optional 
                                           (text "") (offset-offset 0.0))
-               (push-aux note-list text 3 offset-offset))
+               ;; (push-aux note-list text 3 offset-offset))
+               (push-aux note-list text 3 
+                         ;; raise the text for the next one....
+                         (+ (* (mod (incf text-count) 3) 0.5)
+                            offset-offset)))
              (do-subsets (subset)
                (when (and (named-object-p subset) (data subset))
                  (let (ss sstb label)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  18:50:55 Tue Mar 23 2021 CET
+;;; $$ Last modified:  12:51:23 Wed Mar 24 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -764,8 +764,8 @@
        (first-measure-number start-bar-numbering)
        (staff-name-font "Courier")
        (staff-name-font-scaler .6)
-       (default-font '("Courier" "Courier-Italic" "Courier-Bold" 
-                       "Courier-BoldItalic"))
+       (default-font '("Courier" "Courier-Oblique" "Courier-Bold" 
+                       "Courier-BoldOblique"))
        (slur-curvature .35)
        (slur-thickness .05)
        (tie-curvature .25)

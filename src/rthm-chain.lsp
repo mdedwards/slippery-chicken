@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  16:14:15 Thu Sep 17 2020 CEST
+;;; $$ Last modified:  17:22:10 Wed Mar 24 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -247,7 +247,7 @@
              (unless (= (length group) (num-1-beat-rthms rc))
                (error "rthm-chain::initialize-instance: Each group in ~
                        1-beat-rthms must ~
-                       have the same number of beats ~%(here ~a): ~a"
+                       have the ~%same number of beats (here ~a): ~%~a"
                       (length group) group))
            collect
              (loop for beat in group collect

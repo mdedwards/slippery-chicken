@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  14:37:25 Fri Mar 19 2021 CET
+;;; $$ Last modified:  17:54:40 Wed Mar 24 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1017,7 +1017,9 @@
             ((< tessitura 0.7) (setf nth1 1 nth2 5))
             ((>= tessitura 0.7) (setf nth1 0 nth2 6)))
       (setf notes (safe-subseq subset-pitches nth1 nth2)
-            fingering (safe-subseq tag nth1 nth2)
+            fingering (if (listp tag)
+                          (safe-subseq tag nth1 nth2)
+                          tag)
             strings (safe-subseq strings nth1 nth2)
             show-fingering (not (equalp (pitch-list-to-symbols last-chord)
                                         (pitch-list-to-symbols notes)))
@@ -1027,12 +1029,14 @@
       (add-mark chord (when show-fingering
                         (apply #'cmn::fingering 
                                (append
-                                (reverse 
-                                 (loop 
-                                    for s in strings 
-                                    for f in fingering 
-                                    collect
-                                    (format nil "~3a ~a" s f)))
+                                (if (listp tag)
+                                    (reverse 
+                                     (loop 
+                                        for s in strings 
+                                        for f in fingering 
+                                        collect
+                                          (format nil "~3a ~a" s f)))
+                                    (list fingering))
                                 ;;'(:direction :up)))))
                                 ))))
       chord)))

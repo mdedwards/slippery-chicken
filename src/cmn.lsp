@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  12:51:23 Wed Mar 24 2021 CET
+;;; $$ Last modified:  16:58:41 Fri Mar 26 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -786,7 +786,7 @@
        (use-abbreviated-staff-names nil)
        (size size)
        ;; MDE Tue Mar 23 18:47:17 2021, Heidhausen
-       (header-margin 4.0)
+       (unless one-line-per-page (header-margin 4.0))
        ;; (page-hook #'sc-page-number)
        (system-separation group-separation)
        (dynamics-size 1.0)

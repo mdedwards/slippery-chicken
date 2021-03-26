@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  14:59:18 Wed Feb  3 2021 CET
+;;; $$ Last modified:  17:11:59 Fri Mar 26 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -72,16 +72,9 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defclass l-for-lookup (assoc-list)
   ((rules :accessor rules :initarg :rules :initform nil)
    ;; MDE Sun Jan 15 09:27:58 2012 -- given some rules (e.g. in simplest form,
@@ -387,13 +380,13 @@
                 (6 (2 5 6)) (7 (5 6 4)) (8 (3 2))))))
   (do-lookup-linear tune 1 100))
 =>
-(1 3 4 1 4 4 6 8 2 1 1 4 5 5 6 5 1 1 7 6 8 2 1 1 3 5 4 4 5 5 6 5 4 7 1 4 4 6 8
- 2 1 1 4 5 5 6 5 5 8 2 1 1 3 4 1 7 6 8 2 1 1 4 5 4 1 4 5 6 5 1 6 8 2 1 1 3 5 7
- 5 4 1 4 5 6 5 4 7 6 8 2 1 1 4 5 4 1 4 5 6 5)
-((1 24) (2 7) (3 4) (4 20) (5 21) (6 12) (7 5) (8 7))
-(1 2 3 4 5 6 4 1 1 8 1 2 4 6 5 5 7 4 5 4 1 1 8 1 2 3 5 6 4 6 5 5 7 5 4 5 6 4 1
- 1 8 1 2 4 6 5 5 7 1 1 8 1 2 3 4 5 4 1 1 8 1 2 4 6 4 5 6 5 5 7 4 1 1 8 1 2 3 5
- 4 6 4 5 6 5 5 7 5 4 1 1 8 1 2 4 6 4 5 6 5 5)
+(2 1 3 8 2 4 4 1 8 3 4 2 1 3 5 5 8 2 4 3 1 8 4 4 5 2 1 3 4 8 2 3 4 1 4 3 1 8 4
+ 5 4 2 1 3 4 8 2 3 5 6 1 8 4 3 2 1 4 4 5 8 2 3 4 1 8 3 4 5 2 1 4 3 8 2 4 5 4 1
+ 8 3 4 2 1 3 5 1 4 3 8 2 4 4 5 1 8 3 4 2 1 3)
+((1 17) (2 15) (3 18) (4 25) (5 10) (6 1) (8 14))
+(1 1 2 1 1 2 3 1 1 2 2 1 1 2 3 4 1 1 2 2 1 1 2 3 3 1 1 2 2 1 1 2 3 4 2 2 1 1 2
+ 3 3 1 1 2 2 1 1 2 3 4 1 1 2 2 1 1 2 3 3 1 1 2 2 1 1 2 3 4 1 1 2 2 1 1 2 3 3 1
+ 1 2 2 1 1 2 3 4 2 2 1 1 2 3 3 1 1 2 2 1 1 2)
 |#
 ;;; SYNOPSIS
 (defmethod do-lookup-linear ((lflu l-for-lookup) seed stop
@@ -424,19 +417,11 @@
              collect (if (numberp this)
                          (+ offset (* scaler this))
                          this)))
-         (elements (remove-duplicates result))
-         (lld (make-list (length elements))))
-    (when (list-of-numbers-p elements)
-      (setf elements (sort elements #'<)))
-    (loop for e in elements and i from 0 do
-         (setf (nth i lld) (list e (count e result))))
+         (lld (get-distribution result)))
     (setf (ll-distribution lflu) lld)
     (values result lld (l-sequence lflu))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan 14 15:02:42 GMT 2012: Added robodoc info
-
 ;;; ****m* l-for-lookup/reset
 ;;; DESCRIPTION
 ;;; Sets the counters (index pointers) of all circular-sclist objects stored
@@ -498,9 +483,6 @@
                      (make-cscl (make-list 35 :initial-element 0)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan 14 14:28:09 GMT 2012: Edited robodoc info
-
 ;;; ****m* l-for-lookup/get-linear-sequence
 ;;; DESCRIPTION
 ;;; Instead of creating L-sequences with specified rules, use them
@@ -526,7 +508,8 @@
 ;;;   lists before proceeding. T = reset. Default = T. 
 ;;; 
 ;;; RETURN VALUE  
-;;; A list of results of user-defined length.
+;;; Two values: A list of results of user-defined length and the distribution of
+;;; the results.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -553,20 +536,27 @@
   ;; cscl rather it's a simple named-object, so we'll need to convert these for
   ;; the sake of this method
   (let ((crules (clone (rules lflu)))
-        (current seed))
+        (current seed)
+        result lld sdiff)
     (setf (data crules)
           (loop for r in (data crules) collect 
                (make-cscl (data r) :id (id r))))
-    (loop 
-       repeat stop-length
-       collect current
-       do
-       ;; the circular lists are in a list of the data 
-       ;; MDE Wed Apr 3 16:31:51 2013 -- we use the rules now, not the data, so
-       ;; that we can still do the transitioning with linear rather than l-sys
-       ;; data (setf current (get-next (first (data (get-data current
-       ;; lflu)))))))
-       (setf current (get-next (get-data current crules))))))
+    (setf result (loop 
+                    repeat stop-length
+                    collect current
+                    do
+                    ;; the circular lists are in a list of the data MDE Wed Apr
+                    ;; 3 16:31:51 2013 -- we use the rules now, not the data, so
+                    ;; that we can still do the transitioning with linear rather
+                    ;; than l-sys data (setf current (get-next (first (data
+                    ;; (get-data current lflu)))))))
+                      (setf current (get-next (get-data current crules))))
+          lld (get-distribution result)
+          (ll-distribution lflu) lld)
+    (when (setq sdiff (set-difference (get-keys (rules lflu)) result))
+      (warn "l-for-lookup::get-linear-sequence: some keys not used: ~%~a"
+            sdiff))
+    (values result lld)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -704,9 +694,6 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 13 17:09:19 GMT 2012: Add robodoc info
-
 ;;; ****f* l-for-lookup/make-l-for-lookup
 ;;; DESCRIPTION
 ;;; Create an l-for-lookup object. The l-for-lookup object uses techniques
@@ -729,9 +716,9 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :auto-check-redundancy. Some rules (e.g. in simplest form, a set of keys
-;;;   that return only one result each) we'll get a result of the same length no
-;;;   matter how many results we ask for. This can sometimes be problematic so
-;;;   do a check if requested. Default = NIL.
+;;;   that return only one result each) will return a result of the same length
+;;;   no matter how many results we ask for. This can sometimes be problematic
+;;;   so do a check if requested. Default = NIL.
 ;;; - :scaler. Factor by which to scale the values returned by
 ;;;   do-lookup. Default = 1. Does not modify the original data.
 ;;; - :offset. Number to be added to values returned by do-lookup (after they
@@ -1598,6 +1585,17 @@ data: (
                    (sort result #'(lambda (x y) (< (first x) (first y))))
                    ;; sort by number of elements
                    (sort result #'(lambda (x y) (> (second x) (second y))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun get-distribution (list)
+  (let* ((elements (remove-duplicates list))
+         (lld (make-list (length elements))))
+    (when (list-of-numbers-p elements)
+      (setf elements (sort elements #'<)))
+    (loop for e in elements and i from 0 do
+         (setf (nth i lld) (list e (count e list))))
+    lld))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF l-for-lookup.lsp

@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  17:11:59 Fri Mar 26 2021 CET
+;;; $$ Last modified:  11:02:22 Sat Mar 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -505,7 +505,9 @@
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether to reset the pointers of the given circular
-;;;   lists before proceeding. T = reset. Default = T. 
+;;;   lists before proceeding. T = reset. Default = T.
+;;; - T or NIL to indicate whether to warn if any of the given keys are not
+;;;   used. Default = T.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Two values: A list of results of user-defined length and the distribution of
@@ -526,7 +528,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod get-linear-sequence ((lflu l-for-lookup) seed stop-length
-                                &optional (reset t))
+                                &optional (reset t) (warn t))
 ;;; ****                                
   ;; 14/8/07: reset lists so that get-next starts at beginning and we generate 
   ;; the same results each time method called with same data 
@@ -553,7 +555,8 @@
                       (setf current (get-next (get-data current crules))))
           lld (get-distribution result)
           (ll-distribution lflu) lld)
-    (when (setq sdiff (set-difference (get-keys (rules lflu)) result))
+    (when (and warn
+               (setq sdiff (set-difference (get-keys (rules lflu)) result)))
       (warn "l-for-lookup::get-linear-sequence: some keys not used: ~%~a"
             sdiff))
     (values result lld)))
@@ -1590,11 +1593,14 @@ data: (
 
 (defun get-distribution (list)
   (let* ((elements (remove-duplicates list))
-         (lld (make-list (length elements))))
-    (when (list-of-numbers-p elements)
-      (setf elements (sort elements #'<)))
+         (lld (make-list (length elements)))
+         (lon (list-of-numbers-p elements)))
+    (when lon (setf elements (sort elements #'<)))
     (loop for e in elements and i from 0 do
          (setf (nth i lld) (list e (count e list))))
+    (unless lon
+      (setq lld (stable-sort lld
+                             #'(lambda (x y) (> (second x) (second y))))))
     lld))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

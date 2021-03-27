@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:54:40 Wed Mar 24 2021 CET
+;;; $$ Last modified:  18:22:54 Sat Mar 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -970,33 +970,14 @@
                        1 3 24))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 15:31:19 BST 2012: Added robodoc entry
-;;; SAR Sat May 19 15:14:45 EDT 2012: Revisited robodoc entry
-
 ;;; MDE original comment:
 ;;; NB this assumes the pitch-list contains notes that are already playable as
 ;;; a guitar chord (which was fine in cheat sheet, as that was the premise of
 ;;; our harmony).
 
-;;; ****f* instruments/guitar-chord-selection-fun
-;;; DESCRIPTION
-;;; Create chord objects with differing numbers of pitches, drawing the pitches
-;;; from set-palette object subsets with the ID 'guitar.
-;;;
-;;; This function was written for the composition "Cheat Sheet", in which the
-;;; pitch sets were defined explicitly such that all of the pitches available
-;;; to the guitar at any moment were playable as a guitar chord. As such, this
-;;; function always assumes that the pitch-list it is drawing from contains
-;;; pitches that are already playable as a guitar chord. It also adds the
-;;; fingering as mark above each chord when outputting to CMN, which may or may
-;;; not be desirable.
-;;; 
-;;; SYNOPSIS
 (let ((last-chord '()))
-  (defun guitar-chord-selection-fun (curve-num index pitch-list pitch-seq 
-                                     instrument set)
-;;; **** 
+  (defun guitar-chord-selection-fun-aux (curve-num index pitch-list pitch-seq 
+                                         instrument set all6)
     (declare (ignore index instrument pitch-list))
     (let* ((subset (get-data 'guitar (subsets set)))
            (subset-pitches (if subset
@@ -1011,11 +992,13 @@
            (range (1+ (- (highest pitch-seq) (lowest pitch-seq))))
            (tessitura (/ curve-num range))
            (strings '(VI V IV III II I))
-           nth1 nth2 fingering notes chord show-fingering)
-      (cond ((< tessitura 0.3) (setf nth1 0 nth2 3))
-            ((< tessitura 0.5) (setf nth1 0 nth2 4))
-            ((< tessitura 0.7) (setf nth1 1 nth2 5))
-            ((>= tessitura 0.7) (setf nth1 0 nth2 6)))
+           (nth1 0)
+           (nth2 6)
+           fingering notes chord show-fingering)
+      (unless all6
+        (cond ((< tessitura 0.3) (setf nth1 0 nth2 3))
+              ((< tessitura 0.5) (setf nth1 0 nth2 4))
+              ((< tessitura 0.7) (setf nth1 1 nth2 5))))
       (setf notes (safe-subseq subset-pitches nth1 nth2)
             fingering (if (listp tag)
                           (safe-subseq tag nth1 nth2)
@@ -1036,10 +1019,35 @@
                                         for f in fingering 
                                         collect
                                           (format nil "~3a ~a" s f)))
-                                    (list fingering))
-                                ;;'(:direction :up)))))
-                                ))))
+                                    (list fingering))))))
       chord)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/guitar-chord-selection-fun
+;;; DESCRIPTION
+;;; Create chord objects with differing numbers of pitches, drawing the pitches
+;;; from set-palette object subsets with the ID 'guitar.
+;;;
+;;; This function was written for the composition "Cheat Sheet", in which the
+;;; pitch sets were defined explicitly such that all of the pitches available
+;;; to the guitar at any moment were playable as a guitar chord. As such, this
+;;; function always assumes that the pitch-list it is drawing from contains
+;;; pitches that are already playable as a guitar chord. It also adds the
+;;; fingering as mark above each chord when outputting to CMN, which may or may
+;;; not be desirable.
+;;; 
+;;; SYNOPSIS
+(defun guitar-chord-selection-fun (curve-num index pitch-list pitch-seq 
+                                   instrument set)
+;;; **** 
+  (guitar-chord-selection-fun-aux curve-num index pitch-list pitch-seq 
+                                  instrument set nil))
+
+;;; MDE Sat Mar 27 18:17:04 2021, Heidhausen -- always get all 6 notes
+(defun guitar-chord-selection-fun-all (curve-num index pitch-list pitch-seq 
+                                       instrument set)
+  (guitar-chord-selection-fun-aux curve-num index pitch-list pitch-seq 
+                                  instrument set t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* instruments/get-standard-ins

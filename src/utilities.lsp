@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:04:04 Thu Mar 18 2021 CET
+;;; $$ Last modified:  11:40:59 Sat Mar 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3345,9 +3345,6 @@ WARNING:
   (append (nthcdr start list) (subseq list 0 start)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 22:53:23 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/combine-into-symbol
 ;;; DESCRIPTION
 ;;; Combine a sequence of elements of any combination of type string, number,
@@ -3379,10 +3376,6 @@ WARNING:
   (intern (coerce (list char) 'string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 22:58:12 BST 2012: Added robodoc entry
-;;; SAR Mon May 21 10:05:22 EDT 2012: Completed robodoc entry
-
 ;;; ****f* utilities/swap-elements
 ;;; DESCRIPTION
 ;;; Swap the order of each consecutive pair of elements in a list.

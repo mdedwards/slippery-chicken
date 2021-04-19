@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  12:58:09 Sat Mar 20 2021 CET
+;;; $$ Last modified:  15:04:09 Thu Apr 15 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -162,6 +162,10 @@
     (make-ral-pitch-lists (subsets s) (auto-sort s))
     (check-subsets (subsets s) s))
   (subsets s))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod get-subset (id (s sc-set) &optional (warn t))
+  (get-data id (subsets s) warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

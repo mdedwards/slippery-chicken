@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:49:54 Fri Mar 26 2021 CET
+;;; $$ Last modified:  16:48:57 Fri Apr 23 2021 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -4822,7 +4822,7 @@
       (reset lfl)
       (equalp 
        (nth-value 1 (do-lookup lfl 2 17))
-       '((BX1 1) (AX1 1) (CY2 2) (BY1 2) (AY1 2) (BY2 2) (AY2 2) (BZ1 1) 
+       '((CY2 2) (BY1 2) (AY1 2) (BY2 2) (AY2 2) (BX1 1) (AX1 1) (BZ1 1)
          (AZ1 1) (CZ1 1) (AZ2 1) (BZ2 1)))
       (equalp 
        (nth-value 2 (do-lookup lfl 2 17))

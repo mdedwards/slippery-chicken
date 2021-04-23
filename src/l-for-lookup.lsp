@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  11:02:22 Sat Mar 27 2021 CET
+;;; $$ Last modified:  16:20:46 Fri Apr 23 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -192,9 +192,6 @@
     assoc-list))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan 14 14:07:14 GMT 2012: Edited robodoc info
-
 ;;; ****m* l-for-lookup/do-simple-lookup
 ;;; DESCRIPTION
 ;;; Performs a simple look-up procedure whereby a given reference key always
@@ -249,7 +246,6 @@
         (data (first (data (get-data ref lflu))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Sat Jan 14 13:29:20 GMT 2012: Edited robodoc info
 ;;; MDE Fri Mar 29 15:40:03 2013 -- split this out into an auxiliary function
 ;;; so we can share functionality with do-lookup-linear

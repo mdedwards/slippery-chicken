@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  14:01:06 Sat Jul 11 2020 CEST
+;;; $$ Last modified:  16:02:38 Fri Apr 23 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -451,7 +451,8 @@ Each pitch sequence must have 5 notes (you have 6):
                  :num-notes num-notes))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(let ((seqs '((1 ((((3))) (((3))) (((1))) (((25)))))
+(let ((seqs '((0 (()))
+              (1 ((((3))) (((3))) (((1))) (((25)))))
               (2 ((3 4) (5 2) ((25) 25) (1 25)))
               (3 (((3) 4 (3)) (5 (9) 6) (1 2 4) (5 2 (2)) (6 2 3)))
               (4 ((3 4 3 4) (5 3 6 4) ((9) 4 5 (11)) (2 (10) 4 8)))
@@ -512,13 +513,13 @@ Each pitch sequence must have 5 notes (you have 6):
                  for order = (first l)
                  for pss = (second l)
                  do
-                 (loop for ps in pss do
-                    ;; check we've the right number of notes.
-                      (unless (= order (length ps))
-                        (error "kill-get-ps: need ~a elements, got ~a: ~a"
-                               order (length ps) ps)))
+                   (loop for ps in pss do
+                      ;; check we've the right number of notes.
+                        (unless (= order (length ps))
+                          (error "kill-get-ps: need ~a elements, got ~a: ~a"
+                                 order (length ps) ps)))
                  collect
-                 (list order (make-cscl pss)))
+                   (list order (make-cscl pss)))
               seqs-al (make-assoc-list 'create-psps-default dl))))
     (when (and (numberp num-notes) (> num-notes 0))
       (let ((ps (get-data num-notes seqs-al nil)))

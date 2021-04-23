@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  15:38:55 Wed Mar 17 2021 CET
+;;; $$ Last modified:  16:13:58 Fri Apr 23 2021 CEST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -269,23 +269,27 @@
                         :selection-fun-data 
                         (when pass-data
                           selection-fun-data))
-           (when (and (> (num-notes rs) 0)
-                      (or overwrite
-                          (flat-line (pitch-seq-palette rs))))
-             (let ((psp (loop repeat pitch-seqs-per-rthm-seq collect
-                             (funcall selection-fun 
-                                      (num-notes rs)
-                                      (when pass-data
-                                        selection-fun-data)))))
-               ;; filter out chords (numbers in () ) ?
-               (unless chords
-                 (setf psp (loop for ps in psp collect
-                                (loop for n in ps collect 
-                                     (if (listp n) (first n) n)))))
-               ;; (print psp)
-               (setf (pitch-seq-palette rs) psp)
-               ;; now turn the lists into a real psp
-               (init-psp rs))))
+           (if (and (> (num-notes rs) 0)
+                    (or overwrite
+                        (flat-line (pitch-seq-palette rs))))
+               (let ((psp (loop repeat pitch-seqs-per-rthm-seq collect
+                               (funcall selection-fun 
+                                        (num-notes rs)
+                                        (when pass-data
+                                          selection-fun-data)))))
+                 ;; filter out chords (numbers in () ) ?
+                 (unless chords
+                   (setf psp (loop for ps in psp collect
+                                  (loop for n in ps collect 
+                                       (if (listp n) (first n) n)))))
+                 ;; (format t "~&~a: ~a" (id rs) psp)
+                 (setf (pitch-seq-palette rs) psp)
+                 ;; now turn the lists into a real psp
+                 (init-psp rs))
+               ;; MDE Fri Apr 23 16:12:38 2021, Heidhausen -- in case we've
+               ;; deliberately deleted all notes in the rs somewhere 
+               (when (zerop (num-notes rs))
+                 (setf (pitch-seq-palette rs) nil))))
      ;; we only need to pass the pitch-seq data once
        (setf pass-data nil))
   rsp)

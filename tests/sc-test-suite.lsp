@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:48:57 Fri Apr 23 2021 CEST
+;;; $$ Last modified:  19:45:36 Thu Apr 29 2021 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8072,8 +8072,29 @@
              (collapse (make-chord orig) 8ve)))))
     (sc-test-check
       (test-it '(c1 d2 e3 f4 g5 a6 b7) '(c4 d4 e4 f4 g4 a4 b4) 4)
-      (test-it '(cs1 df2 ef3 fs4 gs5 af6 bs7) '(cs1 df1 ef1 fs1 gs1 af1 bs1) 1)
-    )))
+      (test-it '(cs1 df2 ef3 fs4 gs5 af6 bs7) '(cs1 df1 ef1 fs1 gs1 af1 bs1)
+               1))))
+
+;;; MDE Thu Apr 29 19:27:02 2021, Heidhausen
+(sc-deftest test-chord-diatonic-p ()
+  (sc-test-check
+    (diatonic-p (make-chord '(c4 e g))) ; M
+    (not (diatonic-p (make-chord '(c4 e c5))))
+    (not (diatonic-p (make-chord '(c4 e g b)))) ; M7
+    (diatonic-p (make-chord '(c4 e g b)) t) ; M7
+    (diatonic-p (make-chord '(c4 e g bf7)) t) ; dom 7
+    (diatonic-p (make-chord '(df1 f gs3))) ; half-dim
+    (diatonic-p (make-chord '(c4 ef g b)) t) ; min M7
+    (diatonic-p (make-chord '(c4 ef g bf)) t) ; min m7
+    (diatonic-p (make-chord '(c4 ef gf bf)) t) ; half dim m7
+    (not (diatonic-p (make-chord '(c4 ef gf b)) t))
+    (diatonic-p (make-chord '(ds4 fs a c1))) ; dim 7
+    (diatonic-p (make-chord '(e4 gs c5))) ; aug
+    (not (diatonic-p (make-chord '(e4 gs c5 ef)))) ; aug M7
+    (diatonic-p (make-chord '(e4 gs c5 ef)) t) ; aug M7
+    (not (diatonic-p (make-chord '(fs4 as cs d))))
+  ))
+         
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; sndfile tests

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  12:37:52 Fri Mar 12 2021 CET
+;;; $$ Last modified:  19:46:02 Thu Apr 29 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2628,6 +2628,32 @@ data: (
     (setf c (make-chord (reverse c-list)))
     c))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Apr 29 19:43:32 2021, Heidhausen -- test whether a chord is diatonic
+;;; with or without a 7th added. Any additional notes will return nil i.e. a
+;;; C major triad with a g# also -> nil
+(defmethod diatonic-p ((c chord) &optional 7ths-too)
+  (let* ((major '(4 7))
+         (minor '(3 7))
+         (half-dim '(3 6))
+         (dim '(3 6 9))
+         (aug '(4 8))
+         (all (list major minor half-dim dim aug)))
+    (flet ((maj7 (chord) (econs chord 11))
+           (min7 (chord) (econs chord 10)))
+      (when 7ths-too
+        (setq all (append all
+                          (list (maj7 major) (maj7 minor) (maj7 aug)
+                                (min7 major) (min7 minor) (min7 half-dim))))))
+    (loop for diatonic in all do
+         (when (has-interval-structure c diatonic)
+           (return t)))))
+
+;;; intervals in semitones should be within an octave. the chord will be
+;;; collapsed to be within one octave for testing
+(defmethod has-interval-structure ((c chord) intervals)
+  (equalp intervals (mapcar #'(lambda (i) (mod i 12))
+                            (get-interval-structure c t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/single-pitch-chord-to-pitch

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  08:52:04 Fri Mar  5 2021 CET
+;;; $$ Last modified:  17:44:39 Thu Apr 29 2021 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6420,8 +6420,12 @@ data: NIL
        ;; MDE Wed Jul  8 10:45:02 2015 -- tuplet numbers on beams don't usually
        ;; include a bracket but we can force this if we like
        (force-bracket nil)
-       ;; MDE Thu Mar 26 18:49:46 2015
+       ;; MDE Thu Mar 26 18:49:46 2015: show the title? could also be a string
+       ;; in order to not use the sc title
        (title t)
+       ;; MDE Thu Apr 29 17:39:40 2021, Heidhausen -- show the composer? also
+       ;; possibly a string
+       (composer t)
        two-sided                        ; MDE Wed Oct 21 18:15:08 2015
        ;; MDE Sat Dec 24 14:54:34 2016 -- try also "dodecaphonic" if you want
        ;; accidentals before every pitch 
@@ -6489,18 +6493,23 @@ data: NIL
                        (cond ((stringp title) (format nil "\"~a\"" title))
                              (title (format nil "\"~a\"" (title sc)))
                              (t "##f"))
-                       (if (subtitle sc)
+                       ;; MDE Thu Apr 29 17:40:52 2021, Heidhausen -- don't show
+                       ;; subtitle if :title nil
+                       (if (and title (subtitle sc))
                            (format nil "\"~a\"" (subtitle sc))
                            "##f")
                        (if (dedication sc)
                            (format nil "\"~a\"" (dedication sc))
                            "##f")
-                       (if (composer sc) 
-                           (format nil "\"~a~a\"" (composer sc)
-                                   (if (year sc)
-                                       (format nil " ~a" (year sc))
-                                       ""))
-                           "##f")))
+                       (let ((comp (if (stringp composer)
+                                       composer
+                                       (composer sc))))
+                         (if (and composer comp)
+                             (format nil "\"~a~a\"" comp
+                                     (if (year sc)
+                                         (format nil " ~a" (year sc))
+                                         ""))
+                             "##f"))))
              (new-voice (pname player stream &optional include-name) 
                ;; pname must be the same as the file name we'll write with the
                ;; notes (+ .ly) so no - or _
@@ -6621,7 +6630,7 @@ data: NIL
         (when (equal cm::*scale* (cm::find-object 'twelfth-tone-ekm))
           ;; including 72 edo ekmelily file
           (format out "~&\\include \"ekmel.ily\"")
-          ; defining accidental style
+                                        ; defining accidental style
           (format out "~&\\ekmelicStyle \"~a\"~%" ekmelic-style))
         ;; print would print the " marks hence princ
         (princ "\\include \"english.ly\"" out)

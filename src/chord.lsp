@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  19:46:02 Thu Apr 29 2021 CEST
+;;; $$ Last modified:  15:48:46 Fri Apr 30 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2315,6 +2315,10 @@ data: (
 ;;; the optional argument is non-NIL then the result will be transposed so that
 ;;; the chord has the original range.
 ;;; 
+;;; This is quite different to the concept of traditional (tonal) chord
+;;; inversion, where we move from root position to first inversion, second
+;;; inversion, etc. See the trad-invert method for this.
+;;; 
 ;;; ARGUMENTS
 ;;; - a chord object
 ;;; 
@@ -2629,9 +2633,9 @@ data: (
     c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Apr 29 19:43:32 2021, Heidhausen -- test whether a chord is diatonic
-;;; with or without a 7th added. Any additional notes will return nil i.e. a
-;;; C major triad with a g# also -> nil
+;;;  MDE Thu Apr 29 19:43:32 2021, Heidhausen -- test whether a chord is
+;;; diatonic with or without a 7th added. Any additional notes will return nil
+;;; i.e. a C major triad with a g# also -> nil
 (defmethod diatonic-p ((c chord) &optional 7ths-too)
   (let* ((major '(4 7))
          (minor '(3 7))
@@ -2640,20 +2644,30 @@ data: (
          (aug '(4 8))
          (all (list major minor half-dim dim aug)))
     (flet ((maj7 (chord) (econs chord 11))
-           (min7 (chord) (econs chord 10)))
+           (min7 (chord) (econs chord 10))
+           (all-inversions (intervals)
+             (loop with ints = intervals
+                for inv = (trad-invert ints)
+                until (equalp inv intervals)
+                collect inv)))
       (when 7ths-too
         (setq all (append all
                           (list (maj7 major) (maj7 minor) (maj7 aug)
                                 (min7 major) (min7 minor) (min7 half-dim))))))
+    (setq all (loop for ints in all collect ints append (all-inversions ints)))
     (loop for diatonic in all do
          (when (has-interval-structure c diatonic)
            (return t)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; intervals in semitones should be within an octave. the chord will be
 ;;; collapsed to be within one octave for testing
 (defmethod has-interval-structure ((c chord) intervals)
-  (equalp intervals (mapcar #'(lambda (i) (mod i 12))
-                            (get-interval-structure c t))))
+  (let ((cints (mapcar #'(lambda (i) (mod i 12))
+                       (get-interval-structure c t))))
+    (setq cints (sort (remove-duplicates (remove-if #'zerop cints)) #'<))
+    ;; (print cints)
+    (equalp intervals cints)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/single-pitch-chord-to-pitch
@@ -2963,6 +2977,25 @@ data: F5
                (error "chord::get-spectrum: can't get ~a from ~
                        +slippery-chicken-spectra+" spectrum))))
         (t (error "chord::get-spectrum: Unkown spectrum arg: ~a" spectrum))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr 30 15:00:01 2021, Heidhausen -- chord traditional inversion
+(defun trad-invert (intervals)
+  (unless (and (apply #'< intervals)    ; ascending
+               (> (first intervals) 0)
+               (< (first (last intervals)) 12))
+    (error "chord::invert-triad: intervals should be an ascending list of ~
+            numbers > 0 ~%and < 12: ~a" intervals))
+  (loop with i1 = (first intervals)
+     for i2 in (econs (rest intervals) 12) collect
+       (- i2 i1)))
+
+(defun all-inversions (intervals)
+  (loop with ints = intervals
+     for inv = (trad-invert ints)
+     until (equalp inv intervals)
+     collect inv
+     do (setq ints inv)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF chord.lsp

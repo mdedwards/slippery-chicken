@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  13:46:45 Fri Jan 22 2021 CET
+;;; $$ Last modified:  14:56:18 Fri Apr 30 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3055,7 +3055,10 @@ data: G3
 ;;; ****f* pitch/invert-pitch-list
 ;;; DESCRIPTION
 ;;; Using the lowest note in the list as the reference point, invert the rest
-;;; of a given list of pitch items according to their distance from it. 
+;;; of a given list of pitch items according to their distance from
+;;; it. i.e. ascending notes return descending notes from the bottom pitch
+;;; down. This is quite different to the concept of chord inversion, where we
+;;; move from root position to first inversion, second inversion, etc.
 ;;;
 ;;; The list of pitch items may consist of either note-name symbols, pitch
 ;;; objects or frequency numbers.

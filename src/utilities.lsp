@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  11:40:59 Sat Mar 27 2021 CET
+;;; $$ Last modified:  17:37:53 Fri Apr 30 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5740,6 +5740,31 @@ yes_foo, 1 2 3 4;
 (defun halves (list)
   (let ((middle (floor (length list) 2)))
     (list (subseq list 0 middle) (subseq list middle))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun wiggle-extend (list &key (start 0) max (freq 3))
+  (let* ((beg (subseq list 0 start))
+         (al (make-al))
+         (count 0)
+         result last)
+    (loop for i in (nthcdr start list) do
+         (push i result)
+         (when (and last (active al freq))
+           (if (or (not max) (< (1+ count) max))
+               (progn
+                 (incf count 2)
+                 (push last result)
+                 (push i result))
+               ;; if max is an odd number, we won't be able to add the last and
+               ;; the current before continuing but rather than generated too
+               ;; many results, just insert the last, skip the current, then
+               ;; proceed with the next. this will mean results like 236 237 236
+               ;; 238 if we have consecutive numbers
+               (when (< count max)
+                 (incf count)
+                 (push last result))))
+         (setq last i))
+    (append beg (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

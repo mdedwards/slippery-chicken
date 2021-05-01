@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  17:16:46 Tue Mar  2 2021 CET
+;;; $$ Last modified:  14:07:24 Sat May  1 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2767,7 +2767,7 @@ data: S
                  (setf (beam r) nil)))))
         ;; (check-beams first-bar :on-fail #'error))
       
-    (when (is-tied-from last-rthm)
+    (when (and last-rthm (is-tied-from last-rthm))
       (setf changed t
             (is-tied-from last-rthm) nil))
     (gen-stats rs)

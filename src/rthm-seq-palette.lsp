@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  16:13:58 Fri Apr 23 2021 CEST
+;;; $$ Last modified:  16:26:22 Sat May  1 2021 CEST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -295,9 +295,6 @@
   rsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan 28 15:10:10 GMT 2012: Edited robodoc info
-
 ;;; ****m* rthm-seq-palette/reset-psps
 ;;; DESCRIPTION
 ;;; Call the reset method (inherited from circular-sclist) for all
@@ -358,17 +355,18 @@
 (defmethod reset-psps ((rsp rthm-seq-palette))
 ;;; ****
   (loop 
-      with psp
-      for rs in (data rsp) do
-        (if (rsp-p (data rs))
-            (reset-psps (data rs))
-          (progn
-            (unless (rthm-seq-p rs)
-              (error "~a~%rthm-seq-palette::reset-psps: not a rthm-seq!"
-                     rs))
-            (setf psp (pitch-seq-palette rs))
-            (when psp
-              (reset psp)))))
+     with psp
+     for rs in (data rsp) do
+       (cond ((rsp-p (data rs)) (reset-psps (data rs)))
+             ;; MDE Sat May 1 16:24:02 2021, Heidhausen -- try and fix mistakes
+             ;; in the creation of the rsp, if they've been built 'by code'
+             ((rsp-p rs) (reset-psps rs))
+             (t (unless (rthm-seq-p rs)
+                  (error "~a~%rthm-seq-palette::reset-psps: not a rthm-seq!"
+                         rs))
+                (setf psp (pitch-seq-palette rs))
+                (when psp
+                  (reset psp)))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

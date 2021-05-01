@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:37:53 Fri Apr 30 2021 CEST
+;;; $$ Last modified:  15:45:07 Sat May  1 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5712,7 +5712,6 @@ yes_foo, 1 2 3 4;
                         4 list elements.~%Using ~a instead of ~a"
             result list))
     result))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Sep 24 15:22:11 2020, Heidhausen

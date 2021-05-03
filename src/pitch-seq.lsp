@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  14:37:46 Fri Mar 19 2021 CET
+;;; $$ Last modified:  10:44:14 Mon May  3 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,7 +120,7 @@
         (loop for i in (data ps) unless (numberp i) do
               (error "pitch-seq::initialise-instance: ~
                       Elements of the pitch-seq data list should ~%all be ~
-                      integers: ~a"
+                      numbers: ~a"
                      (data ps))
             maximize i)
         (lowest ps) (loop for p in (data ps) minimize p)))
@@ -144,9 +144,6 @@
     sclist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 19:27:45 EST 2012: Added robodoc info
-
 ;;; ****m* pitch-seq/invert
 ;;; DESCRIPTION
 ;;; Invert the pitch sequence contour attached to a given pitch-seq object. The
@@ -604,8 +601,16 @@ len))
             (> end (sclist-length ps)))
     (error "pitch-seq::ps-subseq: ~a pitches but start=~a and end=~a!"
            (sclist-length ps) start end))
-  (let ((result (make-pitch-seq (list (id ps) 
-                                      (subseq (original-data ps) start end)))))
+  (let ((ss (subseq (original-data ps) start end))
+         (at-start (nth start (original-data ps)))
+         result)
+    ;; MDE Mon May  3 10:41:44 2021, Heidhausen -- if our subseq is only 1 note
+    ;; long and that note was a chord, we have to wrap it in an extra layer of
+    ;; () in order for the chord to be preserved
+    (when (and (= 1 (- end start))
+               (listp at-start))
+      (setq ss (list ss)))
+    (setq result (make-pitch-seq (list (id ps) ss)))
     (setf (instruments result) (copy-list (instruments ps))
           (id result) (format nil "~a-post-ps-subseq-~a-~a" (id ps) start end))
     result))
@@ -698,8 +703,7 @@ data: (2 1 1 3 1)
 
 ;; An example assigning a pitch-seq only to specific instruments: ; ;
 (make-pitch-seq '((1 2 1 1 3) violin flute) 'ps1))
-
-                |#
+|#
 ;;; SYNOPSIS
 (defun make-pitch-seq (id-data &optional (id nil))
 ;;; ****

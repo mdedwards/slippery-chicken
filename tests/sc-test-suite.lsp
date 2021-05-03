@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:51:19 Fri Apr 30 2021 CEST
+;;; $$ Last modified:  10:51:54 Mon May  3 2021 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -6308,6 +6308,22 @@
                 (5 1 3 2 4)
                 (2 3 4 5 1)
                 (3 2 4 1 5))))))
+
+;;; MDE Mon May  3 10:48:23 2021, Heidhausen
+(sc-deftest test-psp-subseq-chords ()
+  (let* ((mpsp (make-psp 'mpsp 5 '(((2) 5 (3) 1 (4)))))
+         (ss1 (psp-subseq mpsp 1 5))
+         (ss2 (psp-subseq mpsp 0 3))
+         (ss3 (psp-subseq mpsp 2 3)))
+    (print ss1) (print ss2) (print ss3)
+    (flet ((check-it (psp list)
+             (equalp (original-data (get-nth 0 psp)) list)))
+      (sc-test-check
+        (check-it ss1 '(5 (3) 1 (4)))
+        (check-it ss2 '((2) 5 (3)))
+        ;; this is the important one: a single-note chord psp retains its ()
+        (check-it ss3 '((3)))))))
+      
 
 ;;; SAR Tue Jan 31 17:39:04 GMT 2012
 (sc-deftest test-psp-add-inversions ()

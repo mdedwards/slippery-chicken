@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:45:07 Sat May  1 2021 CEST
+;;; $$ Last modified:  21:07:04 Tue May  4 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5765,5 +5765,12 @@ yes_foo, 1 2 3 4;
          (setq last i))
     (append beg (nreverse result))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun average (num-list)
+  (unless (every #'numberp num-list)
+    (error "utilities::average: argument must be a list of numbers:~%~a"
+           num-list))
+  (float (/ (apply #'+ num-list) (length num-list))))
+    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:16:08 Tue Apr 27 2021 CEST
+;;; $$ Last modified:  12:53:27 Fri May  7 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1008,6 +1008,9 @@
                                         (pitch-list-to-symbols notes)))
             last-chord (copy-list notes)
             chord (make-chord notes))
+      ;; MDE Fri May  7 12:32:32 2021, Heidhausen -- for music-xml
+      (when (and show-fingering tag)
+        (add-mark chord tag)) ; string
       #+cmn 
       (add-mark chord (when show-fingering
                         (apply #'cmn::fingering 

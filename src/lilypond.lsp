@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  16:17:08 Thu Dec 10 2020 CET
+;;; $$ Last modified:  12:55:28 Fri May  7 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -272,6 +272,7 @@
            (uc "\\unaCorda ")
            (tc "\\treCorde ")
 ;;; ****
+           ;; MDE Fri May  7 12:46:09 2021, Heidhausen -- ignore cmn marks
            (t (unless silent
                 (error "lilypond::lp-get-mark: unrecognised mark: ~a" mark)))))
         (integer
@@ -384,7 +385,8 @@
         ;; if it's a list then it's a bunch of arguments to sc-cmn-text
         ;; otherwise it might be a mark (e.g. text) already
         ;; ignore cmn stuff but warn
-        (t (unless silent
+        ;; MDE Fri May  7 12:46:09 2021, Heidhausen -- ignore cmn marks
+        (t (unless (or silent (typep mark 'cmn::sundry))
              (warn "lilypond::get-lp-mark: unknown mark: ~a" mark)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

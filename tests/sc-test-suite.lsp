@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:51:54 Mon May  3 2021 CEST
+;;; $$ Last modified:  17:24:59 Sat May  8 2021 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -10526,7 +10526,7 @@
       (= 3 (sc-force-rest2 mini 5 4 'vc))
       (= 1 (notes-needed (get-bar mini 5 'vc)))
       (= 1 (notes-needed (get-bar mini 6 'vc)))
-      (zerop (sc-force-rest2 mini 5 8 'vc nil)))))
+      (zerop (sc-force-rest2 mini 5 8 'vc nil nil)))))
 
 ;;; SAR Wed Apr 25 16:38:30 BST 2012
 (sc-deftest test-sc-edit-sc-move-dynamic ()

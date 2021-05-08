@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:57:43 Sat Mar  6 2021 CET
+;;; $$ Last modified:  17:24:43 Sat May  8 2021 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4975,6 +4975,8 @@ NIL
 ;;; - The player name (symbol)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to delete all marks when a note is turned into a rest. Default =
+;;;   NIL.  
 ;;; - A function object to be called on error (could be #'error (default),
 ;;;  #'warn, #'print or simply NIL for no error)
 ;;; 
@@ -4998,10 +5000,10 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod sc-force-rest2 ((sc slippery-chicken) bar-num event-num player
-                           &optional (on-error #'error))
+                           &optional delete-marks (on-error #'error))
 ;;; ****
   (let ((start-event (get-event sc bar-num event-num player nil))
-  ;;                                                         ^ nil = no error
+  ;;                                                         ^ nil = no error
         (bars-affected '())
         (count 0))
     (flet ((init-error (text)
@@ -5043,6 +5045,8 @@ NIL
              (setf tied (is-tied-from e))
              (pushnew bn bars-affected)
              (force-rest e)
+             ;; MDE Sat May  8 17:22:56 2021, Heidhausen
+             (when delete-marks (delete-marks e))
              (if tied
                  (incf en)
                  (return))))))

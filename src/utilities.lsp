@@ -4037,9 +4037,19 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:54:14 2013 
-(defun system-open-file (file)
+(defun system-open-file (file &optional (epstopdf t))
   #+darwin (shell "/usr/bin/open" file)
   #+linux
+  ;; automatically converts a .eps file to a .pdf file using the epstopdf
+  ;; command
+  (when (and (equal (pathname-type file) "eps")
+	     epstopdf)
+    (format t "~&Converting to Pdf....")
+    (shell "/usr/bin/epstopdf" file)
+    (setf file (concatenate 'string
+			    (directory-namestring file)
+			    (pathname-name file)
+			    ".pdf")))
   (let ((xdg "/usr/bin/xdg-open"))
     (if (probe-file xdg)
         (shell xdg file)
@@ -4047,6 +4057,9 @@ WARNING:
   #-(or darwin linux)
   (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file))
+
+
+
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jun  1 11:21:10 2013 -- get a file name from a piece title by

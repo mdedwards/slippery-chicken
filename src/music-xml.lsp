@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  12:45:54 Fri May  7 2021 CEST
+;;; $$ Last modified:  14:32:56 Wed Jun  2 2021 CEST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -191,6 +191,7 @@
                                    (silent (not (get-sc-config
                                                  'warn-no-xml-mark))))
   (declare (ignore num-flags))
+  ;; (print silent)
   (flet ((no-xml-mark (mark)
            (when silent
              (warn "music-xml:xml-get-mark: Sorry but ~a is not yet available ~
@@ -428,8 +429,8 @@
                          (xml-words stream mk (if down 'b 'a))))
                ;; if it's a list then it's a bunch of arguments to sc-cmn-text
                ;; otherwise it might be a mark (e.g. text) already
-               ;;; MDE Fri May 712:44:47 2021, Heidhausen -- don't warn cmn
-               ;;; stuff  
+               ;;; MDE Fri May 7 12:44:47 2021, Heidhausen -- don't warn cmn
+               ;;; stuff
                (t (unless (or silent (typep mark 'cmn::sundry))
                     (warn "music-xml::get-xml-mark: unknown mark: ~a"
                           mark)))))))

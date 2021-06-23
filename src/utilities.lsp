@@ -4046,15 +4046,36 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:54:14 2013 
 (defun system-open-file (file)
+  #-(or darwin linux)
+  (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
+           file)
+  #+(or darwin linux)
+  (when (and (equal (pathname-type file) "eps")
+	     (get-data-data 'autoconvert-eps-to-pdf
+			    +slippery-chicken-config-data+))
+    (format t "~&Converting to Pdf....")
+    #+linux
+    (shell "/usr/bin/epstopdf" file)
+    #+darwin
+    (probe-file "")
+    
+which ps2pdf
+/usr/local/bin/ps2pdf
+/Users/michael/projects/cairn @-> which epstopdf
+/Library/TeX/texbin/epstopdf
+    
+    (setf file (concatenate 'string
+			    (directory-namestring file)
+			    (pathname-name file)
+			    ".pdf")))
   #+darwin (shell "/usr/bin/open" file)
   #+linux
+  ;; automatically converts a .eps file to a .pdf file using the epstopdf
+  ;; command
   (let ((xdg "/usr/bin/xdg-open"))
     (if (probe-file xdg)
         (shell xdg file)
-        (warn "utilities::system-open-file: Can't open witout ~a" xdg)))
-  #-(or darwin linux)
-  (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
-           file))
+        (warn "utilities::system-open-file: Can't open witout ~a" xdg))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jun  1 11:21:10 2013 -- get a file name from a piece title by

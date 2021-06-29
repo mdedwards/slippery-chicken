@@ -179,7 +179,8 @@
      ;; pieces so allow that to be skipped if necessary.
      (update-slots-handles-ties t)
      ;; font size for CMN bar numbers
-     (cmn-bar-num-size-for-sc 6))))
+     (cmn-bar-num-size-for-sc 6)
+     (autoconvert-eps-to-pdf nil))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

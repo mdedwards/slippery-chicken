@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:10:16 Wed Feb 24 2021 CET
+;;; $$ Last modified:  21:07:04 Tue May  4 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -571,6 +571,23 @@
 ;;; ****
   (loop for i from 0 by length while list collect
         (loop repeat length while list collect (pop list))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; max-perms is the maximum length of any single list-permutation we perform
+(defun sub-groups (groups &optional (max-perms 100))
+  (when (simple-listp groups) ; could be just one list we want sub-groups form
+    (setq groups (list groups)))
+  (loop for group in groups
+     for glen = (length group)
+     do
+       (when (> glen 8)
+         (warn "utilities::sub-groups: long lists; this might take a while"))
+     appending
+       (loop for len downfrom (1- glen) to 1
+          for lperms = (list-permutations group len)
+          appending (if (> (length lperms) max-perms)
+                      (subseq lperms 0 max-perms)
+                      lperms))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2012,9 +2029,6 @@
      collect x collect (max min (min new-y max))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 11:01:20 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/env-plus
 ;;; DESCRIPTION
 ;;; Increase all y values of a given list of break-point pairs by a specified
@@ -3331,9 +3345,6 @@ WARNING:
   (append (nthcdr start list) (subseq list 0 start)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 22:53:23 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/combine-into-symbol
 ;;; DESCRIPTION
 ;;; Combine a sequence of elements of any combination of type string, number,
@@ -3365,10 +3376,6 @@ WARNING:
   (intern (coerce (list char) 'string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 22:58:12 BST 2012: Added robodoc entry
-;;; SAR Mon May 21 10:05:22 EDT 2012: Completed robodoc entry
-
 ;;; ****f* utilities/swap-elements
 ;;; DESCRIPTION
 ;;; Swap the order of each consecutive pair of elements in a list.
@@ -3835,7 +3842,8 @@ WARNING:
 ;;; SYNOPSIS
 (defun dynamic-to-amplitude (dynamic &optional (warn t))
 ;;; ****
-  (let ((pos (position dynamic '(niente pppp ppp pp p mp mf f ff fff ffff))))
+  (let ((pos (position (rm-package dynamic)
+                       '(niente pppp ppp pp p mp mf f ff fff ffff))))
     (if pos
         (/ pos 10.0)
         (when warn
@@ -4038,15 +4046,35 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:54:14 2013 
 (defun system-open-file (file)
+  #-(or darwin linux)
+  (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
+           file)
+  #+(or darwin linux)
+  ;; automatically converts a .eps file to a .pdf file using the epstopdf
+  ;; command
+  (when (and (equal (pathname-type file) "eps")
+	     (get-data-data 'autoconvert-eps-to-pdf
+			    +slippery-chicken-config-data+))
+    (format t "~&Converting to Pdf....")
+    #+linux
+    (shell "/usr/bin/epstopdf" file)
+    #+darwin
+    (let ((ps2pdf "/usr/local/bin/ps2pdf")
+	  (epstopdf "/Library/TeX/texbin/epstopdf"))
+      (cond ((probe-file ps2pdf) (shell ps2pdf file))
+	    ((probe-file epstopdf) (shell epstopdf file))
+	    (t (warn "~&utilities::system-open-file: Can't convert to pdf,
+		     neiher ~a nor ~a found" ps2pdf epstopdf))))
+    (setf file (concatenate 'string
+			    (directory-namestring file)
+			    (pathname-name file)
+			    ".pdf")))
   #+darwin (shell "/usr/bin/open" file)
   #+linux
   (let ((xdg "/usr/bin/xdg-open"))
     (if (probe-file xdg)
         (shell xdg file)
-        (warn "utilities::system-open-file: Can't open witout ~a" xdg)))
-  #-(or darwin linux)
-  (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
-           file))
+        (warn "utilities::system-open-file: Can't open without ~a" xdg))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jun  1 11:21:10 2013 -- get a file name from a piece title by
@@ -4644,6 +4672,16 @@ RETURNS:
         (cons (list id sum)
               (loop for l in list and letter in letters collect
                    (pexpand-aux l (econs id letter)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun pexpand-print (pexp)
+  (loop for num in pexp by #'cddr
+     for section in (rest pexp) by #'cddr
+     for indent = (* 2 (1- (length section)))
+     do
+       (terpri)
+       (loop repeat indent do (write-char #\ )) ; the space after \ is vital
+       (format t "~a: ~a" num (list-to-string section "-"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5292,6 +5330,59 @@ RETURNS:
       (+ new-min (* prop range2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/centre-list
+;;; DATE
+;;; March 9th 2021, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Take a list of numbers and scale them so that they are symmetrical(ish)
+;;; around either the mid-point (exactly) or the middle element (in terms of
+;;; value). 
+;;; 
+;;; ARGUMENTS
+;;; - a list of numbers
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether the middle element should the zero point from
+;;; which the other elements are offset or (if NIL) to use the calculated middle
+;;; point. So if T, we won't centre around 0 but if NIL we will (i.e. if NIL
+;;; we'll go equally as far in the negative direction as positive). In each case
+;;; however, the returned list will by necessity range from negative to positive
+;;; values.
+;;; 
+;;; RETURN VALUE
+;;; A list of numbers.
+;;; 
+;;; EXAMPLE
+#|
+(centre-list '(1 2 3 4 5 6) t)
+-> (-3 -2 -1 0 1 2) 
+(centre-list '(1 2 3 4 5 6) NIL)
+-> (-2.5 -1.5 -0.5 0.5 1.5 2.5)
+(centre-list '(12.2 -11 7 13 14 15 16 -2) nil)
+-> '(9.7 -13.5 4.5 10.5 11.5 12.5 13.5 -4.5)
+|#
+;;; SYNOPSIS
+(defun centre-list (list &optional zero)
+;;; ****
+  (unless (every #'numberp list)
+    (error "utilities::centre-list: argument 1 must be a list of numbers: ~a"
+           list))
+  (let* ((sorted (sort (copy-list list) #'<))
+         (high (first sorted))
+         (low (first (last sorted)))
+         (range (- high low))
+         (len (length list))
+         ;; given a list of even length, this means we centre higher rather than
+         ;; lower 
+         (mid-el (nth (floor len 2) sorted))
+         (mid-point (+ low (/ range 2.0))))
+    (if zero
+        (loop for i in list collect (- i mid-el))
+        (loop for i in list collect (- i mid-point)))))
+  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmacro popnew (list avoid &key (test #'eq))
   (let ((index (gensym))
         (result (gensym)))
@@ -5642,7 +5733,6 @@ yes_foo, 1 2 3 4;
             result list))
     result))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Sep 24 15:22:11 2020, Heidhausen
 (defun positions (item sequence &key (test #'eq))
@@ -5670,5 +5760,37 @@ yes_foo, 1 2 3 4;
   (let ((middle (floor (length list) 2)))
     (list (subseq list 0 middle) (subseq list middle))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun wiggle-extend (list &key (start 0) max (freq 3))
+  (let* ((beg (subseq list 0 start))
+         (al (make-al))
+         (count 0)
+         result last)
+    (loop for i in (nthcdr start list) do
+         (push i result)
+         (when (and last (active al freq))
+           (if (or (not max) (< (1+ count) max))
+               (progn
+                 (incf count 2)
+                 (push last result)
+                 (push i result))
+               ;; if max is an odd number, we won't be able to add the last and
+               ;; the current before continuing but rather than generated too
+               ;; many results, just insert the last, skip the current, then
+               ;; proceed with the next. this will mean results like 236 237 236
+               ;; 238 if we have consecutive numbers
+               (when (< count max)
+                 (incf count)
+                 (push last result))))
+         (setq last i))
+    (append beg (nreverse result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun average (num-list)
+  (unless (every #'numberp num-list)
+    (error "utilities::average: argument must be a list of numbers:~%~a"
+           num-list))
+  (float (/ (apply #'+ num-list) (length num-list))))
+    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

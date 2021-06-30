@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  08:56:50 Tue Jun 29 2021 CEST
+;;; $$ Last modified:  16:08:58 Wed Jun 30 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4058,24 +4058,26 @@ WARNING:
   (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file)
   #+(or darwin linux)
+  ;; MDE Wed Jun 30 16:08:47 2021, Heidhausen -- Following conversion code
+  ;; courtesy of Leon Focker 
   ;; automatically converts a .eps file to a .pdf file using the epstopdf
   ;; command
   (when (and (equal (pathname-type file) "eps")
-	     (get-sc-config 'autoconvert-eps-to-pdf))
+             (get-sc-config 'autoconvert-eps-to-pdf))
     (format t "~&Converting to Pdf....")
     #+linux
     (shell "/usr/bin/epstopdf" file)
     #+darwin
     (let ((ps2pdf "/usr/local/bin/ps2pdf")
-	  (epstopdf "/Library/TeX/texbin/epstopdf"))
+          (epstopdf "/Library/TeX/texbin/epstopdf"))
       (cond ((probe-file ps2pdf) (shell ps2pdf file))
-	    ((probe-file epstopdf) (shell epstopdf file))
-	    (t (warn "~&utilities::system-open-file: Can't convert to pdf,
-		     neiher ~a nor ~a found" ps2pdf epstopdf))))
+            ((probe-file epstopdf) (shell epstopdf file))
+            (t (warn "~&utilities::system-open-file: Can't convert to pdf,
+                     neiher ~a nor ~a found" ps2pdf epstopdf))))
     (setf file (concatenate 'string
-			    (directory-namestring file)
-			    (pathname-name file)
-			    ".pdf")))
+                            (directory-namestring file)
+                            (pathname-name file)
+                            ".pdf")))
   #+darwin (shell "/usr/bin/open" file)
   #+linux
   (let ((xdg "/usr/bin/xdg-open"))

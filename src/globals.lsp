@@ -181,7 +181,8 @@
      (update-slots-handles-ties t)
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6)
-     (diapason 440))))
+     (diapason 440)
+     (autoconvert-eps-to-pdf nil))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

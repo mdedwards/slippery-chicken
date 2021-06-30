@@ -4053,8 +4053,7 @@ WARNING:
   ;; automatically converts a .eps file to a .pdf file using the epstopdf
   ;; command
   (when (and (equal (pathname-type file) "eps")
-	     (get-data-data 'autoconvert-eps-to-pdf
-			    +slippery-chicken-config-data+))
+	     (get-sc-config 'autoconvert-eps-to-pdf))
     (format t "~&Converting to Pdf....")
     #+linux
     (shell "/usr/bin/epstopdf" file)

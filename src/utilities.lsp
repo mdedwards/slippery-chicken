@@ -4038,35 +4038,15 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:54:14 2013 
 (defun system-open-file (file)
-  #-(or darwin linux)
-  (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
-           file)
-  #+(or darwin linux)
-  ;; automatically converts a .eps file to a .pdf file using the epstopdf
-  ;; command
-  (when (and (equal (pathname-type file) "eps")
-	     (get-data-data 'autoconvert-eps-to-pdf
-			    +slippery-chicken-config-data+))
-    (format t "~&Converting to Pdf....")
-    #+linux
-    (shell "/usr/bin/epstopdf" file)
-    #+darwin
-    (let ((ps2pdf "/usr/local/bin/ps2pdf")
-	  (epstopdf "/Library/TeX/texbin/epstopdf"))
-      (cond ((probe-file ps2pdf) (shell ps2pdf file))
-	    ((probe-file epstopdf) (shell epstopdf file))
-	    (t (warn "~&utilities::system-open-file: Can't convert to pdf,
-		     neiher ~a nor ~a found" ps2pdf epstopdf))))
-    (setf file (concatenate 'string
-			    (directory-namestring file)
-			    (pathname-name file)
-			    ".pdf")))
   #+darwin (shell "/usr/bin/open" file)
   #+linux
   (let ((xdg "/usr/bin/xdg-open"))
     (if (probe-file xdg)
         (shell xdg file)
-        (warn "utilities::system-open-file: Can't open without ~a" xdg))))
+        (warn "utilities::system-open-file: Can't open witout ~a" xdg)))
+  #-(or darwin linux)
+  (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
+           file))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jun  1 11:21:10 2013 -- get a file name from a piece title by

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  21:07:04 Tue May  4 2021 CEST
+;;; $$ Last modified:  08:56:50 Tue Jun 29 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2643,7 +2643,8 @@ WARNING:
 ;;; values. Here we search a file line by line, matching parameters and
 ;;; returning them in a list of parameter-value pairs. This is limited, however,
 ;;; to one parameter per line, and values of one word (i.e. numbers, strings,
-;;; etc. not containing space).
+;;; etc. not containing space), unless optional argument to-line-end is T (see
+;;; below) 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the text file to search
@@ -2652,6 +2653,8 @@ WARNING:
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - the parameter-value separator (character)
+;;; - T or NIL to indicate whether all tokens after a recognised parameter
+;;;   should be returned in a list. Default = NIL = get just one parameter.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of parameter-value pairs
@@ -2689,7 +2692,7 @@ WARNING:
 ...
 |#
 ;;; SYNOPSIS
-(defun get-parameters (file parameters &optional (separator #\=))
+(defun get-parameters (file parameters &optional (separator #\=) to-line-end)
 ;;; ****
   (let ((count 0)
         (results '()))
@@ -2708,7 +2711,12 @@ WARNING:
              ;; (print param)
              (loop for p in parameters do
                   (when (string= param p)
-                    (push (list p (read-from-string value)) results)
+                    (push (list p (read-from-string
+                                   (if to-line-end
+                                       ;; force a list
+                                       (format nil "(~a)" value)
+                                       value)))
+                          results)
                     (incf count)))
              (when eof (return))))))
     (format t "~%~%~a parameters read~%" count)

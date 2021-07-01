@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  12:10:55 Mon Oct 30 2017 CET
+;;; $$ Last modified:  09:19:09 Thu Jul  1 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -159,9 +159,6 @@
   (read-from-file outfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; SAR Thu May 10 21:26:12 BST 2012: Added robodoc entry.
-
 ;;; ****f* clm/clm-loops
 ;;; DESCRIPTION
 ;;; Generate a sound file from an existing specified sound file by shuffling

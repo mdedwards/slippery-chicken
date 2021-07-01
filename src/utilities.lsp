@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:08:58 Wed Jun 30 2021 CEST
+;;; $$ Last modified:  10:05:50 Thu Jul  1 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2632,6 +2632,73 @@ WARNING:
         (let ((param (trim-whitespace (subseq string 0 sep-pos)))
               (value (trim-whitespace (subseq string (1+ sep-pos)))))
           (values param value))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/filter-parameters
+;;; DATE 
+;;; July 1st 2021, Heidhausen
+;;; 
+;;; DESCRIPTION
+
+;;; Though generally applicable, a reaper marker specifically could look like
+;;; this:  ("MARKER" (67 709.726 "b364 F1 molto pesante" 0 0 1 B)) Allow
+;;; therefore searching of the results from (get-parameters ...) for specific
+;;; strings, returning whole parameter lists or specific elements thereof.
+;;; 
+;;; ARGUMENTS
+;;; - a list of parameters, where each element is a 2-element list: the
+;;; parameter name and a list of associated data. I.e. this implies e.g. calling
+;;; get-parameters with the optional to-line-end set to T
+;;; - the string to search for in the data lists
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a number to specify the nth element that will be returned from the data
+;;; lists 
+;;; 
+;;; RETURN VALUE
+;;; a list of matching data lists
+;;; 
+;;; EXAMPLE
+#|
+(filter-parameters
+  (get-parameters "markers.RPP" '("MARKER") #\  t)
+  "harmonic" 1)
+-->
+85 parameters read
+(322.7273 527.37866 542.9216 686.73846 944.6802 952.6701)
+
+;;; or without the nth option:
+
+(filter-parameters
+ (get-parameters "markers.RPP" '("MARKER") #\  t)
+ "harmonic")
+-->
+((29 322.7273 "c harmonic resonance" 0 0 1 B
+  {8F7A97DD-F0B6-4E4D-9F67-27635F109E05})
+ (55 527.37866 "nice resonant harmonic pizz" 0 0 1 B
+  {E380FEF5-FE44-3B47-9C43-2BA80A3D0FAC})
+ (57 542.9216 "nice harmonic S trem" 0 0 1 B
+  {04BB89FE-8FB8-5B4A-AB5F-EDE1F9C921CC})
+ (65 686.73846 "b347 E7 nice single harmonic repeat" 0 0 1 B
+  {586CDD49-BE23-F149-AABC-A98EDD6C6EEE})
+ (79 944.6802 "b483: nice spe and harmonics" 0 0 1 B
+  {11E361AD-22C8-0D42-AB91-ECCBCAAEA075})
+ (80 952.6701 "b491 muted harmonics" 0 0 1 B
+  {097D7A4D-E9F0-FE4B-8BE6-E7BC85E2969B}))
+
+|#
+;;; SYNOPSIS
+(defun filter-parameters (parameters string &optional get-nth)
+;;; ****
+  (loop for parameter in parameters
+     for para = (second parameter) 
+     when (and (listp para)
+               (some #'numberp
+                     (mapcar #'(lambda (x) (and (stringp x) (search string x)))
+                             para)))
+     collect (if get-nth
+                 (nth get-nth para)
+                 para)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/get-parameters

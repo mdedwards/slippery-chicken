@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  12:09:08 Wed Jan  6 2021 CET
+;;; $$ Last modified:  17:27:34 Fri Jul  2 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -109,6 +109,7 @@
                        collect (trailing-slash path))
         ;; MDE Wed Jun 12 13:49:33 2013 -- to avoid duplicate path errors
         (paths sfp) (remove-duplicates (paths sfp) :test #'string=))
+  ;; (print (data sfp))
   (loop with sfe
      for sflist in (data sfp)
      for i from 0 do
@@ -465,6 +466,62 @@
                  :extensions extensions
                  :auto-freq auto-freq
                  :warn-not-found warn-not-found))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sndfile-palette/make-sfp-from-reaper-markers
+;;; DATE
+;;; July 2nd 2021
+;;; 
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod make-sfp-from-reaper-markers (reaper-file sound-file)
+;;; ****
+  (let ((markers (filter-parameters
+                  ;; get all markers that begin with clm-play. the group name
+                  ;; will come after a further hyphen e.g. clm-play-perc or
+                  ;; simply clm-play will indicate the end of a sndfile segment
+                  (get-parameters reaper-file '("MARKER") #\  t)
+                  'clm-play))
+        (sfp (make-assoc-list 'from-reaper nil)))
+    (flet ((saveit (smarker emarker group)
+             (unless (get-data group sfp nil)
+               (add (list group nil) sfp))
+             (add-to-list-data
+              (make-sndfile-ext sound-file :id sound-file
+                                :start (second smarker) :end (second emarker))
+              group sfp))
+           (group-name (data)
+             (let ((marker-name (string (third data))))
+               (when (> (length marker-name) 8)
+                 (read-from-string (subseq marker-name 9))))))
+      (loop for start in markers by #'cddr
+         for end in (rest markers) by #'cddr
+         for sname = (group-name start)
+         for ename = (group-name end)
+         do
+           (when ename
+             (error "make-sfp-from-reaper-markers: end point ~
+                     should have a simple 'clm-play' marker. Got clm-play~a"
+                    ename))
+           (saveit start end sname))
+      (link-named-objects (change-class sfp 'sndfile-palette))
+      )))
+  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file

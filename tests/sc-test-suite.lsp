@@ -18639,7 +18639,7 @@
 ;;; SAR Thu May 10 21:45:19 BST 2012
 #+clm
 (sc-deftest test-clm-clm-loops ()
-  (probe-delete "/tmp/test-sndfile-3-loops-from00m00s180ms.aif")
+  (probe-delete "/tmp/test-sndfile-3-loops-from-00m00s180ms.aif")
   (sc-test-check
     (clm-loops 
      (concatenate 'string 
@@ -18656,7 +18656,7 @@
      :src-width 20)
     ;; MDE Fri May 11 16:29:00 2012 -- changed name to reflect new scheme
     (file-write-ok
-     "/tmp/test-sndfile-3-loops-from00m00s180ms.aif"
+     "/tmp/test-sndfile-3-loops-from-00m00s180ms.aif"
      8600000)))
 
 #+clm
@@ -18685,10 +18685,10 @@
 ;;; SAR Thu May 17 13:49:22 EDT 2012
 #+clm
 (sc-deftest test-clm-clm-loops-all ()
-  (probe-delete "/tmp/test-sndfile-3-loops-from00m00s794ms-test.wav")
-  (probe-delete "/tmp/test-sndfile-3-loops-from00m00s787ms-test.wav")
-  (probe-delete "/tmp/test-sndfile-3-loops-from00m00s749ms-test.wav")
-  (probe-delete "/tmp/test-sndfile-3-loops-from00m00s744ms-test.wav")
+  (probe-delete "/tmp/test-sndfile-3-loops-from-00m00s794ms-test.wav")
+  (probe-delete "/tmp/test-sndfile-3-loops-from-00m00s787ms-test.wav")
+  (probe-delete "/tmp/test-sndfile-3-loops-from-00m00s749ms-test.wav")
+  (probe-delete "/tmp/test-sndfile-3-loops-from-00m00s744ms-test.wav")
   (sc-test-check
     (not (clm-loops-all
           (concatenate 'string 
@@ -18714,10 +18714,10 @@
           :transpositions '(1 12 -12)
           :transposition-offset -3
           :src-width 20))
-    (file-write-ok "/tmp/test-sndfile-3-loops-from00m00s794ms-test.wav" 2.09)
-    (file-write-ok "/tmp/test-sndfile-3-loops-from00m00s787ms-test.wav" 2.07)
-    (file-write-ok "/tmp/test-sndfile-3-loops-from00m00s749ms-test.wav" 2.19)
-    (file-write-ok "/tmp/test-sndfile-3-loops-from00m00s744ms-test.wav" 2.12)))
+    (file-write-ok "/tmp/test-sndfile-3-loops-from-00m00s794ms-test.wav" 2.09)
+    (file-write-ok "/tmp/test-sndfile-3-loops-from-00m00s787ms-test.wav" 2.07)
+    (file-write-ok "/tmp/test-sndfile-3-loops-from-00m00s749ms-test.wav" 2.19)
+    (file-write-ok "/tmp/test-sndfile-3-loops-from-00m00s744ms-test.wav" 2.12)))
 
 ;;; SAR Mon Jun  4 12:50:56 BST 2012
 #+clm

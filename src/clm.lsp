@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  09:43:09 Fri Jul  2 2021 CEST
+;;; $$ Last modified:  09:46:50 Fri Jul  2 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -477,6 +477,7 @@
 ;;;   conversions undertaken for transposition. The higher this number is, the
 ;;;   more accurate the transposition will be, but the longer it will take to
 ;;;   process the file. Default = 5.
+;;; - :scaled-to. The normalisation target. Usually < 1.0. Default = 0.99.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -519,7 +520,7 @@
                         (do-shuffles t) ;; see clm-loops
                         ;; exclude all those loops who start before this
                         ;; number of seconds. 
-                        (start-after -1.0)
+                        (start-after -1.0)                      
                         (stop-after 99999999.0)
                         (suffix "")
                         ;; semitones
@@ -529,6 +530,8 @@
                         ;; shuffled and 10 versions collected which will then be
                         ;; passed (circularly) one after the other to clm-loops.
                         (transpositions '(0))
+                        ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
+                        (scaled-to .99)
                         (transposition-offset 0.0)
                         (src-width 5))
 ;;; ****

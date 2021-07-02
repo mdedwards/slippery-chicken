@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  11:42:17 Thu Jul  1 2021 CEST
+;;; $$ Last modified:  12:41:03 Fri Jul  2 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2152,7 +2152,7 @@
               result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; These functions read a wavelab marker file and prints the list of arguments
+;;; These functions read a wavelab marker file and print the list of arguments
 ;;; necessary to create a sndfile object for a sndfile-palette.  The marker
 ;;; file defines sections with start/stop marker pairs, the first one of which
 ;;; should be named (the description).
@@ -2217,8 +2217,7 @@
                                   sampling-rate)))
              (when (= time last-time)
                (error "utilities::parse-wavelab-marker-file-for-sections: ~
-  Two markers at same point: ~a"
-                      time))
+                       Two markers at same point: ~a" time))
              (setf last-time time)
              (if (oddp count)
                  (setf start time)
@@ -2228,8 +2227,8 @@
                    (unless (or (string= name "*" :end1 1) 
                                (string= name "marker" :end1 6))
                      (warn "parse-wavelab-marker-file-for-sections: ~
-  Got marker with name \"~a\" ~%at ~a (pos ~a) ; ~
-  expected no name."
+                            Got marker with name \"~a\" ~%at ~a (pos ~a) ; ~
+                            expected no name."
                            name (secs-to-mins-secs time) value))
                    (setf end time)
                    (push (make-wavelab-section :sndfile sndfile 

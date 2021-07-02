@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:05:50 Thu Jul  1 2021 CEST
+;;; $$ Last modified:  11:42:17 Thu Jul  1 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2348,9 +2348,6 @@
                (return t))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jun 15 12:39:09 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/parse-wavelab-marker-file-for-loops
 ;;; DESCRIPTION
 ;;; Read a wavelab marker file and return its loop points as groups.
@@ -2639,11 +2636,11 @@ WARNING:
 ;;; July 1st 2021, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Though generally applicable, a reaper marker specifically could look like
 ;;; this:  ("MARKER" (67 709.726 "b364 F1 molto pesante" 0 0 1 B)) Allow
 ;;; therefore searching of the results from (get-parameters ...) for specific
-;;; strings, returning whole parameter lists or specific elements thereof.
+;;; strings, returning whole parameter lists or specific elements thereof. NB
+;;; The strings are case-insensitive.
 ;;; 
 ;;; ARGUMENTS
 ;;; - a list of parameters, where each element is a 2-element list: the
@@ -2690,16 +2687,81 @@ WARNING:
 ;;; SYNOPSIS
 (defun filter-parameters (parameters string &optional get-nth)
 ;;; ****
+  (setq string (string-upcase string))
   (loop for parameter in parameters
      for para = (second parameter) 
      when (and (listp para)
                (some #'numberp
-                     (mapcar #'(lambda (x) (and (stringp x) (search string x)))
+                     (mapcar #'(lambda (x)
+                                 (search string
+                                         (typecase x
+                                           (string (string-upcase x))
+                                           ;; will be uppercase because symbol
+                                           (symbol (string x))
+                                           (t "")))) ; i.e. skip
                              para)))
      collect (if get-nth
                  (nth get-nth para)
                  para)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/parse-reaper-file-for-loops
+;;; DATE
+;;; July 1st 2021
+;;; 
+;;; DESCRIPTION
+;;; Read a reaper file and return its loop points as groups.
+;;;
+;;; The reaper file must contain markers with the word 'clm-loop-point-start'
+;;; and 'clm-loop-point-stop' with any number of 'clm-loop-point' markers
+;;; inbetween. This defines a new set of loop points, of which there can be any
+;;; number. Any number of markers without these names can be between the -start
+;;; and -stop markers; they will be ignored.
+;;; 
+;;; ARGUMENTS
+;;; - A string that is the name of the marker file to be parsed, including
+;;;   directory path and extension.
+;;;
+;;; OPTIONAL ARGUMENTS:
+;;; T or NIL to issue a warning if a marker is found beginning with
+;;; 'clm-loop-point' but continuing with something other than -start or
+;;; -stop. Default = T
+;;;
+;;; RETURN VALUE
+;;; Returns a list of lists which are the grouped time points. 
+;;; 
+;;; SYNOPSIS
+(defun parse-reaper-file-for-loops (reaper-file &optional (warn t))
+;;; ****
+  (let ((markers (filter-parameters
+                  (get-parameters reaper-file '("MARKER") #\  t)
+                  ;; this will get the whole data list for any clm-loop-point
+                  ;; marker. the time is the 2nd element and the marker complete
+                  ;; name is the third
+                  'clm-loop-point))
+        (result '())
+        (lp '()))
+    (flet ((saveit (list) (push (second list) lp))
+           (gotit (lp sym)
+             (let ((el (third lp)))
+               (when (symbolp el)
+                 (eq el sym)))))
+      (loop for loop-point in markers do
+         ;;(print loop-point)
+           (cond ((gotit loop-point 'clm-loop-point-stop)
+                  (when lp
+                    (saveit loop-point)
+                    (push (reverse lp) result)
+                    (setq lp '())))
+                 ((gotit loop-point 'clm-loop-point-start) 
+                  (saveit loop-point))
+                 ((gotit loop-point 'clm-loop-point)
+                  (saveit loop-point))
+                 (t (when warn
+                      (format t "parse-reaper-file-for-loops: ignoring ~a"
+                              (third loop-point)))))))
+    (nreverse result)))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/get-parameters
 ;;; DATE

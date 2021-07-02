@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  14:42:54 Tue Mar  2 2021 CET
+;;; $$ Last modified:  11:51:02 Thu Jul  1 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1162,7 +1162,10 @@ START
   (if (zerop num-shuffles)
       seq
     (let* ((len (length seq))
-           (perms (inefficient-permutations len :max num-shuffles))
+           (perms (inefficient-permutations
+                   len :max num-shuffles
+                   ;; MDE Thu Jul  1 11:50:50 2021, Heidhausen -- 
+                   :if-not-enough nil))
            (last (first (last perms))))
       (loop for i in last collect (elt seq i)))))
           

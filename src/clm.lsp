@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  09:19:09 Thu Jul  1 2021 CEST
+;;; $$ Last modified:  09:43:09 Fri Jul  2 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -244,6 +244,7 @@
 ;;;   conversions undertaken for transposition. The higher this number is, the
 ;;;   more accurate the transposition will be, but the longer it will take to
 ;;;   process the file. Default = 5.
+;;; - :scaled-to. The normalisation target. Usually < 1.0. Default = 0.99.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns the name of the file generated. 
@@ -267,26 +268,29 @@
 
 ;;; SYNOPSIS
 #+clm
-(defun clm-loops (sndfile entry-points &key
-                  (max-perms 1000)
-                  (fibonacci-transitions '(34 21 13 8))
-                  (max-start-time 60.0)
-                  (output-dir (get-sc-config 'default-dir))
-                  (srate clm::*clm-srate*)
-                  (data-format clm::*clm-data-format*)
-                  ;; MDE Fri May 11 15:33:45 2012 
-                  (header-type clm::*clm-header-type*)
-                  ;; MDE Fri May 11 15:34:17 2012 -- 
-                  (sndfile-extension nil)
-                  (channels 1)
-                  ;; semitones
-                  (transpositions '(0))
-                  ;; added 31/7/05 to vary the order of
-                  ;; entry points, transpositions and
-                  ;; fibonacci-transitions (could be 0!)
-                  (num-shuffles 1) 
-                  (suffix "")
-                  (src-width 5))
+(defun clm-loops (sndfile entry-points
+                  &key
+                    (max-perms 1000)
+                    (fibonacci-transitions '(34 21 13 8))
+                    (max-start-time 60.0)
+                    (output-dir (get-sc-config 'default-dir))
+                    (srate clm::*clm-srate*)
+                    (data-format clm::*clm-data-format*)
+                    ;; MDE Fri May 11 15:33:45 2012 
+                    (header-type clm::*clm-header-type*)
+                    ;; MDE Fri May 11 15:34:17 2012 -- 
+                    (sndfile-extension nil)
+                    (channels 1)
+                    ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
+                    (scaled-to .99)
+                    ;; semitones
+                    (transpositions '(0))
+                    ;; added 31/7/05 to vary the order of
+                    ;; entry points, transpositions and
+                    ;; fibonacci-transitions (could be 0!)
+                    (num-shuffles 1) 
+                    (suffix "")
+                    (src-width 5))
 ;;; ****
   (format t "~&num-shuffles: ~a" num-shuffles)
   ;; MDE Fri May 11 15:34:36 2012 
@@ -300,10 +304,8 @@
             ((= header-type clm::mus-next) ".snd")
             (t (error ".aif")))))
   (let* ((perms (flatten 
-                 ;; inefficient-permutations will always return :max results no
-                 ;; matter what the first argument
                  (inefficient-permutations (length entry-points)
-                                           :max max-perms)))
+                                           :max max-perms :if-not-enough nil)))
          (shuffled (multi-shuffle-with-perms entry-points num-shuffles))
          (srcs (loop for i in transpositions collect (semitones i)))
          (transp-perms (make-cscl
@@ -314,8 +316,9 @@
          (fts (make-cscl 
                (multi-shuffle-with-perms fibonacci-transitions num-shuffles)))
          (transition nil)
-         (output-file (format nil "~a~a-loops-from~a~a~a~a" 
-                              output-dir (pathname-name sndfile) 
+         (output-file (format nil "~a~a-loops-from-~a~a~a~a" 
+                              (trailing-slash output-dir)
+                              (pathname-name sndfile) 
                               (secs-to-mins-secs (first entry-points) 
                                                  :same-width t
                                                  :post-mins "m"
@@ -359,7 +362,7 @@
                        end2 (second entry)))))
       (format t "~%Output file will be ~a~%" output-file)
       (clm::with-sound 
-          (:scaled-to .99 :play nil :output output-file :channels channels
+          (:scaled-to scaled-to :play nil :output output-file :channels channels
                       :srate srate
                       :data-format data-format
                       :header-type header-type
@@ -432,7 +435,9 @@
 ;;;   be used as the first argument to the call to fibonacci-transition.
 ;;;   Default = '(34 21 13 8).
 ;;; - :max-start-time. A number that is the maximum time in seconds at which a
-;;;   segment can start in the resulting sound file. Default = 60.0.
+;;;   loop segment can start in the resulting sound file. So this is the
+;;;   approximate duration. If a list, then the durations will be used
+;;;   circularly for each output sound file. Default = 60.0.
 ;;; - :output-dir. The directory path for the output file. 
 ;;;   Default = (get-sc-config 'default-dir).
 ;;; - :srate. The sampling rate. If specified by the user, this will generally
@@ -500,38 +505,41 @@
 #+clm
 (defun clm-loops-all (sndfile entry-points-list 
                       &key 
-                      (max-perms 1000)
-                      (fibonacci-transitions '(34 21 13 8))
-                      (max-start-time 60.0)
-                      (output-dir (get-sc-config 'default-dir))
-                      (srate clm::*clm-srate*)
-                      (data-format clm::*clm-data-format*)
-                      ;; MDE Fri May 11 15:33:45 2012 
-                      (header-type clm::*clm-header-type*)
-                      ;; MDE Fri May 11 15:34:17 2012 -- 
-                      (sndfile-extension nil)
-                      (channels 1)
-                      (do-shuffles t) ;; see clm-loops
-                      ;; exclude all those loops who start before this
-                      ;; number of seconds. 
-                      (start-after -1.0)
-                      (stop-after 99999999.0)
-                      (suffix "")
-                      ;; semitones
-                      ;; 6/10/06: using just one list of transpositions passed
-                      ;; onto clm-loops created the same tone structure for
-                      ;; every file generated (boring).  This list will now be
-                      ;; shuffled and 10 versions collected which will then be
-                      ;; passed (circularly) one after the other to clm-loops.
-                      (transpositions '(0))
-                      (transposition-offset 0.0)
-                      (src-width 5))
+                        (max-perms 1000)
+                        (fibonacci-transitions '(34 21 13 8))
+                        (max-start-time 60.0)
+                        (output-dir (get-sc-config 'default-dir))
+                        (srate clm::*clm-srate*)
+                        (data-format clm::*clm-data-format*)
+                        ;; MDE Fri May 11 15:33:45 2012 
+                        (header-type clm::*clm-header-type*)
+                        ;; MDE Fri May 11 15:34:17 2012 -- 
+                        (sndfile-extension nil)
+                        (channels 1)
+                        (do-shuffles t) ;; see clm-loops
+                        ;; exclude all those loops who start before this
+                        ;; number of seconds. 
+                        (start-after -1.0)
+                        (stop-after 99999999.0)
+                        (suffix "")
+                        ;; semitones
+                        ;; 6/10/06: using just one list of transpositions passed
+                        ;; onto clm-loops created the same tone structure for
+                        ;; every file generated (boring).  This list will now be
+                        ;; shuffled and 10 versions collected which will then be
+                        ;; passed (circularly) one after the other to clm-loops.
+                        (transpositions '(0))
+                        (transposition-offset 0.0)
+                        (src-width 5))
 ;;; ****
   (let* ((transps-offset (loop for st in transpositions
                             collect (+ transposition-offset st)))
          (transps-shuffled (make-cscl
                             (loop repeat 10 collect
-                                 (shuffle transps-offset :reset nil)))))
+                                 (shuffle transps-offset :reset nil))))
+         ;; MDE Fri Jul  2 09:27:54 2021, Heidhausen -- introduced this rather
+         ;; than only having one output dur 
+         (msts (make-cscl (force-list max-start-time))))
     (loop for epl in entry-points-list and i from 1 do
          (when (and (> (first epl) start-after)
                     (<= (first epl) stop-after))
@@ -540,7 +548,7 @@
                       :num-shuffles (if do-shuffles
                                         (mod i 7)
                                         0)
-                      :max-start-time max-start-time
+                      :max-start-time (get-next msts)
                       :channels channels
                       :srate srate
                       :suffix suffix

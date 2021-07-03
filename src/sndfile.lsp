@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  16:59:35 Thu Jan 28 2021 CET
+;;; $$ Last modified:  10:10:23 Sat Jul  3 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -297,7 +297,7 @@ T
     (when path
       (unless (and path (probe-file path))
         (error "sndfile::update: ~
-                Data slot of sndfile must be set to an existing sound file: ~a"
+                Data slot of sndfile must be set to an existing sound file:~%~a"
                path))
       (unless (data sf)
         ;; MDE Sun Dec 16 14:37:13 2012 -- set slot value so update isn't

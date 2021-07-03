@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:24:59 Sat May  8 2021 CEST
+;;; $$ Last modified:  10:49:05 Sat Jul  3 2021 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -14629,9 +14629,27 @@
                                    (dash-pos (position #\- pnn))
                                    (note (subseq pnn 0 dash-pos)))
                               (frequency (make-pitch note))))))
-            (equal-within-tolerance (frequency (first (data (first (data sfp1)))))
-                                    554.365234))
+            (equal-within-tolerance
+             (frequency (first (data (first (data sfp1)))))
+             554.365234))
           t))))
+
+#+clm
+(sc-deftest test-sndfile-palette-make-sfp-from-reaper-markers ()
+  (let* ((sfp (make-sfp-from-reaper-markers
+              (file-from-sc-dir "tests/barbara-markers.RPP")
+              (file-from-sc-dir
+               "tests/test-sndfiles-dir-1/test-sndfile-1.aiff")))
+         (g1 (get-snds 'group1 sfp))
+         (g2 (get-snds 'group2 sfp)))
+    ;;(print g1)
+    (sc-test-check
+      (equal-within-tolerance .088 (duration (second g1)) .001)
+      (equal-within-tolerance .167 (duration (first g2)) .001)
+      (equal-within-tolerance .895 (start (first g1)) .001)
+      (equal-within-tolerance 1.338 (end (second g1)) .001)
+      (= 2 (length g1))
+      (= 1 (length g2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Oct 24 09:33:20 2017 -- sndfilenet tests. Some functionality of

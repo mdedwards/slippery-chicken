@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  17:27:34 Fri Jul  2 2021 CEST
+;;; $$ Last modified:  10:22:55 Sat Jul  3 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -249,7 +249,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Convenience function as we don't really ever want the named-object as we do
-;;; with other palettes.
+;;; with other palettes. The id here is of the group, not individual files.
 
 (defmethod get-snds (id (sfp sndfile-palette))
   (let ((obj (get-data id sfp)))
@@ -468,33 +468,45 @@
                  :warn-not-found warn-not-found))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* sndfile-palette/make-sfp-from-reaper-markers
+;;; ****f* sndfile-palette/make-sfp-from-reaper-markers
 ;;; DATE
 ;;; July 2nd 2021
 ;;; 
 ;;; DESCRIPTION
-;;; 
+
+;;; Create a sndfile-palette object by reading a reaper-file with
+;;; specially-named markers. This is specifically aimed at the situation where
+;;; you want to use one longer sound file in many segments, rather than lots of
+;;; different sound files. We search the reaper file for all markers whose names
+;;; begin with clm-play. A marker which begins a sound file segment will then
+;;; include the group name after a after a further hyphen e.g. the marker will
+;;; be named clm-play-perc or clm-play-string-attack (in these cases the
+;;; sndfile-palette will contain groups named perc and string-attack. A marker
+;;; with the name clm-play will indicate the end of a sndfile segment, and is
+;;; required. All other markers in the reaper file will be ignored.
+;;;
+;;; (N.B. In all, this is a little different from the funtion which creates
+;;; sndfile-palettes from wavelap-marker files but that is a different situation
+;;; (marker files, not wavelab files in general, as here with reaper files) and
+;;; had a slightly different goal at the time, creating groups in bundles rather
+;;; than in names. So we're not reproducing functionality here with reaper files
+;;; rather we're providing a slightly different functionality which sorts
+;;; current needs quite a few years on.)
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - the path to the reaper file (string)
+;;; - the path to the sound file. This must be provided as the reaper file could
+;;;   have marks at any point where there are several sound files
+;;;   playing. (string) 
 ;;; 
 ;;; RETURN VALUE
+;;; a sndfile-palette object with appropriate groups as read from the reaper
+;;; file. 
 ;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
-(defmethod make-sfp-from-reaper-markers (reaper-file sound-file)
+(defun make-sfp-from-reaper-markers (reaper-file sound-file)
 ;;; ****
   (let ((markers (filter-parameters
-                  ;; get all markers that begin with clm-play. the group name
-                  ;; will come after a further hyphen e.g. clm-play-perc or
-                  ;; simply clm-play will indicate the end of a sndfile segment
                   (get-parameters reaper-file '("MARKER") #\  t)
                   'clm-play))
         (sfp (make-assoc-list 'from-reaper nil)))
@@ -502,7 +514,9 @@
              (unless (get-data group sfp nil)
                (add (list group nil) sfp))
              (add-to-list-data
-              (make-sndfile-ext sound-file :id sound-file
+              (make-sndfile-ext sound-file
+                                :id (read-from-string
+                                     (pathname-name sound-file))
                                 :start (second smarker) :end (second emarker))
               group sfp))
            (group-name (data)
@@ -519,8 +533,7 @@
                      should have a simple 'clm-play' marker. Got clm-play~a"
                     ename))
            (saveit start end sname))
-      (link-named-objects (change-class sfp 'sndfile-palette))
-      )))
+      (link-named-objects (change-class sfp 'sndfile-palette)))))
   
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

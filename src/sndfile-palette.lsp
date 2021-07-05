@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  10:22:55 Sat Jul  3 2021 CEST
+;;; $$ Last modified:  10:26:29 Mon Jul  5 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -146,7 +146,8 @@
   (loop for sflist in (data sfp) do
        (setf (data sflist) (remove-if-not #'sndfile-p (data sflist))))
   ;; MDE Fri Jan  4 10:10:22 2013 
-  (setf (num-snds sfp) (count-snds sfp)))
+  (setf (num-snds sfp) (count-snds sfp))
+  sfp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Jan  4 10:49:46 2013 -- must explicitly update the num-snds slot
@@ -473,7 +474,6 @@
 ;;; July 2nd 2021
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Create a sndfile-palette object by reading a reaper-file with
 ;;; specially-named markers. This is specifically aimed at the situation where
 ;;; you want to use one longer sound file in many segments, rather than lots of
@@ -533,8 +533,9 @@
                      should have a simple 'clm-play' marker. Got clm-play~a"
                     ename))
            (saveit start end sname))
-      (link-named-objects (change-class sfp 'sndfile-palette)))))
-  
+      (verify-and-store
+       (change-class sfp 'sndfile-palette))
+      (link-named-objects sfp))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file

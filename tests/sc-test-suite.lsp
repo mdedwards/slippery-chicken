@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:49:05 Sat Jul  3 2021 CEST
+;;; $$ Last modified:  11:55:53 Mon Jul  5 2021 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -14650,6 +14650,15 @@
       (equal-within-tolerance 1.338 (end (second g1)) .001)
       (= 2 (length g1))
       (= 1 (length g2)))))
+
+#+clm
+(sc-deftest test-parse-reaper-file-for-segment ()
+  (sc-test-check
+    (equalp (parse-reaper-file-for-segment
+             (file-from-sc-dir "tests/barbara-markers2.RPP")
+             'gran)
+            '((542.9326 548.098) (598.7433 600.6894) (944.8951 945.41925)
+              (947.9406 948.8009) (952.61755 959.5987) (971.784 975.9188)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Oct 24 09:33:20 2017 -- sndfilenet tests. Some functionality of

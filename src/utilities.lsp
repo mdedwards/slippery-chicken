@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:08:00 Sat Jul  3 2021 CEST
+;;; $$ Last modified:  12:08:31 Mon Jul  5 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2760,7 +2760,50 @@ WARNING:
                       (format t "parse-reaper-file-for-loops: ignoring ~a"
                               (third loop-point)))))))
     (nreverse result)))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/parse-reaper-file-for-segment
+;;; DATE
+;;; July 5th 2021
+;;; 
+;;; DESCRIPTION
+;;; Parse a reaper file and look for markers that correspond to the second
+;;; argument. What we're after is sound file segments i.e. with a start and an
+;;; end. So markers can be added with a certain symbol e.g. gran marking the
+;;; start and that symbol with -end tacked on e.g. gran-end to indicate where a
+;;; segment ends.
+;;; 
+;;; ARGUMENTS
+;;; - the path to the reaper file
+;;; - the marker name we'll look for
+;;; 
+;;; RETURN VALUE
+;;; a list of start-end pairs (in seconds)
+;;; 
+;;; EXAMPLE
+#|
+
+(parse-reaper-file-for-segment "barbara-markers2.RPP" 'gran)
+->  '((542.9326 548.098) (598.7433 600.6894) (944.8951 945.41925)
+      (947.9406 948.8009) (952.61755 959.5987) (971.784 975.9188)))))
+
+|#
+;;; SYNOPSIS
+(defun parse-reaper-file-for-segment (reaper-file marker)
+;;; ****
+  (let ((markers (filter-parameters
+                  (get-parameters reaper-file '("MARKER") #\  t)
+                  marker))
+        (marker-end (read-from-string (format nil "~a-end" marker))))
+    (loop for start in markers by #'cddr
+       for end in (rest markers) by #'cddr do
+         (unless (and (eq marker (third start))
+                      (eq marker-end (third end)))
+           (error "Markers ~a and ~a should be in ascending time order, ~
+                   with no similarly named markers inbetween."
+                  marker marker-end))
+       collect (list (second start) (second end)))))
+    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/get-parameters
 ;;; DATE

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  10:26:29 Mon Jul  5 2021 CEST
+;;; $$ Last modified:  10:04:14 Tue Jul  6 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -497,14 +497,21 @@
 ;;; - the path to the reaper file (string)
 ;;; - the path to the sound file. This must be provided as the reaper file could
 ;;;   have marks at any point where there are several sound files
-;;;   playing. (string) 
+;;;   playing. (string)
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - the default frequency of the sound files: either a pitch symbol, a
+;;;   frequency in Hertz, 'detect for autocorrelation pitch detection, or a
+;;;   function to be called to e.g. extract the pitch from the file name or use
+;;;   another pitch detection method. Default = 'C4 (middle C)
 ;;; 
 ;;; RETURN VALUE
 ;;; a sndfile-palette object with appropriate groups as read from the reaper
 ;;; file. 
 ;;; 
 ;;; SYNOPSIS
-(defun make-sfp-from-reaper-markers (reaper-file sound-file)
+(defun make-sfp-from-reaper-markers (reaper-file sound-file &optional
+                                                              (auto-freq 'c4))
 ;;; ****
   (let ((markers (filter-parameters
                   (get-parameters reaper-file '("MARKER") #\  t)
@@ -517,6 +524,7 @@
               (make-sndfile-ext sound-file
                                 :id (read-from-string
                                      (pathname-name sound-file))
+                                :frequency (if auto-freq auto-freq 'c4)
                                 :start (second smarker) :end (second emarker))
               group sfp))
            (group-name (data)
@@ -533,8 +541,9 @@
                      should have a simple 'clm-play' marker. Got clm-play~a"
                     ename))
            (saveit start end sname))
-      (verify-and-store
-       (change-class sfp 'sndfile-palette))
+      (setf sfp (change-class sfp 'sndfile-palette)
+            (auto-freq sfp) auto-freq)
+      (verify-and-store sfp)
       (link-named-objects sfp))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

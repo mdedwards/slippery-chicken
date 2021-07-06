@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  10:10:23 Sat Jul  3 2021 CEST
+;;; $$ Last modified:  10:25:07 Tue Jul  6 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -71,11 +71,9 @@
    ;; some sounds have a prominent fundamental which can be used for
    ;; transposing to specific pitches.  Give this here either in the form of a
    ;; real freq or a note, which will then be converted.
-   ;; MDE Mon Sep  7 11:08:00 2015 -- changed initform to nil from 'c4 as we
-   ;; will now do auto pitch detection.
-   ;; MDE Fri Sep 25 13:44:28 2015 -- changed back to 'c4 and now allow value
-   ;; of 'detect to indicate we want pitch detection (was slowing down make-sfp
-   ;; too much when autoc was default).
+   ;; MDE Fri Sep 25 13:44:28 2015 -- now allow value of 'detect to indicate we
+   ;; want pitch detection (was slowing down make-sfp too much when autoc was
+   ;; default).
    ;; MDE Sat Dec 15 14:53:02 2018 -- this can also be a function whereupon it
    ;; will be called with the path slot as argument. The idea is that the
    ;; fundamental can be extracted from the file name.
@@ -322,7 +320,8 @@ T
           ;; Battey's CLM autocorrelation instrument. If there's no CLM package
           ;; this will just return the freq for 'c4.
           (when (eq 'detect (frequency sf)) ;(frequency sf))
-            (setf (slot-value sf 'frequency) (autoc-get-fundamental path))))
+            (setf (slot-value sf 'frequency) (autoc-get-fundamental
+                                              path (start sf) (duration sf)))))
       ;; MDE Mon Feb 17 15:03:12 2020 -- don't allow freqs of 0 otherwise
       ;; we'll get division-vy-zero errors in clm-play (thanks Dan) 
       (when (equal-within-tolerance (frequency sf) 0.0)
@@ -516,7 +515,7 @@ data: /path/to/sndfile-1.aiff
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun autoc-get-fundamental (file)
+(defun autoc-get-fundamental (file start duration)
   (flet ((warnac ()
            (warn "sndfile::autoc-get-fundamental: the CLM instrument ~
                   autoc.ins needs to be loaded in order for this function ~
@@ -524,8 +523,8 @@ data: /path/to/sndfile-1.aiff
            (note-to-freq 'c4)))
     #+clm
     (if (fboundp 'clm::autoc)
-        (let* ((penv (clm::autoc file :post-process t :min-freq 30 :dur nil
-                                 :db-floor -60))
+        (let* ((penv (clm::autoc file :beg start :post-process t :min-freq 30
+                                 :dur duration :db-floor -60))
                (y (loop for y in (cdr penv) by #'cddr collect y))
                (avg (/ (apply #'+ y) (length y))))
           ;; (format t "~%average pitch: ~F~%" avg)

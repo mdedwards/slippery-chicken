@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:02:57 Sat May  8 2021 CEST
+;;; $$ Last modified:  10:35:54 Tue Jul  6 2021 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -348,7 +348,9 @@
                                                 (instrument-change-map sc)
                                                 (this (get-first 
                                                        (set-map sc))))
-      (setf (snd-output-dir sc) (trailing-slash (snd-output-dir sc))
+      ;; MDE Tue Jul  6 10:34:19 2021, Heidhausen -- moved the trailing-slash
+      ;; call into a setf method  
+      (setf (snd-output-dir sc) (snd-output-dir sc) ; to trigger setf method
             (rthm-seq-palette sc)
             (if (rsp-p (rthm-seq-palette sc))
                 (clone (rthm-seq-palette sc))
@@ -1021,6 +1023,10 @@
            (error "slippery-chicken::convert-bar-refs-to-numbers:: 
                       can't get bar number for reference ~a" bar))))
   map)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod (setf snd-output-dir) (dir (sc slippery-chicken))
+  (setf (slot-value sc 'snd-output-dir) (trailing-slash dir)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -9120,7 +9126,7 @@ data: (11 15)
                  :staff-groupings staff-groupings
                  :rehearsal-letters rehearsal-letters
                  :instrument-change-map instrument-change-map
-                 :snd-output-dir snd-output-dir
+                 :snd-output-dir (trailing-slash snd-output-dir)
                  :sndfile-palette sndfile-palette
                  :instrument-palette instrument-palette
                  :tempo-map tempo-map

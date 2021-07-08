@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:44:34 Wed Mar  3 2021 CET
+;;; $$ Last modified:  19:17:21 Thu Jul  8 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -7003,11 +7003,11 @@ note Q,
                (result
                 ;; some just always create problems...
                 (if r r v))
-                #|(let ((rr (when r (make-rhythm r))))
-                  (if (or (not r)
-                          (and rr (> (num-dots rr) 1)))
-                      v
-                      r)))|#
+               #|(let ((rr (when r (make-rhythm r))))
+               (if (or (not r)          ;
+               (and rr (> (num-dots rr) 1))) ;
+               v                        ;
+               r)))|#
                ;; when we have something like 8/3 we can just make it 4\.
                ;; (a q. is 8/3 or 8/2. or 4.)
                (dotit (and (numberp result) (or ;(= 3 (numerator result))
@@ -7060,19 +7060,24 @@ note Q,
           ;; (format t "~%this-dur ~a rqqnd ~a pd ~a" this-dur rqqnd pd)
           ;; (print result)
           ;;(format t "~%~a~%ratio ~a tupl ~a this-d ~a"
-                ;;  divisions ratio tuplet this-dur)
+          ;;  divisions ratio tuplet this-dur)
           ;; sometimes we'll be under two tuplet brackets but get something
           ;; like a simple TS as the rthm but then under a 2:3 bracket, which
-          ;; should be turned into a dotted value 
+          ;; should be turned into a dotted value
+          ;; (print result)
           (when (and tuplet (or (= tuplet 4/3) (= tuplet 3/2)))
             (setf tuplet nil)
-            (loop for r in result
-               for rthm = (make-rhythm (rqq-divide-rthm-r r))
-               do (setf (rqq-divide-rthm-r r) 
-                        (format nil "~a\." (/ 4 2/3 (rq rthm))))))
-          ;;; MDE Mon Jun  4 18:17:21 2018 -- this more simple case should start
-          ;;; with e. or start the triplet on the 2nd note :/
-          ;;; (rqq-divide '(1 (3 1 1 1)))
+            ;; (print 'here)
+            (loop for r in result with rthm do
+                 ;; MDE Thu Jul  8 19:16:59 2021, Heidhausen -- was getting
+                 ;; some errors with 3/4 meter rqqs but this test fixed it 
+                 (when (rqq-divide-rthm-p r)
+                   (setf rthm (make-rhythm (rqq-divide-rthm-r r))
+                         (rqq-divide-rthm-r r)
+                         (format nil "~a\." (/ 4 2/3 (rq rthm)))))))
+;;; MDE Mon Jun  4 18:17:21 2018 -- this more simple case should start
+;;; with e. or start the triplet on the 2nd note :/
+;;; (rqq-divide '(1 (3 1 1 1)))
           (if tuplet
               (progn
                 (setf result (append (list '{ tuplet) result '(})))

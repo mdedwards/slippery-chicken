@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:20:31 Thu Jul  8 2021 CEST
+;;; $$ Last modified:  12:19:55 Fri Jul  9 2021 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1355,7 +1355,7 @@
 
 ;;; MDE Thu Jul  8 19:16:30 2021, Heidhausen 
 (sc-deftest test-lotsa-rqqs ()
-  (let* ((proportions '((1 1 1 1) (1 1 1) (1 1 2 1) (1 3 2 1)))
+  (let* ((proportions '((1 1 1 1) (1 1 1) (1 1 2 1) (1 3 2 1) (8 3 2 4 5)))
          (permutations (permutate proportions))
          (meters (loop for n from 2 to 7 collect (list n 4)))
          ;; loop through each of the permutations and create an rq with each of
@@ -1366,19 +1366,17 @@
                           (list
                            (list meter
                                  (list (first meter)
-                                       ;; just for demo. purposes, each bar will
-                                       ;; always be divided into four equal
-                                       ;; proportions, but this of course could
-                                       ;; itself be varied
                                        (loop for props in permutation collect
                                             (list 1 props)))))))))
          (rsp (make-rsp 'rqq-permutations nil))
          (file "/tmp/lotsa-rqqs.eps"))
-    ;; (print rqqs)
     (loop for rs in rqqs and i from 1 do (add (make-rthm-seq (list i rs)) rsp))
-    (cmn-display rsp :file file)
     (sc-test-check
-      (file-write-ok file 1000000))))
+      #+cmn
+      (progn
+        (probe-delete file)
+        (cmn-display rsp :file file)    ; this will generate about 103 pages
+        (file-write-ok file 6000000)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rhythm tests

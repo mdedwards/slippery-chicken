@@ -4567,10 +4567,12 @@ seq-num 5, VN, replacing G3 with B6
                        (amp-env '(0 0 5 1 60 1 100 0))
                        (inc-start nil)
                        (src-width 20)
+		       ;; either a number or an envelope
                        (src-scaler 1.0)
                        (do-src t)
                        (pitch-synchronous nil)
                        (rev-amt 0.0)
+		       ;; either a number or an envelope
                        (duration-scaler 1.0)
                        (short-file-names nil)
                        (check-overwrite t)
@@ -4662,6 +4664,14 @@ seq-num 5, VN, replacing G3 with B6
     (setf players (players sc)))
   ;; re-initialise our random number generator.
   (random-rep 100 t)
+  ;; LMF Mon Jul 19 2021
+  ;; the argument to duration-scaler can be either a number or an envelope.
+  ;; When it is the former, it will now be converted to an envelope.
+  (when (atom duration-scaler)
+    (setf duration-scaler (list 0 duration-scaler 100 duration-scaler)))
+  ;; same for src-scaler
+  (when (atom src-scaler)
+    (setf src-scaler (list 0 src-scaler 100 src-scaler)))
   ;; 10/1/07 remove the events with a start-time after max-start-time at this
   ;; stage rather than rejecting them later (otherwise play-chance-env will
   ;; range over the full event list instead of those below max-start-time)
@@ -4905,7 +4915,12 @@ seq-num 5, VN, replacing G3 with B6
                               ;; got to take time-offset and the start time of
                               ;; the first event into consideration, not just
                               ;; max-start-time...
-                              events-before-max-start))
+                              events-before-max-start)
+		   ;; LMF Mon Jul 19 2021 -- same as this-play-chance-env
+		   this-duration-scaler-env
+		   (new-lastx duration-scaler events-before-max-start)
+		   this-src-scaler-env
+		   (new-lastx src-scaler events-before-max-start))
              (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
                      player-count num-players (nth (1- player-count) players))
@@ -4969,7 +4984,8 @@ seq-num 5, VN, replacing G3 with B6
                                       ;; so long as we can make the loop below
                                       ;; work
                                       (ml nil (length freqs)))
-                             duration (* duration-scaler
+                             duration (* (interpolate event-count-player
+						      this-duration-scaler-env)
                                          (compound-duration-in-tempo event))
                              skip-this-event 
                              ;; MDE Sat Nov 9 15:20:11 2013 -- only when we've
@@ -5006,7 +5022,9 @@ seq-num 5, VN, replacing G3 with B6
                           do
                           ;; (print srt) (print src-scaler)
                           ;; (print snd)
-                            (setf srt (* src-scaler srt))
+                            (setf srt (* (interpolate event-count-player
+						      this-src-scaler-env)
+					 srt))
                             (when (<= srt 0.0)
                               (error "slippery-chicken::clm-play: illegal ~
                                       sample rate conversion: ~a" srt))

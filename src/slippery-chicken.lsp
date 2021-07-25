@@ -4375,6 +4375,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   all  events in the output sound file will be scaled. This does not alter
 ;;;   start times, and will therefore result in overlapping sounds if greater
 ;;;   than 1.0. This is not to be confused with :time-scaler. Default = 1.0.
+;;;   Instead of a number, :duration-scaler can also be an envelope 
+;;;   (a list of break-point pairs). This means you could smoothly transition
+;;;   from staccato-like to overlapping sounds in a single clm-play call.
 ;;; - :normalise. A decimal number that will be the maximum amplitude of the
 ;;;   resulting output file; i.e., to which the samples will be scaled. Can
 ;;;   also be NIL, whereupon no normalisation will be performed. 
@@ -4393,6 +4396,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :src-scaler: A number that is the factor by which all sample-rate
 ;;;   conversion values will be scaled (for increasing or decreasing the
 ;;;   transposition of the overall resulting sound file). Default = 1.0.
+;;;   Instead of a number, :src-scaler can also be an envelope 
+;;;   (a list of break-point pairs), similar to :duration-scaler
 ;;; - :note-number. A number that is an index, representing the the nth pitch
 ;;;   of the current set or chord (from the bottom) to be used for the lowest
 ;;;   player. Default = 0.
@@ -4540,6 +4545,31 @@ seq-num 5, VN, replacing G3 with B6
             :pitch-synchronous t
             :reset-snds-each-rs nil
             :reset-snds-each-player nil))
+
+;;; A minimal working example demonstrating envelope-arguments 
+;;; to duration-scaler and src-scaler ;
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+	 :ensemble '(((vn (violin :midi-channel 1))))
+	 :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1 1 1)))
+	 :rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+                                 :pitch-seq-palette ((1 2 3)))))
+         :rthm-seq-map '((1 ((vn (1 1 1)))))
+	 :snd-output-dir "/E/"
+	 :sndfile-palette '(((sndfile-grp-1
+                              ((test-sndfile-1.aiff)
+                               (test-sndfile-2.aiff)
+                               (test-sndfile-3.aiff))))
+                            ("/path/to/sndfiles-dir-1")))))
+  (clm-play mini 1 'vn 'sndfile-grp-1
+            :src-scaler '(0 .5  80 1  100 2)
+	    :do-src 500
+	    :src-width 5
+	    :duration-scaler '(0 .1  80 1  100 2)
+	    :check-overwrite nil
+            :play nil :header-type clm::mus-riff))
 
 |#
 ;;; SYNOPSIS

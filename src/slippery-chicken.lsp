@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:13:28 Tue Aug 10 2021 CEST
+;;; $$ Last modified:  15:19:44 Tue Aug 10 2021 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4374,10 +4374,11 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :duration-scaler. A number that is the factor by which the duration of
 ;;;   all  events in the output sound file will be scaled. This does not alter
 ;;;   start times, and will therefore result in overlapping sounds if greater
-;;;   than 1.0. This is not to be confused with :time-scaler. Default = 1.0.
-;;;   Instead of a number, :duration-scaler can also be an envelope 
+;;;   than 1.0. This is not to be confused with :time-scaler. 
+;;;   Instead of a simple number, :duration-scaler can also be an envelope 
 ;;;   (a list of break-point pairs). This means you could smoothly transition
 ;;;   from staccato-like to overlapping sounds in a single clm-play call.
+;;;   Default = 1.0.
 ;;; - :normalise. A decimal number that will be the maximum amplitude of the
 ;;;   resulting output file; i.e., to which the samples will be scaled. Can
 ;;;   also be NIL, whereupon no normalisation will be performed. 
@@ -4395,9 +4396,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   transpositions. Default = 20.
 ;;; - :src-scaler: A number that is the factor by which all sample-rate
 ;;;   conversion values will be scaled (for increasing or decreasing the
-;;;   transposition of the overall resulting sound file). Default = 1.0.
-;;;   Instead of a number, :src-scaler can also be an envelope 
-;;;   (a list of break-point pairs), similar to :duration-scaler
+;;;   transposition of the overall resulting sound file). 
+;;;   Instead of a simple number, :src-scaler can also be an envelope 
+;;;   (a list of break-point pairs), similar to :duration-scaler. Default = 1.0.
 ;;; - :note-number. A number that is an index, representing the the nth pitch
 ;;;   of the current set or chord (from the bottom) to be used for the lowest
 ;;;   player. Default = 0.
@@ -4554,24 +4555,24 @@ seq-num 5, VN, replacing G3 with B6
 (let* ((mini
         (make-slippery-chicken
          '+mini+
-	 :ensemble '(((vn (violin :midi-channel 1))))
-	 :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
          :set-map '((1 (1 1 1)))
-	 :rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+         :rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
                                  :pitch-seq-palette ((1 2 3)))))
          :rthm-seq-map '((1 ((vn (1 1 1)))))
-	 :snd-output-dir "/E/"
-	 :sndfile-palette '(((sndfile-grp-1
+         :snd-output-dir "/E/"
+         :sndfile-palette '(((sndfile-grp-1
                               ((test-sndfile-1.aiff)
                                (test-sndfile-2.aiff)
                                (test-sndfile-3.aiff))))
                             ("/path/to/sndfiles-dir-1")))))
   (clm-play mini 1 'vn 'sndfile-grp-1
             :src-scaler '(0 .5  80 1  100 2)
-	    :do-src 500
-	    :src-width 5
-	    :duration-scaler '(0 .1  80 1  100 2)
-	    :check-overwrite nil
+            :do-src 500
+            :src-width 5
+            :duration-scaler '(0 .1  80 1  100 2)
+            :check-overwrite nil
             :play nil :header-type clm::mus-riff))
 
 |#
@@ -4600,12 +4601,12 @@ seq-num 5, VN, replacing G3 with B6
                        (amp-env '(0 0 5 1 60 1 100 0))
                        (inc-start nil)
                        (src-width 20)
-		       ;; either a number or an envelope
+                       ;; either a number or an envelope
                        (src-scaler 1.0)
                        (do-src t)
                        (pitch-synchronous nil)
                        (rev-amt 0.0)
-		       ;; either a number or an envelope
+                       ;; either a number or an envelope
                        (duration-scaler 1.0)
                        (short-file-names nil)
                        (check-overwrite t)
@@ -4681,11 +4682,12 @@ seq-num 5, VN, replacing G3 with B6
     (error "slippery-chicken::clm-play: from-sequence keyword should only ~
             be used ~%when num-sections = 1."))
   #| 
-  ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it ; ;
-  ;; just causes problems now we've updated num-seqs to handle sub-sections ; ;
-  (when (and num-sections (= 1 num-sections) (not num-sequences)) ;
-  (let ((ns (num-seqs sc section)))     ;
-  (unless ns                            ;
+  ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and 
+  it 
+  ;; just causes problems now we've updated num-seqs to handle sub-sections
+  (when (and num-sections (= 1 num-sections) (not num-sequences)) 
+  (let ((ns (num-seqs sc section))) 
+  (unless ns 
   (error "slippery-chicken::clm-play: can't get number of sequences ~ ;
   for section ~a." section))            ;
   (setf num-sequences (- ns (1- from-sequence))))) ;
@@ -4949,11 +4951,11 @@ seq-num 5, VN, replacing G3 with B6
                               ;; the first event into consideration, not just
                               ;; max-start-time...
                               events-before-max-start)
-		   ;; LMF Mon Jul 19 2021 -- same as this-play-chance-env
-		   this-duration-scaler-env
-		   (new-lastx duration-scaler events-before-max-start)
-		   this-src-scaler-env
-		   (new-lastx src-scaler events-before-max-start))
+                   ;; LMF Mon Jul 19 2021 -- same as this-play-chance-env
+                   this-duration-scaler-env
+                   (new-lastx duration-scaler events-before-max-start)
+                   this-src-scaler-env
+                   (new-lastx src-scaler events-before-max-start))
              (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
                      player-count num-players (nth (1- player-count) players))
@@ -5018,7 +5020,7 @@ seq-num 5, VN, replacing G3 with B6
                                       ;; work
                                       (ml nil (length freqs)))
                              duration (* (interpolate event-count-player
-						      this-duration-scaler-env)
+                                                      this-duration-scaler-env)
                                          (compound-duration-in-tempo event))
                              skip-this-event 
                              ;; MDE Sat Nov 9 15:20:11 2013 -- only when we've
@@ -5056,8 +5058,8 @@ seq-num 5, VN, replacing G3 with B6
                           ;; (print srt) (print src-scaler)
                           ;; (print snd)
                             (setf srt (* (interpolate event-count-player
-						      this-src-scaler-env)
-					 srt))
+                                                      this-src-scaler-env)
+                                         srt))
                             (when (<= srt 0.0)
                               (error "slippery-chicken::clm-play: illegal ~
                                       sample rate conversion: ~a" srt))

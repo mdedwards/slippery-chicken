@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  19:09:34 Thu Mar 11 2021 CET
+;;; $$ Last modified:  15:51:52 Tue Aug 10 2021 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -43,9 +43,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :cl-user)
-(require "asdf")
-#+sbcl (asdf:load-system :sb-bsd-sockets)
-#+sbcl (asdf:load-system :sb-posix)
+#+sbcl (require :sb-bsd-sockets)
+#+sbcl (require :sb-posix)
 #+sbcl (unlock-package "COMMON-LISP")
 
 (defparameter +slippery-chicken-version+ "1.0.12")

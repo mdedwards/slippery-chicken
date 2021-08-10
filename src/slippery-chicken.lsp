@@ -4375,6 +4375,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   all  events in the output sound file will be scaled. This does not alter
 ;;;   start times, and will therefore result in overlapping sounds if greater
 ;;;   than 1.0. This is not to be confused with :time-scaler. Default = 1.0.
+;;;   Instead of a number, :duration-scaler can also be an envelope 
+;;;   (a list of break-point pairs). This means you could smoothly transition
+;;;   from staccato-like to overlapping sounds in a single clm-play call.
 ;;; - :normalise. A decimal number that will be the maximum amplitude of the
 ;;;   resulting output file; i.e., to which the samples will be scaled. Can
 ;;;   also be NIL, whereupon no normalisation will be performed. 
@@ -4393,6 +4396,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :src-scaler: A number that is the factor by which all sample-rate
 ;;;   conversion values will be scaled (for increasing or decreasing the
 ;;;   transposition of the overall resulting sound file). Default = 1.0.
+;;;   Instead of a number, :src-scaler can also be an envelope 
+;;;   (a list of break-point pairs), similar to :duration-scaler
 ;;; - :note-number. A number that is an index, representing the the nth pitch
 ;;;   of the current set or chord (from the bottom) to be used for the lowest
 ;;;   player. Default = 0.
@@ -4545,6 +4550,31 @@ seq-num 5, VN, replacing G3 with B6
             :reset-snds-each-rs nil
             :reset-snds-each-player nil))
 
+;;; A minimal working example demonstrating envelope-arguments 
+;;; to duration-scaler and src-scaler ;
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+	 :ensemble '(((vn (violin :midi-channel 1))))
+	 :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1 1 1)))
+	 :rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+                                 :pitch-seq-palette ((1 2 3)))))
+         :rthm-seq-map '((1 ((vn (1 1 1)))))
+	 :snd-output-dir "/E/"
+	 :sndfile-palette '(((sndfile-grp-1
+                              ((test-sndfile-1.aiff)
+                               (test-sndfile-2.aiff)
+                               (test-sndfile-3.aiff))))
+                            ("/path/to/sndfiles-dir-1")))))
+  (clm-play mini 1 'vn 'sndfile-grp-1
+            :src-scaler '(0 .5  80 1  100 2)
+	    :do-src 500
+	    :src-width 5
+	    :duration-scaler '(0 .1  80 1  100 2)
+	    :check-overwrite nil
+            :play nil :header-type clm::mus-riff))
+
 |#
 ;;; SYNOPSIS
 #+clm
@@ -4571,10 +4601,12 @@ seq-num 5, VN, replacing G3 with B6
                        (amp-env '(0 0 5 1 60 1 100 0))
                        (inc-start nil)
                        (src-width 20)
+		       ;; either a number or an envelope
                        (src-scaler 1.0)
                        (do-src t)
                        (pitch-synchronous nil)
                        (rev-amt 0.0)
+		       ;; either a number or an envelope
                        (duration-scaler 1.0)
                        (short-file-names nil)
                        (check-overwrite t)
@@ -4666,6 +4698,14 @@ seq-num 5, VN, replacing G3 with B6
     (setf players (players sc)))
   ;; re-initialise our random number generator.
   (random-rep 100 t)
+  ;; LMF Mon Jul 19 2021
+  ;; the argument to duration-scaler can be either a number or an envelope.
+  ;; When it is the former, it will now be converted to an envelope.
+  (when (atom duration-scaler)
+    (setf duration-scaler (list 0 duration-scaler 100 duration-scaler)))
+  ;; same for src-scaler
+  (when (atom src-scaler)
+    (setf src-scaler (list 0 src-scaler 100 src-scaler)))
   ;; 10/1/07 remove the events with a start-time after max-start-time at this
   ;; stage rather than rejecting them later (otherwise play-chance-env will
   ;; range over the full event list instead of those below max-start-time)
@@ -4909,7 +4949,12 @@ seq-num 5, VN, replacing G3 with B6
                               ;; got to take time-offset and the start time of
                               ;; the first event into consideration, not just
                               ;; max-start-time...
-                              events-before-max-start))
+                              events-before-max-start)
+		   ;; LMF Mon Jul 19 2021 -- same as this-play-chance-env
+		   this-duration-scaler-env
+		   (new-lastx duration-scaler events-before-max-start)
+		   this-src-scaler-env
+		   (new-lastx src-scaler events-before-max-start))
              (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
                      player-count num-players (nth (1- player-count) players))
@@ -4973,7 +5018,8 @@ seq-num 5, VN, replacing G3 with B6
                                       ;; so long as we can make the loop below
                                       ;; work
                                       (ml nil (length freqs)))
-                             duration (* duration-scaler
+                             duration (* (interpolate event-count-player
+						      this-duration-scaler-env)
                                          (compound-duration-in-tempo event))
                              skip-this-event 
                              ;; MDE Sat Nov 9 15:20:11 2013 -- only when we've
@@ -5010,7 +5056,9 @@ seq-num 5, VN, replacing G3 with B6
                           do
                           ;; (print srt) (print src-scaler)
                           ;; (print snd)
-                            (setf srt (* src-scaler srt))
+                            (setf srt (* (interpolate event-count-player
+						      this-src-scaler-env)
+					 srt))
                             (when (<= srt 0.0)
                               (error "slippery-chicken::clm-play: illegal ~
                                       sample rate conversion: ~a" srt))

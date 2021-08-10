@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:35:54 Tue Jul  6 2021 CEST
+;;; $$ Last modified:  14:47:06 Wed Jul 14 2021 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4475,6 +4475,10 @@ seq-num 5, VN, replacing G3 with B6
 ;;;                              (declare (ignore event))
 ;;;                              (get-nearest-by-freq
 ;;;                               (frequency pitch) (data sflist)))
+;;;
+;;;   NB If :pitch-synchronous is NIL, then the pitch-or-chord slot of the event
+;;;   will be the pitch selected from the current set, rather than the actual
+;;;   pitch of the instrument in question.
 ;;; 
 ;;;   Default = NIL i.e. use the circular selection method.
 ;;; - :decay-time. Reverb decay time. Default = 3 seconds.

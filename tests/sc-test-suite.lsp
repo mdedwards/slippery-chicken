@@ -17712,6 +17712,21 @@
                 :do-src nil
                 :play nil :header-type clm::mus-aiff)
       ;;(not (sleep 1))
+      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 5000000)
+      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.aif")
+      ;; LMF Wed 21 Jul 2021
+      ;; envelope argument for duration-scaler
+      (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
+		:duration-scaler '(0 .1  100 2)
+		:do-src nil
+                :play nil :header-type clm::mus-aiff)
+      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 5000000)
+      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.aif")
+      ;; and for src src-scaler
+      (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
+		:src-scaler '(0 .5  100 2) :src-width 5
+                :play nil :header-type clm::mus-aiff)
+      ;;(not (sleep 1))
       (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 5000000))))
 
 ;;; MDE Wed Feb 24 20:07:17 2016

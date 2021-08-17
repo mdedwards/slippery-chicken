@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  12:08:31 Mon Jul  5 2021 CEST
+;;; $$ Last modified:  19:03:16 Tue Aug 17 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1594,15 +1594,17 @@
         (error "utilities::interp-aux: y values in envelope must be ~
                 numbers: ~a"
                env))
-      (when (= x1 x2)
-        (error "utilities::interp-aux: can't interpolate ~a in ~a."
-               point env))
-      (get-interpd-y point 
-                     x1 
-                     (* scaler (nth (- here 1) env))
-                     x2
-                     (* scaler (nth (+ here 1) env))
-                     exp))))
+      (if (= x1 x2)
+          (progn
+            (warn "utilities::interp-aux: weird values for interp-aux: ~a in ~a."
+                  point env)
+            (nth (1- here) env))
+          (get-interpd-y point 
+                         x1 
+                         (* scaler (nth (- here 1) env))
+                         x2
+                         (* scaler (nth (+ here 1) env))
+                         exp)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun get-interpd-y (point x1 y1 x2 y2 exp)

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:19:44 Tue Aug 10 2021 CEST
+;;; $$ Last modified:  16:52:58 Thu Aug 19 2021 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4456,7 +4456,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   this will still result in the sound moving around multichannel space as
 ;;;   all you would be setting is the pan value between any two adjacent
 ;;;   channels. If this isn't your cup of tea, pass a new instrument entirely
-;;;   via :clm-ins. Default = NIL.
+;;;   via :clm-ins. See example below. Default = NIL.
 ;;; - :snd-selector. By default the sound files in the given group are cycled
 ;;;   through, one after the other, returning to the beginning when the end is
 ;;;   reached. This can be changed by passing a function to :snd-selector. This
@@ -4498,7 +4498,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example using some of the more frequent arguments ;
+;;; An example using some of the more frequent arguments
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -4551,7 +4551,7 @@ seq-num 5, VN, replacing G3 with B6
             :reset-snds-each-player nil))
 
 ;;; A minimal working example demonstrating envelope-arguments 
-;;; to duration-scaler and src-scaler ;
+;;; to duration-scaler and src-scaler
 (let* ((mini
         (make-slippery-chicken
          '+mini+
@@ -4574,6 +4574,14 @@ seq-num 5, VN, replacing G3 with B6
             :duration-scaler '(0 .1  80 1  100 2)
             :check-overwrite nil
             :play nil :header-type clm::mus-riff))
+
+;;; if you don't want amplitude panning, rather a random placement of each sound
+;;; in one channel only, then this should work (no matter how many channels
+;;; there are in your output file):
+
+    :pan-fun #'(lambda (event)
+                 (declare (ignore event))
+                 (nth (random-rep 2) '(0 90)))
 
 |#
 ;;; SYNOPSIS

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:03:16 Tue Aug 17 2021 CEST
+;;; $$ Last modified:  15:30:51 Thu Aug 26 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2717,7 +2717,8 @@ WARNING:
 ;;; and 'clm-loop-point-stop' with any number of 'clm-loop-point' markers
 ;;; inbetween. This defines a new set of loop points, of which there can be any
 ;;; number. Any number of markers without these names can be between the -start
-;;; and -stop markers; they will be ignored.
+;;; and -stop markers; they will be ignored. It is assumed that the sound file
+;;; you'll process starts at time zero in the reaper file and within itself.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A string that is the name of the marker file to be parsed, including

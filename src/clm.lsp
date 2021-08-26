@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  09:46:50 Fri Jul  2 2021 CEST
+;;; $$ Last modified:  15:59:19 Thu Aug 26 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -245,6 +245,8 @@
 ;;;   more accurate the transposition will be, but the longer it will take to
 ;;;   process the file. Default = 5.
 ;;; - :scaled-to. The normalisation target. Usually < 1.0. Default = 0.99.
+;;; - :pan. Whether amplitude panning should be applied or simple output to
+;;;   individual channels. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns the name of the file generated. 
@@ -290,6 +292,7 @@
                     ;; fibonacci-transitions (could be 0!)
                     (num-shuffles 1) 
                     (suffix "")
+                    (pan t)
                     (src-width 5))
 ;;; ****
   (format t "~&num-shuffles: ~a" num-shuffles)
@@ -398,7 +401,11 @@
                               :printing nil
                               :duration duration
                               :start start
-                              :degree (nth (random 5) '(15 30 45 60 75))
+                              ;; MDE Thu Aug 26 15:58:58 2021, Heidhausen --
+                              ;; panning or not?
+                              :degree (if pan
+                                          (nth (random 5) '(15 30 45 60 75))
+                                          (nth (random 2) '(0 90)))
                               :srt src
                               :width src-width
                               :amp-env '(0 0 3 1 97 1 100 0))
@@ -410,9 +417,6 @@
                   (incf output-start (* 0.94 duration))))))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 17 12:10:17 EDT 2012: Added robodoc entry
-
 ;;; ****f* clm/clm-loops-all
 ;;; DESCRIPTION
 ;;; Similar to clm-loops, but takes a list of lists of entry points (which can
@@ -478,6 +482,8 @@
 ;;;   more accurate the transposition will be, but the longer it will take to
 ;;;   process the file. Default = 5.
 ;;; - :scaled-to. The normalisation target. Usually < 1.0. Default = 0.99.
+;;; - :pan. Whether amplitude panning should be applied or simple output to
+;;;   individual channels. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -530,6 +536,8 @@
                         ;; shuffled and 10 versions collected which will then be
                         ;; passed (circularly) one after the other to clm-loops.
                         (transpositions '(0))
+                        ;; MDE Thu Aug 26 15:56:34 2021, Heidhausen -- added
+                        (pan t)
                         ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
                         (scaled-to .99)
                         (transposition-offset 0.0)
@@ -554,6 +562,7 @@
                       :max-start-time (get-next msts)
                       :channels channels
                       :srate srate
+                      :pan pan
                       :suffix suffix
                       :data-format data-format
                       :header-type header-type

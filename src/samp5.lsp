@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  11:19:15 Sat Jan  5 2019 CET
+;;; $$ Last modified:  15:58:47 Thu Aug 26 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -116,7 +116,7 @@
           (srt-scaler 1.0)
           (amp 1.0)
           (amp-env '(0 1 100 1))
-          (degree 45)
+          (degree 45) ; 0-90 no matter how many output channels
           ;; MDE Mon Nov  4 10:08:45 2013 -- just for
           ;; compatibility with clm-play i.e. not used
           frequency 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  12:53:27 Fri May  7 2021 CEST
+;;; $$ Last modified:  12:04:54 Wed Oct 20 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,6 +105,40 @@
        :chords nil 
        :microtones t 
        :midi-program 74))
+     ;; MDE Wed Oct 20 11:48:45 2021, Heidhausen
+     (sopranino-recorder
+      (:lowest-written f4 :highest-written g6 :chords nil
+       :staff-name "sopranino recorder" :staff-short-name "sop.no rec."
+       :midi-program 75 :microtones nil :largest-fast-leap 12
+       :transposition-semitones 12  :starting-clef treble))
+     (soprano-recorder
+      (:lowest-written c4 :highest-written d6 :chords nil
+       :staff-name "soprano recorder" :staff-short-name "sop. rec."
+       :midi-program 75 :microtones nil :largest-fast-leap 12
+       :transposition-semitones 12 :starting-clef treble))
+     (alto-recorder
+      (:lowest-written f4 :highest-written g6 :chords nil
+       :staff-name "alto recorder" :staff-short-name "alt. rec."
+       :midi-program 75 :microtones nil :largest-fast-leap 12
+       :starting-clef treble))
+     (tenor-recorder
+      (:lowest-written c4 :highest-written d6 :chords nil
+       :staff-name "tenor recorder" :staff-short-name "ten. rec."
+       :midi-program 75 :microtones nil :largest-fast-leap 12
+       :starting-clef treble))
+     ;; this is a special instrument that is not fully chromatic and has a
+     ;; tuning of a4 = 466 Hz. I wrote a piece for 41 of these for Ulrike
+     ;; Volkhardt and colleagues in 2021/2
+     (consort-tenor-recorder
+      (:lowest-written c4 :highest-written a5 :chords nil
+       :staff-name "consort tenor recorder" :staff-short-name "cons. ten. rec."
+       :midi-program 75 :microtones nil :largest-fast-leap 12
+       :missing-notes (cs4 ds4) :starting-clef treble))
+     (bass-recorder
+      (:lowest-written f2 :highest-written f4 :chords nil
+       :staff-name "bass recorder" :staff-short-name "bs. rec."
+       :midi-program 75 :microtones nil :largest-fast-leap 12
+       :transposition-semitones 12 :starting-clef bass))
      ;; SAR Fri Jan 20 12:01:37 GMT 2012: Added oboe. Conservative range taken
      ;; from the Adler
      (oboe
@@ -115,7 +149,7 @@
        :chords nil :microtones t
        :missing-notes (bqf3 bqs3 cqs4 dqf4) 
        :midi-program 69))
-     ;; MDE Tue Feb 20 19:43:50 2018 -- 
+     ;; MDE Tue Feb 20 19:43:50 2018
      (cor-anglais
       (:staff-name "cor anglais" :staff-short-name "c.a." 
        :lowest-written bf3 :highest-written a6
@@ -291,7 +325,7 @@
        :microtones t
        :clefs (bass tenor) :starting-clef bass 
        :chords nil :midi-program 58))
-     ;;; SAR Fri Jul 13 12:35:35 BST 2012
+;;; SAR Fri Jul 13 12:35:35 BST 2012
      (tuba
       (:staff-name "tuba" :staff-short-name "tba"
        :lowest-written d1 :highest-written g4
@@ -321,24 +355,24 @@
      ;; by Zach Howell (thanks).  
      (glockenspiel
       (:staff-name "glockenspiel" :staff-short-name "glk"
-                  :lowest-written f3 :highest-written c6
-                  :transposition-semitones +24
-                  :starting-clef treble
-                  :chords nil :microtones nil :missing-notes nil
-                  :midi-program 10))
+       :lowest-written f3 :highest-written c6
+       :transposition-semitones +24
+       :starting-clef treble
+       :chords nil :microtones nil :missing-notes nil
+       :midi-program 10))
      (xylophone
       (:staff-name "xylophone" :staff-short-name "xyl"
-                  :lowest-written f3 :highest-written c7
-                  :transposition-semitones +12
-                  :starting-clef treble
-                  :chords nil :microtones nil :missing-notes nil
-                  :midi-program 14))
+       :lowest-written f3 :highest-written c7
+       :transposition-semitones +12
+       :starting-clef treble
+       :chords nil :microtones nil :missing-notes nil
+       :midi-program 14))
      (celesta
       (:staff-name "celesta" :staff-short-name "cel"
-                  :lowest-written c3 :highest-written c7
-                  :transposition-semitones +12
-                  :starting-clef treble
-                  :chords t :microtones nil :missing-notes nil
+       :lowest-written c3 :highest-written c7
+       :transposition-semitones +12
+       :starting-clef treble
+       :chords t :microtones nil :missing-notes nil
        :midi-program 9))
      (crotales
       (:staff-name "crotales" :staff-short-name "crt"
@@ -435,31 +469,31 @@
        ;; there is no GM programme for mandolin so use either steel string
        ;; guitar (26) or banjo 106 perhaps
        :microtones nil :midi-program 26))
-     (soprano ; voice
+     (soprano                           ; voice
       (:staff-name "soprano" :staff-short-name "sop"
        :lowest-written c4 :highest-written c6
        :starting-clef treble :midi-program 54))
-     (mezzo  ; voice
+     (mezzo                             ; voice
       (:staff-name "mezzo-soprano" :staff-short-name "mez"
        :lowest-written a3 :highest-written a5
        :starting-clef treble :midi-program 54))
-     (alto ; voice
+     (alto                              ; voice
       (:staff-name "alto" :staff-short-name "alt"
        :lowest-written f3 :highest-written f5
        :starting-clef treble :midi-program 54))
-     (countertenor ; voice
+     (countertenor                      ; voice
       (:staff-name "countertenor" :staff-short-name "ctr"
        :lowest-written e3 :highest-written e5
        :starting-clef treble-8vb :midi-program 54))
-     (tenor ; voice
+     (tenor                             ; voice
       (:staff-name "tenor" :staff-short-name "ten"
        :lowest-written c3 :highest-written c5
        :starting-clef treble-8vb :midi-program 54))
-     (baritone ; voice
+     (baritone                          ; voice
       (:staff-name "baritone" :staff-short-name "bar"
        :lowest-written a2 :highest-written a4
        :starting-clef bass :midi-program 54))
-     (bass ; voice
+     (bass                              ; voice
       (:staff-name "bass" :staff-short-name "bas"
        :lowest-written e2 :highest-written e4
        :starting-clef bass :midi-program 54))
@@ -511,7 +545,7 @@
        :clefs (bass tenor treble) :starting-clef bass
        :chords nil 
        :microtones t :harmonics t
-       :open-strings (g3 d3 a2 e2) ; written!
+       :open-strings (g3 d3 a2 e2)      ; written!
        :open-string-marks (i ii iii iv)
        :midi-program 44))
      (bass-guitar
@@ -522,7 +556,7 @@
        :clefs (bass treble) :starting-clef bass
        :chords t
        :microtones nil :harmonics t
-       :open-strings (g3 d3 a2 e2) ; written!
+       :open-strings (g3 d3 a2 e2)      ; written!
        :open-string-marks (c1 c2 c3 c4)
        :midi-program 33))
      ;; SAR Thu Apr 12 18:19:21 BST 2012: Added "computer" part for "silent"

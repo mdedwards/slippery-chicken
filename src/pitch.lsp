@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  14:56:18 Fri Apr 30 2021 CEST
+;;; $$ Last modified:  17:15:39 Sat Oct  9 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2527,9 +2527,9 @@ data: D7
 ;;; 
 ;;; ARGUMENTS
 ;;; - A note, either as an alphanumeric note name (e.g. cs4) or a numeric hertz
-;;;   frequency. Note that if one or more pitche objects have been initialised
+;;;   frequency. Note that if one or more pitch objects have been initialised
 ;;;   then it is not necessary to specify the octave as the last octave will be
-;;;   used 
+;;;   used.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:

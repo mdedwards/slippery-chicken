@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  15:17:36 Thu Mar  4 2021 CET
+;;; $$ Last modified:  17:30:34 Sat Oct 23 2021 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1047,6 +1047,7 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
                      &optional sounding try-artificial-harmonic
                        (impossible-microtones t) no-missing-notes)
 ;;; ****
+  (unless pitch (error "instrument::in-range: <pitch> cannot be nil."))
   (let* ((p (make-pitch pitch))
          (low (if sounding (lowest-sounding ins) (lowest-written ins)))
          (high (if sounding (highest-sounding ins) (highest-written ins)))
@@ -1077,7 +1078,6 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
         (values result (cond (chord chord) (too-high 1) (too-low 0))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* instrument/force-in-range
 ;;; DATE
 ;;; October 9th 2013

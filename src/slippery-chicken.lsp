@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:52:58 Thu Aug 19 2021 CEST
+;;; $$ Last modified:  18:18:44 Sat Oct 23 2021 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2684,7 +2684,6 @@ data: NIL
                          (2 ((sax (1 1 1 1 1))
                              (db (1 1 1 1 1))))))))
   (get-instrument-for-player-at-bar 'sax 3 mini))
-
 => 
 INSTRUMENT: lowest-written: BF3, highest-written: FS6
 lowest-sounding: AF2, highest-sounding: E5
@@ -2707,7 +2706,11 @@ data: NIL
 (defmethod get-instrument-for-player-at-bar (player bar (sc slippery-chicken))
 ;;; ****
   (let* ((bar (if (rthm-seq-bar-p bar) bar (get-bar sc bar player)))
-         (section (butlast (player-section-ref bar)))
+         (section
+          (if bar
+              (butlast (player-section-ref bar))
+              (error "slippery-chicken::get-instrument-for-player-at-bar: ~%~
+                      couldn't get bar.")))
          (seq-num (1+ (nth-seq bar))))
     (get-current-instrument-for-player section player seq-num sc)))
 

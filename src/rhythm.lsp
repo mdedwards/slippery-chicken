@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  17:45:20 Wed Mar  3 2021 CET
+;;; $$ Last modified:  16:36:44 Fri Nov 19 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -361,8 +361,12 @@
           (setf (num-dots r)
                 (case scaler
                   (1.5 1)
+                  ;; added the rational versions of these floats
+                  (3/2 1)
                   (1.75 2)
+                  (7/4 2)
                   (1.875 3)
+                  (15/8 3)
                   (t 0))))
         ;; (when (< (value r) 1.0)
         (when (and (get-sc-config 'rhythm-scale-warning)
@@ -372,7 +376,13 @@
                 r scaler))
         ;; let's see if we can get a new rhythm from this thing all scaled and
         ;; dotted and everything....
-        (let ((try (get-rhythm-letter-for-value (value r) nil))) ;; don't warn
+        ;;
+        ;; MDE Fri Nov 19 16:30:30 2021, Heidhausen -- only try to get a new
+        ;; rthm if we're not cloning, otherwise the original object might not be
+        ;; scale
+        (let ((try (when clone
+                     ;;                                  don't warn
+                     (get-rhythm-letter-for-value (value r) nil))))
           ;; (print 'here)
           (when try
             (setf try (make-rhythm try)

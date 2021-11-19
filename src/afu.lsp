@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    May 18th 2019
 ;;;
-;;; $$ Last modified:  11:25:19 Fri Jan 22 2021 CET
+;;; $$ Last modified:  14:52:16 Fri Nov  5 2021 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -76,8 +76,10 @@
    (unique :accessor unique :type list :initform nil)
    ;; also for info only: the number of unique numbers generated
    (num-unique :accessor num-unique :type integer :initform -1)
-   ;; an exponent to raise our numbers to before rescaling. See the
-   ;; inflate-proportionally method for details.
+   ;; an exponent to raise our numbers to before rescaling. Bear in mind that
+   ;; numbers >1.0 might result in more repetition if values are then rounded to
+   ;; e.g. the nearest midi pitch. See the inflate-proportionally method for
+   ;; details.
    (exponent :accessor exponent :initarg :exponent :initform nil)
    ;; the minimum number we want to generate
    (minimum :accessor minimum :type number :initarg :minimum :initform 0.0)

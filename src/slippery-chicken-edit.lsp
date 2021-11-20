@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:36:06 Sat Oct 23 2021 CEST
+;;; $$ Last modified:  13:16:49 Sat Nov 20 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5809,20 +5809,23 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; keyword arguments:
 ;;; - :start-bar. The bar to start at. Default = NIL = 1
 ;;; - :end-bar. The bar to end at. Default = NIL = last bar in piece/object
+;;; - any other keyword arguments to the force-in-range instrument method
 ;;; 
 ;;; RETURN VALUE
 ;;; the modified slippery-chicken object
 ;;; 
 ;;; SYNOPSIS
-(defmethod force-in-range ((sc slippery-chicken) players &key start-bar end-bar)
+(defmethod force-in-range ((sc slippery-chicken) players
+                           &rest keyargs &key &allow-other-keys)
 ;;; ****
   (map-over-bars
-     sc start-bar end-bar players
+   sc (second (member :start-bar keyargs)) (second (member :end-bar keyargs))
+   players
      #'(lambda (bar sc)
          (let ((ins (get-instrument-for-player-at-bar (player bar) bar sc)))
            (loop for e in (rhythms bar) do
-                (force-in-range ins e))))
-     sc)
+                (apply #'force-in-range (cons ins (cons e keyargs))))))
+     sc) ; NB this sc is necessary to pass it to the lambda fun
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

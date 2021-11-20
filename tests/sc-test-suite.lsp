@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:19:55 Fri Jul  9 2021 CEST
+;;; $$ Last modified:  13:43:56 Sat Nov 20 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -4181,7 +4181,7 @@
       (not (in-range i1 'as6))
       (= (nth-value 1 (in-range i1 'as6)) 1)
       ;; MDE Wed Nov 14 16:36:28 2018 -- yes, in range
-      (in-range (get-standard-ins 'vibraphone) 'cqs4)
+      (in-range (get-standard-ins 'vibraphone) 'cqs4 nil t t)
       ;; no, can't play 1/4 tones
       (not (in-range (get-standard-ins 'vibraphone) 'cqs4 nil nil nil))
       (in-range i1 (make-pitch 'c4))
@@ -4190,7 +4190,7 @@
       ;; MDE Thu Nov  1 18:50:00 2018 -- test artificial harmonics
       (nth-value 1 (in-range (get-standard-ins 'violin) 'e8 t t))
       ;; MDE Thu Dec  6 16:20:51 2018 -- missing notes allowed
-      (in-range (get-standard-ins 'bass-clarinet) 'dqf3 nil)
+      (in-range (get-standard-ins 'bass-clarinet) 'dqf3 nil nil t nil)
       ;; MDE Thu Dec  6 15:31:02 2018 -- no missing notes
       (not (in-range (get-standard-ins 'bass-clarinet) 'dqf3 nil t nil t))
       (not (in-range (get-standard-ins 'bass-clarinet) 'cqf2 t t nil t))
@@ -4207,8 +4207,16 @@
 ;;; MDE Wed Oct  9 13:22:55 2013 
 (sc-deftest test-pitch-force-in-range ()
   (let ((cl (get-data 'b-flat-clarinet
-                      +slippery-chicken-standard-instrument-palette+)))
+                      +slippery-chicken-standard-instrument-palette+))
+        ;; MDE Sat Nov 20 13:18:34 2021, Heidhausen
+        (rec (get-standard-ins 'consort-tenor-recorder)))
     (sc-test-check
+      ;; needs to go up 1 octave as cs4 is missing
+      (pitch= (make-pitch 'df5) (force-in-range rec (make-pitch 'df4)
+                                                :no-missing-notes t))
+      ;; ignore missing notes
+      (pitch= (make-pitch 'df4) (force-in-range rec (make-pitch 'df4)
+                                                :no-missing-notes nil))
       ;; now works with chords too
       (chord= (force-in-range cl (make-chord '(c3 ef4 b8)))
               (make-chord '(c4 ef4 b5)))
@@ -17717,14 +17725,14 @@
       ;; LMF Wed 21 Jul 2021
       ;; envelope argument for duration-scaler
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
-		:duration-scaler '(0 .1  100 2)
-		:do-src nil
+                :duration-scaler '(0 .1  100 2)
+                :do-src nil
                 :play nil :header-type clm::mus-aiff)
       (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 5000000)
       (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.aif")
       ;; and for src src-scaler
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
-		:src-scaler '(0 .5  100 2) :src-width 5
+                :src-scaler '(0 .5  100 2) :src-width 5
                 :play nil :header-type clm::mus-aiff)
       ;;(not (sleep 1))
       (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 5000000))))

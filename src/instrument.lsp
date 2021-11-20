@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:30:34 Sat Oct 23 2021 CEST
+;;; $$ Last modified:  13:38:53 Sat Nov 20 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1001,11 +1001,11 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 ;;;   the pitch is too high for an instrument whose :harmonics slot is
 ;;;   T. Default = NIL.
 ;;; - T or NIL to indicate whether a microtonal pitch should be considered
-;;;  'in-range' when the instrument can't play microtones. Default = T (as
-;;;  theoretically it's within the range even though not playable).
+;;;  'in-range' when the instrument can't play microtones. Default = NIL 
+;;;  (although theoretically within range it's not playable).
 ;;; - T or NIL to indicate whether pitches the instrument can't play (the
-;;;   missing-notes slot) should cause the method to return NIL. Default = NIL =
-;;;   even 'missing notes' will be considered in range.
+;;;   missing-notes slot) should cause the method to return NIL. Default = T =
+;;;   'missing notes' will not be considered in range.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns T if the specified pitch falls between the
@@ -1045,7 +1045,7 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 ;;; SYNOPSIS
 (defmethod in-range ((ins instrument) pitch
                      &optional sounding try-artificial-harmonic
-                       (impossible-microtones t) no-missing-notes)
+                       impossible-microtones (no-missing-notes t))
 ;;; ****
   (unless pitch (error "instrument::in-range: <pitch> cannot be nil."))
   (let* ((p (make-pitch pitch))
@@ -1095,7 +1095,8 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword argument:
 ;;; - :sounding. Whether the pitch should be considered a sounding pitch.
-;;;   Default = NIL. 
+;;;   Default = NIL.
+;;; - see other keywords to the in-range method as these are also available
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object within the instrument's range.
@@ -1119,35 +1120,49 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
   D4 
 |#
 ;;; SYNOPSIS
-(defmethod force-in-range ((ins instrument) pitch &key sounding)
+(defmethod force-in-range ((ins instrument) pitch
+                           &key sounding try-artificial-harmonic
+                             impossible-microtones (no-missing-notes t))
 ;;; ****
   (multiple-value-bind (in direction)
-      (in-range ins pitch sounding)
+      (in-range ins pitch sounding try-artificial-harmonic
+                impossible-microtones no-missing-notes)
     (if in
         pitch
-        (loop with too-low = (zerop direction)
+        ;; MDE Sat Nov 20 13:36:04 2021, Heidhausen -- most missing notes or
+        ;; microtones are at the bottom of an instrument's register, so assume
+        ;; 'too-low' if in-range returns nil rather than two values. NB this
+        ;; might at some point need refining with a new method to determine
+        ;; whether a pitch is towards the top of bottom of an instrument's range
+        ;; but let's for now see if we can get away with it :)
+        (loop with too-low = (or (not direction) (zerop direction))
            with inc = (if too-low 12 -12)
            with transp = inc
            for p = (transpose pitch transp)
            do
-           (if (in-range ins p sounding)
-               (return p)
-               (incf transp inc))))))
+             (if (in-range ins p sounding try-artificial-harmonic
+                           impossible-microtones no-missing-notes)
+                 (return p)
+                 (incf transp inc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Oct 19 16:13:47 2018 
-(defmethod force-in-range ((ins instrument) (c chord) &key sounding)
+(defmethod force-in-range ((ins instrument) (c chord)
+                           &rest keyargs &key &allow-other-keys)
   (setf (data c) (loop for p in (data c) collect
-                      (force-in-range ins p :sounding sounding)))
+                      (apply #'force-in-range (cons ins (cons p keyargs)))))
   ;; MDE Sat Dec 19 12:26:27 2020, Heidhausen
   (rm-duplicates c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Oct 19 16:22:11 2018
-(defmethod force-in-range ((ins instrument) (e event) &key ignore)
+(defmethod force-in-range ((ins instrument) (e event)
+                           &rest keyargs &key &allow-other-keys)
   (declare (ignore ignore))
   (unless (is-rest e)
-    (setf (pitch-or-chord e) (force-in-range ins (pitch-or-chord e))))
+    (setf (pitch-or-chord e) (apply #'force-in-range
+                                    (cons ins (cons (pitch-or-chord e)
+                                                    keyargs)))))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

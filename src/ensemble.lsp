@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  09:12:31 Fri Mar  5 2021 CET
+;;; $$ Last modified:  16:07:07 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -144,7 +144,6 @@
   (get-data player e nil)) ; no warning
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* ensemble/get-instrument
 ;;; DATE
 ;;; November 2nd 2018, Heidhausen
@@ -682,6 +681,58 @@ ensemble::players-exist: VLA is not a member of the ensemble
                                 (shuffle players :fix t :copy t :reset nil)))
               (pushnew tmp result :test #'equalp)))
     result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* ensemble/set-staff-names
+;;; DATE
+;;; November 27th 2021, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Set the staff-names slot of players in the ensemble. These will be used
+;;; instead of the instruments' staff-names slot when writing the score. In fact
+;;; the new names will be passed down to the instrument objects.
+;;; 
+;;; ARGUMENTS
+;;; - the ensemble object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - names: can be nil, whereup all the player names will be passed down to the
+;;;   instrument objects as the staff-name (as a downcased string). Or can be a
+;;;   list of player (symbols) whereupon the same will happen. Or it can be a
+;;;   list of (player staff-name) pairs where the staff-name will be downcased,
+;;;   if a symbol, or used directly if a string. If the player is
+;;;   multi-instrumental the staff-name can itself be a list whereupon the
+;;;   symbol/string will be handled similarly but the order should be the same
+;;;   as the list of instruments passed when initialising the player
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defmethod set-staff-names ((e ensemble) &optional names short-names)
+;;; ****
+  (unless names (setq names (players e)))
+  (unless short-names (setq short-names names))
+  (flet ((do-name (thing)
+           (mapcar #'(lambda (n)
+                       (if (symbolp n)
+                           (string-downcase (string n))
+                           n))
+                   ;; in case player plays 2+ instruments
+                   (force-list thing))))
+    (loop for pair in names
+       for spair in short-names
+       for player = (get-data (if (listp pair) (first pair) pair) e)
+       for name = (if (listp pair) (second pair) pair)
+       for sname = (if (listp spair) (second spair) spair)
+       do
+         (setf name (do-name name)
+               sname (do-name sname)
+               (staff-names player) name
+               (staff-short-names player) sname)
+       ;; pass down the staff names to the player's instruments 
+         (handle-staff-names player)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

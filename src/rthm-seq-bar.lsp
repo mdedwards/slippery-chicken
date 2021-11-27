@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:13:49 Sat Oct 23 2021 CEST
+;;; $$ Last modified:  18:02:38 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5900,6 +5900,10 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
          (setq last e))
     (consolidate-rests rsb)
     rsb))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod end-time ((rsb rthm-seq-bar))
+  (end-time (get-last-event rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

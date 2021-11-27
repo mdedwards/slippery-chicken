@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  14:32:56 Wed Jun  2 2021 CEST
+;;; $$ Last modified:  10:18:23 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -453,14 +453,18 @@
             (xml-articulation stream xml-mark nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun xml-simple-rhythm (num)
+;;; MDE Sat Nov 27 10:16:35 2021, Heidhausen -- added &optional so we can probe
+;;; further if e.g. tempi for xml aren't simple undotted values
+(defun xml-simple-rhythm (num &optional (error t))
   (let ((pos (+ 3 (log num 2))))
     (unless (float-int-p pos)
-      (error "rhythm::xml-simple-rhythm: argument must be a power of 2 ~
-              between 0.125 and 128: ~a" num))
-    (nth (floor pos) '("maxima" "long" "breve" "whole" "half" "quarter" "eighth"
-                       "16th" "32nd" "64th"  "128th"))))
+      (when error
+        (error "rhythm::xml-simple-rhythm: argument must be a power of 2 ~
+                between 0.125 and 128:~%~a" num))
+      (setq pos nil))
+    (when pos
+      (nth (floor pos) '("maxima" "long" "breve" "whole" "half" "quarter"
+                         "eighth" "16th" "32nd" "64th"  "128th")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

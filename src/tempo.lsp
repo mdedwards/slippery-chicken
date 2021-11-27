@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified:  10:04:42 Mon Jan 25 2021 CET
+;;; $$ Last modified:  10:56:52 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -211,17 +211,34 @@
                     ~&        </direction-type>~
                     ~&      </direction>~
                     ~&      <direction>"
-          (description tpo)))
-  (format stream "~&        <direction-type>~
-                  ~&          <metronome default-y=\"29\">~
-                  ~&            <beat-unit>~a</beat-unit>~
-                  ~&            <per-minute>~a</per-minute>~
-                  ~&          </metronome>~
-                  ~&        </direction-type>~
-                  ~&        <sound tempo=\"~a\"/>~
-                  ~&      </direction>"
-          (xml-simple-rhythm (beat-value tpo))
-          (bpm tpo) (bpm tpo)))
+            (description tpo)))
+  ;; MDE Sat Nov 27 10:25:44 2021, Heidhausen -- finally need to handle tempi
+  ;; with dotted beats 
+  (let ((beat-unit (xml-simple-rhythm (beat-value tpo) nil)) ; try the easy way
+        (dots 0)
+        rthm)
+    (unless beat-unit                   ; must be dotted
+      (setq rthm (make-rhythm (beat tpo))
+            beat-unit (xml-simple-rhythm (undotted-value rthm))
+            dots (num-dots rthm)))
+    (when (> dots 1)
+      (error "tempo::write-xml: <dots> should be 0 or 1: ~a" dots))
+    (format stream "~&        <direction-type>~
+                    ~&          <metronome default-y=\"29\">~
+                    ~&            <beat-unit>~a</beat-unit>~a~
+                    ~&            <per-minute>~a</per-minute>~
+                    ~&          </metronome>~
+                    ~&        </direction-type>~
+                    ~&        <sound tempo=\"~a\"/>~
+                    ~&      </direction>"
+            beat-unit
+            ;; so this is an example where the xml tag just needs stating,
+            ;; without a value (I would have guessed a value of 1 or 0 would be
+            ;; fine, but if zero dots then don't include <beat-unit-dot>
+            (if (zerop dots)
+                ""
+                (format nil "~%            <beat-unit-dot></beat-unit-dot>"))
+            (bpm tpo) (bpm tpo))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

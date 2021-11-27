@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:18:44 Sat Oct 23 2021 CEST
+;;; $$ Last modified:  09:35:27 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2164,8 +2164,8 @@ bar 45
                    current-event-num 0))
            ;; (print (bar-num current-bar))
            (unless current-bar
-             (error "slippery-chicken::next-event: no bar number ~a!" 
-                    current-bar-num))
+             (error "slippery-chicken::next-event: no bar number ~a for ~a!" 
+                    current-bar-num player))
            ;; (format t "~&bar ~a cen ~a nr ~a"
            ;; (bar-num current-bar) current-event-num (num-rhythms current-bar))
            (if (< current-event-num (num-rhythms current-bar))

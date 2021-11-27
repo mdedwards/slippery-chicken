@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:43:56 Sat Nov 20 2021 CET
+;;; $$ Last modified:  10:57:42 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3104,6 +3104,11 @@
       (equalp (beat tt2) 'q.)
       (= (beat tt3) 2)
       (= (qtr-dur tt1) 1.0)
+      ;; MDE Sat Nov 27 10:54:56 2021, Heidhausen
+      (search "<beat-unit-dot></beat-unit-dot>"
+              (write-xml tt2))
+      (not (search "<beat-unit-dot></<beat-unit-dot>"
+                   (write-xml tt3)))
       ;; MDE Mon Mar 19 18:10:55 2012 -- 
       (equal-within-tolerance (qtr-dur tt2) (* (/ 60.0 96) (/ 1.0 1.5)))
       (equal-within-tolerance (qtr-dur tt3) (/ (/ 60 76) 2.0))

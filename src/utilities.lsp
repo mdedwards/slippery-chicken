@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:33:07 Thu Aug 26 2021 CEST
+;;; $$ Last modified:  10:26:54 Thu Nov 25 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5651,6 +5651,10 @@ RETURNS:
 ;;; MDE Mon Jul 15 13:50:21 2019
 (defun load-from-same-dir (file)  
   (load (path-from-same-dir file)))
+
+;;; MDE Thu Nov 25 10:26:36 2021, Heidhausen
+(defun compile-from-same-dir (file)  
+  (load (compile-file (path-from-same-dir file))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Thu 6 Feb 2020 17:41:19 GMT

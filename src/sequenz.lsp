@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified:  14:12:35 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  12:15:04 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,6 +101,7 @@
                            (warn-ties t)
                            (update-write-bar-nums nil))
   (declare (ignore current-section warn-ties update-write-bar-nums))
+  ;; (print tempo-map)
   (setf (start-bar s) start-bar
         (start-time s) start-time
         (start-time-qtrs s) start-time-qtrs

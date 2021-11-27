@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  13:16:49 Sat Nov 20 2021 CET
+;;; $$ Last modified:  11:04:32 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7808,7 +7808,6 @@ NIL
 ;;; add a part like this in the middle of the score--the new part will be added
 ;;; to the end of the last group of the ensemble (bottom of score) so make sure
 ;;; to add parts in the order you want them.
-;;;
 ;;;
 ;;; In the third case, you can add a new section to an exisitng part, but you
 ;;; cannot add a new section to a part that does not exist.

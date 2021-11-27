@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:35:27 Sat Nov 27 2021 CET
+;;; $$ Last modified:  12:19:42 Sat Nov 27 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1259,6 +1259,10 @@
     (when (get-sc-config 'update-slots-handles-ties)
       ;; MDE Thu Sep 13 18:42:59 2018 -- surely!
       (handle-ties sc))
+    ;; MDE Sat Nov 27 12:17:44 2021, Heidhausen -- in case we've setf the
+    ;; tempo-map, we need to add new tempo-change slots to the events of the
+    ;; first bar of each voice where tempo changes in the new map
+    (update-events-tempo sc)
     (when update-write-bar-nums
       (set-write-bar-num sc))))
 

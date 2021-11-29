@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  16:36:44 Fri Nov 19 2021 CET
+;;; $$ Last modified:  18:55:34 Mon Nov 29 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -238,7 +238,10 @@
 (defmethod print-simple ((r rhythm) &optional written (stream t))
   ;; DJR Thu 19 Sep 2019 14:03:02 BST
   ;; Added a ~% to make things more legible.
-  (format stream "~%~a~a ~a~a, "
+  ;; MDE Mon Nov 29 18:54:55 2021, Heidhausen -- removed Dan's ~% because it was
+  ;; leading to too many new lines especially when trying to print a bunch of
+  ;; objects 
+  (format stream "~a~a ~a~a, "
           (if (is-tied-to r) "+" "")
           (cond ((is-rest r) "rest")
                 ((and (event-p r) (pitch-or-chord r))

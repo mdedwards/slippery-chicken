@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:26:54 Thu Nov 25 2021 CET
+;;; $$ Last modified:  09:29:04 Tue Nov 30 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3951,7 +3951,7 @@ WARNING:
 (defun remove-all (rm-list list &optional (test #' eq))
 ;;; ****
   (loop for rm in rm-list do
-       (setf list (remove rm list :test test)))
+       (setq list (remove rm list :test test)))
   list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

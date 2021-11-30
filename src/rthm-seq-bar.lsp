@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  18:02:38 Sat Nov 27 2021 CET
+;;; $$ Last modified:  16:30:34 Tue Nov 30 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4378,8 +4378,6 @@ data: (2 4)
                         (accidental-in-parentheses fp) t))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sun Dec 25 21:29:01 EST 2011 SAR Added robodoc info
 ;;; ****m* rthm-seq-bar/transpose
 ;;; DESCRIPTION
 ;;; Transpose the pitches of event objects stored in a rthm-seq-bar object by a
@@ -5153,8 +5151,6 @@ collect (written-pitch-or-chord p))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Dec 26 14:32:42 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq-bar/set-midi-channel
 ;;; DESCRIPTION
 ;;; Set the MIDI-channel and microtonal MIDI-channel for the pitch object
@@ -5211,10 +5207,6 @@ collect (midi-channel (pitch-or-chord p))))
        (set-midi-channel e midi-channel microtonal-midi-channel)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Dec 26 14:49:27 EST 2011: Added robodoc info
-;;; SAR Sat Dec 31 09:06:03 EST 2011: Added DATE block
-
 ;;; ****m* rthm-seq-bar/reset-8va
 ;;; DATE
 ;;; 22 Sep 2011 
@@ -5904,6 +5896,23 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod end-time ((rsb rthm-seq-bar))
   (end-time (get-last-event rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Nov 30 16:25:26 2021, Heidhausen 
+(defmethod retain-initial-tied-to ((rsb rthm-seq-bar))
+  (loop for r in (rhythms rsb) do
+     ;; note that any tied-from rhythms/events before this bar will not be
+     ;; processed
+       (unless (is-tied-to r)
+         (unless (is-rest r) (force-rest r))))) ; delete any notes after the tie
+
+(defmethod remove-initial-tied-to ((rsb rthm-seq-bar))
+  (loop for r in (rhythms rsb) do
+     ;; note that any tied-from rhythms/events before this bar will not be
+     ;; processed
+       (if (is-tied-to r)
+           (force-rest r)
+           (return)))) ; rest or attacked note forces a break
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

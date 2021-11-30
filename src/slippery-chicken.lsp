@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:19:42 Sat Nov 27 2021 CET
+;;; $$ Last modified:  09:05:09 Tue Nov 30 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6955,7 +6955,9 @@ data: NIL
 ;;;   documentation for the respell-notes method for more detail. Default = T.
 ;;; - :file. The full path of the file to write. Default will be derived from
 ;;;   the title slot of the slippery-chicken object and will be written into the
-;;;   default directory e.g. (set-sc-config 'default-dir "~/Desktop") 
+;;;   default directory e.g. (set-sc-config 'default-dir "~/Desktop")
+;;; - :suffix. A string to append to the default file name before the .xml
+;;;   extension. Default = "".
 ;;; 
 ;;; RETURN VALUE
 ;;; The file name written, as a string.
@@ -6972,9 +6974,9 @@ data: NIL
                         (right-page-margins '(20 20 20 20))
                         players hide-players start-bar end-bar
                         (respell-notes t)
-                        (file (format nil "~a_~a.xml"
-                                      (get-sc-config 'default-dir)
-                                      (filename-from-title (title sc)))))
+                        ;; MDE Tue Nov 30 09:01:48 2021, Heidhausen
+                        (suffix "") 
+                        file)
 ;;; ****
   (unless start-bar
     (setq start-bar 1))
@@ -6982,6 +6984,11 @@ data: NIL
     (setq end-bar (num-bars sc)))
   (when respell-notes
     (respell-notes sc respell-notes))
+  (unless file
+    (setq file (format nil "~a_~a~a.xml"
+                       (get-sc-config 'default-dir)
+                       (filename-from-title (title sc))
+                       suffix)))
   (with-open-file 
       (xml file :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)

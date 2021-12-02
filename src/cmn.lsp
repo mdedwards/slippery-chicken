@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  16:58:41 Fri Mar 26 2021 CET
+;;; $$ Last modified:  15:19:07 Thu Dec  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -194,6 +194,8 @@
              (lhp (list (left-hand-pizzicato (dx dx) (dy dy) the-text)))
              (bartok (list (bartok-pizzicato (dx dx) (dy dy) the-text)))
              (s (list (staccato (dx dx) (dy dy) the-text)))
+             ;; MDE Thu Dec  2 15:19:05 2021, Heidhausen
+             (ss (list (wedge (dx dx) (dy dy) the-text)))
              (nail (list (fingernail (dx dx) (dy dy) the-text)))
              (stopped (list (stopped-note (dx dx) (dy dy) the-text)))
              (as (list (accent (dx dx) (dy dy) the-text) staccato))

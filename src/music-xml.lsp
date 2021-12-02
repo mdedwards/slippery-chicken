@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  10:18:23 Sat Nov 27 2021 CET
+;;; $$ Last modified:  15:17:55 Thu Dec  2 2021 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -209,6 +209,7 @@
                   ;; strings, in which case there'll be 2+ xml-articulation
                   (a "accent")       ; accent
                   (s "staccato")
+                  (ss "staccatissimo") ; MDE Thu Dec 2 15:16:27 2021, Heidhausen
                   (as '("accent" "staccato"))
                   (at '("accent" "tenuto"))
                   (ts "detached-legato")

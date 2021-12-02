@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  12:55:28 Fri May  7 2021 CEST
+;;; $$ Last modified:  15:18:00 Thu Dec  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,6 +101,7 @@
            (sv "^\"senza vib.\" ")
            (poco-crini "^\"poco crini\" ")
            (s "-. ")
+           (ss "-! ") ; MDE Thu Dec 2 15:16:27 2021, Heidhausen
            (nail (no-lp-mark 'nail))
            (stopped (no-lp-mark 'stopped))
            (as "->-. ")

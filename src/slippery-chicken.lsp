@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:06:09 Thu Dec  2 2021 CET
+;;; $$ Last modified:  16:25:17 Thu Dec  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7337,9 +7337,6 @@ EVENT: start-time: 11.000, end-time: 11.500,
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 10 18:34:38 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/transpose-events 
 ;;; DESCRIPTION
 ;;; Transpose the pitches of event objects in a specified region and a

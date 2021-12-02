@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:05:09 Tue Nov 30 2021 CET
+;;; $$ Last modified:  10:06:09 Thu Dec  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5541,7 +5541,7 @@ seq-num 5, VN, replacing G3 with B6
                bar-num (first bar-num))
          (when (> dc 35)
            (error "slippery-chicken::set-rehearsal-letters: ~
-                  Can only make rehearsal letters ~%from A-Z: ~a" 
+                   Can only make rehearsal letters ~%from A-Z: ~a" 
                   (rehearsal-letters sc))))
      (loop 
         for player in players 

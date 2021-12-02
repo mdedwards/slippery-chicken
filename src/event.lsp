@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:17:44 Fri Nov 26 2021 CET
+;;; $$ Last modified:  15:32:22 Thu Dec  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2424,7 +2424,7 @@ NIL
         accidental pitch-notehead
         ;; these must come before </note> i.e. in during var
         (notations '(beg-sl end-sl beg-phrase end-phrase beg-gliss end-gliss
-                     a s te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
+                     a s ss te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
                      long-pause t3 arp lhp bartok nail flag downbow upbow open
                      ;; harm 0 1 2 3 4 5)) ; fingerings now handled by integerp
                      harm))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:09:38 Sat Nov 27 2021 CET
+;;; $$ Last modified:  23:23:12 Thu Dec  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -476,6 +476,8 @@
                                        ;; should we update the player slot of
                                        ;; each event? 
                                        (write-player nil)
+                                       ;; MDE Thu Dec  2 23:22:18 2021
+                                       (update-slots t)
                                        ;; 31.3.11: if this is t, then rthms > a
                                        ;; beat will case an error 
                                        (auto-beam-check-dur t)
@@ -494,7 +496,7 @@
   (replace-multi-bar-events (piece sc) player start-bar num-bars new-events
                             :tempo-map (tempo-map sc)
                             :sc sc :warn warn
-                            :beat beat
+                            :beat beat :update-slots update-slots
                             :write-player write-player
                             :delete-beams delete-beams
                             :delete-tuplets delete-tuplets

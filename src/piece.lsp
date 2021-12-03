@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  16:24:47 Wed Dec 30 2020 CET
+;;; $$ Last modified:  23:22:41 Thu Dec  2 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -796,6 +796,8 @@ BAR-HOLDER:
                                        (write-player nil)
                                        ;; MDE Fri Aug 29 10:18:29 2014 
                                        (warn t)
+                                       ;; MDE Thu Dec  2 23:22:18 2021
+                                       (update-slots t)
                                        (tuplet-bracket nil))
   (object-is-nil? tempo-map "piece::replace-multi-bar-events" 'tempo-map)
   (object-is-nil? sc "piece::replace-multi-bar-events" 'sc)
@@ -875,7 +877,9 @@ BAR-HOLDER:
     (when (and warn new-events)
       (warn "piece::replace-multi-bar-events: still some events left over: ~a"
             new-events))
-    (update-slots p tempo-map (start-time p) (start-time-qtrs p) (start-bar p))
+    (when update-slots
+      (update-slots p tempo-map (start-time p) (start-time-qtrs p)
+                    (start-bar p)))
     total-ate-rthms))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

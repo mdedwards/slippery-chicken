@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:32:22 Thu Dec  2 2021 CET
+;;; $$ Last modified:  17:23:27 Fri Dec  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -483,7 +483,6 @@
              (marks e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* event/remove-dynamics
 ;;; DESCRIPTION
 ;;; Remove all dynamic symbols from the list of marks attached to a given event

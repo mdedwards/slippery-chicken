@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  18:55:34 Mon Nov 29 2021 CET
+;;; $$ Last modified:  17:29:31 Fri Dec  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -484,7 +484,6 @@
   (equal-within-tolerance (value r1) (value r2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* rhythm/rhythm/
 ;;; DESCRIPTION
 ;;; Determines the ratio of one rhythm object's duration to that of a second
@@ -555,9 +554,6 @@
   (whole-num-p (rhythm/ r1 r2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 18.12.11 SAR: Added robodoc info
-
 ;;; ****m* rhythm/add-mark
 ;;; DESCRIPTION
 ;;; Add an articulation, dynamic, slur or any other mark to a rhythm (also
@@ -1705,6 +1701,25 @@ NIL
 (defmethod end-tie ((r rhythm))
 ;;; ****
   (and (not (is-tied-from r)) (is-tied-to r)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rhythm/has-dynamic
+;;; DATE
+;;; December 3rd 2023
+;;; 
+;;; DESCRIPTION
+;;; Determine whether a rhythm object has any dynamics in its marks slot.
+;;; 
+;;; ARGUMENTS
+;;; - a rhythm object
+;;; 
+;;; RETURN VALUE
+;;; The dynamic as a symbol (e.g. pp) or NIL if there are none.
+;;; 
+;;; SYNOPSIS
+(defmethod has-dynamic ((r rhythm))
+;;; ****
+  (first (some #'is-dynamic (marks r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

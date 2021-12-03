@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:57:42 Sat Nov 27 2021 CET
+;;; $$ Last modified:  12:03:14 Fri Dec  3 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -18030,7 +18030,19 @@
           :rthm-seq-map '((1 ((vn (1 1 1))))))))
     (sc-test-check
       (check-slurs mini-1)
-      (not (check-slurs mini-2)))))
+      (not (check-slurs mini-2 t))
+      ;; MDE Fri Dec  3 11:11:38 2021, Heidhausen
+      (print '1***********)
+      (not (check-slurs mini-2 t)) ; this should fail but pass next time
+      (print '2***********)
+      (check-slurs mini-2 t)
+      (print '3***********)
+      (force-rest (get-event mini-2 3 2 'vn))
+      ;;(add-mark-to-note mini-2 3 2 'vn 'beg-sl)
+      (not (check-slurs mini-2 t))
+      (not (check-slurs mini-2 t))
+      (check-slurs mini-2)
+      )))
 
 ;;; SAR Mon May 14 18:14:37 BST 2012
 (sc-deftest test-sc-check-phrases ()

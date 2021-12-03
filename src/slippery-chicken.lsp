@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:40:47 Fri Dec  3 2021 CET
+;;; $$ Last modified:  12:05:51 Fri Dec  3 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5625,6 +5625,11 @@ seq-num 5, VN, replacing G3 with B6
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to attempt a fix of any problems arising. NB depending on the
+;;; number of problems, this method might need to be called several times before
+;;; a clean pass is returned. 
 ;;; 
 ;;; RETURN VALUE
 ;;; 
@@ -5693,6 +5698,11 @@ begin-slur without matching end-slur:
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to attempt a fix of any problems arising. NB depending on the
+;;; number of problems, this method might need to be called several times before
+;;; a clean pass is returned. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Prints T if no warnings are made, otherwise prints warnings to the listener

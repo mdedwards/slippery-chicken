@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:05:51 Fri Dec  3 2021 CET
+;;; $$ Last modified:  17:10:34 Wed Dec  8 2021 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5686,9 +5686,9 @@ begin-slur without matching end-slur:
 
 |#
 ;;; SYNOPSIS
-(defmethod check-slurs ((sc slippery-chicken) &optional fix)
+(defmethod check-slurs ((sc slippery-chicken) &optional fix (warn t))
 ;;; ****
-  (check-slurs-aux sc "slurs" #'begin-slur-p #'end-slur-p fix))
+  (check-slurs-aux sc "slurs" #'begin-slur-p #'end-slur-p fix warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DESCRIPTION
@@ -5747,15 +5747,15 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 |#
 ;;; SYNOPSIS
-(defmethod check-phrases ((sc slippery-chicken) &optional fix)
+(defmethod check-phrases ((sc slippery-chicken) &optional fix (warn t))
 ;;; ****
-  (check-slurs-aux sc "phrases" #'begin-phrase-p #'end-phrase-p fix))
+  (check-slurs-aux sc "phrases" #'begin-phrase-p #'end-phrase-p fix warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  MDE Fri Dec 3 10:39:31 2021, Heidhausen -- also check for slurs over
 ;;; rests and try to fix, if desired
 (defmethod check-slurs-aux ((sc slippery-chicken) name test-beg test-end
-                            &optional fix)
+                            &optional fix (warn t))
   (flet ((rm-prob (e &optional end)     ; beg-* is default
            (when fix
              (cond ((string= name "phrases")
@@ -5775,21 +5775,24 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
               (if (is-rest e)         ; MDE Fri Dec  3 10:40:34 2021, Heidhausen
                   (progn
                     (when in-slur
-                      (warn "slippery-chicken::check-~a (~a): began ~
-                             ~%at bar ~a but ties over rest in bar ~a"
-                            name player (bar-num last-beg-slur) (bar-num e))
+                      (when warn
+                        (warn "slippery-chicken::check-~a (~a): began ~
+                               ~%at bar ~a but ties over rest in bar ~a"
+                              name player (bar-num last-beg-slur) (bar-num e)))
                       (setq ok nil)
                       (rm-prob last-beg-slur))
                     (when (funcall test-beg e)
-                      (warn "slippery-chicken::check-~a (~a): ~
-                             ~%at bar ~a: can't begin on a rest."
-                            name player (bar-num e))
+                      (when warn
+                        (warn "slippery-chicken::check-~a (~a): ~
+                               ~%at bar ~a: can't begin on a rest."
+                              name player (bar-num e)))
                       (setq ok nil)
                       (rm-prob e))
                     (when (funcall test-end e)
-                      (warn "slippery-chicken::check-~a (~a): ~
-                             ~%at bar ~a: can't end on a rest."
-                            name player (bar-num e))
+                      (when warn
+                        (warn "slippery-chicken::check-~a (~a): ~
+                               ~%at bar ~a: can't end on a rest."
+                              name player (bar-num e)))
                       (setq ok nil)
                       (rm-prob e t)))
                   (cond
@@ -5797,10 +5800,11 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
                      (if in-slur
                          (progn
                            (setq ok nil)
-                           (warn "slippery-chicken::check-~a (~a): began ~
-                                  ~%at bar ~a but already began ~
-                                  at bar ~a"
-                                 name player (bar-num e) in-slur)
+                           (when warn
+                             (warn "slippery-chicken::check-~a (~a): began ~
+                                    ~%at bar ~a but already began ~
+                                    at bar ~a"
+                                   name player (bar-num e) in-slur))
                            (rm-prob e))
                          (setq in-slur (bar-num e)
                                last-beg-slur e)))
@@ -5811,14 +5815,16 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
                          (progn
                            (rm-prob e t)
                            (setq ok nil)
-                           (warn "slippery-chicken::check-~a (~a): ended ~
-                                  at bar ~a~%but no begin slur"
-                                 name player (bar-num e)))))))
+                           (when warn
+                             (warn "slippery-chicken::check-~a (~a): ended ~
+                                    at bar ~a~%but no begin slur"
+                                   name player (bar-num e))))))))
             finally
               (when in-slur
                 (rm-prob last-beg-slur)
-                (warn "slippery-chicken::check-~a (~a): end mark missing at ~
-                       end of piece" name player)))
+                (when warn
+                  (warn "slippery-chicken::check-~a (~a): end mark missing at ~
+                         end of piece" name player))))
        finally (return ok))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

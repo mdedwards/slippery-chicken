@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:03:14 Fri Dec  3 2021 CET
+;;; $$ Last modified:  19:47:11 Tue Dec  7 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19643,6 +19643,7 @@
                                 :minimum -.5 :maximum 2.5 :amp-env '(0 .1 100 1)
                                 :duration 60
                                 :sndfile "/tmp/cosine.wav"))
+        ;; (s2 (make-control-sine :frequency 2 :minimum -3 :maximum 7))
         (saw (make-control-sawtooth :frequency '(0 4 80 1/4 100 1/4) :minimum 0
                                     :maximum 1 :duration 60))
         ;; we couldn't have a freq of 1000 unless rate was >= 2000

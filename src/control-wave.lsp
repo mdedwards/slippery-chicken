@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified:  08:40:56 Thu Mar 26 2020 CET
+;;; $$ Last modified:  17:24:27 Wed Dec  8 2021 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -89,10 +89,12 @@
    ;; type of waveform to use. one of sine, cosine, sawtooth, triangle,
    ;; square, pulse (single sample of 1.0 follwed by zeros)
    (type :accessor type :type symbol :initarg :type :initform 'sine)
-   ;; waveshaping transfer function. x vals from -1 to 1 (and usually y values
-   ;; also) otherwise there's a strong chance we'll fail. this is only used by
+   ;; waveshaping transfer function. with defauly minimum/maximum/amp slots, x
+   ;; vals range from -1 to 1 (and usually y values also). This is only used by
    ;; the get-data and get-last methods i.e. not during the generation of the
-   ;; wave (thus we can change this slot on the fly).
+   ;; wave (thus we can change this slot on the fly). NB take care to provide a
+   ;; transfer function that covers the whole range of minimum to maximum
+   ;; multiplied by amp!
    (transfer :accessor transfer :type list :initarg :transfer :initform nil)
    ;; amplitude scaler for the whole waveform
    (amp :accessor amp :type number :initarg :amp :initform 1.0)

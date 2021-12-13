@@ -89,7 +89,7 @@ git clone https://github.com/slime/slime.git
 git clone -n https://github.com/mdedwards/slippery-chicken.git --depth 1
 mv slippery-chicken sc
 cd sc
-mkdir bin
+# mkdir bin
 git checkout HEAD src
 cd ..
 

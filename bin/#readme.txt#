@@ -1,0 +1,2 @@
+This directory will contain all the fast-load files (e.g. *.fasl) created during
+the compilation process. It will be empty 

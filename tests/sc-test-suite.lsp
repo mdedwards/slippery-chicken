@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:47:11 Tue Dec  7 2021 CET
+;;; $$ Last modified:  12:14:08 Mon Dec 20 2021 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20051,7 +20051,226 @@
         (write-reaper-file rf :file "/tmp/reaper-test.rpp")
         (assoc-list-p (tracks rf))
         (file-write-ok "/tmp/reaper-test.rpp" 4200)))))
-          
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Dec 20 12:10:05 2021, Heidhausen -- an example from Simon Bahr that
+;;; was causing problems for handle-ties
+
+(sc-deftest test-simons-remote ()
+  (let ((+remote-control+
+         (make-slippery-chicken  
+          '+remote-control+ 
+          :title "Remote Control" 
+          :instrument-palette
+          '((rh (:lowest-written f3 :highest-written c6
+                 :starting-clef treble
+                 :chords t))
+            (lh (:lowest-written c2 :highest-written g4
+                 :starting-clef bass
+                 :chords t)))
+          :ensemble '(((rh (rh :midi-channel 1))
+                       (lh (lh :midi-channel 2))))
+          :tempo-map '((1 (q 60)))
+          :set-palette '((A ((f2 c4 e4 f4 fs4 g4 gs4 a4 ds5 gs5 as5 b5)))
+                         (A1 ((f2 c4 e4 f4 g4 a4)))
+                         (A2 ((e4 fs4 gs4 ds5 gs5 as5 b5)))
+                         (B ((c2 g2 bf2 df3 f3 g3 bf3 df4 d4 bf4 f5 g5)))
+                         (B1 ((c2 g2 f3 g3 d4 f5 g5)))
+                         (B2 ((bf2 df3 f3 bf3 df4 bf4)))
+                         (C ((cs2 e2 d3 ds3 e3 gs3 a3 b4 c5 d5 e5 fs5)))
+                         (C1 ((cs2 e2 ds3 e3 gs3 a3 b4 e5 fs5)))
+                         (C2 ((d3 e3 a3 c5 d5 e5 fs5)))
+                         (D ((d2 ds2 fs2 gs2 a2 b2 c3 fs3 b3 ds4 cs5 a5)))
+                         (D1 ((fs2 a2 fs3 cs5 a5)))
+                         (D2 ((b2 fs3 b3 ds4 a5))) 
+                         (D3 ((ef2 af2 c3 ef4)))
+                         (D4 ((d2 fs2 a2 c3 a5))))
+          :set-map '((A (A1 A1 A2 A1 A2 A2 A1 A2 A))
+                     (B (B1 B1 B2 B1 B2 B2 B1 B2 B))
+                     (C (C1 C1 C2 C1 C2 C2 C1 C2 C))
+                     (D (D4 D2 D1 D3 D2 D4 D3 D1 D)))
+          :avoid-melodic-octaves nil
+          :rthm-seq-palette
+          '(;; 4x Intro/Outro
+            (IO1
+             ((((4 4) - e (32) 32 s - (s) s { 3 - te ts - } 
+                - s. 32 - { 3 - (ts) ts (ts) - } - (32) 32 s - { 3 - ts (ts) ts - })
+               (w)
+               (h (h))
+               ( - e (32) 32 s - - (s) s - { 3 - te ts - } 
+                   - s. 32 - { 3 - (ts) ts (ts) - } - (32) 32 s - { 3 - ts (ts) ts - })
+               (- e (e) - - (s) s (e) -
+                  - 32 s (32) (32) s (32) - - s (s) (e) - )
+               ({ 3 ts ts ts } s s - s s e - (h))
+               (- e (e) - - (s) s (e) -
+                  - 32 s (32) (32) s (32) - - s (s) (e) - )
+               ({ 3 ts ts ts } s s - s s e - - s s s s -
+                  { 3 ts ts ts } { 3 ts ts ts } ))
+              :pitch-seq-palette (2 2 2 2 2 2 2 2 2 2 2 2 2
+                                    2 2
+                                    2 2 2 2 2 2 2 2 2 2 2 2 2
+                                    3 3 3 3 3 3
+                                    1 2 3 4 5 6 7 8
+                                    3 3 3 3 3 3
+                                    3 4 5 6 7 8 7 6 5 4 3 4 3 2 1 3 2 1)))
+            (IO2
+             ((((4 4) q. e q e e) (e e e e q e e)
+               (q (e) e q e e) (q e e e e e e)
+               (q. e q e e) (e e e e e e e e)
+               (q. e q q) (q q h))
+              :pitch-seq-palette (6 6 7 6 6 5 4 3 7 5 4 3
+                                    5 6 7 8 7 3 2 1 2 3 4 5
+                                    5 6 5 4 3 2 3 4 5 1 2 3 4
+                                    7 6 7 8 6 7 8)))
+            (IO3
+             ((((4 4) { 3 - te (te) te - } { 3 - te (te) te - }
+                (q) { 3 - te (te) te - } )
+               (q { 3 - te (te) te - } { 3 - (te) te (te) - } (q))
+               ( { 6 - ts ts ts ts ts ts - } q
+                   { 6 - ts ts ts ts ts ts - } q )
+               ( q (q) q. { 3 - ts ts ts - } )
+               ( q (q) q. { 3 - ts ts ts - } )
+               ( { 3 - ts (ts) ts (ts) ts (ts) - } q
+                   { 6 - ts ts ts ts ts ts - } q )
+               ( q (q) q. { 3 - ts ts ts - } )
+               ( { 3 - te (te) te - } { 3 - te (te) te - }
+                   (q) { 3 - te (te) te - } ))
+              :pitch-seq-palette (1 3 2 4 3 5
+                                    10 9 8 9
+                                    2 3 4 3 4 5 6 3 4 5 4 5 6 7
+                                    4 9 2 8 5
+                                    4 6 9 3 2
+                                    1 3 6 2 4 6 8 9 10
+                                    5 3 0 1 4
+                                    9 7 8 6 7 5 6 4)))
+            (IO4
+             ((((4 4) w ) ( (q.) s (s) (s) s (q.) )
+               ( (h) (e.) s (q) ) ( w )
+               ( w ) ( (q.) s (s) (s) s (q.) )
+               ( (h) (e.) s (q) ) ( w ))
+              :pitch-seq-palette (6 5 7 4 8 3 6 9 1 9)))
+            ;; 9x Main
+            (M1
+             ((((4 4) - e e - - s s s s - (s) s (s) s { 3 - te te te - } )
+               ( - s s s (s) -  { 3 - te te (te) - } q. (e) ))
+              :pitch-seq-palette
+              (((11) 10 6 5 (11) 10 9 8 7 11 (10) 9 (11) (10) 8 (7) (11))
+               (11 10 9 11 10 (8) 7 11 10 6 (5) 11 (10) 9 (8) (7) 11))))
+            (M2
+             ((((3 4) { 3 - (te) tq - } { 3 - (tq) te - } { 5 - (fe.) fe - } )
+               ( { 5 - (fe.) fe - } { 5 - (fe.) fe - } q )
+               ( s (s) s (s) e (e) (s) s (e) )
+               ((5 4) q (q) q (q) q)
+               ( (q) q (q) q (q)))
+              :pitch-seq-palette
+              ((1 2 3 4 (5) 6
+                  5 4 (7) 2
+                  3 4 (5) 6 7)
+               (1 2 (8) 4 5
+                  4 3 2 (6)
+                  2 3 4 5 (6) 7))))
+            (M3
+             ((((4 4) { 3 - tq te - } (q) 
+                { 3 - (te) tq - } (q) )
+               ((3 4) q { 5 - (fe.) fe - } (q) )
+               ( { 5 - fe. fe - } +h )
+               ( { 3 - ts (ts) ts (ts) ts (ts) - } - s (s) s (s) - q)
+               ( - s (s) s (s) - { 5 - (fe.) fe - } { 3 - te te te - } ))
+              :pitch-seq-palette
+              ((1 2 (6) 4 (5) 6
+                  (5)
+                  6 7 (8) 6 7 (8) 6 7 (8) 6 7 (8))
+               (7
+                (8) 9 10 (8) 9 10 (8) 9 10 (8) 9 10
+                9 (8) 7 6 (6) 5))))
+            (M4
+             ((((3 4) { 5 - fe. fe - } { 5 - fe. fe - } q )
+               ( { 5 - fe. fe - } { 3 - tq te - } q )
+               ((5 4) q q q q q)
+               ( h. { 3 - +tq te - } { 3 - te te te - })
+               ((4 4) { 3 - ts ts ts - } e - s s s (s) - (q)
+                { 5 - fs fs fs (fe) - } ))
+              :pitch-seq-palette
+              (((10) (11) (12)
+                (7) 8 10 1 3 5 (7) 8 10
+                (13) (11) (12) 5 5
+                9 7 5 1 3 5 9 7 5 7 9 5 3)
+               (10 9 7 6 (4) 3
+                   1 2 (4) 5 (7) 8 1 2 (5) 6 7 8
+                   (9) (9)
+                   10 9 7 6 4 3 10 9 7 9))))
+            (M5
+             ((((1 4) q )
+               ((6 8) - e e e - q. )
+               ( - e e s s - q. )
+               ((3 4) - e e - q (q))
+               ( h. ))
+              :pitch-seq-palette
+              ((2 3 4 5
+                  (13) 4 5 6 7 (8)
+                  2 (13) 4 5)
+               (1 4 5 (12) 9 7
+                  8 5 2 (10)
+                  (11) 4 8 7))))
+            (M6
+             ((((2 4) h ) ( h ) ( h )
+               ((4 4) { 3 - te te te - } q h )
+               ((3 4) { 6 - ts ts ts ts te - } +h )
+               ((4 4) - s s s s - q +h ))
+              :pitch-seq-palette
+              (((10)
+                (10) (12)
+                1 2 3 4 (5) 1 2 3 4 (5) 10 9 8 7 (6))
+               ((10)
+                (10) (9)
+                10 9 8 7 (6) 10 9 8 7 (6) 1 2 3 4 (5)))))
+            (M7
+             ((((3 4) { 3 - (tq) te - } - (s) s (e) - (q) )
+               ( { 3 - (tq) te - } - (s) s (e) - (q) )
+               ( { 3 - (tq) te - } - (s) s s (s) - q )
+               ( { 5 - (fe.) fe - } - (s) s (e) - (q) )
+               ( { 3 - (tq) te - } - (e) s (s) - (q) )
+               ( - e e - - s s (e) - (q)))
+              :pitch-seq-palette
+              ((6 7 (5) 4 (8) 9 3 2 9 8 (11) 2 3 4 5 (6))
+               (12 11 10 9 8 (7) 1 3 4 7 (8) 3 4 5 6 7))))
+            (M8
+             ((((4 4) - e (e) - { 3 - te (te) te - } { 3 - tq te - } (q) )
+               ( { 5 - (fe.) fs fs - } { 5 - fs fs fe. - } +h )
+               ( { 6 - ts ts ts ts te - } +q +h )
+               ( - s s s s - +q +h )
+               ( - s s (e) - { 5 - fs fs fe. - } +h ))
+              :pitch-seq-palette
+              ((2 3 (14) 5 9 8 7 (6) 5 9 8 7 (6) 5
+                  3 (11) 4 (5) (9) 9 7 5 3 (11))
+               (2 3 (14) 5 9 8 7 (6) 5 9 8 7 (6) 5
+                  9 7 5 3 (11) 3 (11) 4 (5) (9)))))
+            (M9
+             ((((4 4) q \+8 (e) - e e - { 3 - te te te - } )
+               ( { 3 - te te (te) - } (s) s (s) s - s s s s - - s s s (s) - ))
+              :pitch-seq-palette
+              (((11) (10) 9 11 10 8 (7) 11 (10) 6 5 11 (10) 9 (8) 7 (11))
+               (11 10 9 (11) 11 10 8 (7) 11 10 (6) 5 10 (9) 8 (7) 11))))
+            ;; 1x ZAPP!
+            (zapp-up
+             ((((12 4) q q q q q q q q q q q q))
+              :pitch-seq-palette (1 2 3 4 5 6 7 8 9 10 11 12)))
+            (zapp-down
+             ((((12 4) q q q q q q q q q q q q))
+              :pitch-seq-palette (12 11 10 9 8 7 6 5 4 3 2 1))))
+          :rthm-seq-map
+          '((A ((rh (IO1 M1 M2 M3 M4 M5 M6 IO2 zapp-down)) 
+                (lh (IO2 M1 M2 M3 M4 M5 M6 IO1 zapp-down))))
+            (B ((rh (IO2 M2 M3 M4 M6 M5 M7 IO3 zapp-up))
+                (lh (IO3 M2 M3 M4 M6 M5 M7 IO2 zapp-up))))
+            (C ((rh (IO3 M3 M6 M4 M5 M7 M8 IO4 zapp-up))
+                (lh (IO4 M3 M6 M4 M5 M7 M8 IO3 zapp-up))))
+            (D ((rh (IO4 M5 M4 M6 M8 M7 M9 IO1 zapp-down))
+                (lh (IO1 M5 M4 M6 M8 M7 M9 IO4 zapp-down))))))))
+    (write-xml +remote-control+ :respell-notes nil)
+    (sc-test-check
+      (file-write-ok "/tmp/_remote-control.xml" 1040000))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*
 ;;; (setf *sc-test-all-tests* (remove 'test-rs-chop *sc-test-all-tests*)) 

@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  23:22:41 Thu Dec  2 2021 CET
+;;; $$ Last modified:  12:08:32 Mon Dec 20 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -697,12 +697,18 @@ BAR-HOLDER:
                          ~%current event: ~a~%last event: ~a ~%~a"
                         bar-num player event last-event bar))
                (setf tie-ok
-                     (if (is-single-pitch event)
+                     ;; MDE Mon Dec 20 12:05:29 2021, Heidhausen -- got to
+                     ;; handle chord objects with just one pitch too so use
+                     ;; porc-equal instead. NB this won't work with
+                     ;; enharmonically equal tied pitches/chords!
+                     (porc-equal event last-event)
+                     #|(if (is-single-pitch event)
                          (pitch= (pitch-or-chord event)
                                  (pitch-or-chord last-event)
                                  t)
                          (chord-equal (pitch-or-chord event)
-                                      (pitch-or-chord last-event))))
+                     (pitch-or-chord last-event)))|#
+                     )
                (unless tie-ok
                  (error "~&piece::handle-ties: in bar ~a, ~a, tied ~
                           notes/chords not the same: ~a ~a!~%~a"

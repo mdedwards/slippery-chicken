@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:29:04 Tue Nov 30 2021 CET
+;;; $$ Last modified:  15:25:43 Thu Dec 23 2021 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1035,6 +1035,15 @@
     (if (< (abs rem) tolerance)
         int
         num)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Dec 23 15:23:38 2021, Heidhausen -- removes a character from the end
+;;; of a string if that character is the last in the string 
+(defun minus-last-char (string char)
+  (let ((len-1 (1- (length string))))
+    (if (char= char (elt string len-1))
+        (subseq string 0 len-1)
+        string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3740,16 +3749,21 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; skip is a list of directories to not include--it's the last directory
-;;; name only we're interested in 
-(defun get-all-files (dir &optional skip)
-  (loop for file in (directory (starify dir t))
-     for files = (namestring file)
-     for isdir = (is-directory files)
-     if (and isdir
-             (not (member (first (last (pathname-directory files)))
-                          skip :test #'string=)))
-     append (get-all-files files)
-     else if (not isdir) collect files))
+;;; name only we're interested in. pattern is a string that the file name must
+;;; have, or a list of such strings
+(defun get-all-files (dir &optional skip pattern)
+  (let ((files (loop for file in (directory (starify dir t))
+                  for files = (namestring file)
+                  for isdir = (is-directory files)
+                  if (and isdir
+                          (not (member (first (last (pathname-directory files)))
+                                       skip :test #'string=)))
+                  append (get-all-files files)
+                  else if (not isdir) collect files)))
+    ;; MDE Wed Dec 22 13:07:13 2021, Heidhausen
+    (loop for pattn in (force-list pattern) do
+         (setq files (remove-if-not #'(lambda (x) (search pattn x)) files)))
+    files))
 
 (defun is-directory (path)
   (append (directory (starify path)) (directory (starify path t))))

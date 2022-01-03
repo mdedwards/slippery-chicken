@@ -1,4 +1,9 @@
 /bin
 !/bin/readme.txt
 \#*
-/src/cm*/bin
+/src/cm*/binscripts/
+pr-poster/
+slippery-chicken.wiki/
+	src/app-skeleton/.DS_Store
+	videos-resources/
+	workshops/

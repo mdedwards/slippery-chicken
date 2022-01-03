@@ -1,9 +1,11 @@
 /bin
 !/bin/readme.txt
 \#*
-/src/cm*/binscripts/
+/src/cm*/bin
+scripts/
 pr-poster/
 slippery-chicken.wiki/
-	src/app-skeleton/.DS_Store
-	videos-resources/
-	workshops/
+src/app-skeleton/
+videos-resources/
+workshops/
+.DS_Store

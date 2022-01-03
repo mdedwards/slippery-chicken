@@ -264,6 +264,7 @@
 (sc-compile-and-load "slippery-chicken.lsp")
 (sc-compile-and-load "piece.lsp")
 (sc-compile-and-load "slippery-chicken-edit.lsp")
+#+clm (sc-compile-and-load "clm-defaults.lsp")
 #+clm (sc-compile-and-load "clm.lsp")
 (sc-compile-and-load "permutations.lsp")
 (sc-compile-and-load "rthm-chain.lsp")

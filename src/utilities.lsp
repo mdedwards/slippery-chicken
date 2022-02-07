@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:25:43 Thu Dec 23 2021 CET
+;;; $$ Last modified:  16:38:13 Mon Feb  7 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5991,7 +5991,11 @@ yes_foo, 1 2 3 4;
   (unless (every #'numberp num-list)
     (error "utilities::average: argument must be a list of numbers:~%~a"
            num-list))
-  (float (/ (apply #'+ num-list) (length num-list))))
+  ;; this exhausts the stack with long lists
+  ;; (float (/ (apply #'+ num-list) (length num-list))))
+  (let ((sum 0.0))
+    (mapcar #'(lambda (x) (incf sum x)) num-list)
+    (/ sum (length num-list))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

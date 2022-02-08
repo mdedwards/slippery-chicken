@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:38:13 Mon Feb  7 2022 CET
+;;; $$ Last modified:  18:36:31 Tue Feb  8 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5987,7 +5987,19 @@ yes_foo, 1 2 3 4;
     (append beg (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/average
+;;; DESCRIPTION
+;;; Get the average value of a list of numbers.
+;;; 
+;;; ARGUMENTS
+;;; - the list of numbers
+;;; 
+;;; RETURN VALUE
+;;; the average of the list, as a float
+;;; 
+;;; SYNOPSIS
 (defun average (num-list)
+;;; ****
   (unless (every #'numberp num-list)
     (error "utilities::average: argument must be a list of numbers:~%~a"
            num-list))
@@ -5997,5 +6009,55 @@ yes_foo, 1 2 3 4;
     (mapcar #'(lambda (x) (incf sum x)) num-list)
     (/ sum (length num-list))))
     
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/force-symmetrical-and-normalise
+;;; DATE
+;;; February 8th 2022
+;;; 
+;;; DESCRIPTION
+;;; Take a list of numbers (usually samples but any of course) and force them to
+;;; be symmetrical around (usually) 0.0 i.e. remove DC offset without the usual
+;;; high-pass filter approach in the DSP time domain. Optionally also normalise
+;;; them to within -1.0 and 1.0 (or other values: see below). Note that if
+;;; either :min or :max are nil then normalisation won't be applied.
+;;; 
+;;; ARGUMENTS
+;;; a list of numbers
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :min. The new minimum value to map to. Default = -1.0
+;;; :max. The new minimum value to map to. Default = 1.0
+;;; :verbose. Print some stats. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; the list of new samples
+;;; 
+;;; SYNOPSIS
+(defun force-symmetrical-and-normalise (samples &key (min -1.0)
+                                                  (max 1.0) verbose)
+;;; ****
+  (let* ((av (average samples))
+         (sampmax 0.0)
+         (newsamples (loop for sample in samples
+                           for symsamp = (- sample av)
+                           for symsampv = (abs symsamp)
+                           do
+                              (when (> symsampv sampmax)
+                                (setq sampmax symsampv))
+                           collect symsamp))
+         (scaler (/ sampmax)))
+    (when verbose
+      (format t "~&sampmax (abs and after correcting offset): ~a, ~
+                 average: ~a, ~%         scaler: ~a"  sampmax av scaler))
+    ;; make samples range from -1.0 to 1.0
+    (when (and min max) ; normalise
+      (setq newsamples (mapcar #'(lambda (s) (* s scaler)) newsamples)))
+    (if (and min max
+             (not (equal-within-tolerance min -1.0))
+             (not (equal-within-tolerance max 1.0)))
+        (mapcar #'(lambda (s) (rescale s -1.0 1.0 min max)) newsamples)
+        newsamples)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

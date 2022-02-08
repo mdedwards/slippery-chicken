@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:56:55 Mon Feb  7 2022 CET
+;;; $$ Last modified:  18:39:48 Tue Feb  8 2022 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16565,6 +16565,28 @@
     (= -50.0 (average (loop for i from 0 downto -100 collect i)))
     (> (average (loop repeat 10000000 collect (random 1000000000.0)))
        490000000.0)))
+
+;;; MDE Tue Feb  8 18:02:47 2022, Heidhausen
+(sc-deftest test-utilities-force-symmetrical ()
+  (flet ((fsanok (mid min max list &optional (tolerance 0.00001d0))
+           (let ((result (force-symmetrical-and-normalise
+                          list :min min :max max :verbose t))
+                 av smin smax)
+             (loop for s in result maximize s into lmax minimize s into lmin
+                   finally (setq smin lmin smax lmax))
+             (setq av (average result))
+             (print av) (print smin) (print smax)
+             (and (equal-within-tolerance mid av tolerance)
+                  ;; don't forget that after normalising probably only one of
+                  ;; min and max will have been achieved 
+                  (or (equal-within-tolerance max smax tolerance)
+                      (equal-within-tolerance min smin tolerance))))))
+    (sc-test-check
+      (fsanok 0 -1 1 (loop repeat 10000 collect (+ .1 (random .4))))
+      (fsanok -1 -2 0 (loop repeat 100000 collect (- (random 1.7) .1)))
+      (fsanok 15.1 10.1 20.1 
+              (loop repeat 1000000 collect (- (random 40.0) 50.0)) .001)
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May  8 21:14:56 2012 -- other random tests

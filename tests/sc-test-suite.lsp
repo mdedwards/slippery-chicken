@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:14:08 Mon Dec 20 2021 CET
+;;; $$ Last modified:  16:56:55 Mon Feb  7 2022 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16557,6 +16557,14 @@
     (float-list= (one-to-many .8 '(0 .1 .35 .7 .2))
                  '(0.08510638 0.12765959 0.23404254 0.38297874 0.17021276))))
 
+;;; MDE Mon Feb  7 16:39:40 2022, Heidhausen
+(sc-deftest test-utilities-average ()
+  (sc-test-check
+    (= 3 (average '(2 3 4)))
+    (= 50.0 (average (loop for i to 100 collect i)))
+    (= -50.0 (average (loop for i from 0 downto -100 collect i)))
+    (> (average (loop repeat 10000000 collect (random 1000000000.0)))
+       490000000.0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May  8 21:14:56 2012 -- other random tests

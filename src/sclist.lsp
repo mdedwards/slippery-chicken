@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  14:53:20 Thu Jan 28 2021 CET
+;;; $$ Last modified:  14:24:15 Sat Feb  5 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -666,7 +666,6 @@ data TURKEY
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Dec 14 11:19:38 2019 -- bringing this over from the popcorn class
-
 ;;; ****m* sclist/plot
 ;;; DESCRIPTION
 ;;; Create text and data files suitable for plotting the numbers in the data (or

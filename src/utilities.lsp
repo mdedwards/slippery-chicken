@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:06:39 Wed Feb  9 2022 CET
+;;; $$ Last modified:  10:18:34 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6015,21 +6015,21 @@ yes_foo, 1 2 3 4;
 ;;; February 8th 2022
 ;;; 
 ;;; DESCRIPTION
-;;; Take a list of numbers (usually samples but any of course) and using the
-;;; average sample value, offset them to force them to be symmetrical around
-;;; (usually) 0.0 i.e. not the same as but similar to removing DC offset:
-;;; without the usual high-pass filter approach in the DSP time domain.
+;;; Take a list of numbers (usually samples but any of course) and, using the
+;;; average sample value, offset them to be symmetrical around 0.0
+;;; (usually). This is not the same as but is related to removing DC offset:
+;;; here we're offsetting numbers individually rather than using the 
+;;; high-pass filter approach in the DSP time domain.
 ;;;
 ;;; Note that to make the samples symmetrical we offset by the average of the
-;;; existing samples so any occasional outliers will still spike perhaps in one
-;;; direction or another making a waveform view seem to be still offset.
+;;; existing samples so any occasional outliers will still spike in one
+;;; direction or another, thus making a waveform view seem to be still offset.
 ;;;
-;;; Optionally also normalise them to within -1.0 and 1.0 (or other values: see
-;;; below). Note that if either :min or :max are nil then normalisation won't be
-;;; applied.
+;;; Optionally also normalise to within -1.0 and 1.0 (or other values: see
+;;; below). If either :min or :max are nil then normalisation won't be applied.
 ;;; 
 ;;; ARGUMENTS
-;;; a list of numbers
+;;; a list of floats (double precision)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -6045,7 +6045,7 @@ yes_foo, 1 2 3 4;
                                                   (max 1.0) verbose)
 ;;; ****
   (let* ((av (average samples))
-         (sampmax 0.0d0) ; double-precision please
+         (sampmax 0.0d0)                ; double-precision please
          (newsamples (loop for sample in samples
                            for symsamp = (- sample av)
                            for symsampv = (abs symsamp)

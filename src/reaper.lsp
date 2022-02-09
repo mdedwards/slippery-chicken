@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  12:54:27 Wed Feb  9 2022 CET
+;;; $$ Last modified:  13:42:54 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -50,9 +50,12 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(in-package :slippery-chicken)
+
 #|
 ;;; one simple way of algorithmically generating a reaper file:
-(let* ((items
+(let* ((tempo 240)
+       (items
          (make-reaper-items1
           (get-sndfiles
            (concatenate 'string
@@ -60,18 +63,14 @@
                         "tests/test-sndfiles-dir-2"))
           '(e (w) (q) q (h) (e) e. (q.) q (w) e (w) e.)
           :input-start '(0 .1 .2)
-          :tempo 240
+          :tempo tempo
           :play-rate '(1 1.02 1 .98 1.01 1 1.02)
           :preserve-pitch t))
-       (file (make-reaper-file 'reaper-test items)))
+       ;; NB the tempo of the reaper file is independent of the items
+       (file (make-reaper-file 'reaper-test items :tempo tempo)))
   (write-reaper-file file))
 |#
 
-
-(in-package :slippery-chicken)
-
-;;; todo: mirror the functionality of clm-play with a reaper-play method in the
-;;; sc class  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a single item/clip/sound object on a track
 (defclass reaper-item (sndfile)

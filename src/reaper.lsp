@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  13:42:54 Wed Feb  9 2022 CET
+;;; $$ Last modified:  16:07:34 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -62,13 +62,13 @@
                         cl-user::+slippery-chicken-home-dir+
                         "tests/test-sndfiles-dir-2"))
           '(e (w) (q) q (h) (e) e. (q.) q (w) e (w) e.)
+           tempo
           :input-start '(0 .1 .2)
-          :tempo tempo
           :play-rate '(1 1.02 1 .98 1.01 1 1.02)
           :preserve-pitch t))
        ;; NB the tempo of the reaper file is independent of the items
-       (file (make-reaper-file 'reaper-test items :tempo tempo)))
-  (write-reaper-file file))
+       (rf (make-reaper-file 'reaper-test items :tempo tempo)))
+  (write-reaper-file rf))
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -359,57 +359,96 @@
                                  keyargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; for make-reaper-items-aux
+(defun make-reaper-items-process-rhythms (rhythms tempo
+                                          &optional (just-attacks t))
+  ;; this allows ties (e.g. e+s) and rests (in parens) and will take care
+  ;; of the compound duration if there are ties
+  (let ((events (rhythm-list (force-list rhythms)))
+        end)
+    ;; convert the rhythms to events, if necessary, before then generating their
+    ;; start-times
+    (setq events (mapcar #'(lambda (r) (sc-change-class r 'event)) events)
+          end (nth-value 1 (events-update-time events :tempo tempo)))
+    ;; we won't need rests or tied-to notes--the latter have, though,
+    ;; contributed to the initial tied-from rhythm's compound-duration
+    (when just-attacks
+      (setq events (just-attacks events)))
+    (values events end)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; for use in make-reaper-items1 etc. Here the first two arguments are atoms or
+;;; fixed lists: the first list to exit the loop stops the process 
+(defun make-reaper-items-aux (sndfiles events end-time
+                              &key (num-tracks 2) (track-base-name "lispy")
+                                (fade-in .005) (fade-out .005)
+                                ;; could also be a list (circular)
+                                (play-rate 1.0) 
+                                (input-start 0.0) ; ditto
+                                (preserve-pitch t))
+  ;; reaper needs 1 or 0, not T or NIL (clearly)
+  (setq preserve-pitch (if preserve-pitch 1 0))
+  (let ((sfs (force-list sndfiles))
+        (play-rates (make-cscl (force-list play-rate)))
+        (input-starts (make-cscl (force-list input-start))))
+    (values
+     (loop for event in events
+           for path in sfs
+           for i from 0
+           collect
+           (make-instance 'reaper-item
+                          :preserve-pitch preserve-pitch
+                          :play-rate (get-next play-rates)
+                          :fade-out fade-out :fade-in fade-in
+                          :start (get-next input-starts)
+                          :start-time (start-time event)
+                          ;; so the file name and the rhythm is the name
+                          :name (format nil "~a-~a"
+                                        (pathname-name path) (data event))
+                          :track (format nil "~a-~a" track-base-name
+                                         (1+ (mod i num-tracks)))
+                          :path path
+                          :duration (compound-duration-in-tempo event)))
+     ;; we return this too so we can e.g. put the cursor at the end of the
+     ;; last event: esp. useful if that was a rest
+     end-time)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; this is just one example of how reaper-items can be made before being passed
 ;;; to make-reaper-file. Here we pass a single or list of sndfile paths and a
 ;;; list of rhythms (as symbols or rhythm/event objects) and create as many
-;;; reaper-item objects as there are rhythms, using the sndfiles circularly.
-(defun make-reaper-items1 (sndfiles rhythms
-                           &key (num-tracks 2) (track-base-name "lispy")
-                             (fade-in .005) (fade-out .005)
-                             (play-rate 1.0)   ; could also be a list (circular)
-                             (input-start 0.0) ; ditto
-                             ;; NB this could be different from the reaper-file
-                             ;; tempo 
-                             (tempo 60.0)
-                             (preserve-pitch t))
-  (let ((sfs (make-cscl (force-list sndfiles)))
-        (play-rates (make-cscl (force-list play-rate)))
-        (input-starts (make-cscl (force-list input-start)))
-        ;; this allows ties (e.g. e+s) and rests (in parens) and will take care
-        ;; of the compound duration if there are ties
-        (events (rhythm-list rhythms))
-        end)
-    ;;           convert the rhythms to events, if necessary, before then
-    ;;           generating their start-times
-    (setq events (mapcar #'(lambda (r) (sc-change-class r 'event)) events)
-          end (nth-value 1 (events-update-time events :tempo tempo))
-          ;; we won't need rests or tied-to notes--the latter have, though,
-          ;; contributed to the initial tied-from rhythm's compound-duration
-          events (remove-if #'(lambda (e) (or (is-rest e) (is-tied-to e)))
-                            events)
-          ;; reaper needs 1 or 0, not T or NIL (clearly)
-          preserve-pitch (if preserve-pitch 1 0))
-    (values
-     (loop for event in events
-        for path = (get-next sfs)
-        for i from 0
-        collect
-          (make-instance 'reaper-item
-                         :preserve-pitch preserve-pitch
-                         :play-rate (get-next play-rates)
-                         :fade-out fade-out :fade-in fade-in
-                         :start (get-next input-starts)
-                         :start-time (start-time event)
-                         ;; so the file name and the rhythm is the name
-                         :name (format nil "~a-~a"
-                                       (pathname-name path) (data event))
-                         :track (format nil "~a-~a"
-                                        track-base-name (1+ (mod i num-tracks)))
-                         :path path
-                         :duration (compound-duration-in-tempo event)))
-     ;; we return this too so we can e.g. put the cursor at the end of the last
-     ;; event: esp. useful if that was a rest
-     end)))
+;;; reaper-item objects as there are attacked rhythms, using the sndfiles
+;;; circularly. NB tempo could be different from the reaper-file tempo.
+(defun make-reaper-items1 (sndfiles rhythms tempo
+                           &rest keyargs &key &allow-other-keys)
+  (multiple-value-bind
+        (events end)
+      (make-reaper-items-process-rhythms rhythms tempo)
+    (let ((sfs (loop with sfs = (make-cscl (force-list sndfiles))
+                     repeat (length events)
+                     collect (get-next sfs))))
+      (apply #'make-reaper-items-aux (append (list sfs events end) keyargs)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; similar but this time the length of the sndfiles determines the number of
+;;; reaper items and the rhythms are used circularly
+(defun make-reaper-items2 (sndfiles rhythms tempo
+                           &rest keyargs &key &allow-other-keys)
+  (multiple-value-bind
+        (events end)
+      (make-reaper-items-process-rhythms rhythms tempo nil)
+    (let ((all-events (loop with elist = (make-cscl events)
+                            with count = 0
+                            with end = (length sndfiles)
+                            until (= count end)
+                            for e = (clone (get-next elist))
+                            do (when (needs-new-note e) (incf count))
+                            collect e)))
+      ;; because we might have circularly used events, we have to update the
+      ;; times again
+      (events-update-time (print all-events) :tempo tempo)
+      (apply #'make-reaper-items-aux
+             (append (list sndfiles (just-attacks all-events) end) keyargs)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a couple of old routines. todo: These could/should be updated to write into

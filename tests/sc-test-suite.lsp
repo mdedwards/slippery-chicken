@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:39:48 Tue Feb  8 2022 CET
+;;; $$ Last modified:  16:05:14 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20064,23 +20064,41 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan 28 16:40:13 2021, Heidhausen -- reaper tests
 (sc-deftest test-reaper ()
-  (multiple-value-bind
-        (items end-time)
-      (make-reaper-items1 (get-sndfiles
-                           (concatenate 'string
-                                        cl-user::+slippery-chicken-home-dir+
-                                        "tests/test-sndfiles-dir-2"))
-                          '(w (w) (q) h.+h+e (h) (e) h (q.) w (w) (w) (e))
-                          :input-start '(0 .1 .2)
-                          :tempo 60
-                          :play-rate '(1 1.02 1 .98 1.01 1 1.02)
-                          :preserve-pitch t)
-    (let ((rf (make-reaper-file 'otest items :cursor end-time)))
-      (probe-delete "/tmp/reaper-test.rpp")
-      (sc-test-check
-        (write-reaper-file rf :file "/tmp/reaper-test.rpp")
-        (assoc-list-p (tracks rf))
-        (file-write-ok "/tmp/reaper-test.rpp" 4200)))))
+  (let ((sndfiles (get-sndfiles
+                   (concatenate 'string
+                                cl-user::+slippery-chicken-home-dir+
+                                ;; only three in here
+                                "tests/test-sndfiles-dir-2"))))
+    (multiple-value-bind
+          (items1 end-time1)
+        (make-reaper-items1 sndfiles
+                            '(w (w) q h.+h+e (h) (e) h (q.) w (w) (w) (e))
+                            60
+                            :input-start '(0 .1 .2)
+                            :play-rate '(1 1.02 1 .98 1.01 1 1.02)
+                            :preserve-pitch t)
+      (multiple-value-bind
+            (items2 end-time2)
+          (make-reaper-items2 (append sndfiles sndfiles sndfiles)
+                              '(w (w) q h.+h+e (h)) ; 3 attacks
+                              63
+                              :input-start .9
+                              :play-rate 1.04
+                              :preserve-pitch t)
+
+        (let ((rf1 (make-reaper-file 'otest1 items1 :cursor end-time1))
+              (rf2  (make-reaper-file 'otest2 items2 :cursor end-time2)))
+          (probe-delete "/tmp/reaper-test.rpp")
+          (probe-delete "/tmp/reaper-test2.rpp")
+          (sc-test-check
+            ;; We'll get warnings about durations but ignore these for test
+            ;; purposes 
+            (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
+            (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
+            (assoc-list-p (tracks rf1))
+            (assoc-list-p (tracks rf2))
+            (file-write-ok "/tmp/reaper-test.rpp" 4200)
+            (file-write-ok "/tmp/reaper-test2.rpp" 4200)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 20 12:10:05 2021, Heidhausen -- an example from Simon Bahr that

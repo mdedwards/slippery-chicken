@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  17:29:31 Fri Dec  3 2021 CET
+;;; $$ Last modified:  15:41:14 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2126,9 +2126,6 @@ data: NIL
                        r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 22.12.11 SAR: Added robodoc info
-
 ;;; ****f* rhythm/rhythm-list
 ;;; DESCRIPTION
 ;;; Create a list of rhythms from symbols, possibly involving ties and not
@@ -2222,6 +2219,29 @@ data: (
         (make-cscl result)
         result)))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* rhythm/just-attacks
+;;; DATE
+;;; February 9th 2022
+;;; 
+;;; DESCRIPTION
+;;; Remove any rhythms/events from a list that don't represent an attack,
+;;; i.e. remove all rests and those tied-to.
+;;; 
+;;; ARGUMENTS
+;;; a list of rhythm/event objects
+;;; 
+;;; RETURN VALUE
+;;; the list purged of all rests and those tied-to
+;;; 
+;;; SYNOPSIS
+(defun just-attacks (rthms)
+;;; ****
+  (unless (every #'rhythm-p rthms)
+    (error "rhythm::just-attacks: not a list of rhythm objects: ~a" rthms))
+  (remove-if #'(lambda (e) (or (is-rest e) (is-tied-to e)))
+             rthms))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun rhythms-as-symbols (rthms)

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:25:11 Wed Feb  9 2022 CET
+;;; $$ Last modified:  09:50:10 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6005,7 +6005,7 @@ yes_foo, 1 2 3 4;
            num-list))
   ;; this exhausts the stack with long lists
   ;; (float (/ (apply #'+ num-list) (length num-list))))
-  (let ((sum 0.0))
+  (let ((sum 0.0d0))  ; double-precision
     (mapcar #'(lambda (x) (incf sum x)) num-list)
     (/ sum (length num-list))))
     
@@ -6016,10 +6016,17 @@ yes_foo, 1 2 3 4;
 ;;; 
 ;;; DESCRIPTION
 ;;; Take a list of numbers (usually samples but any of course) and force them to
-;;; be symmetrical around (usually) 0.0 i.e. remove DC offset without the usual
-;;; high-pass filter approach in the DSP time domain. Optionally also normalise
-;;; them to within -1.0 and 1.0 (or other values: see below). Note that if
-;;; either :min or :max are nil then normalisation won't be applied.
+;;; be symmetrical around (usually) 0.0 i.e. not the same as but similar to
+;;; removing DC offset: without the usual high-pass filter approach in the DSP
+;;; time domain.
+;;;
+;;; Note that to make the samples symmetrical we offset by the average of the
+;;; existing samples so any occasional outliers will still spike perhaps in one
+;;; direction or another making a waveform view seem to be still offset.
+;;;
+;;; Optionally also normalise them to within -1.0 and 1.0 (or other values: see
+;;; below). Note that if either :min or :max are nil then normalisation won't be
+;;; applied.
 ;;; 
 ;;; ARGUMENTS
 ;;; a list of numbers
@@ -6038,7 +6045,7 @@ yes_foo, 1 2 3 4;
                                                   (max 1.0) verbose)
 ;;; ****
   (let* ((av (average samples))
-         (sampmax 0.0)
+         (sampmax 0.0d0) ; double-precision please
          (newsamples (loop for sample in samples
                            for symsamp = (- sample av)
                            for symsampv = (abs symsamp)

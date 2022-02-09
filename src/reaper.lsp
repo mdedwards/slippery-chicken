@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  17:16:28 Thu Feb 25 2021 CET
+;;; $$ Last modified:  12:54:27 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -50,6 +50,24 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#|
+;;; one simple way of algorithmically generating a reaper file:
+(let* ((items
+         (make-reaper-items1
+          (get-sndfiles
+           (concatenate 'string
+                        cl-user::+slippery-chicken-home-dir+
+                        "tests/test-sndfiles-dir-2"))
+          '(e (w) (q) q (h) (e) e. (q.) q (w) e (w) e.)
+          :input-start '(0 .1 .2)
+          :tempo 240
+          :play-rate '(1 1.02 1 .98 1.01 1 1.02)
+          :preserve-pitch t))
+       (file (make-reaper-file 'reaper-test items)))
+  (write-reaper-file file))
+|#
+
+
 (in-package :slippery-chicken)
 
 ;;; todo: mirror the functionality of clm-play with a reaper-play method in the

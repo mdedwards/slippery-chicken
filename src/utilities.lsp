@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:20:33 Wed Feb  9 2022 CET
+;;; $$ Last modified:  09:25:11 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6049,8 +6049,9 @@ yes_foo, 1 2 3 4;
          (scaler (/ sampmax)))
     (when verbose
       (format t "~&force-symmetrical-and-normalise: ~%  sampmax ~
-                 (abs and after correcting offset): ~,6f, ~%  ~
-                 average: ~,6f, scaler: ~,6f~%"  sampmax av scaler))
+                 (abs, after correcting offset): ~,6f, ~%  ~
+                 average (before correction): ~,6f, scaler: ~,6f~%"
+              sampmax av scaler))
     ;; make samples range from -1.0 to 1.0
     (when (and min max)                 ; normalise
       (setq newsamples (mapcar #'(lambda (s) (* s scaler)) newsamples)))

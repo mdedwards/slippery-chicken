@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  16:07:34 Wed Feb  9 2022 CET
+;;; $$ Last modified:  18:29:29 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -97,7 +97,8 @@
    ;; make-reaper-file then before writing they'll be separated into tracks and
    ;; written into those. This can be any string though of course it makes sense
    ;; to put more than one item on a single track
-   (track :accessor track :type string :initarg :track :initform "lispy")))
+   (track :accessor track :type string :initarg :track
+          :initform "reaper-lisp")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a holder for reaper-items that will all be placed on a single user-named
@@ -380,10 +381,15 @@
 ;;; for use in make-reaper-items1 etc. Here the first two arguments are atoms or
 ;;; fixed lists: the first list to exit the loop stops the process 
 (defun make-reaper-items-aux (sndfiles events end-time
-                              &key (num-tracks 2) (track-base-name "lispy")
+                              &key (num-tracks 2)
+                                (track-base-name "reaper-lisp")
                                 (fade-in .005) (fade-out .005)
                                 ;; could also be a list (circular)
-                                (play-rate 1.0) 
+                                (play-rate 1.0)
+                                ;; if an event's duration is longer than the
+                                ;; sndfile we'll get a warning but by default
+                                ;; we'll force its duration
+                                (force-duration t)
                                 (input-start 0.0) ; ditto
                                 (preserve-pitch t))
   ;; reaper needs 1 or 0, not T or NIL (clearly)
@@ -395,20 +401,27 @@
      (loop for event in events
            for path in sfs
            for i from 0
-           collect
-           (make-instance 'reaper-item
-                          :preserve-pitch preserve-pitch
-                          :play-rate (get-next play-rates)
-                          :fade-out fade-out :fade-in fade-in
-                          :start (get-next input-starts)
-                          :start-time (start-time event)
-                          ;; so the file name and the rhythm is the name
-                          :name (format nil "~a-~a"
-                                        (pathname-name path) (data event))
-                          :track (format nil "~a-~a" track-base-name
-                                         (1+ (mod i num-tracks)))
-                          :path path
-                          :duration (compound-duration-in-tempo event)))
+           for dur = (compound-duration-in-tempo event)
+           for ri = (make-instance
+                     'reaper-item
+                     :preserve-pitch preserve-pitch
+                     :play-rate (get-next play-rates)
+                     :fade-out fade-out :fade-in fade-in
+                     :start (get-next input-starts)
+                     :start-time (start-time event)
+                     ;; so the file name and the rhythm is the
+                     ;; item name
+                     :name (format nil "~a-~a"
+                                   (pathname-name path) (data event))
+                     :track (format nil "~a-~a" track-base-name
+                                    (1+ (mod i num-tracks)))
+                     :path path
+                     :duration dur)
+           ;; override sndfile::update to allow the duration to be longer than
+           ;; the sndfile so we get looping in reaper
+           do (when (and force-duration (< (duration ri) dur))
+                (setf (slot-value ri 'duration) dur))
+           collect ri)
      ;; we return this too so we can e.g. put the cursor at the end of the
      ;; last event: esp. useful if that was a rest
      end-time)))
@@ -446,7 +459,7 @@
                             collect e)))
       ;; because we might have circularly used events, we have to update the
       ;; times again
-      (events-update-time (print all-events) :tempo tempo)
+      (events-update-time all-events :tempo tempo)
       (apply #'make-reaper-items-aux
              (append (list sndfiles (just-attacks all-events) end) keyargs)))))
 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  10:25:07 Tue Jul  6 2021 CEST
+;;; $$ Last modified:  12:49:38 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -337,8 +337,9 @@ T
         ;; adjust  
         (when (and (snd-duration sf) (> end (snd-duration sf)))
           (warn "sndfile::update: ~
-                 Given end point (or duration) is > sound duration: ~a ~%~a"
-                end sf)
+                 Given end point (or duration: ~a) ~%  is > sound duration: ~
+                 ~a ~%~a"
+                end (snd-duration sf) sf)
           (setf (slot-value sf 'end) (snd-duration sf))
           (set-dur sf)))
       (setf (data-consistent sf) t))))

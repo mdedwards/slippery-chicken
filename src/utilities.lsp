@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:19:17 Wed Feb  9 2022 CET
+;;; $$ Last modified:  09:20:33 Wed Feb  9 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6052,7 +6052,7 @@ yes_foo, 1 2 3 4;
                  (abs and after correcting offset): ~,6f, ~%  ~
                  average: ~,6f, scaler: ~,6f~%"  sampmax av scaler))
     ;; make samples range from -1.0 to 1.0
-    (when (and min max) ; normalise
+    (when (and min max)                 ; normalise
       (setq newsamples (mapcar #'(lambda (s) (* s scaler)) newsamples)))
     (if (and min max
              (not (equal-within-tolerance min -1.0))

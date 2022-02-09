@@ -17,9 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:18:34 Wed Feb  9 2022 CET
-;;;
-;;; SVN ID: $Id$
+;;; $$ Last modified:  12:06:13 Wed Feb  9 2022 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards

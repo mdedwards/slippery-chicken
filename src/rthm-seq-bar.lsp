@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:30:34 Tue Nov 30 2021 CET
+;;; $$ Last modified:  10:11:01 Thu Feb 10 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -251,7 +251,9 @@
     (fix-nested-tuplets rsb)
     ;; (print (rhythms rsb))
     ;; 2/04
-    ;; 17/5/05: now handled at piece level
+    ;; 17/5/05: now handled at piece level, in handle-ties, which is called from
+    ;; sc-make-piece. So this means that rthm-seq-palettes don't have correct
+    ;; compound-durations 
     ;; (update-compound-durations rsb)
     ))
 
@@ -3633,7 +3635,6 @@ data: (2 4)
 (when (is-tied-to r)
 (inc-nth-rthm rsb last-struck (compound-duration r))))))
 
-        |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; NB Only increments the COMPOUND-DURATION slot, nothing else!!!
@@ -3642,7 +3643,7 @@ data: (2 4)
   (let ((rthm (nth nth (rhythms rsb))))
     ;; (format t "~%inc-nth-rthm: ~a ~a" (compound-duration rthm) inc)
     (incf (compound-duration rthm) inc)))
-
+        |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 8/5/06: get-rest-bars is for when we're writing MIDI files: got to get the

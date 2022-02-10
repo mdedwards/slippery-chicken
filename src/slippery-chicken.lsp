@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:06:24 Wed Feb  9 2022 CET
+;;; $$ Last modified:  10:09:09 Thu Feb 10 2022 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1168,7 +1168,7 @@
     (add-rest-player-sections rsm-clone)
     (add-rest-sequenzes rsm-clone sc)
     (update-slots rsm-clone (tempo-map sc) 0.0 0.0 1 nil nil warn-ties)
-    (handle-ties rsm-clone)
+    (handle-ties rsm-clone) ; compound-duration updated here
     ;; well, not ideal, but we have to do this again because of the
     ;; ties. First we need to do it to get bar numbers etc. for the
     ;; sequenzes, then we have to do it after the handle-ties to make

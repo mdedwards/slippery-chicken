@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  14:07:24 Sat May  1 2021 CEST
+;;; $$ Last modified:  11:14:44 Thu Feb 10 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2033,26 +2033,28 @@ rthm-seq NIL
   rs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#|  
+MDE Thu Feb 10 10:44:36 2022, Heidhausen -- this is no longer necessary as
+compound-durations are handled at the make-piece level (via handle-ties)
 
 (defmethod update-compound-durations ((rs rthm-seq))
   (loop with i = 0
-     for r = (get-nth-non-rest-rhythm i rs)
-     while (< i (num-score-notes rs))
-     do
+        while (< i (num-score-notes rs))
+        for r = (get-nth-non-rest-rhythm i rs)
+        do
        (when (is-tied-from r)
          (incf i)
-         (loop for rtied = (get-nth-non-rest-rhythm i rs)
-            while (is-tied-to rtied)
+         (loop
+           while (< i (num-score-notes rs))
+           for rtied = (get-nth-non-rest-rhythm i rs)
+           while (is-tied-to rtied)
             do
               (incf (compound-duration r) (duration rtied))
               (incf i)))
        (incf i))
   rs)
-            
+|#           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Dec 28 16:35:40 EST 2011: Added robodoc info
-
 ;;; ****m* rthm-seq/get-rhythms
 ;;; DESCRIPTION
 ;;; Get the rhythm objects in a given rthm-seq object, contained in a list.
@@ -2777,6 +2779,47 @@ data: S
 ;;; MDE Thu May 21 17:16:22 2015
 (defmethod delete-rqq-info ((rs rthm-seq))
   (loop for rsb in (bars rs) do (delete-rqq-info rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq/get-rhythm-list
+;;; DATE
+;;; February 10th 2022, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Sometimes (e.g. in reaper.lsp) you just want a rthm-seq's original rhythm
+;;; data but not listed in bars, or with meter data, so that you can pass it to
+;;; e.g. rhythm-list, i.e. take everything outside of rthm-seqs for handling
+;;; outside of make-slippery-chicken
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq object
+;;; 
+;;; RETURN VALUE
+;;; a list of rhythm symbols
+;;; 
+;;; EXAMPLE
+#|
+(let ((rs (make-rthm-seq 
+           '((((4 4) w) (+s (s) (e) (q) (h)) ((h) (s) e.+q) (+w)
+               (+s (s) (e) (q) (h)) ((e) h..) (+w) (+h.. (e)) ()
+               ((h) (q) (e.) s) (+e (e) (q) (h)) (s (s) (e) (q) (h))
+              ((h) (q) (s) e (s)) ((q) h.) (+q. (e) (h)))))))
+  (get-rhythm-list rs))
+--->
+(W +S (S) (E) (Q) (H) (H) (S) E.+Q +W +S (S) (E) (Q) (H) (E) H.. +W +H.. (E)
+ (H) (Q) (E.) S +E (E) (Q) (H) S (S) (E) (Q) (H) (H) (Q) (S) E (S) (Q) H. +Q.
+ (E) (H))
+|#
+;;; SYNOPSIS
+(defmethod get-rhythm-list ((rs rthm-seq))
+;;; ****
+  (loop for bar in (first (data rs))
+        for first = (first bar)
+        do
+           (when (and (listp first) (= 2 (length first))
+                      (integerp (first first)) (integerp (second first)))
+             (setq bar (rest bar)))
+        append bar))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

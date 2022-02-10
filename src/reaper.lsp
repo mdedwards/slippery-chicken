@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  18:29:29 Wed Feb  9 2022 CET
+;;; $$ Last modified:  11:15:15 Thu Feb 10 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -360,9 +360,13 @@
                                  keyargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; for make-reaper-items-aux
+;;; for make-reaper-items-aux. rhythms could be a rthm-seq too
 (defun make-reaper-items-process-rhythms (rhythms tempo
                                           &optional (just-attacks t))
+  (when (rthm-seq-p rhythms)
+    ;; rthm-seqs don't update their compound-duration slots rather that happens
+    ;; in handle-ties at the make-piece level. 
+    (setq rhythms (get-rhythm-list rhythms)))
   ;; this allows ties (e.g. e+s) and rests (in parens) and will take care
   ;; of the compound duration if there are ties
   (let ((events (rhythm-list (force-list rhythms)))

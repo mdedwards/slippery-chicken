@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  15:41:14 Wed Feb  9 2022 CET
+;;; $$ Last modified:  11:09:13 Thu Feb 10 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1880,21 +1880,21 @@ data: NIL
                  rhythm))
         (if ties
             (loop for r in ties collect
-                 (make-rhythm r :is-rest is-rest :is-tied-to t)
-                 into rthms
-                 finally 
-                 (unless first-is-tied-to 
-                   (setf (is-tied-to (first rthms)) nil))
-               ;; when a rhythm is tied to, it normally won't have a
-               ;; compound-duration but when this happens to be the first note
-               ;; of the bar that is tied to, then we need that
-               ;; compound-duration for incrementing the last struck note.
-               ;; UNLESS EXPLICITLY REQUESTED, DON'T DO THIS HERE ANYMORE.  DO
-               ;; IT IN RTHM-SEQ-BAR!!! 
-                 (when inc-compound
-                   (setf (compound-duration (first rthms))
-                         (loop for i in rthms sum (duration i))))
-                 (return rthms))
+                                (make-rhythm r :is-rest is-rest :is-tied-to t)
+                    into rthms
+                  finally 
+                     (unless first-is-tied-to 
+                       (setf (is-tied-to (first rthms)) nil))
+                     ;; when a rhythm is tied to, it normally won't have a
+                     ;; compound-duration but when this happens to be the first
+                     ;; note of the bar that is tied to, then we need that
+                     ;; compound-duration for incrementing the last struck note.
+                     ;; UNLESS EXPLICITLY REQUESTED, DON'T DO THIS HERE ANYMORE.
+                     ;; DO IT IN RTHM-SEQ-BAR!!!
+                     (when inc-compound
+                       (setf (compound-duration (first rthms))
+                             (loop for i in rthms sum (duration i))))
+                     (return rthms))
             (make-rhythm rthm :is-rest is-rest)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2192,32 +2192,37 @@ data: (
 ;;; 
 ;;; SYNOPSIS
 (defun rhythm-list (rthms &optional circular)
-;;; ****                                ;
-  ;; MDE Sat Jun  8 18:51:09 2013 -- need to remove things like {
-  (let* ((rs (first (parse-rhythms rthms 0)))
-         (result
-          (loop for r in rs 
-            ;; make sure we get compound-duration to reflect ties ;
-             for rhythm = (parse-possibly-compound-rhythm r t)
-             #|                         ;
-             collect 
-             ;; if we had something like h+e we can throw away the e as we've
-             ;; got its compound-duration in the h 23.3.11: Hmm the above seems
-             ;; to be BS so collect everything
-             (if (listp rhythm)
-               (first rhythm)
-               rhythm))))
-               |# 
-            if (and rhythm (listp rhythm))
-              append rhythm
-            else if rhythm collect rhythm)))
-    ;; 23.3.11 now update is-tied-from to reflect ties....
-    (loop for r1 in result and r2 in (cdr result) do
-         (when (is-tied-to r2)
-           (setf (is-tied-from r1) t)))
-    (if circular 
-        (make-cscl result)
-        result)))
+;;; ****
+  (if (every #'rhythm-p rthms)
+      ;; MDE Thu Feb 10 09:04:26 2022, Heidhausen -- if rthms are already rhythm
+      ;; objects, just return then
+      rthms
+      ;; MDE Sat Jun  8 18:51:09 2013 -- need to remove things like {
+      (let* ((rs (first (parse-rhythms rthms 0)))
+             (result
+               (loop for r in rs 
+                     ;; make sure we get compound-duration to reflect ties MDE
+                     ;; Thu Feb 10 11:06:31 2022, Heidhausen -- actually, best
+                     ;; to handle separately so that we take care of not just
+                     ;; q+s but q +s
+                     for rhythm = (parse-possibly-compound-rhythm r)
+                     if (and rhythm (listp rhythm))
+                       append rhythm
+                     else if rhythm collect rhythm)))
+        ;; 23.3.11 now update is-tied-from to reflect ties....
+        (loop for r1 in result and r2 in (cdr result) do
+          (when (is-tied-to r2)
+            (setf (is-tied-from r1) t)))
+        ;; MDE Thu Feb 10 11:07:07 2022, Heidhausen -- now handle
+        ;; compound-duration
+        (loop with last-attack for r in result do
+          (if (needs-new-note r)
+              (setq last-attack r)
+              (when (is-tied-to r)
+                (incf (compound-duration last-attack) (duration r)))))
+        (if circular 
+            (make-cscl result)
+            result))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* rhythm/just-attacks

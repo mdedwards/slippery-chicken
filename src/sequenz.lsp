@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified:  12:15:04 Sat Nov 27 2021 CET
+;;; $$ Last modified:  09:26:35 Thu Feb 10 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -114,13 +114,13 @@
         (num-rests s) 0
         (duration s) 
         (loop 
-           for rsb in (bars s) 
-           for bar-count from 1
-           with time = start-time
-           with time-qtrs = start-time-qtrs
-           with tempo
-           with bar-dur
-           do 
+          for rsb in (bars s) 
+          for bar-count from 1
+          with time = start-time
+          with time-qtrs = start-time-qtrs
+          with tempo
+          with bar-dur
+          do 
              (setf (bar-num rsb) (+ start-bar bar-count -1)
                    ;; 9.2.11
                    (nth-bar rsb) (1- bar-count)
@@ -135,29 +135,19 @@
                            (data tpo))
                    bar-dur (update-time rsb time time-qtrs 
                                         tempo))
-           ;; (format t "~%sequenz::update-slots: ~a rhythms"
-           ;;      (length (rhythms rsb)))
              (update-events-bar-nums rsb (bar-num rsb))
              (incf time bar-dur)
              (incf time-qtrs (bar-qtr-duration rsb))
-           ;; MDE Wed Apr 18 10:09:22 2012 -- move whether to write bar nums
-           ;; into the sc class  
-             #|
-           ;; MDE Wed Apr 18 09:02:27 2012 -- (1+ so that the bar num gets ;
-           ;; written at the end of bar 4, 9... ;
-             (unless (zerop (mod (1+ (bar-num rsb)) 5))
-             (setf (write-bar-num rsb) nil))
-             (when (write-bar-num rsb)
-             (format t "~%~a T" (bar-num rsb)))
-             |#
-           ;; MDE Mon Jul 16 16:22:27 2012 
+             ;; MDE Wed Apr 18 10:09:22 2012 -- moved whether to write bar nums
+             ;; into the sc class  
+             ;; MDE Mon Jul 16 16:22:27 2012 
              (gen-stats rsb)
              ;; MDE Sat Jun 28 15:28:34 2014 --  recalculate stats
              (incf (num-bars s))
              (incf (num-notes s) (notes-needed rsb))
              (incf (num-score-notes s) (num-score-notes rsb))
              (incf (num-rests s) (num-rests rsb))
-           sum bar-dur)
+          sum bar-dur)
         (end-time s) (+ start-time (duration s))
         (duration-qtrs s) (loop for rsb in (bars s) sum (bar-qtr-duration rsb))
         (end-time-qtrs s) (+ start-time-qtrs (duration-qtrs s)))

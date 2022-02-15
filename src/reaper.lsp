@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  11:15:15 Thu Feb 10 2022 CET
+;;; $$ Last modified:  12:01:11 Tue Feb 15 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -468,6 +468,11 @@
              (append (list sndfiles (just-attacks all-events) end) keyargs)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun write-reaper-marker (number time label &optional (stream t) (colour 0))
+  (format stream "~&  MARKER ~a ~,3f \"~a\" 0 ~a 1"
+                   number time label colour))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a couple of old routines. todo: These could/should be updated to write into
 ;;; reaper files rather to stdout.
 ;;; 
@@ -491,20 +496,22 @@
     (declare (ignore durations))
     (flet ((find-level (time)
              (loop for g in (reverse generations) and i from 1 do
-                  (when (member time g
-                                :test #'(lambda (x y)
-                                          (equal-within-tolerance x y .001)))
-                    (return i)))))
+               (when (member time g
+                             :test #'(lambda (x y)
+                                       (equal-within-tolerance x y .001)))
+                 (return i)))))
       (loop
-         ;; hard-coded colours for now: white for level 1, yellow 2, blue 3,
-         ;; red 4  
-         with colours = '(33554431 33554176 16777471 0)
-         for time in (rest times)
-         for level = (find-level time)
-         for i from 1
-         do
-           (format t "~&  MARKER ~a ~,3f \"level ~a\" 0 ~a 1"
-                   i time level (nth (min 3 (1- level)) colours)))
+        ;; hard-coded colours for now: white for level 1, yellow 2, blue 3,
+        ;; red 4  
+        with colours = '(33554431 33554176 16777471 0)
+        for time in (rest times)
+        for level = (find-level time)
+        for i from 1
+        do
+           (write-reaper-marker i time level t
+                                (nth (min 3 (1- level)) colours)))
+      ;; (format t "~&  MARKER ~a ~,3f \"level ~a\" 0 ~a 1"
+      ;;    i time level (nth (min 3 (1- level)) colours)))
       t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -589,16 +596,18 @@ Here's where I pasted the data into the .RPP Reaper file:
 (defun pexpand-reaper-markers (tempo generations &rest proportions)
 ;;; ****
   (loop with pexp = (cddr (apply #'pexpand (cons generations proportions)))
-     with beat-dur = (/ 60.0 tempo)
-     ;; hard-coded colours for now: white for level 1, yellow 2, blue 3, red 4
-     with colours = '(33554431 33554176 16777471 0)
-     for beat-num in pexp by #'cddr
-     for letters in (rest pexp) by #'cddr
-     for level = (length letters)
-     for i from 1
-     do
-       (format t "~&  MARKER ~a ~a \"level ~a\" 0 ~a 1"
-               i (* beat-dur (1- beat-num)) level (nth (1- level) colours)))
+        with beat-dur = (/ 60.0 tempo)
+        ;; hard-coded colours for now: white for level 1, yellow 2, blue 3, red 4
+        with colours = '(33554431 33554176 16777471 0)
+        for beat-num in pexp by #'cddr
+        for letters in (rest pexp) by #'cddr
+        for level = (length letters)
+        for i from 1
+        do
+           (write-reaper-marker i (* beat-dur (1- beat-num)) level t
+                                (nth (1- level) colours)))
+  ;; (format t "~&  MARKER ~a ~a \"level ~a\" 0 ~a 1"
+  ;; i (* beat-dur (1- beat-num)) level (nth (1- level) colours)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

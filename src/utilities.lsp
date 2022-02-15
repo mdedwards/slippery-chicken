@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  12:06:13 Wed Feb  9 2022 CET
+;;; $$ Last modified:  12:16:24 Tue Feb 15 2022 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6065,6 +6065,16 @@ yes_foo, 1 2 3 4;
              (not (equal-within-tolerance max 1.0)))
         (mapcar #'(lambda (s) (rescale s -1.0 1.0 min max)) newsamples)
         newsamples)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun accumulate (numbers)
+  (unless (every #'numberp numbers)
+    (error "utilities::accumulate: argument must be a list of numbers:~%~a"
+           numbers))
+  (loop for n in numbers with a = 0.0
+        do (incf a n)
+        collect a))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

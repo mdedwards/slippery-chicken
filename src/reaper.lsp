@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  12:01:11 Tue Feb 15 2022 CET
+;;; $$ Last modified:  12:31:25 Tue Feb 15 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -469,6 +469,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun write-reaper-marker (number time label &optional (stream t) (colour 0))
+  (when (symbolp colour)
+    (setq colour (case colour
+                   (white 33554431)
+                   (yellow 33554176)
+                   (blue 16777471)
+                   (red 0)
+                   (t (error "write-reaper-marker: unknown colour: ~a"
+                             colour)))))
   (format stream "~&  MARKER ~a ~,3f \"~a\" 0 ~a 1"
                    number time label colour))
 

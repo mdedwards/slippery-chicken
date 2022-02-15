@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  11:09:13 Thu Feb 10 2022 CET
+;;; $$ Last modified:  12:55:22 Tue Feb 15 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2223,7 +2223,42 @@ data: (
         (if circular 
             (make-cscl result)
             result))))
-  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* rhythm/get-proportions
+;;; DATE
+;;; 15th February 2022, Heidhausen
+;;; 
+;;; DESCRIPTION
+
+;;; Get the normalised proportions of a list of rhythms, i.e. the durational
+;;; relationships of one rhythm to another. By normalised here it is meant that
+;;; the returned list will sum to 1.0. Implicit there is that proportions are
+;;; expressed as floating-point fractions of 1.0, not as rationals.
+;;;
+;;; NB this works with the rhythm-slot only of rhythm objects, not
+;;; compound-duration
+;;; 
+;;; ARGUMENTS
+;;; a list of rhythm objects or symbols/numbers that represent rhythms.
+;;; 
+;;; RETURN VALUE
+;;; a list of floats
+;;; 
+;;; EXAMPLE
+#|
+(get-proportions '(e e q e. s q)) --> (0.125 0.125 0.25 0.1875 0.0625 0.25)
+|#
+;;; SYNOPSIS
+(defun get-proportions (rhythms)
+;;; **** 
+  (let* ((rthms (rhythm-list rhythms))
+         (unit1 (duration (first rthms)))
+         (props (cons 1 (loop for r in (rest rthms)
+                              collect (/ (duration r) unit1))))
+         (sum (apply #'+ props)))
+    ;; normalise
+    (loop for p in props collect (/ p sum))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* rhythm/just-attacks
 ;;; DATE

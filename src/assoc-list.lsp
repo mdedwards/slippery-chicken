@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  15:10:57 Fri Sep 25 2020 CEST
+;;; $$ Last modified:  08:48:26 Tue Feb 15 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -870,7 +870,7 @@ data: (SNOOPY SPOT ROVER)
 (let ((al (make-assoc-list 'test '((1 (2 3))
                                    (2 (4 5 6))
                                    (3 (7))))))
-  (nmap-data al #'(lambda (no) (length (data no))))
+  (nmap-data al #'(lambda (data) (length data)))
   al)
 ...
 data: (

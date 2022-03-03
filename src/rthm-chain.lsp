@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  17:22:10 Wed Mar 24 2021 CET
+;;; $$ Last modified:  15:58:04 Thu Mar  3 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -773,8 +773,13 @@
   ;; delete all from the palette; the map is re-generated when we setf the data
   ;; slot at the end.  Can't use normal setf as that would mean palette/map
   ;; refs would be checked,
-  (setf (slot-value rc 'palette) 
-        (let ((rsp (make-rsp 'rthm-chain-rsp nil)))
+  (setf (slot-value rc 'palette)
+        ;; MDE Thu Mar  3 15:57:18 2022, Heidhausen -- old id was rthm-chain-rsp
+        ;; which meant that we couldn't have more than one rthm-chain palette in
+        ;; an rsp. now use the id of the parent class
+        (let ((rsp (make-rsp (read-from-string (format nil "~a-rthm-chain-rsp"
+                                                       (id rc)))
+                             nil)))
           (add-empty-parcel rsp section-id 'rthm-seq-palette)
           rsp))
   (reset rc)

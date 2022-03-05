@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  12:31:25 Tue Feb 15 2022 CET
+;;; $$ Last modified:  15:49:56 Sat Mar  5 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -401,29 +401,38 @@
   (let ((sfs (force-list sndfiles))
         (play-rates (make-cscl (force-list play-rate)))
         (input-starts (make-cscl (force-list input-start))))
+    ;; MDE Sat Mar  5 15:33:43 2022, Heidhausen -- if no events are passed we
+    ;; just use the duration of the sndfile
+    (unless events (setq events (ml nil (length sfs))))
     (values
      (loop for event in events
            for path in sfs
            for i from 0
-           for dur = (compound-duration-in-tempo event)
+           for dur = (when event
+                       (if (compound-duration-in-tempo event)
+                         (compound-duration-in-tempo event)
+                         ;; MDE Sat Mar 5 15:25:36 2022, Heidhausen -- in case
+                         ;; we've created an event using :duration t
+                         (compound-duration event)))
            for ri = (make-instance
                      'reaper-item
                      :preserve-pitch preserve-pitch
                      :play-rate (get-next play-rates)
                      :fade-out fade-out :fade-in fade-in
                      :start (get-next input-starts)
-                     :start-time (start-time event)
+                     :start-time (if event (start-time event) 0.0)
                      ;; so the file name and the rhythm is the
                      ;; item name
                      :name (format nil "~a-~a"
-                                   (pathname-name path) (data event))
+                                   (pathname-name path)
+                                   (if event (data event) "?"))
                      :track (format nil "~a-~a" track-base-name
                                     (1+ (mod i num-tracks)))
                      :path path
                      :duration dur)
            ;; override sndfile::update to allow the duration to be longer than
            ;; the sndfile so we get looping in reaper
-           do (when (and force-duration (< (duration ri) dur))
+           do (when (and dur force-duration (< (duration ri) dur))
                 (setf (slot-value ri 'duration) dur))
            collect ri)
      ;; we return this too so we can e.g. put the cursor at the end of the
@@ -466,6 +475,21 @@
       (events-update-time all-events :tempo tempo)
       (apply #'make-reaper-items-aux
              (append (list sndfiles (just-attacks all-events) end) keyargs)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; here we just lay one sndfile after another, with or without a gap i.e. there
+;;; are no rhythms/events 
+(defun make-reaper-items3 (sndfiles gap ; seconds
+                           &rest keyargs &key &allow-other-keys)
+  (let ((items (apply #'make-reaper-items-aux
+                      ;; cursor will be at 0.0
+                      (append (list sndfiles nil 0.0) keyargs)))
+        (time 0.0))
+    ;; must set start-times by hand now, as we had no rhythms
+    (loop for item in items do
+      (setf (start-time item) time)
+      (incf time (+ gap (duration item))))
+    items))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun write-reaper-marker (number time label &optional (stream t) (colour 0))

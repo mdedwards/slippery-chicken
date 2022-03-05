@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:05:14 Wed Feb  9 2022 CET
+;;; $$ Last modified:  15:45:48 Sat Mar  5 2022 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20085,18 +20085,22 @@
                               :input-start .9
                               :play-rate 1.04
                               :preserve-pitch t)
-
-        (let ((rf1 (make-reaper-file 'otest1 items1 :cursor end-time1))
-              (rf2  (make-reaper-file 'otest2 items2 :cursor end-time2)))
+        (let* ((rf1 (make-reaper-file 'otest1 items1 :cursor end-time1))
+               (rf2  (make-reaper-file 'otest2 items2 :cursor end-time2))
+               (items3 (make-reaper-items3 (append sndfiles sndfiles) .1))
+               (rf3  (make-reaper-file 'otest3 items3 :cursor end-time2)))
           (probe-delete "/tmp/reaper-test.rpp")
           (probe-delete "/tmp/reaper-test2.rpp")
+          (probe-delete "/tmp/reaper-test3.rpp")
           (sc-test-check
             ;; We'll get warnings about durations but ignore these for test
             ;; purposes 
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
+            (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
             (assoc-list-p (tracks rf1))
             (assoc-list-p (tracks rf2))
+            (assoc-list-p (tracks rf3))
             (file-write-ok "/tmp/reaper-test.rpp" 4200)
             (file-write-ok "/tmp/reaper-test2.rpp" 4200)))))))
 

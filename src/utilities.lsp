@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  12:16:24 Tue Feb 15 2022 CET
+;;; $$ Last modified:  15:15:22 Thu Mar  3 2022 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -3750,6 +3750,7 @@ WARNING:
 ;;; name only we're interested in. pattern is a string that the file name must
 ;;; have, or a list of such strings
 (defun get-all-files (dir &optional skip pattern)
+  (setq skip (force-list skip))
   (let ((files (loop for file in (directory (starify dir t))
                   for files = (namestring file)
                   for isdir = (is-directory files)
@@ -3760,8 +3761,10 @@ WARNING:
                   else if (not isdir) collect files)))
     ;; MDE Wed Dec 22 13:07:13 2021, Heidhausen
     (loop for pattn in (force-list pattern) do
-         (setq files (remove-if-not #'(lambda (x) (search pattn x)) files)))
-    files))
+      (setq files (remove-if-not #'(lambda (x) (search pattn x)) files)))
+    ;; MDE Mon Feb 28 15:12:25 2022, Heidhausen -- there's no way we could want
+    ;; .DS_Store ... famous last words?
+    (remove-if #'(lambda (f) (search ".DS_Store" f)) files)))
 
 (defun is-directory (path)
   (append (directory (starify path)) (directory (starify path t))))

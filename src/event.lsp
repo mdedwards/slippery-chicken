@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:23:27 Fri Dec  3 2021 CET
+;;; $$ Last modified:  15:24:09 Sat Mar  5 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1498,9 +1498,6 @@ NIL
              e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 24 09:03:26 EST 2011
-
 ;;; ****m* event/set-midi-time-sig
 ;;; DESCRIPTION
 ;;; Sets a MIDI time signature for the given event object. This must be a

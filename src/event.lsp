@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:24:09 Sat Mar  5 2022 CET
+;;; $$ Last modified:  17:51:58 Fri Mar 18 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -846,6 +846,9 @@ data: 132
                    (transposition-semitones instrument)
                    (when wporc (decimal-places (pitch- porc wporc) 4)))))
     ;; (print diff)
+    ;; MDE Fri Mar 18 17:49:32 2022, Heidhausen -- if no (new) value then we
+    ;; probably just want to set the written slot from the existing porc 
+    (unless value (setq value porc))
     (setf-pitch-aux e value 'written-pitch-or-chord)
     (when (written-pitch-or-chord e)
       (setf (is-rest e) nil

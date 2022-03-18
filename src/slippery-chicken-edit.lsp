@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  23:23:12 Thu Dec  2 2021 CET
+;;; $$ Last modified:  17:52:28 Fri Mar 18 2022 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7860,6 +7860,14 @@ NIL
             list of rthm-seq-bar objects: ~&~a" bars))
   ;; MDE Thu Sep 24 18:51:20 2020, Heidhausen -- attach tempo to first event
   (setf (tempo-change (get-nth-event 0 (first bars))) tempo)
+  ;; MDE Fri Mar 18 17:18:19 2022, Paris -- if we have a transposing instrument,
+  ;; update the written pitches to reflect this as they probably don't have this
+  ;; slot yet
+  (let ((ins (get-data instrument instrument-palette)))
+    (when (transposing-instrument-p ins)
+      (loop for bar in bars do
+        (loop for event in (rhythms bar) do
+          (set-written-pitch-or-chord event nil ins)))))
   ;; MDE Wed Sep 19 13:39:54 2018 --
   (loop for bar in bars with psf = (list section-id player) do
      ;; MDE Fri Oct 12 08:59:02 2018 -- don't forget this or multi-bar-rests

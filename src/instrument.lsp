@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  13:38:53 Sat Nov 20 2021 CET
+;;; $$ Last modified:  17:18:00 Fri Mar 18 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -706,9 +706,6 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
     (if rpl rpl result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan  7 11:32:53 EST 2012: Added robodoc info
-
 ;;; ****m* instrument/transposing-instrument-p
 ;;; DESCRIPTION
 ;;; Determine whether a given instrument object defines a transposing

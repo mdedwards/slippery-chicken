@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:15:22 Thu Mar  3 2022 CET
+;;; $$ Last modified:  18:18:19 Fri Mar 18 2022 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6077,7 +6077,6 @@ yes_foo, 1 2 3 4;
   (loop for n in numbers with a = 0.0
         do (incf a n)
         collect a))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  13:03:12 Fri Oct 22 2021 CEST
+;;; $$ Last modified:  17:56:42 Sat Mar 19 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -206,6 +206,15 @@
        :chords nil 
        :microtones t
        :midi-program 72))
+     (sopranino-sax 
+      (:staff-name "sopranino saxophone" :staff-short-name "spino sax"
+       :lowest-written bf3 :highest-written fs6 :transposition-semitones 3
+       :missing-notes (gqs4 gqs5)
+       :largest-fast-leap 15
+       :starting-clef treble 
+       :chords nil
+       :microtones t 
+       :midi-program 65))
      (soprano-sax 
       (:staff-name "soprano saxophone" :staff-short-name "sop sax"
        :lowest-written bf3 :highest-written fs6 :transposition-semitones -2

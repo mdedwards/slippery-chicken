@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:52:28 Fri Mar 18 2022 CET
+;;; $$ Last modified:  11:22:45 Tue Mar 29 2022 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7745,9 +7745,9 @@ NIL
                                      (microtones-midi-channel -1))
 ;;; ****
   (add-player sc new-player :instrument new-ins
-              :instrument-palette (instrument-palette sc)
-              :midi-channel midi-channel
-              :microtones-midi-channel microtones-midi-channel)
+                            :instrument-palette (instrument-palette sc)
+                            :midi-channel midi-channel
+                            :microtones-midi-channel microtones-midi-channel)
   (double-events sc existing-player new-player start-bar start-event end-bar
                  end-event :consolidate-rests nil :auto-beam nil)
   (let ((upper (doctor-env upper-curve (num-bars sc)))
@@ -7755,26 +7755,29 @@ NIL
         (al (make-al))
         (ac (new-lastx activity-curve (num-bars sc)))
         last-set)
-    ;; (print upper) (print lower)
+    ;;    (print upper) (print lower)
     (map-over-bars
      sc start-bar end-bar new-player
      #'(lambda (bar)
-       (let* ((set (get-set-for-bar-num sc (bar-num bar)))
-              (notes
-               (limit-for-instrument
-                (clone (if set (setq last-set set) last-set))
-                ;; (get-standard-ins 'piano)
-                (get-data new-ins (instrument-palette sc))
-                :upper (midi-to-note
-                        (round (interpolate (bar-num bar) upper)))
-                :lower (midi-to-note
-                        (round (interpolate (bar-num bar) lower))))))
-         (invert bar notes t)
-         ;; now use the activity curve to turn notes back off if necessary
-         (loop with level = (interpolate (1- (bar-num bar)) ac)
-            for e in (rhythms bar)
-            for active = (active al level)
-            do (unless active (force-rest e)))))))
+         (let* ((set (get-set-for-bar-num sc (bar-num bar)))
+                (notes
+                  (limit-for-instrument
+                   (clone (if set (setq last-set set) last-set))
+                   (get-data new-ins (instrument-palette sc))
+                   ;; MDE Tue Mar 29 11:21:58 2022, Heidhausen -- this used to
+                   ;; call midi-to-note but remember that doctor-env returns
+                   ;; degrees as y-values
+                   :upper (degree-to-note
+                           (round (interpolate (bar-num bar) upper)))
+                   :lower (degree-to-note
+                           (round (interpolate (bar-num bar) lower))))))
+           ;; (print (pitch-list-to-symbols notes))
+           (invert bar notes t)
+           ;; now use the activity curve to turn notes back off if necessary
+           (loop with level = (interpolate (1- (bar-num bar)) ac)
+                 for e in (rhythms bar)
+                 for active = (active al level)
+                 do (unless active (force-rest e)))))))
   (when reset-midi-channels (reset-midi-channels sc))
   (when update-slots (update-slots sc)))
 

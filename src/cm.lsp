@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  10:53:24 Tue Mar 29 2022 CEST
+;;; $$ Last modified:  12:31:28 Tue Mar 29 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -744,8 +744,11 @@
         (setf n (first n)))
       (setf n (force-octave (rm-package n :sc)))
       (let* ((degrees-per-semitone (degrees-per-semitone))
-             (degrees (floor (* semitones degrees-per-semitone)))
+             ;; MDE Tue Mar 29 12:30:49 2022, Heidhausen -- round, not floor!
+             ;; (degrees (floor (* semitones degrees-per-semitone)))
+             (degrees (round (* semitones degrees-per-semitone)))
              (degree (note-to-degree n)))
+        ;; (print degrees)
         (unless degree
           (error "scale::transpose-note: ~a is not a valid note!" note))
         (setf n (rm-package (cm::note (+ degree degrees))

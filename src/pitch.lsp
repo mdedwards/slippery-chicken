@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  17:15:39 Sat Oct  9 2021 CEST
+;;; $$ Last modified:  12:42:27 Tue Mar 29 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -302,6 +302,7 @@ NIL
 ;;;
 ;;; NB: This method returns a new pitch object rather than altering the values
 ;;;     of the current pitch object.
+;;; NB: the :destructively argument is ignored in this class
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -393,7 +394,7 @@ D4
 |#
 ;;; SYNOPSIS
 (defmethod transpose ((p pitch) semitones &key (as-symbol nil) (package :sc)
-                      destructively)
+                                            destructively)
 ;;; ****
   (declare (ignore destructively))
   (let ((new-note (transpose-note (data p) semitones))

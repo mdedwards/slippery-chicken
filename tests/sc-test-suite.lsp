@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:45:48 Sat Mar  5 2022 CET
+;;; $$ Last modified:  12:56:11 Tue Mar 29 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3276,7 +3276,7 @@
 (sc-deftest test-pitch-transpose ()
   (let* ((p (make-pitch 'c4))
          (tp1 (transpose p 2))
-         (tp2 (transpose p 2.3))
+         (tp2 (transpose p 2.2))
          (tp3 (transpose p 2.5))
          (tp4 (transpose p 2.7)))
     (sc-test-check
@@ -7836,7 +7836,7 @@
        (pitch-list-to-symbols (data (transpose chrd -3 :destructively nil)))
        '(A3 CS4 E4))
       (equalp
-       (pitch-list-to-symbols (data (transpose chrd -3.17 :destructively nil)))
+       (pitch-list-to-symbols (data (transpose chrd -3.37 :destructively nil)))
        '(AQF3 CQS4 EQF4))
       ;; MDE Tue Aug 21 20:17:28 2018 -- test the new :lowest and :highest
       ;; args  

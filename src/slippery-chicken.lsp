@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:09:09 Thu Feb 10 2022 CET
+;;; $$ Last modified:  12:22:25 Wed Apr 27 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -8873,6 +8873,61 @@ data: (11 15)
         set
         (warn "slippery-chicken::get-set-for-bar-num: no set-ref found ~%~
                at bar ~a" bar-num))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-pitch-symbols-for-player
+;;; DATE
+;;; April 27th 2022, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get a list of all the pitches (as symbols) used in a piece on a
+;;; player-by-player basis.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the player (symbol) or list of players we want the pitches for. NB if nil,
+;;; pitches for all players will be returned.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - start bar number. If nil, this will be 1. Default = NIL.
+;;; - end bar number. If nil, this will be the last bar. Default = NIL.
+;;; - whether written as opposed to sounding note symbols should be
+;;;   returned. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A nested list: each element is itself a two-element list where the first
+;;; element is the player symbol and the second is an ascending ordered list of
+;;; the pitches, with enharmonic equivalents removed.
+;;; 
+;;; EXAMPLE
+#|
+(get-pitch-symbols-for-player +percussion+ 'perc)
+((PERC
+  (B4 C5 DF5 D5 DS5 E5 F5 GF5 G5 AF5 A5 BF5 B5 C6 CS6 D6 EF6 E6 F6 FS6 G6 AF6
+   A6 BF6)))
+|#
+;;; SYNOPSIS
+(defmethod get-pitch-symbols-for-player ((sc slippery-chicken) player
+                                         &optional start-bar end-bar
+                                           written)
+;;; ****
+  (unless start-bar (setq start-bar 1))
+  (unless end-bar (setq end-bar (num-bars sc)))
+  (setq player (if player (force-list player) (players sc)))
+  (loop for plyr in player
+        collect
+        (list plyr
+              ;; now for ease of scanning, remove enharmonics and order by
+              ;; ascending pitch
+              (get-pitch-symbols
+               (rm-duplicates
+                (make-chord 
+                 (remove-duplicates 
+                  (loop for bar-num from start-bar to end-bar
+                        append
+                        (remove nil (get-pitch-symbols
+                                     (get-bar sc bar-num player)
+                                     written))))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

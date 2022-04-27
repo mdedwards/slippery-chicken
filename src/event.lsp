@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:51:58 Fri Mar 18 2022 CET
+;;; $$ Last modified:  14:26:58 Fri Apr  1 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -614,9 +614,6 @@
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 16:54:59 EST 2011 Added robodoc info
-
 ;;; ****m* event/setf amplitude
 ;;; DESCRIPTION
 ;;; Change the amplitude slot of a given event object and automatically add a
@@ -2317,9 +2314,6 @@ NIL
       (is-octave sounding written))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 31 12:32:24 EST 2011: Add robodoc info
-
 ;;; ****m* event/get-dynamic
 ;;; DESCRIPTION
 ;;; Gets the dynamic marking attached to a given event object. 

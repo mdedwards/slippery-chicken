@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    July 27th 2015
 ;;;
-;;; $$ Last modified: 12:27:57 Tue Feb  2 2016 GMT
+;;; $$ Last modified:  16:33:53 Tue Apr  5 2022 CEST
 ;;;
 ;;; SVN ID: $Id: spectra.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -247,6 +247,12 @@ data: ((0.9889743194880222d0 2.0263850081954717d0 2.9990610385449314d0
         (+ (note-to-midi (read-from-string
                           (subseq name 8 (if zero-octave 11 10))))
            12)))))
+
+(defun prep-piano-name (name)
+  (when name
+    (let* ((upos (position #\_ name))
+           (note (substitute #\s #\# (subseq name 0 upos))))
+      (note-to-midi (read-from-string note)))))
 
 (defun violin-ensemble-name (name)
   (when name

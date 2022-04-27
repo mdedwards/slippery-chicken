@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  12:55:22 Tue Feb 15 2022 CET
+;;; $$ Last modified:  13:56:47 Fri Apr  1 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2229,7 +2229,6 @@ data: (
 ;;; 15th February 2022, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Get the normalised proportions of a list of rhythms, i.e. the durational
 ;;; relationships of one rhythm to another. By normalised here it is meant that
 ;;; the returned list will sum to 1.0. Implicit there is that proportions are

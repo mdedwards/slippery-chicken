@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:22:45 Tue Mar 29 2022 CEST
+;;; $$ Last modified:  10:09:20 Fri Apr 29 2022 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3662,10 +3662,6 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Apr 25 18:36:03 BST 2012: Added robodoc entry
-
-;;; MDE original comment:
 ;;; This is different from set-rehearsal-letters in that we don't use the
 ;;; rehearsal-letters slot of sc, rather, we use the method argument.
 

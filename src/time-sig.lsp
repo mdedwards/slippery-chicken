@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified:  11:24:48 Wed Mar  3 2021 CET
+;;; $$ Last modified:  11:04:26 Fri Apr 29 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -619,7 +619,10 @@ data: (2 4)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - the tempo. This will be used to convert the first argument to quarter
-;;;   notes  
+;;;   notes
+;;; - overrides. Pairwise list of preferred time signatures, where equivalents
+;;;   can be found (e.g. 3/8 and 6/16). See example below and
+;;;   get-preferred-time-sig 
 ;;; 
 ;;; RETURN VALUE
 ;;; a time-sig object
@@ -628,6 +631,8 @@ data: (2 4)
 #|
 (make-time-sig-from-duration 2) -> 2/4
 (make-time-sig-from-duration 1.75) -> 7/16
+(make-time-sig-from-duration 1.5) -> 3/8
+(make-time-sig-from-duration 1.5 60 '(((6 16) (3 8)))) -> 6/16
 |#
 ;;; SYNOPSIS
 (defun make-time-sig-from-duration (dur-secs
@@ -635,6 +640,7 @@ data: (2 4)
                                       (tempo 60.0)
                                       overrides)
 ;;; ****
+  ;;(print overrides)
   (let* ((quarters (quarters dur-secs tempo)))
     (unless (almost-zero (rem quarters 0.125))
       (error "time-sig::make-time-sig-from-duration: can't make a time ~

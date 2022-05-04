@@ -109,6 +109,7 @@ cat > $LISPINI << EOF
 (load "$CWD/cmn/cmn-all.lisp")
 (load "$CWD/sc/src/all.lsp")
 (in-package :clm)
+(load (compile-file "$CWD/clm-5/nrev.ins"))
 (setf *clm-srate* 44100
       *clm-channels* 2
       ;; 32bit float wave files by default

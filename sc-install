@@ -29,6 +29,13 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # clm needs alsa headers
     $INSTALL libasound2-dev
 elif [[ "$OSTYPE" == "darwin"* ]]; then
+    if ! command -v xcode-select &> /dev/null
+    then
+        echo "You need MacOS's command line tools."
+        echo "You may need to run this script again once it completes."
+        xcode-select --install 
+    fi
+
     INSTALL="brew install"
     if ! command -v brew &> /dev/null
     then
@@ -89,8 +96,8 @@ git clone https://github.com/slime/slime.git
 git clone -n https://github.com/mdedwards/slippery-chicken.git --depth 1
 mv slippery-chicken sc
 cd sc
-# mkdir bin
-git checkout HEAD src
+git checkout HEAD src # just get the src dir
+mkdir bin # we need the bin dir
 cd ..
 
 # Write the sbcl init file ####################################################

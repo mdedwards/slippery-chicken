@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:56:42 Sat Mar 19 2022 CET
+;;; $$ Last modified:  13:13:23 Tue May 17 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -587,51 +587,6 @@
 (auto-set-subset-id +slippery-chicken-standard-instrument-palette+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Mar 20 15:55:39 2012 -- add some more default chord functions for
-;;; the user to choose from. See
-;;; http://michael-edwards.org/sc/manual/chords.html#chord-aux
-
-;;; ****f* instruments/chord-fun1
-;;; DESCRIPTION
-;;; Generate three-note chords where possible, using every second pitch from
-;;; the list of pitches currently available to the given instrument from the
-;;; current set, and ensuring that none of the chords it makes span more than
-;;; an octave.
-;;;
-;;; In all functions that take this format curve-num is the 
-;;; 
-;;; SYNOPSIS
-(defun chord-fun1 (curve-num index pitch-list pitch-seq instrument set)
-;;; ****
-  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2 3 12))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* instruments/chord-fun2
-;;; DESCRIPTION
-;;; Generates 4-note chords where possible, using every third pitch from the
-;;; list of pitches currently available to the given instrument from the
-;;; current set, with (almost) no limit on the total span of the chord.
-;;; 
-;;; SYNOPSIS
-(defun chord-fun2 (curve-num index pitch-list pitch-seq instrument set)
-;;; ****
-  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 3 4 999))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* instruments/play-all
-;;; DESCRIPTION
-;;; A very simple chord function to simply play all the notes in the set, no
-;;; matter which instrument should play them. Useful perhaps for computer
-;;; voices. In any case there's no checking of instrument range as we ignore
-;;; the pitch-list here.
-;;; 
-;;; SYNOPSIS
-(defun play-all (curve-num index pitch-list pitch-seq instrument set)
-;;; ****
-  (declare (ignore curve-num index pitch-list pitch-seq instrument))
-  (make-chord set))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember that the index is the desired top note of the chord
 
 ;;; ****f* instruments/chord-fun-aux
@@ -675,15 +630,21 @@
                       skip num-notes max-span)
 ;;; ****
   (declare (ignore set instrument pitch-seq curve-num))
+  (unless (every #'pitch-p pitch-list)
+    (error "slippery-chicken::instruments:: pitch list must be a list of ~
+            pitch objects: ~a" pitch-list))
   (unless (and (integer>0 skip) (integer>0 num-notes) (integer>0 max-span))
     (error "slippery-chicken::instruments:: skip, num-notes, and max-span must
             be integers > 0"))
+  ;; if called properly by get-notes, pitch-list will be an ascending ordered
+  ;; list of pitches, so we start at the bottom and work up to 
+  ;; index i.e. the highest note index as provided by the curve
   (let* ((start (max 0 (- index (- (* skip num-notes) skip))))
          (at-start (nth start pitch-list))
          (result (list at-start)))
     (loop 
-       repeat num-notes
-       for i from start by skip
+       repeat (1- num-notes) ; because we've already got the lowest
+       for i from (+ start skip) by skip
        for p = (nth i pitch-list)
        do
          (when (and p (<= (pitch- p at-start) max-span)
@@ -692,6 +653,51 @@
     (if (> (length result) 1)
         (make-chord result)
         (first result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Mar 20 15:55:39 2012 -- add some more default chord functions for
+;;; the user to choose from. See
+;;; http://michael-edwards.org/sc/manual/chords.html#chord-aux
+
+;;; ****f* instruments/chord-fun1
+;;; DESCRIPTION
+;;; Generate three-note chords where possible, using every second pitch from
+;;; the list of pitches currently available to the given instrument from the
+;;; current set, and ensuring that none of the chords it makes span more than
+;;; an octave.
+;;;
+;;; In all functions that take this format curve-num is the 
+;;; 
+;;; SYNOPSIS
+(defun chord-fun1 (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
+  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2 3 12))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/chord-fun2
+;;; DESCRIPTION
+;;; Generates 4-note chords where possible, using every third pitch from the
+;;; list of pitches currently available to the given instrument from the
+;;; current set, with (almost) no limit on the total span of the chord.
+;;; 
+;;; SYNOPSIS
+(defun chord-fun2 (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
+  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 3 4 999))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/play-all
+;;; DESCRIPTION
+;;; A very simple chord function to simply play all the notes in the set, no
+;;; matter which instrument should play them. Useful perhaps for computer
+;;; voices. In any case there's no checking of instrument range as we ignore
+;;; the pitch-list here.
+;;; 
+;;; SYNOPSIS
+(defun play-all (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
+  (declare (ignore curve-num index pitch-list pitch-seq instrument))
+  (make-chord set))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun two-hands (one-hand-fun curve-num index pitch-list pitch-seq instrument

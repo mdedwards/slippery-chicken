@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:22:25 Wed Apr 27 2022 CEST
+;;; $$ Last modified:  16:41:30 Fri May 20 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4096,7 +4096,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; ****
   (when update-amplitudes ; MDE Mon Jun 13 12:32:30 2016
     (format t "~&slippery-chicken::midi-play: updating amplitudes to reflect ~
-                dynamic marks. ~%Set :update-ampltidues to NIL if you don't ~
+                dynamic marks. ~%Set :update-amplitudes to NIL if you don't ~
                 want this ~%(e.g. if you've set amplitudes directly).")
     (update-amplitudes sc)
     (handle-hairpins sc))
@@ -8930,6 +8930,52 @@ data: (11 15)
                                      written))))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/note-count
+;;; DATE
+;;; May 20th 2022, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; for statistical purposes, generate a list of the count of all the notes in
+;;; the whole or part of a piece.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the player: either a single symbol, a list of players, or if nil, all the
+;;; players 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - how to sort the result. Default = 'pitch meaning that the pitches will
+;;; ascend irrespective of their counts. Anything else (e.g. nil) will print in
+;;; the order of lowest to highest note count
+;;; - the start bar number. Default = NIL = 1
+;;; - the end bar number. Default = NIL = last bar
+;;; - T or NIL to indicate sounding (nil) or written (t) pitches should be
+;;; examined.  Default = NIL = sounding.
+;;; 
+;;; RETURN VALUE
+;;; a list of (note count) pairs
+;;; 
+;;; SYNOPSIS
+(defmethod note-count ((sc slippery-chicken) player
+                       &optional (sort 'pitch) start-bar end-bar written)
+;;; ****
+  (let ((result '()))
+    (map-over-events sc start-bar end-bar player
+                     #'(lambda (e)
+                         (unless (is-rest e)
+                           (let* ((porc (get-porc e written))
+                                  (pos (position porc result :key #'first :test
+                                                 #'(lambda (p1 p2)
+                                                     (pitch= p1 p2 t)))))
+                             (if pos 
+                                 (incf (second (nth pos result)))
+                                 (push (list porc 1) result))))))
+    (mapcar #'(lambda (l) (list (data (first l)) (second l)))
+            (if (eq sort 'pitch)
+                (sort result #'pitch< :key #'first)
+                (sort result #'< :key #'second)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -9160,7 +9206,7 @@ data: (11 15)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example using all slots          ;
+;;; An example using all slots
 (let ((mini
        (make-slippery-chicken
         '+mini+

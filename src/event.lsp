@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:26:58 Fri Apr  1 2022 CEST
+;;; $$ Last modified:  12:33:33 Fri May 20 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4930,7 +4930,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
         ;; way to go.
         ((and (consp data1) (not data2))
          (make-events data1 midi-channel microtones-midi-channel))
-        (t (error "make-snippet: can't make events from ~a and ~a"
+        (t (error "make-events3: can't make events from ~a and ~a"
                   data1 data2))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* event/event-p

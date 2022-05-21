@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:41:30 Fri May 20 2022 CEST
+;;; $$ Last modified:  16:06:21 Sat May 21 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -7033,7 +7033,7 @@ data: NIL
   (when respell-notes
     (respell-notes sc respell-notes))
   (unless file
-    (setq file (format nil "~a_~a~a.xml"
+    (setq file (format nil "~a~a~a.xml"
                        (get-sc-config 'default-dir)
                        (filename-from-title (title sc))
                        suffix)))

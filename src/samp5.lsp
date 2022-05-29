@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  15:58:47 Thu Aug 26 2021 CEST
+;;; $$ Last modified:  10:42:33 Sun May 29 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,10 +97,12 @@
 ;;; path is given, i.e. nothing with format or any other function call. Hence
 ;;; this macro.
 
-(defmacro defscins (name (&rest args) &body body); &environment env)
-  (let ((sccfile (format nil "~abin/~a.c"
-                         cl-user::+slippery-chicken-home-dir+
-                         name)))
+(defmacro defscins (name (&rest args) &body body) ; &environment env)
+  (let ((sccfile
+          (format nil "~abin/~a.c"
+                  (sc::string-replace " " "\\ "
+                                      cl-user::+slippery-chicken-home-dir+)
+                  name)))
     `(definstrument (,name :c-file ,sccfile)
          ,args ,@body)))
 

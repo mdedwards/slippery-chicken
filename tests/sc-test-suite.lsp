@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:49:28 Tue May 17 2022 CEST
+;;; $$ Last modified:  11:07:10 Sun May 29 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -2387,10 +2387,11 @@
                               (vc (1 1 1)))))))
         (s (make-string-output-stream)))
     (sc-test-check
-      ;; this will write "/tmp/_slippery-chicken-piece.xml". would be a good
+      ;; this will write "/tmp/slippery-chicken-piece.xml". would be a good
       ;; idea to open this in Dorico/Finale/Sibelius and make sure the import of
       ;; grace note chords and single notes works
       (write-xml mini)
+      (file-write-ok "/tmp/slippery-chicken-piece.xml" 15000)
       (write-xml (get-event mini 1  2 'vn) :stream s)
       (string= (get-output-stream-string s)
                "      <note> <!-- bar-pos=1 - - - - - - - - - - - - -->
@@ -20145,56 +20146,56 @@
           :rthm-seq-palette
           '(;; 4x Intro/Outro
             (IO1
-             ((((4 4) - e (32) 32 s - (s) s { 3 - te ts - } 
-                - s. 32 - { 3 - (ts) ts (ts) - } - (32) 32 s - { 3 - ts (ts) ts - })
+             ((((4 4) - e (32) 32 s - (s) s { 3 - te ts - } - s. 32 - { 3 - (ts)
+                ts (ts) - } - (32) 32 s - { 3 - ts (ts) ts - })
                (w)
                (h (h))
-               ( - e (32) 32 s - - (s) s - { 3 - te ts - } 
-                   - s. 32 - { 3 - (ts) ts (ts) - } - (32) 32 s - { 3 - ts (ts) ts - })
+               ( - e (32) 32 s - - (s) s - { 3 - te ts - } - s. 32 - { 3 - (ts)
+                ts (ts) - } - (32) 32 s - { 3 - ts (ts) ts - })
                (- e (e) - - (s) s (e) -
-                  - 32 s (32) (32) s (32) - - s (s) (e) - )
+                - 32 s (32) (32) s (32) - - s (s) (e) - )
                ({ 3 ts ts ts } s s - s s e - (h))
                (- e (e) - - (s) s (e) -
-                  - 32 s (32) (32) s (32) - - s (s) (e) - )
+                - 32 s (32) (32) s (32) - - s (s) (e) - )
                ({ 3 ts ts ts } s s - s s e - - s s s s -
-                  { 3 ts ts ts } { 3 ts ts ts } ))
+                { 3 ts ts ts } { 3 ts ts ts } ))
               :pitch-seq-palette (2 2 2 2 2 2 2 2 2 2 2 2 2
-                                    2 2
-                                    2 2 2 2 2 2 2 2 2 2 2 2 2
-                                    3 3 3 3 3 3
-                                    1 2 3 4 5 6 7 8
-                                    3 3 3 3 3 3
-                                    3 4 5 6 7 8 7 6 5 4 3 4 3 2 1 3 2 1)))
+                                  2 2
+                                  2 2 2 2 2 2 2 2 2 2 2 2 2
+                                  3 3 3 3 3 3
+                                  1 2 3 4 5 6 7 8
+                                  3 3 3 3 3 3
+                                  3 4 5 6 7 8 7 6 5 4 3 4 3 2 1 3 2 1)))
             (IO2
              ((((4 4) q. e q e e) (e e e e q e e)
                (q (e) e q e e) (q e e e e e e)
                (q. e q e e) (e e e e e e e e)
                (q. e q q) (q q h))
               :pitch-seq-palette (6 6 7 6 6 5 4 3 7 5 4 3
-                                    5 6 7 8 7 3 2 1 2 3 4 5
-                                    5 6 5 4 3 2 3 4 5 1 2 3 4
-                                    7 6 7 8 6 7 8)))
+                                  5 6 7 8 7 3 2 1 2 3 4 5
+                                  5 6 5 4 3 2 3 4 5 1 2 3 4
+                                  7 6 7 8 6 7 8)))
             (IO3
              ((((4 4) { 3 - te (te) te - } { 3 - te (te) te - }
                 (q) { 3 - te (te) te - } )
                (q { 3 - te (te) te - } { 3 - (te) te (te) - } (q))
                ( { 6 - ts ts ts ts ts ts - } q
-                   { 6 - ts ts ts ts ts ts - } q )
+                { 6 - ts ts ts ts ts ts - } q )
                ( q (q) q. { 3 - ts ts ts - } )
                ( q (q) q. { 3 - ts ts ts - } )
                ( { 3 - ts (ts) ts (ts) ts (ts) - } q
-                   { 6 - ts ts ts ts ts ts - } q )
+                { 6 - ts ts ts ts ts ts - } q )
                ( q (q) q. { 3 - ts ts ts - } )
                ( { 3 - te (te) te - } { 3 - te (te) te - }
-                   (q) { 3 - te (te) te - } ))
+                (q) { 3 - te (te) te - } ))
               :pitch-seq-palette (1 3 2 4 3 5
-                                    10 9 8 9
-                                    2 3 4 3 4 5 6 3 4 5 4 5 6 7
-                                    4 9 2 8 5
-                                    4 6 9 3 2
-                                    1 3 6 2 4 6 8 9 10
-                                    5 3 0 1 4
-                                    9 7 8 6 7 5 6 4)))
+                                  10 9 8 9
+                                  2 3 4 3 4 5 6 3 4 5 4 5 6 7
+                                  4 9 2 8 5
+                                  4 6 9 3 2
+                                  1 3 6 2 4 6 8 9 10
+                                  5 3 0 1 4
+                                  9 7 8 6 7 5 6 4)))
             (IO4
              ((((4 4) w ) ( (q.) s (s) (s) s (q.) )
                ( (h) (e.) s (q) ) ( w )
@@ -20216,11 +20217,11 @@
                ( (q) q (q) q (q)))
               :pitch-seq-palette
               ((1 2 3 4 (5) 6
-                  5 4 (7) 2
-                  3 4 (5) 6 7)
+                5 4 (7) 2
+                3 4 (5) 6 7)
                (1 2 (8) 4 5
-                  4 3 2 (6)
-                  2 3 4 5 (6) 7))))
+                4 3 2 (6)
+                2 3 4 5 (6) 7))))
             (M3
              ((((4 4) { 3 - tq te - } (q) 
                 { 3 - (te) tq - } (q) )
@@ -20230,8 +20231,8 @@
                ( - s (s) s (s) - { 5 - (fe.) fe - } { 3 - te te te - } ))
               :pitch-seq-palette
               ((1 2 (6) 4 (5) 6
-                  (5)
-                  6 7 (8) 6 7 (8) 6 7 (8) 6 7 (8))
+                (5)
+                6 7 (8) 6 7 (8) 6 7 (8) 6 7 (8))
                (7
                 (8) 9 10 (8) 9 10 (8) 9 10 (8) 9 10
                 9 (8) 7 6 (6) 5))))
@@ -20248,9 +20249,9 @@
                 (13) (11) (12) 5 5
                 9 7 5 1 3 5 9 7 5 7 9 5 3)
                (10 9 7 6 (4) 3
-                   1 2 (4) 5 (7) 8 1 2 (5) 6 7 8
-                   (9) (9)
-                   10 9 7 6 4 3 10 9 7 9))))
+                1 2 (4) 5 (7) 8 1 2 (5) 6 7 8
+                (9) (9)
+                10 9 7 6 4 3 10 9 7 9))))
             (M5
              ((((1 4) q )
                ((6 8) - e e e - q. )
@@ -20259,11 +20260,11 @@
                ( h. ))
               :pitch-seq-palette
               ((2 3 4 5
-                  (13) 4 5 6 7 (8)
-                  2 (13) 4 5)
+                (13) 4 5 6 7 (8)
+                2 (13) 4 5)
                (1 4 5 (12) 9 7
-                  8 5 2 (10)
-                  (11) 4 8 7))))
+                8 5 2 (10)
+                (11) 4 8 7))))
             (M6
              ((((2 4) h ) ( h ) ( h )
                ((4 4) { 3 - te te te - } q h )
@@ -20294,9 +20295,9 @@
                ( - s s (e) - { 5 - fs fs fe. - } +h ))
               :pitch-seq-palette
               ((2 3 (14) 5 9 8 7 (6) 5 9 8 7 (6) 5
-                  3 (11) 4 (5) (9) 9 7 5 3 (11))
+                3 (11) 4 (5) (9) 9 7 5 3 (11))
                (2 3 (14) 5 9 8 7 (6) 5 9 8 7 (6) 5
-                  9 7 5 3 (11) 3 (11) 4 (5) (9)))))
+                9 7 5 3 (11) 3 (11) 4 (5) (9)))))
             (M9
              ((((4 4) q \+8 (e) - e e - { 3 - te te te - } )
                ( { 3 - te te (te) - } (s) s (s) s - s s s s - - s s s (s) - ))
@@ -20321,7 +20322,7 @@
                 (lh (IO1 M5 M4 M6 M8 M7 M9 IO4 zapp-down))))))))
     (write-xml +remote-control+ :respell-notes nil)
     (sc-test-check
-      (file-write-ok "/tmp/_remote-control.xml" 1040000))))
+      (file-write-ok "/tmp/remote-control.xml" 1040000))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

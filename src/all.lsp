@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  15:51:52 Tue Aug 10 2021 CEST
+;;; $$ Last modified:  10:42:04 Sun May 29 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -208,11 +208,11 @@
 #+cmn (sc-compile-and-load "cmn-glyphs.lsp")
 #+cm (sc-compile-and-load "cm.lsp")
 #+cm (sc-compile-and-load "cm-cm.lsp")
+(sc-compile-and-load "cm-load.lsp" t)
+(sc-compile-and-load "utilities.lsp")
 #+clm (sc-compile-and-load "samp5.lsp")
 #+clm (sc-compile-and-load "sine.lsp")
 #+clm (sc-compile-and-load "autoc.lsp")
-(sc-compile-and-load "cm-load.lsp" t)
-(sc-compile-and-load "utilities.lsp")
 (sc-compile-and-load "named-object.lsp")
 (sc-compile-and-load "music-xml.lsp")
 (sc-compile-and-load "linked-named-object.lsp")

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:06:21 Sat May 21 2022 CEST
+;;; $$ Last modified:  14:09:35 Thu May 26 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4566,7 +4566,7 @@ seq-num 5, VN, replacing G3 with B6
          :rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
                                  :pitch-seq-palette ((1 2 3)))))
          :rthm-seq-map '((1 ((vn (1 1 1)))))
-         :snd-output-dir "/E/"
+         :snd-output-dir "/tmp/"
          :sndfile-palette '(((sndfile-grp-1
                               ((test-sndfile-1.aiff)
                                (test-sndfile-2.aiff)

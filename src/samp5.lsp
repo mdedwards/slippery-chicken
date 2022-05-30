@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  10:42:33 Sun May 29 2022 CEST
+;;; $$ Last modified:  20:02:52 Mon May 30 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -100,8 +100,7 @@
 (defmacro defscins (name (&rest args) &body body) ; &environment env)
   (let ((sccfile
           (format nil "~abin/~a.c"
-                  (sc::string-replace " " "\\ "
-                                      cl-user::+slippery-chicken-home-dir+)
+                  (sc::escape-spaces cl-user::+slippery-chicken-home-dir+)
                   name)))
     `(definstrument (,name :c-file ,sccfile)
          ,args ,@body)))

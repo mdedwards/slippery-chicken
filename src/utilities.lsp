@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  18:18:19 Fri Mar 18 2022 CET
+;;; $$ Last modified:  20:03:13 Mon May 30 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6077,6 +6077,12 @@ yes_foo, 1 2 3 4;
   (loop for n in numbers with a = 0.0
         do (incf a n)
         collect a))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon May 30 20:03:00 2022, Heidhausen -- precede spaces with a \ e.g. in
+;;; pathnames 
+(defun escape-spaces (string)
+  (string-replace " " "\\ " string))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

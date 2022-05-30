@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:44:25 Mon May 30 2022 CEST
+;;; $$ Last modified:  20:07:05 Mon May 30 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8257,16 +8257,6 @@
         (check-it 604 matt3)
         (check-it 802 matt4)))))
 
-(get-test-sf-path (format nil "tests/sines/test.aiff"))
-
-(make-sndfile (get-test-sf-path (format nil "tests/sines/test.aiff"))
-              :frequency 'detect)
-
-(make-sndfile (get-test-sf-path (format nil "tests/sines/test.aiff"))
-              :frequency 'detect :start 7.1)
-
-(autoc-get-fundamental (get-test-sf-path (format nil "tests/sines/test.aiff"))
-                       15.4 .1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ensemble tests
@@ -14674,12 +14664,14 @@
   (let ((sfp1 (make-sfp-from-folder
                (concatenate 'string
                             cl-user::+slippery-chicken-home-dir+
-                            "tests/test-sndfiles-dir-1")))
+                            "tests/test-sndfiles-dir-1")
+               ;; ignore test-sndfile-matt-sines.aiff (added 30.5.22)
+               :resist "matt"))
         (sfp2 (make-sfp-from-folder
                (concatenate 'string
                             cl-user::+slippery-chicken-home-dir+
                             "tests/test-sndfiles-dir-1")
-               :auto-freq t)))
+               :auto-freq t :resist "matt")))
     (sc-test-check
       (= 3 (num-snds sfp1))
       (equal-within-tolerance

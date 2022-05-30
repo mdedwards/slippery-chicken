@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  12:49:38 Wed Feb  9 2022 CET
+;;; $$ Last modified:  19:32:34 Mon May 30 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -321,7 +321,10 @@ T
           ;; this will just return the freq for 'c4.
           (when (eq 'detect (frequency sf)) ;(frequency sf))
             (setf (slot-value sf 'frequency) (autoc-get-fundamental
-                                              path (start sf) (duration sf)))))
+                                              path (start sf) ;(duration sf)))))
+                                              ;; 200ms is enough for 4 periods
+                                              ;; of 20Hz  
+                                              .2))))
       ;; MDE Mon Feb 17 15:03:12 2020 -- don't allow freqs of 0 otherwise
       ;; we'll get division-vy-zero errors in clm-play (thanks Dan) 
       (when (equal-within-tolerance (frequency sf) 0.0)

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:07:10 Sun May 29 2022 CEST
+;;; $$ Last modified:  19:44:25 Mon May 30 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8223,19 +8223,50 @@
 (sc-deftest test-sndfile-autoc ()
   ;; MDE Mon Feb 25 20:00:13 2019 -- autoc is as of today part of SC
   ;; (load (compile-file "/Users/michael/ins/autoc.ins"))
-  (flet ((msf (dir sf)
+  (flet ((msf (dir sf &optional (start 0))
            (make-sndfile 
             (get-test-sf-path
              (format nil "tests/test-sndfiles-dir-~a/test-sndfile-~a.aiff"
                      dir sf))
-            :frequency 'detect)))
-    (let ((sf1 (msf 1 1))
-          (sf2 (msf 1 3))
-          (sf3 (msf 2 4)))
+            :frequency 'detect :start start))
+         (check-it (freq sf)
+           (= freq (print (round (frequency sf))))))
+    (let ((sf1 (msf 1 1 .03))
+          (sf2 (msf 1 2))
+          (sf3 (msf 2 4 .8))
+          (sf4 (msf 1 3 .9))
+           ;; MDE Mon May 30 19:15:11 2022, Heidhausen -- we've now changed the
+           ;; auotocorrelation routine to sample 200ms. check this works with
+           ;; sines
+          (matt1 (msf 1 "matt-sines" .1))
+          (matt2 (msf 1 "matt-sines" 7.2))
+          (matt3 (msf 1 "matt-sines" 12.5))
+          (matt4 (msf 1 "matt-sines" 15.7)))
       (sc-test-check
-        (= 347 (round (frequency sf1)))
-        (= 581 (round (frequency sf2)))
-        (= 840 (round (frequency sf3)))))))
+        ;; the lowest partial shown in glisseq is 3x this so the percussive
+        ;; nature is confusing the algo. still at least there's a relationship
+        (check-it 178 sf1)
+        ;; this glissandos so really tough: glisseq really unclear
+        (check-it 125 sf2)
+        ;; very clear pitch
+        (check-it 865 sf3)
+        (check-it 637 sf4)
+        ;; these are actually harmonics of 200 Hz but we're close enough
+        (check-it 201 matt1)
+        (check-it 401 matt2)
+        (check-it 604 matt3)
+        (check-it 802 matt4)))))
+
+(get-test-sf-path (format nil "tests/sines/test.aiff"))
+
+(make-sndfile (get-test-sf-path (format nil "tests/sines/test.aiff"))
+              :frequency 'detect)
+
+(make-sndfile (get-test-sf-path (format nil "tests/sines/test.aiff"))
+              :frequency 'detect :start 7.1)
+
+(autoc-get-fundamental (get-test-sf-path (format nil "tests/sines/test.aiff"))
+                       15.4 .1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ensemble tests

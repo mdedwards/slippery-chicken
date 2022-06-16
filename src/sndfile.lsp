@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  19:32:34 Mon May 30 2022 CEST
+;;; $$ Last modified:  10:04:08 Tue May 31 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -320,11 +320,12 @@ T
           ;; Battey's CLM autocorrelation instrument. If there's no CLM package
           ;; this will just return the freq for 'c4.
           (when (eq 'detect (frequency sf)) ;(frequency sf))
-            (setf (slot-value sf 'frequency) (autoc-get-fundamental
-                                              path (start sf) ;(duration sf)))))
-                                              ;; 200ms is enough for 4 periods
-                                              ;; of 20Hz  
-                                              .2))))
+            (setf (slot-value sf 'frequency)
+                  (autoc-get-fundamental
+                   path (start sf)      ;(duration sf)))))
+                   ;; MDE Tue May 31 10:03:50 2022, Heidhausen -- 200ms is
+                   ;; enough for 4 periods of 20Hz
+                   .2))))
       ;; MDE Mon Feb 17 15:03:12 2020 -- don't allow freqs of 0 otherwise
       ;; we'll get division-vy-zero errors in clm-play (thanks Dan) 
       (when (equal-within-tolerance (frequency sf) 0.0)

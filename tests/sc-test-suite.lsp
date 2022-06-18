@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  20:07:05 Mon May 30 2022 CEST
+;;; $$ Last modified:  09:53:24 Sat Jun 18 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15675,6 +15675,8 @@
       ;; on a related note, try this too:
       (= 3802 (midi2qlist f1 nil))
       (= 808 (midi2qlist f2 nil 1 2))
+      (print (first el2))
+      (print (first el3))
       (= 440 (length el2))
       (= 368 (length el3)))))
 

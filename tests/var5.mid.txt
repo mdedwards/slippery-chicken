@@ -1,4 +1,6 @@
-293.560 qlmidinote 64 97;
+25.379 qlmidinote 55 107;
+131.818 qlmidinote 62 97;
+136.364 qlmidinote 64 97;
 136.363 qlmidinote 66 80;
 136.364 qlmidinote 67 89;
 0.000 qlmidinote 71 102;
@@ -805,5 +807,4 @@
 0.000 qlmidinote 47 115;
 136.360 qlmidinote 71 100;
 136.368 qlmidinote 79 113;
-0.000 qlmidinote 43 115;;136.368 qlmidinote 79 113;
 0.000 qlmidinote 43 115;

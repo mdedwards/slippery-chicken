@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  09:53:24 Sat Jun 18 2022 CEST
+;;; $$ Last modified:  10:18:45 Sat Jun 18 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15671,14 +15671,16 @@
          (el2 (midi-file-to-events f2 :track 1))
          (el3 (midi-file-to-events f2 :track 2)))
     (sc-test-check
-      (= 3802 (length el1))
+      ;; MDE Sat Jun 18 10:18:25 2022, Heidhausen -- these numbers all just went
+      ;; up by 1 or 2 because we were missing the first events! 
+      (= 3803 (length el1))
       ;; on a related note, try this too:
-      (= 3802 (midi2qlist f1 nil))
-      (= 808 (midi2qlist f2 nil 1 2))
-      (print (first el2))
-      (print (first el3))
-      (= 440 (length el2))
-      (= 368 (length el3)))))
+      (= 3803 (midi2qlist f1 nil))
+      (= 810 (midi2qlist f2 nil 1 2))
+      ;; (print (first el2))
+      ;; (print (first el3))
+      (= 441 (length el2))
+      (= 369 (length el3)))))
 
 (sc-deftest test-diapason ()
   (sc-test-check

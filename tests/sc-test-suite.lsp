@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:18:45 Sat Jun 18 2022 CEST
+;;; $$ Last modified:  16:27:17 Sat Jun 18 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15674,6 +15674,10 @@
       ;; MDE Sat Jun 18 10:18:25 2022, Heidhausen -- these numbers all just went
       ;; up by 1 or 2 because we were missing the first events! 
       (= 3803 (length el1))
+      (eq 'd4 (get-pitch-symbol (first el2)))
+      (eq 'g3 (get-pitch-symbol (first el3)))
+      (eq 'g5 (get-pitch-symbol (first (last el2))))
+      (eq 'g2 (get-pitch-symbol (first (last el3))))
       ;; on a related note, try this too:
       (= 3803 (midi2qlist f1 nil))
       (= 810 (midi2qlist f2 nil 1 2))

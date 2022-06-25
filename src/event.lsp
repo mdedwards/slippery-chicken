@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:33:33 Fri May 20 2022 CEST
+;;; $$ Last modified:  16:16:13 Sat Jun 25 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -533,7 +533,18 @@
                    (marks e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jun 25 16:08:06 2022, Karlsruhe -- added this method to handle the
+;;; case of text marks added to chords (which have to be in marks-before
+(defmethod add-mark ((e event) mark &optional (update-amplitude t)
+                                              warn-again)
+  (declare (ignore warn-again update-amplitude))
+  ;; MDE Sat Jun 25 16:02:50 2022, Heidhausen -- text marks added to chords need
+  ;; to be before
+  (if (and (stringp mark) (is-chord e))
+      (add-mark-before e mark)
+      (call-next-method)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 5.4.11: remove existing dynamics if we're about to add one
 (defmethod add-mark :before ((e event) mark &optional (update-amplitude t)
                                               warn-again)
@@ -2512,7 +2523,7 @@ NIL
                (when (is-grace-note e)
                  (format stream "~&        <grace />"))
                (format stream "~&        <chord />"))
-           ;; MDE Sat Oct 13 10:40:09 2018 
+           ;;  MDE Sat Oct 13 10:40:09 2018 
              (multiple-value-setq (accidental pitch-notehead)
                (write-xml p :stream stream))
            ;; (setq accidental (write-xml p :stream stream))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  10:09:20 Fri Apr 29 2022 CEST
+;;; $$ Last modified:  14:23:35 Sat Jun 25 2022 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5520,7 +5520,7 @@ NIL
 ;;; - The method or function itself. This can be a user-defined function or the
 ;;;   name of an existing method or function.  It should take at least one
 ;;;   argument, a note event (can be a single pitch or a chord), and any other
-;;; arguments as supplied.  
+;;;   arguments as supplied.  
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - Any additional argument values the specified method/function may

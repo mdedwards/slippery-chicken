@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:27:17 Sat Jun 18 2022 CEST
+;;; $$ Last modified:  16:09:03 Sat Jun 25 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -2412,7 +2412,13 @@
         </pitch>
         <type>eighth</type>
         <stem default-y=\"3\">up</stem>
-      </note>"))))
+      </note>")
+      ;; make sure these work with notes
+      (add-mark (get-note mini 1 2 'vn) "hello text marks")
+      ;; and now with chords
+      (setf (pitch-or-chord (get-note mini 1 2 'vc)) '(ds4 fs4))
+      (add-mark (get-note mini 1 2 'vc) "hello chord text marks")
+      (write-xml mini))))
 
 ;;; MDE Tue Jul 16 13:10:42 2019 
 (sc-deftest test-event-common-notes ()

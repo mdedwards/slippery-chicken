@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  15:17:55 Thu Dec  2 2021 CET
+;;; $$ Last modified:  15:35:18 Sat Jun 25 2022 CEST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -152,6 +152,7 @@
 (defun xml-words (stream words &optional (placement 'a) tag-options)
   ;; (break)
   ;; (print stream) (print words) (print tag-options) (print placement)
+  ;; (print words)
   (xml-direction stream "words" words tag-options placement))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

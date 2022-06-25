@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:48:46 Fri Apr 30 2021 CEST
+;;; $$ Last modified:  15:11:31 Sat Jun 25 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,7 +67,7 @@
    (micro-tonality :accessor micro-tonality :type float :initform -1.0)
    ;; dynamics, accents etc. exactly the code used by cmn.  These will simply
    ;; be copied over to the event when the chord is bound to an event.  Not
-   ;; used by get-lp-data!  
+   ;; used by get-lp-data or write-xml!  
    (marks :accessor marks :type list :initarg :marks :initform nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

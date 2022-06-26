@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:16:13 Sat Jun 25 2022 CEST
+;;; $$ Last modified:  09:51:03 Sun Jun 26 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -711,6 +711,8 @@
 ;;;
 ;;; NB: This creates a full tempo object, not just a number representing
 ;;; bpm. It also sets the display-tempo object to T as a side effect.
+;;; Also note that to delete a tempo-change you should use the
+;;; delete-tempo-change method rather than passing NIL to this method. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -770,6 +772,12 @@ data: 132
   ;; MDE Mon Apr 25 11:26:54 2016
   (setf (display-tempo e) t)
   value)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod delete-tempo-change ((e event))
+  (setf (slot-value e 'tempo-change) nil
+        (display-tempo e) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/add-pitches

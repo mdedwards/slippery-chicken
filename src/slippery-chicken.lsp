@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:51:50 Tue Jun  7 2022 CEST
+;;; $$ Last modified:  09:44:16 Sun Jun 26 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -10248,16 +10248,15 @@ data: (11 15)
 (defun map-over-events-aux (sc start-bar end-bar players attacked-notes-only
                             function further-args)
 ;;; ****
-;  (print further-args)
   (unless end-bar
-    (setf end-bar (num-bars sc)))
+    (setq end-bar (num-bars sc)))
   (unless start-bar
-    (setf start-bar 1))
+    (setq start-bar 1))
   (unless players
-    (setf players (players sc)))
+    (setq players (players sc)))
   ;; DJR Wed 18 Sep 2019 08:15:15 BST
-  ;; Forgot to setf this!
-  (setf players (force-list players))
+  ;; Forgot to setq this!
+  (setq players (force-list players))
   (let ((count-list '()))
     (loop for player in players do
          (next-event sc player attacked-notes-only start-bar)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:23:35 Sat Jun 25 2022 CEST
+;;; $$ Last modified:  09:52:07 Sun Jun 26 2022 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4351,7 +4351,7 @@ NIL
 
   => T
 
-  |#
+|#
 ;;; SYNOPSIS
 (defmethod remove-extraneous-dynamics ((sc slippery-chicken))
 ;;; ****
@@ -7776,6 +7776,35 @@ NIL
                  do (unless active (force-rest e)))))))
   (when reset-midi-channels (reset-midi-channels sc))
   (when update-slots (update-slots sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/delete-tempi
+;;; DATE
+;;; June 26th 2022, Karlsruhe
+;;; 
+;;; DESCRIPTION
+;;; Delete all tempo-change slot tempo objects from all events in the given
+;;; players. NB Call update-slots after using this and similar methods for the
+;;; last time, so that event timing reflects tempo changes.
+;;; 
+;;; ARGUMENTS
+;;; - 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the start bar. Default = NIL = 1
+;;; - the end bar. Default = NIL = last bar of piece
+;;; - the player(s). Either a list of or single symbol(s). Default = NIL = all
+;;;   players 
+;;; 
+;;; RETURN VALUE
+;;; - the newly modified slippery-chicken object
+;;; 
+;;; SYNOPSIS
+(defmethod delete-tempi ((sc slippery-chicken) &optional start-bar end-bar
+                         players)
+  (map-over-events sc start-bar end-bar players
+                   #'(lambda (e) (delete-tempo-change e)))
+  sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

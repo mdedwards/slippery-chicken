@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  15:35:18 Sat Jun 25 2022 CEST
+;;; $$ Last modified:  11:18:33 Sun Jun 26 2022 CEST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -309,7 +309,7 @@
                   (beg-15mb '(dir "octave-shift"
                               "dash-length=\"7.5\" size=\"-15\" space-length=\"7.5\" type=\"up\""))
                   (end-15mb '(dir "octave-shift" "size=\"-15\" type=\"stop\""))
-                  ;; note heads
+                  ;; noteheads
                   (circled-x '(hd "circle-x"))
                   (x-head '(hd "x"))
                   (triangle '(hd "triangle"))

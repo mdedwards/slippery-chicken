@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  20:03:13 Mon May 30 2022 CEST
+;;; $$ Last modified:  19:22:11 Wed Jul  6 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -714,6 +714,42 @@
                 (> i lim))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/get-primes
+;;; DATE
+;;; July 6th 2022, Werden
+;;; 
+;;; DESCRIPTION
+;;; Get all the prime numbers between minimum and maximum values
+;;; 
+;;; ARGUMENTS
+;;; - the minimum (start point). Doesn't have to be a prime number.
+;;; - the maximum (end point). Doesn't have to be a prime number.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - an integer to specify the maximum number of primes to return. If NIL
+;;;   (default) then we'll stop at max
+;;; 
+;;; RETURN VALUE
+;;; a list of prime numbers
+;;; 
+;;; EXAMPLE
+#|
+(get-primes 5 19) -> (5 7 11 13 17 19)
+(get-primes 5 19 3) -> (5 7 11)
+|#
+;;; SYNOPSIS
+(defun get-primes (min max &optional num)
+  (let ((result '()))
+    (loop with count = 0 for i from min to max
+          do
+             (when (prime i)
+               (push i result)
+               (incf count))
+             (when (and num (= num count))
+               (return)))
+    (nreverse result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/power-of-2
 ;;; DESCRIPTION
 ;;; Test whether the specified number is a power of two and return the
@@ -745,6 +781,7 @@
 ;;; ****
   (unless (zerop float) ; would cause division-by-zero error
     (whole-num-p (log float 2))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/nearest-power-of-2

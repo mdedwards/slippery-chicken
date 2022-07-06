@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  15:04:09 Thu Apr 15 2021 CEST
+;;; $$ Last modified:  12:36:02 Wed Jul  6 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -885,10 +885,6 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
                 reference-pitch offset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb  8 10:24:35 GMT 2012: Deleted MDE's original comment here, as
-;;; it has been taken into the doc below with minor modification
-
 ;;; SAR Wed Feb  8 10:12:39 GMT 2012: Edited robodoc entry
 
 ;;; ****m* sc-set/stack
@@ -948,6 +944,16 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 COMPLETE-SET: complete: NIL
 [...]
 data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
+
+Note the difference of doing :by-freq and by interval:
+
+(let ((set (make-sc-set '(c4 e4 g4))))
+        (print (get-pitch-symbols (stack set 1 :by-freq t)))
+        (get-pitch-symbols (stack set 1 :by-freq nil)))
+-->
+(C3 G3 C4 E4 G4 BF4 C5) 
+(F3 AF3 C4 E4 G4 B4 D5)
+
 |#
 ;;; SYNOPSIS
 (defmethod stack ((s sc-set) num-stacks &key id by-freq (up t) (down t))

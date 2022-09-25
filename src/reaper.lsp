@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  18:47:25 Sun Sep 25 2022 CEST
+;;; $$ Last modified:  18:54:00 Sun Sep 25 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -70,8 +70,7 @@
        (rf (make-reaper-file 'reaper-test items :tempo tempo)))
   (write-reaper-file rf))
 
-;;; or to write a reaper file just with markers (at times in beats, by default
-;;; in reaper)
+;;; or to write a reaper file just with markers (at times in seconds)
 (write-reaper-file (make-reaper-file 'test nil) :markers '(1 2 3.5 7))
 |#
 
@@ -351,8 +350,8 @@
       ;; writes markers before <PROJBAY> (the last entry in our header file) but
       ;; doesn't complain when they come afterwards
       (when markers
-        ;; these are either a list of times (in beats, by default) or a list of
-        ;; sublists with data in the order we'd supply to write-reaper-marker
+        ;; these are either a list of times (in seconds) or a list of sublists
+        ;; with data in the order we'd supply to write-reaper-marker
         (loop for m in markers and i from 1 do
           (if (numberp m)
               (write-reaper-marker i m "" out)

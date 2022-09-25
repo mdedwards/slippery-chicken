@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:22:11 Wed Jul  6 2022 CEST
+;;; $$ Last modified:  18:44:56 Sat Sep 24 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -46,7 +46,6 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; separator is what separates mins and secs; default is e.g. 12:06
 ;;; same-width t would make sure all those minutes under 10 are written in the
 ;;; format e.g. 00:12.2 
@@ -5062,7 +5061,6 @@ RETURNS:
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* utilities/interleave
 ;;; DESCRIPTION
 ;;; Interleave the elements of an aribitrary number of lists. Should the lists
@@ -5096,7 +5094,6 @@ RETURNS:
      finally (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* utilities/envelope-boundaries
 ;;; DESCRIPTION
 ;;; Find sharp changes in envelope values. These are defined as when a y value

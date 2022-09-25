@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  10:43:55 Tue Jul  5 2022 CEST
+;;; $$ Last modified:  18:07:24 Sun Sep 25 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -69,6 +69,9 @@
        ;; NB the tempo of the reaper file is independent of the items
        (rf (make-reaper-file 'reaper-test items :tempo tempo)))
   (write-reaper-file rf))
+
+;;; or to write a reaper file just with markers (at times in seconds)
+(write-reaper-file (make-reaper-file 'test nil) :markers '(1 2 3.5 7))
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -331,7 +334,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; By default the file will be written in slippery-chicken's 'default-dir using
 ;;; the ID as file name, but :file will override this.
-(defmethod write-reaper-file ((rf reaper-file) &key file)
+(defmethod write-reaper-file ((rf reaper-file) &key file markers)
   (let ((outfile (if file
                      file
                      (default-dir-file (format nil "~a.rpp"
@@ -343,6 +346,16 @@
          :direction :output :if-does-not-exist :create
          :if-exists :rename-and-delete)
       (write-header rf out)
+      ;; MDE Sun Sep 25 17:56:30 2022, Heidhausen -- reaper v6.64 at least
+      ;; writes markers before <PROJBAY> (the last entry in our header file) but
+      ;; doesn't complain when they come afterwards
+      (when markers
+        ;; these are either a list of times or a list of sublists with data in
+        ;; the order we'd supply to write-reaper-marker
+        (loop for m in markers and i from 1 do
+          (if (numberp m)
+              (write-reaper-marker i m "" out)
+              (apply #'write-reaper-marker m))))
       ;; loop through the tracks and write them
       (loop for track in (data (tracks rf)) do (write-track track out))
       (write-footer rf out))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  18:44:56 Sat Sep 24 2022 CEST
+;;; $$ Last modified:  12:23:01 Tue Sep 27 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -3785,7 +3785,7 @@ WARNING:
 ;;; skip is a list of directories to not include--it's the last directory
 ;;; name only we're interested in. pattern is a string that the file name must
 ;;; have, or a list of such strings
-(defun get-all-files (dir &optional skip pattern)
+(defun get-all-files (dir &optional skip pattern force-quotes)
   (setq skip (force-list skip))
   (let ((files (loop for file in (directory (starify dir t))
                   for files = (namestring file)
@@ -3798,6 +3798,10 @@ WARNING:
     ;; MDE Wed Dec 22 13:07:13 2021, Heidhausen
     (loop for pattn in (force-list pattern) do
       (setq files (remove-if-not #'(lambda (x) (search pattn x)) files)))
+    ;; MDE Tue Sep 27 12:21:36 2022, Heidhausen -- for files with spaces etc. we
+    ;; might want to put "" marks around the string
+    (when force-quotes
+      (setq files (mapcar #'(lambda (f) (format nil "\"~a\"" f)) files)))
     ;; MDE Mon Feb 28 15:12:25 2022, Heidhausen -- there's no way we could want
     ;; .DS_Store ... famous last words?
     (remove-if #'(lambda (f) (search ".DS_Store" f)) files)))

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  10:04:14 Tue Jul  6 2021 CEST
+;;; $$ Last modified:  12:31:18 Tue Sep 27 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1055,7 +1055,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
  ... 
 |#
 ;;; SYNOPSIS
-(defun get-sndfiles (folder &optional skip insist resist)
+(defun get-sndfiles (folder &optional skip insist resist force-quotes)
 ;;; ****
   ;; MDE Wed Apr 15 11:14:59 2020 -- handle pathnames if we've used
   ;; e.g. merge-pathnames  
@@ -1063,13 +1063,15 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
     (setq folder (directory-namestring folder)))
   (setq insist (force-list insist)
         resist (force-list resist))
-  (loop for file in (get-all-files folder skip)
-     for name = (pathname-name file) 
-     when (and (member (pathname-type file) '("aif" "wav" "aiff" "snd")
-                       :test #'string=)
-               (seq-has-all insist name)
-               (seq-has-none resist name))
-     collect file))
+  (loop for file in (get-all-files folder skip nil force-quotes)
+        for name = (pathname-name file)
+        when (and (member (pathname-type file) '("aif" "wav" "aiff" "snd"
+                                                 "aif\"" "wav\"" "aiff\""
+                                                 "snd\"")
+                          :test #'string=)
+                  (seq-has-all insist name)
+                  (seq-has-none resist name))
+          collect file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun get-groups-from-paths (files parent-dir &optional as-lists)

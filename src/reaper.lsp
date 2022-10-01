@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  12:21:32 Sat Oct  1 2022 CEST
+;;; $$ Last modified:  15:10:29 Sat Oct  1 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -158,6 +158,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod initialize-instance :after ((ri reaper-item) &rest initargs)
   (declare (ignore initargs))
   ;; if there's no name, use the file name (minus dir and extension) as the
@@ -272,9 +274,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; write the reaper header to a stream using the given slots for project
 ;;; settings 
-(defmethod write-header ((rf reaper-file) stream)
+(defmethod write-header ((rf reaper-file) stream master-channels)
   (format stream (header rf) (cursor rf) (zoom rf) (record-path rf) 
-          (bpm (tempo rf)) (num (time-sig rf)) (denom (time-sig rf))))
+          (bpm (tempo rf)) (num (time-sig rf)) (denom (time-sig rf))
+          master-channels))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod write-footer ((rf reaper-file) stream)
@@ -288,6 +291,8 @@
 ;;; should be written to. Sort these now.
 (defmethod create-tracks ((rf reaper-file)
                           &key (min-channels 2) (max-channels 4))
+  (when (> min-channels max-channels)
+    (setq max-channels min-channels))
   ;; items can of course use any name in their track slot, but get all unique
   ;; names here as this will determine how many tracks are written.
   (let* ((track-names (remove-duplicates (mapcar #'track (data rf))
@@ -353,18 +358,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; By default the file will be written in slippery-chicken's 'default-dir using
 ;;; the ID as file name, but :file will override this.
-(defmethod write-reaper-file ((rf reaper-file) &key file markers)
+(defmethod write-reaper-file ((rf reaper-file)
+                              &key file markers
+                                (min-channels 2) (max-channels 4))
   (let ((outfile (if file
                      file
                      (default-dir-file (format nil "~a.rpp"
                                                (string-downcase (id rf)))))))
     ;; sort the items into tracks
-    (create-tracks rf)
+    (create-tracks rf :min-channels min-channels :max-channels max-channels)
     (with-open-file 
         (out outfile
          :direction :output :if-does-not-exist :create
          :if-exists :rename-and-delete)
-      (write-header rf out)
+      (write-header rf out (max min-channels max-channels))
       ;; MDE Sun Sep 25 17:56:30 2022, Heidhausen -- reaper v6.64 at least
       ;; writes markers before <PROJBAY> (the last entry in our header file) but
       ;; doesn't complain when they come afterwards

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  18:54:00 Sun Sep 25 2022 CEST
+;;; $$ Last modified:  11:38:51 Sat Oct  1 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -94,7 +94,10 @@
    ;; line)  
    (start-time :accessor start-time :type number :initarg :start-time
                :initform 0.0)
-   ;; the name visible in the reaper item: by default the sndfile name
+   ;; the name visible in the reaper item: by default the sndfile name--as this
+   ;; might be used for several objects we shouldn't use the named-object ID
+   ;; slot, which is generally but not necesssarily unique (e.g. if used in
+   ;; assoc-lists)
    (name :accessor name :initarg :name :initform nil)
    ;; the name of the track to put this item on. If items are passed to
    ;; make-reaper-file then before writing they'll be separated into tracks and
@@ -157,8 +160,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod initialize-instance :after ((ri reaper-item) &rest initargs)
   (declare (ignore initargs))
+  (unless (path ri)
+    (error "reaper-item::initialize-instance: the path slot is required."))
   ;; if there's no name, use the file name (minus dir and extension) as the
   ;; name.
+  ;; trigger the setf method
+  (setf (track ri) (track ri))
   (when (and (path ri) (stringp (path ri)) (not (name ri)))
     (setf (name ri) (pathname-name (path ri)))))
 
@@ -203,6 +210,7 @@
     scl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod initialize-instance :after ((rf reaper-file) &rest initargs)
   (declare (ignore initargs))
   (setf (tempo rf) (make-tempo (tempo rf))
@@ -230,7 +238,7 @@
     scl))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -242,6 +250,16 @@
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
           (fade-out ri) (name ri) (start ri) (play-rate  ri)
           (preserve-pitch ri) (path ri)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod (setf track) :around (track (ri reaper-item))
+  (call-next-method
+   (typecase track
+     (number (format nil "track~a" track))
+     (string track)
+     (t (error "reaper-item::setf track: track should be a number or string: ~a"
+               track)))
+      ri))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; write all items in a track to a reaper stream, using the tstring as template
@@ -370,6 +388,11 @@
 (defun make-reaper-file (id reaper-items &rest keyargs &key &allow-other-keys)
   ;; (print reaper-items)
   (apply #'make-instance (append (list 'reaper-file :id id :data reaper-items)
+                                 keyargs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun make-reaper-item (path &rest keyargs &key &allow-other-keys)
+  (apply #'make-instance (append (list 'reaper-item :path path)
                                  keyargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  20:02:52 Mon May 30 2022 CEST
+;;; $$ Last modified:  18:43:12 Fri Sep 30 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;

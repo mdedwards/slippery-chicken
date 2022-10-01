@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  11:38:51 Sat Oct  1 2022 CEST
+;;; $$ Last modified:  12:21:32 Sat Oct  1 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -160,8 +160,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod initialize-instance :after ((ri reaper-item) &rest initargs)
   (declare (ignore initargs))
-  (unless (path ri)
-    (error "reaper-item::initialize-instance: the path slot is required."))
   ;; if there's no name, use the file name (minus dir and extension) as the
   ;; name.
   ;; trigger the setf method
@@ -184,7 +182,8 @@
 (defmethod clone-with-new-class :around ((ri reaper-item) new-class)
   (declare (ignore new-class))
   (let ((sndfile (call-next-method)))
-    (setf (slot-value sndfile 'fade-in) (fade-in ri)
+    (setf (slot-value sndfile 'istring) (istring ri)
+          (slot-value sndfile 'fade-in) (fade-in ri)
           (slot-value sndfile 'fade-out) (fade-out ri)
           (slot-value sndfile 'preserve-pitch) (preserve-pitch ri)
           (slot-value sndfile 'start-time) (start-time ri)
@@ -246,6 +245,8 @@
 
 ;;; write an item's data to a stream, using the istring slot as a template
 (defmethod write-item ((ri reaper-item) stream)
+  (unless (path ri)
+    (error "reaper-item::write-item: the path slot is required."))
   ;; start: SOFFS, duration: LENGTH
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
           (fade-out ri) (name ri) (start ri) (play-rate  ri)

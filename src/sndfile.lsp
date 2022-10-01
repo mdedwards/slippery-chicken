@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  10:04:08 Tue May 31 2022 CEST
+;;; $$ Last modified:  16:38:12 Sat Oct  1 2022 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -128,19 +128,19 @@
            sf))
   (update sf))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((sf sndfile) stream)
   (format stream "~%SNDFILE: path: ~a, ~
                     ~%         snd-duration: ~a, channels: ~a, frequency: ~a~
-                    ~%         start: ~a, end: ~a, amplitude: ~a, duration ~a~
+                    ~%         start: ~a, end: ~a, amplitude: ~a, duration: ~a~
                     ~%         will-be-used: ~a, has-been-used: ~a~
                     ~%         data-consistent: ~a, description: ~a"
           (path sf) (snd-duration sf) (channels sf) (frequency sf) (start sf)
           (end sf) (amplitude sf) (duration sf) (will-be-used sf)
           (has-been-used sf) (data-consistent sf) (description sf)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon Apr 16 18:29:55 BST 2012: Added robodoc entry
 

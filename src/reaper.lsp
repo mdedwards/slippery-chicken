@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  15:10:29 Sat Oct  1 2022 CEST
+;;; $$ Last modified:  17:25:44 Sat Oct  1 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -295,13 +295,15 @@
     (setq max-channels min-channels))
   ;; items can of course use any name in their track slot, but get all unique
   ;; names here as this will determine how many tracks are written.
-  (let* ((track-names (remove-duplicates (mapcar #'track (data rf))
-                                         :test #'string=))
+  (let* ((track-names (sort (remove-duplicates (mapcar #'track (data rf))
+                                               :test #'string=)
+                            #'string<))
          ;; create an assoc-list using the track names as IDs and empty lists
          ;; (to cons into) with the items further down
          (al (make-assoc-list
               'rf-tracks
               (mapcar #'(lambda (x) (list x nil)) track-names))))
+    ;; (print track-names)
     ;; track names can only be strings so error if not
     (unless (every #'stringp track-names)
       (error "reaper-file::create-tracks: The tracks names of the reaper-items ~
@@ -547,6 +549,86 @@
                              colour)))))
   (format stream "~&  MARKER ~a ~,3f \"~a\" 0 ~a 1"
                    number time label colour))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun reaper-layer-sounds (sndfiles num-tracks
+                            &key (tempo 60)
+                                 (max-fade 15) ; seconds
+                                 (min-fade .4) ; proportion of duration
+                            (reaper-file "/tmp/reaper-layer-sounds.rpp")
+                            ;; e.g. if you want all tracks to be 26 channels
+                            ;; despite the number of channels in the sound files
+                            ;; set this here
+                                 (min-channels 2)
+                                 ;; how far in to start the shorter sounds
+                                 ;; as a function of their duration
+                                 ;; difference to the longest file. 0.5
+                                 ;; would have them bang in the middle
+                                 (indent 0.608))
+  (let* ((subgroups
+           (split-into-sub-groups2 sndfiles num-tracks))
+         (time 0.0)
+         rf)
+    ;; order the files by duration so we can spread by duration
+    (setq subgroups (loop for subgrp in subgroups
+                          ;; turn the sublist of four sndfile paths into four
+                          ;; reaper-items then sort them
+                          collect (sort (mapcar #'make-reaper-item subgrp) #'>
+                                        :key 'duration)))
+    (loop for subgrp in subgroups
+          for ri1 = (first subgrp)
+          for ri1dur = (duration ri1) do
+             (setf (start-time ri1) time)
+             (loop for ri in subgrp
+                   for fade = (min max-fade (* (duration ri) min-fade))
+                   for track from 1 do
+                      (setf (track ri) track
+                            (fade-in ri) fade
+                            (fade-out ri) fade)
+                      (when (> track 1)
+                        (setf (start-time ri)
+                              ;; put sndfiles in the middle of the longest
+                              (+ time (* indent (- ri1dur (duration ri)))))))
+             (incf time (+ 10 ri1dur)))
+    ;; (print subgroups)
+    ;; NB the tempo of the reaper file is independent of the items
+    (setq rf (make-reaper-file 'layer-sounds (flatten subgroups) :tempo tempo))
+    (if reaper-file 
+        (write-reaper-file rf :min-channels min-channels
+                              :file reaper-file)
+        ;; if :reaper-file is nil just return the reaper-file object so that
+        ;; e.g. more tracks can be added
+        rf)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun reaper-overlap-sounds (sndfiles &key (tempo 60) (min-channels 2)
+                                            (overlap .5)
+                                            (track-name "overlaps")
+                                            (reaper-file
+                                             "/tmp/reaper-layer-sounds.rpp"))
+  (let ((items (mapcar #'make-reaper-item sndfiles))
+        (time 0.0)
+        (overlap-dur 0.0)
+        rf)
+    (loop for ri1 in items
+          for ri2 in (econs (rest items) nil)
+          for d1 = (duration ri1)
+          for d2 = (if ri2 (duration ri2) 0) do
+             (setf (start-time ri1) time
+                   (track ri1) track-name
+                   (fade-in ri1) overlap-dur)
+             ;; the if takes care of whether the first sndfile is longer than
+             ;; the 2nd other vice-versa
+             (setf overlap-dur (* overlap (if (> d1 d2) d2 d1))
+                   (fade-out ri1) overlap-dur)
+             (incf time (- d1 overlap-dur)))
+    (setq rf (make-reaper-file 'overlap-sounds items :tempo tempo))
+    (if reaper-file 
+        (write-reaper-file rf :min-channels min-channels
+                              :file reaper-file)
+        ;; if :reaper-file is nil just return the reaper-file object so that
+        ;; e.g. more tracks can be added
+        rf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a couple of old routines. todo: These could/should be updated to write into

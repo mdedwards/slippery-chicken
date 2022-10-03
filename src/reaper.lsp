@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  17:41:53 Sat Oct  1 2022 CEST
+;;; $$ Last modified:  15:22:57 Mon Oct  3 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -555,21 +555,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun reaper-layer-sounds (sndfiles num-tracks
                             &key (tempo 60)
-                              (max-fade 15)    ; seconds
-                              (min-fade .4)    ; proportion of duration
+                              (max-fade 15) ; seconds
+                              (min-fade .4) ; proportion of duration
                               (reaper-file "/tmp/reaper-layer-sounds.rpp")
                               ;; e.g. if you want all tracks to be 26 channels
-                              ;; despite the number of channels in the sound files
-                              ;; set this here
+                              ;; despite the number of channels in the sound
+                              ;; files set this here
                               (min-channels 2)
                               (max-channels 4)
-                              ;; how far in to start the shorter sounds
-                              ;; as a function of their duration
-                              ;; difference to the longest file. 0.5
-                              ;; would have them bang in the middle
-                              (indent 0.608))
+                              ;; gap in seconds between groups
+                              (gap 10)
+                              ;; shuffle (fixed-seed) the subgroups so that the
+                              ;; sound files are not simply processed by
+                              ;; directory order?
+                              (shuffle t)
+                              ;; how far in to start the shorter sounds as a
+                              ;; function of their duration difference to the
+                              ;; longest file. 0.5 would have them bang in the
+                              ;; middle. By default the golden mean (what
+                              ;; else?): (/ (- (sqrt 5) 1) 2)
+                              (indent 0.618034))
   (let* ((subgroups
-           (split-into-sub-groups2 sndfiles num-tracks))
+           (split-into-sub-groups2 sndfiles num-tracks shuffle))
          (time 0.0)
          rf)
     ;; order the files by duration so we can spread by duration
@@ -579,7 +586,7 @@
                           collect (sort (mapcar #'make-reaper-item subgrp) #'>
                                         :key 'duration)))
     (loop for subgrp in subgroups
-          for ri1 = (first subgrp)
+          for ri1 = (first subgrp) ; the longest
           for ri1dur = (duration ri1) do
             (setf (start-time ri1) time)
             (loop for ri in subgrp
@@ -590,10 +597,9 @@
                           (fade-out ri) fade)
                     (when (> track 1)
                       (setf (start-time ri)
-                            ;; put sndfiles in the middle of the longest
+                            ;; 'indent' shorter sndfiles
                             (+ time (* indent (- ri1dur (duration ri)))))))
-            (incf time (+ 10 ri1dur)))
-    ;; (print subgroups)
+            (incf time (+ gap ri1dur)))
     ;; NB the tempo of the reaper file is independent of the items
     (setq rf (make-reaper-file 'layer-sounds (flatten subgroups) :tempo tempo))
     (if reaper-file 
@@ -601,7 +607,8 @@
                               :file reaper-file)
         ;; if :reaper-file is nil just return the reaper-file object so that
         ;; e.g. more tracks can be added
-        (create-tracks rf :min-channels min-channels :max-channels max-channels))))
+        (create-tracks rf :min-channels min-channels
+                          :max-channels max-channels))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun reaper-overlap-sounds (sndfiles &key (tempo 60) (min-channels 2)

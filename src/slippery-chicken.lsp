@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:32:56 Mon Jun 27 2022 CEST
+;;; $$ Last modified:  15:15:16 Mon Oct  3 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4669,7 +4669,7 @@ seq-num 5, VN, replacing G3 with B6
   ;; MDE Mon Apr  2 10:23:21 2012      
   (unless (fboundp 'clm::nrev)
     (error "slippery-chicken::clm-play: clm's nrev.ins needs to be ~
-            compiled and loaded for this method to run."))
+            compiled ~%and loaded for this method to run."))
   ;; MDE Sat Jun  2 11:41:47 2012 --   
   (when (and (numberp num-sequences)
              (has-subsections (get-section sc section)))

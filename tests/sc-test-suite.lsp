@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:29:13 Wed Jul 13 2022 CEST
+;;; $$ Last modified:  15:13:49 Mon Oct  3 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15789,12 +15789,14 @@
 ;;; SAR Sat May  5 14:02:20 BST 2012
 (sc-deftest test-utilities-split-into-subgroups2 ()
   (sc-test-check
-    (equalp
-     (split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9 10 11 12) 3)
-     '((1 2 3) (4 5 6) (7 8 9) (10 11 12)))
-    (equalp
-     (split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9 10 11 12) 5)
-     '((1 2 3 4 5) (6 7 8 9 10) (11 12)))))
+    (equalp (split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9 10 11 12) 3)
+            '((1 2 3) (4 5 6) (7 8 9) (10 11 12)))
+    ;; MDE Mon Oct  3 15:10:10 2022, Heidhausen -- test the new shuffle
+    ;; funtionality
+    (equalp (split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9 10 11 12) 3 t)
+            '((7 8 9) (1 2 3) (10 11 12) (4 5 6)))
+    (equalp (split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9 10 11 12) 5)
+            '((1 2 3 4 5) (6 7 8 9 10) (11 12)))))
 
 ;;; SAR Sat May  5 14:07:59 BST 2012
 (sc-deftest test-utilities-split-into-subgroups3 ()

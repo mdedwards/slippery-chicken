@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  12:23:01 Tue Sep 27 2022 CEST
+;;; $$ Last modified:  15:13:15 Mon Oct  3 2022 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -564,10 +564,13 @@
 
 |#
 ;;; SYNOPSIS
-(defun split-into-sub-groups2 (list length)
+(defun split-into-sub-groups2 (list length &optional shuffle)
 ;;; ****
-  (loop for i from 0 by length while list collect
-        (loop repeat length while list collect (pop list))))
+  (let ((result (loop for i from 0 by length while list collect
+                         (loop repeat length while list collect (pop list)))))
+    (if shuffle
+        (multi-shuffle result 3) ; fixed-seed randomness by default
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; max-perms is the maximum length of any single list-permutation we perform

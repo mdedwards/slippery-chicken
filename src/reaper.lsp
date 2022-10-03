@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  15:22:57 Mon Oct  3 2022 CEST
+;;; $$ Last modified:  21:08:09 Mon Oct  3 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -340,10 +340,14 @@
                              max-channels)
                             (t max-channels))))
                  ;; reaper always has an even number of channels.
-                 (setq result (if (evenp result) result (1+ result)))
-                 (when (> result max-channels)
-                   (warn "reaper::create-tracks: reaper can only have even ~
-                          numbers of channels: setting to ~a" result))
+                 (setq result (if (evenp result)
+                                  result
+                                  (progn
+                                    (warn "reaper::create-tracks: reaper ~
+                                           can only have even numbers of ~
+                                           channels: setting to ~a"
+                                          result)
+                                    (1+ result))))
                  result))))
       ;; update the assoc-list of tracks, where the data is the list of
       ;; reaper-items (above).
@@ -553,6 +557,84 @@
                    number time label colour))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* reaper/reaper-layer-sounds
+;;; DATE
+;;; October 1st 2022
+;;; 
+;;; DESCRIPTION
+;;; Given a list of paths to sound files, create a reaper file that layers/mixes
+;;; these together. We create as many mixes as possible given the number of
+;;; tracks required, e.g. if there are 20 sound files and <num-tracks> is 4,
+;;; then five mixes will be created, one after the other, with a gap of 10
+;;; seconds by default. So the files are mixed together in the order of the
+;;; first argument, with the longest file in the mix determining the overall
+;;; duration and the shorter files beginning after a wait of <indent> multiplied
+;;; by the difference between the longest and shorter files'
+;;; durations. E.g. with a longest file duration of 60 seconds and a shorter
+;;; file of 30 seconds, given :indent 0.5 the shorter file's start time would be
+;;; 15 seconds; if its duration was 20 seconds, the start time would be 20.
+;;;
+;;; In case sound files are passed in alphabetical order, e.g. by
+;;; (get-sndfiles...), and assuming that it is undesireable that similarly-named
+;;; sound files are placed one after the other, by default the function will
+;;; shuffle the order of the mixes (i.e. the groups of 4 or whatever sound files
+;;; per mix). NB the 4-groups are shuffled, not the files in the groups.
+;;; 
+;;; ARGUMENTS
+;;; - a list of sound file paths (strings)
+;;; - the number of tracks that should be layered/mixed
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :tempo. The BPM value that should be written to the reaper project, if
+;;; desired. Default = 60.
+;;; :max-fade. The maximum length in seconds of a fade-in or fade-out. If this
+;;; is too long for any given sound file, the :mid-fade multiplied by the sound
+;;; file duration will be used. Default = 15 seconds.
+;;; :min-fade. The proportion of a sound file's duration that should be used if
+;;; :max-fade can't be used for both fade-in and fade-out. This should generally
+;;; be < 0.5 but is not enforced. Default = 0.5.
+;;; :reaper-file. The path of the reaper-file to be written. If this is NIL then
+;;; no file is written and the reaper-file object is returned instead, with all
+;;; mixes present. This could be used to add more tracks before writing the
+;;; reaper file (see example below). Default = "/tmp/reaper-layer-sounds.rpp"
+;;; :min-channels. The minimum number of a channels a reaper track should
+;;; have. Usually this will be set to be the maximum number of channels any of
+;;; the files on a single track have. But if you have a bunch of stereo files
+;;; you want to place on, say, a track which should become 5th order ambisonics,
+;;; you can set this to 36. Note that all reaper tracks should have an even
+;;; number of channels so however the channel number is achieved it will be
+;;; rouned up to the nearest even number if necessary. Default = 2.
+;;; :max-channels. This can be set to override the number of channels of any
+;;; given sound file, should it have more channels than you want, for some
+;;; reason. Default = 4.
+;;; :gap. The gap in seconds between the end of the previous mix and the start
+;;; of the next. Default = 10 seconds.
+;;; :shuffle. Whether to shuffle the mixes before writing. See above for
+;;; details. Default = T.
+;;; :indent. How far in to start the shorter sounds, as a function of their
+;;; duration difference to the longest file (see above). 0.5 would have them
+;;; centered bang in the middle. By default the golden mean, 0.618034 (what
+;;; else?) i.e. (/ (- (sqrt 5) 1) 2).
+;;; 
+;;; RETURN VALUE
+;;; If :reaper-file is given, then the path will be returned after writing,
+;;; otherwise a reaper-file object is returned.
+;;; 
+;;; EXAMPLE
+#|
+
+(let ((overlaps (reaper-overlap-sounds
+                 (get-sndfiles "/Volumes/slim500/snd/samples/ambience/rain") 
+                 :reaper-file nil))
+      (layers (reaper-layer-sounds (get-sndfiles "~/ic/projects/mete/clm") 4
+                                   :reaper-file nil)))
+  (add (get-first (tracks overlaps)) (tracks layers))
+  (write-reaper-file layers :min-channels 36
+                     :file "~/ic/projects/mete/reaper/mete-clm-with-rain.rpp"))
+
+|#
+;;; SYNOPSIS
 (defun reaper-layer-sounds (sndfiles num-tracks
                             &key (tempo 60)
                               (max-fade 15) ; seconds
@@ -569,12 +651,8 @@
                               ;; sound files are not simply processed by
                               ;; directory order?
                               (shuffle t)
-                              ;; how far in to start the shorter sounds as a
-                              ;; function of their duration difference to the
-                              ;; longest file. 0.5 would have them bang in the
-                              ;; middle. By default the golden mean (what
-                              ;; else?): (/ (- (sqrt 5) 1) 2)
                               (indent 0.618034))
+;;; ****
   (let* ((subgroups
            (split-into-sub-groups2 sndfiles num-tracks shuffle))
          (time 0.0)
@@ -611,11 +689,48 @@
                           :max-channels max-channels))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* reaper/reaper-overlap-sounds
+;;; DATE
+;;; October 1st 2022.
+;;; 
+;;; DESCRIPTION
+;;; Create a reaper file with one track that overlaps/cross-fades all the given
+;;; sound files.
+;;; 
+;;; ARGUMENTS
+;;; - a list of sound files paths (strings) to overlap
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; 
+;;; :overlap. The proportion by which to overlap the sound files. Given that
+;;; sound files can have any duration and be overlapped in any order, this
+;;; proportion is applied to the shortest of any two sound files to be
+;;; cross-faded. default = 0.5.
+;;; :reaper-file. The path of the reaper-file to be written. If this is NIL then
+;;; no file is written and the reaper-file object is returned instead, with all
+;;; mixes present. This could be used to add more tracks before writing the
+;;; reaper file (see example in reaper-layer-sounds). Default =
+;;; "/tmp/reaper-layer-sounds.rpp"
+;;; :min-channels. See reaper-layer-sounds. Default = 2.
+;;; :max-channels. See reaper-layer-sounds. Default = 4.
+;;; :track-name. The string used to name the track in reaper. Default =
+;;; "overlaps"
+;;; :tempo. The BPM value that should be written to the reaper project, if
+;;; desired. Default = 60.
+;;; 
+;;; RETURN VALUE
+;;; If :reaper-file is given, then the path will be returned after writing,
+;;; otherwise a reaper-file object is returned. See reaper-layer-sounds for an
+;;; example.
+;;; 
+;;; SYNOPSIS
 (defun reaper-overlap-sounds (sndfiles &key (tempo 60) (min-channels 2)
                                          (max-channels 4) (overlap .5)
                                          (track-name "overlaps")
                                          (reaper-file
                                           "/tmp/reaper-layer-sounds.rpp"))
+;;; ****
   (let ((items (mapcar #'make-reaper-item sndfiles))
         (time 0.0)
         (overlap-dur 0.0)

@@ -5,11 +5,6 @@
 This is slippery-chicken, a Common Lisp and CLOS package for
 algorithmic composition.
 
-I use two main branches: 'master' is used only for releases;
-'michael' is used all the time whilst developing so can be
-seen as the 'bleeding edge'. If I've updated something for
-you, you'll find them in 'michael'.
-
 slippery chicken outputs sound files, MIDI files, and score 
 files in PDF, Lilypond, and MusicXML formats. It also outputs
 scores in [antescofo~](http://repmus.ircam.fr/antescofo) format for use with Arshia Cont's score

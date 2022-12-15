@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified:  09:26:35 Thu Feb 10 2022 CET
+;;; $$ Last modified:  12:04:23 Thu Dec 15 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -278,7 +278,7 @@
                                  (when text
                                    (cmn::sc-cmn-text text 
                                                      :dx 0.0
-                                                     :dy 1.5
+                                                     :dy 2 ; 1.5
                                                      :font-size 7.0))))
                  (loop for rsb in (bars s) 
                     ;; 31/3/07 skip the bar if it's part of a

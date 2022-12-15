@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:48:23 Thu Nov  3 2022 CET
+;;; $$ Last modified:  11:29:15 Thu Dec 15 2022 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4287,7 +4287,8 @@ WARNING:
 ;;; MDE Wed May 29 14:54:14 2013 
 (defun system-open-file (file)
   ;; MDE Thu Nov  3 15:37:40 2022, Heidhausen
-  (setq file (escape-spaces file))
+  (when (get-sc-config 'system-open-file-escape-spaces)
+    (setq file (escape-spaces file)))
   #-(or darwin linux)
   (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file)

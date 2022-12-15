@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  14:35:42 Wed Dec 22 2021 CET
+;;; $$ Last modified:  11:29:50 Thu Dec 15 2022 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -182,6 +182,9 @@
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6)
      (diapason 440)
+     ;; MDE Thu Dec 15 11:29:25 2022, Heidhausen -- some systems need to escape
+     ;; spaces in paths otherwise they won't open in a shell called from lisp 
+     (system-open-file-escape-spaces t)
      (autoconvert-eps-to-pdf nil))))
 ;;; ****
 

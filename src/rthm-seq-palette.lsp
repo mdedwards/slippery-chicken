@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  16:26:22 Sat May  1 2021 CEST
+;;; $$ Last modified:  17:14:47 Thu Dec 15 2022 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1251,7 +1251,79 @@ T
 ;;; ****
   (make-rsp id (loop for seq in seqs and id from 1 collect
                     (make-rthm-seq-from-unit-multipliers-simp id unit seq))))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun separate-fragments-from-meters (bars)
+  (let* ((fragments '())
+         (meters '())
+         fragment
+         meter)
+    (unless (listp (first (first bars)))
+      (error "separate-fragments-from-meters: first bar needs a meter!: ~%~a"
+             bars))
+    (loop for bar in bars
+          for first = (first bar) do
+             (if (listp first)
+                 (setq meter first
+                       fragment (rest bar))
+                 (setq fragment bar))
+             (push meter meters)
+             (push fragment fragments))
+    (values (nreverse fragments) (nreverse meters))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* rthm-seq-palette/make-rsp-from-fragments
+;;; DATE
+;;; December 15th 2022
+;;; 
+;;; DESCRIPTION
+;;; Define a bunch of rhythmic fragments then create a rthm-seq-palette by
+;;; listing references to them in any order.
+;;; 
+;;; ARGUMENTS
+;;; - a list of rhythm fragments suitable to be used in a rthm-seq
+;;;   (i.e. e.g. including tuplet and beaming info.), prefaced by an id
+;;; - a list of rthm-seqs using these fragments consisting of a list of the
+;;;   fragments to be combined into bars, each prefaced by the meter (unless it
+;;;   doesn't change)
+;;; 
+;;; RETURN VALUE
+;;; a rthm-seq-palette object where each rthm-seq will have an ID ascending from
+;;; 1 
+;;; 
+;;; EXAMPLE
+#|
+(make-rsp-from-fragments
+  '((1 (- s s - (e))) 
+    (2 (s (s) (s) s)) 
+    (3 ((s) - s e -))
+    (4 (- s s (s) s -)) 
+    (5 ((e) - s s -)) 
+    (6 ((q)))
+    (7 (h))
+    (8 (q.)))
+   ;; one rthm-seq per line: number 1 will have three bars 3/4 3/4 4/4
+  '((((3 4) 1 2 3) (2 3 4) ((4 4) 5 6 1 2))
+   ;; rthm-seq 2 has 5 bars: 7/8 7/8 2/4 2/4 7/8
+    (((7 8) 7 8) (3 4 8) ((2 4) 3 4) (5 6) ((7 8) 5 6 8))
+    (((4 4) 1 2 1 2) ((5 4) 1 2 1 2 2) (3 4 5 7))
+    (((3 8) 8) ((2 4) 5 6) (7))))
+|#
+;;; SYNOPSIS
+(defun make-rsp-from-fragments (fragments references)
+;;; ****
+  (let ((rsp (make-rsp 'from-fragments nil))
+        (id 0))
+    (loop for rs in references do
+             (multiple-value-bind
+                   (fragment-refs meters)
+                 (separate-fragments-from-meters rs)
+               (add (make-rthm-seq-from-fragments
+                     (incf id) fragments fragment-refs meters)
+                    rsp)))
+    (format t "~&make-rsp-from-fragments: made ~a rthm-seqs" id)
+    rsp))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rthm-seq-palette.lsp
 

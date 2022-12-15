@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:13:49 Mon Oct  3 2022 CEST
+;;; $$ Last modified:  17:03:39 Thu Dec 15 2022 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -6327,6 +6327,30 @@
       (eq 'q (data (first (rhythms bar))))
       (eq 'te (data (second (rhythms bar))))
       (is-rest (second (rhythms bar))))))
+
+;; MDE Thu Dec 15 17:03:38 2022, Heidhausen
+(sc-deftest test-make-rsp-from-fragments ()
+  (let ((rsp (make-rsp-from-fragments
+              '((1 (- s s - (e))) 
+                (2 (s (s) (s) s)) 
+                (3 ((s) - s e -))
+                (4 (- s s (s) s -)) 
+                (5 ((e) - s s -)) 
+                (6 ((q)))
+                (7 (h))
+                (8 (q.)))
+              '((((3 4) 1 2 3) (2 3 4) ((4 4) 5 6 1 2))
+                (((7 8) 7 8) (3 4 8) ((2 4) 3 4) (5 6) ((7 8) 5 6 8))
+                (((4 4) 1 2 1 2) ((5 4) 1 2 1 2 2) (3 4 5 7))
+                (((3 8) 8) ((2 4) 5 6) (7))))))
+    (sc-test-check
+      (= 4 (num-data rsp))
+      (= 3 (num-bars (get-data 1 rsp)))
+      (= 5 (num-bars (get-data 2 rsp)))
+      (= 3 (num-bars (get-data 3 rsp)))
+      (= 3 (num-bars (get-data 4 rsp)))
+      )))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; pitch-seq-palette tests

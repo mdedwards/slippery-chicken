@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  17:14:47 Thu Dec 15 2022 CET
+;;; $$ Last modified:  18:24:59 Fri Dec 16 2022 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1253,6 +1253,7 @@ T
                     (make-rthm-seq-from-unit-multipliers-simp id unit seq))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; helper function for make-rsp-from-fragments
 (defun separate-fragments-from-meters (bars)
   (let* ((fragments '())
          (meters '())

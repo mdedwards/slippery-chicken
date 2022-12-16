@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  16:22:28 Thu Dec 15 2022 CET
+;;; $$ Last modified:  17:30:47 Fri Dec 16 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3298,19 +3298,24 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
             same length: ~a ~a" references meters))
   (let* ((frag-al (make-assoc-list 'fragments fragments))
          (rs (loop with last-meter = -1
-                for bar in references and meter in meters 
-                for mtr = (unless (equal meter last-meter)
-                            (if (listp meter)
-                                meter
-                                (list meter default-beat)))
-                for rthms =
-                (loop for ref in bar appending
-                     (copy-list (get-data-data ref frag-al)))
-                collect (if mtr 
-                            (cons mtr rthms)
-                            rthms)
-                do
-                (setf last-meter meter))))
+                   for bar in references and meter in meters 
+                   for mtr = (unless (equal meter last-meter)
+                               (if (listp meter)
+                                   meter
+                                   (list meter default-beat)))
+                   for rthms =
+                      (loop for ref in bar
+                            for data = (copy-list
+                                        (get-data-data ref frag-al nil))
+                            do (unless data
+                                 (error "rthm-seq::make-rthm-seq-from-~
+                                         fragments: no data for id ~a" ref))
+                            appending data)
+                   collect (if mtr 
+                               (cons mtr rthms)
+                               rthms)
+                   do
+                      (setf last-meter meter))))
     (make-instance 'rthm-seq :id id :data (list rs))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

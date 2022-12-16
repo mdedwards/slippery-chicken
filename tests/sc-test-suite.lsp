@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:03:39 Thu Dec 15 2022 CET
+;;; $$ Last modified:  18:48:27 Fri Dec 16 2022 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -5921,7 +5921,6 @@
            (get-data 'oboe
                      +slippery-chicken-standard-instrument-palette+)))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-palette tests
 
@@ -6328,7 +6327,7 @@
       (eq 'te (data (second (rhythms bar))))
       (is-rest (second (rhythms bar))))))
 
-;; MDE Thu Dec 15 17:03:38 2022, Heidhausen
+;;; MDE Thu Dec 15 17:03:38 2022, Heidhausen
 (sc-deftest test-make-rsp-from-fragments ()
   (let ((rsp (make-rsp-from-fragments
               '((1 (- s s - (e))) 
@@ -6351,6 +6350,35 @@
       (= 3 (num-bars (get-data 4 rsp)))
       )))
 
+;;; MDE Fri Dec 16 18:34:06 2022, Heidhausen
+(sc-deftest test-parcel-and-combine-all ()
+    (let* ((fragments '((1 (q. q.))
+                        (1a (+q. q.))
+                        (2 (q h))
+                        (3 (h h))
+                        (4 (q h.))
+                        (5 (q w))
+                        (6 (q. q.+h))
+                        (7 ({ 3 tq tq tq }))
+                        (8 ((e.) s - e e -))))
+           (rsps (mapcar #'(lambda (refs)
+                             (make-rsp-from-fragments fragments refs))
+                         '(((((3 4) 1)) ; 3/4
+                            (((3 4) 2)))
+                           ((((4 4) 3)) ; 4/4
+                            (((4 4) 4)))
+                           ((((5 4) 5)) ; 5/4
+                            (((5 4) 6)))
+                           ((((2 4) 7) (7) (7)) ; 6/4
+                            (((2 4) 7) (7) (8)))
+                           ((((4 4) 4) ((3 4) 1a)))))) ; 7/4
+           (durs (loop for rsp in rsps collect
+                          (round (duration (get-first rsp)))))
+           (rsp (parcel-and-combine-all rsps durs 'rthm-seq-palette)))
+      (sc-test-check
+        (rsp-p rsp)
+        (equalp '((((2 4) { 3 TQ TQ TQ }) ({ 3 TQ TQ TQ }) ((E.) S - E E -)))
+                (get-data-data '(6 2) rsp)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; pitch-seq-palette tests

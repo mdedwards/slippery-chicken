@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  16:34:53 Wed Mar 10 2021 CET
+;;; $$ Last modified:  18:50:12 Fri Dec 16 2022 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2002,6 +2002,74 @@ data: (
 (defun is-ral (candidate)
   (typep candidate 'recursive-assoc-list))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* recursive-assoc-list/parcel-and-combine-all
+;;; DATE
+;;; December 16th 2022
+;;; 
+;;; DESCRIPTION
+;;; - combine a list of recursive-assoc-lists (ral) into a new ral but adding
+;;; each ral itself into a new ral with a given ID (parcelling). This allows
+;;; each of the rals in the list to have common ids but by parcelling them up we
+;;; can achieve this at the expense of a further level of recursion.
+;;; 
+;;; ARGUMENTS
+;;; - a list of rals
+;;; - a list of ids to be used for parcelling. This should be as long as the
+;;;   list of rals.
+;;; 
+;;; RETURN VALUE
+;;; a new ral
+;;; 
+;;; EXAMPLE
+#|
+;;; this is a bit convoluted but was the original motivation to write this
+;;; routine: say you have a bunch of rthm-seq-palettes made from fragments and
+;;; organised according to the length in quarter notes of the sequences. You can
+;;; parcel them all up into recursive palettes and then into a single palette 
+;;; thus:
+(let* ((fragments '((1 (q. q.))
+                    (1a (+q. q.))
+                    (2 (q h))
+                    (3 (h h))
+                    (4 (q h.))
+                    (5 (q w))
+                    (6 (q. q.+h))
+                    (7 ({ 3 tq tq tq }))
+                    (8 ((e.) s - e e -))))
+       (rsps (mapcar #'(lambda (refs)
+                         (make-rsp-from-fragments fragments refs))
+                     ;; each of these lists will become an rsp, the duration of
+                     ;; which is the same length (not checked)
+                     '(((((3 4) 1))     ; 3/4
+                        (((3 4) 2)))
+                       ((((4 4) 3))     ; 4/4
+                        (((4 4) 4)))
+                       ((((5 4) 5))     ; 5/4
+                        (((5 4) 6)))
+                       ((((2 4) 7) (7) (7)) ; 6/4
+                        (((2 4) 7) (7) (8)))
+                       ((((4 4) 4) ((3 4) 1a)))))) ; 7/4
+       ;; get the duration of the first rthm-seq in each palette and use that as
+       ;; an id for the main palette below
+       (durs (loop for rsp in rsps collect
+                      (round (duration (get-first rsp)))))
+       (rsp (parcel-and-combine-all rsps durs 'rthm-seq-palette)))
+  (get-data-data '(6 2) rsp))
+->  ((((2 4) { 3 TQ TQ TQ }) ({ 3 TQ TQ TQ }) ((E.) S - E E -)))
+|#
+;;; SYNOPSIS
+(defun parcel-and-combine-all (rals ids &optional new-class)
+  (unless (= (length rals) (length ids))
+    (error "recursive-assoc-list::parcel-and-combine-all: there should be the ~
+            same number of rals as ids."))
+  (let ((result (parcel-data (clone (first rals)) (pop ids))))
+    (when new-class (setq result (sc-change-class result new-class)))
+    (loop for ral in (cdr rals) do
+             (setf result (combine result (parcel-data ral (pop ids)))))
+    result))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF recursive-assoc-list.lsp
+
+;;; ****

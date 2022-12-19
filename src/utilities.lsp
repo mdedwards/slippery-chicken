@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  11:29:15 Thu Dec 15 2022 CET
+;;; $$ Last modified:  10:35:47 Mon Dec 19 2022 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6127,6 +6127,19 @@ yes_foo, 1 2 3 4;
 ;;; pathnames 
 (defun escape-spaces (string)
   (string-replace " " "\\ " string))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun sndfile-size (duration channels bits-per-sample
+                     &optional (sampling-rate 48000))
+  (let ((bytes (float (* channels (mins-secs-to-secs duration)
+                         (/ bits-per-sample 8) sampling-rate )))
+        (kbytes (ash 1 10)) ; or (expt 2 10)
+        (mbytes (ash 1 20)) ; or (expt 2 20)
+        (gbytes (ash 1 30)))
+    (cond ((> bytes gbytes) (values (/ bytes gbytes) 'gigabytes))
+          ((> bytes mbytes) (values (/ bytes mbytes) 'megabytes))
+          ((> bytes kbytes) (values (/ bytes gbytes) 'kilobytes))
+          (t (values bytes 'bytes)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

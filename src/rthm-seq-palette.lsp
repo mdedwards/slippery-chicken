@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  18:24:59 Fri Dec 16 2022 CET
+;;; $$ Last modified:  11:14:07 Sat Dec 17 2022 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1287,7 +1287,11 @@ T
 ;;; - a list of rthm-seqs using these fragments consisting of a list of the
 ;;;   fragments to be combined into bars, each prefaced by the meter (unless it
 ;;;   doesn't change)
-;;; 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicated whether the number of rthm-seqs made should be
+;;;   printed
+;;;
 ;;; RETURN VALUE
 ;;; a rthm-seq-palette object where each rthm-seq will have an ID ascending from
 ;;; 1 
@@ -1311,7 +1315,7 @@ T
     (((3 8) 8) ((2 4) 5 6) (7))))
 |#
 ;;; SYNOPSIS
-(defun make-rsp-from-fragments (fragments references)
+(defun make-rsp-from-fragments (fragments references &optional verbose)
 ;;; ****
   (let ((rsp (make-rsp 'from-fragments nil))
         (id 0))
@@ -1322,7 +1326,8 @@ T
                (add (make-rthm-seq-from-fragments
                      (incf id) fragments fragment-refs meters)
                     rsp)))
-    (format t "~&make-rsp-from-fragments: made ~a rthm-seqs" id)
+    (when verbose
+      (format t "~&make-rsp-from-fragments: made ~a rthm-seqs" id))
     rsp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

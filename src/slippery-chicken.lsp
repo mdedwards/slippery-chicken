@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:15:16 Mon Oct  3 2022 CEST
+;;; $$ Last modified:  18:29:07 Fri Jan  6 2023 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5527,28 +5527,26 @@ seq-num 5, VN, replacing G3 with B6
   (unless (listp players)
     (setf players (list players)))
   (loop 
-     for bar-num in (rehearsal-letters sc)
-     ;; we have to set the rehearsal letter on the bar
-     ;; line of the previous bar
-     for dc from 10 
-     for letter = (format nil "~a" (digit-char dc 36))
-     do 
-     ;; MDE Fri Oct 11 17:11:56 2013 
-     (if (listp bar-num)
-         (setf letter (second bar-num)
-               bar-num (first bar-num))
-         (when (> dc 35)
-           (error "slippery-chicken::set-rehearsal-letters: ~
-                   Can only make rehearsal letters ~%from A-Z: ~a" 
-                  (rehearsal-letters sc))))
-     (loop 
-        for player in players 
-        for bar = (get-bar sc (1- bar-num) player)
-        do
-        (unless bar
-          (error "slippery-chicken::set-rehearsal-letters: couldn't get ~
+    for bar-num in (rehearsal-letters sc)
+    for dc from 10 
+    for letter = (get-rehearsal-letter dc)
+    do 
+    ;; MDE Fri Oct 11 17:11:56 2013
+    ;; MDE Fri Jan  6 18:27:41 2023, Heidhausen -- we can now handle letters
+    ;; beyond Z (see get-rehearsal-letter)
+       (when (listp bar-num)
+         (setq letter (second bar-num)
+               bar-num (first bar-num)))
+       (loop 
+         for player in players
+         ;; we have to set the rehearsal letter on the bar line of the previous
+         ;; bar
+         for bar = (get-bar sc (1- bar-num) player)
+         do
+            (unless bar
+              (error "slippery-chicken::set-rehearsal-letters: couldn't get ~
                         bar ~a for ~a." bar-num player))
-        (setf (rehearsal-letter bar) letter)))
+            (setf (rehearsal-letter bar) letter)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -10291,6 +10289,19 @@ data: (11 15)
               (chord-p p2))
          (chord= p1 p2 enharmonics-are-equal frequency-tolerance))
         (t nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jan  6 17:58:37 2023, Heidhausen -- dc is the argument to digit-char
+;;; where 10 = "A" 
+(defun get-rehearsal-letter (dc)
+  (unless (> dc 9) (error "get-rehearsal-letter:: argument should be > 9"))
+  (let* ((letter-num (+ 10 (mod (- dc 10) 26)))
+         (letter (digit-char letter-num 36))
+         (num (1+ (floor dc 36)))
+         (result ""))
+    ;; after Z we have AA, BB, CC ...
+    (loop repeat num do (setq result (format nil "~a~a" result letter)))
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

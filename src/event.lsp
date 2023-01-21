@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:51:03 Sun Jun 26 2022 CEST
+;;; $$ Last modified:  11:23:52 Sat Jan 21 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4326,6 +4326,38 @@ NIL
     (loop for c in chans do
          (push (list c change) (midi-program-changes e))))
   (midi-program-changes e))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/chord-to-single-pitch
+;;; DATE
+;;; January 21st 2023, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Any events that are chords will be convered to single-pitch events, using
+;;; the highest pitch in the chord. Rests and single-pitch events will be left
+;;; unchanged. 
+;;; 
+;;; ARGUMENTS
+;;; - the event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the accessor function. E.g. #'lowest. If you want to access other members
+;;; of the chord object's data slot (where the pitches live) then e.g.
+;;; #'(lambda (x) (third (data x))) Default = #'highest.
+;;; 
+;;; RETURN VALUE
+;;; the modified event
+;;; 
+;;; SYNOPSIS
+(defmethod chord-to-single-pitch ((e event) &optional (which #'highest))
+;;; ****
+  (when (is-chord e)
+    (with-slots ((poc pitch-or-chord)) e
+      (setf poc (funcall which poc)))
+    (unless (is-single-pitch e)
+      (error "event::chord-to-single-pitch: couldn't make into a single ~
+              pitch: ~a" e)))
+    e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

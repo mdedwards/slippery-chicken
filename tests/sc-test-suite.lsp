@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:48:27 Fri Dec 16 2022 CET
+;;; $$ Last modified:  11:27:59 Sat Jan 21 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -2457,8 +2457,25 @@
       (equalp '((12 5) (11 5) (1 2))
               (add-midi-program-changes e '(11 12) 5))
       (equalp '(4 66) ; prog change 66 is sax
-              (first (add-midi-program-changes e 4 'alto-sax)))
-      )))
+              (first (add-midi-program-changes e 4 'alto-sax))))))
+
+;;; MDE Sat Jan 21 10:55:10 2023, Heidhausen
+(sc-deftest test-event-chord-to-single-pitch ()
+  (let ((cs (make-event (make-chord '(df3 c4 fs4 b4 f5)) 4)) ; sorted
+        (cns (make-event (make-chord '(f2 cs5 g1 c4 e7 d5) :auto-sort nil) 4))
+        (sp (make-event 'cs3 8))
+        (rest (make-rest 16)))
+    (sc-test-check
+      (eq 'f5 (get-pitch-symbol (chord-to-single-pitch (clone cs))))
+      (eq 'df3 (get-pitch-symbol (chord-to-single-pitch (clone cs) #'lowest)))
+      ;; check things work with unsorted chords too
+      (eq 'g1 (get-pitch-symbol
+               (chord-to-single-pitch (clone cns) #'(lambda (x)
+                                                      (third (data x))))))
+      (eq 'e7 (get-pitch-symbol (chord-to-single-pitch (clone cns))))
+      (eq 'g1 (get-pitch-symbol (chord-to-single-pitch (clone cns) #'lowest)))
+      (is-rest (chord-to-single-pitch rest))
+      (eq 'cs3 (get-pitch-symbol (chord-to-single-pitch sp))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq tests

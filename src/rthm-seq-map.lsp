@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  13:01:50 Wed Dec 30 2020 CET
+;;; $$ Last modified:  14:17:07 Fri Jan 20 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -294,7 +294,7 @@ data: (RS2 RS3 RS2)
                     (3 ((((2 4) s s q e)))))))))
   (print (get-data-data '(1 vn) mrsm))
   ;; so there'll be a repeat after two events three times in a row, then after
-  ;; three events twice in a row. The number of repeats will be 5 eight times
+  ;; three events twice in a row. The number of repeats will be 5 three times
   ;; in a row, then 8 twice in a row.
   (add-repeats mrsm '((2 3) (3 2)) '((5 3) (8 2)))
   (print (get-data-data '(1 vn) mrsm)))
@@ -355,6 +355,7 @@ data: (RS2 RS3 RS2)
                 (repeats 1)
                 (refs (get-map-refs rsm section player))
                 (nd (if end end (length refs))))
+           (when print (format t "~&~a refs: ~a" player refs))
            (loop for ref in refs and i from 1 do
                 (setf repeats nil)
                 (when (and (>= i start) (<= i nd))

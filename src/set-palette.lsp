@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  16:50:30 Fri Apr 30 2021 CEST
+;;; $$ Last modified:  15:02:48 Fri Jan 20 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -702,7 +702,7 @@ data: (C4 F4 A4 C5)
 (defmethod rm-diss-cen ((sp set-palette))
   (loop for ref in (get-all-refs sp) do
        (rm-diss-cen (get-data ref sp))))
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Planning notes: In order to sort the chords we will use the normal sort
 ;;; function comparing two chords. We'll pass two envelopes to the main
 ;;; function, one for the desired dissonance progression, the other for the
@@ -991,7 +991,7 @@ data: (C4 F4 A4 C5)
                                   finally 
                                     (warn-repeating-bass)
                                     (return lowest)))))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; :permutate nil
+            ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; :permutate nil
             (loop for set-num below num-sets
                for denv-val = (when dissonance-env (interpolate set-num denv))
                for cenv-val = (when centroid-env (interpolate set-num cenv))
@@ -1855,16 +1855,16 @@ data: (
 ;;; SYNOPSIS
 (defun set-palette-from-ring-mod (reference-note id 
                                   &key
-                                    (warn-no-bass t)
-                                    (do-bass t)
-                                    ;; the start id for the sets; will be
-                                    ;; incremented  
-                                    (start-id 1)
-                                    remove-octaves
-                                    force-chromatic
-                                    (min-bass-notes 1)
-                                    (ring-mod-bass-octave 0)
-                                    (partials '(1 3 5 7)))
+                                  (warn-no-bass t)
+                                  (do-bass t)
+                                  ;; the start id for the sets; will be
+                                  ;; incremented  
+                                  (start-id 1)
+                                  remove-octaves
+                                  force-chromatic
+                                  (min-bass-notes 1)
+                                  (ring-mod-bass-octave 0)
+                                  (partials '(1 3 5 7)))
 ;;; ****
   (let* ((freq (note-to-freq reference-note))
          (highest-partial (loop for p in partials maximize p))
@@ -1873,69 +1873,69 @@ data: (
          (fundamental (/ freq highest-partial))
          ;; get all the partials of the fundamental and the reference-note
          (freqs
-          (loop for p in partials
-             collect (* p fundamental)
-             when (> p 1) ;; so as to avoid duplication of reference-note
-             collect (* p freq)))
+           (loop for p in partials
+                 collect (* p fundamental)
+                 when (> p 1) ;; so as to avoid duplication of reference-note
+                 collect (* p freq)))
          ;; all possible permutations of our frequencies in pairs
          (pairs (get-all-pairs freqs))
          (sp (make-set-palette id nil)))
     ;; so now we'll ring modulate each possible pair
     (loop for pair in pairs
-       for left = (first pair) for right = (second pair)
-       for rm = (ring-mod left right 
-                          :print nil :return-notes nil
-                          :remove-octaves remove-octaves
-                          :min-freq (note-to-freq 'a0)
-                          :max-freq (note-to-freq 'c8))
-       ;; find bass notes too as we're often top heavy
-       for rm-bass = (when do-bass 
-                       (ring-mod-bass 
-                        pair 
-                        :bass-octave ring-mod-bass-octave
-                        :warn warn-no-bass))
-       for i from start-id
-       with set
-       do 
-       ;; if we can't get a bass from the pair, try it with the whole freq
-       ;; set from the ring-modulation
-         (when (and do-bass (< (length rm-bass) min-bass-notes))
-           (let ((rmb (ring-mod-bass 
-                       rm :bass-octave ring-mod-bass-octave
-                       :warn warn-no-bass)))
-             (when (> (length rmb) (length rm-bass))
-               (setf rm-bass rmb)))
-           (when (and warn-no-bass
-                      (< (length rm-bass) min-bass-notes))
-             (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
+          for left = (first pair) for right = (second pair)
+          for rm = (ring-mod left right 
+                             :print nil :return-notes nil
+                             :remove-octaves remove-octaves
+                             :min-freq (note-to-freq 'a0)
+                             :max-freq (note-to-freq 'c8))
+          ;; find bass notes too as we're often top heavy
+          for rm-bass = (when do-bass 
+                          (ring-mod-bass 
+                           pair 
+                           :bass-octave ring-mod-bass-octave
+                           :warn warn-no-bass))
+          for i from start-id
+          with set
+          do 
+          ;; if we can't get a bass from the pair, try it with the whole freq
+          ;; set from the ring-modulation
+             (when (and do-bass (< (length rm-bass) min-bass-notes))
+               (let ((rmb (ring-mod-bass 
+                           rm :bass-octave ring-mod-bass-octave
+                           :warn warn-no-bass)))
+                 (when (> (length rmb) (length rm-bass))
+                   (setf rm-bass rmb)))
+               (when (and warn-no-bass
+                          (< (length rm-bass) min-bass-notes))
+                 (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
                     notes ~%  even after 2nd attempt with ~a" rm)))
-         (setf rm-bass (when rm-bass
-                         ;; max three bass notes
-                         (list (first rm-bass)
-                               (nth (floor (length rm-bass) 2) rm-bass)
-                               (first (last rm-bass))))
-               ;; here there's numbers instead of symbols so we can still get
-               ;; duplicates when making the set :/ 
-               set (remove-duplicates (append rm rm-bass))
-               ;; MDE Thu May 3 10:57:21 2012 -- as we removed octaves and
-               ;; duplicates above when looking at freq, when these are resolved
-               ;; to the nearest note, we still might have octaves/duplicates so
-               ;; do this again at the set level, below
-               set (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
-                                      ;; MDE Mon May 20 12:56:47 2013 -- don't
-                                      ;; warn about duplicate pitches but do
-                                      ;; remove them
-                                      :warn-dups nil :rm-dups t
-                                      :tag (combine-into-symbol 
-                                            (freq-to-note left) '-ringmod- 
-                                            (freq-to-note right))))
-       ;; MDE Thu May  3 10:59:13 2012 
-         (rm-duplicates set t)     ; comparing symbols, not pitch= (freqs etc.)
-         (when remove-octaves
-           (rm-octaves set))
-       ;; (print set)
-       ;; (print (micro-tonality set))
-         (add set sp))
+             (setf rm-bass (when rm-bass
+                             ;; max three bass notes
+                             (list (first rm-bass)
+                                   (nth (floor (length rm-bass) 2) rm-bass)
+                                   (first (last rm-bass))))
+                   ;; here there's numbers instead of symbols so we can still get
+                   ;; duplicates when making the set :/ 
+                   set (remove-duplicates (append rm rm-bass))
+                   ;; MDE Thu May 3 10:57:21 2012 -- as we removed octaves and
+                   ;; duplicates above when looking at freq, when these are resolved
+                   ;; to the nearest note, we still might have octaves/duplicates so
+                   ;; do this again at the set level, below
+                   set (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
+                                          ;; MDE Mon May 20 12:56:47 2013 -- don't
+                                          ;; warn about duplicate pitches but do
+                                          ;; remove them
+                                          :warn-dups nil :rm-dups t
+                                          :tag (combine-into-symbol 
+                                                (freq-to-note left) '-ringmod- 
+                                                (freq-to-note right))))
+             ;; MDE Thu May  3 10:59:13 2012 
+             (rm-duplicates set t) ; comparing symbols, not pitch= (freqs etc.)
+             (when remove-octaves
+               (rm-octaves set))
+             ;; (print set)
+             ;; (print (micro-tonality set))
+             (add set sp))
     ;; MDE Mon Jun 22 13:42:02 2015
     ;; (print (micro-tonality (get-data 1 sp)))
     (when force-chromatic

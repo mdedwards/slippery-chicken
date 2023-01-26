@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:23:52 Sat Jan 21 2023 CET
+;;; $$ Last modified:  10:55:51 Thu Jan 26 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -854,7 +854,28 @@ data: 132
 ;;; MDE Sat Dec 24 13:16:07 2016 -- optional instrument means the transposition
 ;;; will be set from its data rather than from existing sounding and written
 ;;; pitches.
+;;; ****m* event/set-written-pitch-or-chord
+;;; DATE
+;;; Some time somewhere in 2013
+;;; 
+;;; DESCRIPTION
+;;; Change the written (as opposed to sounding) pitch/chord data of an event.
+;;; 
+;;; ARGUMENTS
+;;; - the event object
+;;; - the new pitch data (symbol, list of symbols (chord), or pitch/chord
+;;;   object)  
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - an instrument for the event so that the sounding pitch can be calculated
+;;; from its transposition slot.
+;;; 
+;;; RETURN VALUE
+;;; the modified event
+;;; 
+;;; SYNOPSIS
 (defmethod set-written-pitch-or-chord ((e event) value &optional instrument)
+;;; ****
   ;; (print (data value))
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))

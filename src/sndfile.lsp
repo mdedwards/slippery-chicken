@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  18:22:15 Tue Feb  7 2023 CET
+;;; $$ Last modified:  18:53:02 Tue Feb  7 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -385,13 +385,31 @@ T
       (setf (frequency sf) (midi-to-freq midi)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; ****m* sndfile/centroid
+;;; DATE
+;;; February 7th 2023, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Calculate the average spectral centroid of a sound file, between the start
+;;; and end points given. This requires CLM's scentroid.ins to be compiled
+;;; and loaded in advance. Note that the averaging is done by FFT analysis every
+;;; 10 milliseconds and with an FFT size of 4096 samples. FFT frames that have
+;;; an RMS amplitude of < -40dbFS will be ignored.
+;;; 
+;;; ARGUMENTS
+;;; the sndfile object
+;;; 
+;;; RETURN VALUE
+;;; The frequency of the centroid in Hertz.
+;;;
+;;; SYNOPSIS
 (defmethod centroid ((sf sndfile))
+;;; ****
   (with-slots ((cd centroid)) sf
     (flet ((warnsc ()
              (warn "sndfile::centroid: the CLM instrument ~
-                  scentroid.ins needs to be loaded in order for this function ~
-                  to work. Returning 0 as default")
+                    scentroid.ins needs to be loaded in order for this ~
+                    function to work. Returning 0 as default")
              0))
       ;; if it's already been calculated, just return it
       (if cd

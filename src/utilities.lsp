@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:35:47 Mon Dec 19 2022 CET
+;;; $$ Last modified:  14:05:33 Tue Feb  7 2023 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5147,13 +5147,6 @@ RETURNS:
      when (and (<= xdiff xthresh) (>= ydiff ythresh)) collect x
      do (setf last-y y
               last-x x)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun list-mean (list)
-  (unless (every #'numberp list)
-    (error "utilities::mean: can't find the mean of non-numbers: ~a" list))
-  (/ (loop for el in list sum el) (float (length list))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/get-clusters

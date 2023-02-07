@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:29:07 Fri Jan  6 2023 CET
+;;; $$ Last modified:  14:06:03 Tue Feb  7 2023 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -10174,8 +10174,10 @@ data: (11 15)
   ;; (loop for c in (cons (1- (first contenders)) contenders)
   (let* ((counts (loop for c in contenders
                     for count = (nth (1- (* 2 c)) counts)
-                    collect count))
-         (mean (list-mean counts))
+                       collect count))
+         ;; this used to call list-mean instead but this new function is safer
+         ;; on long lists
+         (mean (average counts))
          ;; we're going to decide on the bar number with the number of notes
          ;; which is furthest away from all other contenders
          (deltas (loop for c in counts collect (abs (- c mean))))

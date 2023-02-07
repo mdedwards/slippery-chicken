@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:27:59 Sat Jan 21 2023 CET
+;;; $$ Last modified:  18:22:33 Tue Feb  7 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8305,11 +8305,16 @@
                      dir sf))
             :frequency 'detect :start start))
          (check-it (freq sf)
-           (= freq (print (round (frequency sf))))))
+           (= freq (round (frequency sf)))))
     (let ((sf1 (msf 1 1 .03))
           (sf2 (msf 1 2))
           (sf3 (msf 2 4 .8))
           (sf4 (msf 1 3 .9))
+          ;;  MDE Tue Feb  7 17:12:33 2023, Heidhausen -- remake some to get
+          ;; whole sndfile and test spectral centroid
+          (sfa4 (msf 2 4))
+          (sfa5 (msf 2 5))
+          (sfa6 (msf 2 6))
            ;; MDE Mon May 30 19:15:11 2022, Heidhausen -- we've now changed the
            ;; auotocorrelation routine to sample 200ms. check this works with
            ;; sines
@@ -8318,6 +8323,9 @@
           (matt3 (msf 1 "matt-sines" 12.5))
           (matt4 (msf 1 "matt-sines" 15.7)))
       (sc-test-check
+        ;; MDE Tue Feb  7 17:10:45 2023, Heidhausen
+        ;; (print (list (centroid sfa4) (centroid sfa5) (centroid sfa6)))
+        (> (centroid sfa4) (centroid sfa5) (centroid sfa6))
         ;; the lowest partial shown in glisseq is 3x this so the percussive
         ;; nature is confusing the algo. still at least there's a relationship
         (check-it 178 sf1)

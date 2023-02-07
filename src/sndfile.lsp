@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  14:02:46 Tue Feb  7 2023 CET
+;;; $$ Last modified:  18:22:15 Tue Feb  7 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -78,7 +78,7 @@
    ;; will be called with the path slot as argument. The idea is that the
    ;; fundamental can be extracted from the file name.
    (frequency :accessor frequency :initarg :frequency :initform 'c4)
-   (centroid :accessor centroid :initform nil)
+   (centroid :reader centroid :writer (setf centroid) :initform nil)
    ;; when duration is given, we have to update end and vice-versa.  This slot
    ;; tells us whether this was done and so avoids endless back-and-forths when
    ;; calling the setf methods.
@@ -387,23 +387,32 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod centroid ((sf sndfile))
-  (flet ((warnsc ()
-           (warn "sndfile::centroid: the CLM instrument ~
+  (with-slots ((cd centroid)) sf
+    (flet ((warnsc ()
+             (warn "sndfile::centroid: the CLM instrument ~
                   scentroid.ins needs to be loaded in order for this function ~
                   to work. Returning 0 as default")
-           0))
-  (with-slots ((cd centroid)) c
-    ;; if it's already been calculated, just return it
-    (if cd
-        cd
-        #+clm
-        (if (fboundp 'clm::scentroid)
-            (setf cd
-                  (average 
-                   (clm::scentroid (path sf) :beg (start sf) :dur (duration sf))
-                ))
-            (warnsc))
-        #-clm (warnsc)))))
+             0))
+      ;; if it's already been calculated, just return it
+      (if cd
+          cd
+          #+clm
+          (if (fboundp 'clm::scentroid)
+              (setf cd
+                    (let* ((centroids (clm::scentroid (path sf)
+                                                      :beg (start sf)
+                                                      :dur (duration sf)))
+                           (just-ys (remove-if
+                                     ;; don't use spectral frames with rms
+                                     ;; values lower than the threshold
+                                     ;; (centroid = 0) in the averaging
+                                     #'(lambda (x)
+                                         (equal-within-less-tolerance x 0.0))
+                                     (loop for y in (rest centroids)
+                                           by #'cddr collect y))))
+                      (average just-ys)))
+              (warnsc))
+      #-clm (warnsc)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

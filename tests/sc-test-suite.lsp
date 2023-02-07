@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:22:33 Tue Feb  7 2023 CET
+;;; $$ Last modified:  18:53:48 Tue Feb  7 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8311,7 +8311,7 @@
           (sf3 (msf 2 4 .8))
           (sf4 (msf 1 3 .9))
           ;;  MDE Tue Feb  7 17:12:33 2023, Heidhausen -- remake some to get
-          ;; whole sndfile and test spectral centroid
+          ;; whole sndfile and test spectral centroid while we're at it
           (sfa4 (msf 2 4))
           (sfa5 (msf 2 5))
           (sfa6 (msf 2 6))

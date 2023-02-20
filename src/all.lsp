@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  10:42:04 Sun May 29 2022 CEST
+;;; $$ Last modified:  14:00:35 Mon Feb 20 2023 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -284,6 +284,7 @@
 (sc-compile-and-load "wolfram.lsp" t)
 (sc-compile-and-load "afu.lsp")
 (sc-compile-and-load "reaper.lsp")
+(sc-compile-and-load "csound.lsp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

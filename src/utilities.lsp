@@ -6135,4 +6135,137 @@ yes_foo, 1 2 3 4;
           (t (values bytes 'bytes)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/decider
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; February 23rd 2023
+;;;
+;;; DESCRIPTION
+;;; Return an index, which can be used to select an element from a sequence,
+;;; when provided with a list of weights (see the example). It does that by
+;;; scaling the selector argument relative to the sum of all weights, using
+;;; rescale. Then it goes through all the weights and as soon as the selector
+;;; is smaller than the sum of the weights so far, the index of the current
+;;; weight is returned. So when given a list of weights '(2 1), the following
+;;; selectors will return:
+;;; 0     => 0
+;;; 1/3   => 0
+;;; 19/30 => 0
+;;; 2/3   => 1
+;;; 1     => 1
+;;; This process is thus deterministic. By providing a random number as a
+;;; selector, you can make random choices etc.
+;;; 
+;;; ARGUMENTS
+;;; - A number between 0 and 1
+;;; - A list of numbers, representing weights 
+;;; 
+;;; RETURN VALUE
+;;; index of chosen element
+;;;
+;;; EXAMPLE
+#|
+;;; simple example, choosing from a list:
+(let* ((ls '(c4 d4 e4 f4 g4 a4 b4))
+       (weights '(1 1 2 2 3 1 2)))
+  (nth (decider 0.1 weights) ls))
+=> d4
+
+;;; making a simple melody, following a sine wave:
+(let* ((ls '(c4 d4 e4 f4 g4 a4 b4))
+       (weights '(1 1 2 2 3 1 2)))
+  (loop for i from 0 to pi by 0.25 collect
+       (nth (decider (abs (sin i)) weights) ls)))
+=> (C4 E4 F4 G4 B4 B4 B4 B4 B4 A4 G4 F4 D4)
+
+;;; make a random melody with 10 pitches:
+(let* ((ls '(c4 d4 e4 f4 g4 a4 b4))
+       (weights '(1 1 2 2 3 1 2)))
+  (loop repeat 10 collect
+       (nth (decider (random 1.0) weights) ls)))
+|#
+;;; SYNOPSIS
+(defun decider (selector weights)
+  (labels ((helper (selector ls1 index sum)
+	     (cond ((null ls1) (1- (length weights)))
+		   ((< selector sum) index)
+		   (t (helper selector
+			      (cdr ls1)
+			      (+ index 1)
+			      (+ sum (car ls1)))))))
+    (helper (rescale selector 0 1 0 (loop for i in weights sum i))
+	    (cdr weights) 0 (car weights))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/visualize
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; February 23rd 2023
+;;; 
+;;; DESCRIPTION
+;;; Print a Visualization of an array or a list into the repl with 64 values
+;;; -> *ascii art* <-
+;;; 
+;;; ARGUMENTS
+;;; - An array or a list
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :y-range. Maximum value that the y-axis display. When nil, the graph will be
+;;; normalized.
+;;; :start. Where to start reading the sequence from. Default = 0 
+;;; :abs. When t, the absolute value of all numbers is visualized
+;;; :scale. If the sequence is shorter than 64 and scale is t, the graph will
+;;; be scaled to 64 values
+;;; 
+;;; RETURN VALUE
+;;; ":)"
+;;;
+;;; EXAMPLE
+#|
+(visualize (loop repeat 64 for i from 0 by 0.1 collect (sin i)))
+(visualize (loop repeat 128 for i from 0 by 0.1 collect (sin i)) :start 64)
+(visualize (loop repeat 128 for i from 0 by 0.1 collect (* (sin i) 2)) :scale nil :start 96)
+(visualize (loop repeat 55 for i from 0 by 0.1 collect (* (sin i) 2)) :scale nil :abs t :y-range 1)
+|#
+;;; SYNOPSIS
+(defun visualize (ls &key y-range (start 0) abs (scale t))
+  (when (arrayp ls)
+    (setf ls (loop for i across ls collect i)))
+  (when abs (setf ls (loop for i in ls collect (abs i))))
+  (let* ((matrix (make-array '(64 17) :initial-element 0.0))
+	 (maxi (apply #'max (mapcar #'abs ls)))
+	 (y-range (if y-range y-range
+		      (if (= maxi 0) 1 maxi)))
+	 (len (length ls))
+	 (size (if (or scale (>= (- len start) 64)) 64 (- len start))))
+    (loop for i from start below (+ size start) do
+	 (loop for j below 17 do
+	      (if (= (round (+ (* (/ (nth (mod (floor
+						(+ start
+						   (if scale
+						       (* (/ i size)
+							  (- len start))
+						       i)))
+					       len)
+					  ls)
+				     y-range)
+				  8 (if abs 2 1))
+			       (* 8 (if abs 0 1))))
+		     j)
+		  (setf (aref matrix (- i start) j) 1)
+		  (setf (aref matrix (- i start) j) 0))))
+    (loop for j downfrom 16 to 0 do
+	 (print (apply 'concatenate 'string
+		       (loop for i below 64 collect
+			    (if (= (aref matrix i j)  1)
+				"_"
+				" ")))))
+    "=)"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -20159,6 +20159,30 @@
                (pitch= p2 (flat-to-sharp p1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF Mon 24 Feb 2023
+
+(sc-deftest test-decider ()
+  (let ((weights '(2 0 1 1)))
+    (sc-test-check
+      (= 0 (decider 0 weights))
+      (= 0 (decider 0.44444444449 weights))
+      (= 2 (decider 0.5 weights))
+      (= 3 (decider 1 weights)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF Mon 24 Feb 2023
+
+(sc-deftest test-visualize ()
+  (let* ((ls (loop repeat 128 for i from 0 by 0.1 collect (sin i)))
+	 (ls1 (subseq ls 0 64))
+	 (ls2 (subseq ls 0 55)))
+    (sc-test-check
+      (equal "=)" (visualize ls1))
+      (equal "=)" (visualize ls :start 64))
+      (equal "=)" (visualize ls :scale nil :start 96))
+      (equal "=)" (visualize ls2 :scale nil :abs t :y-range 0.5)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; test write-list-to-coll
 ;;; DJR Tue 18 Feb 2020 15:58:07 GMT
 

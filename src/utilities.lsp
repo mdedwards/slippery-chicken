@@ -6144,7 +6144,19 @@ yes_foo, 1 2 3 4;
 ;;;
 ;;; DESCRIPTION
 ;;; Return an index, which can be used to select an element from a sequence,
-;;; when provided with a list of weights. See the example.
+;;; when provided with a list of weights (see the example). It does that by
+;;; scaling the selector argument relative to the sum of all weights, using
+;;; rescale. Then it goes through all the weights and as soon as the selector
+;;; is smaller than the sum of the weights so far, the index of the current
+;;; weight is returned. So when given a list of weights '(2 1), the following
+;;; selectors will return:
+;;; 0     => 0
+;;; 1/3   => 0
+;;; 19/30 => 0
+;;; 2/3   => 1
+;;; 1     => 1
+;;; This process is thus deterministic. By providing a random number as a
+;;; selector, you can make random choices etc.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A number between 0 and 1
@@ -6155,10 +6167,24 @@ yes_foo, 1 2 3 4;
 ;;;
 ;;; EXAMPLE
 #|
+;;; simple example, choosing from a list:
 (let* ((ls '(c4 d4 e4 f4 g4 a4 b4))
        (weights '(1 1 2 2 3 1 2)))
   (nth (decider 0.1 weights) ls))
 => d4
+
+;;; making a simple melody, following a sine wave:
+(let* ((ls '(c4 d4 e4 f4 g4 a4 b4))
+       (weights '(1 1 2 2 3 1 2)))
+  (loop for i from 0 to pi by 0.25 collect
+       (nth (decider (abs (sin i)) weights) ls)))
+=> (C4 E4 F4 G4 B4 B4 B4 B4 B4 A4 G4 F4 D4)
+
+;;; make a random melody with 10 pitches:
+(let* ((ls '(c4 d4 e4 f4 g4 a4 b4))
+       (weights '(1 1 2 2 3 1 2)))
+  (loop repeat 10 collect
+       (nth (decider (random 1.0) weights) ls)))
 |#
 ;;; SYNOPSIS
 (defun decider (selector weights)

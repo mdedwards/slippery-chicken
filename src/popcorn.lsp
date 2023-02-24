@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    3rd February 2011 (Ko Lanta, Thailand)
 ;;;
-;;; $$ Last modified:  12:06:22 Sat Dec 14 2019 CET
+;;; $$ Last modified:  08:04:31 Tue Feb 21 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -516,6 +516,5 @@ data: (0.02 0.03)
                  :min-spike min-spike))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF popcorn.lsp
 

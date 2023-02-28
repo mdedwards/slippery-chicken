@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:06:03 Tue Feb  7 2023 CET
+;;; $$ Last modified:  16:32:13 Tue Feb 28 2023 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -10304,6 +10304,470 @@ data: (11 15)
     ;; after Z we have AA, BB, CC ...
     (loop repeat num do (setq result (format nil "~a~a" result letter)))
     result))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/csound-play
+;;; AUTHOR
+;;; Ruben Philipp <ruben.philipp@folkwang-uni.de>
+;;;
+;;; DATE
+;;; 2023-02-28, Essen
+;;;
+;;; DESCRIPTION
+;;; Generate a Csound-score file (.sco) from the data of the specified
+;;; slippery-chicken object. 
+;;;
+;;; ARGUMENTS
+;;; - A slippery-chicken object.
+;;; - The ID(s) of the player(s) whose events are used to obtain the
+;;;   rhythmic structure of the score events (i.e. the onset and duration
+;;;   values) and, dependent on the p-fields function, pitch content,
+;;;   amplitude etc. This must be a list with one or more symbols.
+;;; - The ID(s) (number) or name(s) (string) of the Csound instruments
+;;;   according to the resp. instrument definition in the Csound orchestra.
+;;;   Each player of the second argument of this methods needs to be assigned
+;;;   one Csound instrument. This must be a list with one or more values.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :suffix. A string to be added just before the .sco of the generated
+;;;   csound score-file. Will be overridden when manually setting the path
+;;;   via :csound-file. Default = "".
+;;; - :csound-file. A string indicating the path and filename to the .sco-file
+;;;   to be generated with this method. Default is a filename extracted from the
+;;;   title of the sc piece, placed in the (get-sc-config 'default-dir)
+;;;   directory (per default /tmp).
+;;; - :start-section. An integer that is the number of the first section for
+;;;   which the Csound-score is to be generated. Default = 1.
+;;; - :num-sections. An integer that is the number of sections to generate the
+;;;   score data. If NIL, all sections will be written. Default = NIL.
+;;; - :from-sequence.  An integer that is the number of the first sequence
+;;;   within the specified starting section to be used to generate the output
+;;;   file. Default = 1.
+;;; - :num-sequences. An integer that s the number of sequences for which
+;;;   event data is to be generated in the resulting .sco-file, including the
+;;;   sequence spiecified in from-sequence. If NIL, all sequences will be
+;;;   written. NB: This argument can only be used when the num-sections = 1.
+;;;   Default = NIL.
+;;; - :chords. Either a boolean or an integer which determines how to deal with
+;;;   chords in events. When T, all notes of a chord are parsed as
+;;;   i-statements in the Csound-score. When NIL, chords will be ignored and
+;;;   treated like rests (i.e. nothing will be generated). When an integer is
+;;;   given, the number determines the max. amount of pitches being parsed as i-
+;;;   statements. They are chosen chronologically from the given chord.
+;;;   Default = T.
+;;; - :offset. An integer or floating point value to indicate the global
+;;;   offset of all score events (in seconds). Default = 0.
+;;; - :delimiter. A character which separates each score statement. Csound
+;;;   recommends using spaces, though #\tab does also work an might, in some
+;;;   cases, improve legibility. Default = #\space.
+;;; - :p-fields. This should be either NIL, a list of lists or a function used
+;;;   to generate the p-fields starting from p4. The lists can be of arbitrary
+;;;   length and are solely limited by Csound's internal parsing restrictions.
+;;;   When NIL, no additional p-statements are added to any of the score-
+;;;   statements, regardless of the amount of included players (i.e. no further
+;;;   p-field is added to any of the players).
+;;;   When given a list of lists, each sublist contains a set of constant
+;;;   p-values for each player. NB: It is mandatory to pass a sub-list for
+;;;   each player chosen for score generation (cf. second argument). It is
+;;;   possible to pass an empty list (i.e. NIL) for a single player, if it is
+;;;   desired not to add any further p-fields other than instrument-name (p1),
+;;;   onset (p2), and duration (p3).
+;;;   When a function is given as argument, it will be used to generate the
+;;;   p-values based on the event-data and other arguments. This enables dynamic
+;;;   generation of score content dependent on the data contained in the
+;;;   specific event used for generating the i-statement (e.g. pitch or
+;;;   amplitude). The pfield-function needs to accept the following arguments:
+;;;   - event.         A sc event.
+;;;   - event-num.     An integer counting the event index of each player.
+;;;   - cs-instrument. The csound-instrument name as defined in the third
+;;;                    argument (see above). This comes in handy when the
+;;;                    csound instruments require different sets of p-values.
+;;;   NB: When chords should be able to be processed (see above), the function
+;;;       needs to be able to process events containing chords and return a list
+;;;       of the length of the chord (e.g. via is-chord).
+;;;       For further detail, take a look at csound.lsp.
+;;; - :comments. A boolean indicating whether additional comments should be
+;;;   included into the generated score. The comments include the title,
+;;;   composer and generation date of the sc piece resp. the csound-score.
+;;;   Additionally, the score sections containing the instrument calls for
+;;;   each player will be preceded with a reference to the player ID
+;;;   according to the sc ensemble. Default = T.
+;;;   
+;;;
+;;; RETURN VALUE
+;;; Returns the path of the file written, as a string.
+;;;
+;;; EXAMPLE
+#|
+;;; An example using the csound-p-fields-simple function
+(let ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((pno (piano :midi-channel 1))
+                      (vln (violin :midi-channel 2))))
+         :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4 d4 e4 f4 g4 a4 bf4 cs5))))
+         :set-map '((1 (1 1 1 1 1 1 1))
+                    (2 (1 1 1 1 1 1 1))
+                    (3 (1 1 1 1 1 1 1)))
+         :tempo-map '((1 (q 60)))
+         :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                 :pitch-seq-palette ((1 (2) 3))))
+                             (2 ((((4 4) (q) e (s) s h))
+                                 :pitch-seq-palette ((1 2 3))))
+                             (3 ((((4 4) e (s) s h (q)))
+                                 :pitch-seq-palette ((2 3 3))))
+                             (4 ((((4 4) (s) s h (q) e))
+                                 :pitch-seq-palette ((3 1 (2))))))
+         :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
+                             (vln (1 2 1 2 1 2 1))))
+                         (2 ((pno (3 4 3 4 3 4 3))
+                             (vln (3 4 3 4 3 4 3))))
+                         (3 ((pno (1 2 1 2 1 2 1))
+                             (vln (1 2 1 2 1 2 1))))))))
+  (csound-play mini
+               '(pno vln)
+               '(1 "fmsynth")
+               :chords 1
+               :delimiter #\tab
+               :comments t))
+
+;;; An example that creates different sets of p-field for each
+;;; individual player.
+;;; - Player 'vln calls the (hypothetical) Csound instrument 1
+;;;   which generates tone of frequency p4 and amplitude p5.
+;;;   Here, the standard csound-p-fields-simple function is invoked.
+;;; - Player 'vlc calls the Csound instrument 2, which is a simple
+;;;   sampler capable of playing one out of ten pre-loaded soundfiles.
+;;;   These are identified by an index (1 <= i <= 10) which is expected
+;;;   to be p4. p5 determines the amplitude of the playback.
+;;;   In this examples, the samples will be selected cyclically, while
+;;;   each event of the player is allocated one of the ten samples.
+;;;   As there is one soundfile per events, chords will be treated as
+;;;   pitches, i.e. every chord results in a list instead of a list of
+;;;   lists of p-fields.
+(defun csound-p-fields-custom (event event-num cs-instrument)
+  ;; generate different p-field sets depending on the
+  ;; given Csound instrument-number
+  (format t "~%ins: ~a; enum: ~a~%"
+          cs-instrument
+          event-num)
+  (case cs-instrument
+    (1 (csound-p-fields-simple event
+                               event-num
+                               cs-instrument))
+    (2 (let* ((amplitude (get-amplitude event))
+              ;; num of available samples in Csound
+              ;; instrument definition / orchestra
+              (num-samples 10)
+              ;; get the id of the sample to be played
+              ;; for this event
+              (current-sample (1+ (mod (1- event-num)
+                                       num-samples))))
+         (list current-sample
+               amplitude)))))
+
+(let* ((mini
+         (make-slippery-chicken
+          '+mini+
+          :ensemble '(((vln (violin :midi-channel 1))
+                     (vlc (cello :midi-channel 2))))
+          :tempo-map '((1 (q 60)))
+          :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+                         (2 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+                         (3 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+          :set-map '((1 (1 1 1 1 1))
+                     (2 (2 2 2 2 2))
+                     (3 (3 3 3 3 3)))
+          :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                  :pitch-seq-palette ((1 2 3 4 5))))
+                              (2 ((((4 4) q e s s h))
+                                  :pitch-seq-palette ((1 2 3 4 5))))
+                              (3 ((((4 4) e s s h q))
+                                  :pitch-seq-palette ((1 2 3 4 5)))))
+          :rthm-seq-map '((1 ((vln (1 3 2 1 2))
+                              (vlc (3 1 1 2 2))))
+                          (2 ((vln (3 1 1 2 2))
+                              (vlc (1 3 1 2 2))))
+                          (3 ((vln (1 1 3 2 2))
+                              (vlc (2 1 1 2 3))))))))
+  (csound-play mini
+               '(vln vlc)
+               '(1 2)
+               :chords nil
+               :delimiter #\tab
+               :p-fields #'csound-p-fields-custom
+               :comments t))
+|#
+;;; SYNOPSIS
+(defmethod csound-play ((sc slippery-chicken)
+                        players
+                        csound-instruments
+                        &key
+                          (start-section 1)
+                        ;; offset in seconds
+                          (offset 0)
+                        ;; add something just before .sco?
+                          (suffix "")
+                          (csound-file
+                           (format nil "~a~a~a.sco"
+                                   (get-sc-config 'default-dir)
+                                   (filename-from-title (title sc))
+                                   suffix))
+                        ;; add a comment sections?
+                          (comments t)
+                          (delimiter #\space)
+                          (from-sequence 1)
+                          (num-sequences nil)
+                          (chords t)
+                        ;; either NIL, a list of lists, or a function
+                        ;; cf. documentation
+                          (p-fields #'csound-p-fields-simple)                        
+                        ;; when NIL, all sections are considered
+                          (num-sections nil))
+  ;;; ****
+  ;; test if a csound instrument is assigned to every selected player
+  (when (/= (length players)
+            (length csound-instruments))
+    (error "slippery-chicken::csound-play: ~
+            players/voices and csound-instruments differ in length"))
+  ;; if the p-fields keywords is not a function, test if it is either
+  ;; NIL, or
+  ;; a list of lists containing p-field-values for each player/instrument
+  (unless (or (functionp p-fields)
+              (eq nil p-fields)
+              (and (every #'listp p-fields)
+                   (= (length p-fields)
+                      (length players))))
+    (error "slippery-chicken::csound-play: ~
+            the p-fields keyword argument must be either NIL, ~% ~
+            a function, or a list of lists with p-field values ~
+            for each player"))
+  ;; borrowed from midi-play
+  ;; RP  Sun Feb 19 23:55:03 2023
+  (when (and (not num-sections)
+             (= start-section 1)
+             (= 1 (get-num-sections sc)))
+    (setf num-sections 1))
+  ;; borrowed from midi-play
+  ;; RP  Sun Feb 19 23:55:54 2023
+  (unless (integer>0 from-sequence)
+    (error "slippery-chicken::csound-play: ~
+            from-sequence must be an integer >= 1."))
+  ;; borrowed from midi-play
+  ;; RP  Sun Feb 19 23:57:57 2023
+  (when (and num-sequences 
+             (or (not num-sections)
+                 (and num-sections (> num-sections 1))))
+    (error "slippery-chicken::csound-play: num-sequences keyword should only ~
+            be used ~%when num-sections = 1."))
+  ;; borrowed from midi-play
+  ;; RP  Sun Feb 19 23:58:48 2023
+  (when (and from-sequence (/= 1 from-sequence)
+             (or (not num-sections)
+                 (and num-sections (> num-sections 1))))
+    (error "slippery-chicken::csound-play: from-sequence keyword should only ~
+            be used ~%when num-sections = 1."))
+  ;; borrowed from midi-play
+  ;; RP  Sun Feb 19 23:59:05 2023
+  (when (and num-sections (= 1 num-sections) (not num-sequences))
+    (let ((ns (num-seqs sc start-section)))
+      (unless ns 
+        (error "slippery-chicken::csound-play: can't get number of sequences ~
+                for section ~a." start-section))
+      (setf num-sequences (- ns (1- from-sequence)))))
+  ;; start parsing the sc-data
+  (let* ((events (get-events-start-time-duration sc
+                                                 start-section
+                                                 players
+                                                 :num-sections num-sections
+                                                 :num-sequences num-sequences
+                                                 :from-sequence from-sequence
+                                                 :ignore-rests nil
+                                                 :include-rests t
+                                                 :time-scaler 1.0))
+         (score-events
+           (loop
+             for player in events
+             for player-i from 0
+             for instrument = (nth player-i csound-instruments)
+             collect
+             ;; create Csound instrument calls for each player
+             ;; results in a list of lists with one list for each player
+             (let ((event-count 0))
+               (loop for rs in player
+                     append
+                     (loop for event in rs
+                           ;; only process a chord if desired
+                           unless (and (numberp (is-chord event))
+                                       (null chords))
+                             append
+                             (progn
+                               ;; increase event counter
+                               ;; NB: event count stays the same for
+                               ;; each individual pitch in a chord,
+                               ;; thus, a chord is treated here as a
+                               ;; single entity
+                               (incf event-count)
+                               (let* ((actual-chord-length (is-chord event))
+                                      ;; set values for p1-p3
+                                      ;; i.e. instrument, onset, duration
+                                      (p1-value (if (numberp instrument)
+                                                    (format nil "i~a" instrument)
+                                                    (format nil "i \"~a\"" instrument)))
+                                      (p2-value (+ offset
+                                                   (start-time event)))
+                                      (p3-value (duration event))
+                                      ;; get values for any other p-field
+                                      (p-field-values (cond ((functionp p-fields)
+                                                             (funcall p-fields
+                                                                      event
+                                                                      event-count
+                                                                      instrument))
+                                                            ((listp p-fields)
+                                                             (nth player-i p-fields))
+                                                            (t nil)))
+                                      ;; determine the amount of i-statements
+                                      ;; (here: pitches) for a chord.
+                                      ;; this is necessary, as it is possible
+                                      ;; to limit the amount of notes via the
+                                      ;; :chord keyword-arg.
+                                      ;; the value is set to the max. possible
+                                      ;; notes (either the :chord-limit or the
+                                      ;; available pitches in a chord)
+                                      (pitches-per-chord (cond
+                                                           ;; when chord size is
+                                                           ;; limited, set the upmost
+                                                           ;; limit either to the length
+                                                           ;; of the chord (if lt) or
+                                                           ;; to the chord-limit
+                                                           ((null actual-chord-length) nil)
+                                                           ((and (numberp chords)
+                                                                 (> actual-chord-length
+                                                                    chords))
+                                                            chords)
+                                                           (t actual-chord-length))))
+                                 ;; process first chords, then pitches
+                                 (if (numberp actual-chord-length)
+                                     ;; process the chord note by note
+                                     (loop for i from 0 to (1- pitches-per-chord)
+                                           collect
+                                           (append (list p1-value
+                                                         p2-value
+                                                         p3-value)
+                                                   ;; could be a list of lists (when
+                                                   ;; data is generated by a function)
+                                                   ;; or a one-dimensional list with
+                                                   ;; n-values (cf. documentation)
+                                                   (if (every #'listp p-field-values)
+                                                       (nth i p-field-values)
+                                                       p-field-values)))
+                                     ;; process a (single) pitch
+                                     (list (append (list p1-value
+                                                         p2-value
+                                                         p3-value)
+                                                   ;; in this case, the value
+                                                   ;; ought to be a list with
+                                                   ;; n values
+                                                   p-field-values)))))))))))
+    ;; write to file
+    (with-open-file (stream csound-file
+                            :direction :output
+                            :if-does-not-exist :create
+                            :if-exists :supersede)
+      ;; initial comments
+      (when comments
+        (format stream ";; TITLE: ~a~%~
+                        ;; COMPOSER: ~a~%~
+                        ;; YEAR: ~a~%~
+                        ;; GENERATION DATE: ~a~%"
+                (title sc)
+                (composer sc)
+                (year sc)
+                (multiple-value-bind
+                      (second minute hour day month year weekday dst-p tz)
+                    (get-decoded-time)
+                  (format nil "~4,'0d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d"
+                          year month day hour minute second))))
+      (loop for instrument in score-events
+            for instrument-i from 0 do
+              (when comments
+                (format stream "~%;; PLAYER: ~a~%~%"
+                        (nth instrument-i players)))
+              (loop for ins-data in instrument
+                    ;; ignore empty lists (e.g. produced by ignored chords)
+                    ;; might be redundant as ignored chords are already
+                    ;; sorted out "a priori" in the loop (see above)
+                    ;; RP  Mon Feb 20 01:20:51 2023
+                    unless (not ins-data)
+                      do
+                         (let ((control-string (concatenate 'string
+                                                            "~{~a~^"
+                                                            (string delimiter)
+                                                            "~}~%")))
+                           (format stream control-string ins-data))))
+      (format stream "~%~%"))
+    csound-file))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* csound/csound-p-fields-simple
+;;; AUTHOR
+;;; Ruben Philipp <ruben.philipp@folkwang-uni.de>
+;;;
+;;; DATE
+;;; 2023-02-28, Essen
+;;;
+;;; DESCRIPTION
+;;; This function is intended to be used in conjunction with
+;;; the csound-play method. It returns a list or -- when the given event
+;;; is a chord -- a list of lists of p-values.
+;;;
+;;; The p-fields are allocated as follows:
+;;; - p4: frequency
+;;; - p5: amplitude
+;;;
+;;; N.B.: The event-num and cs-instrument arguments are mandatory as they
+;;;       are required by the csound-play method, even though they are not
+;;;       used in this function.
+;;;
+;;; ARGUMENTS
+;;; - An event object (most likely the event currently processed by
+;;;   csound-play).
+;;; - A number referring as an index to the position in processing sequence.
+;;; - A reference to a Csound-instrument (number or string).
+;;;
+;;; RETURN VALUE
+;;; Returns either a list (when the event is a pitch) or a list of lists
+;;; (in case the event contains a chord) with p4- and p5-values (see
+;;; above).
+;;;
+;;; $$ Last modified:  16:32:27 Tue Feb 28 2023 CET
+;;;
+;;; SYNOPSIS
+(defun csound-p-fields-simple (event event-num cs-instrument)
+  ;;; ****
+  ;; event-num and cs-instruments are not used in
+  ;; this function. ignore
+  ;; RP  Tue Feb 28 14:46:17 2023
+  (declare (ignore event-num
+                   cs-instruments))
+  (let ((freq (get-frequency event))
+        (amplitude (get-amplitude event)))
+    (if (listp freq)
+        ;; return a list of lists for the chord
+        (loop for f in freq
+              collect
+              ;; limit the float decimal places to 4
+              ;; as Csound has issues dealing with big floats
+              ;; in scores
+              (list (format nil "~,4f" f)
+                    amplitude))
+        (list (format nil "~,4f" freq)
+              amplitude))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

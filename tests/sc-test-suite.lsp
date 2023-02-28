@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  09:14:34 Tue Feb 28 2023 CET
+;;; $$ Last modified:  16:48:40 Tue Feb 28 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20464,7 +20464,201 @@
                 (lh (IO1 M5 M4 M6 M8 M7 M9 IO4 zapp-down))))))))
     (write-xml +remote-control+ :respell-notes nil)
     (sc-test-check
-      (file-write-ok "/tmp/remote-control.xml" 1040000))))
+     (file-write-ok "/tmp/remote-control.xml" 1040000))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Feb 28 16:39:07 2023
+
+(sc-deftest test-csound-play ()
+            (in-scale :chromatic)
+            ;; a custom function which takes the event-num and cs-instrument
+            ;; arguments into account.
+            (defun csound-p-fields-custom-test (event
+                                                event-num
+                                                cs-instrument)
+              ;; generate different p-field sets depending on the
+              ;; given Csound instrument-number
+              (format t "~%ins: ~a; enum: ~a~%"
+                      cs-instrument
+                      event-num)
+              (case cs-instrument
+                (1 (csound-p-fields-simple event
+                                           event-num
+                                           cs-instrument))
+                (2 (let* ((amplitude (get-amplitude event))
+                          ;; num of available samples in Csound
+                          ;; instrument definition / orchestra
+                          (num-samples 10)
+                          ;; get the id of the sample to be played
+                          ;; for this event
+                          (current-sample (1+ (mod (1- event-num)
+                                                   num-samples))))
+                     (list current-sample
+                           amplitude)))))
+            (let* ((mini
+                     (make-slippery-chicken
+                      '+mini+
+                      :ensemble '(((pno (piano :midi-channel 1))
+                                   (vln (violin :midi-channel 2))))
+                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4 d4 e4 f4 g4 a4 bf4 cs5))))
+                      :set-map '((1 (1 1 1 1 1 1 1))
+                                 (2 (1 1 1 1 1 1 1))
+                                 (3 (1 1 1 1 1 1 1)))
+                      :tempo-map '((1 (q 60)))
+                      :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                              :pitch-seq-palette ((1 (2) 3))))
+                                          (2 ((((4 4) (q) e (s) s h))
+                                              :pitch-seq-palette ((1 2 3))))
+                                          (3 ((((4 4) e (s) s h (q)))
+                                              :pitch-seq-palette ((2 3 3))))
+                                          (4 ((((4 4) (s) s h (q) e))
+                                              :pitch-seq-palette ((3 1 (2))))))
+                      :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
+                                          (vln (1 2 1 2 1 2 1))))
+                                      (2 ((pno (3 4 3 4 3 4 3))
+                                          (vln (3 4 3 4 3 4 3))))
+                                      (3 ((pno (1 2 1 2 1 2 1))
+                                          (vln (1 2 1 2 1 2 1))))))))
+              (probe-delete "/tmp/mini.sco")
+              (sc-test-check
+               (csound-play mini
+                            '(pno vln)
+                            '(1 "fmsynth")
+                            ;; just use the first note from a chord
+                            :csound-file "/tmp/mini.sco"
+                            :chords 1
+                            :delimiter #\tab
+                            :comments t)
+               (probe-delete "/tmp/mini.sco")
+               ;; test with a custom p-field-function (lambda)
+               ;; ignoring chords (hence, the p-field-function does
+               ;; not need to take chord events into account)
+               ;; RP  Mon Feb 20 17:00:17 2023
+               (csound-play mini
+                            '(pno vln)
+                            '(1 2)
+                            :csound-file "/tmp/mini.sco"
+                            :comments nil
+                            :chords nil
+                            :offset 2.5
+                            :p-fields #'(lambda (event
+                                                 event-num
+                                                 cs-instrument)
+                                          (let ((freq (get-frequency event))
+                                                (amplitude (get-amplitude event)))
+                                            (case cs-instrument
+                                              (1 (list freq amplitude))
+                                              (2 (list freq))))))
+               (probe-delete "/tmp/mini.sco")
+               (csound-play mini
+                            '(pno vln)
+                            '(1 2)
+                            :csound-file "/tmp/mini.sco"
+                            :chords t
+                            :offset 2.5
+                            :p-fields #'csound-p-fields-custom-test))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Feb 28 16:39:01 2023
+;;; similar to test-sc-mini-play-num-seqs-from-seq
+
+(sc-deftest test-sc-csound-play-num-seqs-from-seq ()
+            (let ((mini
+                    (make-slippery-chicken
+                     '+mini+
+                     :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                                  (hn (french-horn :midi-channel 2))
+                                  (vc (cello :midi-channel 3))))
+                     :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))) 
+                     :set-map '((1 (1 1 1 1 1 1 1))
+                                (2 (1 1 1 1 1 1 1))
+                                (3 (1 1 1 1 1 1 1)))
+                     :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                             :pitch-seq-palette ((1 2 3))))
+                                         (2 ((((4 4) (q) e (s) s h))
+                                             :pitch-seq-palette ((1 2 3))))
+                                         (3 ((((4 4) e (s) s h (q)))
+                                             :pitch-seq-palette ((2 3 3))))
+                                         (4 ((((4 4) (s) s h (q) e))
+                                             :pitch-seq-palette ((3 1 2)))))
+                     :rthm-seq-map '((1 ((cl (1 2 1 2 1 2 1))
+                                         (hn (1 2 1 2 1 2 1))
+                                         (vc (1 2 1 2 1 2 1))))
+                                     (2 ((cl (3 4 3 4 3 4 3))
+                                         (hn (3 4 3 4 3 4 3))
+                                         (vc (3 4 3 4 3 4 3))))
+                                     (3 ((cl (1 2 1 2 1 2 1))
+                                         (hn (1 2 1 2 1 2 1))
+                                         (vc (1 2 1 2 1 2 1))))))))
+              (probe-delete "/tmp/mini-test.sco")
+              (sc-test-check
+               (csound-play mini
+                            '(cl hn)
+                            '("clarinet" "horn")
+                            :csound-file "/tmp/mini-test.sco"
+                            :chords t
+                            :start-section 2
+                            :num-sections 1
+                            :from-sequence 2
+                            :num-sequences 3))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Feb 28 16:37:50 2023
+
+(sc-deftest test-sc-csound-play-static-p-fields ()
+            (let ((mini
+                    (make-slippery-chicken
+                     '+mini+
+                     :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                                  (hn (french-horn :midi-channel 2))
+                                  (vc (cello :midi-channel 3))))
+                     :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))) 
+                     :set-map '((1 (1 1 1 1 1 1 1))
+                                (2 (1 1 1 1 1 1 1))
+                                (3 (1 1 1 1 1 1 1)))
+                     :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                             :pitch-seq-palette ((1 2 3))))
+                                         (2 ((((4 4) (q) e (s) s h))
+                                             :pitch-seq-palette ((1 2 3))))
+                                         (3 ((((4 4) e (s) s h (q)))
+                                             :pitch-seq-palette ((2 3 3))))
+                                         (4 ((((4 4) (s) s h (q) e))
+                                             :pitch-seq-palette ((3 1 2)))))
+                     :rthm-seq-map '((1 ((cl (1 2 1 2 1 2 1))
+                                         (hn (1 2 1 2 1 2 1))
+                                         (vc (1 2 1 2 1 2 1))))
+                                     (2 ((cl (3 4 3 4 3 4 3))
+                                         (hn (3 4 3 4 3 4 3))
+                                         (vc (3 4 3 4 3 4 3))))
+                                     (3 ((cl (1 2 1 2 1 2 1))
+                                         (hn (1 2 1 2 1 2 1))
+                                         (vc (1 2 1 2 1 2 1))))))))
+              (probe-delete "/tmp/mini-test.sco")
+              (sc-test-check
+               ;; a list of lists with static values for each instrument
+               (csound-play mini
+                            '(hn vc)
+                            '(3 4)
+                            :csound-file "/tmp/mini-test.sco"
+                            :p-fields '((2.0 3.0) (0.49 220 440)))
+               (probe-delete "/tmp/mini-test.sco")
+               ;; a list of lists with static values, except for one instrument
+               (csound-play mini
+                            '(cl hn vc)
+                            '(1 2 3)
+                            :csound-file "/tmp/mini-test.sco"
+                            :p-fields '((2.0 3.0 4.5) nil (0.5 .3 880 "\"something\"")))
+               (probe-delete "/tmp/mini-test.sco")
+               ;; NIL
+               (csound-play mini
+                            '(cl vc)
+                            '("clarinet" "cello")
+                            :csound-file "/tmp/mini-test.sco"
+                            :comments nil
+                            :p-fields nil))))               
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

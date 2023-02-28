@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:53:48 Tue Feb  7 2023 CET
+;;; $$ Last modified:  09:14:34 Tue Feb 28 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8325,7 +8325,9 @@
       (sc-test-check
         ;; MDE Tue Feb  7 17:10:45 2023, Heidhausen
         ;; (print (list (centroid sfa4) (centroid sfa5) (centroid sfa6)))
-        (> (centroid sfa4) (centroid sfa5) (centroid sfa6))
+        (if (fboundp 'clm::scentroid)
+            (> (centroid sfa4) (centroid sfa5) (centroid sfa6))
+            t)
         ;; the lowest partial shown in glisseq is 3x this so the percussive
         ;; nature is confusing the algo. still at least there's a relationship
         (check-it 178 sf1)
@@ -20174,8 +20176,8 @@
 
 (sc-deftest test-visualize ()
   (let* ((ls (loop repeat 128 for i from 0 by 0.1 collect (sin i)))
-	 (ls1 (subseq ls 0 64))
-	 (ls2 (subseq ls 0 55)))
+         (ls1 (subseq ls 0 64))
+         (ls2 (subseq ls 0 55)))
     (sc-test-check
       (equal "=)" (visualize ls1))
       (equal "=)" (visualize ls :start 64))

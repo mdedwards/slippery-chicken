@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:59:53 Thu Mar  2 2023 CET
+;;; $$ Last modified:  21:45:27 Thu Mar  2 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20657,7 +20657,49 @@
                                    '("clarinet" "cello")
                                    :csound-file "/tmp/mini-test.sco"
                                    :comments nil
-                                   :p-fields nil))))               
+                                   :p-fields nil))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Thu Mar  2 21:39:31 2023
+
+(sc-deftest test-csound-play ()
+            (in-scale :chromatic)
+            (let* ((mini
+                     (make-slippery-chicken
+                      '+mini+
+                      :ensemble '(((pno (piano :midi-channel 1))
+                                   (vln (violin :midi-channel 2))))
+                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4 d4 e4 f4 g4 a4 bf4 cs5))))
+                      :set-map '((1 (1 1 1 1 1 1 1))
+                                 (2 (1 1 1 1 1 1 1))
+                                 (3 (1 1 1 1 1 1 1)))
+                      :tempo-map '((1 (q 60)))
+                      :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                              :pitch-seq-palette ((1 (2) 3))))
+                                          (2 ((((4 4) (q) e (s) s h))
+                                              :pitch-seq-palette ((1 2 3))))
+                                          (3 ((((4 4) e (s) s h (q)))
+                                              :pitch-seq-palette ((2 3 3))))
+                                          (4 ((((4 4) (s) s h (q) e))
+                                              :pitch-seq-palette ((3 1 (2))))))
+                      :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
+                                          (vln (1 2 1 2 1 2 1))))
+                                      (2 ((pno (3 4 3 4 3 4 3))
+                                          (vln (3 4 3 4 3 4 3))))
+                                      (3 ((pno (1 2 1 2 1 2 1))
+                                          (vln (1 2 1 2 1 2 1))))))))
+              (probe-delete "/tmp/mini.sco")
+              (probe-delete "/tmp/mini.wav")
+              (sc-test-check
+               (csound-play mini
+                            '(pno vln)
+                            '(1 2)
+                            (concatenate
+                             'string
+                             cl-user::+slippery-chicken-home-dir+
+                             "tests/mini-synth.orc")
+                            :sndfile "/tmp/mini.wav"
+                            :comments nil))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

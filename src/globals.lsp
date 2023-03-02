@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  19:07:41 Thu Mar  2 2023 CET
+;;; $$ Last modified:  21:47:43 Thu Mar  2 2023 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -192,7 +192,7 @@
      ;; render a sound file from a given orchestra and a score generated via
      ;; write-csound-score.
      (csound-command
-      "/opt/homebrew/bin/csound"))))
+      "/usr/local/bin/csound"))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

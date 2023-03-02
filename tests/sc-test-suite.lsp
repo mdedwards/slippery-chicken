@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:48:40 Tue Feb 28 2023 CET
+;;; $$ Last modified:  17:59:53 Thu Mar  2 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20470,7 +20470,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RP  Tue Feb 28 16:39:07 2023
 
-(sc-deftest test-csound-play ()
+(sc-deftest test-write-csound-score ()
             (in-scale :chromatic)
             ;; a custom function which takes the event-num and cs-instrument
             ;; arguments into account.
@@ -20522,48 +20522,48 @@
                                           (vln (1 2 1 2 1 2 1))))))))
               (probe-delete "/tmp/mini.sco")
               (sc-test-check
-               (csound-play mini
-                            '(pno vln)
-                            '(1 "fmsynth")
-                            ;; just use the first note from a chord
-                            :csound-file "/tmp/mini.sco"
-                            :chords 1
-                            :delimiter #\tab
-                            :comments t)
+               (write-csound-score mini
+                                   '(pno vln)
+                                   '(1 "fmsynth")
+                                   ;; just use the first note from a chord
+                                   :csound-file "/tmp/mini.sco"
+                                   :chords 1
+                                   :delimiter #\tab
+                                   :comments t)
                (probe-delete "/tmp/mini.sco")
                ;; test with a custom p-field-function (lambda)
                ;; ignoring chords (hence, the p-field-function does
                ;; not need to take chord events into account)
                ;; RP  Mon Feb 20 17:00:17 2023
-               (csound-play mini
-                            '(pno vln)
-                            '(1 2)
-                            :csound-file "/tmp/mini.sco"
-                            :comments nil
-                            :chords nil
-                            :offset 2.5
-                            :p-fields #'(lambda (event
-                                                 event-num
-                                                 cs-instrument)
-                                          (let ((freq (get-frequency event))
-                                                (amplitude (get-amplitude event)))
-                                            (case cs-instrument
-                                              (1 (list freq amplitude))
-                                              (2 (list freq))))))
+               (write-csound-score mini
+                                   '(pno vln)
+                                   '(1 2)
+                                   :csound-file "/tmp/mini.sco"
+                                   :comments nil
+                                   :chords nil
+                                   :offset 2.5
+                                   :p-fields #'(lambda (event
+                                                        event-num
+                                                        cs-instrument)
+                                                 (let ((freq (get-frequency event))
+                                                       (amplitude (get-amplitude event)))
+                                                   (case cs-instrument
+                                                     (1 (list freq amplitude))
+                                                     (2 (list freq))))))
                (probe-delete "/tmp/mini.sco")
-               (csound-play mini
-                            '(pno vln)
-                            '(1 2)
-                            :csound-file "/tmp/mini.sco"
-                            :chords t
-                            :offset 2.5
-                            :p-fields #'csound-p-fields-custom-test))))
+               (write-csound-score mini
+                                   '(pno vln)
+                                   '(1 2)
+                                   :csound-file "/tmp/mini.sco"
+                                   :chords t
+                                   :offset 2.5
+                                   :p-fields #'csound-p-fields-custom-test))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RP  Tue Feb 28 16:39:01 2023
 ;;; similar to test-sc-mini-play-num-seqs-from-seq
 
-(sc-deftest test-sc-csound-play-num-seqs-from-seq ()
+(sc-deftest test-sc-write-csound-score-num-seqs-from-seq ()
             (let ((mini
                     (make-slippery-chicken
                      '+mini+
@@ -20593,21 +20593,21 @@
                                          (vc (1 2 1 2 1 2 1))))))))
               (probe-delete "/tmp/mini-test.sco")
               (sc-test-check
-               (csound-play mini
-                            '(cl hn)
-                            '("clarinet" "horn")
-                            :csound-file "/tmp/mini-test.sco"
-                            :chords t
-                            :start-section 2
-                            :num-sections 1
-                            :from-sequence 2
-                            :num-sequences 3))))
+               (write-csound-score mini
+                                   '(cl hn)
+                                   '("clarinet" "horn")
+                                   :csound-file "/tmp/mini-test.sco"
+                                   :chords t
+                                   :start-section 2
+                                   :num-sections 1
+                                   :from-sequence 2
+                                   :num-sequences 3))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RP  Tue Feb 28 16:37:50 2023
 
-(sc-deftest test-sc-csound-play-static-p-fields ()
+(sc-deftest test-sc-write-csound-score-static-p-fields ()
             (let ((mini
                     (make-slippery-chicken
                      '+mini+
@@ -20638,26 +20638,26 @@
               (probe-delete "/tmp/mini-test.sco")
               (sc-test-check
                ;; a list of lists with static values for each instrument
-               (csound-play mini
-                            '(hn vc)
-                            '(3 4)
-                            :csound-file "/tmp/mini-test.sco"
-                            :p-fields '((2.0 3.0) (0.49 220 440)))
+               (write-csound-score mini
+                                   '(hn vc)
+                                   '(3 4)
+                                   :csound-file "/tmp/mini-test.sco"
+                                   :p-fields '((2.0 3.0) (0.49 220 440)))
                (probe-delete "/tmp/mini-test.sco")
                ;; a list of lists with static values, except for one instrument
-               (csound-play mini
-                            '(cl hn vc)
-                            '(1 2 3)
-                            :csound-file "/tmp/mini-test.sco"
-                            :p-fields '((2.0 3.0 4.5) nil (0.5 .3 880 "\"something\"")))
+               (write-csound-score mini
+                                   '(cl hn vc)
+                                   '(1 2 3)
+                                   :csound-file "/tmp/mini-test.sco"
+                                   :p-fields '((2.0 3.0 4.5) nil (0.5 .3 880 "\"something\"")))
                (probe-delete "/tmp/mini-test.sco")
                ;; NIL
-               (csound-play mini
-                            '(cl vc)
-                            '("clarinet" "cello")
-                            :csound-file "/tmp/mini-test.sco"
-                            :comments nil
-                            :p-fields nil))))               
+               (write-csound-score mini
+                                   '(cl vc)
+                                   '("clarinet" "cello")
+                                   :csound-file "/tmp/mini-test.sco"
+                                   :comments nil
+                                   :p-fields nil))))               
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

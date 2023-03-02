@@ -10309,7 +10309,7 @@ data: (11 15)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken/csound-play
+;;; ****m* slippery-chicken/write-csound-score
 ;;; AUTHOR
 ;;; Ruben Philipp <ruben.philipp@folkwang-uni.de>
 ;;;
@@ -10428,7 +10428,7 @@ data: (11 15)
                              (vln (3 4 3 4 3 4 3))))
                          (3 ((pno (1 2 1 2 1 2 1))
                              (vln (1 2 1 2 1 2 1))))))))
-  (csound-play mini
+  (write-csound-score mini
                '(pno vln)
                '(1 "fmsynth")
                :chords 1
@@ -10494,7 +10494,7 @@ data: (11 15)
                               (vlc (1 3 1 2 2))))
                           (3 ((vln (1 1 3 2 2))
                               (vlc (2 1 1 2 3))))))))
-  (csound-play mini
+  (write-csound-score mini
                '(vln vlc)
                '(1 2)
                :chords nil
@@ -10503,36 +10503,36 @@ data: (11 15)
                :comments t))
 |#
 ;;; SYNOPSIS
-(defmethod csound-play ((sc slippery-chicken)
-                        players
-                        csound-instruments
-                        &key
-                          (start-section 1)
-                        ;; offset in seconds
-                          (offset 0)
-                        ;; add something just before .sco?
-                          (suffix "")
-                          (csound-file
-                           (format nil "~a~a~a.sco"
-                                   (get-sc-config 'default-dir)
-                                   (filename-from-title (title sc))
-                                   suffix))
-                        ;; add a comment sections?
-                          (comments t)
-                          (delimiter #\space)
-                          (from-sequence 1)
-                          (num-sequences nil)
-                          (chords t)
-                        ;; either NIL, a list of lists, or a function
-                        ;; cf. documentation
-                          (p-fields #'csound-p-fields-simple)                        
-                        ;; when NIL, all sections are considered
-                          (num-sections nil))
-  ;;; ****
+(defmethod write-csound-score ((sc slippery-chicken)
+                               players
+                               csound-instruments
+                               &key
+                                 (start-section 1)
+                               ;; offset in seconds
+                                 (offset 0)
+                               ;; add something just before .sco?
+                                 (suffix "")
+                                 (csound-file
+                                  (format nil "~a~a~a.sco"
+                                          (get-sc-config 'default-dir)
+                                          (filename-from-title (title sc))
+                                          suffix))
+                               ;; add a comment sections?
+                                 (comments t)
+                                 (delimiter #\space)
+                                 (from-sequence 1)
+                                 (num-sequences nil)
+                                 (chords t)
+                               ;; either NIL, a list of lists, or a function
+                               ;; cf. documentation
+                                 (p-fields #'csound-p-fields-simple)                        
+                               ;; when NIL, all sections are considered
+                                 (num-sections nil))
+;;; ****
   ;; test if a csound instrument is assigned to every selected player
   (when (/= (length players)
             (length csound-instruments))
-    (error "slippery-chicken::csound-play: ~
+    (error "slippery-chicken::write-csound-score: ~
             players/voices and csound-instruments differ in length"))
   ;; if the p-fields keywords is not a function, test if it is either
   ;; NIL, or
@@ -10542,7 +10542,7 @@ data: (11 15)
               (and (every #'listp p-fields)
                    (= (length p-fields)
                       (length players))))
-    (error "slippery-chicken::csound-play: ~
+    (error "slippery-chicken::write-csound-score: ~
             the p-fields keyword argument must be either NIL, ~% ~
             a function, or a list of lists with p-field values ~
             for each player"))
@@ -10555,28 +10555,31 @@ data: (11 15)
   ;; borrowed from midi-play
   ;; RP  Sun Feb 19 23:55:54 2023
   (unless (integer>0 from-sequence)
-    (error "slippery-chicken::csound-play: ~
+    (error "slippery-chicken::write-csound-score: ~
             from-sequence must be an integer >= 1."))
   ;; borrowed from midi-play
   ;; RP  Sun Feb 19 23:57:57 2023
   (when (and num-sequences 
              (or (not num-sections)
                  (and num-sections (> num-sections 1))))
-    (error "slippery-chicken::csound-play: num-sequences keyword should only ~
+    (error "slippery-chicken::write-csound-score: ~
+            num-sequences keyword should only ~
             be used ~%when num-sections = 1."))
   ;; borrowed from midi-play
   ;; RP  Sun Feb 19 23:58:48 2023
   (when (and from-sequence (/= 1 from-sequence)
              (or (not num-sections)
                  (and num-sections (> num-sections 1))))
-    (error "slippery-chicken::csound-play: from-sequence keyword should only ~
+    (error "slippery-chicken::write-csound-score: ~
+            from-sequence keyword should only ~
             be used ~%when num-sections = 1."))
   ;; borrowed from midi-play
   ;; RP  Sun Feb 19 23:59:05 2023
   (when (and num-sections (= 1 num-sections) (not num-sequences))
     (let ((ns (num-seqs sc start-section)))
       (unless ns 
-        (error "slippery-chicken::csound-play: can't get number of sequences ~
+        (error "slippery-chicken::write-csound-score: ~
+                can't get number of sequences ~
                 for section ~a." start-section))
       (setf num-sequences (- ns (1- from-sequence)))))
   ;; start parsing the sc-data
@@ -10723,7 +10726,7 @@ data: (11 15)
 ;;;
 ;;; DESCRIPTION
 ;;; This function is intended to be used in conjunction with
-;;; the csound-play method. It returns a list or -- when the given event
+;;; the write-csound-score method. It returns a list or -- when the given event
 ;;; is a chord -- a list of lists of p-values.
 ;;;
 ;;; The p-fields are allocated as follows:
@@ -10731,12 +10734,12 @@ data: (11 15)
 ;;; - p5: amplitude
 ;;;
 ;;; N.B.: The event-num and cs-instrument arguments are mandatory as they
-;;;       are required by the csound-play method, even though they are not
+;;;       are required by the write-csound-score method, even though they are not
 ;;;       used in this function.
 ;;;
 ;;; ARGUMENTS
 ;;; - An event object (most likely the event currently processed by
-;;;   csound-play).
+;;;   write-csound-score).
 ;;; - A number referring as an index to the position in processing sequence.
 ;;; - A reference to a Csound-instrument (number or string).
 ;;;
@@ -10745,7 +10748,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  16:32:27 Tue Feb 28 2023 CET
+;;; $$ Last modified:  21:32:26 Thu Mar  2 2023 CET
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)
@@ -10768,6 +10771,172 @@ data: (11 15)
                     amplitude))
         (list (format nil "~,4f" freq)
               amplitude))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/csound-play
+;;; AUTHOR:
+;;; Ruben Philipp <ruben.philipp@folkwang-uni.de>
+;;;
+;;; DATE
+;;; 2023-03-02, Essen
+;;;
+;;; DESCRIPTION
+;;; This method outputs a soundfile from a slippery-chicken object by
+;;; generating a Csound-score via write-csound-score and calling the Csound
+;;; command with a given Csound-Orchestra as an additional argument. Hence,
+;;; this method's arguments resemble those of write-csound-score, except for
+;;; the argument indicating the orchestra file and a few keyword-arguments
+;;; which primarily deal with the soundfile output.
+;;;
+;;; In order to work properly, please make sure to have Csound properly
+;;; installed on your system and set the value of 'csound-command via
+;;; (set-sc-config ...) according to your system's configuration.
+;;;
+;;; ARGUMENTS
+;;; - A slippery chicken object.
+;;; - The ID(s) of the player(s) whose events are used to obtain the
+;;;   rhythmic structure of the score events. This must be a list with one or
+;;;   more symbols. See write-csound-score for more detail.
+;;; - The ID(s) (number) or name(s) (string) of the Csound instruments
+;;;   according to the resp. instrument definition in the Csound orchestra.
+;;;   This must be a list with one or more values. See write-csound-score for
+;;;   more information.
+;;; - The path to the Csound-orchestra file (.orc) to be used for rendering
+;;;   the output soundfile. Make sure that it contains instrument definitions
+;;;   for all Csound-instruments set in the preceding argument. This must be
+;;;   a string.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :csound-flags. A list of strings containing the flags, for the Csound
+;;;   command. Altering these might be useful e.g. to change the output format
+;;;   of the soundfile. N.B.: The "-o" argument, usually preceding the output
+;;;   soundfile name, is already set per default and should not be included in
+;;;   this list. For a full list of available arguments, see the Csound-manual.
+;;;   Default = '("-d" "-W" "-f")
+;;; - :sndfile-suffix. A string to be added just before the file-extension of the
+;;;   generated soundfile. Will be overridden when manually setting the sndfile-
+;;;   path via :sndfile. Default = "".
+;;; - :sndfile-extension. A string specifying the file extension of the soundfile
+;;;   to be generated by the Csound command. This might be altered in case the
+;;;   output format is changed e.g. via :csound-flags. Will be overridden when
+;;;   manually setting the sndfile-path via :sndfile. Default = ".wav".
+;;; - :sndfile. A string indicating the path and filename to the soundfile to be
+;;;   generated with this method. Please bear in mind to alter the suffix if you
+;;;   change the format via :csound-flags. Default is a filename extracted from the
+;;;   title of the sc piece, placed in the (get-sc-config 'default-dir) directory
+;;;   (per default /tmp)
+;;; - The other keyword arguments are exactly the same as write-csound-score.
+;;;   Please see write-csound-score for detailed documentation.
+;;;
+;;; RETURN VALUE
+;;; Returns the path of the soundfile written, as a string.
+;;;
+;;; EXAMPLE
+
+#|
+;;; An example using the csound-p-fields-simple function.
+;;; The Csound orchestra might consist of two instruments producing
+;;; tones based on simple waveforms (sines, square waves etc.)
+(let ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((pno (piano :midi-channel 1))
+                      (vln (violin :midi-channel 2))))
+         :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4 d4 e4 f4 g4 a4 bf4 cs5))))
+         :set-map '((1 (1 1 1 1 1 1 1))
+                    (2 (1 1 1 1 1 1 1))
+                    (3 (1 1 1 1 1 1 1)))
+         :tempo-map '((1 (q 60)))
+         :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                 :pitch-seq-palette ((1 (2) 3))))
+                             (2 ((((4 4) (q) e (s) s h))
+                                 :pitch-seq-palette ((1 2 3))))
+                             (3 ((((4 4) e (s) s h (q)))
+                                 :pitch-seq-palette ((2 3 3))))
+                             (4 ((((4 4) (s) s h (q) e))
+                                 :pitch-seq-palette ((3 1 (2))))))
+         :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
+                             (vln (1 2 1 2 1 2 1))))
+                         (2 ((pno (3 4 3 4 3 4 3))
+                             (vln (3 4 3 4 3 4 3))))
+                         (3 ((pno (1 2 1 2 1 2 1))
+                             (vln (1 2 1 2 1 2 1))))))))
+  (csound-play mini
+               '(pno vln)
+               '(1 2)
+               "mini-orchestra.orc"
+               :comments nil))
+|#
+
+;;; SYNOPSIS
+(defmethod csound-play (sc
+                        players
+                        csound-instruments
+                        ;; RP  Thu Mar  2 21:17:59 2023
+                        ;;; unique to csound-play
+                        orchestra-file
+                        &key
+                          ;; RP  Thu Mar  2 19:10:21 2023
+                          ;; specific to csound-play
+                          (csound-flags '("-d" "-W" "-f"))
+                          ;; add something just before the
+                          ;; sndfile-extension?
+                          (sndfile-suffix "")
+                          ;; choose the right file extension
+                          ;; according to your format!
+                          (sndfile-extension ".wav")
+                          (sndfile (format nil "~a~a~a~a"
+                                      (get-sc-config 'default-dir)
+                                      (filename-from-title (title sc))
+                                      sndfile-suffix
+                                      sndfile-extension))
+                        ;; RP  Thu Mar  2 19:32:09 2023
+                        ;; analogous to write-csound-score
+                          (start-section 1)
+                          (offset 0)
+                          (suffix "")
+                          (csound-file
+                           (format nil "~a~a~a.sco"
+                                   (get-sc-config 'default-dir)
+                                   (filename-from-title (title sc))
+                                   suffix))
+                          (comments t)
+                          (delimiter #\space)
+                          (from-sequence 1)
+                          (num-sequences nil)
+                          (chords t)
+                          (p-fields #'csound-p-fields-simple)                        
+                          (num-sections nil))
+  ;;; ****
+  (let* ((sco-file (write-csound-score sc
+                                       players
+                                       csound-instruments
+                                       :start-section start-section
+                                       :offset offset
+                                       :suffix suffix
+                                       :csound-file csound-file
+                                       :comments comments
+                                       :delimiter delimiter
+                                       :from-sequence from-sequence
+                                       :num-sequences num-sequences
+                                       :chords chords
+                                       :p-fields p-fields
+                                       :num-sections num-sections))
+         (success (apply #'shell
+                         (append
+                          (list (get-sc-config 'csound-command))
+                          csound-flags
+                          (list "-o"
+                                sndfile
+                                orchestra-file
+                                sco-file)))))
+    (print sco-file)
+    (if (zerop success)
+        sndfile
+        (error "slippery-chicken::csound-play: ~
+                Call to Csound failed."))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

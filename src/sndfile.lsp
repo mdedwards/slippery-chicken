@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  09:14:24 Tue Feb 28 2023 CET
+;;; $$ Last modified:  16:21:09 Fri Mar  3 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -425,7 +425,7 @@ T
                                      ;; values lower than the threshold
                                      ;; (centroid = 0) in the averaging
                                      #'(lambda (x)
-                                         (equal-within-less-tolerance x 0.0))
+                                         (equal-within-tolerance x 0.0))
                                      (loop for y in (rest centroids)
                                            by #'cddr collect y))))
                       (average just-ys)))

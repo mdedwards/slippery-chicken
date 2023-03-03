@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  11:29:50 Thu Dec 15 2022 CET
+;;; $$ Last modified:  21:47:43 Thu Mar  2 2023 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -185,7 +185,14 @@
      ;; MDE Thu Dec 15 11:29:25 2022, Heidhausen -- some systems need to escape
      ;; spaces in paths otherwise they won't open in a shell called from lisp 
      (system-open-file-escape-spaces t)
-     (autoconvert-eps-to-pdf nil))))
+     (autoconvert-eps-to-pdf nil)
+     ;; RP  Thu Mar  2 19:04:20 2023
+     ;; The full path to the Csound command. This is required in order to be
+     ;; to use csound-display, i.e. automatically call the Csound command to
+     ;; render a sound file from a given orchestra and a score generated via
+     ;; write-csound-score.
+     (csound-command
+      "/usr/local/bin/csound"))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

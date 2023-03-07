@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:20:20 Fri Mar  3 2023 CET
+;;; $$ Last modified:  13:37:27 Tue Mar  7 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20501,7 +20501,8 @@
                       '+mini+
                       :ensemble '(((pno (piano :midi-channel 1))
                                    (vln (violin :midi-channel 2))))
-                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4 d4 e4 f4 g4 a4 bf4 cs5))))
+                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4 d4 e4 f4
+                                          g4 a4 bf4 cs5))))
                       :set-map '((1 (1 1 1 1 1 1 1))
                                  (2 (1 1 1 1 1 1 1))
                                  (3 (1 1 1 1 1 1 1)))
@@ -20545,8 +20546,10 @@
                                    :p-fields #'(lambda (event
                                                         event-num
                                                         cs-instrument)
-                                                 (let ((freq (get-frequency event))
-                                                       (amplitude (get-amplitude event)))
+                                                 (let ((freq
+                                                         (get-frequency event))
+                                                       (amplitude
+                                                         (get-amplitude event)))
                                                    (case cs-instrument
                                                      (1 (list freq amplitude))
                                                      (2 (list freq))))))
@@ -20570,7 +20573,8 @@
                      :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
                                   (hn (french-horn :midi-channel 2))
                                   (vc (cello :midi-channel 3))))
-                     :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))) 
+                     :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4
+                                         f4 g4 a4 b4 c5)))) 
                      :set-map '((1 (1 1 1 1 1 1 1))
                                 (2 (1 1 1 1 1 1 1))
                                 (3 (1 1 1 1 1 1 1)))
@@ -20614,7 +20618,8 @@
                      :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
                                   (hn (french-horn :midi-channel 2))
                                   (vc (cello :midi-channel 3))))
-                     :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))) 
+                     :set-palette '((1 ((f3 g3 a3 b3 c4 d4
+                                         e4 f4 g4 a4 b4 c5)))) 
                      :set-map '((1 (1 1 1 1 1 1 1))
                                 (2 (1 1 1 1 1 1 1))
                                 (3 (1 1 1 1 1 1 1)))
@@ -20649,7 +20654,9 @@
                                    '(cl hn vc)
                                    '(1 2 3)
                                    :csound-file "/tmp/mini-test.sco"
-                                   :p-fields '((2.0 3.0 4.5) nil (0.5 .3 880 "\"something\"")))
+                                   :p-fields '((2.0 3.0 4.5)
+                                               nil
+                                               (0.5 .3 880 "\"something\"")))
                (probe-delete "/tmp/mini-test.sco")
                ;; NIL
                (write-csound-score mini
@@ -20669,7 +20676,8 @@
                       '+mini+
                       :ensemble '(((pno (piano :midi-channel 1))
                                    (vln (violin :midi-channel 2))))
-                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4 d4 e4 f4 g4 a4 bf4 cs5))))
+                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4
+                                          d4 e4 f4 g4 a4 bf4 cs5))))
                       :set-map '((1 (1 1 1 1 1 1 1))
                                  (2 (1 1 1 1 1 1 1))
                                  (3 (1 1 1 1 1 1 1)))
@@ -20690,16 +20698,25 @@
                                           (vln (1 2 1 2 1 2 1))))))))
               (probe-delete "/tmp/mini.sco")
               (probe-delete "/tmp/mini.wav")
+              ;; RP  Sun Mar  5 15:08:26 2023
+              ;; just test csound-play when Csound is
+              ;; available on the system
               (sc-test-check
-               (csound-play mini
-                            '(pno vln)
-                            '(1 2)
-                            (concatenate
-                             'string
-                             cl-user::+slippery-chicken-home-dir+
-                             "tests/mini-synth.orc")
-                            :sndfile "/tmp/mini.wav"
-                            :comments nil))))
+                (if (probe-file (get-sc-config 'csound-command))
+                    (csound-play mini
+                                 '(pno vln)
+                                 '(1 2)
+                                 (concatenate
+                                  'string
+                                  cl-user::+slippery-chicken-home-dir+
+                                  "tests/mini-synth.orc")
+                                 :sndfile "/tmp/mini.wav"
+                                 :comments nil)
+                    (progn
+                      (format t "test-csound-play: Csound command not found ~
+                               on your system. ~%~
+                               Skipping test-csound-play")
+                      t)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -10525,7 +10525,7 @@ data: (11 15)
                                  (chords t)
                                ;; either NIL, a list of lists, or a function
                                ;; cf. documentation
-                                 (p-fields #'csound-p-fields-simple)                        
+                                 (p-fields #'csound-p-fields-simple)
                                ;; when NIL, all sections are considered
                                  (num-sections nil))
 ;;; ****
@@ -10619,20 +10619,26 @@ data: (11 15)
                                       ;; set values for p1-p3
                                       ;; i.e. instrument, onset, duration
                                       (p1-value (if (numberp instrument)
-                                                    (format nil "i~a" instrument)
-                                                    (format nil "i \"~a\"" instrument)))
+                                                    (format nil
+                                                            "i~a"
+                                                            instrument)
+                                                    (format nil
+                                                            "i \"~a\""
+                                                            instrument)))
                                       (p2-value (+ offset
                                                    (start-time event)))
                                       (p3-value (duration event))
                                       ;; get values for any other p-field
-                                      (p-field-values (cond ((functionp p-fields)
-                                                             (funcall p-fields
-                                                                      event
-                                                                      event-count
-                                                                      instrument))
-                                                            ((listp p-fields)
-                                                             (nth player-i p-fields))
-                                                            (t nil)))
+                                      (p-field-values
+                                        (cond
+                                          ((functionp p-fields)
+                                           (funcall p-fields
+                                                    event
+                                                    event-count
+                                                    instrument))
+                                          ((listp p-fields)
+                                           (nth player-i p-fields))
+                                          (t nil)))
                                       ;; determine the amount of i-statements
                                       ;; (here: pitches) for a chord.
                                       ;; this is necessary, as it is possible
@@ -10641,33 +10647,36 @@ data: (11 15)
                                       ;; the value is set to the max. possible
                                       ;; notes (either the :chord-limit or the
                                       ;; available pitches in a chord)
-                                      (pitches-per-chord (cond
-                                                           ;; when chord size is
-                                                           ;; limited, set the upmost
-                                                           ;; limit either to the length
-                                                           ;; of the chord (if lt) or
-                                                           ;; to the chord-limit
-                                                           ((null actual-chord-length) nil)
-                                                           ((and (numberp chords)
-                                                                 (> actual-chord-length
-                                                                    chords))
-                                                            chords)
-                                                           (t actual-chord-length))))
+                                      (pitches-per-chord
+                                        (cond
+                                          ;; when chord size is
+                                          ;; limited, set the upmost
+                                          ;; limit either to the length
+                                          ;; of the chord (if lt) or
+                                          ;; to the chord-limit
+                                          ((null actual-chord-length) nil)
+                                          ((and (numberp chords)
+                                                (> actual-chord-length
+                                                   chords))
+                                           chords)
+                                          (t actual-chord-length))))
                                  ;; process first chords, then pitches
                                  (if (numberp actual-chord-length)
                                      ;; process the chord note by note
-                                     (loop for i from 0 to (1- pitches-per-chord)
+                                     (loop for i from 0
+                                             to (1- pitches-per-chord)
                                            collect
-                                           (append (list p1-value
-                                                         p2-value
-                                                         p3-value)
-                                                   ;; could be a list of lists (when
-                                                   ;; data is generated by a function)
-                                                   ;; or a one-dimensional list with
-                                                   ;; n-values (cf. documentation)
-                                                   (if (every #'listp p-field-values)
-                                                       (nth i p-field-values)
-                                                       p-field-values)))
+                                           (append
+                                            (list p1-value
+                                                  p2-value
+                                                  p3-value)
+                                            ;; could be a list of lists (when
+                                            ;; data is generated by a function)
+                                            ;; or a one-dimensional list with
+                                            ;; n-values (cf. documentation)
+                                            (if (every #'listp p-field-values)
+                                                (nth i p-field-values)
+                                                p-field-values)))
                                      ;; process a (single) pitch
                                      (list (append (list p1-value
                                                          p2-value
@@ -10707,10 +10716,11 @@ data: (11 15)
                     ;; RP  Mon Feb 20 01:20:51 2023
                     unless (not ins-data)
                       do
-                         (let ((control-string (concatenate 'string
-                                                            "~{~a~^"
-                                                            (string delimiter)
-                                                            "~}~%")))
+                         (let ((control-string (concatenate
+                                                'string
+                                                "~{~a~^"
+                                                (string delimiter)
+                                                "~}~%")))
                            (format stream control-string ins-data))))
       (format stream "~%~%"))
     csound-file))
@@ -10734,8 +10744,8 @@ data: (11 15)
 ;;; - p5: amplitude
 ;;;
 ;;; N.B.: The event-num and cs-instrument arguments are mandatory as they
-;;;       are required by the write-csound-score method, even though they are not
-;;;       used in this function.
+;;;       are required by the write-csound-score method, even though they are
+;;;       not used in this function.
 ;;;
 ;;; ARGUMENTS
 ;;; - An event object (most likely the event currently processed by
@@ -10748,7 +10758,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  21:32:26 Thu Mar  2 2023 CET
+;;; $$ Last modified:  13:57:32 Tue Mar  7 2023 CET
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)
@@ -10814,18 +10824,19 @@ data: (11 15)
 ;;;   soundfile name, is already set per default and should not be included in
 ;;;   this list. For a full list of available arguments, see the Csound-manual.
 ;;;   Default = '("-d" "-W" "-f")
-;;; - :sndfile-suffix. A string to be added just before the file-extension of the
-;;;   generated soundfile. Will be overridden when manually setting the sndfile-
-;;;   path via :sndfile. Default = "".
-;;; - :sndfile-extension. A string specifying the file extension of the soundfile
-;;;   to be generated by the Csound command. This might be altered in case the
-;;;   output format is changed e.g. via :csound-flags. Will be overridden when
-;;;   manually setting the sndfile-path via :sndfile. Default = ".wav".
+;;; - :sndfile-suffix. A string to be added just before the file-extension of
+;;;   the generated soundfile. Will be overridden when manually setting the
+;;;   sndfile-path via :sndfile. Default = "".
+;;; - :sndfile-extension. A string specifying the file extension of the
+;;;   soundfile to be generated by the Csound command. This might be altered
+;;;   in case the output format is changed e.g. via :csound-flags. Will be
+;;;   overridden when manually setting the sndfile-path via :sndfile.
+;;;   Default = ".wav".
 ;;; - :sndfile. A string indicating the path and filename to the soundfile to be
 ;;;   generated with this method. Please bear in mind to alter the suffix if you
-;;;   change the format via :csound-flags. Default is a filename extracted from the
-;;;   title of the sc piece, placed in the (get-sc-config 'default-dir) directory
-;;;   (per default /tmp)
+;;;   change the format via :csound-flags. Default is a filename extracted from
+;;;   the title of the sc piece, placed in the (get-sc-config 'default-dir)
+;;;   directory (per default /tmp).
 ;;; - The other keyword arguments are exactly the same as write-csound-score.
 ;;;   Please see write-csound-score for detailed documentation.
 ;;;
@@ -10906,7 +10917,7 @@ data: (11 15)
                           (from-sequence 1)
                           (num-sequences nil)
                           (chords t)
-                          (p-fields #'csound-p-fields-simple)                        
+                          (p-fields #'csound-p-fields-simple)
                           (num-sections nil))
   ;;; ****
   (let* ((sco-file (write-csound-score sc
@@ -10923,16 +10934,24 @@ data: (11 15)
                                        :chords chords
                                        :p-fields p-fields
                                        :num-sections num-sections))
-         (success (apply #'shell
-                         (append
-                          (list (get-sc-config 'csound-command))
-                          csound-flags
-                          (list "-o"
-                                sndfile
-                                orchestra-file
-                                sco-file)))))
-    (print sco-file)
-    (if (zerop success)
+         ;; RP  Tue Mar  7 12:59:07 2023
+         ;; test if Csound command is available before
+         ;; trying to render the piece
+         (success (if (probe-file (get-sc-config 'csound-command))
+                      (apply #'shell
+                             (append
+                              (list (get-sc-config 'csound-command))
+                              csound-flags
+                              (list "-o"
+                                    sndfile
+                                    orchestra-file
+                                    sco-file)))
+                      (warn "slippery-chicken::csound-play: ~
+                             Csound is not available on your system. ~
+                             Please make sure that the csound binary is ~
+                             correctly installed and (set-sc-config ~
+                             'csound-command ...) is properly set."))))
+    (if success
         sndfile
         (error "slippery-chicken::csound-play: ~
                 Call to Csound failed."))))

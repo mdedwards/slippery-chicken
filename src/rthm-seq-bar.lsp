@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:55:49 Wed Apr 27 2022 CEST
+;;; $$ Last modified:  15:25:40 Sat Mar  4 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5099,32 +5099,31 @@ collect (get-pitch-symbol p)))
 ;;; 
 ;;; EXAMPLE
 #|
-;; Create a rthm-seq-bar object consisting of events and print the contents of ; ; ; ; ; ;
-;; the WRITTEN-PITCH-OR-CHORD slots to see they're set to NIL. Apply the ; ; ; ; ; ;
-;; set-written method with a value of -2 and print the contents of the ; ; ; ; ; ;
-;; WRITTEN-PITCH-OR-CHORD slots to see the data of the newly created pitch ; ; ; ; ; ;
-;; objects. Apply the delete-written method and print the contents of the ; ; ; ; ; ;
-;; WRITTEN-PITCH-OR-CHORD slots to see they're empty. ; ; ; ; ; ;
-  (let ((rsb (make-rthm-seq-bar 
-(list
-'(3 8) 
-(make-event 'cs4 'e)
-(make-event 'cs4 'e)
-(make-event 'cs4 'e)))))
-(print (loop for p in (rhythms rsb)
-collect (written-pitch-or-chord p)))
-(set-written rsb -2)
-(print (loop for p in (rhythms rsb)
-collect (get-pitch-symbol p)))
-(delete-written rsb)
-(print (loop for p in (rhythms rsb)
-collect (written-pitch-or-chord p))))
+;; Create a rthm-seq-bar object consisting of events and print the contents of
+;; the WRITTEN-PITCH-OR-CHORD slots to see they're set to NIL. Apply the
+;; set-written method with a value of -2 and print the contents of the
+;; WRITTEN-PITCH-OR-CHORD slots to see the data of the newly created pitch
+;; objects. Apply the delete-written method and print the contents of the
+;; WRITTEN-PITCH-OR-CHORD slots to see they're empty.
+(let ((rsb (make-rthm-seq-bar 
+            (list
+             '(3 8) 
+             (make-event 'cs4 'e)
+             (make-event 'cs4 'e)
+             (make-event 'cs4 'e)))))
+  (print (loop for p in (rhythms rsb)
+               collect (written-pitch-or-chord p)))
+  (set-written rsb -2)
+  (print (loop for p in (rhythms rsb)
+               collect (get-pitch-symbol p)))
+  (delete-written rsb)
+  (print (loop for p in (rhythms rsb)
+               collect (written-pitch-or-chord p))))
 
-  =>
-  (NIL NIL NIL) 
-  (B3 B3 B3) 
-  (NIL NIL NIL)
-
+=>
+(NIL NIL NIL) 
+(B3 B3 B3) 
+(NIL NIL NIL)
   |#
 ;;; SYNOPSIS
 (defmethod delete-written ((rsb rthm-seq-bar))

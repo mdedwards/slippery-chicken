@@ -186,6 +186,11 @@
      ;; spaces in paths otherwise they won't open in a shell called from lisp 
      (system-open-file-escape-spaces t)
      (autoconvert-eps-to-pdf nil)
+     ;; LF  Thu Mar  30 14:04:33 2023
+     ;; If true, when reaper files are written with #'write-reaper-file,
+     ;; the pathnames to the soundfiles are converted to windows-type paths.
+     ;; If nil, they will be unix-type paths.
+     (reaper-files-for-windows nil)
      ;; RP  Thu Mar  2 19:04:20 2023
      ;; The full path to the Csound command. This is required in order to be
      ;; to use csound-display, i.e. automatically call the Csound command to

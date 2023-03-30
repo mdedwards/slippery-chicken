@@ -139,6 +139,8 @@
   ;; for the project settings
   ((record-path :accessor record-path :type string :initarg :record-path
                 :initform "/tmp/")
+   (samplerate :accessor samplerate :type integer :initarg :samplerate
+	       :initform 44100)
    (time-sig :accessor time-sig :initarg :time-sig :initform '(4 4))
    (tempo :accessor tempo :type number :initarg :tempo :initform 60)
    ;; zoom factor for the time line. At the moment this gives me about 80
@@ -252,7 +254,11 @@
   ;; start: SOFFS, duration: LENGTH
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
           (fade-out ri) (name ri) (start ri) (play-rate  ri)
-          (preserve-pitch ri) (path ri)))
+          (preserve-pitch ri)
+	  (os-format-path (path ri) 
+			  (if (get-sc-config 'reaper-files-for-windows)
+			      'windows
+			      'unix))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod (setf track) :around (track (ri reaper-item))
@@ -275,9 +281,9 @@
 ;;; write the reaper header to a stream using the given slots for project
 ;;; settings 
 (defmethod write-header ((rf reaper-file) stream master-channels)
-  (format stream (header rf) (cursor rf) (zoom rf) (record-path rf) 
-          (bpm (tempo rf)) (num (time-sig rf)) (denom (time-sig rf))
-          master-channels))
+  (format stream (header rf) (cursor rf) (zoom rf) (record-path rf)
+	  (samplerate rf) (samplerate rf) (bpm (tempo rf)) (num (time-sig rf))
+	  (denom (time-sig rf)) master-channels))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod write-footer ((rf reaper-file) stream)
@@ -478,7 +484,7 @@
                      :name (format nil "~a-~a"
                                    (pathname-name path)
                                    (if event (data event) "?"))
-                     :track (format nil "~a-~a" track-base-name
+                     :track (format nil "~a-~3,'0d" track-base-name
                                     (1+ (mod i num-tracks)))
                      :path path
                      :duration dur)

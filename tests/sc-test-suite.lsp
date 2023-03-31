@@ -20185,6 +20185,18 @@
       (equal "=)" (visualize ls2 :scale nil :abs t :y-range 0.5)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF Mon 24 Feb 2023
+
+(sc-deftest test-os-format-path ()
+  (let* ((str1 "/E/samples/kick.wav")
+	 (str2 "E:/samples/kick.wav"))
+    (sc-test-check
+     (equal str1 (os-format-path "/E/samples/kick.wav"))
+     (equal str1 (os-format-path "E:/samples/kick.wav"))
+     (equal str2 (os-format-path "/E/samples/kick.wav" 'windows))
+     (equal str2 (os-format-path "E:/samples/kick.wav" 'windows)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; test write-list-to-coll
 ;;; DJR Tue 18 Feb 2020 15:58:07 GMT
 

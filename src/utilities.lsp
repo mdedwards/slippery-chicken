@@ -6268,4 +6268,58 @@ yes_foo, 1 2 3 4;
     "=)"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/os-format-path
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; March 30th 2023
+;;; 
+;;; DESCRIPTION
+;;; Converts device-names ("/E/", "E:/") according to type
+;;; Windows:  "E:"
+;;; Unix:     "/E/"
+;;; 
+;;; ARGUMENTS
+;;; - a string representing a path
+;;; 
+;;; RETURN VALUE
+;;; - a string representing a path
+;;;
+;;; EXAMPLE
+#|
+(os-format-path "/E/samples/kicks/kick.wav")
+=> "/E/samples/kicks/kick.wav"
+(os-format-path "E:/samples/kicks/kick.wav")
+=> "/E/samples/kicks/kick.wav"
+(os-format-path "/E/samples/kicks/kick.wav" 'windows)
+=> "E:/samples/kicks/kick.wav"
+(os-format-path "E:/samples/kicks/kick.wav" 'windows)
+=> "E:/samples/kicks/kick.wav"
+|#
+;;; SYNOPSIS
+(defun os-format-path (path &optional (type 'unix))
+  (let* ((new-path (substitute #\/ #\: path))
+	 (device (if (char= #\/ (elt path 0))
+		     (second (pathname-directory path))
+		     (format nil "~{~a~}"
+			     (loop with break until break for i from 0 collect
+				  (let ((this (elt path i))
+					(next (elt path (1+ i))))
+				    (when (or (char= #\: next)
+					      (char= #\/ next))
+				      (setf break t))
+				    this)))))
+	 (helper (subseq new-path (1+ (position #\/ new-path :start 1))))
+	 (rest (if (char= #\/ (elt helper 0))
+		   helper
+		   (format nil "/~a" helper))))
+    ;; intering the symbol is nicer when calling this from other packages
+    (case (intern (string type) :sc)
+      ((unix linux) (format nil "/~a~a" device rest))
+      ((or windows test1) (format nil "~a:~a" device rest))
+      ;; if type is unknown, no error but unix type path:
+      (t (format nil "/~a~a" device rest)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

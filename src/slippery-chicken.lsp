@@ -10123,7 +10123,6 @@ data: (11 15)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* slippery-chicken/lp-display
 ;;; DESCRIPTION
-
 ;;; This function has exactly the same arguments as write-lp-data-for all and
 ;;; only differs from that method in that after writing all the Lilypond text
 ;;; files for the score, it calls Lilypond to render the PDF, which is then

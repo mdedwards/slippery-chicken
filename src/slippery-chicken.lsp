@@ -8606,7 +8606,7 @@ NOTE 6200 0.6666667
 ;;; - :start-bar. The bar number to start processing. Default = 1.
 ;;; - :start-bar. The bar number to stop processing (inclusive). Default = NIL =
 ;;;   the last bar.
-;;; - :attacked-only. Whether only to include attacked notes. Default = NIL.
+;;; - :attacked-only. Whether only to include attacked notes. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; two values: the lowest event and the highest event.
@@ -8614,7 +8614,7 @@ NOTE 6200 0.6666667
 ;;; SYNOPSIS
 (defmethod player-ambitus ((sc slippery-chicken) player &key written print
                                                           (start-bar 1) end-bar
-                                                          attacked-only)
+                                                          (attacked-only t))
 ;;; ****
   (let (high low e-high e-low)
     ;; initialize next-event
@@ -10768,7 +10768,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  15:26:38 Thu Apr 27 2023 CEST
+;;; $$ Last modified:  15:38:59 Thu Apr 27 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

@@ -8625,11 +8625,11 @@ NOTE 6200 0.6666667
              (unless (is-rest e)
                (setq e-high (get-pitch-highest e written)
                      e-low (get-pitch-lowest e written))
+               ;; RP  Thu Apr 27 15:23:06 2023
                ;; initialize both values with pitch of first event
                ;; this is necessary as it is not clear at the beginning,
-               ;; whether the pitch marks the loewr or upper boundary
+               ;; whether the pitch marks the lower or upper boundary
                ;; of the range
-               ;; RP  Thu Apr 27 15:23:06 2023
                (when (not high)
                  (setq high e-high
                        low e-low))
@@ -10768,7 +10768,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  15:38:59 Thu Apr 27 2023 CEST
+;;; $$ Last modified:  15:50:14 Thu Apr 27 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

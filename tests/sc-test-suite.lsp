@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:37:27 Tue Mar  7 2023 CET
+;;; $$ Last modified:  16:13:12 Thu Apr 27 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20189,7 +20189,7 @@
 
 (sc-deftest test-os-format-path ()
   (let* ((str1 "/E/samples/kick.wav")
-	 (str2 "E:/samples/kick.wav"))
+         (str2 "E:/samples/kick.wav"))
     (sc-test-check
      (equal str1 (os-format-path "/E/samples/kick.wav"))
      (equal str1 (os-format-path "E:/samples/kick.wav"))
@@ -20729,6 +20729,45 @@
                                on your system. ~%~
                                Skipping test-csound-play")
                       t)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Thu Apr 27 16:05:30 2023
+;;; test-player-ambitus
+
+(sc-deftest test-player-ambitus ()
+            (in-scale :chromatic)
+            (let* ((mini
+                     (make-slippery-chicken
+                      '+mini+
+                      :ensemble '(((pno (piano :midi-channel 1))
+                                   (vln (violin :midi-channel 2))))
+                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4
+                                          d4 e4 f4 g4 a4 bf4 cs5))))
+                      :set-map '((1 (1 1 1 1 1 1 1))
+                                 (2 (1 1 1 1 1 1 1))
+                                 (3 (1 1 1 1 1 1 1)))
+                      :tempo-map '((1 (q 60)))
+                      :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                              :pitch-seq-palette ((1 (2) 3))))
+                                          (2 ((((4 4) (q) e (s) s h))
+                                              :pitch-seq-palette ((1 2 3))))
+                                          (3 ((((4 4) e (s) s h (q)))
+                                              :pitch-seq-palette ((2 3 3))))
+                                          (4 ((((4 4) (s) s h (q) e))
+                                              :pitch-seq-palette ((3 1 (2))))))
+                      :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
+                                          (vln (1 2 1 2 1 2 1))))
+                                      (2 ((pno (3 4 3 4 3 4 3))
+                                          (vln (3 4 3 4 3 4 3))))
+                                      (3 ((pno (1 2 1 2 1 2 1))
+                                          (vln (1 2 1 2 1 2 1))))))))
+              (sc-test-check
+               (multiple-value-bind (low high)
+                   (player-ambitus mini 'vln
+                                   :start-bar 3
+                                   :end-bar 3)
+                 (and (eq 'b3 (data low))
+                      (eq 'a4 (data high)))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

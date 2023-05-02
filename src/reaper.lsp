@@ -22,21 +22,7 @@
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    January 21st 2021
-;;;;;; RETURN VALUE
-;;; the edited string of the entire reaper file
 ;;;
-;;; EXAMPLE
-#|
-;;; insert the angle-env value of a sndfile as an envelope on track 1 of 
-;;; project.rpp and give it the duration of the sndfile.
-(let ((snd (make-sndfile "/E/sound.wav" :angle-env '(0 0 1 1 2 .5))))
-  (insert-envelope (read-file "/E/project.rpp")
-		   (make-reaper-envelope (angle-env snd)
-					 :env-type 'parmenv
-					 :parameter-slot 6)
-		   1 0 (duration snd)))
-|#
-;;; SYNOPSIS
 ;;; $$ Last modified:  21:08:09 Mon Oct  3 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
@@ -68,25 +54,16 @@
 
 ;; load a regex library
 ;; TODO: what if no quickload?
-;; out it in "src/all.lsp"
+;; load it in "src/all.lsp"
 ;;(ql:quickload "cl-ppcre")
 
 ;; this is the (partially binary) data for the respective plugin, as it appears
 ;; in a reaper project file:
+;; should this be moved to globals??
 (defparameter *iem-stereo-encoder*
   (read-file (file-from-sc-dir "src/iem-stereo-encoder.txt")))
 (defparameter *blue-ripple-decoder*
   (read-file (file-from-sc-dir "src/blue-ripple.txt")))
-
-#|
-;; only thouch these if you know what you're doing:
-(defparameter *spatial-reaper-tempo* 60)
-;; if nil - use individual-duration
-;; if > 0 - set every env to this duration :duration t
-;; if < 0 - end at (abs) of this time :end-times nil
-(defparameter *spatial-reaper-duration*  nil)
-(defparameter *spatial-reaper-use-starts* nil)
-|#
 
 #|
 ;;; one simple way of algorithmically generating a reaper file:

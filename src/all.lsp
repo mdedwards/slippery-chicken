@@ -46,6 +46,7 @@
 #+sbcl (require :sb-bsd-sockets)
 #+sbcl (require :sb-posix)
 #+sbcl (unlock-package "COMMON-LISP")
+(ql:quickload "cl-ppcre")
 
 (defparameter +slippery-chicken-version+ "1.0.12")
 

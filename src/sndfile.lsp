@@ -68,6 +68,11 @@
    ;; this is a scaler that will be used in with-sound calls, if wanted.
    (amplitude :accessor amplitude :initarg :amplitude 
               :initform 1.0)
+   ;; optional spatialisation data:
+   (angle-env :accessor angle-env :type list :initarg :angle-env
+	      :initform '(0 .5  100 .5))
+   (elevation-env :accessor elevation-env :type list :initarg :elevation-env
+		  :initform '(0 .5  100 .5))
    ;; some sounds have a prominent fundamental which can be used for
    ;; transposing to specific pitches.  Give this here either in the form of a
    ;; real freq or a note, which will then be converted.
@@ -535,7 +540,9 @@ data: /path/to/sndfile-1.aiff
 ;;; SYNOPSIS
 (defun make-sndfile (path &key id data duration end (start 0.0)
                      (frequency nil)
-                     (amplitude 1.0))
+	             (amplitude 1.0)
+	             (angle-env '(0 .5  100 .5))
+		     (elevation-env '(0 .5  100 .5)))
 ;;; **** 
   (if (and path (listp path))
       (progn
@@ -565,7 +572,8 @@ data: /path/to/sndfile-1.aiff
           sf))
       (make-instance 'sndfile :id id :data data :path path :duration duration
                      :frequency frequency :end end :start start
-                     :amplitude amplitude)))
+                     :amplitude amplitude
+		     :angle-env angle-env :elevation-env elevation-env)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

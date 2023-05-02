@@ -1,0 +1,6 @@
+"    <FXCHAIN
+      WNDRECT 23 51 924 544
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >"

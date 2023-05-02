@@ -1,0 +1,8 @@
+      <~a
+        EGUID ~a
+        ACT 1 -1
+        VIS 1 1 1
+        LANEHEIGHT 0 0
+        ARM 1
+        DEFSHAPE 0 -1 -1~{~&        ~a ~}
+      >

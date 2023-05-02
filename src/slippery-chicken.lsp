@@ -8606,30 +8606,41 @@ NOTE 6200 0.6666667
 ;;; - :start-bar. The bar number to start processing. Default = 1.
 ;;; - :start-bar. The bar number to stop processing (inclusive). Default = NIL =
 ;;;   the last bar.
+;;; - :attacked-only. Whether only to include attacked notes. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; two values: the lowest event and the highest event.
 ;;; 
 ;;; SYNOPSIS
 (defmethod player-ambitus ((sc slippery-chicken) player &key written print
-                                                          (start-bar 1) end-bar)
+                                                          (start-bar 1) end-bar
+                                                          (attacked-only t))
 ;;; ****
-  
   (let (high low e-high e-low)
-    (next-event sc player nil start-bar)
-    (loop for e = (next-event sc player t nil end-bar)
-       while e do
-         (unless (is-rest e)
-           (setq e-high (get-pitch-highest e written)
-                 e-low (get-pitch-lowest e written))
-           ;; (print (data e-high))
-           (if (or (not high) (pitch> e-high high))
-               (setq high e-high)
-               (when (or (not low) (pitch< e-low low))
-                 (setq low e-low)))))
+    ;; initialize next-event
+    (next-event sc player attacked-only start-bar)
+    (loop for e = (next-event sc player attacked-only nil end-bar)
+          while e
+          do
+             (unless (is-rest e)
+               (setq e-high (get-pitch-highest e written)
+                     e-low (get-pitch-lowest e written))
+               ;; RP  Thu Apr 27 15:23:06 2023
+               ;; initialize both values with pitch of first event
+               ;; this is necessary as it is not clear at the beginning,
+               ;; whether the pitch marks the lower or upper boundary
+               ;; of the range
+               (when (not high)
+                 (setq high e-high
+                       low e-low))
+               (if (pitch> e-high high)
+                   (setq high e-high)
+                   (when (pitch< e-low low)
+                     (setq low e-low)))))
     (when print
       (format t "~&~a: low: ~a high: ~a" player (data low) (data high)))
     (values low high)))
+  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Aug  5 18:09:57 2017 -- 
@@ -10123,7 +10134,6 @@ data: (11 15)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* slippery-chicken/lp-display
 ;;; DESCRIPTION
-
 ;;; This function has exactly the same arguments as write-lp-data-for all and
 ;;; only differs from that method in that after writing all the Lilypond text
 ;;; files for the score, it calls Lilypond to render the PDF, which is then
@@ -10758,7 +10768,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  13:57:32 Tue Mar  7 2023 CET
+;;; $$ Last modified:  15:50:14 Thu Apr 27 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

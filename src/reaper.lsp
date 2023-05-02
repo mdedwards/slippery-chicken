@@ -22,7 +22,21 @@
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    January 21st 2021
+;;;;;; RETURN VALUE
+;;; the edited string of the entire reaper file
 ;;;
+;;; EXAMPLE
+#|
+;;; insert the angle-env value of a sndfile as an envelope on track 1 of 
+;;; project.rpp and give it the duration of the sndfile.
+(let ((snd (make-sndfile "/E/sound.wav" :angle-env '(0 0 1 1 2 .5))))
+  (insert-envelope (read-file "/E/project.rpp")
+		   (make-reaper-envelope (angle-env snd)
+					 :env-type 'parmenv
+					 :parameter-slot 6)
+		   1 0 (duration snd)))
+|#
+;;; SYNOPSIS
 ;;; $$ Last modified:  21:08:09 Mon Oct  3 2022 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
@@ -51,8 +65,6 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :slippery-chicken)
-
-;; TODO: init-volume auf 1??
 
 ;; load a regex library
 ;; TODO: what if no quickload?
@@ -126,19 +138,16 @@
           :initform "reaper-lisp")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Leon Focker:
-;;; like sndfile, but with envelopes for elevation and angle
-;;; ****c* sndfile/spatial-sndfile
+;;; LF <2023-05-02 Tu>
 (defclass reaper-envelope (sclist)
-  ;; the string that will be printed in the reaper file
-  (;;(reaper-automation-data :accessor reaper-automation-data :initform nil)
-   (env-type :accessor env-type :initform 'volume :initarg :env-type)
+  ((env-type :accessor env-type :initform 'volume :initarg :env-type)
    (parameter-slot :accessor parameter-slot :type integer
 		   :initarg :parameter-slot :initform 0)
    (parameter-min :accessor parameter-min :initarg :parameter-min :type number
 		  :initform 0)
    (parameter-max :accessor parameter-max :initarg :parameter-max :type number
 		  :initform 1)
+   ;; the string that will be printed in the reaper file
    (env-string :accessor env-string :type string :initarg :env-string
 	      :initform (read-file (file-from-sc-dir "src/reaper-env.txt")))))
 
@@ -305,31 +314,10 @@
 			      'unix))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; write a reaper-envelope object into a string that can be printed into a
-;;; reaper file.
-;;; start-time and end-time are - obviously - when the envelope will start and
-;;; end. TODO: tempo or seconds??
-(defun write-reaper-envelope-aux (env-type)
-  (case env-type
-    ((volume-pre volume-pre-fx vol-pre vol-pre-fx)
-     "VOLENV")
-    ((volume vol) "VOLENV2")
-    ((volume-trim trim-volume vol-trim trim-vol)
-     "VOLENV3")
-    ((panning-pre panning-pre-fx pan-pre pan-pre-fx)
-     "PANENV")
-    ((panning pan) "PANENV2")
-    ((width-pre with-pre-fx) "WIDTHENV")
-    (width "WIDTHENV2")
-    (mute "MUTEENV")
-    (tempo "TEMPOENVEX")
-    ((auxvolume auxvol aux-volume aux-vol)
-     "AUXVOLENV")
-    ((auxpanning auxpan aux-panning aux-pan)
-     "AUXPANENV")
-    ((auxmute aux-mute) "AUXMUTEENV")
-    (t "PARMENV")))
-
+;;; LF <2023-05-02 Tu>
+;;; write a reaper-envelope object into a stream to be inserted into a reaper
+;;; file. start-time and end-time are - obviously - when the envelope will start
+;;; and end in seconds within the reaper-file.
 (defmethod write-reaper-envelope ((env reaper-envelope) stream start-time end-time)
   (format stream (env-string env)
 	  (format nil
@@ -524,17 +512,16 @@
                                  keyargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; generate string with random numbers in style:
-;; "{B1E049E1-FA47-6E73-1EEE-C0817D973E48}"
+;;; LF <2023-05-02 Tu>
+;;; generate string with random numbers in style:
+;;; "{B1E049E1-FA47-6E73-1EEE-C0817D973E48}"
 (defun generate-reaper-id ()
   (format nil "{~8,'0x-~4,'0x-~4,'0x-~4,'0x-~12,'0x}"
 	  (random (expt 16 8)) (random (expt 16 4)) (random (expt 16 4))
 	  (random (expt 16 4)) (random (expt 16 12))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Modulo for envelope curves, using linear interpolation to create
-;; intermedeate points.
-;; TODO: DOC
+;;; for use in env-mod
 (defun env-mod-aux (last-x last-y x y min max)
   (let* ((yfloordiff (- (floor y) (floor last-y)))
 	 (pos? (> yfloordiff 0))
@@ -544,12 +531,20 @@
        for mult = 2 then 1
        for until-crossing = (+ i (if pos? (- 1 (mod last-y 1)) (mod last-y 1)))
        for test = (= 0 until-crossing)
-       for new-x = (+ last-x (abs (* (/ until-crossing ydiff) xdiff)))
+       for new-x = (rationalize
+		    (+ last-x (abs (* (/ until-crossing ydiff) xdiff))))
        unless test collect new-x unless test collect
 	 (rescale (if pos? .9999999 0) 0 1 min max #'error #'rationalize)
        collect (+ new-x (* .00001 mult)) collect
 	 (rescale (if pos? 0 .9999999) 0 1 min max #'error #'rationalize))))
-       
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF <2023-05-02 Tu>
+;;; Tries to apply the modulo operation in envelope-lists. Of course we can't
+;;; just take the modulo of all y values, because then an envelope like
+;;; '(0 0  1 2) would lose all meaning -> '(0 0  1 0)
+;;; Instead it should be '(0 0  1 2) -> '(0 0  .5 0.999999  .50001 0  1 .999999)
+;;; env-mod tries to achieve that.
 (defun env-mod (envelope &optional (min 0) (max 1))
   (unless (listp envelope)
     (error "envelope in env-mod should be a list but is ~a" envelope))
@@ -565,15 +560,15 @@
       do (setf last-x x last-y y))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF <2023-05-02 Tu>
 ;;; parse the data from a reaper-envelope object into reaper automation
-;;; data (string)
-(defun generate-automation-data (env start-time end-time)
+;;; data (string), apply env-mod.
+(defun generate-automation-data (reaper-envelope start-time end-time)
   (let* ((dur (- end-time start-time))
-	 (env-ls (env-mod (data env)))
+	 (env-ls (env-mod (data reaper-envelope)))
 	 (env-len (loop for x in env-ls by #'cddr finally (return x)))
-	 ;;(len (rational (* dur (/ *spatial-reaper-tempo* 60))))
-	 (min (parameter-min env))
-	 (max (parameter-max env))
+	 (min (parameter-min reaper-envelope))
+	 (max (parameter-max reaper-envelope))
 	 points)
     (setf points
 	  (loop for x in env-ls by #'cddr and y in (cdr env-ls) by #'cddr
@@ -584,20 +579,84 @@
     points))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun is-parmenv (env-type)
-  (some #'(lambda (x) (equal env-type x))
-	'(volume volume-pre-fx trim-volume pan pan-pre-fx width width-pre-fx
-	  mute tempo aux-volume aux-pan aux-mute parmenv parm-env)))
+;;; Return the right term for env-type
+(defun write-reaper-envelope-aux (env-type)
+  (case env-type
+    ((volume-pre volume-pre-fx vol-pre vol-pre-fx)
+     "VOLENV")
+    ((volume vol) "VOLENV2")
+    ((volume-trim trim-volume vol-trim trim-vol)
+     "VOLENV3")
+    ((panning-pre panning-pre-fx pan-pre pan-pre-fx)
+     "PANENV")
+    ((panning pan) "PANENV2")
+    ((width-pre with-pre-fx) "WIDTHENV")
+    (width "WIDTHENV2")
+    (mute "MUTEENV")
+    (tempo "TEMPOENVEX")
+    ((auxvolume auxvol aux-volume aux-vol)
+     "AUXVOLENV")
+    ((auxpanning auxpan aux-panning aux-pan)
+     "AUXPANENV")
+    ((auxmute aux-mute) "AUXMUTEENV")
+    (t "PARMENV")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; env-type can be one of: volume, volume-pre-fx, trim-volume, pan, pan-pre-fx,
-;;; width, width-pre-fx, mute, tempo, aux-volume, aux-pan, aux-mute or parmenv.
-;;; Any other type will create a parameter-env (parmenv), which is an envelope
-;;; for a parameter in a plugin, which is determined by parameter-slot.
+;;; check, wheter env-type specifies a parameter-env (parmenv)
+(defun is-parmenv (env-type)
+  (equal "PARMENV" (write-reaper-envelope-aux env-type)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/make-reaper-envelope
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; April 30th 2023.
+;;;
+;;; DESCRIPTION
+;;; make a reaper-envelope object.
+;;; 
+;;; ARGUMENTS
+;;; - a list which represents an envelope, meaning it consists of x and y values
+;;; For example: '(0 0  50 1  100 .5)
+;;; Usually the first x value would be 0, all following x values should be
+;;; ascending numbers. The length of the envelope (meaning the value of the last
+;;; x value isn't important here)
+;;; Note that if you use generate-automation-data on the resulting
+;;; reaper-envelope object, y values will range from 0 to 1. The env list can
+;;; obviously have y values greater than that, but those will be reduced
+;;; modulo 1 (see env-mod). An envelope like '(0 0 1 3) would then result in
+;;; something like this:
+;;; '(0 0 1/3 .9999999 (+ 1/3 .001) 0 2/3 .9999999 (+ 2/3 .001) 0 1.0 .9999999)
+;;; :parameter-min and :parameter-max are applied after that operation.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :env-type. A symbol. Wheter this envelope controls a plugin ('parmenv) or
+;;; another parameter of a track. Valid options are:
+;;; volume volume-pre-fx trim-volume pan pan-pre-fx width width-pre-fx mute tempo
+;;; aux-volume aux-pan aux-mute parmenv...
+;;; Any symbol that isn't recognized will create a 'parmenv.
+;;; :parameter-slot. A positive integer. When env-type is 'parmenv, this
+;;; determines which parameter of the plugin the envelope controls. Open reaper
+;;; and the plugin and then count the automatable parameters to find out which
+;;; one you want. For example, the angle-parameter for the iem stereo encoder is
+;;; the 6th.
+;;; :parameter-min. The minimm value the envelope will have in reaper. Usually
+;;; it is 0 but for example for panorama it could be -1. This is less important
+;;; :parameter-max. The maximum value the envelope will have in reaper. Usually
+;;; it is 1 but for example for volume it could be 2. This is less important.
+;;;
+;;; RETURN VALUE
+;;; the envelope-object
 (defun make-reaper-envelope (env &key (env-type 'volume)
 				   parameter-slot
 				   parameter-min
 				   parameter-max)
+  (unless (and (listp env) (= 0 (mod (length env) 2)))
+    (error "env in make-reaper-envelope is either not a list or malformed: ~&~a"
+	   env))
   (setf env-type (intern (string env-type) :sc))
   (unless (is-parmenv env-type)
     (warn "env-type ~a not supported, set to parmenv" env-type)
@@ -612,13 +671,13 @@
      (unless parameter-max (setf parameter-max 1))))
   (make-instance 'reaper-envelope
 		 :data env
-		 ;;:reaper-automation-data (generate-automation-data env)
 		 :env-type env-type
 		 :parameter-slot parameter-slot
 		 :parameter-min parameter-min
 		 :parameter-max parameter-max))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF <2023-05-02 Tu>
 ;;; write the neccessary plugin data for reaper to a stream
 (defun write-plugin (plugin-binary-string stream)
   (format stream
@@ -759,8 +818,26 @@
     items))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; every soundfile gets its own track, start-times are given individually in
-;; start-times. Start-times are looped, if list is shorter than sndfiles
+;;; ****f* utilities/make-reaper-items4
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; April 30th 2023.
+;;;
+;;; DESCRIPTION
+;;; make-reaper-items but every sndfile gets its own track and start-times are
+;;; given individually. 
+;;; 
+;;; ARGUMENTS
+;;; - a list of sndfiles
+;;; - a list of start-times for the sndfiles within the reaper project. If this
+;;; list is shorter than sndfiles it is looped.
+;;; 
+;;; RETURN VALUE
+;;; a list of reaper-items
+;;;
+;;; SYNOPSIS
 (defun make-reaper-items4 (sndfiles &optional (start-times '(0)))
   (let ((items (apply #'make-reaper-items-aux
 			      (list sndfiles nil 0.0
@@ -1123,23 +1200,8 @@ Here's where I pasted the data into the .RPP Reaper file:
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; "POST GENERATIONAL EDITING OF REAPER FILES"
-;; SPATIAL REAPER
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Editing files on disk:
-
-;; wrapper for the post-generational editing functions below
-;; file is the path to the .rpp file you want to edit
-;; var can be any symbol, the same symbol must be put in the "string" argument
-;; of the editing functions in body
-(defmacro edit-file (file var &body body)
-  `(let* ((,var (read-file ,file)))
-     (setf ,@(loop for i in `,body collect `,var collect i))
-     (with-open-file 
-	      (out ,file :direction :output :if-exists :rename-and-delete)
-	    (princ ,var out))
-     (format t "~&succesfully edited ~a" ,file)))
+;;; LF <2023-05-02 Tu>
+;;; see and use the edit-file macro to use the following functions in a nice way
 
 (defun set-master-channels (string &optional (number-of-master-channels 16))
   (let* ((scan (ppcre:create-scanner "MASTER_NCH [0-9]+")))
@@ -1154,15 +1216,48 @@ Here's where I pasted the data into the .RPP Reaper file:
 				     number-of-track-channels))))
 
 (defun set-all-faders (string &optional (set-to .5))
-  (let* ((scan (ppcre:create-scanner "AUTOMODE ..{2,6}?VOLPAN [0-9]+?\[.]?[0-9]*"
-				     :single-line-mode t)))
+  (let* ((scan (ppcre:create-scanner
+		"AUTOMODE ..{2,6}?VOLPAN [0-9]+?\[.]?[0-9]*"
+		:single-line-mode t)))
     (ppcre:regex-replace-all scan string
 			     (format nil "AUTOMODE 0~&    VOLPAN ~a"
 				     set-to))))
 
-;;; TODO DOC
-;;; track-nr 0 is master
-;;; pre nil - insert after other plugins, t - before other plugins
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* reaper/insert-envelope
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; April 30th 2023.
+;;; 
+;;; DESCRIPTION
+;;; get the string of a reaper file and rewrite it, so that a given plugin is
+;;; inserted into the project in a given place.
+;;; 
+;;; ARGUMENTS
+;;; - the string of the project file you want to edit
+;;; - the binary string of the plugin you want to insert. The easiest way of
+;;; obtaining this is probably by copying it from a reaper file that you created
+;;; manually (create a reaper project file and load the plugin, the open the
+;;; file with a text editor and find and copy the string <VST ..... >.
+;;; See "slippery-chicken/src/iem-stereo-encoder.txt" for an example).
+;;; - the number of the track, that the envelope is to be inserted (master is 0)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - if the plugin is to be inserted before all others (t) or after all other
+;;; plugins already on the track (nil)
+;;; 
+;;; RETURN VALUE
+;;; the edited string of the entire reaper file
+;;;
+;;; EXAMPLE
+#|
+;;; insert the blue ripple binaural ambisonics decoder on the master track of 
+;;; project.rpp
+(insert-plugin (read-file "/E/project.rpp") *blue-ripple-decoder* 0 t)
+|#
+;;; SYNOPSIS
 (defun insert-plugin (string plugin-binary-string track-nr &optional (pre nil))
   (unless (stringp string)
     (error "string in insert-plugin must be a string but is: ~a" string))
@@ -1232,12 +1327,45 @@ Here's where I pasted the data into the .RPP Reaper file:
       (when track (write-string track out))
       (write-string string out :start track-end))))
 
-;;; TODO DOC
-;;; reaper-envelope must be a reaper-envelope object.
-;;; TODO: make master trackvisible when env
-;;; TODO: function to change name to first item on track
-;;; TODO: insert on track by name
-;;; TODO: Master-non-parmenvs have different names (mastervol2)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: make master track visible when it gets an envelope
+;;; todo: function to change name to first item on track
+;;; todo: insert on track by name
+;;; todo: Master envelopes except parmenvs have different names (eg. mastervol2)
+;;;
+;;; ****f* reaper/insert-envelope
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; April 30th 2023.
+;;; 
+;;; DESCRIPTION
+;;; get the string of a reaper file and rewrite it, so that a given envelope is
+;;; inserted into the project in a given place.
+;;; 
+;;; ARGUMENTS
+;;; - the string of the project file you want to edit
+;;; - the reaper-envelope object that you want to insert into the reaper project
+;;; - the number of the track, that the envelope is to be inserted (master is 0)
+;;; - the time in seconds at which the first point of the envelope will be
+;;; - the time in seconds at which the last point of the envelope will be
+;;; 
+;;; RETURN VALUE
+;;; the edited string of the entire reaper file
+;;;
+;;; EXAMPLE
+#|
+;;; insert the angle-env value of a sndfile as an envelope on track 1 of 
+;;; project.rpp and give it the duration of the sndfile.
+(let ((snd (make-sndfile "/E/sound.wav" :angle-env '(0 0 1 1 2 .5))))
+  (insert-envelope (read-file "/E/project.rpp")
+		   (make-reaper-envelope (angle-env snd)
+					 :env-type 'parmenv
+					 :parameter-slot 6)
+		   1 0 (duration snd)))
+|#
+;;; SYNOPSIS
 (defun insert-envelope (string reaper-envelope track-nr start-time end-time)
   (unless (stringp string)
     (error "string in insert-envelope must be a string but is: ~a" string))
@@ -1300,14 +1428,6 @@ Here's where I pasted the data into the .RPP Reaper file:
       (write-string string out :end track-start)
       (when track (write-string track out))
       (write-string string out :start track-end))))
-
-;; EXAMPLE
-#|
-(edit-file "/E/test.rpp" any-variable-name
-  (set-track-channels any-variable-name 16)
-  (set-all-faders any-variable-name .2))
-|#
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; todo: what about multichannel input files?
@@ -1449,7 +1569,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 	  (setf temp-string
 		(insert-envelope
 		 temp-string
-		 (make-reaper-envelope (print (angle-env snd))
+		 (make-reaper-envelope (angle-env snd)
 				       :env-type 'parmenv
 				       :parameter-slot angle-parameter-slot)
 		 i
@@ -1457,13 +1577,13 @@ Here's where I pasted the data into the .RPP Reaper file:
 		 end))
 	  (setf temp-string
 		(insert-envelope
-			  temp-string
-			  (make-reaper-envelope (elevation-env snd)
-						:env-type 'parmenv
-						:parameter-slot elevation-parameter-slot)
-			  i
-			  start
-			  end))
+		 temp-string
+		 (make-reaper-envelope (elevation-env snd)
+				       :env-type 'parmenv
+				       :parameter-slot elevation-parameter-slot)
+		 i
+		 start
+		 end))
 	finally (return temp-string)))
     file))
 

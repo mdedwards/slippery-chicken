@@ -3543,6 +3543,86 @@ WARNING:
 (defun read-from-default-dir-file (file)
   (read-from-file (concatenate 'string (get-sc-config 'default-dir) file)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/read-file
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; April 30th 2023.
+;;;
+;;; DESCRIPTION
+;;; Read an entire file (not just an s-expression) a into string and return it
+;;; 
+;;; ARGUMENTS
+;;; - A string that is the path to a file (directory and filename)
+;;; 
+;;; RETURN VALUE
+;;; A string with the contents of the file
+;;; 
+;;; EXAMPLE
+#|
+(read-from-file "/path/to/lisp-lorem-ipsum.txt")
+|#
+;;; SYNOPSIS
+(defun read-file (infile)
+  (with-open-file (instream infile :direction :input :if-does-not-exist nil)
+    (when instream 
+      (let ((string (make-string (file-length instream))))
+        (read-sequence string instream)
+        string))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/edit-file
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; April 30th 2023.
+;;;
+;;; DESCRIPTION
+;;; a simple wrapper to open a file as a string and save it into a lexical
+;;; variable. This variable is then set to the return values of the expressions
+;;; within the body of edit-file. Eventually the new value of the variable is
+;;; written into the original file. This was originally designed to be used with
+;;; the editing functions in reaper.lsp (set-track-channels etc.).
+;;; 
+;;; ARGUMENTS
+;;; - A string that is the path to a file (directory and filename)
+;;; - A name for the lexical variable - this can be used within body
+;;; (without quote)
+;;; 
+;;; RETURN VALUE
+;;; whatever was written into the file
+;;; 
+;;; EXAMPLE
+#|
+;;; set all faders of project.rpp to 0.5 and use "anything" as lexical variable
+(edit-file "/E/project.rpp" anything
+      (set-all-faders anything .5))
+|#
+#|
+;;; more complex: insert a plugin on 3 tracks in two ways
+(edit-file "/E/project.rpp" project
+  (insert-plugin project *iem-stereo-encoder* 1)
+  (insert-plugin project *iem-stereo-encoder* 2)
+  (insert-plugin project *iem-stereo-encoder* 3))
+;;; alternatively:
+(edit-file "/E/project.rpp" project
+  (loop for i from 1 to 3 with temp-var = project
+     do (setf temp-var (insert-plugin temp-var *iem-stereo-encoder* i))
+       finally (return temp-var)))
+|#
+;;; SYNOPSIS
+(defmacro edit-file (file var &body body)
+  `(let* ((,var (read-file ,file)))
+     (setf ,@(loop for i in `,body collect `,var collect i))
+     (with-open-file 
+	      (out ,file :direction :output :if-exists :rename-and-delete)
+	    (princ ,var out))
+     (format t "~&succesfully edited ~a" ,file)
+     ,var))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon May  7 22:47:10 BST 2012: Added robodoc entry
@@ -5533,6 +5613,8 @@ RETURNS:
 ;;; the range of arguments two and three. This would normally be #'error,
 ;;; #'warn or NIL. If #'warn or NIL, argument 1 will be hard-limited to the
 ;;; original range. Default = #'error
+;;; :type-of-result. Usually this function uses float precision, but by setting
+;;; type-of-result to #'double-float or #'rationalize, it is more precise.
 ;;; 
 ;;; RETURN VALUE
 ;;; The value within the new range (a number)
@@ -5543,7 +5625,8 @@ RETURNS:
 ==> 50.0
 |#
 ;;; SYNOPSIS
-(defun rescale (val min max new-min new-max &optional (out-of-range #'error))
+(defun rescale (val min max new-min new-max &optional (out-of-range #'error)
+					      (type-of-result #'float))
 ;;; ****
   (flet ((oor () ; in case we need to call it on more than one occasion...
            (when (functionp out-of-range)
@@ -5559,9 +5642,9 @@ RETURNS:
                  (<= val max))
       (oor)
       (setf val (if (> val max) max min)))
-    (let* ((range1 (float (- max min)))
-           (range2 (float (- new-max new-min)))
-           (prop (float (/ (- val min) range1))))
+    (let* ((range1 (funcall type-of-result (- max min)))
+           (range2 (funcall type-of-result (- new-max new-min)))
+           (prop (funcall type-of-result (/ (- val min) range1))))
       (+ new-min (* prop range2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6194,9 +6277,10 @@ yes_foo, 1 2 3 4;
 		   (t (helper selector
 			      (cdr ls1)
 			      (+ index 1)
-			      (+ sum (car ls1)))))))
-    (helper (rescale selector 0 1 0 (loop for i in weights sum i))
-	    (cdr weights) 0 (car weights))))
+			      (+ sum (rationalize (car ls1))))))))
+    (helper (rescale (rationalize selector) 0 1 0 (loop for i in weights sum
+						       (rationalize i)))
+	    (cdr weights) 0 (rationalize (car weights)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/visualize

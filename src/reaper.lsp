@@ -295,7 +295,10 @@
 ;;; write a reaper-envelope object into a stream to be inserted into a reaper
 ;;; file. start-time and end-time are - obviously - when the envelope will start
 ;;; and end in seconds within the reaper-file.
-(defmethod write-reaper-envelope ((env reaper-envelope) stream start-time end-time)
+(defmethod write-reaper-envelope ((env reaper-envelope)
+				  stream
+				  start-time
+				  end-time)
   (format stream (env-string env)
 	  (format nil
 		  (if (is-parmenv (env-type env)) "~a ~a ~a ~a" "~a ~a ~a")
@@ -319,8 +322,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; write all items in a track to a reaper stream, using the tstring as template
 (defmethod write-track ((rt reaper-track) stream)
-  (format stream (tstring rt) (string-downcase (string (id rt))) (track-volume rt)
-	  (channels rt))
+  (format stream (tstring rt) (string-downcase (string (id rt)))
+	  (track-volume rt) (channels rt))
   (loop for item in (data rt) do (write-item item stream))
   (format stream "~&  >"))
 
@@ -472,7 +475,7 @@
       (write-footer rf out))
     outfile))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -627,10 +630,13 @@
 ;;;
 ;;; RETURN VALUE
 ;;; the envelope-object
+;;;
+;;; SYNOPSIS
 (defun make-reaper-envelope (env &key (env-type 'volume)
 				   parameter-slot
 				   parameter-min
 				   parameter-max)
+;;; ****
   (unless (and (listp env) (= 0 (mod (length env) 2)))
     (error "env in make-reaper-envelope is either not a list or malformed: ~&~a"
 	   env))
@@ -816,6 +822,7 @@
 ;;;
 ;;; SYNOPSIS
 (defun make-reaper-items4 (sndfiles &optional (start-times '(0)))
+;;; ****
   (let ((items (apply #'make-reaper-items-aux
 			      (list sndfiles nil 0.0
 				    :num-tracks (length sndfiles)
@@ -1036,7 +1043,8 @@
                               :file reaper-file)
         ;; if :reaper-file is nil just return the reaper-file object so that
         ;; e.g. more tracks can be added
-        (create-tracks rf :min-channels min-channels :max-channels max-channels))))
+        (create-tracks rf :min-channels min-channels
+		       :max-channels max-channels))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a couple of old routines. todo: These could/should be updated to write into
@@ -1236,6 +1244,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 |#
 ;;; SYNOPSIS
 (defun insert-plugin (string plugin-binary-string track-nr &optional (pre nil))
+;;; ****
   (unless (stringp string)
     (error "string in insert-plugin must be a string but is: ~a" string))
   (unless (numberp track-nr)
@@ -1344,13 +1353,14 @@ Here's where I pasted the data into the .RPP Reaper file:
 |#
 ;;; SYNOPSIS
 (defun insert-envelope (string reaper-envelope track-nr start-time end-time)
+;;; ****
   (unless (stringp string)
     (error "string in insert-envelope must be a string but is: ~a" string))
   (unless (numberp track-nr)
     (error "track-nr in insert-envelope must be a number but is: ~a" track-nr))
   (unless (equal 'reaper-envelope (type-of reaper-envelope))
-    (error "reaper-envelope in insert-envelope must be a reaper-envelope object ~
-            but is: ~a" reaper-envelope))
+    (error "reaper-envelope in insert-envelope must be a reaper-envelope ~
+            object but is: ~a" reaper-envelope))
   (let* ((master? (>= 0 track-nr))
 	 (parmenv? (is-parmenv (env-type reaper-envelope)))
 	 (envelope-string (write-reaper-envelope
@@ -1498,6 +1508,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 				    (envs-use-start-times t)
 				    (envs-use-end-times t)
 				    envs-duration)
+;;; ****
   ;; sanity checks:
   (unless (every #'(lambda (x) (equal 'sndfile (type-of x))) list-of-sndfiles)
     (error "list-of-sndfile is indeed not a list of sndfiles but: ~a"

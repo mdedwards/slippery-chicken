@@ -3566,6 +3566,7 @@ WARNING:
 |#
 ;;; SYNOPSIS
 (defun read-file (infile)
+;;; ****
   (with-open-file (instream infile :direction :input :if-does-not-exist nil)
     (when instream 
       (let ((string (make-string (file-length instream))))
@@ -3615,6 +3616,7 @@ WARNING:
 |#
 ;;; SYNOPSIS
 (defmacro edit-file (file var &body body)
+;;; ****
   `(let* ((,var (read-file ,file)))
      (setf ,@(loop for i in `,body collect `,var collect i))
      (with-open-file 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:05:33 Tue Feb  7 2023 CET
+;;; $$ Last modified:  14:09:39 Thu May  4 2023 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -741,6 +741,7 @@
 |#
 ;;; SYNOPSIS
 (defun get-primes (min max &optional num)
+;;; ****  
   (let ((result '()))
     (loop with count = 0 for i from min to max
           do
@@ -783,7 +784,6 @@
 ;;; ****
   (unless (zerop float) ; would cause division-by-zero error
     (whole-num-p (log float 2))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/nearest-power-of-2
@@ -6188,15 +6188,16 @@ yes_foo, 1 2 3 4;
 |#
 ;;; SYNOPSIS
 (defun decider (selector weights)
+;;; ****  
   (labels ((helper (selector ls1 index sum)
-	     (cond ((null ls1) (1- (length weights)))
-		   ((< selector sum) index)
-		   (t (helper selector
-			      (cdr ls1)
-			      (+ index 1)
-			      (+ sum (car ls1)))))))
+             (cond ((null ls1) (1- (length weights)))
+                   ((< selector sum) index)
+                   (t (helper selector
+                              (cdr ls1)
+                              (+ index 1)
+                              (+ sum (car ls1)))))))
     (helper (rescale selector 0 1 0 (loop for i in weights sum i))
-	    (cdr weights) 0 (car weights))))
+            (cdr weights) 0 (car weights))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/visualize
@@ -6229,42 +6230,45 @@ yes_foo, 1 2 3 4;
 #|
 (visualize (loop repeat 64 for i from 0 by 0.1 collect (sin i)))
 (visualize (loop repeat 128 for i from 0 by 0.1 collect (sin i)) :start 64)
-(visualize (loop repeat 128 for i from 0 by 0.1 collect (* (sin i) 2)) :scale nil :start 96)
-(visualize (loop repeat 55 for i from 0 by 0.1 collect (* (sin i) 2)) :scale nil :abs t :y-range 1)
+(visualize (loop repeat 128 for i from 0 by 0.1 collect (* (sin i) 2))
+   :scale nil :start 96)
+(visualize (loop repeat 55 for i from 0 by 0.1 collect (* (sin i) 2))
+   :scale nil :abs t :y-range 1)
 |#
 ;;; SYNOPSIS
 (defun visualize (ls &key y-range (start 0) abs (scale t))
+;;; ****
   (when (arrayp ls)
     (setf ls (loop for i across ls collect i)))
   (when abs (setf ls (loop for i in ls collect (abs i))))
   (let* ((matrix (make-array '(64 17) :initial-element 0.0))
-	 (maxi (apply #'max (mapcar #'abs ls)))
-	 (y-range (if y-range y-range
-		      (if (= maxi 0) 1 maxi)))
-	 (len (length ls))
-	 (size (if (or scale (>= (- len start) 64)) 64 (- len start))))
+         (maxi (apply #'max (mapcar #'abs ls)))
+         (y-range (if y-range y-range
+                      (if (= maxi 0) 1 maxi)))
+         (len (length ls))
+         (size (if (or scale (>= (- len start) 64)) 64 (- len start))))
     (loop for i from start below (+ size start) do
-	 (loop for j below 17 do
-	      (if (= (round (+ (* (/ (nth (mod (floor
-						(+ start
-						   (if scale
-						       (* (/ i size)
-							  (- len start))
-						       i)))
-					       len)
-					  ls)
-				     y-range)
-				  8 (if abs 2 1))
-			       (* 8 (if abs 0 1))))
-		     j)
-		  (setf (aref matrix (- i start) j) 1)
-		  (setf (aref matrix (- i start) j) 0))))
+         (loop for j below 17 do
+              (if (= (round (+ (* (/ (nth (mod (floor
+                                                (+ start
+                                                   (if scale
+                                                       (* (/ i size)
+                                                          (- len start))
+                                                       i)))
+                                               len)
+                                          ls)
+                                     y-range)
+                                  8 (if abs 2 1))
+                               (* 8 (if abs 0 1))))
+                     j)
+                  (setf (aref matrix (- i start) j) 1)
+                  (setf (aref matrix (- i start) j) 0))))
     (loop for j downfrom 16 to 0 do
-	 (print (apply 'concatenate 'string
-		       (loop for i below 64 collect
-			    (if (= (aref matrix i j)  1)
-				"_"
-				" ")))))
+         (print (apply 'concatenate 'string
+                       (loop for i below 64 collect
+                            (if (= (aref matrix i j)  1)
+                                "_"
+                                " ")))))
     "=)"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6299,21 +6303,22 @@ yes_foo, 1 2 3 4;
 |#
 ;;; SYNOPSIS
 (defun os-format-path (path &optional (type 'unix))
+;;; ****  
   (let* ((new-path (substitute #\/ #\: path))
-	 (device (if (char= #\/ (elt path 0))
-		     (second (pathname-directory path))
-		     (format nil "~{~a~}"
-			     (loop with break until break for i from 0 collect
-				  (let ((this (elt path i))
-					(next (elt path (1+ i))))
-				    (when (or (char= #\: next)
-					      (char= #\/ next))
-				      (setf break t))
-				    this)))))
-	 (helper (subseq new-path (1+ (position #\/ new-path :start 1))))
-	 (rest (if (char= #\/ (elt helper 0))
-		   helper
-		   (format nil "/~a" helper))))
+         (device (if (char= #\/ (elt path 0))
+                     (second (pathname-directory path))
+                     (format nil "~{~a~}"
+                             (loop with break until break for i from 0 collect
+                                  (let ((this (elt path i))
+                                        (next (elt path (1+ i))))
+                                    (when (or (char= #\: next)
+                                              (char= #\/ next))
+                                      (setf break t))
+                                    this)))))
+         (helper (subseq new-path (1+ (position #\/ new-path :start 1))))
+         (rest (if (char= #\/ (elt helper 0))
+                   helper
+                   (format nil "/~a" helper))))
     ;; intering the symbol is nicer when calling this from other packages
     (case (intern (string type) :sc)
       ((unix linux) (format nil "/~a~a" device rest))

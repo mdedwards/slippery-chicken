@@ -6,9 +6,10 @@
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./robodoc.css" type="text/css" />
-<title>./../../src/time-sig.lsp</title>
+<script src="./robodoc.js"></script>
+<title>time-sig.lsp</title>
 <!-- Source: ./../../src/time-sig.lsp -->
-<!-- Generated with ROBODoc Version 4.99.43 (Oct  1 2016) -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
 </head>
 <script type=text/javascript src=../head-foot.js></script>
 <body>
@@ -32,15 +33,15 @@
 
 
 <a name="linked2dnamed2dobject2ftime2dsig"></a>
-<a name="robo286"></a><h2 class=robodoc>linked-named-object/time-sig [ Classes ]</h2>
+<a name="robo291"></a><h2 class=robodoc>linked-named-object/time-sig [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo292">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>time-sig</strong>
 
  File:             <a href="#robo_top_of_doc">time-sig.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo590">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo292">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo283">sclist</a> -&gt; <strong>time-sig</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; <strong>time-sig</strong>
 
  Version:          1.0.12
 
@@ -54,35 +55,35 @@
 
  Creation date:    12th February 2001
 
- $$ Last modified:  16:54:19 Thu Sep 24 2020 CEST
+ $$ Last modified:  11:04:26 Fri Apr 29 2022 CEST
 
  SVN ID: $Id$
 </pre>
 
 
 <a name="time2dsig2fbeat2dduration"></a>
-<a name="robo847"></a><h2 class=robodoc>time-sig/beat-duration [ Methods ]</h2>
+<a name="robo868"></a><h2 class=robodoc>time-sig/beat-duration [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo291">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the duration in seconds of one beat of the given time-signature at a
- <a href="./tempo_lsp.html#robo285">tempo</a> of quarter=60.
+ <a href="./tempo_lsp.html#robo290">tempo</a> of quarter=60.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo286">time-sig</a> object.
+<pre> - A <a href="#robo291">time-sig</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A number.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Beat duration in seconds for time-signature 2/4 at quarter=60
-(let ((ts (<a href="#robo851">make-time-sig</a> '(2 4))))
+(let ((ts (<a href="#robo872">make-time-sig</a> '(2 4))))
   (<strong>beat-duration</strong> ts))
 
 =&gt; 1.0
 
 ;; Beat duration in seconds for 6/8 at quarter=60
-(let ((ts (<a href="#robo851">make-time-sig</a> '(6 8))))
+(let ((ts (<a href="#robo872">make-time-sig</a> '(6 8))))
   (<strong>beat-duration</strong> ts))
 
 =&gt; 1.5
@@ -93,14 +94,14 @@
 
 
 <a name="time2dsig2fget2dbeat2das2drhythm"></a>
-<a name="robo848"></a><h2 class=robodoc>time-sig/get-beat-as-rhythm [ Methods ]</h2>
+<a name="robo869"></a><h2 class=robodoc>time-sig/get-beat-as-rhythm [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo291">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the beat unit of a given <a href="#robo286">time-sig</a> object and return it as a <a href="./rhythm_lsp.html#robo282">rhythm</a>.
+<pre> Get the beat unit of a given <a href="#robo291">time-sig</a> object and return it as a <a href="./rhythm_lsp.html#robo287">rhythm</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo286">time-sig</a> object.
+<pre> - A <a href="#robo291">time-sig</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether to consider the beat of a compound meter to  
@@ -109,11 +110,11 @@
    (such as Q. for 6/8). NIL = denominator. Default = NIL. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./rhythm_lsp.html#robo282">rhythm</a> object.
+<pre> A <a href="./rhythm_lsp.html#robo287">rhythm</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Returns a <a href="./rhythm_lsp.html#robo282">rhythm</a> object
-(let ((ts (<a href="#robo851">make-time-sig</a> '(2 4))))
+<pre class="source">;; Returns a <a href="./rhythm_lsp.html#robo287">rhythm</a> object
+(let ((ts (<a href="#robo872">make-time-sig</a> '(2 4))))
   (<strong>get-beat-as-rhythm</strong> ts))
 
 =&gt; 
@@ -129,14 +130,14 @@ data: 4
 
 ;; Default for compound meters is to return the denominator of the time
 ;; signature 
-(let ((ts (<a href="#robo851">make-time-sig</a> '(6 8))))
+(let ((ts (<a href="#robo872">make-time-sig</a> '(6 8))))
   (data (<strong>get-beat-as-rhythm</strong> ts)))
 
 =&gt; 8
 
 ;; Setting the optional argument to T returns the compound beat of a compound
 ;; meter rather than the denominator of the time signature
-(let ((ts (<a href="#robo851">make-time-sig</a> '(6 8))))
+(let ((ts (<a href="#robo872">make-time-sig</a> '(6 8))))
   (data (<strong>get-beat-as-rhythm</strong> ts t)))
 
 =&gt; Q.
@@ -147,37 +148,37 @@ data: 4
 
 
 <a name="time2dsig2fget2dwhole2dbar2drest"></a>
-<a name="robo849"></a><h2 class=robodoc>time-sig/get-whole-bar-rest [ Methods ]</h2>
+<a name="robo870"></a><h2 class=robodoc>time-sig/get-whole-bar-rest [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo291">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create an <a href="./event_lsp.html#robo418">event</a> object consisting of a rest equal in duration to one full
- bar of the given <a href="#robo286">time-sig</a> object.
+<pre> Create an <a href="./event_lsp.html#robo426">event</a> object consisting of a rest equal in duration to one full
+ bar of the given <a href="#robo291">time-sig</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo286">time-sig</a> object.
+<pre> - A <a href="#robo291">time-sig</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns an <a href="./event_lsp.html#robo418">event</a> object.
+<pre> Returns an <a href="./event_lsp.html#robo426">event</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Returns an <a href="./event_lsp.html#robo418">event</a> object
-(let ((ts (<a href="#robo851">make-time-sig</a> '(2 4))))
+<pre class="source">;; Returns an <a href="./event_lsp.html#robo426">event</a> object
+(let ((ts (<a href="#robo872">make-time-sig</a> '(2 4))))
   (<strong>get-whole-bar-rest</strong> ts))
 
 =&gt; 
 EVENT: start-time: NIL, end-time: NIL, 
-       duration-in-<a href="./tempo_lsp.html#robo285">tempo</a>: 0.0, 
-       compound-duration-in-<a href="./tempo_lsp.html#robo285">tempo</a>: 0.0, 
+       duration-in-<a href="./tempo_lsp.html#robo290">tempo</a>: 0.0, 
+       compound-duration-in-<a href="./tempo_lsp.html#robo290">tempo</a>: 0.0, 
        amplitude: 0.7 
        bar-num: -1, marks-before: NIL, 
-       <a href="./tempo_lsp.html#robo285">tempo</a>-change: NIL 
-       <a href="./instrument_lsp.html#robo279">instrument</a>-change: NIL 
-       display-<a href="./tempo_lsp.html#robo285">tempo</a>: NIL, start-time-qtrs: -1, 
+       <a href="./tempo_lsp.html#robo290">tempo</a>-change: NIL 
+       <a href="./instrument_lsp.html#robo284">instrument</a>-change: NIL 
+       display-<a href="./tempo_lsp.html#robo290">tempo</a>: NIL, start-time-qtrs: -1, 
        midi-time-sig: NIL, midi-program-changes: NIL, 
        8va: 0
-       <a href="./pitch_lsp.html#robo280">pitch</a>-or-<a href="./chord_lsp.html#robo593">chord</a>: NIL
-       written-<a href="./pitch_lsp.html#robo280">pitch</a>-or-<a href="./chord_lsp.html#robo593">chord</a>: NIL
+       <a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo606">chord</a>: NIL
+       written-<a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo606">chord</a>: NIL
 RHYTHM: value: 2.000, duration: 2.000, rq: 2, is-rest: T, 
         score-rthm: 2.0f0, undotted-value: 2, num-flags: 0, num-dots: 0, 
         is-tied-to: NIL, is-tied-from: NIL, compound-duration: 2.000, 
@@ -188,13 +189,13 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: 2, tag: NIL, 
 data: 2
 
-;; The rhythmic value of the <a href="./event_lsp.html#robo418">event</a> object returned is equal to the rhythmic
+;; The rhythmic value of the <a href="./event_lsp.html#robo426">event</a> object returned is equal to the rhythmic
 ;; duration of a full bar in the given time signature, the PITCH-OR-CHORD slot
 ;; is set to NIL, and the IS-REST slot is set to T.
-(let* ((ts (<a href="#robo851">make-time-sig</a> '(2 4)))
+(let* ((ts (<a href="#robo872">make-time-sig</a> '(2 4)))
        (tswbr (<strong>get-whole-bar-rest</strong> ts)))
   (print (value tswbr))
-  (print (<a href="./pitch_lsp.html#robo280">pitch</a>-or-<a href="./chord_lsp.html#robo593">chord</a> tswbr))
+  (print (<a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo606">chord</a> tswbr))
   (print (is-rest tswbr)))
 
 =&gt;
@@ -208,29 +209,29 @@ T
 
 
 <a name="time2dsig2fis2dcompound"></a>
-<a name="robo850"></a><h2 class=robodoc>time-sig/is-compound [ Methods ]</h2>
+<a name="robo871"></a><h2 class=robodoc>time-sig/is-compound [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo291">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determine whether the value of a given <a href="#robo286">time-sig</a> object is a compound time
+<pre> Determine whether the value of a given <a href="#robo291">time-sig</a> object is a compound time
  signature. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo286">time-sig</a> object.
+<pre> - A <a href="#robo291">time-sig</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> T if the value of the given <a href="#robo286">time-sig</a> object is a compound time signature,
+<pre> T if the value of the given <a href="#robo291">time-sig</a> object is a compound time signature,
  otherwise NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Testing a <a href="#robo286">time-sig</a> object with a 2/4 time signature returns NIL
-(let ((ts (<a href="#robo851">make-time-sig</a> '(2 4))))
+<pre class="source">;; Testing a <a href="#robo291">time-sig</a> object with a 2/4 time signature returns NIL
+(let ((ts (<a href="#robo872">make-time-sig</a> '(2 4))))
   (<strong>is-compound</strong> ts))
 
 =&gt; NIL
 
-;; Testing a <a href="#robo286">time-sig</a> object with a 6/8 time signature returns T
-(let ((ts (<a href="#robo851">make-time-sig</a> '(6 8))))
+;; Testing a <a href="#robo291">time-sig</a> object with a 6/8 time signature returns T
+(let ((ts (<a href="#robo872">make-time-sig</a> '(6 8))))
   (<strong>is-compound</strong> ts))
 
 =&gt; T
@@ -241,11 +242,11 @@ T
 
 
 <a name="time2dsig2fmake2dtime2dsig"></a>
-<a name="robo851"></a><h2 class=robodoc>time-sig/make-time-sig [ Functions ]</h2>
+<a name="robo872"></a><h2 class=robodoc>time-sig/make-time-sig [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">time-sig</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo291">time-sig</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo286">time-sig</a> object. In addition to the numerator and denominator
+<pre> Create a <a href="#robo291">time-sig</a> object. In addition to the numerator and denominator
  values, the object also stores other automatically calculated information,
  such as whether the signature is simple or compound, the duration of one
  bar of the given time signature in seconds, the number of midi-clocks, etc. 
@@ -255,14 +256,14 @@ T
    beats per measure), the second being the denominator (beat type). 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - A <a href="#robo286">time-sig</a> object.
+<pre> - A <a href="#robo291">time-sig</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>make-time-sig</strong> '(2 4))
 
 =&gt; 
 TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, num-beats: 2
-SCLIST: <a href="./sclist_lsp.html#robo283">sclist</a>-length: 2, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 2, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: "0204", tag: NIL, 
 data: (2 4)
@@ -273,16 +274,16 @@ data: (2 4)
 
 
 <a name="time2dsig2fmake2dtime2dsig2dfrom2dduration"></a>
-<a name="robo852"></a><h2 class=robodoc>time-sig/make-time-sig-from-duration [ Functions ]</h2>
+<a name="robo873"></a><h2 class=robodoc>time-sig/make-time-sig-from-duration [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">time-sig</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo291">time-sig</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> This tries to <a href="./wolfram_lsp.html#robo952">generate</a> a reasonable time signature from a given duration in
- seconds. Will not do anything sophisticated like decide <a href="./utilities_lsp.html#robo869">between</a> simple and
+<pre> This tries to <a href="./wolfram_lsp.html#robo983">generate</a> a reasonable time signature from a given duration in
+ seconds. Will not do anything sophisticated like decide <a href="./utilities_lsp.html#robo891">between</a> simple and
  compound times.
  
  This will usually result in a numerator &gt;= 2, but tt's not always easy to
- decide on the best <a href="#robo286">time-sig</a>, e.g. 2/8 is usually preferable to 1/4, but
+ decide on the best <a href="#robo291">time-sig</a>, e.g. 2/8 is usually preferable to 1/4, but
  1/16 is better than 2/32. Hence there's a call to a routine that
  substitutes less-preferable for more-preferable time-sigs.
 </pre>
@@ -290,33 +291,39 @@ data: (2 4)
 <pre> - a duration in seconds
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - the <a href="./tempo_lsp.html#robo285">tempo</a>. This will be used to convert the first argument to quarter
-   notes  
+<pre> - the <a href="./tempo_lsp.html#robo290">tempo</a>. This will be used to convert the first argument to quarter
+   notes
+ - overrides. Pairwise list of preferred time signatures, where equivalents
+   can be found (e.g. 3/8 and 6/16). See example below and
+   get-preferred-<a href="#robo291">time-sig</a> 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="#robo286">time-sig</a> object
+<pre> a <a href="#robo291">time-sig</a> object
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>make-time-sig-from-duration</strong> 2) -&gt; 2/4
 (<strong>make-time-sig-from-duration</strong> 1.75) -&gt; 7/16
+(<strong>make-time-sig-from-duration</strong> 1.5) -&gt; 3/8
+(<strong>make-time-sig-from-duration</strong> 1.5 60 '(((6 16) (3 8)))) -&gt; 6/16
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>make-time-sig-from-duration</strong> (dur-secs
                                     &amp;optional 
-                                    (<a href="./tempo_lsp.html#robo285">tempo</a> 60.0))
+                                      (<a href="./tempo_lsp.html#robo290">tempo</a> 60.0)
+                                      overrides)
 </pre>
 
 
 <a name="time2dsig2fscale"></a>
-<a name="robo853"></a><h2 class=robodoc>time-sig/scale [ Methods ]</h2>
+<a name="robo874"></a><h2 class=robodoc>time-sig/scale [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo291">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Scale the value of the given <a href="#robo286">time-sig</a> object by a specified <a href="./utilities_lsp.html#robo884">factor</a>.
+<pre> Scale the value of the given <a href="#robo291">time-sig</a> object by a specified <a href="./utilities_lsp.html#robo908">factor</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo286">time-sig</a> object.
- - A number (scaling <a href="./utilities_lsp.html#robo884">factor</a>).
+<pre> - A <a href="#robo291">time-sig</a> object.
+ - A number (scaling <a href="./utilities_lsp.html#robo908">factor</a>).
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether or not to preserve the meter by maintaining 
@@ -324,36 +331,36 @@ data: (2 4)
    preserve the meter. Default = T. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo286">time-sig</a> object.
+<pre> A <a href="#robo291">time-sig</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Scaling a (2 4) <a href="#robo286">time-sig</a> object by 3 creates a new <a href="#robo286">time-sig</a> object with a
+<pre class="source">;; Scaling a (2 4) <a href="#robo291">time-sig</a> object by 3 creates a new <a href="#robo291">time-sig</a> object with a
 ;; value of 6/4 
-(let ((ts (<a href="#robo851">make-time-sig</a> '(2 4))))
+(let ((ts (<a href="#robo872">make-time-sig</a> '(2 4))))
   (<strong>scale</strong> ts 3))
 
 =&gt; 
 TIME-SIG: num: 6, denom: 4, duration: 6.0, compound: NIL, midi-clocks: 24, num-beats: 6
-SCLIST: <a href="./sclist_lsp.html#robo283">sclist</a>-length: 2, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 2, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: "0604", tag: NIL, 
 data: (6 4)
 
-;; Scaling a (2 4) <a href="#robo286">time-sig</a> object by 2 by default preserves the meter
-(let ((ts (<a href="#robo851">make-time-sig</a> '(2 4))))
+;; Scaling a (2 4) <a href="#robo291">time-sig</a> object by 2 by default preserves the meter
+(let ((ts (<a href="#robo872">make-time-sig</a> '(2 4))))
   (data (<strong>scale</strong> ts 2)))
 
 =&gt; (2 2)
 
-;; Scaling a (2 4) <a href="#robo286">time-sig</a> object by 2 with the optional argument set to NIL
+;; Scaling a (2 4) <a href="#robo291">time-sig</a> object by 2 with the optional argument set to NIL
 ;; changes the meter and results in a 4/4
-(let ((ts (<a href="#robo851">make-time-sig</a> '(2 4))))
+(let ((ts (<a href="#robo872">make-time-sig</a> '(2 4))))
   (data (<strong>scale</strong> ts 2 nil)))
 
 =&gt; (4 4)
 
-;; Halving the value of a <a href="#robo286">time-sig</a> object is achieved using a <a href="./utilities_lsp.html#robo884">factor</a> of .5
-(let ((ts (<a href="#robo851">make-time-sig</a> '(2 4))))
+;; Halving the value of a <a href="#robo291">time-sig</a> object is achieved using a <a href="./utilities_lsp.html#robo908">factor</a> of .5
+(let ((ts (<a href="#robo872">make-time-sig</a> '(2 4))))
   (data (<strong>scale</strong> ts .5)))
 
 =&gt; (2 8)
@@ -365,18 +372,18 @@ data: (6 4)
 
 
 <a name="time2dsig2ftime2dsig2dequal"></a>
-<a name="robo854"></a><h2 class=robodoc>time-sig/time-sig-equal [ Methods ]</h2>
+<a name="robo875"></a><h2 class=robodoc>time-sig/time-sig-equal [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo291">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determine whether the values of two given <a href="#robo286">time-sig</a> objects are the same. If
+<pre> Determine whether the values of two given <a href="#robo291">time-sig</a> objects are the same. If
  they are identical in signature, return T; if they are different signatures
  but have the same duration (e.g. 2/4, 4/8, 8/16 etc.) return
  TIME-SIG-EQUAL-DURATION; otherwise return NIL.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo286">time-sig</a> object.
- - A second <a href="#robo286">time-sig</a> object.
+<pre> - A first <a href="#robo291">time-sig</a> object.
+ - A second <a href="#robo291">time-sig</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns T if the time signatures are identical; returns
@@ -385,22 +392,22 @@ data: (6 4)
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Two identical signatures return T
-(let ((ts1 (<a href="#robo851">make-time-sig</a> '(2 4)))
-      (ts2 (<a href="#robo851">make-time-sig</a> '(2 4))))
+(let ((ts1 (<a href="#robo872">make-time-sig</a> '(2 4)))
+      (ts2 (<a href="#robo872">make-time-sig</a> '(2 4))))
   (<strong>time-sig-equal</strong> ts1 ts2))
 
 =&gt; T
 
 ;; Two different signatures of the same duration return TIME-SIG-EQUAL-DURATION 
-(let ((ts1 (<a href="#robo851">make-time-sig</a> '(2 4)))
-      (ts2 (<a href="#robo851">make-time-sig</a> '(4 8))))
+(let ((ts1 (<a href="#robo872">make-time-sig</a> '(2 4)))
+      (ts2 (<a href="#robo872">make-time-sig</a> '(4 8))))
   (<strong>time-sig-equal</strong> ts1 ts2))
 
 =&gt; TIME-SIG-EQUAL-DURATION
 
 ;; Two completely different signatures return NIL
-(let ((ts1 (<a href="#robo851">make-time-sig</a> '(2 4)))
-      (ts2 (<a href="#robo851">make-time-sig</a> '(3 4))))
+(let ((ts1 (<a href="#robo872">make-time-sig</a> '(2 4)))
+      (ts2 (<a href="#robo872">make-time-sig</a> '(3 4))))
   (<strong>time-sig-equal</strong> ts1 ts2))
 
 =&gt; NIL
@@ -411,8 +418,7 @@ data: (6 4)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/time-sig.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Thu Feb 25 2021 17:24:22
-</p>
+<p>Generated from ./../../src/time-sig.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
 </div> <!-- footer -->
 </body>
 </html>

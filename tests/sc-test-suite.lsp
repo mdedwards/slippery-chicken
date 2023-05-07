@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:13:12 Thu Apr 27 2023 CEST
+;;; $$ Last modified:  19:04:54 Sun May  7 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20768,6 +20768,37 @@
                                    :end-bar 3)
                  (and (eq 'b3 (data low))
                       (eq 'a4 (data high)))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Sun May  7 18:53:47 2023
+;;; test-event-list-to-csound-score
+
+(sc-deftest test-event-list-to-csound-score ()
+            (let* ((rthms '(q e s s q e s te fs))
+                   (notes '(c4 d4 e4 f4))
+                   (notes-len (length notes))
+                   (events (events-update-time
+                            (loop
+                              for rthm in rthms
+                              for i from 0
+                              collect
+                              (make-event (nth (mod i notes-len)
+                                               notes)
+                                          rthm
+                                          :midi-channel (1+ (mod i 3)))))))
+              (probe-delete "/tmp/test.sco")
+              (sc-test-check
+               (event-list-to-csound-score events
+                                           '(1 2)
+                                           '("ins1" "ins2")
+                                           :csound-file "/tmp/test.sco")
+               (probe-delete "/tmp/test.sco")
+               (event-list-to-csound-score events
+                                           nil
+                                           '(1)
+                                           :csound-file "/tmp/test.sco"))))
+                                           
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

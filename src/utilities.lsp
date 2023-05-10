@@ -3544,7 +3544,7 @@ WARNING:
   (read-from-file (concatenate 'string (get-sc-config 'default-dir) file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/read-file
+;;; ****f* utilities/read-file-as-string
 ;;; AUTHOR
 ;;; Leon Focker: leon@leonfocker.de
 ;;;
@@ -3565,7 +3565,7 @@ WARNING:
 (read-from-file "/path/to/lisp-lorem-ipsum.txt")
 |#
 ;;; SYNOPSIS
-(defun read-file (infile)
+(defun read-file-as-string (infile)
 ;;; ****
   (with-open-file (instream infile :direction :input :if-does-not-exist nil)
     (when instream 
@@ -3617,7 +3617,7 @@ WARNING:
 ;;; SYNOPSIS
 (defmacro edit-file (file var &body body)
 ;;; ****
-  `(let* ((,var (read-file ,file)))
+  `(let* ((,var (read-file-as-string ,file)))
      (setf ,@(loop for i in `,body collect `,var collect i))
      (with-open-file 
 	      (out ,file :direction :output :if-exists :rename-and-delete)

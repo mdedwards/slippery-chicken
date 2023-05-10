@@ -52,18 +52,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :slippery-chicken)
 
-;; load a regex library
-;; TODO: what if no quickload?
-;; load it in "src/all.lsp"
-;;(ql:quickload "cl-ppcre")
-
-;; this is the (partially binary) data for the respective plugin, as it appears
-;; in a reaper project file:
-;; should this be moved to globals??
-(defparameter *iem-stereo-encoder*
-  (read-file (file-from-sc-dir "src/iem-stereo-encoder.txt")))
-(defparameter *blue-ripple-decoder*
-  (read-file (file-from-sc-dir "src/blue-ripple.txt")))
+;; this is a property list that holds the (partially binary) data for the
+;; the respective plugins, as it appears in a reaper project file:
+(defparameter *plugins-for-reaper*
+  `(:iem-stereo-encoder
+    ,(read-file-as-string (file-from-sc-dir "src/iem-stereo-encoder.txt"))
+    :iem-multi-encoder
+    ,(read-file-as-string (file-from-sc-dir "src/iem-multi-encoder.txt"))
+    :iem-binaural-decoder
+    ,(read-file-as-string (file-from-sc-dir "src/iem-binaural-decoder.txt"))
+    :iem-simple-decoder
+    ,(read-file-as-string (file-from-sc-dir "src/iem-simple-decoder.txt"))
+    :iem-allra-decoder
+    ,(read-file-as-string (file-from-sc-dir "src/iem-allra-decoder.txt"))
+    :blue-ripple-decoder
+    ,(read-file-as-string (file-from-sc-dir "src/blue-ripple.txt"))))
 
 #|
 ;;; one simple way of algorithmically generating a reaper file:
@@ -102,6 +105,11 @@
    ;; no transposition on stretch?
    (preserve-pitch :accessor preserve-pitch :type boolean
                    :initarg :preserve-pitch :initform t)
+   ;; the output start-time (in seconds, in a reaper file) NB the input file
+   ;; start time is the start slot of the sndfile class (in reaper the SOFFS
+   ;; line)  
+   (start-time :accessor start-time :type number :initarg :start-time
+               :initform 0.0)
    ;; the name visible in the reaper item: by default the sndfile name--as this
    ;; might be used for several objects we shouldn't use the named-object ID
    ;; slot, which is generally but not necesssarily unique (e.g. if used in
@@ -126,7 +134,8 @@
 		  :initform 1)
    ;; the string that will be printed in the reaper file
    (env-string :accessor env-string :type string :initarg :env-string
-	      :initform (read-file (file-from-sc-dir "src/reaper-env.txt")))))
+	       :initform (read-file-as-string (file-from-sc-dir
+					       "src/reaper-env.txt")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a holder for reaper-items that will all be placed on a single user-named
@@ -1240,13 +1249,16 @@ Here's where I pasted the data into the .RPP Reaper file:
 #|
 ;;; insert the blue ripple binaural ambisonics decoder on the master track of 
 ;;; project.rpp
-(insert-plugin (read-file "/E/project.rpp") *blue-ripple-decoder* 0 t)
+(insert-plugin (read-file-as-string "/E/project.rpp") *blue-ripple-decoder* 0 t)
 |#
 ;;; SYNOPSIS
 (defun insert-plugin (string plugin-binary-string track-nr &optional (pre nil))
 ;;; ****
   (unless (stringp string)
     (error "string in insert-plugin must be a string but is: ~a" string))
+  (unless (stringp plugin-binary-string)
+    (error "plugin-binary-string in insert-plugin must be a string but is: ~a"
+	   plugin-binary-string))
   (unless (numberp track-nr)
     (error "track-nr in insert-plugin must be a number but is: ~a" track-nr))
   (let* ((master? (>= 0 track-nr))
@@ -1345,7 +1357,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; insert the angle-env value of a sndfile as an envelope on track 1 of 
 ;;; project.rpp and give it the duration of the sndfile.
 (let ((snd (make-sndfile "/E/sound.wav" :angle-env '(0 0 1 1 2 .5))))
-  (insert-envelope (read-file "/E/project.rpp")
+  (insert-envelope (read-file-as-string "/E/project.rpp")
 		   (make-reaper-envelope (angle-env snd)
 					 :env-type 'parmenv
 					 :parameter-slot 6)
@@ -1501,8 +1513,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 				    (ambi-order 3)
 				    (tempo 60)
 				    (init-volume .2511)
-				    (encoder *iem-stereo-encoder*)
-				    (decoder *blue-ripple-decoder*)
+				    (encoder :iem-stereo-encoder)
+				    (decoder :blue-ripple-decoder)
 				    (angle-parameter-slot 6)
 				    (elevation-parameter-slot 7)
 				    (envs-use-start-times t)
@@ -1544,7 +1556,7 @@ Here's where I pasted the data into the .RPP Reaper file:
     (format t "~&succesfully wrote ~a" file)
     ;; edit the file
     (edit-file file string
-      (insert-plugin string decoder 0 t)
+      (insert-plugin string (getf *plugins-for-reaper* decoder) 0 t)
      (loop for i from 1 and snd in list-of-sndfiles
 	 with temp-string = string
 	 for start = (if envs-use-start-times
@@ -1553,7 +1565,9 @@ Here's where I pasted the data into the .RPP Reaper file:
 	 for end = (if envs-duration (+ start envs-duration)
 			  (if envs-use-end-times (+ start (duration snd))
 			      max-time))
-	do (setf temp-string (insert-plugin temp-string encoder i))
+	do (setf temp-string (insert-plugin temp-string
+					    (getf *plugins-for-reaper* encoder)
+					    i))
 	  (setf temp-string
 		(insert-envelope
 		 temp-string
@@ -1575,4 +1589,5 @@ Here's where I pasted the data into the .RPP Reaper file:
 	finally (return temp-string)))
     file))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF

@@ -197,7 +197,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; load the ppcre library from /src/ppcre/
+;; load the ppcre library (https://edicl.github.io/cl-ppcre/) from /src/ppcre/
 (asdf:load-asd
  (merge-pathnames "ppcre/cl-ppcre.asd" +slippery-chicken-src-path+))
 (asdf:load-system :cl-ppcre)

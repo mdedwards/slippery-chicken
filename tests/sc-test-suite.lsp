@@ -20291,7 +20291,7 @@ est)")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-11 Do>
-;;; this happens after test-reaper so recycle the reaper-test files
+;;; this happens after test-reaper to recycle the reaper-test files
 (sc-deftest test-utilities-edit-file ()
   (sc-test-check
     (edit-file "/tmp/reaper-test.rpp" str "this is a test :)")

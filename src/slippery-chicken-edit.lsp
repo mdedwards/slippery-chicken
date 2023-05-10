@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  09:52:07 Sun Jun 26 2022 CEST
+;;; $$ Last modified:  14:12:34 Thu May  4 2023 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7801,7 +7801,8 @@ NIL
 ;;; 
 ;;; SYNOPSIS
 (defmethod delete-tempi ((sc slippery-chicken) &optional start-bar end-bar
-                         players)
+                                                         players)
+;;; ****  
   (map-over-events sc start-bar end-bar players
                    #'(lambda (e) (delete-tempo-change e)))
   sc)

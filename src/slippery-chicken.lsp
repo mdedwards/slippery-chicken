@@ -10768,7 +10768,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  15:50:14 Thu Apr 27 2023 CEST
+;;; $$ Last modified:  19:08:20 Sun May  7 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)
@@ -10965,6 +10965,290 @@ data: (11 15)
         sndfile
         (error "slippery-chicken::csound-play: ~
                 Call to Csound failed."))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* slippery-chicken/event-list-to-csound-score
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-05-07
+;;; 
+;;; DESCRIPTION
+;;; This function generates a Csound-score file (.sco) from an event-list.
+;;; Its structure is very similar to write-csound-score except that the
+;;; allocation process between players and Csound-instruments ist structured
+;;; differently. This function uses the event-list's MIDI-channels for
+;;; allocating the data to Csound-instruments (if desired).
+;;; NB: The function events-update-time might be useful in this context (also
+;;; refer to event-list-to-midi-file).
+;;;
+;;; ARGUMENTS
+;;; - A list of event objects.
+;;; - The MIDI-channel(s) to take into account for generating the score.
+;;;   This must be a list with one or more symbols or NIL. When NIL, all
+;;;   MIDI-channels present in the event-list will be used. When a list,
+;;;   only the MIDI-channels contained in this list will be used as a basis
+;;;   for the rhythmic structure of the Csound-score. 
+;;; - The ID(s) (as a number) or name(s) (as a string) of the Csound instruments
+;;;   according to the resp. instrument definition in the Csound orchestra as
+;;;   list of one or more items.
+;;;   Each MIDI-channel of the second argument of this method needs to be
+;;;   assigned to one Csound-instrument. Thus, the length of this list must
+;;;   be exactly the same as the previous list, except when using NIL in the
+;;;   MIDI-channels list. In the latter case, the Csound instruments defined
+;;;   in this list will be allocated cyclically to the available MIDI-channels
+;;;   in ascending order of the MIDI-channels.
+;;;   E.g.: When the MIDI-channels 1, 2, 3, and 10 are present in the
+;;;   event-list, and this argument is set to '("ins1" "ins2"), the value of
+;;;   this slot will internally be changed to '("ins1" "ins2" "ins1" "ins2").
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword-arguments:
+;;; - :suffix. A string to be added just before the .sco of the generated
+;;;   csound score-file. Will be overridden when manually setting the path
+;;;   via :csound-file. Default = "".
+;;; - :csound-file. A string indicating the path and filename to the .sco-file
+;;;   to be generated with this method. Default is "tmp.suffix.sco", placed
+;;;   in the (get-sc-config 'default-dir) directory (per default /tmp).
+;;; - :offset. An integer or floating point value to indicate the global
+;;;   offset of all score events (in seconds). Default = 0.
+;;; - :comments. A boolean indicating whether additional comments should be
+;;;   included into the generated score. Default = T.
+;;; - :delimiter. A character which separates each score statement. Csound
+;;;   recommends using spaces, though #\tab does also work an might, in some
+;;;   cases, improve legibility. Default = #\space.
+;;; - :chords. Either a boolean or an integer which determines how to deal with
+;;;   chords in events. When T, all notes of a chord are parsed as
+;;;   i-statements in the Csound-score. When NIL, chords will be ignored and
+;;;   treated like rests (i.e. nothing will be generated). When an integer is
+;;;   given, the number determines the max. amount of pitches being parsed as i-
+;;;   statements. They are chosen chronologically from the given chord.
+;;;   Default = T.
+;;; - :p-fields. This should be either NIL, a list of lists or a function used
+;;;   to generate the p-fields starting from p4. Cf. the documentation of
+;;;   write-csound-score for more detail.
+;;;   Default: #'csound-p-fields-simple.
+;;; 
+;;; RETURN VALUE
+;;; Returns the path of the file written, as a string.
+;;;
+;;; EXAMPLE
+#|
+(let* ((notes '(c4 d4 e4 f4 g4))
+       (notes-len (length notes))
+       (rthms '(q e s))
+       (rthms-len (length rthms))
+       (events (loop repeat 20
+                     collect
+                     (make-event (nth (random notes-len) notes)
+                                 (nth (random rthms-len) rthms)
+                                 :midi-channel (1+ (random 3))))))
+  (events-update-time events)
+  (event-list-to-csound-score events
+                              nil ;; use all midi-channels
+                              '(1 2)
+                              :csound-file "/tmp/example.sco"))
+
+;; => /tmp/example.sco
+|#
+;;; SYNOPSIS
+(defun event-list-to-csound-score (event-list
+                                   ;; when NIL, use all available
+                                   ;; midi-channels and allocate them
+                                   ;; to the given csound instruments
+                                   ;; in a cyclical order
+                                   midi-channels
+                                   csound-instruments
+                                   &key
+                                     ;; add something just before .sco?
+                                     (suffix "")
+                                     (csound-file
+                                      (format nil "~atmp~a.sco"
+                                              (get-sc-config 'default-dir)
+                                              suffix))
+                                     ;; offset in seconds
+                                     (offset 0)
+                                     ;; add a comments section?
+                                     (comments t)
+                                     (delimiter #\space)
+                                     (chords t)
+                                     (p-fields #'csound-p-fields-simple))
+  ;;; ****
+  ;; test if a csound instrument is assigned to every midi-channel
+  ;; unless midi-channels is not NIL (i.e. all midi-channels will be
+  ;; used for generating the score)
+  (when (and midi-channels
+             (/= (length midi-channels)
+                 (length csound-instruments)))
+    (error "slippery-chicken::event-list-to-csound-score: ~
+            midi-channels and csound-instruments differ in length."))
+  ;; if the p-fields keywords is not a function, test if it is either
+  ;; NIL, or
+  ;; a list of lists containing p-field-values for each player/instrument
+  (unless (or (functionp p-fields)
+              (eq nil p-fields)
+              (and (every #'listp p-fields)
+                   (= (length p-fields)
+                      (length midi-channels))))
+    (error "slippery-chicken::event-list-to-csound-score: ~
+            the p-fields keyword argument must be either NIL, ~% ~
+            a function, or a list of lists with p-field values ~
+            for each player"))
+  ;;; when midi-channels is NIL, use all-midi-channels and allocate them
+  ;;; to the given instruments chronologically.
+  ;;; when less instruments than midi-channels are available,
+  ;;; cyclically allocate each channel one instrument from the
+  ;;; csound-instruments list
+  (when (null midi-channels)
+    ;;; get all midi channels available in the event-list
+    (let ((available-midi-ch
+            (loop for event in event-list
+                  for midi-ch = (get-midi-channel event)
+                  with midi-channels = '()
+                  ;; add the channel to the list when it is not nil (e.g.
+                  ;; when the event is a rest) and when the channel is not
+                  ;; already represented in the channel-list
+                  when (and midi-ch (not (member midi-ch midi-channels)))
+                    do
+                       (push midi-ch midi-channels)
+                  finally
+                     (return (sort midi-channels #'<)))))
+      (setf midi-channels available-midi-ch)))
+  (when (/= (length midi-channels)
+            (length csound-instruments))
+    (setf csound-instruments
+          (loop for i from 0 to (1- (length midi-channels))
+                with num-ins = (length csound-instruments)
+                collect
+                (nth (mod i num-ins) csound-instruments))))
+  (let ((score-events
+          (loop
+            for event in event-list
+            ;; the midi-channel of the event
+            for midi-ch = (get-midi-channel event)
+            for is-chord = (is-chord event)
+            ;; event counter for the midi-channels
+            with event-count = (make-assoc-list
+                                'event-count
+                                (mapcar #'(lambda (c) (list c 0))
+                                        midi-channels))
+            ;; just process the event when non-NIL and
+            ;; member of the midi-channels list.
+            when (and midi-ch (member midi-ch midi-channels)
+                      ;; furthermore, only process chords when desired
+                      (not (and (numberp is-chord)
+                                (null chords))))
+              append
+              (progn
+                ;;; increment event-counter for the channel
+                (replace-data midi-ch
+                              (1+ (get-data-data midi-ch event-count))
+                              event-count)
+                (let* ((current-event-count
+                         (get-data-data midi-ch event-count))
+                       ;; the position of the current instrument in the
+                       ;; csound-instrements resp. midi-channels list
+                       ;; analogous to the player-i in write-csound-score
+                       (instrument-i (position midi-ch midi-channels))
+                       (actual-chord-length is-chord)
+                       ;; get the instrument for the event
+                       (instrument (nth instrument-i
+                                        csound-instruments))
+                       ;; set values for p1-p3
+                       ;; (i.e. instrument, onset, duration)
+                       (p1-value (if (numberp instrument)
+                                     (format nil
+                                             "i~a"
+                                             instrument)
+                                     (format nil
+                                             "i \"~a\""
+                                             instrument)))
+                       (p2-value (+ offset
+                                    (start-time event)))
+                       (p3-value (duration event))
+                       ;; get the values for any other p-field
+                       (p-field-values
+                         (cond
+                           ((functionp p-fields)
+                            (funcall p-fields
+                                     event
+                                     current-event-count
+                                     instrument))
+                           ((listp p-fields)
+                            (nth instrument-i p-fields))
+                           (t nil)))
+                       ;; determine the amount of i-statements
+                       ;; (here: pitches) for a chord.
+                       ;; this is necessary, as it is possible
+                       ;; to limit the amount of notes via the
+                       ;; :chord keyword-arg.
+                       ;; the value is set to the max. possible
+                       ;; notes (either the :chord-limit or the
+                       ;; available pitches in a chord)
+                       (pitches-per-chord
+                         (cond
+                           ;; when chord size is
+                           ;; limited, set the upmost
+                           ;; limit either to the length
+                           ;; of the chord (if lt) or
+                           ;; to the chord-limit
+                           ((null actual-chord-length) nil)
+                           ((and (numberp chords)
+                                 (> actual-chord-length
+                                    chords))
+                            chords)
+                           (t actual-chord-length))))
+                  ;; process first chords, then pitches
+                  (if (numberp actual-chord-length)
+                      (loop for i from 0
+                              to (1- pitches-per-chord)
+                            collect
+                            (append
+                             (list p1-value
+                                   p2-value
+                                   p3-value)
+                             (if (every #'listp p-field-values)
+                                 (nth i p-field-values)
+                                 p-field-values)))
+                      ;; process a (single) pitch
+                      (list (append (list p1-value
+                                          p2-value
+                                          p3-value)
+                                    ;; in this case, the value
+                                    ;; ought to be a list with
+                                    ;; n values
+                                    p-field-values))))))))
+    ;; write to file
+    (with-open-file (stream csound-file
+                            :direction :output
+                            :if-does-not-exist :create
+                            :if-exists :supersede)
+      ;; initial comments
+      (when comments
+        (format stream ";; GENERATION DATE: ~a~%"
+                (multiple-value-bind
+                      (second minute hour day month year weekday dst-p tz)
+                    (get-decoded-time)
+                  (format nil "~4,'0d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d"
+                          year month day hour minute second))))
+      (loop for event-data in score-events
+            ;; ignore empty lists (e.g. produced by ignored chords)
+            ;; might be redundant as ignored chords are already
+            ;; sorted out "a priori" in the loop (see above)
+            ;; borrowed from write-csound-score
+            ;; RP  Sun May  7 18:29:53 2023
+            unless (not event-data)
+              do
+                 (let ((control-string (concatenate
+                                        'string
+                                        "~{~a~^"
+                                        (string delimiter)
+                                        "~}~%")))
+                   (format stream control-string event-data)))
+      (format stream "~%~%"))
+    csound-file))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -6,9 +6,10 @@
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./robodoc.css" type="text/css" />
-<title>./../../src/cm-cm.lsp</title>
+<script src="./robodoc.js"></script>
+<title>cm-cm.lsp</title>
 <!-- Source: ./../../src/cm-cm.lsp -->
-<!-- Generated with ROBODoc Version 4.99.43 (Oct  1 2016) -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
 </head>
 <script type=text/javascript src=../head-foot.js></script>
 <body>
@@ -53,7 +54,7 @@
 
  Creation date:    26th March 2020 (abstracted out of <a href="./cm_lsp.html#robo_top_of_doc">cm.lsp</a>)
 
- $$ Last modified:  08:37:09 Thu Mar 26 2020 CET
+ $$ Last modified:  16:16:33 Thu Mar 11 2021 CET
 
  SVN ID: $Id$
 </pre>
@@ -67,7 +68,7 @@
 <pre> 30-Dec-2010
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Print the <a href="./chord_lsp.html#robo88">highest</a> and <a href="./chord_lsp.html#robo90">lowest</a> <a href="./pitch_lsp.html#robo280">pitch</a> in a specified MIDI file as a MIDI note
+<pre> Print the <a href="./event_lsp.html#robo192">highest</a> and <a href="./event_lsp.html#robo197">lowest</a> <a href="./pitch_lsp.html#robo285">pitch</a> in a specified MIDI file as a MIDI note
  number. 
 
  NB: This is a Common Music function and as such must be called with the
@@ -79,13 +80,13 @@
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - An integer or NIL to indicate which track in the specified MIDI file is
    to be accessed. If NIL, all tracks will be accessed. NB: CM (and
-   therefore <a href="./slippery-chicken_lsp.html#robo591">slippery-chicken</a> too) generates some MIDI files by writing each
+   therefore <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a> too) generates some MIDI files by writing each
    channel to a different track, so the "track" would seem synonymous with
    "channel" here. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Two integer values (using the values function) that are the <a href="./chord_lsp.html#robo88">highest</a> and
- <a href="./chord_lsp.html#robo90">lowest</a> pitches in the specified MIDI file.
+<pre> Two integer values (using the values function) that are the <a href="./event_lsp.html#robo192">highest</a> and
+ <a href="./event_lsp.html#robo197">lowest</a> pitches in the specified MIDI file.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<a href="./cm_lsp.html#robo4">cm</a>::<strong>midi-file-high-low</strong> "/tmp/multi-ps.mid")
@@ -103,11 +104,11 @@
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./cm_lsp.html#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Write all midi notes in the file out to a new one-channel file using the
- single <a href="./pitch_lsp.html#robo280">pitch</a> &lt;note&gt; and channel number &lt;channel&gt;.
+ single <a href="./pitch_lsp.html#robo285">pitch</a> &lt;note&gt; and channel number &lt;channel&gt;.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A string that is the file path, including file-name and extension.
- - A note-name symbol or MIDI-note integer that is the <a href="./pitch_lsp.html#robo280">pitch</a> to write.
+ - A note-name symbol or MIDI-note integer that is the <a href="./pitch_lsp.html#robo285">pitch</a> to write.
  - An integer that is the channel to which the output should be written
    (1-based) 
 </pre>
@@ -143,7 +144,7 @@
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - An integer or NIL to indicate which track in the specified MIDI file is
    to be accessed. If NIL, all tracks will be accessed. NB: CM (and
-   therefore <a href="./slippery-chicken_lsp.html#robo591">slippery-chicken</a> too) generates some MIDI files by writing each
+   therefore <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a> too) generates some MIDI files by writing each
    channel to a different track, so the "track" would seem synonymous with
    "channel" here. 
 </pre>
@@ -155,12 +156,12 @@
 <pre class="source">(<a href="./cm_lsp.html#robo4">cm</a>::<strong>parse-midi-file</strong> "/tmp/multi-ps.mid")
 
 =&gt;
-(#i(midi-<a href="./tempo_lsp.html#robo285">tempo</a>-change time 0.0 usecs 357142)
+(#i(midi-<a href="./tempo_lsp.html#robo290">tempo</a>-change time 0.0 usecs 357142)
  #i(midi-time-signature time 0.0 numerator 2 denominator 4 clocks 24 32nds 8)
  #i(midi time 0.0 keynum 36 duration 0.357142 amplitude 0.09448819 channel 15)
- #i(midi-<a href="./tempo_lsp.html#robo285">tempo</a>-change time 0.0 usecs 357142)
+ #i(midi-<a href="./tempo_lsp.html#robo290">tempo</a>-change time 0.0 usecs 357142)
  #i(midi-time-signature time 0.0 numerator 2 denominator 4 clocks 24 32nds 8)
- #i(midi-<a href="./tempo_lsp.html#robo285">tempo</a>-change time 0.0 usecs 357142)
+ #i(midi-<a href="./tempo_lsp.html#robo290">tempo</a>-change time 0.0 usecs 357142)
  #i(midi time 0.178571 keynum 66 duration 0.178571 amplitude 0.09448819 channel 15)
  #i(midi time 0.357142 keynum 68 duration 0.0892855 amplitude 0.09448819 channel 15)
  #i(midi time 0.357142 keynum 40 duration 0.357142 amplitude 0.09448819 channel 15)
@@ -173,8 +174,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/cm-cm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.43 on Thu Feb 25 2021 17:24:22
-</p>
+<p>Generated from ./../../src/cm-cm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -16419,6 +16419,27 @@
        vulputate ipsum lacus porta risus a vulputate magna justo a
        est))))
 
+;;; LF <2023-05-11 Do>
+(sc-deftest test-utilities-read-file-as-string ()
+  (sc-test-check
+    (equalp
+     (read-file-as-string
+      (concatenate 'string 
+                   cl-user::+slippery-chicken-home-dir+
+                   "tests/lisp-lorem-ipsum.txt")) 
+     "(Lorem ipsum dolor sit amet consectetur adipiscing elit Cras consequat
+convallis justo vitae consectetur Mauris in nibh vel est tempus
+lobortis Suspendisse potenti Sed mauris massa adipiscing vitae dignissim
+condimentum volutpat vel felis Fusce augue dui pulvinar ultricies imperdiet
+sed pharetra eu quam Integer in vulputate velit Aliquam erat
+volutpat Vivamus sit amet orci eget eros consequat tincidunt Nunc elementum
+adipiscing lobortis Morbi at lorem est eget mattis erat Donec ac risus a dui
+malesuada lobortis ac at est Integer at interdum tortor Vivamus hendrerit
+consequat augue Quisque aliquam tellus nec vestibulum lobortis risus turpis
+luctus ligula in bibendum felis sem pulvinar dolor Vivamus rhoncus nisi
+gravida porta vulputate ipsum lacus porta risus a vulputate magna justo a
+est)")))
+
 ;;; SAR Fri Jun 15 12:49:41 BST 2012
 (sc-deftest test-utilities-parse-wavelab-marker-file-for-loops ()
   (sc-test-check
@@ -20219,11 +20240,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan 28 16:40:13 2021, Heidhausen -- reaper tests
 (sc-deftest test-reaper ()
-  (let ((sndfiles (get-sndfiles
+  (let* ((sndfiles (get-sndfiles
                    (concatenate 'string
                                 cl-user::+slippery-chicken-home-dir+
                                 ;; only three in here
-                                "tests/test-sndfiles-dir-2"))))
+                                "tests/test-sndfiles-dir-2")))
+	 (list-of-sndfiles
+	  (loop for snd in sndfiles collect
+	       (make-sndfile snd
+			     :angle-env '(0 0  .5 .5  .8 8  1 3.25)
+			     :elevation-env '(0 0  .6 .5  2 .5)))))
     (multiple-value-bind
           (items1 end-time1)
         (make-reaper-items1 sndfiles
@@ -20247,17 +20273,30 @@
           (probe-delete "/tmp/reaper-test.rpp")
           (probe-delete "/tmp/reaper-test2.rpp")
           (probe-delete "/tmp/reaper-test3.rpp")
+	  (probe-delete "/tmp/reaper-test4.rpp")
           (sc-test-check
             ;; We'll get warnings about durations but ignore these for test
             ;; purposes 
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
+	    (write-spatial-reaper-file list-of-sndfiles
+				       :file "/tmp/reaper-test4.rpp")
             (assoc-list-p (tracks rf1))
             (assoc-list-p (tracks rf2))
             (assoc-list-p (tracks rf3))
             (file-write-ok "/tmp/reaper-test.rpp" 4200)
-            (file-write-ok "/tmp/reaper-test2.rpp" 4200)))))))
+            (file-write-ok "/tmp/reaper-test2.rpp" 4200)
+	    (file-write-ok "/tmp/reaper-test4.rpp" 17000)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF <2023-05-11 Do>
+;;; this happens after test-reaper so recycle the reaper-test files
+(sc-deftest test-utilities-edit-file ()
+  (sc-test-check
+    (edit-file "/tmp/reaper-test.rpp" str "this is a test :)")
+    (equalp "this is a test :)"
+	    (read-file-as-string "/tmp/reaper-test.rpp"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 20 12:10:05 2021, Heidhausen -- an example from Simon Bahr that

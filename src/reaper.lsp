@@ -366,6 +366,7 @@
   (when channels (setf channels (if (evenp (round channels))
 				    (round channels)
 				    (1+ (round channels)))))
+  (unless track-volumes (setf track-volumes '(1)))
   (unless (listp track-volumes)
       (setf track-volumes (list track-volumes)))
   (when (> min-channels max-channels)

@@ -46,7 +46,7 @@
 #+sbcl (require :sb-bsd-sockets)
 #+sbcl (require :sb-posix)
 #+sbcl (unlock-package "COMMON-LISP")
-(ql:quickload "cl-ppcre")
+(require :asdf)
 
 (defparameter +slippery-chicken-version+ "1.0.12")
 
@@ -196,6 +196,11 @@
            (load-cm-file f)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; load the ppcre library from /src/ppcre/
+(asdf:load-asd
+ (merge-pathnames "ppcre/cl-ppcre.asd" +slippery-chicken-src-path+))
+(asdf:load-system :cl-ppcre)
 
 #+(or cm-essentials windows win32 win64 ecl) (sc-load-cm-essentials)
 #-(or cm-essentials windows win32 win64 ecl) (sc-load-cm-all)

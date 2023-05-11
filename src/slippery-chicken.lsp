@@ -6512,8 +6512,8 @@ data: NIL
        ;; set to t if using bartok pizz and othersigns
        (use-custom-markup t)
        (rehearsal-letters-font-size 18)
-       ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95") 
-       (lp-version "2.20.0")
+       ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95")  "2.20.0")
+       (lp-version "2.24.1")
        ;; 24.7.11 (Pula) barlines through whole staff group or just a stave
        (group-barlines t)
        ;; 5.11.11 set to t if you want lilypond to optimize page breaks for
@@ -6656,10 +6656,17 @@ data: NIL
                    (format stream 
                            "~&  \\override Staff.Stem #'stemlet-length = #~a~%"
                            stemlet-length))
-                 (princ "  \\compressFullBarRests" stream)
+                 ;; MDE Thu May 11 14:52:16 2023, Heidhausen -- changes for
+                 ;; version 2.21  
+                 ;; (princ "  \\compressFullBarRests" stream)
+                 (princ "  \\compressEmptyMeasures" stream)
                  ;; change the thickness of the barlines globally
-                 (format stream "~&  \\override Score.BarLine ~
-                                 #'hair-thickness = #~a" barline-thickness)
+                 ;; MDE Thu May 11 15:11:21 2023, Heidhausen -- version 2.21
+                 ;; changes 
+                 ;; (format stream "~&  \\override Score.BarLine ~
+                    ;;             #'hair-thickness = #~a" barline-thickness)
+                 (format stream "~&  \\override Score.BarLine.~
+                                 hair-thickness = #~a" barline-thickness)
                  (when page-turns
                    (format stream "~%  \\set Staff.minimumPageTurnLength = ~
                                    #(ly:make-moment ~a ~a)"
@@ -10768,7 +10775,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  19:08:20 Sun May  7 2023 CEST
+;;; $$ Last modified:  15:12:40 Thu May 11 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

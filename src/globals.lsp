@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  21:47:43 Thu Mar  2 2023 CET
+;;; $$ Last modified:  14:42:38 Thu May 11 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -118,7 +118,8 @@
      ;; open the resultant PDF directly from Lisp.  The default should work if
      ;; you have the Lilypond app in your Applications folder on OSX.
      (lilypond-command
-      "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
+      "/usr/local/bin/lilypond")
+     ;; "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
      ;; The default amplitude for all events that don't have amplitude/dynamic
      ;; set via some means such as marks.
      (default-amplitude 0.7)

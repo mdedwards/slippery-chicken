@@ -1237,7 +1237,9 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; manually (create a reaper project file and load the plugin, the open the
 ;;; file with a text editor and find and copy the string <VST ..... >.
 ;;; See "slippery-chicken/src/iem-stereo-encoder.txt" for an example).
-;;; - the number of the track, that the envelope is to be inserted (master is 0)
+;;; To use that plugin in write-spatial-reaper-file (of possibly others), add
+;;; it to the *plugins-for-reaper* property-list.
+;;; - the number of the track, on which to insert the plugin (master is 0)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - if the plugin is to be inserted before all others (t) or after all other
@@ -1346,7 +1348,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; ARGUMENTS
 ;;; - the string of the project file you want to edit
 ;;; - the reaper-envelope object that you want to insert into the reaper project
-;;; - the number of the track, that the envelope is to be inserted (master is 0)
+;;; - the number of the track, on which to insert the envelope (master is 0)
 ;;; - the time in seconds at which the first point of the envelope will be
 ;;; - the time in seconds at which the last point of the envelope will be
 ;;; 
@@ -1462,10 +1464,12 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; desired. Default = 60.
 ;;; :init-volume. Volume multipliers for all faders.
 ;;; -0dB would be 1, Default = -12dB.
-;;; :encoder. The binary data for the plugin that will be inserted into all
-;;; tracks except the master track. Default: *iem-stereo-encoder*
-;;; :decoder. The binary data for the plugin that will be inserted on the master
-;;; track. Default: *blue-ripple-decoder*
+;;; :encoder. The indicator to find the binary data for the plugin that will be
+;;; inserted into all tracks except the master track in *plugins-for-reaper*.
+;;; Default: :iem-stereo-encoder
+;;; :decoder. The indicator to find the binary data for the plugin that will be
+;;; inserted on the master track in *plugins-for-reaüer*.
+;;; Default: :blue-ripple-decoder
 ;;; :angle-parameter-slot. The automation slot that the angle-env will controll.
 ;;; This should be changed when other plugins are used than the defaults.
 ;;; Default = 6, because the IEM stereo encoders 6th automation slot is the

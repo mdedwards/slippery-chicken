@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:33:43 Thu May 11 2023 CEST
+;;; $$ Last modified:  11:06:46 Fri May 12 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19692,7 +19692,7 @@
     (add-mark-to-note mini 1 '(4 2) 'vn '(rgb (0 1 0)))
     (add-mark-to-note mini 1 5 'vn 'flag-head)
     (add-mark-to-note mini 1 6 'vn '(rgb (0 0 1)))
-    (write-xml mini)
+    ;; (write-xml mini)))
     (lp-display mini)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

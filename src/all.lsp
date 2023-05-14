@@ -97,7 +97,7 @@
   (let* ((title (format nil "slippery chicken ~a"
                         +slippery-chicken-version+))
          (sc-logo (concatenate 'string +slippery-chicken-src-path+
-                               "sc-ascii-logo.txt"))
+                               "txt/sc-ascii-logo.txt"))
          (in (open sc-logo :if-does-not-exist nil)))
     (when logo
       (if in 

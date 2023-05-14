@@ -1713,6 +1713,10 @@
 ;;; - :x-max. A number that is the maximum value for all x values after
 ;;;   scaling. NB: This optional argument can only be used if a value has been
 ;;;   specified for the :x-scaler.
+;;; - :first-x. If a number, scale the x-axis so that this is the first x-value.
+;;;   This then ignores x-scaler.
+;;; - :last-x. If a number, scale the x-axis so that this is the last x-value.
+;;;   This then ignores x-scaler.
 ;;; 
 ;;; RETURN VALUE
 ;;; An envelope in the form of a list of break-point pairs.
@@ -1740,17 +1744,30 @@
 
 => (9 53.0 50 189.0 90 7.0 90 200.0 90 3.0)
 
+;;; 'Stretching' the envelope by providing first-x and last-x values
+(scale-env '(1 0 5 1 20 0) 1 :first-x 0 :last-x 100)
+
+=> (0.0 0 21.052631 1 100.0 0)
+
 |#
 ;;; SYNOPSIS
-(defun scale-env (env y-scaler &key x-scaler 
-                                    (x-min most-negative-double-float)
-                                    (y-min most-negative-double-float)
-                                    (x-max most-positive-double-float)
-                                    (y-max most-positive-double-float))
+(defun scale-env (env y-scaler &key x-scaler first-x last-x
+                                 (x-min most-negative-double-float)
+                                 (y-min most-negative-double-float)
+                                 (x-max most-positive-double-float)
+				 (y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
-     collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
-                 x) 
+     collect (cond ((or first-x last-x)
+		    (let* ((old-first (first env))
+			   (old-last (lastx env)))
+		      (min x-max
+			   (max x-min
+				(rescale x old-first old-last
+					 (or first-x old-first)
+					 (or last-x old-last))))))
+		   (x-scaler (min x-max (max x-min (* x x-scaler))))
+		   (t x))
      collect (min y-max (max y-min (* y y-scaler)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4171,6 +4188,206 @@ WARNING:
         (when warn
           (warn "utilities::dynamic-to-amplitude: unrecognised dynamics: ~a"
                 dynamic)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/degree-to-radian
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert an angle in degrees to its equivalent in radians
+;;; 
+;;; ARGUMENTS
+;;; - The number in degrees
+;;; 
+;;; RETURN VALUE
+;;; The number in radians
+;;; 
+;;; EXAMPLE
+#|
+(degree-to-radian 180)
+
+=> 3.141592653589793d0
+
+|#
+;;; SYNOPSIS
+(defun degree-to-radian (degree)
+;;; ****
+  (rationalize (* pi (/ degree 180))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/radian-to-degree
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert an angle in radians to its equivalent in degrees
+;;; 
+;;; ARGUMENTS
+;;; - The number in radians
+;;; 
+;;; RETURN VALUE
+;;; The number in degrees
+;;; 
+;;; EXAMPLE
+#|
+(radian-to-degree pi)
+
+=> 180
+
+|#
+;;; SYNOPSIS
+(defun radian-to-degree (radian)
+;;; ****
+  (rationalize (* 180 (/ radian pi))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/polar-to-cartesian
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert a point in a 3D coordinate space from the polar system to cartesian
+;;; coordinates. This differs from the normal definition of this conversion, in
+;;; that the elevation is the angle from true horizontal, not vertical...
+;;; 
+;;; ARGUMENTS
+;;; - The horizonal angle from the X axis (alpha, azimuth angle) in degree
+;;; - The vertical angle from the X axis (polar, elevation) between 0 and 180°
+;;; - The distance from the origin (the radius), 0 <= distance <= 1
+;;; 
+;;; RETURN VALUE
+;;; A list that holds the x y and z coordinates for the point.
+;;; 
+;;; EXAMPLE
+#|
+(polar-to-cartesian 0 45 1)
+
+=> (0.70710677 0.0 0.70710677)
+
+|#
+;;; SYNOPSIS
+(defun polar-to-cartesian (angle elevation distance)
+;;; ****
+  (unless (<= 0 elevation 180) (error "elevation ~a out of bounds" elevation))
+  (unless (>= distance 0) (error "distance ~a out of bounds" distance))
+  (let* ((sina (sin (degree-to-radian angle)))
+	 (sine (sin (degree-to-radian elevation)))
+	 (cosa (cos (degree-to-radian angle)))
+	 (cose (cos (degree-to-radian elevation)))
+	 (x (* distance cosa cose))
+	 (y (* distance sina cose))
+	 (z (* distance sine)))
+    `(,x ,y ,z)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/cartesian-to-polar
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert a point in a 3D coordinate space from the cartesian system to polar
+;;; coordinates. This differs from the normal definition of this conversion, in
+;;; that the elevation is the angle from true horizontal, not vertical...
+;;; 
+;;; ARGUMENTS
+;;; - The x-coordinate
+;;; - The y-coordinate
+;;; - The z-coordinate
+;;; 
+;;; RETURN VALUE
+;;; A list that holds the angle (azimuth), elevation and distance of the point.
+;;; 
+;;; EXAMPLE
+#|
+(cartesian-to-polar .5 .5 .5)
+
+=> (45 30001/1000 433/250)
+
+|#
+;;; SYNOPSIS
+(defun cartesian-to-polar (x y z)
+;;; ****
+  (unless (<= -1 x 1) (error "x ~a out of bounds" x))
+  (unless (<= -1 y 1) (error "y ~a out of bounds" y))
+  (unless (<= -1 z 1) (error "z ~a out of bounds" z))
+  (let* ((distance
+	  (/ (round (* (sqrt (+ (expt x 2) (expt y 2) (expt z 2))) 1000)) 1000))
+	 (elevation
+	  (/ (round (* (radian-to-degree (atan z distance))  1000)) 1000))
+	 (angle (/ (round (* (radian-to-degree (atan y x)) 1000)) 1000)))
+    `(,angle ,elevation ,distance)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/convert-polar-envelopes
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert a set of an angle-env and elevation-env into an envelope for the
+;;; x, y and z coordinates. Distance is assumed to be 1, if no additional
+;;; distance-env is given.
+;;; 
+;;; ARGUMENTS
+;;; - An angle-env
+;;; - An elevation-env
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :distance-env. A distance-env...
+;;; :minimum-samples. A number - minimal amount of points between first and
+;;; last point of the envelopes at which to convert. If nil, only the original
+;;; points of the envelopes are used, this however doesn't always fully
+;;; represent the envelopes... Going from 0° to 180° is something else than
+;;; going from y = 1 to y = -1.
+;;; 
+;;; RETURN VALUE
+;;; A list that holds the three envelopes for x, y and z
+;;; 
+;;; EXAMPLE
+#|
+(convert-polar-envelopes '(0 0  1 180) '(0 30  .5 0  1 45) :minimum-samples 5)
+
+=> (0 0.8660254 1/4 0.68301266 0.5 6.123234e-17 3/4 -0.65328145 1 -0.70710677)
+=> (0 0.0 1/4 0.68301266 0.5 1.0 3/4 0.65328145 1 8.6595606e-17)
+=> (0 0.5 1/4 0.25881904 0.5 0.0 3/4 0.38268343 1 0.70710677)
+
+|#
+;;; SYNOPSIS
+(defun convert-polar-envelopes (angle-env elevation-env
+				&key (distance-env '(0 1 1 1))
+				  minimum-samples)
+;;; ****
+  ;; stretch the envelopes so they align:
+  (setf angle-env (scale-env angle-env 1 :first-x 0 :last-x 100)
+	elevation-env (scale-env elevation-env 1 :first-x 0 :last-x 100)
+	distance-env (scale-env distance-env 1 :first-x 0 :last-x 100))
+  (let* ((angle-all-x (loop for x in angle-env by #'cddr collect x))
+	 (elevation-all-x (loop for x in elevation-env by #'cddr collect x))
+	 (distance-all-x (loop for x in distance-env by #'cddr collect x))
+	 (all-x angle-all-x))
+    (loop for i in elevation-all-x
+       unless (member i all-x :test #'=) do (push i all-x))
+    (loop for i in distance-all-x
+       unless (member i all-x :test #'=) do (push i all-x))
+    (when minimum-samples
+      (loop for i from 0 to 100 by (/ 100 (1- minimum-samples))
+	 unless (member i all-x :test #'=) do (push i all-x)))
+    (setf all-x (sort all-x #'<))
+    (loop for i in all-x
+       for new = (polar-to-cartesian
+		  (* (interpolate i angle-env) 360)
+		  (* (interpolate i elevation-env) 90)
+		  (interpolate i distance-env))
+       collect i into x-env collect (first new) into x-env
+       collect i into y-env collect (second new) into y-env
+       collect i into z-env collect (third new) into z-env
+       finally (return (values x-env y-env z-env)))))
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

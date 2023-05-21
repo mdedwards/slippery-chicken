@@ -197,11 +197,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; load the ppcre library (https://edicl.github.io/cl-ppcre/) from /src/ppcre/
-(asdf:load-asd
- (merge-pathnames "ppcre/cl-ppcre.asd" +slippery-chicken-src-path+))
-(asdf:load-system :cl-ppcre)
-
 #+(or cm-essentials windows win32 win64 ecl) (sc-load-cm-essentials)
 #-(or cm-essentials windows win32 win64 ecl) (sc-load-cm-all)
 ;;; It seems CM doesn't put itself on the features list but sc needs it.
@@ -231,6 +226,7 @@
 (sc-compile-and-load "palette.lsp")
 (sc-compile-and-load "pitch-seq-palette.lsp")
 (sc-compile-and-load "globals.lsp")
+(sc::import-ppcre)
 (sc-compile-and-load "sc-map.lsp")
 (sc-compile-and-load "set-map.lsp")
 (sc-compile-and-load "tempo.lsp")

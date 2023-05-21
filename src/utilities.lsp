@@ -6629,4 +6629,44 @@ yes_foo, 1 2 3 4;
       (t (format nil "/~a~a" device rest)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF <2023-05-21 So>
+;;; import the ppcre library
+;;; you could (set-sc-config 'path-to-ppcre "...") to install into another
+;;; directory.
+(defun import-ppcre (&key update (mkdir "/usr/bin/mkdir") (git "/usr/bin/git"))
+;;; ****
+  ;; set the directory:
+  (let* ((dir (or (get-sc-config 'path-to-ppcre)
+		  (make-pathname
+		   :directory
+		   (butlast (pathname-directory
+			     cl-user::+slippery-chicken-home-dir+)))))
+	 (target-dir (format nil "~appcre/" dir)))
+    ;; check if the git command is found:
+    (unless (probe-file git)
+      (warn "utilities::import-ppcre: Cannot find the git command at: ~a. ~
+          ppcre can not be installed automatically" git))
+    (when (probe-file git)
+      #+(and (or ccl sbcl) unix)
+      (progn
+	(if (probe-file (concatenate 'string target-dir "cl-ppcre.asd"))
+	    (if update (progn (format t "~&updating ~a~&" target-dir)
+			      (shell git "-C" target-dir "pull"))
+		(print "PPCRE seems to be installed, if you want to update it, ~
+                   evaluate (import-ppcre :update t)"))
+	    (progn
+	      (shell mkdir target-dir)
+	      (shell git
+		     "clone"
+		     "https://github.com/edicl/cl-ppcre.git"
+		     target-dir)))
+	(asdf:load-asd
+	 (merge-pathnames "cl-ppcre.asd" target-dir))
+	(asdf:load-system :cl-ppcre))
+      #-(and (or ccl sbcl) unix)
+      (warn "utilities::import-ppcre: Sorry but this currently only runs ~
+           with SBCL or CCL on a unix system. Please install the ppcre-library ~
+           by hand into ~a." (get-sc-config 'path-to-ppcre)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

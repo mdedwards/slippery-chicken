@@ -1516,7 +1516,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; make three soundfiles into sndfile objects and spatialize them, while 
 ;;; returning their paths in windows format.
 (set-sc-config 'reaper-files-for-windows t)
-(write-spatial-reaper-file
+(write-reaper-ambisonics-file
  `(,(make-sndfile "/E/pads.wav"
 			  :angle-env '(0 0  .5 .5  .8 4  1 3.5)
 			  :elevation-env '(0 0  .6 .5  2 .5))
@@ -1530,6 +1530,18 @@ Here's where I pasted the data into the .RPP Reaper file:
  :ambi-order 3
  :envs-use-start-times t
  :envs-use-end-times t)
+
+
+;;; spatialize one sndfile with two channels, that are opposite of each other:
+(write-reaper-ambisonics-file 
+ `(,(make-sndfile "/E/code/feedback/intro.wav"
+		  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
+			       (0 .5  .5 1  .8 4.5  1 4))
+		  :elevation-env '(0 0  .6 .5  2 .5)))
+ :file "/E/code/test.rpp"
+ :encoder :iem-multi-encoder
+ :angle-parameter-slot '(7 12)
+ :elevation-parameter-slot '(8 13))
 |#
 ;;; SYNOPSIS
 (defun write-reaper-ambisonics-file (list-of-sndfiles

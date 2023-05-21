@@ -1564,6 +1564,12 @@ Here's where I pasted the data into the .RPP Reaper file:
 		 (nth (mod i (length start-times)) start-times)))
 	 (min-time (apply #'min start-times))
 	 (max-time 0)
+	 (angle-slots (if (listp angle-parameter-slot)
+			  angle-parameter-slot
+			  (list angle-parameter-slot)))
+	 (elevation-slots (if (listp elevation-parameter-slot)
+			      elevation-parameter-slot
+			      (list elevation-parameter-slot)))
 	 (channel-nr (expt (1+ ambi-order) 2))
 	 (rf (create-tracks
 	      (make-reaper-file 'ambi items
@@ -1572,7 +1578,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 				:n-channels channel-nr
 				:master-volume init-volume)
 	      :channels channel-nr
-	      :track-volumes init-volume)))
+	      :track-volumes init-volume))
+	 (string ""))
     ;; when no duration is given and we don't use end-times, look for the file
     ;; that is playing the longest
     (unless (or envs-duration envs-use-end-times)
@@ -1582,43 +1589,48 @@ Here's where I pasted the data into the .RPP Reaper file:
     ;; write the file
     (write-reaper-file rf :file file)
     (format t "~&succesfully wrote ~a" file)
-    ;; edit the file
-    (edit-file file string
-      (insert-plugin string (getf *plugins-for-reaper* decoder) 0 t)
-      (loop for i from 1 and snd in list-of-sndfiles
-	 with temp-string = string
-	 for start = (if envs-use-start-times
-			 (nth (1- i) looped-start-times)
-			 min-time)
-	 for end = (if envs-duration (+ start envs-duration)
-		       (if envs-use-end-times (+ start (duration snd))
-			   max-time))
-	 ;; insert "encoder"
-	 do (setf temp-string
-		  (insert-plugin
-		   temp-string
-		   (getf *plugins-for-reaper* encoder)
-		   i)
-		  ;; insert envelopes
-		  temp-string
-		  (insert-envelope
-		   temp-string
-		   (make-reaper-envelope
-		    (angle-env snd)
-		    :parameter-slot angle-parameter-slot
-		    :start-time start
-		    :end-time end)
-		   i)
-		  temp-string
-		  (insert-envelope
-		   temp-string
-		   (make-reaper-envelope
-		    (elevation-env snd)
-		    :parameter-slot elevation-parameter-slot
-		    :start-time start
-		    :end-time end)
-		   i))
-	 finally (return temp-string)))
+    ;; edit the file and insert decoder:
+    (setf string (read-file-as-string file)
+	  string (insert-plugin string (getf *plugins-for-reaper* decoder) 0 t))
+    (loop for i from 1 and snd in list-of-sndfiles
+       for start = (if envs-use-start-times
+		       (nth (1- i) looped-start-times)
+		       min-time)
+       for end = (if envs-duration (+ start envs-duration)
+		     (if envs-use-end-times (+ start (duration snd))
+			 max-time))
+       for angle-envs = (if (listp (car (angle-env snd)))
+			    (angle-env snd) `(,(angle-env snd)))
+       for elevation-envs = (if (listp (car (elevation-env snd)))
+				(elevation-env snd) `(,(elevation-env snd)))
+       for nr-of-voices = (max (length angle-envs) (length elevation-envs))
+	 
+       ;; insert encoders:
+       do (setf string (insert-plugin string
+				      (getf *plugins-for-reaper* encoder)
+				      i))
+       ;; insert envelopes:
+	 (loop for k from 0 below nr-of-voices do
+	      (setf string (insert-envelope
+			    string
+			    (make-reaper-envelope
+			     (nth (mod k (length angle-envs)) angle-envs)
+			     :parameter-slot (nth (mod k (length angle-slots)) angle-slots)
+			     :start-time start
+			     :end-time end)
+			    i)
+		    string (insert-envelope
+			    string
+			    (make-reaper-envelope
+			     (nth (mod k (length elevation-envs)) elevation-envs)
+			     :parameter-slot (nth (mod k (length elevation-slots)) elevation-slots)
+			     :start-time start
+			     :end-time end)
+			    i))))
+    (with-open-file 
+	(out file :direction :output :if-exists :rename-and-delete)
+      (princ string out))
+    (format t "~&succesfully edited ~a" file)
     file))
 
 ;;; TODO: DOC

@@ -69,6 +69,7 @@
    (amplitude :accessor amplitude :initarg :amplitude 
               :initform 1.0)
    ;; optional spatialisation data:
+   ;; can be a breakpoint-list (env) or a list of envs.
    (angle-env :accessor angle-env :type list :initarg :angle-env
 	      :initform '(0 .5  100 .5))
    (elevation-env :accessor elevation-env :type list :initarg :elevation-env
@@ -498,6 +499,12 @@ T
 ;;;   slippery chicken normalizes all sound file events; however, standard
 ;;;   practice would suggest that this should fall between 0.0 and 1.0.
 ;;;   Default = 1.0
+;;; - :angle-env. used for spatialization, fore example with
+;;;   #'write-reaper-ambisonics-file. Can be an env (list of breakpoints) or
+;;;   a list of envs. This then represents the azimuth angle in a polar
+;;;   coordinate system.
+;;; - :elevation-env. same as angle-env but represents the elevation angle.
+;;;   (the horizontal angle from the x-axis).
 ;;;
 ;;; RETURN VALUE
 ;;; A sndfile object.

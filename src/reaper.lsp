@@ -1490,11 +1490,15 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; :angle-parameter-slot. The automation slot that the angle-env will controll.
 ;;; This should be changed when other plugins are used than the defaults.
 ;;; Default = 6, because the IEM stereo encoders 6th automation slot is the
-;;; angle-argument.
+;;; angle-argument. If this is a list of numbers, the first element will be used
+;;; for the first angle-env of the sndfile and the second for the second env
+;;; etc. (when more than one is given for each sndfile).
 ;;; :elevation-parameter-slot. The automation slot that the elevation-env will
 ;;; controll. This should be changed when other plugins are used than the
 ;;; defaults. Default = 7, because the IEM stereo encoders 7th automation slot
-;;; is the elevation-argument.
+;;; is the elevation-argument. If this is a list of numbers, the first element
+;;; will be used for the first elevation-env of the sndfile and the second for
+;;; the second env etc. (when more than one is given for each sndfile).
 ;;; :envs-use-start-times. If nil, all envelopes start at the minimal
 ;;; start-time. If t, the envelopes use the start time of the respective
 ;;; sndfile.
@@ -1618,7 +1622,8 @@ Here's where I pasted the data into the .RPP Reaper file:
     file))
 
 ;;; TODO: DOC
-;;; TODO: Conversion isn't 100% right - shifted in some way
+;;; TODO: Conversion isn't 100% right - values need to go from -1 to 1.
+;;; TODO: cope with list of spatial-envs.
 (defun write-reaper-sad-file (list-of-sndfiles
 			      &key file
 				(start-times '(0))

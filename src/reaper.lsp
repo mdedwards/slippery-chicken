@@ -114,7 +114,7 @@
                    :initarg :preserve-pitch :initform t)
    ;; the output start-time (in seconds, in a reaper file) NB the input file
    ;; start time is the start slot of the sndfile class (in reaper the SOFFS
-   ;; line)  
+   ;; line)
    (start-time :accessor start-time :type number :initarg :start-time
                :initform 0.0)
    ;; the name visible in the reaper item: by default the sndfile name--as this
@@ -304,7 +304,7 @@
     (error "reaper-item::write-item: the path slot is required."))
   ;; start: SOFFS, duration: LENGTH
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
-          (fade-out ri) (name ri) (start ri) (play-rate  ri)
+          (fade-out ri) (name ri) (amplitude ri) (start ri) (play-rate  ri)
           (preserve-pitch ri)
 	  (os-format-path (path ri) 
 			  (if (get-sc-config 'reaper-files-for-windows)
@@ -1608,7 +1608,11 @@ Here's where I pasted the data into the .RPP Reaper file:
 	 (angle-slots (force-list angle-parameter-slot))
 	 (elevation-slots (force-list (list elevation-parameter-slot)))
 	 (channel-nr (expt (1+ ambi-order) 2))
-	 (rf (create-tracks
+	 (string "")
+	 rf)
+    (loop for item in items and snd in list-of-sndfiles do
+	 (setf (amplitude item) (amplitude snd)))
+    (setf rf (create-tracks
 	      (make-reaper-file 'ambi items
 				:tempo (or tempo 60)
 				:sample-rate sample-rate
@@ -1617,7 +1621,6 @@ Here's where I pasted the data into the .RPP Reaper file:
 	      :channels channel-nr
 	      :track-volumes init-volume
 	      :sort-track-names nil))
-	 (string ""))
     ;; when no duration is given and we don't use end-times, look for the file
     ;; that is playing the longest
     (unless (or envs-duration envs-use-end-times)
@@ -1798,7 +1801,11 @@ Here's where I pasted the data into the .RPP Reaper file:
 		 (nth (mod i (length start-times)) start-times)))
 	 (min-time (apply #'min start-times))
 	 (max-time 0)
-	 (rf (create-tracks
+	 (string "")
+	 rf)
+    (loop for item in items and snd in list-of-sndfiles do
+	 (setf (amplitude item) (amplitude snd)))
+    (setf rf (create-tracks
 	      (make-reaper-file 'sad items
 				:tempo (or tempo 60)
 				:sample-rate sample-rate
@@ -1807,7 +1814,6 @@ Here's where I pasted the data into the .RPP Reaper file:
 	      :max-channels 8
 	      :track-volumes init-volume
 	      :sort-track-names nil))
-	 (string ""))
     ;; when no duration is given and we don't use end-times, look for the file
     ;; that is playing the longest
     (unless (or envs-duration envs-use-end-times)

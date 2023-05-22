@@ -10,7 +10,7 @@
       SEL 0
       IID 1
       NAME ~a
-      VOLPAN 1 0 1 -1
+      VOLPAN ~a 0 1 -1
       SOFFS ~a
       PLAYRATE ~a ~a 0 -1 0 0.0025
       CHANMODE 0

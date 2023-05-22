@@ -49,7 +49,7 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :slippery-chicken)
 
 ;; this is a property list that holds the (partially binary) data for the
@@ -565,7 +565,9 @@
   (let* ((start-time (start-time reaper-envelope))
 	 (end-time (end-time reaper-envelope))
 	 (dur (- end-time start-time))
-	 (env-ls (env-mod (data reaper-envelope)))
+	 (env-ls (env-mod (data reaper-envelope)
+			  (parameter-min reaper-envelope)
+			  (parameter-max reaper-envelope)))
 	 (env-len (lastx env-ls))
 	 (min (parameter-min reaper-envelope))
 	 (max (parameter-max reaper-envelope))
@@ -1455,8 +1457,6 @@ Here's where I pasted the data into the .RPP Reaper file:
       (write-string string out :start track-end))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; todo: what about multichannel input files?
-;;;
 ;;; ****f* reaper/write-reaper-ambisonics-file
 ;;; AUTHOR
 ;;; Leon Focker: leon@leonfocker.de
@@ -1465,8 +1465,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; April 30th 2023.
 ;;; 
 ;;; DESCRIPTION
-;;; Create a reaper file that contains all files to be spatialized, the
-;;; neccessary plugins and automation data.
+;;; Create a reaper file that contains all the data to spatialize sndfiles using
+;;; the ambisonics method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - a list of sndfile objects: their angle-env and elevation-env arguments
@@ -1662,8 +1662,6 @@ Here's where I pasted the data into the .RPP Reaper file:
     (format t "~&succesfully edited ~a" file)
     file))
 
-;;; TODO: DOC
-;;; TODO: Conversion isn't 100% right - values need to go from -1 to 1.
 #+cl-ppcre
 (defun write-reaper-sad-file (list-of-sndfiles
 			      &key file
@@ -1674,6 +1672,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 				(init-volume .2511)
 				(envs-use-start-times t)
 				(envs-use-end-times t)
+				(env-conversion-srate 4)
 				envs-duration
 				envs-only)
 ;;; ****
@@ -1741,7 +1740,15 @@ Here's where I pasted the data into the .RPP Reaper file:
 		  (convert-polar-envelopes
 		   (nth (mod k (length angle-envs)) angle-envs)
 		   (nth (mod k (length elevation-envs)) elevation-envs)
-		   :minimum-samples (* (- end start) 2))
+		   :minimum-samples (* (- end start) env-conversion-srate))
+		;; atm, the envelopes go from -1 to 1 but we should scale them
+		;; to fit between 0 and 1:
+		(setf x (loop for x in x by #'cddr and y in (cdr x) by #'cddr
+			   collect x collect (rationalize (* (1+ y) .5)))
+		      y (loop for x in y by #'cddr and y in (cdr y) by #'cddr
+			   collect x collect (rationalize (* (1+ y) .5)))
+		      z (loop for x in z by #'cddr and y in (cdr z) by #'cddr
+			   collect x collect (rationalize (* (1+ y) .5))))
 		(setf string
 		      (insert-envelope
 		       string

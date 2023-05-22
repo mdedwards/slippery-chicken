@@ -142,6 +142,8 @@
 		  :initform 0)
    (parameter-max :accessor parameter-max :initarg :parameter-max :type number
 		  :initform 1)
+   (is-visible :accessor is-visible :initarg :is-visible  :type boolean
+	       :initform t)
    ;; the string that will be printed in the reaper file
    (env-string :accessor env-string :type string :initarg :env-string
 	       :initform (read-file-as-string (file-from-sc-dir
@@ -323,6 +325,7 @@
 		  (or (parameter-min env) "")
 		  (or (parameter-max env) ""))
 	  (generate-reaper-id)
+	  (if (is-visible env) 1 0)
 	  (generate-automation-data env)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -367,6 +370,7 @@
 ;;; track-volumes can be a number or a list of numbers, that the volumes of the
 ;;; tracks is set to. If the list is shorter than the umber of tracks created,
 ;;; it is looped.
+;;; todo: meaningful tracknames?
 (defmethod create-tracks ((rf reaper-file)
                           &key (min-channels 2) (max-channels 4)
 			    channels track-volumes)
@@ -655,6 +659,8 @@
 ;;; it is 0 but for example for panorama it could be -1. This is less important
 ;;; :parameter-max. The maximum value the envelope will have in reaper. Usually
 ;;; it is 1 but for example for volume it could be 2. This is less important.
+;;; :is-visible. t or nil, wheter the envelope will be visible (opened) in the
+;;; reaper-file.
 ;;;
 ;;; RETURN VALUE
 ;;; the envelope-object
@@ -665,7 +671,8 @@
 				   end-time
 				   parameter-slot
 				   parameter-min
-				   parameter-max)
+				   parameter-max
+				   (is-visible t))
 ;;; ****
   (unless (and (listp env) (= 0 (mod (length env) 2)))
     (error "env in make-reaper-envelope is either not a list or malformed: ~&~a"
@@ -690,7 +697,8 @@
 		 :end-time end-time
 		 :parameter-slot parameter-slot
 		 :parameter-min parameter-min
-		 :parameter-max parameter-max))
+		 :parameter-max parameter-max
+		 :is-visible is-visible))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-02 Tu>
@@ -768,8 +776,10 @@
                      :name (format nil "~a-~a"
                                    (pathname-name path)
                                    (if event (data event) "?"))
-                     :track (format nil "~a-~3,'0d" track-base-name
-                                    (1+ (mod i num-tracks)))
+                     :track (if track-base-name
+				(format nil "~a-~3,'0d" track-base-name
+					(1+ (mod i num-tracks)))
+				(pathname-name path))
                      :path path
                      :duration dur)
            ;; override sndfile::update to allow the duration to be longer than
@@ -860,7 +870,8 @@
 			      (list sndfiles nil 0.0
 				    :num-tracks (length sndfiles)
 				    :fade-in 0.0
-				    :fade-out 0.0))))
+				    :fade-out 0.0
+				    :track-base-name nil))))
     ;; must set start-times by hand now, as we had no rhythms
     (loop for item in items and i from 0 do
       (setf (start-time item) (nth (mod i (length start-times)) start-times)))
@@ -1519,6 +1530,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; after the already existing ones). Then you could edit the envelopes of the
 ;;; sndfiles and set envs-only to t. This way, the file will stay the same
 ;;; except for the envelopes.
+;;; :envs-visible. t or nil, wheter all envelopes will be visible (opened) in the
+;;; reaper-file.
 ;;; 
 ;;; RETURN VALUE
 ;;; path to the reaper file that was generated.
@@ -1572,7 +1585,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 				       (envs-use-start-times t)
 				       (envs-use-end-times t)
 				       envs-duration
-				       envs-only)
+				       envs-only
+				       (envs-visible t))
 ;;; ****
   ;; sanity checks:
   (unless (and (listp list-of-sndfiles)
@@ -1648,7 +1662,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 			     :parameter-slot (nth (mod k (length angle-slots))
 						  angle-slots)
 			     :start-time start
-			     :end-time end)
+			     :end-time end
+			     :is-visible envs-visible)
 			    i)
 		    string (insert-envelope
 			    string
@@ -1659,7 +1674,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 					      (mod k (length elevation-slots))
 					      elevation-slots)
 			     :start-time start
-			     :end-time end)
+			     :end-time end
+			     :is-visible envs-visible)
 			    i))))
     (with-open-file 
 	(out file :direction :output :if-exists :rename-and-delete)
@@ -1720,6 +1736,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; after the already existing ones). Then you could edit the envelopes of the
 ;;; sndfiles and set envs-only to t. This way, the file will stay the same
 ;;; except for the envelopes.
+;;; :envs-visible. t or nil, wheter all envelopes will be visible (opened) in the
+;;; reaper-file.
 ;;; 
 ;;; RETURN VALUE
 ;;; path to the reaper file that was generated.
@@ -1766,7 +1784,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 				(envs-use-start-times t)
 				(envs-use-end-times t)
 				envs-duration
-				envs-only)
+				envs-only
+				(envs-visible t))
 ;;; ****
   ;; sanity checks:
   (unless (and (listp list-of-sndfiles)
@@ -1848,7 +1867,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 			x
 			:parameter-slot (nth k '(6 14 22 30 38 46 54 62))
 			:start-time start
-			:end-time end)
+			:end-time end
+			:is-visible envs-visible)
 		       i)
 		      string
 		      (insert-envelope
@@ -1857,7 +1877,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 			y
 			:parameter-slot (nth k '(7 15 23 31 39 47 55 63))
 			:start-time start
-			:end-time end)
+			:end-time end
+			:is-visible envs-visible)
 		       i)
 		      string
 		      (insert-envelope
@@ -1866,7 +1887,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 			z
 			:parameter-slot (nth k '(8 16 24 32 40 48 56 64))
 			:start-time start
-			:end-time end)
+			:end-time end
+			:is-visible envs-visible)
 		       i)))))
     (with-open-file 
 	(out file :direction :output :if-exists :rename-and-delete)

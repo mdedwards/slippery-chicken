@@ -1544,7 +1544,8 @@ Here's where I pasted the data into the .RPP Reaper file:
  :envs-use-end-times t)
 
 
-;;; spatialize one sndfile with two channels, that are opposite of each other:
+;;; spatialize one sndfile with two channels, that are opposite and circling
+;;; each other:
 (write-reaper-ambisonics-file 
  `(,(make-sndfile "/E/code/feedback/intro.wav"
 		  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
@@ -1662,6 +1663,93 @@ Here's where I pasted the data into the .RPP Reaper file:
     (format t "~&succesfully edited ~a" file)
     file))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* reaper/write-reaper-sad-file
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; May 22nd 2023.
+;;; 
+;;; DESCRIPTION
+;;; Create a reaper file that contains all the data to spatialize sndfiles using
+;;; the spatial audio designer plugins. For this, the angle and elevation
+;;; arguments of the sndfiles wil be converted to the cartesian coordinate
+;;; system.
+;;; 
+;;; ARGUMENTS
+;;; - a list of sndfile objects: their angle-env and elevation-env arguments
+;;; will be used for spatialization.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;;
+;;; :file. The path to the file that shall be generated.
+;;; :start-times. A list of start times for each soundfile on each track in
+;;; seconds. If the list is shorter than the number of sndfiles, it is looped.
+;;; Default = '(0) - this means all files start at 0.
+;;; :sample-rate. The sample-rate that should be written to the reaper project.
+;;; Default = 48000.
+;;; :nr-of-master-channels. = How many channels the master bus will have. The
+;;; number of channels for each track is determined by the number of channels
+;;; the soundfiles on each track has, but is at least 2 and not more than 8.
+;;; :tempo. The BPM value that should be written to the reaper project, if
+;;; desired. Default = 60.
+;;; :init-volume. Volume multipliers for all faders.
+;;; -0dB would be 1, Default = -12dB.
+;;; :env-conversion-srate. This number is the minimum amount of times per second
+;;; that an additional point is calculated and converted from polar to cartesian
+;;; coordinates. Default = 4, which means that at least every .25 seconds there
+;;; will be a breakpoint. If this number is too low (< 1), the conversion from
+;;; polar to cartesian won't represent the original envelope very well.
+;;; :envs-use-start-times. If nil, all envelopes start at the minimal
+;;; start-time. If t, the envelopes use the start time of the respective
+;;; sndfile.
+;;; :envs-use-end-times. If nil, all envelopes end when every sndfile hast
+;;; stopped. If t, end when the respective sndfile stopps.
+;;; :envs-duration. If nil, the behavior of envs-use-end-times applies.
+;;; If a number, every automation envelope gets this duration -
+;;; envs-use-end-times will be ignored in this case.
+;;; envs-only. If t, don't write a file or insert any plugins, just re-write the
+;;; envelopes. This is usefull if you generate a file with this function and 
+;;; edited the project file by adding more tracks etc. (These should be added
+;;; after the already existing ones). Then you could edit the envelopes of the
+;;; sndfiles and set envs-only to t. This way, the file will stay the same
+;;; except for the envelopes.
+;;; 
+;;; RETURN VALUE
+;;; path to the reaper file that was generated.
+;;;
+;;; EXAMPLE
+#|
+;;; make three soundfiles into sndfile objects and spatialize them, while 
+;;; returning their paths in windows format.
+(set-sc-config 'reaper-files-for-windows t)
+(write-reaper-sad-file
+ `(,(make-sndfile "/E/pads.wav"
+			  :angle-env '(0 0  .5 .5  .8 4  1 3.5)
+			  :elevation-env '(0 0  .6 .5  2 .5))
+    ,(make-sndfile "/E/synths.wav"
+			  :angle-env '(0 0  .5 .5  .8 8  1 3.25)
+			  :elevation-env '(0 0.5  1 .5))
+    ,(make-sndfile "/E/drums.wav"
+			  :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
+			  :elevation-env '(0 0.5  1 .5)))
+ :file "/E/spatial.rpp"
+ :envs-use-start-times t
+ :envs-use-end-times t)
+
+
+;;; spatialize one sndfile with two channels, that are opposite and circling
+;;; each other:
+(write-reaper-sad-file 
+ `(,(make-sndfile "/E/code/feedback/intro.wav"
+		  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
+			       (0 .5  .5 1  .8 4.5  1 4))
+		  :elevation-env '(0 0  .6 .5  2 .5)))
+ :file "/E/code/test.rpp")
+|#
+;;; SYNOPSIS
 #+cl-ppcre
 (defun write-reaper-sad-file (list-of-sndfiles
 			      &key file
@@ -1670,9 +1758,9 @@ Here's where I pasted the data into the .RPP Reaper file:
 				(nr-of-master-channels 2)
 				(tempo 60)
 				(init-volume .2511)
+				(env-conversion-srate 4)
 				(envs-use-start-times t)
 				(envs-use-end-times t)
-				(env-conversion-srate 4)
 				envs-duration
 				envs-only)
 ;;; ****

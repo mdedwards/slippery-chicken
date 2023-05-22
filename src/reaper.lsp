@@ -373,21 +373,22 @@
 ;;; todo: meaningful tracknames?
 (defmethod create-tracks ((rf reaper-file)
                           &key (min-channels 2) (max-channels 4)
-			    channels track-volumes)
+			    channels track-volumes (sort-track-names t))
   ;; make sure channels is multiple of 2
   (when channels (setf channels (if (evenp (round channels))
 				    (round channels)
 				    (1+ (round channels)))))
   (unless track-volumes (setf track-volumes '(1)))
-  (unless (listp track-volumes)
-      (setf track-volumes (list track-volumes)))
+  (setf track-volumes (force-list track-volumes))
   (when (> min-channels max-channels)
     (setq max-channels min-channels))
   ;; items can of course use any name in their track slot, but get all unique
   ;; names here as this will determine how many tracks are written.
-  (let* ((track-names (sort (remove-duplicates (mapcar #'track (data rf))
-                                               :test #'string=)
-                            #'string<))
+  (let* ((unique-track-names (remove-duplicates (mapcar #'track (data rf))
+						:test #'string=))
+	 (track-names (if sort-track-names
+			  (sort unique-track-names #'string<)
+			  unique-track-names))
          ;; create an assoc-list using the track names as IDs and empty lists
          ;; (to cons into) with the items further down
          (al (make-assoc-list
@@ -1605,12 +1606,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 		 (nth (mod i (length start-times)) start-times)))
 	 (min-time (apply #'min start-times))
 	 (max-time 0)
-	 (angle-slots (if (listp angle-parameter-slot)
-			  angle-parameter-slot
-			  (list angle-parameter-slot)))
-	 (elevation-slots (if (listp elevation-parameter-slot)
-			      elevation-parameter-slot
-			      (list elevation-parameter-slot)))
+	 (angle-slots (force-list angle-parameter-slot))
+	 (elevation-slots (force-list (list elevation-parameter-slot)))
 	 (channel-nr (expt (1+ ambi-order) 2))
 	 (rf (create-tracks
 	      (make-reaper-file 'ambi items
@@ -1619,7 +1616,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 				:n-channels channel-nr
 				:master-volume init-volume)
 	      :channels channel-nr
-	      :track-volumes init-volume))
+	      :track-volumes init-volume
+	      :sort-track-names nil))
 	 (string ""))
     ;; when no duration is given and we don't use end-times, look for the file
     ;; that is playing the longest
@@ -1808,7 +1806,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 				:n-channels nr-of-master-channels
 				:master-volume init-volume)
 	      :max-channels 8
-	      :track-volumes init-volume))
+	      :track-volumes init-volume
+	      :sort-track-names nil))
 	 (string ""))
     ;; when no duration is given and we don't use end-times, look for the file
     ;; that is playing the longest

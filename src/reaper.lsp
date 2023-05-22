@@ -777,10 +777,9 @@
                      :name (format nil "~a-~a"
                                    (pathname-name path)
                                    (if event (data event) "?"))
-                     :track (if track-base-name
-				(format nil "~a-~3,'0d" track-base-name
-					(1+ (mod i num-tracks)))
-				(pathname-name path))
+                     :track (format nil "~3,'0d-~a"
+				    (1+ (mod i num-tracks))
+				    (or track-base-name (pathname-name path)))
                      :path path
                      :duration dur)
            ;; override sndfile::update to allow the duration to be longer than

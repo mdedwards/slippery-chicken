@@ -20280,14 +20280,17 @@ est)")))
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
-	    (write-spatial-reaper-file list-of-sndfiles
-				       :file "/tmp/reaper-test4.rpp")
+	    (write-reaper-ambisonics-file list-of-sndfiles
+					  :file "/tmp/reaper-test4.rpp")
+	    (write-reaper-sad-file list-of-sndfiles
+					  :file "/tmp/reaper-test5.rpp")
             (assoc-list-p (tracks rf1))
             (assoc-list-p (tracks rf2))
             (assoc-list-p (tracks rf3))
             (file-write-ok "/tmp/reaper-test.rpp" 4200)
             (file-write-ok "/tmp/reaper-test2.rpp" 4200)
-	    (file-write-ok "/tmp/reaper-test4.rpp" 17000)))))))
+	    (file-write-ok "/tmp/reaper-test4.rpp" 17000)
+	    (file-write-ok "/tmp/reaper-test5.rpp" 201000)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-11 Do>

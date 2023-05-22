@@ -1645,15 +1645,19 @@ Here's where I pasted the data into the .RPP Reaper file:
 			    string
 			    (make-reaper-envelope
 			     (nth (mod k (length angle-envs)) angle-envs)
-			     :parameter-slot (nth (mod k (length angle-slots)) angle-slots)
+			     :parameter-slot (nth (mod k (length angle-slots))
+						  angle-slots)
 			     :start-time start
 			     :end-time end)
 			    i)
 		    string (insert-envelope
 			    string
 			    (make-reaper-envelope
-			     (nth (mod k (length elevation-envs)) elevation-envs)
-			     :parameter-slot (nth (mod k (length elevation-slots)) elevation-slots)
+			     (nth (mod k (length elevation-envs))
+				  elevation-envs)
+			     :parameter-slot (nth
+					      (mod k (length elevation-slots))
+					      elevation-slots)
 			     :start-time start
 			     :end-time end)
 			    i))))

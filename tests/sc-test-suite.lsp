@@ -20248,7 +20248,7 @@ est)")))
 	 (list-of-sndfiles
 	  (loop for snd in sndfiles collect
 	       (make-sndfile snd
-			     :angle-env '(0 0  .5 .5  .8 8  1 3.25)
+			     :angle-env '((0 0  .5 .5  .8 8  1 3.25) (0 1 1 0))
 			     :elevation-env '(0 0  .6 .5  2 .5)))))
     (multiple-value-bind
           (items1 end-time1)
@@ -20274,23 +20274,24 @@ est)")))
           (probe-delete "/tmp/reaper-test2.rpp")
           (probe-delete "/tmp/reaper-test3.rpp")
 	  (probe-delete "/tmp/reaper-test4.rpp")
+	  (probe-delete "/tmp/reaper-test5.rpp")
           (sc-test-check
             ;; We'll get warnings about durations but ignore these for test
             ;; purposes 
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
-	    (write-reaper-ambisonics-file list-of-sndfiles
+	    #+cl-ppcre(write-reaper-ambisonics-file list-of-sndfiles
 					  :file "/tmp/reaper-test4.rpp")
-	    (write-reaper-sad-file list-of-sndfiles
+	    #+cl-ppcre(write-reaper-sad-file list-of-sndfiles
 					  :file "/tmp/reaper-test5.rpp")
             (assoc-list-p (tracks rf1))
             (assoc-list-p (tracks rf2))
             (assoc-list-p (tracks rf3))
             (file-write-ok "/tmp/reaper-test.rpp" 4200)
             (file-write-ok "/tmp/reaper-test2.rpp" 4200)
-	    (file-write-ok "/tmp/reaper-test4.rpp" 17000)
-	    (file-write-ok "/tmp/reaper-test5.rpp" 201000)))))))
+	    #+cl-ppcre(file-write-ok "/tmp/reaper-test4.rpp" 14500)
+	    #+cl-ppcre(file-write-ok "/tmp/reaper-test5.rpp" 201000)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-11 Do>

@@ -6633,6 +6633,7 @@ yes_foo, 1 2 3 4;
 ;;; import the ppcre library
 ;;; you could (set-sc-config 'path-to-ppcre "...") to install into another
 ;;; directory.
+#+(not cl-ppcre)
 (defun import-ppcre (&key update (mkdir "/usr/bin/mkdir") (git "/usr/bin/git"))
 ;;; ****
   ;; set the directory:
@@ -6666,7 +6667,7 @@ yes_foo, 1 2 3 4;
       #-(and (or ccl sbcl) unix)
       (warn "utilities::import-ppcre: Sorry but this currently only runs ~
            with SBCL or CCL on a unix system. Please install the ppcre-library ~
-           by hand into ~a." (get-sc-config 'path-to-ppcre)))))
+           by hand and load it before loading SC"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

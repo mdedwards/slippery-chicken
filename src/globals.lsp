@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  14:42:38 Thu May 11 2023 CEST
+;;; $$ Last modified:  19:15:31 Mon Jun 12 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;

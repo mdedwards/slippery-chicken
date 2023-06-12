@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:09:39 Thu May  4 2023 CEST
+;;; $$ Last modified:  19:27:50 Mon Jun 12 2023 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4304,11 +4304,12 @@ WARNING:
     (shell "/usr/bin/epstopdf" file)
     #+darwin
     (let ((ps2pdf "/usr/local/bin/ps2pdf")
-          (epstopdf "/Library/TeX/texbin/epstopdf"))
-      (cond ((probe-file ps2pdf) (shell ps2pdf file))
-            ((probe-file epstopdf) (shell epstopdf file))
+          (epstopdf "/Library/TeX/texbin/epstopdf")
+          (pdf (concatenate 'string (path-minus-extension file) ".pdf")))
+      (cond ((probe-file ps2pdf) (shell ps2pdf file) pdf)
+            ((probe-file epstopdf) (shell epstopdf file "-o" pdf))
             (t (warn "~&utilities::system-open-file: Can't convert to pdf,
-                     neiher ~a nor ~a found" ps2pdf epstopdf))))
+                      neither ~a nor ~a found" ps2pdf epstopdf))))
     (setf file (concatenate 'string
                             (directory-namestring file)
                             (pathname-name file)

@@ -4188,6 +4188,18 @@ seq-num 5, VN, replacing G3 with B6
     midi-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jun 17 14:28:41 2023, Heidhausen -- to avoid code dpulication in
+;;; clm-lay and reaper-play 
+(defmethod get-snds-from-palette ((sc slippery-chicken) sfp-refs sfp)
+  (when sfp-refs
+    (make-cscl
+     (loop for sfpr in sfp-refs
+           append (get-snds sfpr
+                            (if sfp
+                                sfp
+                                (sndfile-palette sc)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May 10 13:52:19 BST 2012: Conformed robodoc entry
 
@@ -4755,20 +4767,10 @@ seq-num 5, VN, replacing G3 with B6
                           sum len))
          ;; DJR Thu  5 Sep 2019 12:41:00 BST
          ;; Update snds and snds2 to accept multiple sound-file-palette-refs
-         (snds (when sound-file-palette-ref
-                 (make-cscl
-                  (loop for sfpr in sound-file-palette-ref
-                     append (get-snds sfpr
-                                      (if sndfile-palette
-                                          sndfile-palette
-                                          (sndfile-palette sc)))))))
-         (snds2 (when sound-file-palette-ref2
-                  (make-cscl
-                   (loop for sfpr in sound-file-palette-ref2
-                      append (get-snds sfpr
-                                       (if sndfile-palette
-                                           sndfile-palette
-                                           (sndfile-palette sc)))))))
+         (snds (get-snds-from-palette sc sound-file-palette-ref
+                                      sndfile-palette))
+         (snds2 (get-snds-from-palette sc sound-file-palette-ref2
+                                       sndfile-palette))
          #|
          ;; DJR Mon 16 Sep 2019 01:26:11 BST ;
          ;; We'll sort this later. See below. ;
@@ -10775,7 +10777,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  15:12:40 Thu May 11 2023 CEST
+;;; $$ Last modified:  14:31:09 Sat Jun 17 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)
@@ -11257,6 +11259,5 @@ data: (11 15)
       (format stream "~%~%"))
     csound-file))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

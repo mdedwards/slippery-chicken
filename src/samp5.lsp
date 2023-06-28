@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  18:43:12 Fri Sep 30 2022 CEST
+;;; $$ Last modified:  20:24:44 Wed Jun 28 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -56,11 +56,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Places a sound in stereo space no matter whether input is stereo or mono.
 ;;; if degree = 0 and input is stereo, then both channels will be put in the
-;;; left output channel only vice-versa when degree = 90.  Check out 
-;;; get-stereo-scalers for details how the channel scaling is effected.  
-;;; Mono input files are handled as per usual.
-;;; If more than two channels are used then the two channels the sound
-;;; is placed between will be randomly chosen.
+;;; left output channel only vice-versa when degree = 90. If more than two
+;;; channels are used then the two channels the sound is placed between will
+;;; be randomly chosen.
 
 ;;; Get the channel scaler values for placing a stereo signal in
 ;;; a different stereo space.
@@ -91,6 +89,13 @@
             b-b (/ b-b max)))
     (values a-a a-b b-a b-b)))
             
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun need-src (srt srt-env srt-scaler)
+  (not (every #'(lambda (x)
+                  (equal-within-tolerance x 1.0))
+              (loop for y in (cdr srt-env) by #'cddr collect
+                       (+ srt (* srt-scaler y))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sun Jul 17 10:11:23 2016 -- write .c .o .so etc. files in the bin
 ;;; directory. definstrument can handle a :c-file keyword only when a direct
@@ -150,8 +155,7 @@
            (dur (if (zerop duration)
                     max-out-dur
                     (min max-out-dur duration)))
-           ;; force srt
-           (do-src (not (= 1 srt)))
+           (do-src (need-src srt srt-env srt-scaler))
            (genA (if do-src
                      (make-src :input fA :srate srt :width width)
                      ;; got to respecify start sample for some reason....

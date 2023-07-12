@@ -3,8 +3,8 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 1,
-			"revision" : 7,
+			"minor" : 5,
+			"revision" : 2,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -44,7 +44,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 449.833374000000049, 248.0, 96.0, 22.0 ],
+					"patching_rect" : [ 294.833374000000049, 221.0, 96.0, 22.0 ],
 					"text" : "print osc-sc-eval"
 				}
 
@@ -361,7 +361,7 @@
 					"patching_rect" : [ 133.0, 39.0, 173.0, 61.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 7.0, 8.0, 173.0, 61.0 ],
-					"text" : "(expt 2.3 17)",
+					"text" : "(expt 2 3)",
 					"textcolor" : [ 0.101961, 0.121569, 0.172549, 1.0 ]
 				}
 
@@ -387,7 +387,7 @@
 					"patching_rect" : [ 19.0, 248.0, 196.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 7.0, 104.0, 196.0, 22.0 ],
-					"text" : "1410499.9",
+					"text" : "8",
 					"textcolor" : [ 0.101961, 0.121569, 0.172549, 1.0 ]
 				}
 
@@ -485,14 +485,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-3", 1 ],
 					"midpoints" : [ 205.5, 246.0, 205.5, 246.0 ],
-					"order" : 1,
-					"source" : [ "obj-14", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-7", 0 ],
 					"order" : 0,
 					"source" : [ "obj-14", 0 ]
 				}
@@ -501,7 +493,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-9", 0 ],
-					"order" : 2,
+					"order" : 1,
 					"source" : [ "obj-14", 0 ]
 				}
 
@@ -583,7 +575,7 @@
  ],
 		"dependency_cache" : [ 			{
 				"name" : "osc-sc-eval.maxpat",
-				"bootpath" : "~/sc/doc/examples",
+				"bootpath" : "~/Library/Mobile Documents/com~apple~CloudDocs/sc/doc/examples",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1

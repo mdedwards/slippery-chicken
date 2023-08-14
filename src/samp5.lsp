@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  20:24:44 Wed Jun 28 2023 CEST
+;;; $$ Last modified:  13:10:28 Mon Aug 14 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -92,7 +92,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun need-src (srt srt-env srt-scaler)
   (not (every #'(lambda (x)
-                  (equal-within-tolerance x 1.0))
+                  (sc::equal-within-tolerance x 1.0))
               (loop for y in (cdr srt-env) by #'cddr collect
                        (+ srt (* srt-scaler y))))))
 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:25:40 Sat Mar  4 2023 CET
+;;; $$ Last modified:  17:14:48 Wed Aug 23 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1792,9 +1792,6 @@ data: ((2 4) - S S - S - S S S - S S)
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 12.12.11 SAR: Added ROBODoc info
-
 ;;; ****m* rthm-seq-bar/auto-put-tuplet-bracket-on-beats
 ;;; DESCRIPTION
 ;;; Given a rthm-seq-bar object with tuplet rhythms and an indication of which
@@ -5875,8 +5872,11 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
     (error "~a~%rthm-seq-bar::invert: this method only works with event (not ~
             rhythm) objects." rsb))
   (let* ((plist (if pitch-list (make-cscl pitch-list) (make-cscl '(c4))))
+         ;; MDE Wed Aug 23 17:14:37 2023, Heidhausen -- handel grace notes (by
+         ;; removing them)
+         (rthms (remove-if #'is-grace-note (my-copy-list (rhythms rsb))))
          last pitch)
-    (loop for e in (rhythms rsb) do
+    (loop for e in rthms do ; (rhythms rsb) do
          (if (is-rest e)
              (progn
                (when (or (not pitch) (not tie))
@@ -5890,6 +5890,9 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
            (setf (is-tied-from last) t
                  (is-tied-to e) t))
          (setq last e))
+    ;; MDE Wed Aug 23 17:14:27 2023, Heidhausen -- we have to replace them now
+    ;; we've copied and removed grace notes
+    (setf (rhythms rsb) rthms)
     (consolidate-rests rsb)
     rsb))
 
@@ -5913,6 +5916,13 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
        (if (is-tied-to r)
            (force-rest r)
            (return)))) ; rest or attacked note forces a break
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod add-tempo ((rsb rthm-seq-bar) tempo)
+  (if (event-p (first (rhythms rsb)))
+      (setf (tempo-change (first (rhythms rsb))) tempo)
+      (error "rthm-seq-bar::add-tempo: no events in bar: ~a" rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

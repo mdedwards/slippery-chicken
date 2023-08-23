@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:12:34 Thu May  4 2023 CEST
+;;; $$ Last modified:  19:57:33 Wed Aug 23 2023 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3974,7 +3974,6 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Fri Apr 20 09:12:59 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/auto-beam
@@ -3997,6 +3996,8 @@ NIL
 ;;;   of rhythms can be found for each beat of the bar. If T, a warning will be
 ;;;   printed when an exact beat cannot be found for each beat of the bar. 
 ;;;   Default = T.
+;;; - players, a single symbol or list of players to process. Default = NIL =
+;;;   process all players in the ensemble 
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -4021,9 +4022,12 @@ NIL
 
   |#
 ;;; SYNOPSIS
-(defmethod auto-beam ((sc slippery-chicken) &optional (beat nil) (check-dur t))
+(defmethod auto-beam ((sc slippery-chicken) &optional (beat nil) (check-dur t)
+                                                      players)
 ;;; ****
-  (loop for player in (players sc) do
+  ;; MDE Wed Aug 23 19:57:16 2023, Heidhausen -- don't do all players by force
+  (setq players (if players (force-list players) (players sc)))
+  (loop for player in players do
         (loop 
             for bnum from 1 to (num-bars sc) 
             for bar = (get-bar sc bnum player)

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:14:48 Wed Aug 23 2023 CEST
+;;; $$ Last modified:  19:59:02 Wed Aug 23 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1963,8 +1963,10 @@ data: ((2 4) - S S - S - S S S - S S)
 
   |#
 ;;; SYNOPSIS
-(defmethod auto-beam ((rsb rthm-seq-bar) &optional (beat nil) (check-dur t))
+(defmethod auto-beam ((rsb rthm-seq-bar) &optional (beat nil) (check-dur t)
+                                                   ignore)
 ;;; ****
+  (declare (ignore ignore))
   (unless (is-rest-bar rsb)
     (let ((beats (get-beats rsb beat check-dur))
           (start nil)

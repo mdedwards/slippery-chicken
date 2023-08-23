@@ -8994,6 +8994,30 @@ data: (11 15)
                 (sort result #'< :key #'second)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/quarter-duration
+;;; DATE 
+;;; 23rd August 2023
+;;; 
+;;; DESCRIPTION
+;;; return the duration in quarter notes of a slippery-chicken piece
+;;; 
+;;; ARGUMENTS
+;;; the slippery chicken object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; start-bar and end-bar, both integers or if nil will default to 1 and the
+;;; number of bars in the piece 
+;;; 
+;;; RETURN VALUE
+;;; a float: total number of quarters
+;;; 
+;;; SYNOPSIS
+(defmethod quarter-duration ((sc slippery-chicken) &optional start-bar end-bar)
+;;; ****
+  (apply #'+ (map-over-bars sc start-bar end-bar (first (players sc))
+                            #'bar-duration)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -10777,7 +10801,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  15:41:00 Mon Aug 21 2023 CEST
+;;; $$ Last modified:  12:33:14 Wed Aug 23 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

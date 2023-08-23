@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  19:15:31 Mon Jun 12 2023 CEST
+;;; $$ Last modified:  10:56:49 Wed Aug 23 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -185,7 +185,7 @@
      (diapason 440)
      ;; MDE Thu Dec 15 11:29:25 2022, Heidhausen -- some systems need to escape
      ;; spaces in paths otherwise they won't open in a shell called from lisp 
-     (system-open-file-escape-spaces t)
+     (system-open-file-escape-spaces nil)
      (autoconvert-eps-to-pdf nil)
      ;; LF  Thu Mar  30 14:04:33 2023
      ;; If true, when reaper files are written with #'write-reaper-file,

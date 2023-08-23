@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:27:50 Mon Jun 12 2023 CEST
+;;; $$ Last modified:  10:57:07 Wed Aug 23 2023 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4271,6 +4271,7 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:40:43 2013 -- 
 (defun shell (command &rest arguments)
+  ;; (print command) (print arguments)
   #+sbcl
   (cl-user::process-exit-code
    (cl-user::run-program command arguments :output *standard-output*
@@ -4282,6 +4283,10 @@ WARNING:
   #-(or sbcl ccl)
   (warning "utilities::shell: Can't execute ~a on your system. Sorry."
            command))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun quotify (string)
+  (concatenate 'string "\"" string "\""))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:54:14 2013 
@@ -4303,17 +4308,17 @@ WARNING:
     #+linux
     (shell "/usr/bin/epstopdf" file)
     #+darwin
-    (let ((ps2pdf "/usr/local/bin/ps2pdf")
-          (epstopdf "/Library/TeX/texbin/epstopdf")
-          (pdf (concatenate 'string (path-minus-extension file) ".pdf")))
-      (cond ((probe-file ps2pdf) (shell ps2pdf file) pdf)
-            ((probe-file epstopdf) (shell epstopdf file "-o" pdf))
+    (let* ((ps2pdf "/usr/local/bin/ps2pdf")
+           (epstopdf "/Library/TeX/texbin/epstopdf")
+           (pdf (concatenate 'string (path-minus-extension file) ".pdf"))
+           (qfile file) ;(quotify file))
+           (qpdf pdf)) ;(quotify pdf)))
+      ;; (print qfile) (print qpdf)
+      (cond ((probe-file ps2pdf) (shell ps2pdf qfile qpdf))
+            ((probe-file epstopdf) (shell epstopdf qfile "-o" qpdf))
             (t (warn "~&utilities::system-open-file: Can't convert to pdf,
-                      neither ~a nor ~a found" ps2pdf epstopdf))))
-    (setf file (concatenate 'string
-                            (directory-namestring file)
-                            (pathname-name file)
-                            ".pdf")))
+                      neither ~a nor ~a found" ps2pdf epstopdf)))
+      (setq file qpdf)))
   #+darwin (shell "/usr/bin/open" file)
   #+linux
   (let ((xdg "/usr/bin/xdg-open"))

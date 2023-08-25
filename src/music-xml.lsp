@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  11:18:33 Sun Jun 26 2022 CEST
+;;; $$ Last modified:  09:11:32 Fri Aug 25 2023 CEST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -194,7 +194,7 @@
   (declare (ignore num-flags))
   ;; (print silent)
   (flet ((no-xml-mark (mark)
-           (when silent
+           (unless silent
              (warn "music-xml:xml-get-mark: Sorry but ~a is not yet available ~
                     for sc->Music-Xml; ignoring" mark))
            nil))

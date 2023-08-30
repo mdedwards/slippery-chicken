@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:06:46 Fri May 12 2023 CEST
+;;; $$ Last modified:  12:24:14 Wed Aug 30 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3927,6 +3927,23 @@
     ;; remember: fs1 will be sorted lower when optional sort arg is t
     (= 4 (nth-value 1 (find-nearest-pitch '(b0 d1 cs2 d3 fs1 a4) 'fs3 t)))))
 
+;;; MDE Wed Aug 30 12:12:45 2023, Heidhausen 
+(sc-deftest test-partial-nodes ()
+    (in-scale :quarter-tone)
+  (let ((pn6 (partial-nodes 'd3 6))
+        (pn9 (partial-nodes 'e5 9)))
+    (sc-test-check
+      (equalp (mapcar #'id (partial-nodes 'd3 7))
+              '(EQS3 AF3 BQS3 EQS4 BQS4 BQS5))
+      (= 2 (length pn6))
+      (= 6 (length pn9))
+      (equal-within-tolerance 176.199 (frequency (first pn6)) .001)
+      (equal-within-tolerance .16 (pitch-bend (first pn6)))
+      (equal-within-tolerance .02 (pitch-bend (second pn6)))
+      (equalp (mapcar #'id pn9) '(FS5 AQF5 D6 FS6 FS7 FS8))
+      (equal-within-tolerance 5933.296 (frequency (sixth pn9)) .001)
+      (equal-within-tolerance .18 (pitch-bend (third pn9))))))
+      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Oct 18 15:07:34 2018 -- 
 (sc-deftest test-round-to-nearest ()

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  12:12:03 Wed Aug 30 2023 CEST
+;;; $$ Last modified:  12:26:25 Wed Aug 30 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3969,7 +3969,7 @@ data: D1
 ;;; August 30th 2023
 ;;; 
 ;;; DESCRIPTION
-;;; Calculate the pitches that represent the nodal/touching point to achieve a
+;;; Calculate the pitches that represent the nodal/touching points to achieve a
 ;;; particular partial number from a given open-string. Note that despite the
 ;;; general rule that nodes are available from one to 1- the desired partial,
 ;;; not all can be used because they coincide with lower-order

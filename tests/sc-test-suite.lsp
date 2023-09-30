@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:17:56 Mon Sep 25 2023 CEST
+;;; $$ Last modified:  16:09:17 Sat Sep 30 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20792,30 +20792,67 @@
 ;;; test-event-list-to-csound-score
 
 (sc-deftest test-event-list-to-csound-score ()
-            (let* ((rthms '(q e s s q e s te fs))
-                   (notes '(c4 d4 e4 f4))
-                   (notes-len (length notes))
-                   (events (events-update-time
-                            (loop
-                              for rthm in rthms
-                              for i from 0
-                              collect
-                              (make-event (nth (mod i notes-len)
-                                               notes)
-                                          rthm
-                                          :midi-channel (1+ (mod i 3)))))))
-              (probe-delete "/tmp/test.sco")
-              (sc-test-check
-               (event-list-to-csound-score events
-                                           '(1 2)
-                                           '("ins1" "ins2")
-                                           :csound-file "/tmp/test.sco")
-               (probe-delete "/tmp/test.sco")
-               (event-list-to-csound-score events
-                                           nil
-                                           '(1)
-                                           :csound-file "/tmp/test.sco"))))
-                                           
+  (let* ((rthms '(q e s s q e s te fs))
+         (notes '(c4 d4 e4 f4))
+         (notes-len (length notes))
+         (events (events-update-time
+                  (loop
+                    for rthm in rthms
+                    for i from 0
+                    collect
+                    (make-event (nth (mod i notes-len)
+                                     notes)
+                                rthm
+                                :midi-channel (1+ (mod i 3)))))))
+    (probe-delete "/tmp/test.sco")
+    (sc-test-check
+      (event-list-to-csound-score events
+                                  '(1 2)
+                                  '("ins1" "ins2")
+                                  :csound-file "/tmp/test.sco")
+      (probe-delete "/tmp/test.sco")
+      (event-list-to-csound-score events
+                                  nil
+                                  '(1)
+                                  :csound-file "/tmp/test.sco"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Sat Sep 30 15:59:11 2023
+;;; test-insert-bar-with-grace-notes
+
+(sc-deftest test-insert-bar-with-grace-notes ()
+  (in-scale :chromatic)
+  (let ((sc
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((vln (violin))))
+           :tempo-map '((1 (q 120)))
+           :set-palette '((set1 ((c4 d4 e4 f4 g4 a4))))
+           :set-map '((1 (set1 set1)))
+           :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
+                                      :pitch-seq-palette ((1 2 3 4 5)
+                                                          (5 4 3 2 1)))))
+           :rthm-seq-map '((1 ((vln (seq1 seq1)))))))
+        (bar (make-rthm-seq-bar '((4 4) (w)))))
+    ;;; fill the bar with rthms containing grace notes
+    (fill-with-rhythms bar
+                       (loop for p in '(b4 as4 d5 g4 f4)
+                             for r in '(q e. g s h)
+                             collect (make-event p r)))
+    (insert-bar (piece sc) bar 1 1 'vln 2 '(2 4 8 3 2))
+    (update-slots sc)
+    ;;; remove irrelevant tempo-changes in second bar
+    (delete-tempi sc 2)
+    ;;; remove extraneous time signatures (due to the bar added)
+    (update-write-time-sig2 (piece sc))
+    (update-slots sc)
+    (probe-delete "/tmp/insert-grace-notes.xml")
+    (probe-delete "/tmp/insert-grace-notes.eps")
+    (write-xml sc :file "/tmp/insert-grace-notes.xml")
+    (cmn-display sc :file "/tmp/insert-grace-notes.eps")
+    (sc-test-check
+      (file-write-ok "/tmp/insert-grace-notes.xml")
+      (file-write-ok "/tmp/insert-grace-notes.eps"))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

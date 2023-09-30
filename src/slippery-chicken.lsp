@@ -6416,6 +6416,9 @@ data: NIL
 ;;;   engraver's spacing algorithm used, according to context).
 ;;; - :accidental-style. String. See the lilypond documentation for details of
 ;;;   applicable styles and their results. Default = 'modern.
+;;; - :links. T or NIL to indicate whether the generated PDF should contain
+;;;   notes that are clickable links to the lilypond source code or not. Default
+;;;   = T. 
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6560,6 +6563,9 @@ data: NIL
        dummy-staves
        ;; MDE Thu Feb  2 14:45:21 2017 -- fixed width rhythmic notation
        fixed-width
+       ;; MDE Sat Sep 30 16:55:40 2023, Heidhausen -- the PDF should contain
+       ;; links to the source code?
+       (links t)
        ;; sim to rehearsal letters
        (tempi-all-players t)
        (ekmelic-style "gost"))
@@ -6810,6 +6816,8 @@ data: NIL
         (princ (get-lp-key-sig (first (key-sig sc)) (second (key-sig sc))) out)
         (terpri out)
         (princ "  \\numericTimeSignature" out)
+        (terpri out)
+        (princ (if links "\\pointAndClickOn" "\\pointAndClickOff") out)
         (terpri out)
         (princ "}" out)
         (terpri out)
@@ -10801,7 +10809,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  10:33:35 Sat Aug 26 2023 CEST
+;;; $$ Last modified:  17:16:26 Sat Sep 30 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

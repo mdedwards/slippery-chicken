@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  21:08:09 Mon Oct  3 2022 CEST
+;;; $$ Last modified:  18:39:42 Sat Oct 14 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -140,7 +140,7 @@
   ((record-path :accessor record-path :type string :initarg :record-path
                 :initform "/tmp/")
    (samplerate :accessor samplerate :type integer :initarg :samplerate
-	       :initform 44100)
+               :initform 44100)
    (time-sig :accessor time-sig :initarg :time-sig :initform '(4 4))
    (tempo :accessor tempo :type number :initarg :tempo :initform 60)
    ;; zoom factor for the time line. At the moment this gives me about 80
@@ -255,10 +255,10 @@
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
           (fade-out ri) (name ri) (start ri) (play-rate  ri)
           (preserve-pitch ri)
-	  (os-format-path (path ri) 
-			  (if (get-sc-config 'reaper-files-for-windows)
-			      'windows
-			      'unix))))
+          (os-format-path (path ri) 
+                          (if (get-sc-config 'reaper-files-for-windows)
+                              'windows
+                              'unix))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod (setf track) :around (track (ri reaper-item))
@@ -282,8 +282,8 @@
 ;;; settings 
 (defmethod write-header ((rf reaper-file) stream master-channels)
   (format stream (header rf) (cursor rf) (zoom rf) (record-path rf)
-	  (samplerate rf) (samplerate rf) (bpm (tempo rf)) (num (time-sig rf))
-	  (denom (time-sig rf)) master-channels))
+          (samplerate rf) (samplerate rf) (bpm (tempo rf)) (num (time-sig rf))
+          (denom (time-sig rf)) master-channels))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod write-footer ((rf reaper-file) stream)
@@ -395,7 +395,7 @@
         (loop for m in markers and i from 1 do
           (if (numberp m)
               (write-reaper-marker i m "" out)
-              (apply #'write-reaper-marker m))))
+              (apply #'write-reaper-marker (append m (list out))))))
       ;; loop through the tracks and write them
       (loop for track in (data (tracks rf)) do (write-track track out))
       (write-footer rf out))

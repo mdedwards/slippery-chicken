@@ -10440,7 +10440,7 @@ data: (11 15)
 ;;;   NB: When chords should be able to be processed (see above), the function
 ;;;       needs to be able to process events containing chords and return a list
 ;;;       of the length of the chord (e.g. via is-chord).
-;;;       For further detail, take a look at csound.lsp.
+;;;       For further detail, take a look at csound-p-fields-simple.
 ;;; - :comments. A boolean indicating whether additional comments should be
 ;;;   included into the generated score. The comments include the title,
 ;;;   composer and generation date of the sc piece resp. the csound-score.
@@ -10809,7 +10809,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  17:16:26 Sat Sep 30 2023 CEST
+;;; $$ Last modified:  20:43:54 Thu Oct 12 2023 CEST
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  10:52:29 Wed Oct 18 2023 CEST
+;;; $$ Last modified:  19:16:08 Wed Oct 18 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -51,28 +51,6 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :slippery-chicken)
-
-#|
-;;; one simple way of algorithmically generating a reaper file:
-(let* ((tempo 240)
-       (items
-         (make-reaper-items1
-          (get-sndfiles
-           (concatenate 'string
-                        cl-user::+slippery-chicken-home-dir+
-                        "tests/test-sndfiles-dir-2"))
-          '(e (w) (q) q (h) (e) e. (q.) q (w) e (w) e.)
-           tempo
-          :input-start '(0 .1 .2)
-          :play-rate '(1 1.02 1 .98 1.01 1 1.02)
-          :preserve-pitch t))
-       ;; NB the tempo of the reaper file is independent of the items
-       (rf (make-reaper-file 'reaper-test items :tempo tempo)))
-  (write-reaper-file rf))
-
-;;; or to write a reaper file just with markers (at times in seconds)
-(write-reaper-file (make-reaper-file 'test nil) :markers '(1 2 3.5 7))
-|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a single item/clip/sound object on a track
@@ -369,11 +347,69 @@
       rf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* reaper/write-reaper-file
+;;; DESCRIPTION
+;;;
+;;; Write a reaper file from the reaper-items in the data slot.
 ;;; By default the file will be written in slippery-chicken's 'default-dir using
-;;; the ID as file name, but :file will override this.
+;;; the object's ID as file name, but :file will override this. 
+;;; 
+;;; ARGUMENTS
+;;; - a reaper-file object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments: 
+;;; - :file. The path of the reaper file to write. Default will be the id slot
+;;;   of the reaper-file object + .rpp, placed in the default-directory of
+;;;   slippery-chicken (itself /tmp by default).
+;;; - :markers. These are either a simple list of times (in seconds) or a
+;;;   mixture containing sublists such as (marker-number time-in-secs
+;;;   label-string colour), or just the first two or three of those. See the
+;;;   write-reaper-marker method for details. Default = NIL.
+;;; - :min-channels (default 2) and :max-channels (default 4). These are the
+;;;   minimum and maximum channel counts of the reaper-tracks which are usually
+;;;   dependent upon or influence the number of channels reflected in the sound
+;;;   files' playback. A sound file could have any number of channels of course
+;;;   and usually we'd use the maximum number of channels a track's sound files
+;;;   have to set the channels slot, but here we can limit these to something
+;;;   reasonable (or e.g. force 4-channel tracks even though all sound files are
+;;;   stereo).
+;;; 
+;;; RETURN VALUE
+;;; The patch to the generated reaper file.
+;;; 
+;;; EXAMPLE
+#|
+;;; one simple way of algorithmically generating a reaper file:
+(let* ((tempo 240)
+       (items
+         (make-reaper-items1
+          (get-sndfiles
+           (concatenate 'string
+                        cl-user::+slippery-chicken-home-dir+
+                        "tests/test-sndfiles-dir-2"))
+          '(e (w) (q) q (h) (e) e. (q.) q (w) e (w) e.)
+           tempo
+          :input-start '(0 .1 .2)
+          :play-rate '(1 1.02 1 .98 1.01 1 1.02)
+          :preserve-pitch t))
+       ;; NB the tempo of the reaper file is independent of the items
+       (rf (make-reaper-file 'reaper-test items :tempo tempo)))
+  (write-reaper-file rf))
+
+;;; or to write a reaper file just with markers (at times in seconds)
+(write-reaper-file (make-reaper-file 'test nil) :markers '(1 2 3.5 7))
+
+;;; mixed marker data starting with simple times
+(write-reaper-file (make-reaper-file 'test nil)
+  :markers '(1 2 3.5 7 (49 8.021 "nice label") ; number 49, time 8.021, named 
+             (562 9.1 "better label" blue))) ; sim. but with a recognised colour
+|#
+;;; SYNOPSIS
 (defmethod write-reaper-file ((rf reaper-file)
                               &key file markers
                                    (min-channels 2) (max-channels 4))
+;;; ****
   (let ((outfile (if file
                      file
                      (default-dir-file (format nil "~a.rpp"
@@ -390,8 +426,6 @@
       ;; writes markers before <PROJBAY> (the last entry in our header file) but
       ;; doesn't complain when they come afterwards
       (when markers
-        ;; these are either a list of times (in seconds) or a list of sublists
-        ;; with data in the order we'd supply to write-reaper-marker
         (loop for m in markers and i from 1 do
                  (if (numberp m)
                      (write-reaper-marker i m "" out)

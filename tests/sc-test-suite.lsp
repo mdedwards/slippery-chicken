@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:09:17 Sat Sep 30 2023 CEST
+;;; $$ Last modified:  10:51:52 Wed Oct 18 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8327,7 +8327,7 @@
           (sf2 (msf 1 2))
           (sf3 (msf 2 4 .8))
           (sf4 (msf 1 3 .9))
-          ;;  MDE Tue Feb  7 17:12:33 2023, Heidhausen -- remake some to get
+          ;; MDE Tue Feb  7 17:12:33 2023, Heidhausen -- remake some to get
           ;; whole sndfile and test spectral centroid while we're at it
           (sfa4 (msf 2 4))
           (sfa5 (msf 2 5))
@@ -20264,7 +20264,14 @@
           (probe-delete "/tmp/reaper-test.rpp")
           (probe-delete "/tmp/reaper-test2.rpp")
           (probe-delete "/tmp/reaper-test3.rpp")
+          (probe-delete "/tmp/test.rpp")
           (sc-test-check
+            ;; MDE Wed Oct 18 10:09:21 2023, Heidhausen -- check marker writing
+            ;; throws no errors when writing to the default path
+            (write-reaper-file (make-reaper-file 'test nil)
+                               :markers '(1 2 3.5 7 (49 8.021 "nice label")
+                                          (562 9.1 "better label" blue)))
+            (file-write-ok "/tmp/test.rpp" 1500)
             ;; We'll get warnings about durations but ignore these for test
             ;; purposes 
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")

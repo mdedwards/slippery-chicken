@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  21:08:09 Mon Oct  3 2022 CEST
+;;; $$ Last modified:  10:52:29 Wed Oct 18 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -140,7 +140,7 @@
   ((record-path :accessor record-path :type string :initarg :record-path
                 :initform "/tmp/")
    (samplerate :accessor samplerate :type integer :initarg :samplerate
-	       :initform 44100)
+               :initform 44100)
    (time-sig :accessor time-sig :initarg :time-sig :initform '(4 4))
    (tempo :accessor tempo :type number :initarg :tempo :initform 60)
    ;; zoom factor for the time line. At the moment this gives me about 80
@@ -255,10 +255,10 @@
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
           (fade-out ri) (name ri) (start ri) (play-rate  ri)
           (preserve-pitch ri)
-	  (os-format-path (path ri) 
-			  (if (get-sc-config 'reaper-files-for-windows)
-			      'windows
-			      'unix))))
+          (os-format-path (path ri) 
+                          (if (get-sc-config 'reaper-files-for-windows)
+                              'windows
+                              'unix))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod (setf track) :around (track (ri reaper-item))
@@ -282,8 +282,8 @@
 ;;; settings 
 (defmethod write-header ((rf reaper-file) stream master-channels)
   (format stream (header rf) (cursor rf) (zoom rf) (record-path rf)
-	  (samplerate rf) (samplerate rf) (bpm (tempo rf)) (num (time-sig rf))
-	  (denom (time-sig rf)) master-channels))
+          (samplerate rf) (samplerate rf) (bpm (tempo rf)) (num (time-sig rf))
+          (denom (time-sig rf)) master-channels))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod write-footer ((rf reaper-file) stream)
@@ -373,7 +373,7 @@
 ;;; the ID as file name, but :file will override this.
 (defmethod write-reaper-file ((rf reaper-file)
                               &key file markers
-                                (min-channels 2) (max-channels 4))
+                                   (min-channels 2) (max-channels 4))
   (let ((outfile (if file
                      file
                      (default-dir-file (format nil "~a.rpp"
@@ -383,8 +383,8 @@
       (create-tracks rf :min-channels min-channels :max-channels max-channels))
     (with-open-file 
         (out outfile
-         :direction :output :if-does-not-exist :create
-         :if-exists :rename-and-delete)
+             :direction :output :if-does-not-exist :create
+             :if-exists :rename-and-delete)
       (write-header rf out (max min-channels max-channels))
       ;; MDE Sun Sep 25 17:56:30 2022, Heidhausen -- reaper v6.64 at least
       ;; writes markers before <PROJBAY> (the last entry in our header file) but
@@ -393,9 +393,14 @@
         ;; these are either a list of times (in seconds) or a list of sublists
         ;; with data in the order we'd supply to write-reaper-marker
         (loop for m in markers and i from 1 do
-          (if (numberp m)
-              (write-reaper-marker i m "" out)
-              (apply #'write-reaper-marker m))))
+                 (if (numberp m)
+                     (write-reaper-marker i m "" out)
+                     (let* ((len (length m))
+                            (args (if (> len 3)
+                                      (append (subseq m 0 3) (list out)
+                                              (last m))
+                                      (econs m out))))
+                       (apply #'write-reaper-marker args)))))
       ;; loop through the tracks and write them
       (loop for track in (data (tracks rf)) do (write-track track out))
       (write-footer rf out))
@@ -759,7 +764,8 @@
                               :file reaper-file)
         ;; if :reaper-file is nil just return the reaper-file object so that
         ;; e.g. more tracks can be added
-        (create-tracks rf :min-channels min-channels :max-channels max-channels))))
+        (create-tracks rf :min-channels min-channels
+                          :max-channels max-channels))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a couple of old routines. todo: These could/should be updated to write into
@@ -886,7 +892,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; ****
   (loop with pexp = (cddr (apply #'pexpand (cons generations proportions)))
         with beat-dur = (/ 60.0 tempo)
-        ;; hard-coded colours for now: white for level 1, yellow 2, blue 3, red 4
+        ;; hard-coded colours for now: white for level 1, yellow 2, blue 3,
+        ;; red 4
         with colours = '(33554431 33554176 16777471 0)
         for beat-num in pexp by #'cddr
         for letters in (rest pexp) by #'cddr

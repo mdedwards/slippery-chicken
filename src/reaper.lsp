@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  19:16:08 Wed Oct 18 2023 CEST
+;;; $$ Last modified:  17:02:25 Thu Oct 19 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -351,8 +351,6 @@
 ;;; DESCRIPTION
 ;;;
 ;;; Write a reaper file from the reaper-items in the data slot.
-;;; By default the file will be written in slippery-chicken's 'default-dir using
-;;; the object's ID as file name, but :file will override this. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - a reaper-file object
@@ -397,7 +395,7 @@
        (rf (make-reaper-file 'reaper-test items :tempo tempo)))
   (write-reaper-file rf))
 
-;;; or to write a reaper file just with markers (at times in seconds)
+;;; or to write a reaper file with markers only, at times given in seconds
 (write-reaper-file (make-reaper-file 'test nil) :markers '(1 2 3.5 7))
 
 ;;; mixed marker data starting with simple times

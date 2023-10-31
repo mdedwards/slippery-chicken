@@ -10809,7 +10809,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  20:43:54 Thu Oct 12 2023 CEST
+;;; $$ Last modified:  17:56:14 Tue Oct 31 2023 CET
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)
@@ -10818,7 +10818,7 @@ data: (11 15)
   ;; this function. ignore
   ;; RP  Tue Feb 28 14:46:17 2023
   (declare (ignore event-num
-                   cs-instruments))
+                   cs-instrument))
   (let ((freq (get-frequency event))
         (amplitude (get-amplitude event)))
     (if (listp freq)

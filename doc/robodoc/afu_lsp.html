@@ -89,15 +89,15 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :<a href="./rthm-seq-bar_lsp.html#robo488">invert</a>. Whether to <a href="./rthm-seq-bar_lsp.html#robo488">invert</a> proportions (e.g. 3 becomes 1/3)  . Default =
+ - :<a href="./pitch-seq_lsp.html#robo324">invert</a>. Whether to <a href="./pitch-seq_lsp.html#robo324">invert</a> proportions (e.g. 3 becomes 1/3)  . Default =
    T.
- - :<a href="./utilities_lsp.html#robo961">rescale</a>. Whether to <a href="./popcorn_lsp.html#robo382">scale</a> the results to be within new
+ - :<a href="./utilities_lsp.html#robo966">rescale</a>. Whether to <a href="./popcorn_lsp.html#robo383">scale</a> the results to be within new
    minima/maxima. This should be a two-element list (min. max.). Default =
    '(0 1).
- - :<a href="./event_lsp.html#robo192">highest</a>. The <a href="./event_lsp.html#robo192">highest</a> number to use from the original list when scaling.
-   This <a href="./tl-set_lsp.html#robo877">limit</a> is offered so that we don't end up with most of our numbers
-   down at the very bottom end of our <a href="./popcorn_lsp.html#robo382">scale</a>. Default = 4.
- - :<a href="./event_lsp.html#robo197">lowest</a>. Similar to :<a href="./event_lsp.html#robo192">highest</a> but the minimum scaler we'll use.
+ - :<a href="./chord_lsp.html#robo88">highest</a>. The <a href="./chord_lsp.html#robo88">highest</a> number to use from the original list when scaling.
+   This <a href="./set-palette_lsp.html#robo647">limit</a> is offered so that we don't end up with most of our numbers
+   down at the very bottom end of our <a href="./popcorn_lsp.html#robo383">scale</a>. Default = 4.
+ - :<a href="./event_lsp.html#robo197">lowest</a>. Similar to :<a href="./chord_lsp.html#robo88">highest</a> but the minimum scaler we'll use.
    Default = 1.
  - :reverse. Whether to alternate the original order with the reverse thereof
    when looping through the list and applying proportional scalers. Default =
@@ -109,8 +109,8 @@
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>inflate-proportionally</strong> (l &amp;key (<a href="./rthm-seq-bar_lsp.html#robo488">invert</a> t) (<a href="./utilities_lsp.html#robo961">rescale</a> '(0 1))
-                                   (<a href="./event_lsp.html#robo197">lowest</a> 1) (<a href="./event_lsp.html#robo192">highest</a> 4)
+<pre class="source">(defun <strong>inflate-proportionally</strong> (l &amp;key (<a href="./pitch-seq_lsp.html#robo324">invert</a> t) (<a href="./utilities_lsp.html#robo966">rescale</a> '(0 1))
+                                   (<a href="./event_lsp.html#robo197">lowest</a> 1) (<a href="./chord_lsp.html#robo88">highest</a> 4)
                                    (reverse t) (expt nil))
 </pre>
 
@@ -200,14 +200,14 @@ data: (-2.1223445 -1.4747927 -2.5553133 -1.4747927 -0.6775627 -2.4432077
 <a name="circular2dsclist2fafu"></a>
 <a name="robo110"></a><h2 class=robodoc>circular-sclist/afu [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo607">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>afu</strong>
 
  File:             <a href="#robo_top_of_doc">afu.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo607">circular-sclist</a> -&gt; <strong>afu</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <strong>afu</strong>
 
  Version:          1.0.12
 
@@ -216,7 +216,7 @@ data: (-2.1223445 -1.4747927 -2.5553133 -1.4747927 -0.6775627 -2.4432077
  Purpose:          AFU = Alternativ fuer Unentschiedener (a little play on
                    the rather silly German political party).  This translates
                    to Alternative for the Undecided. Building on the
-                   <a href="./circular-sclist_lsp.html#robo607">circular-sclist</a> and <a href="./activity-levels_lsp.html#robo293">activity-levels</a> class, it's meant as a
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> and <a href="./activity-levels_lsp.html#robo293">activity-levels</a> class, it's meant as a
                    deterministic alternative to randomness.
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -228,7 +228,7 @@ data: (-2.1223445 -1.4747927 -2.5553133 -1.4747927 -0.6775627 -2.4432077
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/afu.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/afu.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

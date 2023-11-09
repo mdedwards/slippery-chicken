@@ -33,47 +33,47 @@
 
 
 <a name="rthm2dseq2fadd2dbar"></a>
-<a name="robo530"></a><h2 class=robodoc>rthm-seq/add-bar [ Methods ]</h2>
+<a name="robo532"></a><h2 class=robodoc>rthm-seq/add-bar [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Add a <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object to the end of a given <a href="#robo620">rthm-seq</a> object.
+<pre> Add a <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object to the end of a given <a href="#robo622">rthm-seq</a> object.
 
- NB: If the <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object is added without specifying a
+ NB: If the <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object is added without specifying a
      <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a>, the method automatically adds data to the existing
      <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A rhtm-seq object.
- - A <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object.
+ - A <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - A <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a>. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the new value of the DURATION slot of the given <a href="#robo620">rthm-seq</a> object.
+<pre> Returns the new value of the DURATION slot of the given <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Returns the new value of the DURATION slot
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
-  (<strong>add-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((5 8) e e+32 s. +q))))
+  (<strong>add-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((5 8) e e+32 s. +q))))
 
 =&gt; 10.5
 
-;; Apply the method and print the rhythms objects of the given <a href="#robo620">rthm-seq</a> object
+;; Apply the method and print the rhythms objects of the given <a href="#robo622">rthm-seq</a> object
 ;; to see the changes
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
-  (<strong>add-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((5 8) e e+32 s. +q)))
+  (<strong>add-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((5 8) e e+32 s. +q)))
   (print-simple rs))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> NIL
+<a href="#robo622">rthm-seq</a> NIL
 (2 4): note Q, note E, note S, note S, 
 (2 4): rest E, note Q, rest E, 
 (3 8): note S, note S, note E., note S, 
@@ -81,11 +81,11 @@
 
 ;; Apply the method and print the DATA slot of the updated PITCH-SEQ-PALETTE
 ;; slot to see the new notes that have been automatically added
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
-  (<strong>add-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((5 8) e e+32 s. +q)))
+  (<strong>add-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((5 8) e e+32 s. +q)))
   (data (first (data (<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> rs)))))
 
 =&gt; (1 2 3 1 1 2 3 4 3 4 3)
@@ -96,22 +96,22 @@
 
 
 <a name="rthm2dseq2fchange2dpitches"></a>
-<a name="robo531"></a><h2 class=robodoc>rthm-seq/change-pitches [ Methods ]</h2>
+<a name="robo533"></a><h2 class=robodoc>rthm-seq/change-pitches [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> February 3rd 2018, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Change the pitches in a <a href="#robo620">rthm-seq</a>. The replacement pitches list can contain
+<pre> Change the pitches in a <a href="#robo622">rthm-seq</a>. The replacement pitches list can contain
  fewer pitches than in the seq: the method stops when it runs out. If there
  are more pitches than necessary, a list of unused pitches will be returned. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo620">rthm-seq</a> object
+<pre> - the <a href="#robo622">rthm-seq</a> object
  - a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects or symbols as replacements
  - the bar within the sequence to start at (counting from 1)
- - the <a href="./event_lsp.html#robo426">event</a> within the start bar to start at (counting from 1)
+ - the <a href="./event_lsp.html#robo428">event</a> within the start bar to start at (counting from 1)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -126,31 +126,31 @@
 <pre class="source">(defmethod <strong>change-pitches</strong> ((rs rthm-seq)
                            <a href="./pitch_lsp.html#robo285">pitch</a>-list 
                            (start-bar integer) ; don't use <a href="./bar-holder_lsp.html#robo283">bar-holder</a> method
-                           start-<a href="./event_lsp.html#robo426">event</a> 
+                           start-<a href="./event_lsp.html#robo428">event</a> 
                            &amp;key written)
 </pre>
 
 
 <a name="rthm2dseq2fchop"></a>
-<a name="robo532"></a><h2 class=robodoc>rthm-seq/chop [ Methods ]</h2>
+<a name="robo534"></a><h2 class=robodoc>rthm-seq/chop [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Applies the <strong>chop</strong> method to each <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object contained in the given
- <a href="#robo620">rthm-seq</a> object (see rthm-seq-bar::<strong>chop</strong> for details), returning a list of
- <a href="#robo620">rthm-seq</a> objects, each of which contains just one of the <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a>
+<pre> Applies the <strong>chop</strong> method to each <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object contained in the given
+ <a href="#robo622">rthm-seq</a> object (see rthm-seq-bar::<strong>chop</strong> for details), returning a list of
+ <a href="#robo622">rthm-seq</a> objects, each of which contains just one of the <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a>
  objects created with <strong>chop</strong>.
 
  The <strong>chop</strong> method is the basis for slippery-chicken's feature of
  intra-phrasal looping.
 
  NB: Since the <strong>chop</strong> method functions by comparing each beat of a given
-     <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object to the specified &lt;<strong>chop</strong>-points&gt; pattern for
-     segmenting that beat, all <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects in the given <a href="#robo620">rthm-seq</a>
+     <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object to the specified &lt;<strong>chop</strong>-points&gt; pattern for
+     segmenting that beat, all <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects in the given <a href="#robo622">rthm-seq</a>
      object must be evenly divisible by the beat for which the pattern is
      defined. For example, if the &lt;<strong>chop</strong>-points&gt; argument defines a
-     quarter-note, all bars in the given <a href="#robo620">rthm-seq</a> object must be evenly
-     divisible by a quarter-note, and a <a href="#robo620">rthm-seq</a> object consisting of a 2/4,
+     quarter-note, all bars in the given <a href="#robo622">rthm-seq</a> object must be evenly
+     divisible by a quarter-note, and a <a href="#robo622">rthm-seq</a> object consisting of a 2/4,
      a 3/4 and a 3/8 bar would fail at the 3/8 bar with an error.
 
  NB: The &lt;unit&gt; argument must be a duplet rhythmic value (i.e. 32, 's, 'e
@@ -163,31 +163,31 @@
      can potentially be imported into notation software.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - &lt;<strong>chop</strong>-points&gt;. A list of integer pairs, each of which delineates a
-   segment of the beat of the given <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object measured in the
+   segment of the beat of the given <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object measured in the
    rhythmic unit specified by the &lt;unit&gt; argument. See the documentation for 
    rthm-seq-bar::<strong>chop</strong> for more details.
  - &lt;unit&gt;. The rhythmic duration that serves as the unit of measurement for
    the <strong>chop</strong> points. Default = 's.
  - &lt;number-bars-first&gt;. T or NIL. This argument helps in naming (and
    therefore debugging) the newly-created bars.  If T, the bars in the
-   original <a href="#robo620">rthm-seq</a> will be renumbered, starting from 1, and this will be
+   original <a href="#robo622">rthm-seq</a> will be renumbered, starting from 1, and this will be
    reflected in the tag of the new bars.  E.g. if T, a new bar's tag may be
    new-bar-from-rs1-b3-time-range-1.750-to-2.000, if NIL this would be
    new-bar-from-rs1-time-range-1.750-to-2.000. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of <a href="#robo620">rthm-seq</a> objects.
+<pre> A list of <a href="#robo622">rthm-seq</a> objects.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create a <a href="#robo620">rthm-seq</a> with three bars, all having a quarter-note beat basis,
-;; apply <strong>chop</strong>, and print-simple the resulting list of new <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a>
-;; objects. The <a href="#robo620">rthm-seq</a> numbers printed with this are the IDs of the <a href="#robo620">rthm-seq</a>
-;; objects, not the bar-nums of the individual <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects. 
-(let* ((rs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e s s)
+<pre class="source">;; Create a <a href="#robo622">rthm-seq</a> with three bars, all having a quarter-note beat basis,
+;; apply <strong>chop</strong>, and print-simple the resulting list of new <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a>
+;; objects. The <a href="#robo622">rthm-seq</a> numbers printed with this are the IDs of the <a href="#robo622">rthm-seq</a>
+;; objects, not the bar-nums of the individual <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects. 
+(let* ((rs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e s s)
                                    ((e) q (e))
                                    (s s (e) e. s))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5 6 7 8 9)
@@ -198,132 +198,132 @@
   (loop for rs-obj in ch do (print-simple rs-obj)))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> 1
+<a href="#robo622">rthm-seq</a> 1
 (1 16): NIL S, 
-<a href="#robo620">rthm-seq</a> 2
+<a href="#robo622">rthm-seq</a> 2
 (1 8): NIL E, 
-<a href="#robo620">rthm-seq</a> 3
+<a href="#robo622">rthm-seq</a> 3
 (3 16): NIL E., 
-<a href="#robo620">rthm-seq</a> 4
+<a href="#robo622">rthm-seq</a> 4
 (1 4): NIL Q, 
-<a href="#robo620">rthm-seq</a> 5
+<a href="#robo622">rthm-seq</a> 5
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 6
+<a href="#robo622">rthm-seq</a> 6
 (1 8): rest 8, 
-<a href="#robo620">rthm-seq</a> 7
+<a href="#robo622">rthm-seq</a> 7
 (3 16): rest 16/3, 
-<a href="#robo620">rthm-seq</a> 8
+<a href="#robo622">rthm-seq</a> 8
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 9
+<a href="#robo622">rthm-seq</a> 9
 (1 8): rest 8, 
-<a href="#robo620">rthm-seq</a> 10
+<a href="#robo622">rthm-seq</a> 10
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 11
+<a href="#robo622">rthm-seq</a> 11
 (1 16): NIL S, 
-<a href="#robo620">rthm-seq</a> 12
+<a href="#robo622">rthm-seq</a> 12
 (1 8): NIL E, 
-<a href="#robo620">rthm-seq</a> 13
+<a href="#robo622">rthm-seq</a> 13
 (3 16): NIL E, NIL S, 
-<a href="#robo620">rthm-seq</a> 14
+<a href="#robo622">rthm-seq</a> 14
 (1 4): NIL E, NIL S, NIL S, 
-<a href="#robo620">rthm-seq</a> 15
+<a href="#robo622">rthm-seq</a> 15
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 16
+<a href="#robo622">rthm-seq</a> 16
 (1 8): rest S, NIL S, 
-<a href="#robo620">rthm-seq</a> 17
+<a href="#robo622">rthm-seq</a> 17
 (3 16): rest S, NIL S, NIL S, 
-<a href="#robo620">rthm-seq</a> 18
+<a href="#robo622">rthm-seq</a> 18
 (1 16): NIL S, 
-<a href="#robo620">rthm-seq</a> 19
+<a href="#robo622">rthm-seq</a> 19
 (1 8): NIL S, NIL S, 
-<a href="#robo620">rthm-seq</a> 20
+<a href="#robo622">rthm-seq</a> 20
 (1 16): NIL S, 
-<a href="#robo620">rthm-seq</a> 21
+<a href="#robo622">rthm-seq</a> 21
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 22
+<a href="#robo622">rthm-seq</a> 22
 (1 8): rest 8, 
-<a href="#robo620">rthm-seq</a> 23
+<a href="#robo622">rthm-seq</a> 23
 (3 16): rest E, NIL S, 
-<a href="#robo620">rthm-seq</a> 24
+<a href="#robo622">rthm-seq</a> 24
 (1 4): rest E, NIL E, 
-<a href="#robo620">rthm-seq</a> 25
+<a href="#robo622">rthm-seq</a> 25
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 26
+<a href="#robo622">rthm-seq</a> 26
 (1 8): rest S, NIL S, 
-<a href="#robo620">rthm-seq</a> 27
+<a href="#robo622">rthm-seq</a> 27
 (3 16): rest S, NIL E, 
-<a href="#robo620">rthm-seq</a> 28
+<a href="#robo622">rthm-seq</a> 28
 (1 16): NIL S, 
-<a href="#robo620">rthm-seq</a> 29
+<a href="#robo622">rthm-seq</a> 29
 (1 8): NIL E, 
-<a href="#robo620">rthm-seq</a> 30
+<a href="#robo622">rthm-seq</a> 30
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 31
+<a href="#robo622">rthm-seq</a> 31
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 32
+<a href="#robo622">rthm-seq</a> 32
 (1 8): rest 8, 
-<a href="#robo620">rthm-seq</a> 33
+<a href="#robo622">rthm-seq</a> 33
 (3 16): rest 16/3, 
-<a href="#robo620">rthm-seq</a> 34
+<a href="#robo622">rthm-seq</a> 34
 (1 4): rest 4, 
-<a href="#robo620">rthm-seq</a> 35
+<a href="#robo622">rthm-seq</a> 35
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 36
+<a href="#robo622">rthm-seq</a> 36
 (1 8): rest 8, 
-<a href="#robo620">rthm-seq</a> 37
+<a href="#robo622">rthm-seq</a> 37
 (3 16): rest 16/3, 
-<a href="#robo620">rthm-seq</a> 38
+<a href="#robo622">rthm-seq</a> 38
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 39
+<a href="#robo622">rthm-seq</a> 39
 (1 8): rest 8, 
-<a href="#robo620">rthm-seq</a> 40
+<a href="#robo622">rthm-seq</a> 40
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 41
+<a href="#robo622">rthm-seq</a> 41
 (1 16): NIL S, 
-<a href="#robo620">rthm-seq</a> 42
+<a href="#robo622">rthm-seq</a> 42
 (1 8): NIL S, NIL S, 
-<a href="#robo620">rthm-seq</a> 43
+<a href="#robo622">rthm-seq</a> 43
 (3 16): NIL S, NIL S, rest S, 
-<a href="#robo620">rthm-seq</a> 44
+<a href="#robo622">rthm-seq</a> 44
 (1 4): NIL S, NIL S, rest E, 
-<a href="#robo620">rthm-seq</a> 45
+<a href="#robo622">rthm-seq</a> 45
 (1 16): NIL S, 
-<a href="#robo620">rthm-seq</a> 46
+<a href="#robo622">rthm-seq</a> 46
 (1 8): NIL S, rest S, 
-<a href="#robo620">rthm-seq</a> 47
+<a href="#robo622">rthm-seq</a> 47
 (3 16): NIL S, rest E, 
-<a href="#robo620">rthm-seq</a> 48
+<a href="#robo622">rthm-seq</a> 48
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 49
+<a href="#robo622">rthm-seq</a> 49
 (1 8): rest 8, 
-<a href="#robo620">rthm-seq</a> 50
+<a href="#robo622">rthm-seq</a> 50
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 51
+<a href="#robo622">rthm-seq</a> 51
 (1 16): NIL S, 
-<a href="#robo620">rthm-seq</a> 52
+<a href="#robo622">rthm-seq</a> 52
 (1 8): NIL E, 
-<a href="#robo620">rthm-seq</a> 53
+<a href="#robo622">rthm-seq</a> 53
 (3 16): NIL E., 
-<a href="#robo620">rthm-seq</a> 54
+<a href="#robo622">rthm-seq</a> 54
 (1 4): NIL E., NIL S, 
-<a href="#robo620">rthm-seq</a> 55
+<a href="#robo622">rthm-seq</a> 55
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 56
+<a href="#robo622">rthm-seq</a> 56
 (1 8): rest 8, 
-<a href="#robo620">rthm-seq</a> 57
+<a href="#robo622">rthm-seq</a> 57
 (3 16): rest E, NIL S, 
-<a href="#robo620">rthm-seq</a> 58
+<a href="#robo622">rthm-seq</a> 58
 (1 16): rest 16, 
-<a href="#robo620">rthm-seq</a> 59
+<a href="#robo622">rthm-seq</a> 59
 (1 8): rest S, NIL S, 
-<a href="#robo620">rthm-seq</a> 60
+<a href="#robo622">rthm-seq</a> 60
 (1 16): NIL S,
 
-;; Attempting to apply the method to a <a href="#robo620">rthm-seq</a> object in which not all bars
+;; Attempting to apply the method to a <a href="#robo622">rthm-seq</a> object in which not all bars
 ;; have time-signatures that are divisible by the beat defined in the
 ;; &lt;<strong>chop</strong>-points&gt; argument will result in dropping into the debugger with an
 ;; error 
-(let* ((rs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e s s)
+(let* ((rs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e s s)
                                    ((e) q (e))
                                    ((3 8) (e) e. s))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5 6 7)
@@ -345,17 +345,17 @@ rthm-seq-bar::get-beats: Can't find an exact beat of rhythms
 
 
 <a name="rthm2dseq2fclear2dties2dbeg2dend"></a>
-<a name="robo533"></a><h2 class=robodoc>rthm-seq/clear-ties-beg-end [ Methods ]</h2>
+<a name="robo535"></a><h2 class=robodoc>rthm-seq/clear-ties-beg-end [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Deletes ties to the first <a href="./rhythm_lsp.html#robo287">rhythm</a>(s) of a <a href="#robo620">rthm-seq</a>, making them rests
+<pre> Deletes ties to the first <a href="./rhythm_lsp.html#robo287">rhythm</a>(s) of a <a href="#robo622">rthm-seq</a>, making them rests
  instead of tied notes.  Also makes sure the last <a href="./rhythm_lsp.html#robo287">rhythm</a> is not tied from
  (into another sequence). Useful if you're making rthm-seqs from other
  (larger) rthm-seqs or algorithmically.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo620">rthm-seq</a> object
+<pre> - the <a href="#robo622">rthm-seq</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T if any ties were cleared, NIL otherwise.
@@ -366,34 +366,34 @@ rthm-seq-bar::get-beats: Can't find an exact beat of rhythms
 
 
 <a name="rthm2dseq2fcombine"></a>
-<a name="robo534"></a><h2 class=robodoc>rthm-seq/combine [ Methods ]</h2>
+<a name="robo536"></a><h2 class=robodoc>rthm-seq/combine [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Combine two rthm-seqs into one, updating slots for the new object, which is
- a <a href="./slippery-chicken_lsp.html#robo767">clone</a>.
+ a <a href="./slippery-chicken_lsp.html#robo769">clone</a>.
 
  NB: The MARKS slot is ignored for now (it is as of yet 
 
  NB: This method sets the values of the individual slots but leaves the DATA
      slot untouched (for cases in which the user might want to see where the
      new data originated from, or otherwise use the old data somehow, such
-     as in a new <a href="#robo620">rthm-seq</a> object).
+     as in a new <a href="#robo622">rthm-seq</a> object).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo620">rthm-seq</a> object.
- - A second <a href="#robo620">rthm-seq</a> object.
+<pre> - A first <a href="#robo622">rthm-seq</a> object.
+ - A second <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; The method returns a <a href="#robo620">rthm-seq</a> object
-(let ((rs1 (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+<pre class="source">;; The method returns a <a href="#robo622">rthm-seq</a> object
+(let ((rs1 (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4)))))
-      (rs2 (<a href="#robo552">make-rthm-seq</a> '((((4 4) h+e (e) { 3 te te te })
+      (rs2 (<a href="#robo554">make-rthm-seq</a> '((((4 4) h+e (e) { 3 te te te })
                             ((5 8) e e+32 s. +q)
                             ((3 4) (q) q q))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 2 3 1 2))))))
@@ -409,7 +409,7 @@ RTHM-SEQ: num-bars: 6
           psp-inversions: NIL
           marks: NIL
           time-sigs-tag: NIL
-          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo752">tie</a>: NIL
+          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo754">tie</a>: NIL
          (for brevity's sake, slots <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> and bars are not printed)
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 6, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
@@ -420,12 +420,12 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
        PITCH-SEQ-PALETTE ((1 2 3 4 1 2 3 1 2)))
 
 ;; With the same <strong>combine</strong> call, print the collected contents of the BARS slot
-;; and the PITCH-SEQ-PALETTE slot of the new <a href="#robo620">rthm-seq</a> object
-(let* ((rs1 (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+;; and the PITCH-SEQ-PALETTE slot of the new <a href="#robo622">rthm-seq</a> object
+(let* ((rs1 (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                               ((e) q (e))
                               ((3 8) s s e. s))
                              :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4)))))
-       (rs2 (<a href="#robo552">make-rthm-seq</a> '((((4 4) h+e (e) { 3 te te te })
+       (rs2 (<a href="#robo554">make-rthm-seq</a> '((((4 4) h+e (e) { 3 te te te })
                               ((5 8) e e+32 s. +q)
                               ((3 4) (q) q q))
                              :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 2 3 1 2)))))
@@ -434,7 +434,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
   (print (data (<a href="./assoc-list_lsp.html#robo37">get-first</a> (<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> crs)))))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> NIL-NIL
+<a href="#robo622">rthm-seq</a> NIL-NIL
 (2 4): note Q, note E, note S, note S, 
 (2 4): rest E, note Q, rest E, 
 (3 8): note S, note S, note E., note S, 
@@ -449,21 +449,21 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 
 <a name="rthm2dseq2fdelete2dmarks"></a>
-<a name="robo535"></a><h2 class=robodoc>rthm-seq/delete-marks [ Methods ]</h2>
+<a name="robo537"></a><h2 class=robodoc>rthm-seq/delete-marks [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Delete all marks from the MARKS slot of the specified <a href="#robo620">rthm-seq</a> object and
+<pre> Delete all marks from the MARKS slot of the specified <a href="#robo622">rthm-seq</a> object and
  replace them with NIL.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object
+<pre> - A <a href="#robo622">rthm-seq</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> NIL
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mrs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e (s) s))
+<pre class="source">(let ((mrs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e (s) s))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3))
                                   :marks (ff 1 a 1 pizz 1 ppp 2 s 2))))))
   (print (marks mrs))
@@ -480,23 +480,23 @@ NIL
 
 
 <a name="rthm2dseq2fget2dbar"></a>
-<a name="robo536"></a><h2 class=robodoc>rthm-seq/get-bar [ Methods ]</h2>
+<a name="robo538"></a><h2 class=robodoc>rthm-seq/get-bar [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get a specified <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object from within a <a href="#robo620">rthm-seq</a> object. 
+<pre> Get a specified <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object from within a <a href="#robo622">rthm-seq</a> object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
  - An integer that is the 1-based number of the desired bar to return from
-   within the given <a href="#robo620">rthm-seq</a> object.
+   within the given <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object.
+<pre> Returns a <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Returns a <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e s s)
+<pre class="source">;;; Returns a <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e s s)
                                   ((e) q (e))
                                   ((3 8) s s e. s)))))))
   (<strong>get-bar</strong> rs 2))
@@ -506,17 +506,17 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
               old-bar-nums: NIL, write-bar-num: NIL, start-time: -1.000, 
               start-time-qtrs: -1.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
               show-rest: T, notes-needed: 1, 
-              tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo908">factor</a>: 0.35, beams: NIL, 
+              tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo913">factor</a>: 0.35, beams: NIL, 
               current-time-sig: 6, write-time-sig: NIL, num-rests: 2, 
               num-rhythms: 3, num-score-notes: 1, parent-start-end: NIL, 
               missing-duration: NIL, bar-line-type: 0, 
-              <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>-<a href="./section_lsp.html#robo58">section</a>-ref: NIL, nth-seq: NIL, nth-bar: NIL, 
+              <a href="./player_lsp.html#robo286">player</a>-<a href="./section_lsp.html#robo58">section</a>-ref: NIL, nth-seq: NIL, nth-bar: NIL, 
               rehearsal-letter: NIL, all-time-sigs: (too long to print) 
               sounding-duration: NIL, 
               rhythms: (
 [...]
 
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e s s)
                                   ((e) q (e))
                                   ((3 8) s s e. s)))))))
   (print-simple (<strong>get-bar</strong> rs 2)))
@@ -529,20 +529,20 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 
 
 <a name="rthm2dseq2fget2dfirst"></a>
-<a name="robo537"></a><h2 class=robodoc>rthm-seq/get-first [ Methods ]</h2>
+<a name="robo539"></a><h2 class=robodoc>rthm-seq/get-first [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the first <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo426">event</a> object in the specified <a href="#robo620">rthm-seq</a> object.
+<pre> Return the first <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo428">event</a> object in the specified <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo426">event</a> object.
+<pre> A <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo428">event</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mrs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e (s) s))
+<pre class="source">(let ((mrs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e (s) s))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3))
                                   :marks (ff 1 a 1 pizz 1 ppp 2 s 2))))))
   (<strong>get-first</strong> mrs))
@@ -565,20 +565,20 @@ data: Q
 
 
 <a name="rthm2dseq2fget2dlast"></a>
-<a name="robo538"></a><h2 class=robodoc>rthm-seq/get-last [ Methods ]</h2>
+<a name="robo540"></a><h2 class=robodoc>rthm-seq/get-last [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the last <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo426">event</a> object in the specified <a href="#robo620">rthm-seq</a> object.
+<pre> Return the last <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo428">event</a> object in the specified <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo426">event</a> object.
+<pre> A <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo428">event</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mrs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e (s) s))
+<pre class="source">(let ((mrs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e (s) s))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3))
                                   :marks (ff 1 a 1 pizz 1 ppp 2 s 2))))))
   (<strong>get-last</strong> mrs))
@@ -601,20 +601,20 @@ data: S
 
 
 <a name="rthm2dseq2fget2dlast2dattack"></a>
-<a name="robo539"></a><h2 class=robodoc>rthm-seq/get-last-attack [ Methods ]</h2>
+<a name="robo541"></a><h2 class=robodoc>rthm-seq/get-last-attack [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Gets the <a href="./rhythm_lsp.html#robo287">rhythm</a> object for the last note that needs an attack (i.e. not a
- rest and not a tied note) in a given <a href="#robo620">rthm-seq</a> object.
+ rest and not a tied note) in a given <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL indicating whether to print a warning message if the given index
-   (minus 1) is greater than the number of attacks in the <a href="#robo620">rthm-seq</a> object 
-   (default = T). This is a carry-over argument from the <a href="./rthm-seq-bar_lsp.html#robo479">get-nth-attack</a>
+   (minus 1) is greater than the number of attacks in the <a href="#robo622">rthm-seq</a> object 
+   (default = T). This is a carry-over argument from the <a href="./rthm-seq-bar_lsp.html#robo481">get-nth-attack</a>
    method called within the <strong>get-last-attack</strong> method and not likely to be
    needed for use with <strong>get-last-attack</strong>.
 </pre>
@@ -623,7 +623,7 @@ data: S
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Returns a <a href="./rhythm_lsp.html#robo287">rhythm</a> object
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -646,21 +646,21 @@ data: S
 
 
 <a name="rthm2dseq2fget2dlast2dbar"></a>
-<a name="robo540"></a><h2 class=robodoc>rthm-seq/get-last-bar [ Methods ]</h2>
+<a name="robo542"></a><h2 class=robodoc>rthm-seq/get-last-bar [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the last <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object of a given <a href="#robo620">rthm-seq</a> object.
+<pre> Get the last <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object of a given <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object.
+<pre> A <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; The method returns a <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object 
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+<pre class="source">;;; The method returns a <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object 
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -677,22 +677,22 @@ data: ((3 8) S S E. S)
 
 
 <a name="rthm2dseq2fget2dlast2devent"></a>
-<a name="robo541"></a><h2 class=robodoc>rthm-seq/get-last-event [ Methods ]</h2>
+<a name="robo543"></a><h2 class=robodoc>rthm-seq/get-last-event [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the last <a href="./event_lsp.html#robo426">event</a> object (or <a href="./rhythm_lsp.html#robo287">rhythm</a> object) of a given <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a>
+<pre> Get the last <a href="./event_lsp.html#robo428">event</a> object (or <a href="./rhythm_lsp.html#robo287">rhythm</a> object) of a given <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a>
  object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns an <a href="./event_lsp.html#robo426">event</a> (or <a href="./rhythm_lsp.html#robo287">rhythm</a>) object.
+<pre> Returns an <a href="./event_lsp.html#robo428">event</a> (or <a href="./rhythm_lsp.html#robo287">rhythm</a>) object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; The last <a href="./event_lsp.html#robo426">event</a> is a <a href="./rhythm_lsp.html#robo287">rhythm</a> object
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+<pre class="source">;; The last <a href="./event_lsp.html#robo428">event</a> is a <a href="./rhythm_lsp.html#robo287">rhythm</a> object
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -709,8 +709,8 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: S, tag: NIL, 
 data: S
 
-;; The last <a href="./event_lsp.html#robo426">event</a> is an <a href="./event_lsp.html#robo426">event</a> object
-(let ((rs (<a href="#robo552">make-rthm-seq</a> `((((2 4) q+e s s)
+;; The last <a href="./event_lsp.html#robo428">event</a> is an <a href="./event_lsp.html#robo428">event</a> object
+(let ((rs (<a href="#robo554">make-rthm-seq</a> `((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. ,(<a href="./event_lsp.html#robo198">make-event</a> 'c4 's)))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -732,24 +732,24 @@ data: S
 
 
 <a name="rthm2dseq2fget2dmultipliers"></a>
-<a name="robo542"></a><h2 class=robodoc>rthm-seq/get-multipliers [ Methods ]</h2>
+<a name="robo544"></a><h2 class=robodoc>rthm-seq/get-multipliers [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get a list of factors by which a specified rhythmic unit must be multiplied
- in order to create the rhythms of a given <a href="#robo620">rthm-seq</a> object.
+ in order to create the rhythms of a given <a href="#robo622">rthm-seq</a> object.
 
  NB: The <strong>get-multipliers</strong> method determines durations in the source rhythmic
      material based on attacked notes only, so beginning ties will be
      ignored and rests following an attack will count the same as if the
      attacked note were tied to another note with the same duration as the
      rest. For this reason, the results returned by the method when applied
-     to a <a href="#robo620">rthm-seq</a> object that contains multiple bars may differ from
+     to a <a href="#robo622">rthm-seq</a> object that contains multiple bars may differ from
      applying the method to multiple rthm-seqs with single bars, albeit with
      the same rhythms when seen as a group (see example below).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
  - A <a href="./rhythm_lsp.html#robo287">rhythm</a> unit, either as a number or a shorthand symbol (i.e. 's) 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -763,31 +763,31 @@ data: S
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; By default the method returns the list of multipliers un-rounded
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e s s))
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e s s))
                                  :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4)))))))
   (<strong>get-multipliers</strong> rs 'e))
 
 =&gt; (2.0 1.0 0.5 0.5)
 
 ;; Setting the optional argument to T rounds the results before returning 
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q e s s))
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q e s s))
                                  :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4)))))))
   (<strong>get-multipliers</strong> rs 'e t))
 
 =&gt; (2 1 0 0)
 
-;;; Applying the method to the a multiple-bar <a href="#robo620">rthm-seq</a> object may return
+;;; Applying the method to the a multiple-bar <a href="#robo622">rthm-seq</a> object may return
 ;;; different results than applying the method to each of the bars contained
-;;; within that <a href="#robo620">rthm-seq</a> object as individual one-bar <a href="#robo620">rthm-seq</a> objects, as the
-;;; method measures the distances <a href="./utilities_lsp.html#robo891">between</a> attacked notes, regardless of ties
+;;; within that <a href="#robo622">rthm-seq</a> object as individual one-bar <a href="#robo622">rthm-seq</a> objects, as the
+;;; method measures the distances <a href="./utilities_lsp.html#robo896">between</a> attacked notes, regardless of ties
 ;;; and rests.
-(let ((rs1 (<a href="#robo552">make-rthm-seq</a> '(seq1 ((((2 4) q +e. s))
+(let ((rs1 (<a href="#robo554">make-rthm-seq</a> '(seq1 ((((2 4) q +e. s))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2))))))
-      (rs2 (<a href="#robo552">make-rthm-seq</a> '(seq2 ((((2 4) (s) e (s) q))
+      (rs2 (<a href="#robo554">make-rthm-seq</a> '(seq2 ((((2 4) (s) e (s) q))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2))))))
-      (rs3 (<a href="#robo552">make-rthm-seq</a> '(seq3 ((((2 4) +e. s { 3 (te) te te } ))
+      (rs3 (<a href="#robo554">make-rthm-seq</a> '(seq3 ((((2 4) +e. s { 3 (te) te te } ))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3))))))
-      (rs4 (<a href="#robo552">make-rthm-seq</a> '(seq4 ((((2 4) q +e. s)
+      (rs4 (<a href="#robo554">make-rthm-seq</a> '(seq4 ((((2 4) q +e. s)
                                    ((s) e (s) q)
                                    (+e. s { 3 (te) te te } ))
                                   :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5 6 7)))))))
@@ -808,20 +808,20 @@ data: S
 
 
 <a name="rthm2dseq2fget2dnth2dattack"></a>
-<a name="robo543"></a><h2 class=robodoc>rthm-seq/get-nth-attack [ Methods ]</h2>
+<a name="robo545"></a><h2 class=robodoc>rthm-seq/get-nth-attack [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Gets the <a href="./rhythm_lsp.html#robo287">rhythm</a> object for the nth note in a given <a href="#robo620">rthm-seq</a> object that
+<pre> Gets the <a href="./rhythm_lsp.html#robo287">rhythm</a> object for the nth note in a given <a href="#robo622">rthm-seq</a> object that
  needs an attack, i.e. not a rest and not tied. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - The zero-based index number indicating which attack is sought.
- - The given <a href="#robo620">rthm-seq</a> object in which to search.
+ - The given <a href="#robo622">rthm-seq</a> object in which to search.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL indicating whether to print an error message if the given index
-   is greater than the number of attacks (minus 1) in the <a href="#robo620">rthm-seq</a> object 
+   is greater than the number of attacks (minus 1) in the <a href="#robo622">rthm-seq</a> object 
    (default = T).    
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -829,7 +829,7 @@ data: S
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; The method returns a <a href="./rhythm_lsp.html#robo287">rhythm</a> object when successful
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -847,9 +847,9 @@ NAMED-OBJECT: id: S, tag: NIL,
 data: S
 
 ;; By default, the method drops into the debugger with an error when the
-;; specified index is greater than the number of items in the given <a href="#robo620">rthm-seq</a>
+;; specified index is greater than the number of items in the given <a href="#robo622">rthm-seq</a>
 ;; object. 
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -861,7 +861,7 @@ rthm-seq::get-nth-attack: Couldn't get attack with index 11
 
 ;; This error can be suppressed, simply returning NIL, by setting the optional
 ;; argument to NIL.
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -876,26 +876,26 @@ rthm-seq::get-nth-attack: Couldn't get attack with index 11
 
 
 <a name="rthm2dseq2fget2dnth2dbar"></a>
-<a name="robo544"></a><h2 class=robodoc>rthm-seq/get-nth-bar [ Methods ]</h2>
+<a name="robo546"></a><h2 class=robodoc>rthm-seq/get-nth-bar [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the nth <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object from a given <a href="#robo620">rthm-seq</a> object.
+<pre> Get the nth <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object from a given <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
  - An index number (zero-based).
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object if successful.
+<pre> Returns a <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object if successful.
 
  Returns NIL and prints a warning if the specified index number is greater
- than the number of <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects (minus one) in the given <a href="#robo620">rthm-seq</a>
+ than the number of <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects (minus one) in the given <a href="#robo622">rthm-seq</a>
  object. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; The method returns a rhtm-seq-bar object when successful
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -908,8 +908,8 @@ NAMED-OBJECT: id: "NIL-bar2", tag: NIL,
 data: ((E) Q (E))
 
 ;; Returns a warning and prints NIL when the specified index number is greater
-;; than the number of <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects in the given <a href="#robo620">rthm-seq</a> object
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+;; than the number of <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects in the given <a href="#robo622">rthm-seq</a> object
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -924,30 +924,30 @@ WARNING: rthm-seq::rthm-seq-check-bounds: Illegal list reference: 11
 
 
 <a name="rthm2dseq2fget2dnth2dnon2drest2drhythm"></a>
-<a name="robo545"></a><h2 class=robodoc>rthm-seq/get-nth-non-rest-rhythm [ Methods ]</h2>
+<a name="robo547"></a><h2 class=robodoc>rthm-seq/get-nth-non-rest-rhythm [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the nth non-rest <a href="./rhythm_lsp.html#robo287">rhythm</a> object stored in the given <a href="#robo620">rthm-seq</a> object. 
+<pre> Get the nth non-rest <a href="./rhythm_lsp.html#robo287">rhythm</a> object stored in the given <a href="#robo622">rthm-seq</a> object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - The zero-based index number indicating which non-rest-<a href="./rhythm_lsp.html#robo287">rhythm</a> is sought.
- - The given <a href="#robo620">rthm-seq</a> object in which to search.
+ - The given <a href="#robo622">rthm-seq</a> object in which to search.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL indicating whether to print an error message if the given index 
    is greater than the number of non-rest rhythms (minus 1) in given
-   <a href="#robo620">rthm-seq</a> object.  (Default = T.)   
+   <a href="#robo622">rthm-seq</a> object.  (Default = T.)   
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A <a href="./rhythm_lsp.html#robo287">rhythm</a> object.
 
- Returns NIL if the given index is higher than the <a href="./event_lsp.html#robo192">highest</a> possible index of
- non-rest rhythms in the given <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object.
+ Returns NIL if the given index is higher than the <a href="./chord_lsp.html#robo88">highest</a> possible index of
+ non-rest rhythms in the given <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; The method returns a <a href="./rhythm_lsp.html#robo287">rhythm</a> object when successful
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3 4))))))
@@ -965,9 +965,9 @@ NAMED-OBJECT: id: Q, tag: NIL,
 data: Q
 
 ;; By default, the method drops into the debugger with an error when the
-;; specified index is greater than the number of items in the given <a href="#robo620">rthm-seq</a> 
+;; specified index is greater than the number of items in the given <a href="#robo622">rthm-seq</a> 
 ;; object. 
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3 4))))))
@@ -979,7 +979,7 @@ rthm-seq::get-nth-non-rest-<a href="./rhythm_lsp.html#robo287">rhythm</a>: Could
 
 ;; This error can be suppressed, simply returning NIL, by setting the optional
 ;; argument to NIL.
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3 4))))))
@@ -994,27 +994,27 @@ rthm-seq::get-nth-non-rest-<a href="./rhythm_lsp.html#robo287">rhythm</a>: Could
 
 
 <a name="rthm2dseq2fget2dnth2drhythm"></a>
-<a name="robo546"></a><h2 class=robodoc>rthm-seq/get-nth-rhythm [ Methods ]</h2>
+<a name="robo548"></a><h2 class=robodoc>rthm-seq/get-nth-rhythm [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Gets the <a href="./rhythm_lsp.html#robo287">rhythm</a> (or <a href="./event_lsp.html#robo426">event</a>) object for the nth note in a given <a href="#robo620">rthm-seq</a>
+<pre> Gets the <a href="./rhythm_lsp.html#robo287">rhythm</a> (or <a href="./event_lsp.html#robo428">event</a>) object for the nth note in a given <a href="#robo622">rthm-seq</a>
  object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - The zero-based index number indicating which attack is sought.
- - The given <a href="#robo620">rthm-seq</a> object in which to search.
+ - The given <a href="#robo622">rthm-seq</a> object in which to search.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL indicating whether to print an error message if the given index
-   is greater than the number of attacks (minus 1) in the <a href="#robo620">rthm-seq</a> object  
+   is greater than the number of attacks (minus 1) in the <a href="#robo622">rthm-seq</a> object  
    (default = T).    
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./rhythm_lsp.html#robo287">rhythm</a> or <a href="./event_lsp.html#robo426">event</a> object.
+<pre> A <a href="./rhythm_lsp.html#robo287">rhythm</a> or <a href="./event_lsp.html#robo428">event</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+<pre class="source">(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -1039,26 +1039,26 @@ data: E
 
 
 <a name="rthm2dseq2fget2drhythm2dlist"></a>
-<a name="robo547"></a><h2 class=robodoc>rthm-seq/get-rhythm-list [ Methods ]</h2>
+<a name="robo549"></a><h2 class=robodoc>rthm-seq/get-rhythm-list [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> February 10th 2022, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Sometimes (e.g. in <a href="./reaper_lsp.html#robo_top_of_doc">reaper.lsp</a>) you just want a rthm-seq's original <a href="./rhythm_lsp.html#robo287">rhythm</a>
  data but not listed in bars, or with meter data, so that you can pass it to
- e.g. <a href="./rhythm_lsp.html#robo438">rhythm-list</a>, i.e. take everything outside of rthm-seqs for handling
- outside of <a href="./slippery-chicken_lsp.html#robo808">make-slippery-chicken</a>
+ e.g. <a href="./rhythm_lsp.html#robo440">rhythm-list</a>, i.e. take everything outside of rthm-seqs for handling
+ outside of <a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo620">rthm-seq</a> object
+<pre> - a <a href="#robo622">rthm-seq</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> a list of <a href="./rhythm_lsp.html#robo287">rhythm</a> symbols
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((rs (<a href="#robo552">make-rthm-seq</a> 
+<pre class="source">(let ((rs (<a href="#robo554">make-rthm-seq</a> 
            '((((4 4) w) (+s (s) (e) (q) (h)) ((h) (s) e.+q) (+w)
                (+s (s) (e) (q) (h)) ((e) h..) (+w) (+h.. (e)) ()
                ((h) (q) (e.) s) (+e (e) (q) (h)) (s (s) (e) (q) (h))
@@ -1075,21 +1075,21 @@ data: E
 
 
 <a name="rthm2dseq2fget2drhythms"></a>
-<a name="robo548"></a><h2 class=robodoc>rthm-seq/get-rhythms [ Methods ]</h2>
+<a name="robo550"></a><h2 class=robodoc>rthm-seq/get-rhythms [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the <a href="./rhythm_lsp.html#robo287">rhythm</a> objects in a given <a href="#robo620">rthm-seq</a> object, contained in a list.
+<pre> Get the <a href="./rhythm_lsp.html#robo287">rhythm</a> objects in a given <a href="#robo622">rthm-seq</a> object, contained in a list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Returns a list of <a href="./rhythm_lsp.html#robo287">rhythm</a> objects
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
@@ -1121,8 +1121,8 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 [...]
 )
 
-;; Get just the <a href="./rhythm_lsp.html#robo287">rhythm</a> labels from the same <a href="#robo620">rthm-seq</a> object
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+;; Get just the <a href="./rhythm_lsp.html#robo287">rhythm</a> labels from the same <a href="#robo622">rthm-seq</a> object
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
@@ -1136,21 +1136,21 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 
 
 <a name="rthm2dseq2fget2dtime2dsigs"></a>
-<a name="robo549"></a><h2 class=robodoc>rthm-seq/get-time-sigs [ Methods ]</h2>
+<a name="robo551"></a><h2 class=robodoc>rthm-seq/get-time-sigs [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return a list of <a href="./time-sig_lsp.html#robo291">time-sig</a> objects for each of the <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects in a
- given <a href="#robo620">rthm-seq</a> object. 
+<pre> Return a list of <a href="./time-sig_lsp.html#robo291">time-sig</a> objects for each of the <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects in a
+ given <a href="#robo622">rthm-seq</a> object. 
 
- One time signature is returned for each <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object, even if two or
+ One time signature is returned for each <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object, even if two or
  more consecutive objects have the same time signature. 
 
  Optionally, this method can return a list of time signatures in list form
  (e.g. ((2 4) (3 4)) etc.) rather than a list of <a href="./time-sig_lsp.html#robo291">time-sig</a> objects.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether to return the time signatures as <a href="./time-sig_lsp.html#robo291">time-sig</a>
@@ -1161,9 +1161,9 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
  signatures as two-item lists can be returned instead.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Return a list of <a href="./time-sig_lsp.html#robo291">time-sig</a> objects, one for each <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object even if
-;; consecutive <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects have the same time signature
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+<pre class="source">;; Return a list of <a href="./time-sig_lsp.html#robo291">time-sig</a> objects, one for each <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object even if
+;; consecutive <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects have the same time signature
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
@@ -1195,7 +1195,7 @@ data: (3 8)
 )
 
 ;; Return the same as a list of two-item lists instead
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
@@ -1209,61 +1209,61 @@ data: (3 8)
 
 
 <a name="rthm2dseq2finsert2dbar"></a>
-<a name="robo550"></a><h2 class=robodoc>rthm-seq/insert-bar [ Methods ]</h2>
+<a name="robo552"></a><h2 class=robodoc>rthm-seq/insert-bar [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Insert a <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object into the given <a href="#robo620">rthm-seq</a> object and
+<pre> Insert a <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object into the given <a href="#robo622">rthm-seq</a> object and
  re-initialize it. If there's a <a href="./pitch_lsp.html#robo285">pitch</a>-seq/<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> given (list of
- numbers, or list of lists), <a href="./utilities_lsp.html#robo968">splice</a> this in at the appropriate location.
+ numbers, or list of lists), <a href="./utilities_lsp.html#robo973">splice</a> this in at the appropriate location.
 
  NB: This method sets the values of the individual slots but leaves the DATA
      slot untouched (for cases in which the user might want to see where the
      new data originated from, or otherwise use the old data somehow, such
-     as in a new <a href="#robo620">rthm-seq</a> object).
+     as in a new <a href="#robo622">rthm-seq</a> object).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
- - A <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
+ - A <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object.
  - A bar number (integer). This argument is the bar number of the bar to be
-   inserted, relative to the <a href="#robo620">rthm-seq</a> and 1-based; e.g., if 3, then it will 
+   inserted, relative to the <a href="#robo622">rthm-seq</a> and 1-based; e.g., if 3, then it will 
    come before the present third bar.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> object.
+<pre> - A <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> object.
  - (three ignore arguments for sc-internal use only)
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns T if successful.
 
  Drops into the debugger with an error if the specified bar-number argument
- is greater than the number of <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects in the given <a href="#robo620">rthm-seq</a>. 
+ is greater than the number of <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects in the given <a href="#robo622">rthm-seq</a>. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; The method returns T when successful
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
-  (<strong>insert-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((3 4) q. e e s s)) 3))
+  (<strong>insert-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((3 4) q. e e s s)) 3))
 
 =&gt; T
 
-;; Create a <a href="#robo620">rthm-seq</a> object with three rthm-seq-bars and print the contents of
+;; Create a <a href="#robo622">rthm-seq</a> object with three rthm-seq-bars and print the contents of
 ;; the NUM-BARS slot to confirm that it contains 3 objects. Insert a bar before
 ;; the third item and print the value of the NUM-BARS slot again to confirm
-;; that there are now 4 objects. Use print-simple and <a href="#robo544">get-nth-bar</a> to confirm
+;; that there are now 4 objects. Use print-simple and <a href="#robo546">get-nth-bar</a> to confirm
 ;; that the 3rd object (with a zero-based index of 2) is indeed the one
 ;; inserted.
   
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
-  (print (<a href="./slippery-chicken_lsp.html#robo812">num-bars</a> rs))
-  (<strong>insert-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((3 4) q. e e s s)) 3)
-  (print (<a href="./slippery-chicken_lsp.html#robo812">num-bars</a> rs))
-  (print-simple (<a href="#robo544">get-nth-bar</a> 2 rs)))
+  (print (<a href="./slippery-chicken_lsp.html#robo815">num-bars</a> rs))
+  (<strong>insert-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((3 4) q. e e s s)) 3)
+  (print (<a href="./slippery-chicken_lsp.html#robo815">num-bars</a> rs))
+  (print-simple (<a href="#robo546">get-nth-bar</a> 2 rs)))
 
 =&gt;
 3 
@@ -1271,45 +1271,45 @@ data: (3 8)
 (3 4): note Q., note E, note E, note S, note S,
 
 ;; Attempting to insert a bar with an index number greater than the number of
-;; objects currently in the <a href="#robo620">rthm-seq</a> object drops into the debugger with an
+;; objects currently in the <a href="#robo622">rthm-seq</a> object drops into the debugger with an
 ;; error 
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
-  (<strong>insert-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((3 4) q. e e s s)) 11))
+  (<strong>insert-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((3 4) q. e e s s)) 11))
 
 =&gt;
 rthm-seq::insert-bar: only 3 bars in rthm-seq!
    [Condition of type SIMPLE-ERROR]
 
-;; Inserting a <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> using the optional <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> argument splices the
+;; Inserting a <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> using the optional <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> argument splices the
 ;; specified value of that argument into the existing <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a>
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
-  (<strong>insert-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((3 4) q. e e s s)) 3 '((1 2 3 4 5)))
+  (<strong>insert-bar</strong> rs (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((3 4) q. e e s s)) 3 '((1 2 3 4 5)))
   (data (<a href="./assoc-list_lsp.html#robo37">get-first</a> (<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> rs))))
 
 =&gt; (1 2 3 1 1 2 3 4 5 1 2 3 4)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>insert-bar</strong> ((rs rthm-seq) (rsb rthm-seq-bar) bar-num
-                       &amp;optional <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> ignore1 ignore2 ignore3)
+                       &amp;optional <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> ignore1 ignore2 ignore3)
 </pre>
 
 
 <a name="rthm2dseq2fmake2drhythms"></a>
-<a name="robo551"></a><h2 class=robodoc>rthm-seq/make-rhythms [ Functions ]</h2>
+<a name="robo553"></a><h2 class=robodoc>rthm-seq/make-rhythms [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 11 Feb 2010
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Initialize a group of rhythms, taking advantage of rthm-seq's ability to
- <a href="./sc-set_lsp.html#robo576">add</a> tuplet and beaming info.
+ <a href="./sc-set_lsp.html#robo578">add</a> tuplet and beaming info.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A list of rhythms equalling one full bar
@@ -1335,7 +1335,7 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 
 =&gt; 4
 
-;; Apply the function with the optional <a href="#robo560">split</a>-into-beats argument set to T and
+;; Apply the function with the optional <a href="./rthm-chain_lsp.html#robo455">split</a>-into-beats argument set to T and
 ;; see that we now have two lists, each equalling one beat in combined
 ;; length. Print the data of the contents.
 (let ((rs (<strong>make-rhythms</strong> '(q e s s) '(2 4) t)))
@@ -1365,16 +1365,16 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 =&gt; (((1 3)) (-1) (1) NIL NIL NIL)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>make-rhythms</strong> (bar <a href="./time-sig_lsp.html#robo291">time-sig</a> &amp;optional <a href="#robo560">split</a>-into-beats)
+<pre class="source">(defun <strong>make-rhythms</strong> (bar <a href="./time-sig_lsp.html#robo291">time-sig</a> &amp;optional <a href="./rthm-chain_lsp.html#robo455">split</a>-into-beats)
 </pre>
 
 
 <a name="rthm2dseq2fmake2drthm2dseq"></a>
-<a name="robo552"></a><h2 class=robodoc>rthm-seq/make-rthm-seq [ Functions ]</h2>
+<a name="robo554"></a><h2 class=robodoc>rthm-seq/make-rthm-seq [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Creates a <a href="#robo620">rthm-seq</a> object from a list of at least bars and generally also a
+<pre> Creates a <a href="#robo622">rthm-seq</a> object from a list of at least bars and generally also a
  list of <a href="./pitch_lsp.html#robo285">pitch</a> sequences. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -1387,16 +1387,16 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword argument 
  - :psp-inversions. T or NIL to indicate whether to also automatically
-   <a href="./wolfram_lsp.html#robo983">generate</a> and <a href="./sc-set_lsp.html#robo576">add</a> inverted forms of the specified <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> objects.
-   T = <a href="./wolfram_lsp.html#robo983">generate</a> and <a href="./sc-set_lsp.html#robo576">add</a>. Default = NIL.
+   <a href="./wolfram_lsp.html#robo988">generate</a> and <a href="./sc-set_lsp.html#robo578">add</a> inverted forms of the specified <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> objects.
+   T = <a href="./wolfram_lsp.html#robo988">generate</a> and <a href="./sc-set_lsp.html#robo578">add</a>. Default = NIL.
  - :warn-time-sigs. T or NIL to indicate whether to issue a warning when a
    time-signature is given where it's not needed (i.e. two bars of 4/4)
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a <a href="#robo620">rthm-seq</a> object.
+<pre> Returns a <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Make a <a href="#robo620">rthm-seq</a> object with the ID seq1 that contains one 2/4 bar of
+<pre class="source">;; Make a <a href="#robo622">rthm-seq</a> object with the ID seq1 that contains one 2/4 bar of
 ;; rhythms and one <a href="./pitch_lsp.html#robo285">pitch</a> sequence in the <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a>
 (<strong>make-rthm-seq</strong> '(seq1 ((((2 4) q e s s))
                        :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4)))))
@@ -1411,16 +1411,16 @@ RTHM-SEQ: num-bars: 1
           psp-inversions: NIL
           marks: NIL
           time-sigs-tag: NIL
-          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo752">tie</a>: NIL
+          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo754">tie</a>: NIL
          (for brevity's sake, slots <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> and bars are not printed)
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: SEQ1, tag: NIL, 
 data: ((((2 4) Q E S S)) PITCH-SEQ-PALETTE (1 2 3 4))
 
-;; A <a href="#robo620">rthm-seq</a> object with two bars of rhythms and two <a href="./pitch_lsp.html#robo285">pitch</a>-seqs in the
-;; <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a>. There must be as many items in each <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> list as
-;; there are rhythms in each <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a>.
+;; A <a href="#robo622">rthm-seq</a> object with two bars of rhythms and two <a href="./pitch_lsp.html#robo285">pitch</a>-seqs in the
+;; <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a>. There must be as many items in each <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> list as
+;; there are rhythms in each <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a>.
 (<strong>make-rthm-seq</strong> '(seq1 ((((2 4) q e s s)
                         ((e) q (e)))
                        :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5)
@@ -1436,7 +1436,7 @@ RTHM-SEQ: num-bars: 2
           psp-inversions: NIL
           marks: NIL
           time-sigs-tag: NIL
-          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo752">tie</a>: NIL
+          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo754">tie</a>: NIL
          (for brevity's sake, slots <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> and bars are not printed)
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
@@ -1459,7 +1459,7 @@ RTHM-SEQ: num-bars: 3
           psp-inversions: NIL
           marks: NIL
           time-sigs-tag: NIL
-          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo752">tie</a>: NIL
+          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo754">tie</a>: NIL
          (for brevity's sake, slots <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> and bars are not printed)
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 1, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
@@ -1467,7 +1467,7 @@ NAMED-OBJECT: id: SEQ1, tag: NIL,
 data: ((((2 4) Q E S S) ((E) Q (E)) ((3 8) S S E. S)))
 
 ;;; With :psp-inversions set to T, the inverted forms of the specified
-;;; <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> are automatically generated and added
+;;; <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> are automatically generated and added
 (let ((mrs
        (<strong>make-rthm-seq</strong> '(seq1 ((((2 4) q e s s))
                               :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4))))
@@ -1476,7 +1476,7 @@ data: ((((2 4) Q E S S) ((E) Q (E)) ((3 8) S S E. S)))
 
 =&gt; (
 PITCH-SEQ: notes: NIL
-           <a href="./event_lsp.html#robo192">highest</a>: 4
+           <a href="./chord_lsp.html#robo88">highest</a>: 4
            <a href="./event_lsp.html#robo197">lowest</a>: 1
            original-data: (1 2 3 4)
            user-id: NIL
@@ -1485,13 +1485,13 @@ PITCH-SEQ: notes: NIL
            relative-notes-length: 25
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 4, bounds-alert: T, copy: NIL
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: "rthm-seq-SEQ1-<a href="./pitch_lsp.html#robo285">pitch</a>-seq-<a href="./palette_lsp.html#robo403">palette</a>-ps-1", tag: NIL, 
+NAMED-OBJECT: id: "rthm-seq-SEQ1-<a href="./pitch_lsp.html#robo285">pitch</a>-seq-<a href="./palette_lsp.html#robo405">palette</a>-ps-1", tag: NIL, 
 data: (1 2 3 4)
 **************
 
     
 PITCH-SEQ: notes: NIL
-           <a href="./event_lsp.html#robo192">highest</a>: 4
+           <a href="./chord_lsp.html#robo88">highest</a>: 4
            <a href="./event_lsp.html#robo197">lowest</a>: 1
            original-data: (4 3 2 1)
            user-id: NIL
@@ -1500,7 +1500,7 @@ PITCH-SEQ: notes: NIL
            relative-notes-length: 25
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 4, bounds-alert: T, copy: NIL
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: "rthm-seq-SEQ1-<a href="./pitch_lsp.html#robo285">pitch</a>-seq-<a href="./palette_lsp.html#robo403">palette</a>-ps-1-inverted", tag: NIL, 
+NAMED-OBJECT: id: "rthm-seq-SEQ1-<a href="./pitch_lsp.html#robo285">pitch</a>-seq-<a href="./palette_lsp.html#robo405">palette</a>-ps-1-inverted", tag: NIL, 
 data: (4 3 2 1)
 **************
 )
@@ -1511,23 +1511,23 @@ data: (4 3 2 1)
 
 
 <a name="rthm2dseq2fmake2drthm2dseq2dfrom2dfragments"></a>
-<a name="robo553"></a><h2 class=robodoc>rthm-seq/make-rthm-seq-from-fragments [ Functions ]</h2>
+<a name="robo555"></a><h2 class=robodoc>rthm-seq/make-rthm-seq-from-fragments [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> January 2010
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo620">rthm-seq</a> object from a predefined list of <a href="./rhythm_lsp.html#robo287">rhythm</a> fragments.
+<pre> Make a <a href="#robo622">rthm-seq</a> object from a predefined list of <a href="./rhythm_lsp.html#robo287">rhythm</a> fragments.
 
  NB: No <a href="./pitch_lsp.html#robo285">pitch</a>-seqs can be passed as yet.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The ID of the <a href="#robo620">rthm-seq</a> object to be made.
+<pre> - The ID of the <a href="#robo622">rthm-seq</a> object to be made.
  - A list of <a href="./rhythm_lsp.html#robo287">rhythm</a> lists (fragments) paired with key IDs. The <a href="./rhythm_lsp.html#robo287">rhythm</a> lists
-   take the form of <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> definitions without the time signatures.
+   take the form of <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> definitions without the time signatures.
  - A list of lists containing any combination of the key IDs from the list
-   of fragments. These will be collated to create the resulting <a href="#robo620">rthm-seq</a>
+   of fragments. These will be collated to create the resulting <a href="#robo622">rthm-seq</a>
    object. Each element will make up one whole bar.
  - A list of meters. These can be given either as single numerators, whereby
   the optional &lt;default-beat&gt; argument will then be the denominator) or
@@ -1536,7 +1536,7 @@ data: (4 3 2 1)
   number of beats in the corresponding item from the list of references. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo620">rthm-seq</a> object.
+<pre> A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((frags '((1 (- s s - (e))) 
@@ -1560,7 +1560,7 @@ RTHM-SEQ: num-bars: 4
           psp-inversions: NIL
           marks: NIL
           time-sigs-tag: NIL
-          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo752">tie</a>: NIL
+          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo754">tie</a>: NIL
          (for brevity's sake, slots <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> and bars are not printed)
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 1, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
@@ -1575,21 +1575,21 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
 
 
 <a name="rthm2dseq2fmake2drthm2dseq2dfrom2dunit2dmultipliers"></a>
-<a name="robo554"></a><h2 class=robodoc>rthm-seq/make-rthm-seq-from-unit-multipliers [ Functions ]</h2>
+<a name="robo556"></a><h2 class=robodoc>rthm-seq/make-rthm-seq-from-unit-multipliers [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Given a rhythmic unit, e.g. 32, a list of multipliers (e.g. '(7 9 16)),
- and a time signature (e.g. '(4 4)), return a <a href="#robo620">rthm-seq</a> object made up of
+ and a time signature (e.g. '(4 4)), return a <a href="#robo622">rthm-seq</a> object made up of
  bars whose rhythms are multiples of the specified unit by the numbers in
  the multipliers list.  
 
  At this point the unit should be a whole number divisor of the beat in the
  time signature, i.e. quintuple eighths won't work in 4/4.
 
- NB: Setting the <a href="./rthm-seq-bar_lsp.html#robo456">auto-beam</a> keyword argument to T can result in errors if
-     creating durations longer than 1 beat, as <a href="./rthm-seq-bar_lsp.html#robo456">auto-beam</a> will call
-     <a href="./rthm-seq-bar_lsp.html#robo474">get-beats</a>. :<a href="./rthm-seq-bar_lsp.html#robo456">auto-beam</a> is therefore set to NIL by default.
+ NB: Setting the <a href="./rthm-seq-bar_lsp.html#robo458">auto-beam</a> keyword argument to T can result in errors if
+     creating durations longer than 1 beat, as <a href="./rthm-seq-bar_lsp.html#robo458">auto-beam</a> will call
+     <a href="./rthm-seq-bar_lsp.html#robo476">get-beats</a>. :<a href="./rthm-seq-bar_lsp.html#robo458">auto-beam</a> is therefore set to NIL by default.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A rhythmic duration unit.
@@ -1601,8 +1601,8 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
  - :tag. A symbol that is another name, description etc. for the given
    object. The tag may be used for identification but not for searching
    purposes. Default = NIL.
- - :<a href="./rthm-seq-bar_lsp.html#robo456">auto-beam</a>.  T or NIL. When T, the function will attempt to automatically
-   set beaming indicators among the resulting <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects. This can
+ - :<a href="./rthm-seq-bar_lsp.html#robo458">auto-beam</a>.  T or NIL. When T, the function will attempt to automatically
+   set beaming indicators among the resulting <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects. This can
    result in errors if the resulting rhythms have a duration of more than 1
    beat. Default = NIL.
  - :id. A symbol that will be the ID of the given object. 
@@ -1613,28 +1613,28 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
    all tuplets.  Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a <a href="#robo620">rthm-seq</a> object.
+<pre> Returns a <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Make a <a href="#robo620">rthm-seq</a> object using the rhythmic unit of a 16th-note, rhythms that
+<pre class="source">;; Make a <a href="#robo622">rthm-seq</a> object using the rhythmic unit of a 16th-note, rhythms that
 ;; are 4, 2, 2, 4 and 4 16th-notes long, and a time signature of 2/4; then
 ;; print-simple the object returned to see the results.
 (let ((rs (<strong>make-rthm-seq-from-unit-multipliers</strong> 's '(4 2 2 4 4) '(2 4))))
   (print-simple rs))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> from-multipliers
+<a href="#robo622">rthm-seq</a> from-multipliers
 (2 4): note Q, note E, note E, 
 (2 4): note Q, note Q, 
 
-;; Make a <a href="#robo620">rthm-seq</a> object using the rhythmic unit of a 32nd note, combinations
+;; Make a <a href="#robo622">rthm-seq</a> object using the rhythmic unit of a 32nd note, combinations
 ;; of irregular duration, and a time signature of 4/4; then print-simple the
 ;; returned object to see the results.
 (let ((rs (<strong>make-rthm-seq-from-unit-multipliers</strong> 32 '(7 9 16) '(4 4))))
   (print-simple rs))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> from-multipliers
+<a href="#robo622">rthm-seq</a> from-multipliers
 (4 4): note E.., note 32, note Q, note H
 
 ;; The print-simple output of the above example disregards the ties. We can
@@ -1665,39 +1665,39 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
                                               ;; each beat.
                                               (tuplet nil)
                                               (tag nil)
-                                              (<a href="./rthm-seq-bar_lsp.html#robo456">auto-beam</a> nil) ; see above
+                                              (<a href="./rthm-seq-bar_lsp.html#robo458">auto-beam</a> nil) ; see above
                                               (id "from-multipliers"))
 </pre>
 
 
 <a name="rthm2dseq2fmake2drthm2dseq2dfrom2dunit2dmultipliers2dsimp"></a>
-<a name="robo555"></a><h2 class=robodoc>rthm-seq/make-rthm-seq-from-unit-multipliers-simp [ Functions ]</h2>
+<a name="robo557"></a><h2 class=robodoc>rthm-seq/make-rthm-seq-from-unit-multipliers-simp [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> June 6th 2020
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo620">rthm-seq</a> using lists of multiples of a single unit e.g. '(2 2 1)
+<pre> Make a <a href="#robo622">rthm-seq</a> using lists of multiples of a single unit e.g. '(2 2 1)
  would result in an automatic time signature of 5/8 if passed a unit of 'e
  (or 8). In that case the rhythms would be q q e. Rests may be created by
  passing a number in parentheses.
 
- See also <a href="#robo554">make-rthm-seq-from-unit-multipliers</a> for a related method.
+ See also <a href="#robo556">make-rthm-seq-from-unit-multipliers</a> for a related method.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the ID for the <a href="#robo620">rthm-seq</a>
+<pre> - the ID for the <a href="#robo622">rthm-seq</a>
  - the <a href="./rhythm_lsp.html#robo287">rhythm</a> unit (symbol, number or <a href="./rhythm_lsp.html#robo287">rhythm</a> object)
  - the lists of multipliers, each sublist representing a bar
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="#robo620">rthm-seq</a> object
+<pre> a <a href="#robo622">rthm-seq</a> object
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(print-simple (<strong>make-rthm-seq-from-unit-multipliers-simp</strong> 1 'e
                   '((3 4 1 2) (2 1 2))))
 --&gt;
-<a href="#robo620">rthm-seq</a> 1
+<a href="#robo622">rthm-seq</a> 1
 NIL: bar -1: (10 8): 
 note Q., 
 note H, 
@@ -1714,20 +1714,20 @@ note Q,
 
 
 <a name="rthm2dseq2frs2dsubseq"></a>
-<a name="robo556"></a><h2 class=robodoc>rthm-seq/rs-subseq [ Methods ]</h2>
+<a name="robo558"></a><h2 class=robodoc>rthm-seq/rs-subseq [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 30th September 2013
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Extract a new <a href="#robo620">rthm-seq</a> object from the bars of an existing <a href="#robo620">rthm-seq</a>.
+<pre> Extract a new <a href="#robo622">rthm-seq</a> object from the bars of an existing <a href="#robo622">rthm-seq</a>.
  
  NB other -subseq methods are more like Lisp's subseq but as this is for the
  end user it's a little different in the use of its indices.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the original <a href="#robo620">rthm-seq</a> object
+<pre> - the original <a href="#robo622">rthm-seq</a> object
  - the start bar (1-based)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -1735,7 +1735,7 @@ note Q,
    NIL, we'll use the original end bar. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A new <a href="#robo620">rthm-seq</a> object.
+<pre> A new <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <p class="item_name">SYNOPSIS</p>
@@ -1744,26 +1744,26 @@ note Q,
 
 
 <a name="rthm2dseq2fscale"></a>
-<a name="robo557"></a><h2 class=robodoc>rthm-seq/scale [ Methods ]</h2>
+<a name="robo559"></a><h2 class=robodoc>rthm-seq/scale [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Scale the durations of the <a href="./rhythm_lsp.html#robo287">rhythm</a> objects in a given <a href="#robo620">rthm-seq</a> object by the
- specified <a href="./utilities_lsp.html#robo908">factor</a>.
+<pre> Scale the durations of the <a href="./rhythm_lsp.html#robo287">rhythm</a> objects in a given <a href="#robo622">rthm-seq</a> object by the
+ specified <a href="./utilities_lsp.html#robo913">factor</a>.
 
  NB: As is evident in the examples below, this method does not replace the
-     original data in the <a href="#robo620">rthm-seq</a> object's DATA slot.
+     original data in the <a href="#robo622">rthm-seq</a> object's DATA slot.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
- - A real number that is the scaling <a href="./utilities_lsp.html#robo908">factor</a>.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
+ - A real number that is the scaling <a href="./utilities_lsp.html#robo913">factor</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a <a href="#robo620">rthm-seq</a> object.
+<pre> Returns a <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; The method returns a <a href="#robo620">rthm-seq</a> object.
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+<pre class="source">;; The method returns a <a href="#robo622">rthm-seq</a> object.
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
@@ -1779,7 +1779,7 @@ RTHM-SEQ: num-bars: 3
           psp-inversions: NIL
           marks: NIL
           time-sigs-tag: NIL
-          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo752">tie</a>: NIL
+          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo754">tie</a>: NIL
          (for brevity's sake, slots <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> and bars are not printed)
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
@@ -1787,16 +1787,16 @@ NAMED-OBJECT: id: NIL, tag: NIL,
 data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
        ((1 2 3 1 1 2 3 4)))
 
-;; Create a <a href="#robo620">rthm-seq</a> object, <strong>scale</strong> the durations by 3 times using the <strong>scale</strong>
+;; Create a <a href="#robo622">rthm-seq</a> object, <strong>scale</strong> the durations by 3 times using the <strong>scale</strong>
 ;; method, and print-simple the corresponding slots to see the results
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 1 1 2 3 4))))))
   (print-simple (<strong>scale</strong> rs 3)))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> NIL
+<a href="#robo622">rthm-seq</a> NIL
 (6 4): note H., note Q., note E., note E., 
 (6 4): rest Q., note H., rest Q., 
 (9 8): note E., note E., note E., note E.,
@@ -1808,32 +1808,32 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 
 <a name="rthm2dseq2fset2dnth2dattack"></a>
-<a name="robo558"></a><h2 class=robodoc>rthm-seq/set-nth-attack [ Methods ]</h2>
+<a name="robo560"></a><h2 class=robodoc>rthm-seq/set-nth-attack [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Sets the value of the nth <a href="./rhythm_lsp.html#robo287">rhythm</a> object of a given <a href="#robo620">rthm-seq</a> object that
+<pre> Sets the value of the nth <a href="./rhythm_lsp.html#robo287">rhythm</a> object of a given <a href="#robo622">rthm-seq</a> object that
  needs an attack; i.e., not a rest and not a tied note.
 
- NB: This method does not check to ensure that the resulting <a href="#robo620">rthm-seq</a> bars
+ NB: This method does not check to ensure that the resulting <a href="#robo622">rthm-seq</a> bars
      contain the right number of beats.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A zero-based index number for the attacked note to change.
- - An <a href="./event_lsp.html#robo426">event</a>.
- - A <a href="#robo620">rthm-seq</a> object.
+ - An <a href="./event_lsp.html#robo428">event</a>.
+ - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL indicating whether to print an error message if the given index 
-   is greater than the number of attacks (minus 1) in the <a href="#robo620">rthm-seq</a> object
+   is greater than the number of attacks (minus 1) in the <a href="#robo622">rthm-seq</a> object
    (default = T).   
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - An <a href="./event_lsp.html#robo426">event</a> object.
+<pre> - An <a href="./event_lsp.html#robo428">event</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; The method returns an <a href="./event_lsp.html#robo426">event</a> object
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+<pre class="source">;; The method returns an <a href="./event_lsp.html#robo428">event</a> object
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -1842,23 +1842,23 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 =&gt; 
 EVENT: start-time: NIL, end-time: NIL, 
 [...]
-       <a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo606">chord</a>: 
+       <a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo608">chord</a>: 
 PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
 [...]
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: C4, tag: NIL, 
 data: C4
 [...]
-       written-<a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo606">chord</a>: NIL
+       written-<a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo608">chord</a>: NIL
 RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
 [...]
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: Q, tag: NIL, 
 data: Q
 
-;; Create a <a href="#robo620">rthm-seq</a> object, apply <strong>set-nth-attack</strong>, print the corresponding
+;; Create a <a href="#robo622">rthm-seq</a> object, apply <strong>set-nth-attack</strong>, print the corresponding
 ;; slots to see the change
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -1866,27 +1866,27 @@ data: Q
   (print-simple rs))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> NIL
+<a href="#robo622">rthm-seq</a> NIL
 (2 4): note Q, note E, note S, C4 Q, 
 (2 4): rest E, note Q, rest E, 
 (3 8): note S, note S, note E., note S,
 
 ;; By default, the method drops into the debugger with an error when the
-;; specified index is greater than the number of items in the given <a href="#robo620">rthm-seq</a>
+;; specified index is greater than the number of items in the given <a href="#robo622">rthm-seq</a>
 ;; object. 
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
   (<strong>set-nth-attack</strong> 11 (<a href="./event_lsp.html#robo198">make-event</a> 'c4 'q) rs))
 
 =&gt; 
-rthm-seq::set-nth-attack: Can't set attack 11 as only 8 notes in the <a href="#robo620">rthm-seq</a>
+rthm-seq::set-nth-attack: Can't set attack 11 as only 8 notes in the <a href="#robo622">rthm-seq</a>
    [Condition of type SIMPLE-ERROR]
 
 ;; This error can be suppressed, simply returning NIL, by setting the optional
 ;; argument to NIL.
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
@@ -1895,52 +1895,52 @@ rthm-seq::set-nth-attack: Can't set attack 11 as only 8 notes in the <a href="#r
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>set-nth-attack</strong> (index (e <a href="./event_lsp.html#robo426">event</a>) (rs rthm-seq)
+<pre class="source">(defmethod <strong>set-nth-attack</strong> (index (e <a href="./event_lsp.html#robo428">event</a>) (rs rthm-seq)
                            &amp;optional (error t))
 </pre>
 
 
 <a name="rthm2dseq2fset2dnth2dbar"></a>
-<a name="robo559"></a><h2 class=robodoc>rthm-seq/set-nth-bar [ Methods ]</h2>
+<a name="robo561"></a><h2 class=robodoc>rthm-seq/set-nth-bar [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Change the contents of the nth <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object in the given <a href="#robo620">rthm-seq</a>. 
+<pre> Change the contents of the nth <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object in the given <a href="#robo622">rthm-seq</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A zero-based index number for the bar to change.
- - A <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object containing the new bar.
- - A <a href="#robo620">rthm-seq</a> object. 
+ - A <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object containing the new bar.
+ - A <a href="#robo622">rthm-seq</a> object. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object.
+<pre> A <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; The method returns what is passed to it as the new-bar argument (generally a
-;; <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object.
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+;; <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object.
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
-  (<strong>set-nth-bar</strong> 1 (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((2 4) (s) e (s) q)) rs))
+  (<strong>set-nth-bar</strong> 1 (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((2 4) (s) e (s) q)) rs))
 
 =&gt; 
 RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: T, bar-num: -1, 
 [...]
 data: ((2 4) (S) E (S) Q)
 
-;; Create a <a href="#robo620">rthm-seq</a> object, change the second bar (index 1) using the
+;; Create a <a href="#robo622">rthm-seq</a> object, change the second bar (index 1) using the
 ;; <strong>set-nth-bar</strong> method, and print the contents of the rhythms data to see the
 ;; changes. 
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((2 4) q+e s s)
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 1 1 2 3))))))
-  (<strong>set-nth-bar</strong> 1 (<a href="./rthm-seq-bar_lsp.html#robo491">make-rthm-seq-bar</a> '((2 4) (s) e (s) q)) rs)
+  (<strong>set-nth-bar</strong> 1 (<a href="./rthm-seq-bar_lsp.html#robo493">make-rthm-seq-bar</a> '((2 4) (s) e (s) q)) rs)
   (print-simple rs))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> NIL
+<a href="#robo622">rthm-seq</a> NIL
 (2 4): note Q, note E, note S, note S, 
 (2 4): rest S, note E, rest S, note Q, 
 (3 8): note S, note S, note E., note S,
@@ -1951,58 +1951,58 @@ data: ((2 4) (S) E (S) Q)
 
 
 <a name="rthm2dseq2fsplit"></a>
-<a name="robo560"></a><h2 class=robodoc>rthm-seq/split [ Methods ]</h2>
+<a name="robo562"></a><h2 class=robodoc>rthm-seq/split [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 27 Jan 2011
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Splits the <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects of a given <a href="#robo620">rthm-seq</a> object into multiple
- smaller <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects, creating a new <a href="#robo620">rthm-seq</a> object with a greater
+<pre> Splits the <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects of a given <a href="#robo622">rthm-seq</a> object into multiple
+ smaller <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects, creating a new <a href="#robo622">rthm-seq</a> object with a greater
  number of bars than the original. This will only work if the given
- <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects can be <strong>split</strong> into whole beats; e.g., a 4/4 bar will
+ <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects can be <strong>split</strong> into whole beats; e.g., a 4/4 bar will
  not be <strong>split</strong> into 5/8 + 3/8.
 
  The keyword arguments :min-beats and :max-beats serve as guidelines rather
  than strict cut-offs. In some cases, the method may only be able to
- effectively <strong>split</strong> the given <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> by dividing it into segments that
+ effectively <strong>split</strong> the given <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> by dividing it into segments that
  slightly exceed the length stipulated by these arguments (see example
  below). 
 
  Depending on the min-beats/max-beats arguments stipulated by the user or
- the rhythmic structure of the given <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects, the given
- <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> or <a href="#robo620">rthm-seq</a> objects may not be splittable, in which case NIL
+ the rhythmic structure of the given <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects, the given
+ <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> or <a href="#robo622">rthm-seq</a> objects may not be splittable, in which case NIL
  is returned. If the keyword argument :warn is set to T, a warning will be
  also printed in such cases.
 
  NB: This method sets the values of the individual slots but leaves the DATA
  slot untouched (for cases in which the user might want to see where the new
  data originated from, or otherwise use the old data somehow, such as in a
- new <a href="#robo620">rthm-seq</a> object).
+ new <a href="#robo622">rthm-seq</a> object).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo620">rthm-seq</a> object.
+<pre> - A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments
  - :min-beats. This argument takes an integer value to indicate the minimum
-   number of beats in any of the new <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects created. This
+   number of beats in any of the new <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects created. This
    serves as a guideline only and may occasionally be exceeded in value by
    the method. Default value = 2.
  - :max-beats. This argument takes an integer value to indicate the maximum
-   number of beats in any of the new <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects created. This
+   number of beats in any of the new <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects created. This
    serves as a guideline only and may occasionally be exceeded in value by
    the method. Default value = 5.
- - :warn. Indicates whether to print a warning if the <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> object is
+ - :warn. Indicates whether to print a warning if the <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> object is
    unsplittable. Value T = print a warning. Defaults to NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo620">rthm-seq</a> object.
+<pre> A <a href="#robo622">rthm-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; The method returns a new <a href="#robo620">rthm-seq</a> object
-(let ((rs (<a href="#robo552">make-rthm-seq</a> '((((4 4) q e s s (e) e e (e))
+<pre class="source">;; The method returns a new <a href="#robo622">rthm-seq</a> object
+(let ((rs (<a href="#robo554">make-rthm-seq</a> '((((4 4) q e s s (e) e e (e))
                             ((3 4) s s e s e s e. s)
                             ((5 4) h q. e e s s))
                            :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
@@ -2020,7 +2020,7 @@ RTHM-SEQ: num-bars: 5
           psp-inversions: NIL
           marks: NIL
           time-sigs-tag: NIL
-          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo752">tie</a>: NIL
+          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo754">tie</a>: NIL
          (for brevity's sake, slots <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> and bars are not printed)
 SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
@@ -2030,8 +2030,8 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
        PITCH-SEQ-PALETTE ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2 3 4 5 6)))
 
 ;; Without setting the :min-beats and :max-beats arguments, the following
-;; <a href="#robo620">rthm-seq</a> object is broken down from 3 to 5 <a href="./rthm-seq-bar_lsp.html#robo621">rthm-seq-bar</a> objects
-(let* ((rs (<a href="#robo552">make-rthm-seq</a> '((((4 4) q e s s (e) e e (e))
+;; <a href="#robo622">rthm-seq</a> object is broken down from 3 to 5 <a href="./rthm-seq-bar_lsp.html#robo623">rthm-seq-bar</a> objects
+(let* ((rs (<a href="#robo554">make-rthm-seq</a> '((((4 4) q e s s (e) e e (e))
                              ((3 4) s s e s e s e. s)
                              ((5 4) h q. e e s s))
                             :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
@@ -2040,7 +2040,7 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
   (print-simple rssplt))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> NIL
+<a href="#robo622">rthm-seq</a> NIL
 (2 4): note Q, note E, note S, note S, 
 (2 4): rest E, note E, note E, rest E, 
 (3 4): note S, note S, note E, note S, note E, note S, note E., note S, 
@@ -2048,7 +2048,7 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
 (3 4): note Q., note E, note E, note S, note S,
 
 ;; Setting :min-beats to 4 affects the resulting subdivisions to larger bars
-(let* ((rs (<a href="#robo552">make-rthm-seq</a> '((((4 4) q e s s (e) e e (e))
+(let* ((rs (<a href="#robo554">make-rthm-seq</a> '((((4 4) q e s s (e) e e (e))
                              ((3 4) s s e s e s e. s)
                              ((5 4) h q. e e s s))
                             :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
@@ -2057,13 +2057,13 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
   (print-simple rssplt))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> NIL
+<a href="#robo622">rthm-seq</a> NIL
 (4 4): note Q, note E, note S, note S, rest E, note E, note E, rest E, 
 (3 4): note S, note S, note E, note S, note E, note S, note E., note S, 
 (5 4): note H, note Q., note E, note E, note S, note S, 
 
 ;; Even though :max-beats is set to 2, an occasional 3/4 bar is constructed
-(let* ((rs (<a href="#robo552">make-rthm-seq</a> '((((4 4) q e s s (e) e e (e))
+(let* ((rs (<a href="#robo554">make-rthm-seq</a> '((((4 4) q e s s (e) e e (e))
                              ((3 4) s s e s e s e. s)
                              ((5 4) h q. e e s s))
                             :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
@@ -2072,7 +2072,7 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
   (print-simple rssplt))
 
 =&gt;
-<a href="#robo620">rthm-seq</a> NIL
+<a href="#robo622">rthm-seq</a> NIL
 (2 4): note Q, note E, note S, note S, 
 (2 4): rest E, note E, note E, rest E, 
 (3 4): note S, note S, note E, note S, note E, note S, note E., note S, 
@@ -2081,34 +2081,34 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>split</strong> ((rs rthm-seq) 
-                  &amp;key (min-beats 2) (max-beats 5) warn (<a href="./slippery-chicken_lsp.html#robo767">clone</a> t))
+                  &amp;key (min-beats 2) (max-beats 5) warn (<a href="./slippery-chicken_lsp.html#robo769">clone</a> t))
 </pre>
 
 
 <a name="rthm2dseq2fsplit2dinto2dsingle2dbars"></a>
-<a name="robo561"></a><h2 class=robodoc>rthm-seq/split-into-single-bars [ Methods ]</h2>
+<a name="robo563"></a><h2 class=robodoc>rthm-seq/split-into-single-bars [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo622">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Split a <a href="#robo620">rthm-seq</a> into single bar rthm-seqs.  The <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> will be
+<pre> Split a <a href="#robo622">rthm-seq</a> into single bar rthm-seqs.  The <a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> will be
  used to set the <a href="./pitch_lsp.html#robo285">pitch</a>-seqs of the new rthm-seqs.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo620">rthm-seq</a> object
+<pre> - a <a href="#robo622">rthm-seq</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - whether to <a href="./slippery-chicken_lsp.html#robo767">clone</a> each bar or just the original.  Default = T = <a href="./slippery-chicken_lsp.html#robo767">clone</a>.
+<pre> - whether to <a href="./slippery-chicken_lsp.html#robo769">clone</a> each bar or just the original.  Default = T = <a href="./slippery-chicken_lsp.html#robo769">clone</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a list of <a href="#robo620">rthm-seq</a> objects
+<pre> a list of <a href="#robo622">rthm-seq</a> objects
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>split-into-single-bars</strong> ((rs rthm-seq) &amp;optional (<a href="./slippery-chicken_lsp.html#robo767">clone</a> t))
+<pre class="source">(defmethod <strong>split-into-single-bars</strong> ((rs rthm-seq) &amp;optional (<a href="./slippery-chicken_lsp.html#robo769">clone</a> t))
 </pre>
 
 
 <a name="sclist2frthm2dseq"></a>
-<a name="robo620"></a><h2 class=robodoc>sclist/rthm-seq [ Classes ]</h2>
+<a name="robo622"></a><h2 class=robodoc>sclist/rthm-seq [ Classes ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo288">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
@@ -2116,7 +2116,7 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
 
  File:             <a href="#robo_top_of_doc">rthm-seq.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; <strong>rthm-seq</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; <strong>rthm-seq</strong>
 
  Version:          1.0.12
 
@@ -2125,7 +2125,7 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
  Purpose:          Implementation of the <strong>rthm-seq</strong> class which holds the bars
                    and rhythms of a sequence (multiple bars).  This will
                    generally be stored in a <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> and referenced
-                   later in the <a href="./rthm-seq-map_lsp.html#robo573">rthm-seq-map</a>.
+                   later in the <a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a>.
 
                    The data used to create such an object will look
                    something like:
@@ -2141,14 +2141,14 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
 
  Creation date:    14th February 2001
 
- $$ Last modified:  17:30:47 Fri Dec 16 2022 CET
+ $$ Last modified:  19:58:52 Wed Aug 23 2023 CEST
 
  SVN ID: $Id$
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/rthm-seq.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/rthm-seq.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

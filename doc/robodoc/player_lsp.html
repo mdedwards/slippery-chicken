@@ -41,7 +41,7 @@
 
  File:             <a href="#robo_top_of_doc">player.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <strong>player</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <strong>player</strong>
 
  Version:          1.0.12
 
@@ -62,71 +62,71 @@
 
 
 <a name="player2fmake2dplayer"></a>
-<a name="robo367"></a><h2 class=robodoc>player/make-player [ Functions ]</h2>
+<a name="robo368"></a><h2 class=robodoc>player/make-player [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object from a specified <a href="./instrument-palette_lsp.html#robo299">instrument-palette</a> object and a
- specified <a href="./instrument_lsp.html#robo284">instrument</a> or list of <a href="./instruments_lsp.html#robo11">instruments</a> which that <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> plays. 
+<pre> Create a <a href="#robo286">player</a> object from a specified <a href="./instrument-palette_lsp.html#robo299">instrument-palette</a> object and a
+ specified <a href="./instrument_lsp.html#robo284">instrument</a> or list of <a href="./instruments_lsp.html#robo11">instruments</a> which that <a href="#robo286">player</a> plays. 
 
- The <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object is separate from the <a href="./instrument_lsp.html#robo284">instrument</a> object as on <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> in an
- <a href="./ensemble_lsp.html#robo391">ensemble</a> may perform more than one <a href="./instrument_lsp.html#robo284">instrument</a> ("<a href="./sc-map_lsp.html#robo565">double</a>"), such as flute and
+ The <a href="#robo286">player</a> object is separate from the <a href="./instrument_lsp.html#robo284">instrument</a> object as on <a href="#robo286">player</a> in an
+ <a href="./ensemble_lsp.html#robo393">ensemble</a> may perform more than one <a href="./instrument_lsp.html#robo284">instrument</a> ("<a href="./sc-map_lsp.html#robo567">double</a>"), such as flute and
  piccolo, clarinet and bass clarinet, or sax, flute and clarinet.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A symbol which will be the ID of the resulting <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A symbol which will be the ID of the resulting <a href="#robo286">player</a> object.
  - An <a href="./instrument-palette_lsp.html#robo299">instrument-palette</a> object. If NIL then
    <a href="./instruments_lsp.html#robo247">+slippery-chicken-standard-instrument-palette+</a> will be used 
  - A symbol or a list of symbols that are the <a href="./instruments_lsp.html#robo11">instruments</a> from the
-   specified <a href="./instrument-palette_lsp.html#robo299">instrument-palette</a> object that the given <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> will play, as
+   specified <a href="./instrument-palette_lsp.html#robo299">instrument-palette</a> object that the given <a href="#robo286">player</a> will play, as
    spelled and defined within the <a href="./instrument-palette_lsp.html#robo299">instrument-palette</a> object. NB: If only one
-   <a href="./instrument_lsp.html#robo284">instrument</a> is to be assigned to the given <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>, it should be stated as
+   <a href="./instrument_lsp.html#robo284">instrument</a> is to be assigned to the given <a href="#robo286">player</a>, it should be stated as
    symbol rather than a list, to avoid errors in the DOUBLES slot.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :midi-channel. An integer that indicates the MIDI channel on which any
-   non-<a href="./event_lsp.html#robo204">microtonal</a> <a href="./pitch_lsp.html#robo285">pitch</a> material for this <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> is to be played
+   non-<a href="./event_lsp.html#robo204">microtonal</a> <a href="./pitch_lsp.html#robo285">pitch</a> material for this <a href="#robo286">player</a> is to be played
    back. Default = 1.
  - :microtones-midi-channel. An integer that indicates the MIDI channel on
-   which any <a href="./event_lsp.html#robo204">microtonal</a> <a href="./pitch_lsp.html#robo285">pitch</a> material for this <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> is to be played
-   back. slippery chicken uses this channel to <a href="./sc-set_lsp.html#robo576">add</a> MIDI <a href="./pitch_lsp.html#robo285">pitch</a>-bends via CM
+   which any <a href="./event_lsp.html#robo204">microtonal</a> <a href="./pitch_lsp.html#robo285">pitch</a> material for this <a href="#robo286">player</a> is to be played
+   back. slippery chicken uses this channel to <a href="./sc-set_lsp.html#robo578">add</a> MIDI <a href="./pitch_lsp.html#robo285">pitch</a>-bends via CM
    so that <a href="./event_lsp.html#robo204">microtonal</a> chords are possible, but due to a current glitch these
    tracks contain no <a href="./pitch_lsp.html#robo285">pitch</a>-bend data. A work-around for this is to simply
    open the MIDI file in a sequencer and shift the entire channel by the
    desired <a href="./pitch_lsp.html#robo285">pitch</a>-bend value. Default = -1.
  - :<a href="./cmn_lsp.html#robo7">cmn</a>-staff-args. A list of pairs that indicate any additional arguments
-   to the call to <a href="./cmn_lsp.html#robo7">cmn</a>::staff for this <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>, such as staff size, number of
+   to the call to <a href="./cmn_lsp.html#robo7">cmn</a>::staff for this <a href="#robo286">player</a>, such as staff size, number of
    lines etc. Instead of being real <a href="./cmn_lsp.html#robo7">cmn</a> function calls, as they would be in
    normal <a href="./cmn_lsp.html#robo7">cmn</a>, this is a simple list of pairs; e.g. '(staff-size .8
    staff-lines 3). Defaults = NIL.
  - :staff-names. A symbol, string or list of staff names, generally strings,
-   for each <a href="./instrument_lsp.html#robo284">instrument</a> the <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> will play. E.g. '("violin II"). If not
-   given, then the <a href="./instrument_lsp.html#robo284">instrument</a>'s name as defined in the <a href="./instrument_lsp.html#robo284">instrument</a> <a href="./palette_lsp.html#robo403">palette</a>
+   for each <a href="./instrument_lsp.html#robo284">instrument</a> the <a href="#robo286">player</a> will play. E.g. '("violin II"). If not
+   given, then the <a href="./instrument_lsp.html#robo284">instrument</a>'s name as defined in the <a href="./instrument_lsp.html#robo284">instrument</a> <a href="./palette_lsp.html#robo405">palette</a>
    will be used. Default = NIL.
  - :staff-short-names. A symbol, string or list of short staff
    names. E.g. '("vln2"). Default = NIL
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> Returns a <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object with just one <a href="./instrument_lsp.html#robo284">instrument</a> object
+<pre class="source">;; Create a <a href="#robo286">player</a> object with just one <a href="./instrument_lsp.html#robo284">instrument</a> object
 (let ((ip (<a href="./instrument-palette_lsp.html#robo233">make-instrument-palette</a> 
             'inst-pal 
-            '((picc (:transposition-<a href="./utilities_lsp.html#robo965">semitones</a> 12 :<a href="./event_lsp.html#robo197">lowest</a>-written d4
-                     :<a href="./event_lsp.html#robo192">highest</a>-written c6)) 
-              (flute (:<a href="./event_lsp.html#robo197">lowest</a>-written c4 :<a href="./event_lsp.html#robo192">highest</a>-written d7))  
-              (clar (:transposition-<a href="./utilities_lsp.html#robo965">semitones</a> -2 :<a href="./event_lsp.html#robo197">lowest</a>-written e3
-                     :<a href="./event_lsp.html#robo192">highest</a>-written c6))  
-              (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo965">semitones</a> -7
-                     :<a href="./event_lsp.html#robo197">lowest</a>-written f2 :<a href="./event_lsp.html#robo192">highest</a>-written c5))    
-              (vln (:<a href="./event_lsp.html#robo197">lowest</a>-written g3 :<a href="./event_lsp.html#robo192">highest</a>-written c7 :chords t))  
-              (vla (:<a href="./event_lsp.html#robo197">lowest</a>-written c3 :<a href="./event_lsp.html#robo192">highest</a>-written f6 :chords t))))))
-  (<strong>make-player</strong> '<a href="./slippery-chicken-edit_lsp.html#robo228">player</a>-one ip 'flute))
+            '((picc (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> 12 :<a href="./event_lsp.html#robo197">lowest</a>-written d4
+                     :<a href="./chord_lsp.html#robo88">highest</a>-written c6)) 
+              (flute (:<a href="./event_lsp.html#robo197">lowest</a>-written c4 :<a href="./chord_lsp.html#robo88">highest</a>-written d7))  
+              (clar (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -2 :<a href="./event_lsp.html#robo197">lowest</a>-written e3
+                     :<a href="./chord_lsp.html#robo88">highest</a>-written c6))  
+              (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -7
+                     :<a href="./event_lsp.html#robo197">lowest</a>-written f2 :<a href="./chord_lsp.html#robo88">highest</a>-written c5))    
+              (vln (:<a href="./event_lsp.html#robo197">lowest</a>-written g3 :<a href="./chord_lsp.html#robo88">highest</a>-written c7 :chords t))  
+              (vla (:<a href="./event_lsp.html#robo197">lowest</a>-written c3 :<a href="./chord_lsp.html#robo88">highest</a>-written f6 :chords t))))))
+  (<strong>make-player</strong> '<a href="#robo286">player</a>-one ip 'flute))
 
 =&gt; 
-PLAYER: (id <a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>): INST-PAL 
+PLAYER: (id <a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>): INST-PAL 
 doubles: NIL, <a href="./cmn_lsp.html#robo7">cmn</a>-staff-args: NIL
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: PLAYER-ONE, tag: NIL, 
@@ -136,20 +136,20 @@ INSTRUMENT: <a href="./event_lsp.html#robo197">lowest</a>-written:
 NAMED-OBJECT: id: FLUTE, tag: NIL, 
 data: NIL
 
-;; Create a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object with two <a href="./instruments_lsp.html#robo11">instruments</a>, setting the midi channels using
+;; Create a <a href="#robo286">player</a> object with two <a href="./instruments_lsp.html#robo11">instruments</a>, setting the midi channels using
 ;; the keyword arguments, then print the corresponding slots to see the changes 
 (let* ((ip (<a href="./instrument-palette_lsp.html#robo233">make-instrument-palette</a> 
             'inst-pal 
-            '((picc (:transposition-<a href="./utilities_lsp.html#robo965">semitones</a> 12 :<a href="./event_lsp.html#robo197">lowest</a>-written d4
-                     :<a href="./event_lsp.html#robo192">highest</a>-written c6)) 
-              (flute (:<a href="./event_lsp.html#robo197">lowest</a>-written c4 :<a href="./event_lsp.html#robo192">highest</a>-written d7))  
-              (clar (:transposition-<a href="./utilities_lsp.html#robo965">semitones</a> -2 :<a href="./event_lsp.html#robo197">lowest</a>-written e3
-                     :<a href="./event_lsp.html#robo192">highest</a>-written c6))  
-              (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo965">semitones</a> -7
-                     :<a href="./event_lsp.html#robo197">lowest</a>-written f2 :<a href="./event_lsp.html#robo192">highest</a>-written c5))    
-              (vln (:<a href="./event_lsp.html#robo197">lowest</a>-written g3 :<a href="./event_lsp.html#robo192">highest</a>-written c7 :chords t))  
-              (vla (:<a href="./event_lsp.html#robo197">lowest</a>-written c3 :<a href="./event_lsp.html#robo192">highest</a>-written f6 :chords t))))) 
-       (plr (<strong>make-player</strong> '<a href="./slippery-chicken-edit_lsp.html#robo228">player</a>-one ip '(flute picc) 
+            '((picc (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> 12 :<a href="./event_lsp.html#robo197">lowest</a>-written d4
+                     :<a href="./chord_lsp.html#robo88">highest</a>-written c6)) 
+              (flute (:<a href="./event_lsp.html#robo197">lowest</a>-written c4 :<a href="./chord_lsp.html#robo88">highest</a>-written d7))  
+              (clar (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -2 :<a href="./event_lsp.html#robo197">lowest</a>-written e3
+                     :<a href="./chord_lsp.html#robo88">highest</a>-written c6))  
+              (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -7
+                     :<a href="./event_lsp.html#robo197">lowest</a>-written f2 :<a href="./chord_lsp.html#robo88">highest</a>-written c5))    
+              (vln (:<a href="./event_lsp.html#robo197">lowest</a>-written g3 :<a href="./chord_lsp.html#robo88">highest</a>-written c7 :chords t))  
+              (vla (:<a href="./event_lsp.html#robo197">lowest</a>-written c3 :<a href="./chord_lsp.html#robo88">highest</a>-written f6 :chords t))))) 
+       (plr (<strong>make-player</strong> '<a href="#robo286">player</a>-one ip '(flute picc) 
                          :midi-channel 1
                          :microtones-midi-channel 2)))
   (print (loop for i in (data (data plr)) collect (id i)))
@@ -164,22 +164,22 @@ data: NIL
 ;;; With specified <a href="./cmn_lsp.html#robo7">cmn</a>-staff-args
 (let ((ip (<a href="./instrument-palette_lsp.html#robo233">make-instrument-palette</a> 
            'inst-pal 
-           '((picc (:transposition-<a href="./utilities_lsp.html#robo965">semitones</a> 12 :<a href="./event_lsp.html#robo197">lowest</a>-written d4
-                    :<a href="./event_lsp.html#robo192">highest</a>-written c6)) 
-             (flute (:<a href="./event_lsp.html#robo197">lowest</a>-written c4 :<a href="./event_lsp.html#robo192">highest</a>-written d7))  
-             (clar (:transposition-<a href="./utilities_lsp.html#robo965">semitones</a> -2 :<a href="./event_lsp.html#robo197">lowest</a>-written e3
-                    :<a href="./event_lsp.html#robo192">highest</a>-written c6))  
-             (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo965">semitones</a> -7
-                    :<a href="./event_lsp.html#robo197">lowest</a>-written f2 :<a href="./event_lsp.html#robo192">highest</a>-written c5))    
-             (vln (:<a href="./event_lsp.html#robo197">lowest</a>-written g3 :<a href="./event_lsp.html#robo192">highest</a>-written c7 :chords t))  
-             (vla (:<a href="./event_lsp.html#robo197">lowest</a>-written c3 :<a href="./event_lsp.html#robo192">highest</a>-written f6 :chords t))))))
-  (<strong>make-player</strong> '<a href="./slippery-chicken-edit_lsp.html#robo228">player</a>-one ip '(flute picc) 
+           '((picc (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> 12 :<a href="./event_lsp.html#robo197">lowest</a>-written d4
+                    :<a href="./chord_lsp.html#robo88">highest</a>-written c6)) 
+             (flute (:<a href="./event_lsp.html#robo197">lowest</a>-written c4 :<a href="./chord_lsp.html#robo88">highest</a>-written d7))  
+             (clar (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -2 :<a href="./event_lsp.html#robo197">lowest</a>-written e3
+                    :<a href="./chord_lsp.html#robo88">highest</a>-written c6))  
+             (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -7
+                    :<a href="./event_lsp.html#robo197">lowest</a>-written f2 :<a href="./chord_lsp.html#robo88">highest</a>-written c5))    
+             (vln (:<a href="./event_lsp.html#robo197">lowest</a>-written g3 :<a href="./chord_lsp.html#robo88">highest</a>-written c7 :chords t))  
+             (vla (:<a href="./event_lsp.html#robo197">lowest</a>-written c3 :<a href="./chord_lsp.html#robo88">highest</a>-written f6 :chords t))))))
+  (<strong>make-player</strong> '<a href="#robo286">player</a>-one ip '(flute picc) 
                :midi-channel 1
                :microtones-midi-channel 2
                :<a href="./cmn_lsp.html#robo7">cmn</a>-staff-args '(staff-size .8 staff-lines 3)))
 
 =&gt; 
-PLAYER: (id <a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>): INST-PAL 
+PLAYER: (id <a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>): INST-PAL 
 doubles: T, <a href="./cmn_lsp.html#robo7">cmn</a>-staff-args: (#&lt;SELF-ACTING {10097B6E73}&gt;
                              #&lt;SELF-ACTING {10097B6EE3}&gt;), total-notes: 0, total-degrees: 0, 
 total-duration: 0.000, total-bars: 0, <a href="./ensemble_lsp.html#robo162">tessitura</a>: NIL
@@ -196,40 +196,40 @@ data:
 
 
 <a name="player2fmicrotonal2dchords2dp"></a>
-<a name="robo368"></a><h2 class=robodoc>player/microtonal-chords-p [ Methods ]</h2>
+<a name="robo369"></a><h2 class=robodoc>player/microtonal-chords-p [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determines whether the MICROTONES-MIDI-CHANNEL slot of the given <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>
+<pre> Determines whether the MICROTONES-MIDI-CHANNEL slot of the given <a href="#robo286">player</a>
  object is set to a value greater than 0 and is different to the midi-channel
- slot, indicating that the <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> and its <a href="./instrument_lsp.html#robo284">instrument</a> are capable of
+ slot, indicating that the <a href="#robo286">player</a> and its <a href="./instrument_lsp.html#robo284">instrument</a> are capable of
  performing <a href="./event_lsp.html#robo204">microtonal</a> chords.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns T if the value stored in the MICROTONES-MIDI-CHANNEL slot of the
- given <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object is greater than 0, otherwise returns NIL.
+ given <a href="#robo286">player</a> object is greater than 0, otherwise returns NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Returns T
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'vln ip 'violin :microtones-midi-channel 2)))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'vln ip 'violin :microtones-midi-channel 2)))
   (<strong>microtonal-chords-p</strong> plr))
 
 =&gt; T
 
 ;; Returns NIL
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'pno ip 'piano)))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'pno ip 'piano)))
   (<strong>microtonal-chords-p</strong> plr))
 
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>microtonal-chords-p</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>))
-  ;; MDE Thu Dec 28 17:49:36 2017 -- updated as now <a href="#robo367">make-player</a> sets microtones
+<pre class="source">(defmethod <strong>microtonal-chords-p</strong> ((p <a href="#robo286">player</a>))
+  ;; MDE Thu Dec 28 17:49:36 2017 -- updated as now <a href="#robo368">make-player</a> sets microtones
   ;; channel to midi-channel if it's not explicitly set
   (and (integer&gt;0 (microtones-midi-channel p))
        (/= (microtones-midi-channel p)
@@ -237,7 +237,7 @@ data:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod score-write-bar-line ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>))
+(defmethod score-write-bar-line ((p <a href="#robo286">player</a>))
   (let* ((data (data p))
          (ins (if (typep data 'assoc-list)
                   (first (data data))
@@ -247,27 +247,27 @@ data:
 
 
 <a name="player2fplayer2dget2dinstrument"></a>
-<a name="robo369"></a><h2 class=robodoc>player/player-get-instrument [ Methods ]</h2>
+<a name="robo370"></a><h2 class=robodoc>player/player-get-instrument [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the <a href="./instrument_lsp.html#robo284">instrument</a> object assigned to a single-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object or
+<pre> Get the <a href="./instrument_lsp.html#robo284">instrument</a> object assigned to a single-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="#robo286">player</a> object or
  get the specified <a href="./instrument_lsp.html#robo284">instrument</a> object assigned to a multiple-<a href="./instrument_lsp.html#robo284">instrument</a>
- <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.  
+ <a href="#robo286">player</a> object.  
 
  NB: This method will drop into the debugger with an error if no optional
      argument is supplied when applying the method to a multiple-<a href="./instrument_lsp.html#robo284">instrument</a>
-     <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object. It will also print a warning when supplying an optional
-     argument to a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object that contains only one <a href="./instrument_lsp.html#robo284">instrument</a> object.  
+     <a href="#robo286">player</a> object. It will also print a warning when supplying an optional
+     argument to a <a href="#robo286">player</a> object that contains only one <a href="./instrument_lsp.html#robo284">instrument</a> object.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - Actually a required object for multiple-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> objects: The
+<pre> - Actually a required object for multiple-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="#robo286">player</a> objects: The
    symbol that is the ID of the sought-after <a href="./instrument_lsp.html#robo284">instrument</a> object, as it
-   appears in the <a href="./instrument-palette_lsp.html#robo299">instrument-palette</a> with which the <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object which
-   made. If the given <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object consists of only one <a href="./instrument_lsp.html#robo284">instrument</a> object,
+   appears in the <a href="./instrument-palette_lsp.html#robo299">instrument-palette</a> with which the <a href="#robo286">player</a> object which
+   made. If the given <a href="#robo286">player</a> object consists of only one <a href="./instrument_lsp.html#robo284">instrument</a> object,
    this argument is disregarded and a warning is printed. If this argument
    is simply T then the first <a href="./instrument_lsp.html#robo284">instrument</a> is returned (in the <a href="./assoc-list_lsp.html#robo111">assoc-list</a>, not
    the <a href="./piece_lsp.html#robo56">piece</a>, of which we have no knowledge).
@@ -277,9 +277,9 @@ data:
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Returns an <a href="./instrument_lsp.html#robo284">instrument</a> object. Needs no optional argument when applied to a
-;; <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object that contains only one <a href="./instrument_lsp.html#robo284">instrument</a> object
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'pno ip 'piano)))
+;; <a href="#robo286">player</a> object that contains only one <a href="./instrument_lsp.html#robo284">instrument</a> object
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'pno ip 'piano)))
    (<strong>player-get-instrument</strong> plr))
 
 =&gt;
@@ -289,61 +289,61 @@ NAMED-OBJECT: id: PIANO, tag: NIL,
 data: NIL
 
 ;; Returns the only existing <a href="./instrument_lsp.html#robo284">instrument</a> object and prints a warning if using
-;; the optional argument when applying to a single-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object 
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'pno ip 'piano)))
+;; the optional argument when applying to a single-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="#robo286">player</a> object 
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'pno ip 'piano)))
   (id (<strong>player-get-instrument</strong> plr 'piano)))
 
 =&gt; PIANO
 WARNING:
-   <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>::<a href="./slippery-chicken-edit_lsp.html#robo228">player</a>-get-<a href="./instrument_lsp.html#robo284">instrument</a>: <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> PNO has only 1 <a href="./instrument_lsp.html#robo284">instrument</a> so optional
+   <a href="#robo286">player</a>::<a href="#robo286">player</a>-get-<a href="./instrument_lsp.html#robo284">instrument</a>: <a href="#robo286">player</a> PNO has only 1 <a href="./instrument_lsp.html#robo284">instrument</a> so optional
 argument PIANO is being ignored 
 
-;; Asking for a non-existent <a href="./instrument_lsp.html#robo284">instrument</a> obect from a single-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>
+;; Asking for a non-existent <a href="./instrument_lsp.html#robo284">instrument</a> obect from a single-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="#robo286">player</a>
 ;; object returns the only existing <a href="./instrument_lsp.html#robo284">instrument</a> object instead
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'pno ip 'piano)))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'pno ip 'piano)))
   (id (<strong>player-get-instrument</strong> plr 'marimba)))
 
 =&gt; PIANO
 WARNING:
-   <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>::<a href="./slippery-chicken-edit_lsp.html#robo228">player</a>-get-<a href="./instrument_lsp.html#robo284">instrument</a>: <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> PNO has only 1 <a href="./instrument_lsp.html#robo284">instrument</a> so optional
+   <a href="#robo286">player</a>::<a href="#robo286">player</a>-get-<a href="./instrument_lsp.html#robo284">instrument</a>: <a href="#robo286">player</a> PNO has only 1 <a href="./instrument_lsp.html#robo284">instrument</a> so optional
 argument PIANO is being ignored 
 
 ;; The ID desired <a href="./instrument_lsp.html#robo284">instrument</a> object must be specified when applying the method
-;; to a multiple-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'percussion ip '(marimba vibraphone))))
+;; to a multiple-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="#robo286">player</a> object
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'percussion ip '(marimba vibraphone))))
   (id (<strong>player-get-instrument</strong> plr 'marimba)))
 
 =&gt; MARIMBA
 
 ;; Interrupts and drops into the debugger when the optional argument is omitted
-;; in applying the method to a multiple-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'percussion ip '(marimba vibraphone))))
+;; in applying the method to a multiple-<a href="./instrument_lsp.html#robo284">instrument</a> <a href="#robo286">player</a> object
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'percussion ip '(marimba vibraphone))))
    (<strong>player-get-instrument</strong> plr))
 
 =&gt;
-<a href="./slippery-chicken-edit_lsp.html#robo228">player</a>::<a href="./slippery-chicken-edit_lsp.html#robo228">player</a>-get-<a href="./instrument_lsp.html#robo284">instrument</a>: PERCUSSION doubles so you need to pass the ID of
+<a href="#robo286">player</a>::<a href="#robo286">player</a>-get-<a href="./instrument_lsp.html#robo284">instrument</a>: PERCUSSION doubles so you need to pass the ID of
 the <a href="./instrument_lsp.html#robo284">instrument</a> you want. 
    [Condition of type SIMPLE-ERROR]
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>player-get-instrument</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>) &amp;optional ins (warn t))
+<pre class="source">(defmethod <strong>player-get-instrument</strong> ((p <a href="#robo286">player</a>) &amp;optional ins (warn t))
 </pre>
 
 
 <a name="player2fplays2dtransposing2dinstrument"></a>
-<a name="robo370"></a><h2 class=robodoc>player/plays-transposing-instrument [ Methods ]</h2>
+<a name="robo371"></a><h2 class=robodoc>player/plays-transposing-instrument [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determine whether a given <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object has one or more transposing
+<pre> Determine whether a given <a href="#robo286">player</a> object has one or more transposing
  <a href="./instrument_lsp.html#robo284">instrument</a> objects assigned to it.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether <a href="./instruments_lsp.html#robo11">instruments</a> that <a href="./chord_lsp.html#robo108">transpose</a> at the octave are
@@ -352,24 +352,24 @@ the <a href="./instrument_lsp.html#robo284">instrument</a> you want.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns T if one or more of the <a href="./instrument_lsp.html#robo284">instrument</a> objects assigned to the given
- <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object has a transposition value other than C or a
- transposition-<a href="./utilities_lsp.html#robo965">semitones</a> value other than 0.
+ <a href="#robo286">player</a> object has a transposition value other than C or a
+ transposition-<a href="./utilities_lsp.html#robo970">semitones</a> value other than 0.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object using the 'b-flat-clarinet <a href="./instrument_lsp.html#robo284">instrument</a> object
+<pre class="source">;; Create a <a href="#robo286">player</a> object using the 'b-flat-clarinet <a href="./instrument_lsp.html#robo284">instrument</a> object
 ;; definition from the default <a href="./instruments_lsp.html#robo247">+slippery-chicken-standard-instrument-palette+</a>,
 ;; then apply the method. 
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'cl ip 'b-flat-clarinet)))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'cl ip 'b-flat-clarinet)))
   (<strong>plays-transposing-instrument</strong> plr))
 
 =&gt; T
 
-;; Create a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object using the 'flute <a href="./instrument_lsp.html#robo284">instrument</a> object definition from
+;; Create a <a href="#robo286">player</a> object using the 'flute <a href="./instrument_lsp.html#robo284">instrument</a> object definition from
 ;; the default <a href="./instruments_lsp.html#robo247">+slippery-chicken-standard-instrument-palette+</a>, then apply the
 ;; method. 
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'fl ip 'flute)))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'fl ip 'flute)))
   (<strong>plays-transposing-instrument</strong> plr))
 
 =&gt; NIL
@@ -377,116 +377,116 @@ the <a href="./instrument_lsp.html#robo284">instrument</a> you want.
 ;; Although the intended procedure is to list single <a href="./instruments_lsp.html#robo11">instruments</a> as once-off
 ;; symbols (as in the previous example), single <a href="./instruments_lsp.html#robo11">instruments</a> can also be added
 ;; as a one-item list
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'fl ip '(flute))))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'fl ip '(flute))))
   (doubles plr))
 
 =&gt; NIL
 
-;; Create a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object using a list that consists of the 'flute and
+;; Create a <a href="#robo286">player</a> object using a list that consists of the 'flute and
 ;; 'alto-sax <a href="./instrument_lsp.html#robo284">instrument</a> object definitions from the default
 ;; <a href="./instruments_lsp.html#robo247">+slippery-chicken-standard-instrument-palette+</a>, then apply the method to see
 ;; that it returns T even when only one of the <a href="./instruments_lsp.html#robo11">instruments</a> is transposing.
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'fl ip '(flute alto-sax))))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'fl ip '(flute alto-sax))))
   (<strong>plays-transposing-instrument</strong> plr))
 
 =&gt; T
 
 ;; Setting the optional argument to NIL causes <a href="./instruments_lsp.html#robo11">instruments</a> that <a href="./chord_lsp.html#robo108">transpose</a> at
 ;; the octave to return T.
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'db ip '<a href="./sc-map_lsp.html#robo565">double</a>-bass)))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'db ip '<a href="./sc-map_lsp.html#robo567">double</a>-bass)))
   (<strong>plays-transposing-instrument</strong> plr))
 
 =&gt; NIL
 
-(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)
-       (plr (<a href="#robo367">make-player</a> 'db ip '<a href="./sc-map_lsp.html#robo565">double</a>-bass)))
+(let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+       (plr (<a href="#robo368">make-player</a> 'db ip '<a href="./sc-map_lsp.html#robo567">double</a>-bass)))
   (<strong>plays-transposing-instrument</strong> plr nil))
 
 =&gt; T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>plays-transposing-instrument</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>) 
+<pre class="source">(defmethod <strong>plays-transposing-instrument</strong> ((p <a href="#robo286">player</a>) 
                                          &amp;optional (ignore-octaves t) ignore)
 </pre>
 
 
 <a name="player2freset2dinstrument2dstats"></a>
-<a name="robo371"></a><h2 class=robodoc>player/reset-instrument-stats [ Methods ]</h2>
+<a name="robo372"></a><h2 class=robodoc>player/reset-instrument-stats [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 23rd August 2013
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Reset the <a href="./slippery-chicken_lsp.html#robo824">statistics</a> slots for each <a href="./instrument_lsp.html#robo284">instrument</a> the <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> plays.
+<pre> Reset the <a href="./slippery-chicken_lsp.html#robo829">statistics</a> slots for each <a href="./instrument_lsp.html#robo284">instrument</a> the <a href="#robo286">player</a> plays.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object
+<pre> - The <a href="#robo286">player</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - just-<a href="#robo376">total-duration</a>. If NIL update all <a href="./slippery-chicken_lsp.html#robo824">statistics</a> slots, otherwise just
-   the <a href="#robo376">total-duration</a> slot of each <a href="./instrument_lsp.html#robo284">instrument</a> 
+<pre> - just-<a href="#robo377">total-duration</a>. If NIL update all <a href="./slippery-chicken_lsp.html#robo829">statistics</a> slots, otherwise just
+   the <a href="#robo377">total-duration</a> slot of each <a href="./instrument_lsp.html#robo284">instrument</a> 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> T if the <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> has <a href="./instruments_lsp.html#robo11">instruments</a>, NIL if not.
+<pre> T if the <a href="#robo286">player</a> has <a href="./instruments_lsp.html#robo11">instruments</a>, NIL if not.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>reset-instrument-stats</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>) &amp;optional just-total-duration)
+<pre class="source">(defmethod <strong>reset-instrument-stats</strong> ((p <a href="#robo286">player</a>) &amp;optional just-total-duration)
 </pre>
 
 
 <a name="player2ftessitura2ddegree"></a>
-<a name="robo372"></a><h2 class=robodoc>player/tessitura-degree [ Methods ]</h2>
+<a name="robo373"></a><h2 class=robodoc>player/tessitura-degree [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return a number that represents the <a href="./utilities_lsp.html#robo890">average</a> <a href="./pitch_lsp.html#robo285">pitch</a> for a specified
+<pre> Return a number that represents the <a href="./utilities_lsp.html#robo895">average</a> <a href="./pitch_lsp.html#robo285">pitch</a> for a specified
  <a href="./instrument_lsp.html#robo284">instrument</a> over the course of a <a href="./piece_lsp.html#robo56">piece</a>. The number returned will be degrees
- in the current <a href="./popcorn_lsp.html#robo382">scale</a>.
+ in the current <a href="./popcorn_lsp.html#robo383">scale</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A number that is the <a href="./ensemble_lsp.html#robo162">tessitura</a>-degree; i.e., <a href="./utilities_lsp.html#robo890">average</a> <a href="./pitch_lsp.html#robo285">pitch</a> of the given
+<pre> A number that is the <a href="./ensemble_lsp.html#robo162">tessitura</a>-degree; i.e., <a href="./utilities_lsp.html#robo895">average</a> <a href="./pitch_lsp.html#robo285">pitch</a> of the given
  <a href="./instrument_lsp.html#robo284">instrument</a> for the entirety of the given musical data.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo808">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo391">ensemble</a> '(((vn (violin :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((vn (violin :midi-channel 1))
                      (va (violin :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-        :<a href="./set-map_lsp.html#robo574">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((2 4) q (e) s (32) 32))
                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3)))))
-        :<a href="./rthm-seq-map_lsp.html#robo573">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (<strong>tessitura-degree</strong> (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo391">ensemble</a> mini))))
+  (<strong>tessitura-degree</strong> (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo393">ensemble</a> mini))))
 
 =&gt; 136
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>tessitura-degree</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>))
+<pre class="source">(defmethod <strong>tessitura-degree</strong> ((p <a href="#robo286">player</a>))
 </pre>
 
 
 <a name="player2ftessitura2dnote"></a>
-<a name="robo373"></a><h2 class=robodoc>player/tessitura-note [ Methods ]</h2>
+<a name="robo374"></a><h2 class=robodoc>player/tessitura-note [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the value of the TESSITURA-DEGREE slot of a specified <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object
+<pre> Return the value of the TESSITURA-DEGREE slot of a specified <a href="#robo286">player</a> object
  as a note-name symbol.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> - A note-name symbol.
@@ -495,76 +495,76 @@ the <a href="./instrument_lsp.html#robo284">instrument</a> you want.
 <pre class="source">(<a href="./cm_lsp.html#robo134">in-scale</a> :chromatic)
 
 (let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo808">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo391">ensemble</a> '(((vn (violin :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((vn (violin :midi-channel 1))
                      (va (violin :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-        :<a href="./set-map_lsp.html#robo574">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((2 4) q (e) s (32) 32))
                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3)))))
-        :<a href="./rthm-seq-map_lsp.html#robo573">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (<strong>tessitura-note</strong> (first (data (<a href="./ensemble_lsp.html#robo391">ensemble</a> mini)))))
+  (<strong>tessitura-note</strong> (first (data (<a href="./ensemble_lsp.html#robo393">ensemble</a> mini)))))
 
 =&gt; BF3
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>tessitura-note</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>))
+<pre class="source">(defmethod <strong>tessitura-note</strong> ((p <a href="#robo286">player</a>))
 </pre>
 
 
 <a name="player2ftotal2dbars"></a>
-<a name="robo374"></a><h2 class=robodoc>player/total-bars [ Methods ]</h2>
+<a name="robo375"></a><h2 class=robodoc>player/total-bars [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the number of bars in a specified <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> Return the number of bars in a specified <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> - An integer.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo808">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo391">ensemble</a> '(((vn (violin :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((vn (violin :midi-channel 1))
                      (va (violin :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-        :<a href="./set-map_lsp.html#robo574">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((2 4) q (e) s (32) 32))
                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3)))))
-        :<a href="./rthm-seq-map_lsp.html#robo573">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (<strong>total-bars</strong> (first (data (<a href="./ensemble_lsp.html#robo391">ensemble</a> mini)))))
+  (<strong>total-bars</strong> (first (data (<a href="./ensemble_lsp.html#robo393">ensemble</a> mini)))))
 
 =&gt; 5
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>total-bars</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>))
+<pre class="source">(defmethod <strong>total-bars</strong> ((p <a href="#robo286">player</a>))
 </pre>
 
 
 <a name="player2ftotal2ddegrees"></a>
-<a name="robo375"></a><h2 class=robodoc>player/total-degrees [ Methods ]</h2>
+<a name="robo376"></a><h2 class=robodoc>player/total-degrees [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return a number that reflects the mean note (<a href="./ensemble_lsp.html#robo162">tessitura</a>) of a <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>'s
+<pre> Return a number that reflects the mean note (<a href="./ensemble_lsp.html#robo162">tessitura</a>) of a <a href="#robo286">player</a>'s
  part. This is calculated by incrementing the TOTAL-DEGREES slot of the
- corresponding <a href="./instrument_lsp.html#robo284">instrument</a> object for each attacked note in the <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>'s part
- by the degree of that note (in the <a href="./popcorn_lsp.html#robo382">scale</a> of the <a href="./piece_lsp.html#robo56">piece</a>), and then dividing
- the sum by the total number of notes in the <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>'s part.
+ corresponding <a href="./instrument_lsp.html#robo284">instrument</a> object for each attacked note in the <a href="#robo286">player</a>'s part
+ by the degree of that note (in the <a href="./popcorn_lsp.html#robo383">scale</a> of the <a href="./piece_lsp.html#robo56">piece</a>), and then dividing
+ the sum by the total number of notes in the <a href="#robo286">player</a>'s part.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> - An integer.
@@ -573,60 +573,60 @@ the <a href="./instrument_lsp.html#robo284">instrument</a> you want.
 <pre class="source">(<a href="./cm_lsp.html#robo134">in-scale</a> :chromatic)
 
 (let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo808">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo391">ensemble</a> '(((vn (violin :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((vn (violin :midi-channel 1))
                      (va (violin :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-        :<a href="./set-map_lsp.html#robo574">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((2 4) q (e) s (32) 32))
                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3)))))
-        :<a href="./rthm-seq-map_lsp.html#robo573">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (<strong>total-degrees</strong> (first (data (<a href="./ensemble_lsp.html#robo391">ensemble</a> mini)))))
+  (<strong>total-degrees</strong> (first (data (<a href="./ensemble_lsp.html#robo393">ensemble</a> mini)))))
 
 =&gt; 865
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>total-degrees</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>))
+<pre class="source">(defmethod <strong>total-degrees</strong> ((p <a href="#robo286">player</a>))
 </pre>
 
 
 <a name="player2ftotal2dduration"></a>
-<a name="robo376"></a><h2 class=robodoc>player/total-duration [ Methods ]</h2>
+<a name="robo377"></a><h2 class=robodoc>player/total-duration [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the total duration of played notes for a given <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> over the span of
+<pre> Get the total duration of played notes for a given <a href="#robo286">player</a> over the span of
  a <a href="./piece_lsp.html#robo56">piece</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A number that is the total duration in seconds of played notes.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo808">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo391">ensemble</a> '(((vn (violin :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((vn (violin :midi-channel 1))
                      (va (violin :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-        :<a href="./set-map_lsp.html#robo574">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((2 4) q (e) s (32) 32))
                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3))))
                             (2 ((((2 4) (q) e (s) 32 32))
                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3)))))
-        :<a href="./rthm-seq-map_lsp.html#robo573">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (2 2 2 2 2))
                             (vc (1 2 1 2 1))))))))
-  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> 'vn (<a href="./ensemble_lsp.html#robo391">ensemble</a> mini))))
-  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> 'va (<a href="./ensemble_lsp.html#robo391">ensemble</a> mini))))
-  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo391">ensemble</a> mini)))))
+  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> 'vn (<a href="./ensemble_lsp.html#robo393">ensemble</a> mini))))
+  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> 'va (<a href="./ensemble_lsp.html#robo393">ensemble</a> mini))))
+  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo393">ensemble</a> mini)))))
 
 =&gt;
 6.875 
@@ -634,50 +634,50 @@ the <a href="./instrument_lsp.html#robo284">instrument</a> you want.
 5.625
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>total-duration</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>))
+<pre class="source">(defmethod <strong>total-duration</strong> ((p <a href="#robo286">player</a>))
 </pre>
 
 
 <a name="player2ftotal2dnotes"></a>
-<a name="robo377"></a><h2 class=robodoc>player/total-notes [ Methods ]</h2>
+<a name="robo378"></a><h2 class=robodoc>player/total-notes [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo286">player</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the total number of notes (actually events) played by a specified
- <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> (not rests or tied notes, but midi-notes) in the <a href="./piece_lsp.html#robo56">piece</a> which this
- <a href="./instrument_lsp.html#robo284">instrument</a> plays.  A <a href="./chord_lsp.html#robo606">chord</a> counts as 1 note/<a href="./event_lsp.html#robo426">event</a>.
+ <a href="#robo286">player</a> (not rests or tied notes, but midi-notes) in the <a href="./piece_lsp.html#robo56">piece</a> which this
+ <a href="./instrument_lsp.html#robo284">instrument</a> plays.  A <a href="./chord_lsp.html#robo608">chord</a> counts as 1 note/<a href="./event_lsp.html#robo428">event</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./slippery-chicken-edit_lsp.html#robo228">player</a> object.
+<pre> - A <a href="#robo286">player</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - An integer that is the number of notes for that <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>.
+<pre> - An integer that is the number of notes for that <a href="#robo286">player</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo808">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo391">ensemble</a> '(((vn (violin :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((vn (violin :midi-channel 1))
                      (va (violin :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-        :<a href="./set-map_lsp.html#robo574">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((2 4) q (e) s (32) 32))
                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3)))))
-        :<a href="./rthm-seq-map_lsp.html#robo573">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (print (<strong>total-notes</strong> (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo391">ensemble</a> mini)))))
+  (print (<strong>total-notes</strong> (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo393">ensemble</a> mini)))))
 
 =&gt; 15
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>total-notes</strong> ((p <a href="./slippery-chicken-edit_lsp.html#robo228">player</a>))
+<pre class="source">(defmethod <strong>total-notes</strong> ((p <a href="#robo286">player</a>))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/player.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/player.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

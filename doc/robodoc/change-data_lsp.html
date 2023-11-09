@@ -35,15 +35,15 @@
 <a name="change2ddata2fget2dchange2ddata"></a>
 <a name="robo61"></a><h2 class=robodoc>change-data/get-change-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo605">change-data</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo607">change-data</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the change data (for example, from an <a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> object) for
  a specified sequence.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo605">change-data</a> object.
+<pre> - A <a href="#robo607">change-data</a> object.
  - An integer that is the number of the sequence within the given
-   <a href="#robo605">change-data</a> object for which to retrieve the data.
+   <a href="#robo607">change-data</a> object for which to retrieve the data.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - An integer that is the number of the bar within the specified sequence
@@ -54,20 +54,20 @@
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo808">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo391">ensemble</a> '(((sax ((alto-sax tenor-sax) :midi-channel 1))
-                     (db (<a href="./sc-map_lsp.html#robo565">double</a>-bass :midi-channel 2))))
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+                     (db (<a href="./sc-map_lsp.html#robo567">double</a>-bass :midi-channel 2))))
         :<a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> '((1 ((sax ((1 alto-sax) (3 tenor-sax))))))
         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))  
-        :<a href="./set-map_lsp.html#robo574">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((4 4) h q e s s)
                                  (w))
                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4 5 6)))))
-        :<a href="./rthm-seq-map_lsp.html#robo573">rthm-seq-map</a> '((1 ((sax (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((sax (1 1 1 1 1))
                             (db (1 1 1 1 1))))))))
    (<strong>get-change-data</strong> 
-    (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> '(1 sax) (<a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> mini)) 2 2))
+    (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> '(1 sax) (<a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> mini)) 2 2))
 
 =&gt; ALTO-SAX, NIL
 </pre>
@@ -79,10 +79,10 @@
 <a name="change2ddata2fmake2dchange2ddata"></a>
 <a name="robo62"></a><h2 class=robodoc>change-data/make-change-data [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo605">change-data</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo607">change-data</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo605">change-data</a> object, which holds data for use by a <a href="./change-map_lsp.html#robo562">change-map</a>
- object. The data stored in <a href="#robo605">change-data</a> object will be that of parameter
+<pre> Create a <a href="#robo607">change-data</a> object, which holds data for use by a <a href="./change-map_lsp.html#robo564">change-map</a>
+ object. The data stored in <a href="#robo607">change-data</a> object will be that of parameter
  changes for a whole <a href="./section_lsp.html#robo58">section</a>, such as <a href="./tempo_lsp.html#robo290">tempo</a> values.
 
  The data is passed to the <strong>make-change-data</strong> function as a list of
@@ -90,7 +90,7 @@
  number of the bar within that sequence, and the new data.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An ID for the <a href="#robo605">change-data</a> object to be created.
+<pre> - An ID for the <a href="#robo607">change-data</a> object to be created.
  - A list of three-item lists, each consisting of the number of the sequence
    in which the data is to change, the number of the bar within that
    sequence in which the data is to change, and the data value itself. The
@@ -98,7 +98,7 @@
    is given, it will default to 1.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo605">change-data</a> object.
+<pre> A <a href="#robo607">change-data</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>make-change-data</strong> 'cd-test '((1 1 23) (6 1 28) (18 1 35)))
@@ -118,7 +118,7 @@ data: ((1 1 23) (6 1 28) (18 1 35))
 
 
 <a name="sclist2fchange2ddata"></a>
-<a name="robo605"></a><h2 class=robodoc>sclist/change-data [ Classes ]</h2>
+<a name="robo607"></a><h2 class=robodoc>sclist/change-data [ Classes ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo288">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
@@ -126,7 +126,7 @@ data: ((1 1 23) (6 1 28) (18 1 35))
 
  File:             <a href="#robo_top_of_doc">change-data.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
                    <strong>change-data</strong>
 
  Version:          1.0.12
@@ -135,7 +135,7 @@ data: ((1 1 23) (6 1 28) (18 1 35))
 
  Purpose:          Implementation of the <strong>change-data</strong> class.  Holds data
                    regarding parameter changes for a whole <a href="./section_lsp.html#robo58">section</a>
-                   (e.g. <a href="./tempo_lsp.html#robo290">tempo</a>).  For use in <a href="./change-map_lsp.html#robo562">change-map</a>.  The data in the
+                   (e.g. <a href="./tempo_lsp.html#robo290">tempo</a>).  For use in <a href="./change-map_lsp.html#robo564">change-map</a>.  The data in the
                    &lt;changes&gt; slot is a three-element list: the sequence
                    number, the bar number of the sequence where the change
                    takes place (defaults to 1) and the new data (e.g. a
@@ -160,7 +160,7 @@ data: ((1 1 23) (6 1 28) (18 1 35))
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/change-data.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/change-data.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

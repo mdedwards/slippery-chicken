@@ -234,12 +234,12 @@ Rest: ((4 6 1) (2 3 4))
  - :sublists. T or NIL to indicate whether the returned result should be
    flattened into a one-dimensional list or should be left as a list of
    lists. T = leave as list of lists. Default = NIL.
- - :<a href="./slippery-chicken_lsp.html#robo767">clone</a>. T or NIL to indicate whether objects in the list should be cloned
+ - :<a href="./slippery-chicken_lsp.html#robo769">clone</a>. T or NIL to indicate whether objects in the list should be cloned
    as they are permutated (so that they are unique objects rather than
    shared data space).  Useful perhaps if e.g. you're cloning chords which
    will then have their own marks. etc.  If T then the list must contain
-   <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a> named-objects or types subclassed from them (as is every
-   <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a> class).
+   <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> named-objects or types subclassed from them (as is every
+   <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> class).
  - :if-not-enough. A function object (or NIL) to call when :max was
    requested but we can't return that many results.  Default = #'error. 
 </pre>
@@ -289,7 +289,7 @@ Rest: ((4 6 1) (2 3 4))
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>inefficiently-permutate</strong> (list &amp;key (max nil) (skip 0) (fix t)
-                                <a href="./slippery-chicken_lsp.html#robo767">clone</a> (sublists nil) (if-not-enough #'error))
+                                <a href="./slippery-chicken_lsp.html#robo769">clone</a> (sublists nil) (if-not-enough #'error))
 </pre>
 
 
@@ -387,8 +387,8 @@ WARNING:
  - :fix. T or NIL to indicate whether the given sequence should always be
    shuffled with the same (fixed) random seed (thus always producing the
    same result). T = fixed seed. Default = T.
- - :<a href="./sndfile-ext_lsp.html#robo837">reset</a>. T or NIL to indicate whether the random state should be <a href="./sndfile-ext_lsp.html#robo837">reset</a>
-   before the function is performed.  T = <a href="./sndfile-ext_lsp.html#robo837">reset</a>. Default = T.
+ - :<a href="./activity-levels_lsp.html#robo26">reset</a>. T or NIL to indicate whether the random state should be <a href="./activity-levels_lsp.html#robo26">reset</a>
+   before the function is performed.  T = <a href="./activity-levels_lsp.html#robo26">reset</a>. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> - A sequence.
@@ -437,7 +437,7 @@ WARNING:
                       (end (length seq))
                       (copy t)
                       (fix t)
-                      (<a href="./sndfile-ext_lsp.html#robo837">reset</a> t))
+                      (<a href="./activity-levels_lsp.html#robo26">reset</a> t))
 </pre>
 
 
@@ -507,7 +507,7 @@ WARNING:
 <pre> Systematically produce a list of all possible <a href="#robo15">permutations</a> of an original
  list of elements of any type.
 
- NB: Such lists can quickly become very long, so <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a>
+ NB: Such lists can quickly become very long, so <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a>
      automatically defaults to outputting the resulting list to a file and 
      printing a warning when the results exceed a certain length. 
 </pre>
@@ -596,14 +596,14 @@ results so they are being written to the file
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Return a random non-negative number that is less than the specified
- value. An optional argument allows for the random state to be <a href="./sndfile-ext_lsp.html#robo837">reset</a>.
+ value. An optional argument allows for the random state to be <a href="./activity-levels_lsp.html#robo26">reset</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A number.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether the random state should be <a href="./sndfile-ext_lsp.html#robo837">reset</a> before the
-   function is performed. T = <a href="./sndfile-ext_lsp.html#robo837">reset</a>. Default = NIL.  
+<pre> - T or NIL to indicate whether the random state should be <a href="./activity-levels_lsp.html#robo26">reset</a> before the
+   function is performed. T = <a href="./activity-levels_lsp.html#robo26">reset</a>. Default = NIL.  
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A number.
@@ -641,7 +641,7 @@ results so they are being written to the file
   3
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">  (defun <strong>random-rep</strong> (below &amp;optional (<a href="./sndfile-ext_lsp.html#robo837">reset</a> nil))
+<pre class="source">  (defun <strong>random-rep</strong> (below &amp;optional (<a href="./activity-levels_lsp.html#robo26">reset</a> nil))
 </pre>
 
 
@@ -673,8 +673,8 @@ results so they are being written to the file
  - :fix. T or NIL to indicate whether the given sequence should always be
    shuffled with the same (fixed) random seed (thus always producing the
    same result). T = fixed seed. Default = T.
- - :<a href="./sndfile-ext_lsp.html#robo837">reset</a>. T or NIL to indicate whether the random state should be <a href="./sndfile-ext_lsp.html#robo837">reset</a>
-   before the function is performed.  T = <a href="./sndfile-ext_lsp.html#robo837">reset</a>. Default = T.
+ - :<a href="./activity-levels_lsp.html#robo26">reset</a>. T or NIL to indicate whether the random state should be <a href="./activity-levels_lsp.html#robo26">reset</a>
+   before the function is performed.  T = <a href="./activity-levels_lsp.html#robo26">reset</a>. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list.
@@ -703,12 +703,12 @@ results so they are being written to the file
 (4 7 2 5 1 6 3) 
 (1 5 3 7 4 2 6)
 
-;; Set the keyword argument :<a href="./sndfile-ext_lsp.html#robo837">reset</a> to t only at the beginning so we get the
+;; Set the keyword argument :<a href="./activity-levels_lsp.html#robo26">reset</a> to t only at the beginning so we get the
 ;; same result that time but different (but repeatable) results thereafter.
 (loop repeat 3 do
      (print 'start)
      (loop for i below 4 
-        do (print (<strong>shuffle</strong> '(1 2 3 4 5 6 7) :<a href="./sndfile-ext_lsp.html#robo837">reset</a> (zerop i)))))
+        do (print (<strong>shuffle</strong> '(1 2 3 4 5 6 7) :<a href="./activity-levels_lsp.html#robo26">reset</a> (zerop i)))))
 
 =&gt;
 START 
@@ -748,13 +748,13 @@ START
                 (end (length seq))
                 (copy t)
                 (fix t)
-                (<a href="./sndfile-ext_lsp.html#robo837">reset</a> t)
+                (<a href="./activity-levels_lsp.html#robo26">reset</a> t)
                 &amp;aux (width (- end start)))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/permutations.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/permutations.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

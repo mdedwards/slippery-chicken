@@ -49,7 +49,7 @@
 
  Purpose:          Definition of the spectral data for piano and other
                    <a href="./instruments_lsp.html#robo11">instruments</a>' notes. We'll use this data for
-                   the calculation of <a href="./chord_lsp.html#robo606">chord</a> dissonance values in the <a href="./chord_lsp.html#robo606">chord</a>
+                   the calculation of <a href="./chord_lsp.html#robo608">chord</a> dissonance values in the <a href="./chord_lsp.html#robo608">chord</a>
                    class's <a href="./chord_lsp.html#robo72">calculate-dissonance</a> method. 
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -63,7 +63,7 @@
 
 
 <a name="spectra2fget2dspectra2dal"></a>
-<a name="robo865"></a><h2 class=robodoc>spectra/get-spectra-al [ Functions ]</h2>
+<a name="robo870"></a><h2 class=robodoc>spectra/get-spectra-al [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo19">spectra</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -76,18 +76,18 @@
  partials as close as possible to integer multiples of the sample sound
  file's fundamental frequency, as detected from the file name (see below).
 
- By default we <a href="./utilities_lsp.html#robo890">average</a> <a href="#robo19">spectra</a> over three separate readings at 300, 400, and
+ By default we <a href="./utilities_lsp.html#robo895">average</a> <a href="#robo19">spectra</a> over three separate readings at 300, 400, and
  500 milliseconds. We do this in order to avoid spectral anomalies at any
  fixed point in any of the sound files, and of course to skip the onset
  transient and any inharmonicities therein.
 
  As the extensive analysis and processing here will take some computation
  time, in order to create our default spectral data for calculating a
- <a href="./chord_lsp.html#robo606">chord</a>'s dissonance or spectral <a href="./sndfile_lsp.html#robo850">centroid</a>, I've performed the analysis on
+ <a href="./chord_lsp.html#robo608">chord</a>'s dissonance or spectral <a href="./sndfile_lsp.html#robo855">centroid</a>, I've performed the analysis on
  some of my local sample libraries. By then using the <a href="./assoc-list_lsp.html#robo111">assoc-list</a> method
  print-for-init I've copied the data into separate text files for reading
  into the +slippery-chicken-<a href="#robo19">spectra</a>+ global <a href="./assoc-list_lsp.html#robo111">assoc-list</a> and thus making these
- available to all <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a> users. By modifying the examples at the
+ available to all <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> users. By modifying the examples at the
  bottom of this file, similar sample directories' spectral data could be
  added to this global.
 </pre>
@@ -100,7 +100,7 @@
  in order to return the MIDI note number of the sample in that file. This
  whole approach is predicated on the assumption that sample file names will
  contain such <a href="./pitch_lsp.html#robo285">pitch</a> data. If that is not the case then <strong>get-spectra-al</strong> will
- be of no use. See the akoustik-piano-name and violin-<a href="./ensemble_lsp.html#robo391">ensemble</a>-name
+ be of no use. See the akoustik-piano-name and violin-<a href="./ensemble_lsp.html#robo393">ensemble</a>-name
  functions below for examples.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -126,7 +126,7 @@
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>get-spectra-al</strong> "/path/to/samples/*.wav"
-                #'violin-<a href="./ensemble_lsp.html#robo391">ensemble</a>-name :id 'violin-<a href="./ensemble_lsp.html#robo391">ensemble</a>)
+                #'violin-<a href="./ensemble_lsp.html#robo393">ensemble</a>-name :id 'violin-<a href="./ensemble_lsp.html#robo393">ensemble</a>)
 --&gt;
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
@@ -148,7 +148,7 @@ data: ((0.9889743194880222d0 2.0263850081954717d0 2.9990610385449314d0
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">#+clm
 (defun <strong>get-spectra-al</strong> (sample-dir name-fun
-                       &amp;key (<a href="./slippery-chicken-edit_lsp.html#robo702">force-harmonics</a> t) (harmonic-tolerance 0.15)
+                       &amp;key (<a href="./slippery-chicken-edit_lsp.html#robo704">force-harmonics</a> t) (harmonic-tolerance 0.15)
                          (fftsize 4096) (num-partials 12) (id '<a href="#robo19">spectra</a>)
                          ;; millisec times of fft analysis
                          (analysis-points '(300 400 500)))
@@ -156,7 +156,7 @@ data: ((0.9889743194880222d0 2.0263850081954717d0 2.9990610385449314d0
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/spectra.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/spectra.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

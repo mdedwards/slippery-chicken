@@ -33,16 +33,16 @@
 
 
 <a name="sc2dset2ftl2dset"></a>
-<a name="robo602"></a><h2 class=robodoc>sc-set/tl-set [ Classes ]</h2>
+<a name="robo604"></a><h2 class=robodoc>sc-set/tl-set [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sc-set_lsp.html#robo623">sc-set</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sc-set_lsp.html#robo625">sc-set</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>tl-set</strong>
 
  File:             <a href="#robo_top_of_doc">tl-set.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; <a href="./chord_lsp.html#robo606">chord</a> -&gt;
-                   <a href="./sc-set_lsp.html#robo623">sc-set</a> -&gt; <strong>tl-set</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; <a href="./chord_lsp.html#robo608">chord</a> -&gt;
+                   <a href="./sc-set_lsp.html#robo625">sc-set</a> -&gt; <strong>tl-set</strong>
 
  Version:          1.0.12
 
@@ -66,30 +66,30 @@
 
 
 <a name="tl2dset2flimit"></a>
-<a name="robo877"></a><h2 class=robodoc>tl-set/limit [ Methods ]</h2>
+<a name="robo882"></a><h2 class=robodoc>tl-set/limit [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo602">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo604">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Remove <a href="./pitch_lsp.html#robo285">pitch</a> objects from a given <a href="#robo602">tl-set</a> whose <a href="./pitch_lsp.html#robo285">pitch</a> content is higher or
+<pre> Remove <a href="./pitch_lsp.html#robo285">pitch</a> objects from a given <a href="#robo604">tl-set</a> whose <a href="./pitch_lsp.html#robo285">pitch</a> content is higher or
  lower than the pitches specified. Any <a href="./pitch_lsp.html#robo285">pitch</a> objects whose <a href="./pitch_lsp.html#robo285">pitch</a> content is
  equal to the <strong>limit</strong> pitches specified will be retained.
 
- NB: C0 and B10 are the <a href="./event_lsp.html#robo192">highest</a> and <a href="./event_lsp.html#robo197">lowest</a> possible pitches of the
-     quarter-tone <a href="./popcorn_lsp.html#robo382">scale</a> defined in <a href="./popcorn_lsp.html#robo382">scale</a>.lsp (16.35 and 31608.55 Hz
+ NB: C0 and B10 are the <a href="./chord_lsp.html#robo88">highest</a> and <a href="./event_lsp.html#robo197">lowest</a> possible pitches of the
+     quarter-tone <a href="./popcorn_lsp.html#robo383">scale</a> defined in <a href="./popcorn_lsp.html#robo383">scale</a>.lsp (16.35 and 31608.55 Hz
      respectively).
 
- NB: The keyword arguments for which the lower and upper <a href="./sclist_lsp.html#robo612">limits</a> are to be
+ NB: The keyword arguments for which the lower and upper <a href="./sclist_lsp.html#robo614">limits</a> are to be
      specified are optional arguments, but are required in order for any
      effect to be had.
 
  NB: Whether a <a href="./pitch_lsp.html#robo285">pitch</a> is higher or lower than the specified pitches is
      determined by their frequencies. If a <a href="./pitch_lsp.html#robo285">pitch</a> happens to be <a href="./event_lsp.html#robo204">microtonal</a> it
-     could be that the <a href="./utilities_lsp.html#robo931">nearest</a> <a href="./pitch_lsp.html#robo285">pitch</a> symbol is an approximation, i.e. not
+     could be that the <a href="./utilities_lsp.html#robo936">nearest</a> <a href="./pitch_lsp.html#robo285">pitch</a> symbol is an approximation, i.e. not
      quite the same as the frequency, so limiting might appear to be working
      incorrectly.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo602">tl-set</a> object.
+<pre> - The <a href="#robo604">tl-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -98,16 +98,16 @@
  - :lower. A note-name symbol that is the lower <strong>limit</strong> for the limiting
    process.
  - :do-related-sets. T or NIL to indicate whether the RELATED-SETS slot of
-   the given <a href="#robo602">tl-set</a> object is to be transposed as well or left unhandled. T
+   the given <a href="#robo604">tl-set</a> object is to be transposed as well or left unhandled. T
    = <a href="./chord_lsp.html#robo108">transpose</a>. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo602">tl-set</a> object.
+<pre> A <a href="#robo604">tl-set</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; By default the method does not <a href="./chord_lsp.html#robo108">transpose</a> the pitches of the RELATED-SETS
 ;;; slot 
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :subsets '((fl (df5 f5 af5))
                                     (vla (e3 g3 b3)))
                          :related-sets '((missing (fs2 b5))))))
@@ -130,7 +130,7 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5)
 
 ;; Setting the :do-related-sets argument to T results in any RELATED-SETS <a href="./pitch_lsp.html#robo285">pitch</a>
 ;; content being transposed as well
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :subsets '((fl (df5 f5 af5))
                                     (vla (e3 g3 b3)))
                          :related-sets '((missing (fs2 b5))))))
@@ -154,33 +154,33 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 
 <a name="tl2dset2flimit2dfor2dinstrument"></a>
-<a name="robo878"></a><h2 class=robodoc>tl-set/limit-for-instrument [ Methods ]</h2>
+<a name="robo883"></a><h2 class=robodoc>tl-set/limit-for-instrument [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo602">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo604">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Remove any <a href="./pitch_lsp.html#robo285">pitch</a> objects from the given <a href="#robo602">tl-set</a> object which are outside of
+<pre> Remove any <a href="./pitch_lsp.html#robo285">pitch</a> objects from the given <a href="#robo604">tl-set</a> object which are outside of
  the range of the specified <a href="./instrument_lsp.html#robo284">instrument</a> object. 
 
  The <a href="./pitch_lsp.html#robo285">pitch</a> objects returned after that operation can then be reduced again
- by applying further <a href="./sclist_lsp.html#robo612">limits</a> specified by the :upper and :lower keyword
+ by applying further <a href="./sclist_lsp.html#robo614">limits</a> specified by the :upper and :lower keyword
  arguments.  
 
- NB: This method returns a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects, not a <a href="#robo602">tl-set</a> object,
-     though it does destructively alter the data of the given <a href="#robo602">tl-set</a> object
+ NB: This method returns a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects, not a <a href="#robo604">tl-set</a> object,
+     though it does destructively alter the data of the given <a href="#robo604">tl-set</a> object
      accordingly. 
 
- NB: This method will return NIL if the <a href="./pitch_lsp.html#robo285">pitch</a> objects of the given <a href="#robo602">tl-set</a>
+ NB: This method will return NIL if the <a href="./pitch_lsp.html#robo285">pitch</a> objects of the given <a href="#robo604">tl-set</a>
      object are <a href="./event_lsp.html#robo204">microtonal</a> while the given <a href="./instrument_lsp.html#robo284">instrument</a> object is set to be a
      non-<a href="./event_lsp.html#robo204">microtonal</a> <a href="./instrument_lsp.html#robo284">instrument</a> (see example).
 
  NB: Whether a <a href="./pitch_lsp.html#robo285">pitch</a> is higher or lower than the specified pitches is
      determined by their frequencies. If a <a href="./pitch_lsp.html#robo285">pitch</a> happens to be <a href="./event_lsp.html#robo204">microtonal</a> it
-     could be that the <a href="./utilities_lsp.html#robo931">nearest</a> <a href="./pitch_lsp.html#robo285">pitch</a> symbol is an approximation, i.e. not
+     could be that the <a href="./utilities_lsp.html#robo936">nearest</a> <a href="./pitch_lsp.html#robo285">pitch</a> symbol is an approximation, i.e. not
      quite the same as the frequency, so limiting might appear to be working
      incorrectly.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo602">tl-set</a> object.
+<pre> - A <a href="#robo604">tl-set</a> object.
  - An <a href="./instrument_lsp.html#robo284">instrument</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -192,8 +192,8 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
    <a href="./pitch_lsp.html#robo285">pitch</a> (inclusive) of the <a href="./pitch_lsp.html#robo285">pitch</a> objects returned, as a further limitation
    after the range of the <a href="./instrument_lsp.html#robo284">instrument</a> object has been applied.
  - :do-related-sets. T or NIL to indicate whether to apply the specified
-   range restrictions to the RELATED-SETS slot of the given <a href="#robo602">tl-set</a> object as
-   well. NB: These will be modified within the original <a href="#robo602">tl-set</a> object but
+   range restrictions to the RELATED-SETS slot of the given <a href="#robo604">tl-set</a> object as
+   well. NB: These will be modified within the original <a href="#robo604">tl-set</a> object but
    not returned as part of the resulting list. T = apply to RELATED-SETS as
    well. Default = NIL.
 </pre>
@@ -203,11 +203,11 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; Returns a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects, limited only by the range of the given
 ;;; <a href="./instrument_lsp.html#robo284">instrument</a> object by default
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :related-sets '((other-notes (b4 e5 fs5 c6)))))
       (mi (<a href="./instrument_lsp.html#robo240">make-instrument</a> 'flute 
                            :staff-name "Flute" :staff-short-name "Fl."
-                           :<a href="./event_lsp.html#robo197">lowest</a>-written 'c4 :<a href="./event_lsp.html#robo192">highest</a>-written 'd7 
+                           :<a href="./event_lsp.html#robo197">lowest</a>-written 'c4 :<a href="./chord_lsp.html#robo88">highest</a>-written 'd7 
                            :starting-clef 'treble :midi-program 74 :chords nil
                            :microtones t :missing-notes '(cqs4 dqf4))))
   (<strong>limit-for-instrument</strong> mtls mi))
@@ -245,25 +245,25 @@ data: C6
 
 ;;; Further restrict the pitches returned by setting values for the :upper and
 ;;; :lower keyword arguments and print the new <a href="./pitch_lsp.html#robo285">pitch</a> content of the given
-;;; <a href="#robo602">tl-set</a> object to see the destructive modification
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+;;; <a href="#robo604">tl-set</a> object to see the destructive modification
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :related-sets '((other-notes (b4 e5 fs5 c6)))))
       (mi (<a href="./instrument_lsp.html#robo240">make-instrument</a> 'flute 
                            :staff-name "Flute" :staff-short-name "Fl."
-                           :<a href="./event_lsp.html#robo197">lowest</a>-written 'c4 :<a href="./event_lsp.html#robo192">highest</a>-written 'd7 
+                           :<a href="./event_lsp.html#robo197">lowest</a>-written 'c4 :<a href="./chord_lsp.html#robo88">highest</a>-written 'd7 
                            :starting-clef 'treble :midi-program 74 :chords nil
                            :microtones t :missing-notes '(cqs4 dqf4))))
   (<strong>limit-for-instrument</strong> mtls mi :upper 'b5 :lower 'c5)
-  (<a href="./sc-set_lsp.html#robo594">pitch-symbols</a> mtls))
+  (<a href="./sc-set_lsp.html#robo596">pitch-symbols</a> mtls))
 
 =&gt; (DF5 F5 AF5)
 
-;;; By default the RELATED-SETS slot of the given <a href="#robo602">tl-set</a> object is not affected 
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+;;; By default the RELATED-SETS slot of the given <a href="#robo604">tl-set</a> object is not affected 
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :related-sets '((other-notes (b4 e5 fs5 c6)))))
       (mi (<a href="./instrument_lsp.html#robo240">make-instrument</a> 'flute 
                            :staff-name "Flute" :staff-short-name "Fl."
-                           :<a href="./event_lsp.html#robo197">lowest</a>-written 'c4 :<a href="./event_lsp.html#robo192">highest</a>-written 'd7 
+                           :<a href="./event_lsp.html#robo197">lowest</a>-written 'c4 :<a href="./chord_lsp.html#robo88">highest</a>-written 'd7 
                            :starting-clef 'treble :midi-program 74 :chords nil
                            :microtones t :missing-notes '(cqs4 dqf4))))
   (<strong>limit-for-instrument</strong> mtls mi :upper 'b5 :lower 'c5)
@@ -276,15 +276,15 @@ data: C6
 
 ;;; Setting the :do-related-sets argument to T will cause the method to be
 ;;; applied to the RELATED-SETS slot as well.
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :related-sets '((other-notes (b4 e5 fs5 c6)))))
       (mi (<a href="./instrument_lsp.html#robo240">make-instrument</a> 'flute 
                            :staff-name "Flute" :staff-short-name "Fl."
-                           :<a href="./event_lsp.html#robo197">lowest</a>-written 'c4 :<a href="./event_lsp.html#robo192">highest</a>-written 'd7 
+                           :<a href="./event_lsp.html#robo197">lowest</a>-written 'c4 :<a href="./chord_lsp.html#robo88">highest</a>-written 'd7 
                            :starting-clef 'treble :midi-program 74 :chords nil
                            :microtones t :missing-notes '(cqs4 dqf4))))
   (<strong>limit-for-instrument</strong> mtls mi :upper 'b5 :lower 'c5 :do-related-sets t)
-  (print (<a href="./sc-set_lsp.html#robo594">pitch-symbols</a> mtls))
+  (print (<a href="./sc-set_lsp.html#robo596">pitch-symbols</a> mtls))
   (print (loop for nobj in (data (related-sets mtls)) 
             collect (loop for p in (data nobj) 
                        collect (data p)))))
@@ -294,12 +294,12 @@ data: C6
 ((E5 FS5))
 
 ;;; The method will return NIL if a set of only <a href="./event_lsp.html#robo204">microtonal</a> pitches (which
-;;; e.g. <a href="./set-palette_lsp.html#robo652">ring-mod</a> might return) is given in combination with an <a href="./instrument_lsp.html#robo284">instrument</a>
+;;; e.g. <a href="./set-palette_lsp.html#robo654">ring-mod</a> might return) is given in combination with an <a href="./instrument_lsp.html#robo284">instrument</a>
 ;;; object which is not microtone-capable (such as the 'piano object of the
 ;;; <a href="./instruments_lsp.html#robo247">+slippery-chicken-standard-instrument-palette+</a> 
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(dqs2 fqs2 aqf2 gqs3 bqf3 gqf4 bqf4 dqf5 fqs5)))
-      (pno (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> 'piano 
-                     +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo403">palette</a>+)))
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(dqs2 fqs2 aqf2 gqs3 bqf3 gqf4 bqf4 dqf5 fqs5)))
+      (pno (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> 'piano 
+                     +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)))
   (<strong>limit-for-instrument</strong> mtls pno :lower 'e5 :upper 'd6))
 
 =&gt; NIL
@@ -311,60 +311,60 @@ data: C6
 
 
 <a name="tl2dset2flimit2dshift2doctave"></a>
-<a name="robo879"></a><h2 class=robodoc>tl-set/limit-shift-octave [ Methods ]</h2>
+<a name="robo884"></a><h2 class=robodoc>tl-set/limit-shift-octave [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo602">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo604">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> August 18th 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Like the <a href="#robo877">limit</a> method, we restrict pitches in the set to be within
- specified <a href="./sclist_lsp.html#robo612">limits</a>, but instead of removing pitches we shift them to octaves
- within the <a href="./sclist_lsp.html#robo612">limits</a>. Rather than just putting the outlying pitches up or down
+<pre> Like the <a href="./set-palette_lsp.html#robo647">limit</a> method, we restrict pitches in the set to be within
+ specified <a href="./sclist_lsp.html#robo614">limits</a>, but instead of removing pitches we shift them to octaves
+ within the <a href="./sclist_lsp.html#robo614">limits</a>. Rather than just putting the outlying pitches up or down
  and octave or two, we put them into the least-used octave of the set so as
  to balance <a href="./pitch_lsp.html#robo285">pitch</a> spread.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo602">tl-set</a> object
+<pre> - the <a href="#robo604">tl-set</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :upper. A note-name symbol that is the upper <a href="#robo877">limit</a> for the limiting
+ - :upper. A note-name symbol that is the upper <a href="./set-palette_lsp.html#robo647">limit</a> for the limiting
    process.
- - :lower. A note-name symbol that is the lower <a href="#robo877">limit</a> for the limiting
+ - :lower. A note-name symbol that is the lower <a href="./set-palette_lsp.html#robo647">limit</a> for the limiting
    process.
  - :do-related-sets. T or NIL to indicate whether the RELATED-SETS slot of
-   the given <a href="#robo602">tl-set</a> object is to be transposed as well or left unhandled. T
+   the given <a href="#robo604">tl-set</a> object is to be transposed as well or left unhandled. T
    = <a href="./chord_lsp.html#robo108">transpose</a>. Default = NIL.
- - :<a href="./event_lsp.html#robo192">highest</a>-wins. T or NIL to indicate whether in the case of a <a href="./slippery-chicken-edit_lsp.html#robo752">tie</a> when
-   searching for the least used octave in a set, the <a href="./event_lsp.html#robo192">highest</a> octave will be
+ - :<a href="./chord_lsp.html#robo88">highest</a>-wins. T or NIL to indicate whether in the case of a <a href="./slippery-chicken-edit_lsp.html#robo754">tie</a> when
+   searching for the least used octave in a set, the <a href="./chord_lsp.html#robo88">highest</a> octave will be
    used to move notes into. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo602">tl-set</a> object.
+<pre> The <a href="#robo604">tl-set</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; the C2 will be shifted to C5 as the 5th octave is the least used in the
 ;;; original set. The DS5 will be shifted down to DS2 as once we've shifted the
 ;;; C2, the second octave is now the least used, plus it's within range.
 (<a href="./intervals-mapper_lsp.html#robo262">get-pitch-symbols</a>
- (<strong>limit-shift-octave</strong> (<a href="#robo880">make-tl-set</a> '(c2 e2 cs3 f3 g3 d4 a4 ds5))
+ (<strong>limit-shift-octave</strong> (<a href="#robo885">make-tl-set</a> '(c2 e2 cs3 f3 g3 d4 a4 ds5))
                      :upper 'c5 :lower 'd2))
 --&gt; (DS2 E2 CS3 F3 G3 D4 A4 C5)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>limit-shift-octave</strong> ((tls tl-set)
-                               &amp;key upper lower (<a href="./event_lsp.html#robo192">highest</a>-wins t)
+                               &amp;key upper lower (<a href="./chord_lsp.html#robo88">highest</a>-wins t)
                                  do-related-sets)
 </pre>
 
 
 <a name="tl2dset2fmake2dtl2dset"></a>
-<a name="robo880"></a><h2 class=robodoc>tl-set/make-tl-set [ Functions ]</h2>
+<a name="robo885"></a><h2 class=robodoc>tl-set/make-tl-set [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo602">tl-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo604">tl-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo602">tl-set</a> object, which extends the <a href="./sc-set_lsp.html#robo623">sc-set</a> class by incorporating
+<pre> Create a <a href="#robo604">tl-set</a> object, which extends the <a href="./sc-set_lsp.html#robo625">sc-set</a> class by incorporating
  transposition and limiting to certain <a href="./pitch_lsp.html#robo285">pitch</a> ranges. 
  
  NB: As of yet, once a set is transposed or limited, it can't be
@@ -373,36 +373,36 @@ data: C6
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A list of note-name symbols that is to be the set (<a href="./pitch_lsp.html#robo285">pitch</a>-set) for the
-   given <a href="#robo602">tl-set</a> object.
+   given <a href="#robo604">tl-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :id. A symbol that is to be the ID of the given <a href="#robo602">tl-set</a> object.
+ - :id. A symbol that is to be the ID of the given <a href="#robo604">tl-set</a> object.
  - :subsets. An <a href="./assoc-list_lsp.html#robo111">assoc-list</a> of key/data pairs, in which the data is a list of
    note-name symbols that are a subset of the main set. One use for this
    keyword argument might be to create subsets that particular <a href="./instruments_lsp.html#robo11">instruments</a>
-   can play; these would then be selected in the <a href="./chord_lsp.html#robo606">chord</a>-function passed to
+   can play; these would then be selected in the <a href="./chord_lsp.html#robo608">chord</a>-function passed to
    the <a href="./instrument_lsp.html#robo284">instrument</a> object.
  - :related-sets. An <a href="./assoc-list_lsp.html#robo111">assoc-list</a> of key/data pairs, similar to :subsets, only
    that the pitches given here do not have to be part of the main set. This
    can be used, for example, for pitches missing from the main set.
- - :<a href="#robo877">limit</a>-upper. A note-name symbol or a <a href="./pitch_lsp.html#robo285">pitch</a> object to indicate the
-   <a href="./event_lsp.html#robo192">highest</a> possible <a href="./pitch_lsp.html#robo285">pitch</a> in the <a href="#robo602">tl-set</a> object to be created.
- - :<a href="#robo877">limit</a>-lower.  A note-name symbol or a <a href="./pitch_lsp.html#robo285">pitch</a> object to indicate the
-   <a href="./event_lsp.html#robo197">lowest</a> possible <a href="./pitch_lsp.html#robo285">pitch</a> in the <a href="#robo602">tl-set</a> object to be created.
- - :transposition. A number that is the number of <a href="./utilities_lsp.html#robo965">semitones</a> by which the
-   pitches of the new <a href="#robo602">tl-set</a> are to be transposed when the object is
+ - :<a href="./set-palette_lsp.html#robo647">limit</a>-upper. A note-name symbol or a <a href="./pitch_lsp.html#robo285">pitch</a> object to indicate the
+   <a href="./chord_lsp.html#robo88">highest</a> possible <a href="./pitch_lsp.html#robo285">pitch</a> in the <a href="#robo604">tl-set</a> object to be created.
+ - :<a href="./set-palette_lsp.html#robo647">limit</a>-lower.  A note-name symbol or a <a href="./pitch_lsp.html#robo285">pitch</a> object to indicate the
+   <a href="./event_lsp.html#robo197">lowest</a> possible <a href="./pitch_lsp.html#robo285">pitch</a> in the <a href="#robo604">tl-set</a> object to be created.
+ - :transposition. A number that is the number of <a href="./utilities_lsp.html#robo970">semitones</a> by which the
+   pitches of the new <a href="#robo604">tl-set</a> are to be transposed when the object is
    created. Default = 0.
  - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
-   symbols) are to be automatically sorted from <a href="./event_lsp.html#robo197">lowest</a> to <a href="./event_lsp.html#robo192">highest</a>. T =
+   symbols) are to be automatically sorted from <a href="./event_lsp.html#robo197">lowest</a> to <a href="./chord_lsp.html#robo88">highest</a>. T =
    sort. Default = T.
  - :tag. The tag (symbol, string) to be attached to the object; from the
-   <a href="./named-object_lsp.html#robo603">named-object</a> base class. Default = NIL.
+   <a href="./named-object_lsp.html#robo605">named-object</a> base class. Default = NIL.
  - :warn-dups. To or NIL to indicate whether a warning should be issued if
    duplicate pitches are found. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo602">tl-set</a> object.
+<pre> A <a href="#robo604">tl-set</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Simple usage with default values for keyword arguments
@@ -410,8 +410,8 @@ data: C6
 
 =&gt; 
 TL-SET: transposition: 0
-        <a href="#robo877">limit</a>-upper: NIL
-        <a href="#robo877">limit</a>-lower: NIL
+        <a href="./set-palette_lsp.html#robo647">limit</a>-upper: NIL
+        <a href="./set-palette_lsp.html#robo647">limit</a>-lower: NIL
 SC-SET: auto-sort: T, used-notes: 
 RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       num-data: 0
@@ -452,23 +452,23 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
-;; Limiting the <a href="./pitch_lsp.html#robo285">pitch</a> range of the <a href="#robo602">tl-set</a> object, once using a note-name
+;; Limiting the <a href="./pitch_lsp.html#robo285">pitch</a> range of the <a href="#robo604">tl-set</a> object, once using a note-name
 ;; symbol and once using a <a href="./pitch_lsp.html#robo285">pitch</a> object
 (<strong>make-tl-set</strong> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-             :<a href="#robo877">limit</a>-upper 'g5
-             :<a href="#robo877">limit</a>-lower (<a href="./pitch_lsp.html#robo336">make-pitch</a> 'd3))
+             :<a href="./set-palette_lsp.html#robo647">limit</a>-upper 'g5
+             :<a href="./set-palette_lsp.html#robo647">limit</a>-lower (<a href="./pitch_lsp.html#robo336">make-pitch</a> 'd3))
 
 =&gt; 
 TL-SET: transposition: 0
-        <a href="#robo877">limit</a>-upper: 
+        <a href="./set-palette_lsp.html#robo647">limit</a>-upper: 
 PITCH: frequency: 783.991, midi-note: 79, midi-channel: 0 
 [...]
-        <a href="#robo877">limit</a>-lower: 
+        <a href="./set-palette_lsp.html#robo647">limit</a>-lower: 
 PITCH: frequency: 146.832, midi-note: 50, midi-channel: 0 
 [...]
 data: (E3 G3 B3 D4 GF4 BF4 DF5 F5)
 
-;; Applying a transposition by <a href="./utilities_lsp.html#robo965">semitones</a>
+;; Applying a transposition by <a href="./utilities_lsp.html#robo970">semitones</a>
 (<strong>make-tl-set</strong> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
              :transposition 3)
 
@@ -479,7 +479,7 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>make-tl-set</strong> (set &amp;key id tag subsets related-sets
-                          <a href="#robo877">limit</a>-upper <a href="#robo877">limit</a>-lower
+                          <a href="./set-palette_lsp.html#robo647">limit</a>-upper <a href="./set-palette_lsp.html#robo647">limit</a>-lower
                           (rm-dups t) (warn-dups t)
                           (transposition 0)
                           (auto-sort t))
@@ -487,14 +487,14 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 
 <a name="tl2dset2fstack"></a>
-<a name="robo881"></a><h2 class=robodoc>tl-set/stack [ Methods ]</h2>
+<a name="robo886"></a><h2 class=robodoc>tl-set/stack [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo602">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo604">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Extend the <a href="./pitch_lsp.html#robo285">pitch</a> content of a given <a href="./sc-set_lsp.html#robo623">sc-set</a> object by adding new <a href="./pitch_lsp.html#robo285">pitch</a>
+<pre> Extend the <a href="./pitch_lsp.html#robo285">pitch</a> content of a given <a href="./sc-set_lsp.html#robo625">sc-set</a> object by adding new <a href="./pitch_lsp.html#robo285">pitch</a>
  objects which have the same interval structure as the original set. 
 
- NB: See documentation for the <strong>stack</strong> method in the <a href="./sc-set_lsp.html#robo623">sc-set</a> class for usage. 
+ NB: See documentation for the <strong>stack</strong> method in the <a href="./sc-set_lsp.html#robo625">sc-set</a> class for usage. 
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>stack</strong> ((tls tl-set) num-stacks &amp;key id by-freq)
@@ -502,21 +502,21 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 
 <a name="tl2dset2ftranspose"></a>
-<a name="robo882"></a><h2 class=robodoc>tl-set/transpose [ Methods ]</h2>
+<a name="robo887"></a><h2 class=robodoc>tl-set/transpose [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo602">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo604">tl-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Transpose the pitches of a given <a href="#robo602">tl-set</a> by a specified number of
- <a href="./utilities_lsp.html#robo965">semitones</a>. 
+<pre> Transpose the pitches of a given <a href="#robo604">tl-set</a> by a specified number of
+ <a href="./utilities_lsp.html#robo970">semitones</a>. 
 
  The contents of the SUBSETS slot are automatically transposed as well, but
  the RELATED-SETS slot is left untransposed by default. An optional argument
  allows for RELATED-SETS slot to be transposed as well.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo602">tl-set</a> object.
- - A positive or negative integer that is the number of <a href="./utilities_lsp.html#robo965">semitones</a> by which
-   the <a href="./pitch_lsp.html#robo285">pitch</a> content of the given <a href="#robo602">tl-set</a> object is to be transposed.
+<pre> - A <a href="#robo604">tl-set</a> object.
+ - A positive or negative integer that is the number of <a href="./utilities_lsp.html#robo970">semitones</a> by which
+   the <a href="./pitch_lsp.html#robo285">pitch</a> content of the given <a href="#robo604">tl-set</a> object is to be transposed.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -525,11 +525,11 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
  (- additional &lt;ignore&gt; arguments are for internal use only)
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo602">tl-set</a> object.
+<pre> The <a href="#robo604">tl-set</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; By default the RELATED-SETS are left untransposed
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :subsets '((fl (df5 f5 af5))
                                     (vla (e3 g3 b3)))
                          :related-sets '((missing (fs2 b5))))))
@@ -537,8 +537,8 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 =&gt; 
 TL-SET: transposition: 3
-        <a href="#robo877">limit</a>-upper: NIL
-        <a href="#robo877">limit</a>-lower: NIL
+        <a href="./set-palette_lsp.html#robo647">limit</a>-upper: NIL
+        <a href="./set-palette_lsp.html#robo647">limit</a>-lower: NIL
 SC-SET: auto-sort: T, used-notes: 
 [...]
     subsets: 
@@ -553,7 +553,7 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 ;; Set the &lt;do-related-sets&gt; argument to T for the RELATED-SETS contents to be
 ;; transposed as well
-(let ((mtls (<a href="#robo880">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+(let ((mtls (<a href="#robo885">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :subsets '((fl (df5 f5 af5))
                                     (vla (e3 g3 b3)))
                          :related-sets '((missing (fs2 b5))))))
@@ -561,8 +561,8 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 =&gt; 
 TL-SET: transposition: 3
-        <a href="#robo877">limit</a>-upper: NIL
-        <a href="#robo877">limit</a>-lower: NIL
+        <a href="./set-palette_lsp.html#robo647">limit</a>-upper: NIL
+        <a href="./set-palette_lsp.html#robo647">limit</a>-lower: NIL
 SC-SET: auto-sort: T, used-notes: 
 [...]
     subsets: 
@@ -576,15 +576,15 @@ NAMED-OBJECT: id: NIL, tag: NIL,
 data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>transpose</strong> :before ((tls tl-set) <a href="./utilities_lsp.html#robo965">semitones</a> 
+<pre class="source">(defmethod <strong>transpose</strong> :before ((tls tl-set) <a href="./utilities_lsp.html#robo970">semitones</a> 
                               &amp;key destructively do-related-sets
                                 ;; MDE Wed Aug 22 09:43:29 2018
-                                <a href="./event_lsp.html#robo197">lowest</a> <a href="./event_lsp.html#robo192">highest</a>)
+                                <a href="./event_lsp.html#robo197">lowest</a> <a href="./chord_lsp.html#robo88">highest</a>)
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/tl-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/tl-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

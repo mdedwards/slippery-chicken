@@ -41,8 +41,8 @@
 
  File:             <strong>l-for-lookup</strong>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo607">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <strong>l-for-lookup</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <strong>l-for-lookup</strong>
 
  Version:          1.0.12
 
@@ -123,9 +123,9 @@
  and use it to perform the Fibonacci-based transitioning look-up of values in
  the specified sequences.
 
- NB As this accesses the rules as circular lists whose states are not <a href="./sndfile-ext_lsp.html#robo837">reset</a>
+ NB As this accesses the rules as circular lists whose states are not <a href="./activity-levels_lsp.html#robo26">reset</a>
  before starting, you may get (desired) different results if you call the
- routine more than once. In order to avoid that call (<a href="./sndfile-ext_lsp.html#robo837">reset</a> lflu) before
+ routine more than once. In order to avoid that call (<a href="./activity-levels_lsp.html#robo26">reset</a> lflu) before
  <strong>do-lookup</strong>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -139,7 +139,7 @@
    sequence. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A number which is the <a href="./utilities_lsp.html#robo908">factor</a> by which returned numerical values are to be
+<pre> - A number which is the <a href="./utilities_lsp.html#robo913">factor</a> by which returned numerical values are to be
    scaled. If NIL, the method will use the value in the given <a href="#robo41">l-for-lookup</a>
    object's SCALER slot instead. Default = NIL. NB: The value of the given
    <a href="#robo41">l-for-lookup</a> object's OFFSET slot is additionally used to increase
@@ -200,7 +200,7 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo41">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Similar to <a href="#robo269">do-lookup</a> but here we <a href="./wolfram_lsp.html#robo983">generate</a> a linear sequence (with
+<pre> Similar to <a href="#robo269">do-lookup</a> but here we <a href="./wolfram_lsp.html#robo988">generate</a> a linear sequence (with
  get-linear-sequence) instead of an L-System.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -211,13 +211,13 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :scaler. A number which is the <a href="./utilities_lsp.html#robo908">factor</a> by which returned numerical values
+ - :scaler. A number which is the <a href="./utilities_lsp.html#robo913">factor</a> by which returned numerical values
    are to be scaled. If NIL, the method will use the value in the given
    <a href="#robo41">l-for-lookup</a> object's SCALER slot instead. Default = NIL. NB: The value
    of the given <a href="#robo41">l-for-lookup</a> object's OFFSET slot is additionally used to
    increase numerical values before they are returned.  Default = NIL.
- - :<a href="./sndfile-ext_lsp.html#robo837">reset</a>. T or NIL to indicate whether to <a href="./sndfile-ext_lsp.html#robo837">reset</a> the pointers of the given
-   circular lists before proceeding. T = <a href="./sndfile-ext_lsp.html#robo837">reset</a>. Default = T. 
+ - :<a href="./activity-levels_lsp.html#robo26">reset</a>. T or NIL to indicate whether to <a href="./activity-levels_lsp.html#robo26">reset</a> the pointers of the given
+   circular lists before proceeding. T = <a href="./activity-levels_lsp.html#robo26">reset</a>. Default = T. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> This method returns three lists:
@@ -252,7 +252,7 @@
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>do-lookup-linear</strong> ((lflu l-for-lookup) seed stop
-                             &amp;key scaler (<a href="./sndfile-ext_lsp.html#robo837">reset</a> t))
+                             &amp;key scaler (<a href="./activity-levels_lsp.html#robo26">reset</a> t))
 </pre>
 
 
@@ -263,7 +263,7 @@
 <p class="item_name">DESCRIPTION</p>
 <pre> Performs a simple look-up procedure whereby a given reference key always
  returns a specific and single <a href="./piece_lsp.html#robo56">piece</a> of data. This is different from
- <a href="#robo269">do-lookup</a>, which performs a transitioning <a href="./utilities_lsp.html#robo891">between</a> lists and returns items
+ <a href="#robo269">do-lookup</a>, which performs a transitioning <a href="./utilities_lsp.html#robo896">between</a> lists and returns items
  from those lists in a circular manner. <strong>do-simple-lookup</strong> always returns the
  first element of the sequence list associated with a given key-ID.
 
@@ -371,7 +371,7 @@
 <pre> - an integer
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL: whether to <a href="./popcorn_lsp.html#robo382">scale</a> the Fibonacci numbers to fit the given
+<pre> - T or NIL: whether to <a href="./popcorn_lsp.html#robo383">scale</a> the Fibonacci numbers to fit the given
  integer. Default = T.
  - T or NIL: whether to round after scaling
 </pre>
@@ -382,19 +382,19 @@
 <pre class="source">(FIBONACCI-DIVIDE 300)
 --&gt; (116 187 230 258 274 285 291 295 297 299 300)
 
-;;; don't <a href="./popcorn_lsp.html#robo382">scale</a> to 300 (i.e. only increase by Fibonacci numbers but note that
+;;; don't <a href="./popcorn_lsp.html#robo383">scale</a> to 300 (i.e. only increase by Fibonacci numbers but note that
 ;;; the Fibonacci number is added to the current number, which starts at one,
 ;;; hence 1+89, 90+55, 145+34 ...
 (FIBONACCI-DIVIDE 300 nil)
 --&gt; (90 145 179 200 213 221 226 229 231 232 233)
 
-;;; do <a href="./popcorn_lsp.html#robo382">scale</a> but don't round
+;;; do <a href="./popcorn_lsp.html#robo383">scale</a> but don't round
 (FIBONACCI-DIVIDE 300 t nil)
 --&gt; (115.87983 186.69528 230.4721 257.51074 274.24893 284.54935 290.98712
      294.8498 297.4249 298.71246 300.0)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>fibonacci-divide</strong> (num &amp;optional (<a href="./popcorn_lsp.html#robo382">scale</a> t) (round t))
+<pre class="source">(defun <strong>fibonacci-divide</strong> (num &amp;optional (<a href="./popcorn_lsp.html#robo383">scale</a> t) (round t))
 </pre>
 
 
@@ -553,7 +553,7 @@
  repetitions. The function either produces sequences consisting of
  transitions from each consecutive increasing number to its upper
  neighbor, starting from 0 and continuing through a specified number of
- integers, or it can be used to produce a sequence by transitioning <a href="./utilities_lsp.html#robo891">between</a>
+ integers, or it can be used to produce a sequence by transitioning <a href="./utilities_lsp.html#robo896">between</a>
  each element of a user-specified list of items.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -678,7 +678,7 @@
  sequence created, in their given order. 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create an <a href="#robo41">l-for-lookup</a> object with three rules and <a href="./wolfram_lsp.html#robo983">generate</a> a new sequence
+<pre class="source">;; Create an <a href="#robo41">l-for-lookup</a> object with three rules and <a href="./wolfram_lsp.html#robo988">generate</a> a new sequence
 ;; of 29 rule keys from those rules. The <a href="#robo41">l-for-lookup</a> object here has been
 ;; created with the SEQUENCES argument set to NIL, as the <strong>get-l-sequence</strong>
 ;; method requires no sequences. The second list returned indicates the
@@ -714,7 +714,7 @@
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo41">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Instead of creating L-sequences with specified rules, use them
- <a href="./wolfram_lsp.html#robo983">generate</a> a simple sequential list. 
+ <a href="./wolfram_lsp.html#robo988">generate</a> a simple sequential list. 
 
  The method first returns the first element in the list whose ID matches the 
  SEED argument, then that element is used as the ID for the next
@@ -732,8 +732,8 @@
  - An integer that is the number of elements to be in the resulting list.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether to <a href="./sndfile-ext_lsp.html#robo837">reset</a> the pointers of the given circular
-   lists before proceeding. T = <a href="./sndfile-ext_lsp.html#robo837">reset</a>. Default = T.
+<pre> - T or NIL to indicate whether to <a href="./activity-levels_lsp.html#robo26">reset</a> the pointers of the given circular
+   lists before proceeding. T = <a href="./activity-levels_lsp.html#robo26">reset</a>. Default = T.
  - T or NIL to indicate whether to warn if any of the given keys are not
    used. Default = T.
 </pre>
@@ -753,7 +753,7 @@
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-linear-sequence</strong> ((lflu l-for-lookup) seed stop-length
-                                &amp;optional (<a href="./sndfile-ext_lsp.html#robo837">reset</a> t) (warn t))
+                                &amp;optional (<a href="./activity-levels_lsp.html#robo26">reset</a> t) (warn t))
 </pre>
 
 
@@ -785,7 +785,7 @@
    that return only one result each) will return a result of the same length
    no matter how many results we ask for. This can sometimes be problematic
    so do a check if requested. Default = NIL.
- - :scaler. Factor by which to <a href="./popcorn_lsp.html#robo382">scale</a> the values returned by
+ - :scaler. Factor by which to <a href="./popcorn_lsp.html#robo383">scale</a> the values returned by
    <a href="#robo269">do-lookup</a>. Default = 1. Does not modify the original data.
  - :offset. Number to be added to values returned by <a href="#robo269">do-lookup</a> (after they
    are scaled). Default = NIL. Does not modify the original data.
@@ -965,7 +965,7 @@ data: (
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo41">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Sets the counters (index pointers) of all <a href="./circular-sclist_lsp.html#robo607">circular-sclist</a> objects stored
+<pre> Sets the counters (index pointers) of all <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> objects stored
  within a given <a href="#robo41">l-for-lookup</a> object back to zero.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -983,7 +983,7 @@ data: (
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/l-for-lookup.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/l-for-lookup.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -109,7 +109,7 @@
    output. If greater than one, the segments will be automatically panned
    amongst the channels. Default = 1.
  - :transpositions. A list of number that are transpositions in
-   <a href="./utilities_lsp.html#robo965">semitones</a>. These will be shuffled and applied randomly to each
+   <a href="./utilities_lsp.html#robo970">semitones</a>. These will be shuffled and applied randomly to each
    consecutive segment in the output. Default = '(0).
  - :num-shuffles. An integer that will indicate how many times the lists
    passed to <a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> and entry-points will be shuffled before
@@ -158,7 +158,7 @@
                     (channels 1)
                     ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
                     (scaled-to .99)
-                    ;; <a href="./utilities_lsp.html#robo965">semitones</a>
+                    ;; <a href="./utilities_lsp.html#robo970">semitones</a>
                     (transpositions '(0))
                     ;; added 31/7/05 to vary the order of
                     ;; entry points, transpositions and
@@ -228,9 +228,9 @@
  - :suffix. A string that will be automatically appended to the end of the
    file name. Default = "".
  - :transpositions. A list of number that are transpositions in
-   <a href="./utilities_lsp.html#robo965">semitones</a>. These will be shuffled and applied randomly to each
+   <a href="./utilities_lsp.html#robo970">semitones</a>. These will be shuffled and applied randomly to each
    consecutive segment in the output. Default = '(0).
- - :transposition-offset. A number that is an additional number of <a href="./utilities_lsp.html#robo965">semitones</a>
+ - :transposition-offset. A number that is an additional number of <a href="./utilities_lsp.html#robo970">semitones</a>
    to be added to each transposition value before performing the
    transposition. Default = 0.0.
  - :src-width. A number that represents the accuracy of the sample-rate
@@ -282,7 +282,7 @@
                         (start-after -1.0)                      
                         (stop-after 99999999.0)
                         (suffix "")
-                        ;; <a href="./utilities_lsp.html#robo965">semitones</a>
+                        ;; <a href="./utilities_lsp.html#robo970">semitones</a>
                         ;; 6/10/06: using just one list of transpositions passed
                         ;; onto <a href="#robo122">clm-loops</a> created the same tone structure for
                         ;; every file generated (boring).  This list will now be
@@ -308,24 +308,24 @@
 
  This function also produces an output text file containing the same list of
  lists. This file is in Lisp syntax and can therefore be accessed using
- <a href="./utilities_lsp.html#robo955">read-from-file</a>. 
+ <a href="./utilities_lsp.html#robo960">read-from-file</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A string that is the file name, including directory path and extension,
    of the output file to produce.
- - A string that is the sound file for which to <a href="./wolfram_lsp.html#robo983">generate</a> random entry
+ - A string that is the sound file for which to <a href="./wolfram_lsp.html#robo988">generate</a> random entry
    points. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :min-points. An integer that is the least number of entry points to
-   <a href="./wolfram_lsp.html#robo983">generate</a> for each list. Default = 5.
+   <a href="./wolfram_lsp.html#robo988">generate</a> for each list. Default = 5.
  - :max-points. An integer that is the greatest number of entry points to
-   <a href="./wolfram_lsp.html#robo983">generate</a> for each list. Default = 13.
- - :min-dur. A number that is the shortest duration <a href="./utilities_lsp.html#robo891">between</a> two entry
+   <a href="./wolfram_lsp.html#robo988">generate</a> for each list. Default = 13.
+ - :min-dur. A number that is the shortest duration <a href="./utilities_lsp.html#robo896">between</a> two entry
    points. Default = 0.05.
  - :num-loop-sets. An integer that is the number of lists of entry points to
-   <a href="./wolfram_lsp.html#robo983">generate</a>. Default = 20.
+   <a href="./wolfram_lsp.html#robo988">generate</a>. Default = 20.
  - :scalers. A list of fractions that are durations relative to the min-dur,
    such that, for example, a min-dur of 0.05 with a scaler of 13/8 would
    result in a scaled duration of 0.08125. The fractions in this list will
@@ -358,7 +358,7 @@
                            ;; loop--number of looped sound segments is 1- this
                            (min-points 5)
                            ;; max number of time points--the actual number of
-                           ;; points will be randomly chosen <a href="./utilities_lsp.html#robo891">between</a> these two
+                           ;; points will be randomly chosen <a href="./utilities_lsp.html#robo896">between</a> these two
                            ;; numbers. 
                            (max-points 13)
                            ;; minimum duration of a loop segment--this number
@@ -377,7 +377,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/clm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/clm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>reaper-play.lsp</title>
+<!-- Source: ./../../src/reaper-play.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="slippery2dchicken2freaper2dplay"></a>
+<a name="robo824"></a><h2 class=robodoc>slippery-chicken/reaper-play [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Using the sound files (samples) defined for the given reference (group ID)
+ in the <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> slot of the <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> object, use CLM to
+ <a href="./wolfram_lsp.html#robo988">generate</a> a new sound file using the <a href="./pitch_lsp.html#robo285">pitch</a> and timing information of one or
+ more <a href="./slippery-chicken_lsp.html#robo821">players</a>' parts from the <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> object.
+
+ NB: The sound file will begin with the first sounding <a href="./event_lsp.html#robo428">event</a> in the <a href="./section_lsp.html#robo58">section</a>
+     at 0.0 seconds. If there are any leading rests in the <a href="./player_lsp.html#robo286">player</a>'s part,
+     these will be omitted in the output file.
+
+ By grouping sound files in the <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> slot, the user can <a href="./wolfram_lsp.html#robo988">generate</a>
+ a CLM sound file version of the <a href="./piece_lsp.html#robo56">piece</a> in various 'flavours'; perhaps, for
+ example, using exclusively source sound files consisting of string samples,
+ or percussion sounds, or a variety of sounds, as desired. See below for an
+ example of a <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a>.
+ 
+ By default, as :<a href="./pitch_lsp.html#robo285">pitch</a>-synchronous default to NIL (see below) this method
+ does not attempt to match the pitches of the output sound file to those
+ generated for the <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> object, rather, it generates its own
+ sequence of pitches based on pitches from the current set. Instead of using
+ the pitches of the specified <a href="./slippery-chicken_lsp.html#robo821">players</a>' parts--which might produce extreme
+ sound file transpositions both upwards and downwards--it accesses each note
+ of the current set (assigned by the <a href="./set-map_lsp.html#robo576">set-map</a> to each rthm-seq) from the
+ bottom up, one voice after another. If do-src is T, transposition will then
+ be calculated such that the frequency of the sound file (defaults to C4 in
+ the <a href="./sndfile_lsp.html#robo289">sndfile</a> object) will be shifted to the <a href="./pitch_lsp.html#robo285">pitch</a> of the given <a href="./pitch_lsp.html#robo285">pitch</a> of the
+ set. When the set changes it will play the same respective note number of
+ that set, etc. This means that, in effect, any given voice will retain the
+ same <a href="./pitch_lsp.html#robo285">pitch</a> for the duration of the <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> (set) but as the sound files
+ cycle around, and these often have quite different <a href="./pitch_lsp.html#robo285">pitch</a>/spectral content,
+ there's not necessarily a sense of <a href="./pitch_lsp.html#robo285">pitch</a> repetition. If you find that this
+ transposition process still yields some extreme transpositions, the
+ :note-number keyword can be specified to indicate an index into the current
+ set of pitches to serve as the <a href="./event_lsp.html#robo197">lowest</a> voice. If you increase :note-number
+ the transpositions will get higher. If the number of voices plus this index
+ exceeds the number of pitches in the set, the method will <a href="./set-palette_lsp.html#robo662">wrap</a> around to
+ the <a href="./event_lsp.html#robo197">lowest</a> <a href="./pitch_lsp.html#robo285">pitch</a> of the set. Bear in mind then that when :<a href="./pitch_lsp.html#robo285">pitch</a>-synchronous
+ is NIL, the <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> curves given in the rthm-seq-<a href="./palette_lsp.html#robo405">palette</a>--and therefore
+ all the carefully chosen pitches in the <a href="./piece_lsp.html#robo56">piece</a>--will be ignored in favour of
+ representing the transpositions and therefore intervals present in the
+ set. That might seem like a strange thing to (want to) do, but it's served
+ me (Michael Edwards) very well on many occasions, so it's still the
+ default.
+
+ If instead of the above method the user would like the pitches in the
+ resulting sound file to be transposed to match the pitches of the
+ <a href="./slippery-chicken_lsp.html#robo821">players</a>' notes, the keyword argument :<a href="./pitch_lsp.html#robo285">pitch</a>-synchronous can be set
+ to T (and do-src should be left set to T as well). This will also work with
+ chords.
+
+ See also <a href="./sndfile-palette_lsp.html#robo853">make-sfp-from-wavelab-marker-file</a> in <a href="./sndfile-palette_lsp.html#robo_top_of_doc">sndfile-palette.lsp</a> for
+ automatically creating a <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> from markers in a Steinberg
+ Wavelab marker file.
+
+ Event amplitudes are as yet unused by this method.
+
+ NB: CLM's nrev <a href="./instrument_lsp.html#robo284">instrument</a> must be loaded before calling this method. If
+ you're using the <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> app, then this is done for you at
+ startup. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A slippery chicken object.
+ - The ID of the starting <a href="./section_lsp.html#robo58">section</a>.
+ - The IDs of the <a href="./player_lsp.html#robo286">player</a>(s) whose events are to be used to obtain the
+   rhythmic structure (and optionally, <a href="./pitch_lsp.html#robo285">pitch</a> content) of the resulting sound
+   file. This can be a single symbol for an individual <a href="./player_lsp.html#robo286">player</a>, a list of
+   <a href="./player_lsp.html#robo286">player</a> IDs, or NIL. If NIL, the <a href="./event_lsp.html#robo428">event</a> from all <a href="./slippery-chicken_lsp.html#robo821">players</a>' parts will be
+   reflected in the output file. Default = NIL.
+ - The ID of the sound file group in the <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> slot of the
+   <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> object that contains the source sound files from which
+   the new sound file is to be generated.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :num-sections. An integer or NIL to indicate how many sections should be
+   generated, including the starting <a href="./section_lsp.html#robo58">section</a>. If NIL, sound file data will
+   be generated for all sections of the <a href="./piece_lsp.html#robo56">piece</a>. NB If there are sub-sections
+   this will include them in the total, i.e., if <a href="./section_lsp.html#robo58">section</a> 1 has 3 subsections
+   and :num-sections is 2, we'll <a href="./wolfram_lsp.html#robo988">generate</a> data from the first two
+   subsections of <a href="./section_lsp.html#robo58">section</a> 1, not all subsections of main sections 1 and
+   2. Default = NIL. 
+ - :from-sequence. An integer that is the number of the first sequence
+   within the specified starting <a href="./section_lsp.html#robo58">section</a> to be used to <a href="./wolfram_lsp.html#robo988">generate</a> the output
+   file. This argument can only be used when num-sections = 1. Default = 1. 
+ - :<a href="./sc-map_lsp.html#robo573">num-sequences</a>. NIL or an integer that indicates how many sequences are
+   to be generated, including that specified by :from-sequence. If NIL, all
+   sequences will be played. This argument can only be used when
+   num-sections = 1 and the <a href="./section_lsp.html#robo58">section</a> has no subsections. Default = NIL.
+ - :srate. A number that is the sampling rate of the output file
+   (independent of the input file). This and the following two arguments
+   default to the CLM <a href="./package_lsp.html#robo14">package</a> globals. See clm.html for more options.
+   Default = clm::*clm-srate*.
+ - :header-type: A CLM <a href="./package_lsp.html#robo14">package</a> header-type specification to designate the
+   output sound file format. For example, clm::mus-riff will produce .wav
+   files, clm::mus-aiff will produce .aiff files. The value of this argument
+   defaults to the CLM <a href="./package_lsp.html#robo14">package</a> globals. See clm.html for more
+   options. Default = clm::*clm-header-type*.
+ - :data-format. A CLM <a href="./package_lsp.html#robo14">package</a> data-format specification to designate the
+   output sound file sample data format. For example, clm::mus-float will
+   produce a 32-bit little-endian floating-point format; clm::mus-l24int
+   will produce little-endian 24-bit integer; mus-bshort will produce 16-bit
+   big-endian files, and mus-bfloat will produce 32-bit floating-point
+   big-endian files. NB: AIFF and AIFC files are not compatible with little
+   endian formats. The value of this argument defaults to the CLM <a href="./package_lsp.html#robo14">package</a>
+   globals. See clm.html for more options. 
+   Default = clm::*clm-data-format*.
+ - :<a href="./sndfile_lsp.html#robo289">sndfile</a>-extension. NIL or a string that will be the extension of the
+   output sound file (e.g. ".wav", ".aif"). If NIL, the method will
+   determine the extension automatically based on the header-type. NB: The
+   extension does not determine the output sound file format; that is
+   determined by :header-type. Default = NIL.
+ - :channels. An integer that is the number of channels in the output sound
+   file, limited only by the sound file format specified. Note that both
+   <a href="./sndfile_lsp.html#robo860">stereo</a> and mono sounds from the <a href="./palette_lsp.html#robo405">palette</a> will be randomly panned <a href="./utilities_lsp.html#robo896">between</a>
+   any two adjacent channels. Default = 2.
+ - :rev-amt. A number that determines the amount of reverberation for the
+   resulting sound file, passed to CLM's nrev. 
+   NB: 0.1 is a lot. Default = 0.0.
+ - time-offset. A number that is an offset time in seconds. This produces a
+   lead time of a specified number of seconds of silence prior to the sound
+   output. 
+ - :inc-start. T or NIL to indicate whether playback of the source sound
+   files is to begin at incrementally increasing positions in those files or
+   at their respective 0.0 positions every time. If T, the method will
+   increment the position in the source sound file from which playback is
+   begun such that it reaches the end of the source sound file the last time
+   it is 'played'. T = increment start times. Default = NIL.
+ - :ignore-rests. T or NIL to indicate whether silence should be
+   incorporated into the resulting sound file to correspond with rests in
+   the <a href="./player_lsp.html#robo286">player</a>'s parts. If T, the sound files will play over the duration of
+   rests. However, this is only true on a bar-by-bar basis; i.e., notes at
+   the end of one bar will not be continued over into a rest in the next
+   bar. This implies that rests at the start of a bar will not be turned
+   into sounding notes. T = ignore resets. Default = T.
+ - :sound-file-<a href="./palette_lsp.html#robo405">palette</a>-ref2. The ID of a sound file group in the given
+   <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> object's <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> slot. If this reference is
+   given, the method will invoke <a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> to transition from
+   the first specified group of source sound files to this one. If NIL, only
+   one group of source sound files will be used. Default = NIL.
+ - :do-src. T, NIL, a number, or a note-name <a href="./pitch_lsp.html#robo285">pitch</a> symbol to indicate whether
+   transposition of the source sound files for playback will be calculated
+   such that the perceived fundamental frequencies of those sound files are
+   shifted to match the pitches of the current set. If do-src is a number
+   (frequency in Hertz) or a note-name <a href="./pitch_lsp.html#robo285">pitch</a> symbol, the method will use
+   only that <a href="./pitch_lsp.html#robo285">pitch</a> instead of the sound files' frequencies when transposing
+   to the events' pitches. NB Whichever is used, after being converted to a
+   sample rate conversion <a href="./utilities_lsp.html#robo913">factor</a>, this is always multiplied by the
+   src-scaler (see below). T = match sound files' frequencies to set
+   pitches. NIL means no transposition will be performed. Default = T.
+ - :<a href="./pitch_lsp.html#robo285">pitch</a>-synchronous: T or NIL to indicate whether the source sound files
+   are to be transposed to match the pitches of the events in the given
+   <a href="./slippery-chicken_lsp.html#robo821">players</a>' part. This will only be effective if the given source sound file
+   has a perceptible frequency that has been specified using the <a href="./sndfile_lsp.html#robo289">sndfile</a>
+   object's :frequency slot in the <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a>. :do-src must also be T
+   for this to work. T = match pitches. Default = NIL.
+ - :<a href="./activity-levels_lsp.html#robo26">reset</a>-snds-each-rs. T or NIL to indicate whether to begin with the first
+   source sound file of the specified group at the beginning of each
+   <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a>. T = begin with the first sound file. Default = T.
+ - :<a href="./activity-levels_lsp.html#robo26">reset</a>-snds-each-<a href="./player_lsp.html#robo286">player</a>. T or NIL to indicate whether to begin with the
+   first source sound file of the specified group for the beginning of each
+   <a href="./player_lsp.html#robo286">player</a>'s part. T = begin with the first sound file. Default = T. 
+ - :play-chance-env. A list of break-point pairs that determines the chance
+   that a given <a href="./event_lsp.html#robo428">event</a> from the source <a href="./player_lsp.html#robo286">player</a>'s part will be reflected in the
+   new sound file. It is determined by random selection but uses a fixed
+   seed that is re-initialized each time <a href="./slippery-chicken_lsp.html#robo768">clm-play</a> is called. The following
+   default ensures every note will play: '(0 100 100 100).
+ - :play-chance-env-exp. A number that will be applied as the exponent to
+   the play-chance-env's y values to create an exponential interpolation
+   <a href="./utilities_lsp.html#robo896">between</a> break-point pairs. Default = 0.5.
+ - :max-start-time. A number that is the last time-point in seconds for
+   which events will be processed for the output file. If a maximum start
+   time is specified here (in seconds), events after this will be
+   skipped. The default value of 99999999 seconds (27778 hours) will result
+   in all events being reflected in the sound file.
+ - :time-scaler. A number that will be the <a href="./utilities_lsp.html#robo913">factor</a> by which all start times
+   are scaled for the output file (in effect a <a href="./tempo_lsp.html#robo290">tempo</a> scaler). If
+   :ignore-rests is T, this will also have an indirect effect on
+   durations. This argument should not be confused with
+   :duration-scaler. Default = 1.0.
+ - :duration-scaler. A number that is the <a href="./utilities_lsp.html#robo913">factor</a> by which the duration of
+   all  events in the output sound file will be scaled. This does not alter
+   start times, and will therefore result in overlapping sounds if greater
+   than 1.0. This is not to be confused with :time-scaler. 
+   Instead of a simple number, :duration-scaler can also be an envelope 
+   (a list of break-point pairs). This means you could smoothly transition
+   from staccato-like to overlapping sounds in a single <a href="./slippery-chicken_lsp.html#robo768">clm-play</a> call.
+   Default = 1.0.
+ - :amp-env. A list of break-point pairs that will govern the amplitude
+   envelope applied to all source-sound files as it is being written to the
+   new output file. NB: If the user wants to maintain the original attack of
+   the source sound file and is not employing the :inc-start option, this
+   should be set to '(0 1 ...). If :inc-start is T, the resulting sound file
+   will probably contain clicks from non-zero crossings. 
+   Default = '(0 0 5 1 60 1 100 0).
+ - :src-scaler: A number that is the <a href="./utilities_lsp.html#robo913">factor</a> by which all sample-rate
+   conversion values will be scaled (for increasing or decreasing the
+   transposition of the overall resulting sound file). 
+   Instead of a simple number, :src-scaler can also be an envelope 
+   (a list of break-point pairs), similar to :duration-scaler. Default = 1.0.
+ - :note-number. A number that is an index, representing the the nth <a href="./pitch_lsp.html#robo285">pitch</a>
+   of the current set or <a href="./chord_lsp.html#robo608">chord</a> (from the bottom) to be used for the <a href="./event_lsp.html#robo197">lowest</a>
+   <a href="./player_lsp.html#robo286">player</a>. Default = 0.
+ - :duration-run-over. T or NIL to indicate whether the method will allow a
+   sound file <a href="./event_lsp.html#robo428">event</a> to extend past the end of specified segment boundaries
+   of a sound file in the <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a>. T = allow. Default = NIL.
+ - :short-file-names. T or NIL to indicate whether abbreviated output file
+   names will be automatically created instead of the usually rather long
+   names. T = short. Default = NIL.
+ - :output-name-uniquifier. A user-specified string that will be
+   incorporated into the file name, either at the end or the beginning
+   depending on whether short-file-names is T or NIL. Default = "".
+ - :check-overwrite. T or NIL to indicate whether to query the user before
+   overwriting existing sound files. T = query. Default = T.
+ - :print-secs. T or NIL to indicate whether CLM should print the seconds
+   computed as it works. T = print. Default = NIL.
+ - :<a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a>. NIL or a file name including path and extension that
+   contains an external definition of a <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a>. This will replace
+   any <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> defined in the <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> object. If NIL, the
+   one in the <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> object will be used. Default = NIL.
+ - :chords. NIL or a list of lists consisting of note-name symbols to be
+   used as the pitches for the resulting sound file in place of the pitches
+   from the <a href="./set-map_lsp.html#robo576">set-map</a>. There must be one <a href="./chord_lsp.html#robo608">chord</a> specified for each sequence. If
+   NIL, the pitches from the <a href="./set-map_lsp.html#robo576">set-map</a> will be used. Default = NIL.
+ - :<a href="./chord_lsp.html#robo608">chord</a>-accessor. Sometimes the <a href="./chord_lsp.html#robo608">chord</a> stored in the <a href="./palette_lsp.html#robo405">palette</a> is not a
+   simple list of data so we need to access the nth of the <a href="./chord_lsp.html#robo608">chord</a>
+   list. Default = NIL.
+ - :clm-ins. The CLM <a href="./instrument_lsp.html#robo284">instrument</a> that should be called to <a href="./wolfram_lsp.html#robo988">generate</a> sound file
+   output. This must accept required and keyword arguments like <a href="./samp5_lsp.html#robo16">samp5</a> (see
+   src/<a href="./samp5_lsp.html#robo_top_of_doc">samp5.lsp</a> or more simply src/<a href="./sine_lsp.html#robo_top_of_doc">sine.lsp</a>) but can of course choose to
+   ignore them. Remember that your CLM <a href="./instruments_lsp.html#robo11">instruments</a> will (most probably) be
+   in the CLM <a href="./package_lsp.html#robo14">package</a> so you'll need the clm:: qualifer. Default =
+   #'clm::<a href="./samp5_lsp.html#robo16">samp5</a>. 
+ - :clm-ins-args. This should be a list of keyword arguments and values to
+   pass to each CLM <a href="./instrument_lsp.html#robo284">instrument</a> call (e.g. '(:cutoff-freq 2000 :q .6)) or a
+   function which takes two arguments (the current <a href="./event_lsp.html#robo428">event</a> and the <a href="./event_lsp.html#robo428">event</a>
+   number) and returns a list of keyword arguments perhaps based on
+   those. Default = NIL.
+ - :pan-min-max. Each <a href="./event_lsp.html#robo428">event</a> is panned randomly <a href="./utilities_lsp.html#robo896">between</a> any two adjacent
+   channels in the output sound file. The values used are chosen from the
+   following list of degrees: (15 25 35 45 55 65 75). However, these can be
+   scaled to be within new <a href="./sclist_lsp.html#robo614">limits</a> by passing a two-element list to
+   :pan-mix-max. E.g. '(40 50) would <a href="./set-palette_lsp.html#robo647">limit</a> most values to the <a href="./utilities_lsp.html#robo931">middle</a> area of
+   <a href="./sndfile_lsp.html#robo860">stereo</a> space. NB if <a href="./sndfile_lsp.html#robo860">stereo</a> soundfiles are used as input the original
+   panning will generally be retained. See <a href="./samp5_lsp.html#robo_top_of_doc">samp5.lsp</a> for details of how such
+   files are handled. Default = NIL (i.e. use the list given above).
+ - :pan-fun. If you want to take charge of selecting pan positions yourself,
+   pass a function via this keyword. The function must take one argument: the
+   current <a href="./event_lsp.html#robo428">event</a>, though of course, it can ignore it completely if
+   preferred. The function should return a degree value: a number <a href="./utilities_lsp.html#robo896">between</a> 0
+   and 90. Bear in mind if using <a href="./samp5_lsp.html#robo16">samp5</a> with more than 2 output channels that
+   this will still result in the sound moving around multichannel space as
+   all you would be setting is the pan value <a href="./utilities_lsp.html#robo896">between</a> any two adjacent
+   channels. If this isn't your cup of tea, pass a new <a href="./instrument_lsp.html#robo284">instrument</a> entirely
+   via :clm-ins. See example below. Default = NIL.
+ - :snd-selector. By default the sound files in the given group are cycled
+   through, one after the other, returning to the beginning when the end is
+   reached. This can be changed by passing a function to :snd-selector. This
+   function must take three arguments: the <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> object that
+   contains the group's <a href="./sndfile_lsp.html#robo289">sndfile</a> objects (the sndfiles are in a simple list
+   in the data slot); the <a href="./pitch_lsp.html#robo285">pitch</a> of the current <a href="./event_lsp.html#robo428">event</a> (if the <a href="./event_lsp.html#robo428">event</a> happens
+   to be a <a href="./chord_lsp.html#robo608">chord</a>, each <a href="./pitch_lsp.html#robo285">pitch</a> of the <a href="./chord_lsp.html#robo608">chord</a> will be handled separately
+   i.e. the :snd-selector function will be called for each <a href="./pitch_lsp.html#robo285">pitch</a>); and the
+   <a href="./event_lsp.html#robo428">event</a> object. Of course any of these arguments may be ignored by the
+   :snd-selector function; indeed it is imagined that the <a href="./event_lsp.html#robo428">event</a> object will
+   be mostly ignored and the <a href="./pitch_lsp.html#robo285">pitch</a> object used instead, but it is
+   nevertheless passed for completeness. For example, the following
+   function, declared on-the-fly using lambda rather than separately with
+   defun, makes <a href="./slippery-chicken_lsp.html#robo768">clm-play</a> act as a traditional sampler would: Assuming our
+   <a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> group has a list of sound files whose frequencies really
+   correspond to their perceived fundamentals (e.g. see the
+   <a href="./sndfile-palette_lsp.html#robo854">set-frequency-from-filename</a> method, and the <a href="./sndfile-palette_lsp.html#robo848">kontakt-to-sfp</a> function) we
+   choose the <a href="./utilities_lsp.html#robo936">nearest</a> sound file in the group to the frequency of the
+   current <a href="./event_lsp.html#robo428">event</a>'s <a href="./pitch_lsp.html#robo285">pitch</a>:
+
+            :snd-selector #'(lambda (sflist <a href="./pitch_lsp.html#robo285">pitch</a> <a href="./event_lsp.html#robo428">event</a>)
+                              (declare (ignore <a href="./event_lsp.html#robo428">event</a>))
+                              (<a href="./sndfile-palette_lsp.html#robo846">get-nearest-by-freq</a>
+                               (frequency <a href="./pitch_lsp.html#robo285">pitch</a>) (data sflist)))
+
+   NB If :<a href="./pitch_lsp.html#robo285">pitch</a>-synchronous is NIL, then the <a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo608">chord</a> slot of the <a href="./event_lsp.html#robo428">event</a>
+   will be the <a href="./pitch_lsp.html#robo285">pitch</a> selected from the current set, rather than the actual
+   <a href="./pitch_lsp.html#robo285">pitch</a> of the <a href="./instrument_lsp.html#robo284">instrument</a> in question.
+   Default = NIL i.e. use the circular selection method.
+ - :decay-time. Reverb decay time. Default = 3 seconds.
+ - :snd-transitions. Set the transition from sound-file-ref to sound-file-ref
+   over the course of the call to <a href="./slippery-chicken_lsp.html#robo768">clm-play</a> using a custom envelope instead of
+   the default <a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> method, e.g. '(0 0 100 1). x-axis is
+   arbitrary, y-axis should range from 0 to 1. When reading, y-values will be
+   rounded.
+ - :file. reaper file name, if you don't want this to be auto-generated. A
+   full path is expected.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Total events generated (integer).
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; An example using some of the more frequent arguments
+(let ((mini
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
+        '+mini+
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
+                     (hn (french-horn :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1 1 1))
+                   (2 (1 1 1 1 1 1 1))
+                   (3 (1 1 1 1 1 1 1)))
+        :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((4 4) h (q) e (s) s))
+                                :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 (2) 3))))
+                            (2 ((((4 4) (q) e (s) s h))
+                                :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 (3)))))
+                            (3 ((((4 4) e (s) s h (q)))
+                                :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((2 3 3))))
+                            (4 ((((4 4) (s) s h (q) e))
+                                :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((3 (1) 2)))))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((cl (2 3 2 4 1 3 1))
+                            (hn (2 4 1 2 3 1 3))
+                            (vc (1 2 2 3 4 1 3))))
+                        (2 ((cl (4 2 1 3 3 1 2))
+                            (hn (2 1 4 3 2 1 3))
+                            (vc (2 3 4 3 1 2 1))))
+                        (3 ((cl (3 1 2 4 3 1 2))
+                            (hn (3 4 2 1 3 2 1))
+                            (vc (3 2 3 1 4 2 1)))))
+        :snd-output-dir (get-sc-config 'default-dir)
+        :<a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> '(((<a href="./sndfile_lsp.html#robo289">sndfile</a>-grp-1
+                             ((test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-1.aiff)
+                              (test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-2.aiff)
+                              (test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-3.aiff)))
+                            (<a href="./sndfile_lsp.html#robo289">sndfile</a>-grp-2
+                             ((test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-4.aiff :frequency 834)
+                              (test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-5.aiff)
+                              (test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-6.aiff))))
+                           ("/path/to/sndfiles-dir-1"
+                            "/path/to/sndfiles-dir-2")))))
+  (<a href="./slippery-chicken_lsp.html#robo768">clm-play</a> mini 2 '(cl vc) '<a href="./sndfile_lsp.html#robo289">sndfile</a>-grp-1
+            :num-sections 1
+            :srate 48000
+            :header-type clm::mus-aiff
+            :data-format clm::mus-b24int
+            :rev-amt 0.05
+            :inc-start t
+            :ignore-rests nil
+            :sound-file-<a href="./palette_lsp.html#robo405">palette</a>-ref2 '<a href="./sndfile_lsp.html#robo289">sndfile</a>-grp-2
+            :<a href="./pitch_lsp.html#robo285">pitch</a>-synchronous t
+            :<a href="./activity-levels_lsp.html#robo26">reset</a>-snds-each-rs nil
+            :<a href="./activity-levels_lsp.html#robo26">reset</a>-snds-each-<a href="./player_lsp.html#robo286">player</a> nil))
+
+;;; A minimal working example demonstrating envelope-arguments 
+;;; to duration-scaler and src-scaler
+(let* ((mini
+        (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
+         '+mini+
+         :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((vn (violin :midi-channel 1))))
+         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+         :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1)))
+         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((2 4) (s) (s) e e e))
+                                 :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3)))))
+         :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((vn (1 1 1)))))
+         :snd-output-dir "/tmp/"
+         :<a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> '(((<a href="./sndfile_lsp.html#robo289">sndfile</a>-grp-1
+                              ((test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-1.aiff)
+                               (test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-2.aiff)
+                               (test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-3.aiff))))
+                            ("/path/to/sndfiles-dir-1")))))
+  (<a href="./slippery-chicken_lsp.html#robo768">clm-play</a> mini 1 'vn '<a href="./sndfile_lsp.html#robo289">sndfile</a>-grp-1
+            :src-scaler '(0 .5  80 1  100 2)
+            :do-src 500
+            :src-width 5
+            :duration-scaler '(0 .1  80 1  100 2)
+            :check-overwrite nil
+            :play nil :header-type clm::mus-riff))
+
+;;; if you don't want amplitude panning, rather a random placement of each sound
+;;; in one channel only, then this should work (no matter how many channels
+;;; there are in your output file):
+
+    :pan-fun #'(lambda (<a href="./event_lsp.html#robo428">event</a>)
+                 (declare (ignore <a href="./event_lsp.html#robo428">event</a>))
+                 (nth (<a href="./permutations_lsp.html#robo313">random-rep</a> 2) '(0 90)))
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">#+clm
+(defmethod <strong>reaper-play</strong> ((sc slippery-chicken) <a href="./section_lsp.html#robo58">section</a> <a href="./slippery-chicken_lsp.html#robo821">players</a> 
+                        sound-file-<a href="./palette_lsp.html#robo405">palette</a>-ref 
+                        &amp;key 
+                        sound-file-<a href="./palette_lsp.html#robo405">palette</a>-ref2
+                        (play-chance-env '(0 100 100 100))
+                        (max-start-time 99999999)
+                        (play-chance-env-exp 0.5)
+                        (time-scaler 1.0)
+                        (from-sequence 1)
+                        (<a href="./sc-map_lsp.html#robo573">num-sequences</a> nil)
+                        (num-sections nil)
+                        (ignore-rests t)
+                        (time-offset 0.0)
+                        (chords nil)
+                        (<a href="./chord_lsp.html#robo608">chord</a>-accessor nil)
+                        (note-number 0)
+                        (amp-env '(0 0 5 1 60 1 100 0))
+                        (inc-start nil)
+                        ;; either a number or an envelope
+                        (src-scaler 1.0)
+                        (do-src t)
+                        (<a href="./pitch_lsp.html#robo285">pitch</a>-synchronous nil)
+                        ;; either a number or an envelope
+                        (duration-scaler 1.0)
+                        (short-file-names nil)
+                        ;; by default we <a href="./wolfram_lsp.html#robo988">generate</a> filenames according to <a href="./slippery-chicken_lsp.html#robo821">players</a>
+                        ;; and other relevent data but if this is given then
+                        ;; we'll use it instead 
+                        (file nil)
+                        (check-overwrite t)
+                        (<a href="./activity-levels_lsp.html#robo26">reset</a>-snds-each-rs t)
+                        (<a href="./activity-levels_lsp.html#robo26">reset</a>-snds-each-<a href="./player_lsp.html#robo286">player</a> t)
+                        (duration-run-over nil)
+                        (channels 2)
+                        (srate 48000)
+                        (output-name-uniquifier "")
+                        (<a href="./sndfile-palette_lsp.html#robo303">sndfile-palette</a> nil)
+                        ;; MDE Sat Oct  3 18:45:28 2015 -- for Cameron!
+                        pan-fun
+                        ;; MDE Thu Oct  1 21:03:59 2015 
+                        (pan-min-max nil) ; actually '(15 75) by default below
+                        ;; MDE Thu Oct  1 19:13:49 2015
+                        snd-selector 
+                        ;; DJR Mon 16 Sep 2019 01:26:11 BST We can now set
+                        ;; snd-transitions with a custom envelope, e.g. '(0 0
+                        ;; 100 1). x-values are arbitrary, y-values are from 0
+                        ;; (for sound-file-<a href="./palette_lsp.html#robo405">palette</a>-ref) and 1 (for
+                        ;; sound-file-<a href="./palette_lsp.html#robo405">palette</a>-ref2).
+                        snd-transitions)
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/reaper-play.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

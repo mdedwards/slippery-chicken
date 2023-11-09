@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:51:52 Wed Oct 18 2023 CEST
+;;; $$ Last modified:  21:05:45 Thu Nov  9 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -4941,10 +4941,13 @@
   (let ((l '(1 4 5 7 3 4 1 5 4 8 5 7 3 2 3 6 3 4 5 4 1 4 8 5 7 3 2))
         ;; MDE Thu Jan  3 16:18:19 2013 -- make sure it works with symbols too,
         ;; as claimed 
-        (ls '(ba ba black sheep sheep sheep)))
+        (ls '(ba ba black sheep sheep sheep))
+        (lss '("ba" "ba" "black" "sheep" "sheep" "sheep")))
     (sc-test-check
      (equalp (count-elements ls)
              '((sheep 3) (ba 2) (black 1)))
+     (equalp (print (count-elements lss #'string=))
+             '(("sheep" 3) ("ba" 2) ("black" 1)))
      (equalp (count-elements l)
              '((1 3) (2 2) (3 5) (4 6) (5 5) (6 1) (7 3) (8 2))))))
 

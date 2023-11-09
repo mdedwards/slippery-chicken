@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  16:20:46 Fri Apr 23 2021 CEST
+;;; $$ Last modified:  21:06:54 Thu Nov  9 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1567,17 +1567,17 @@ data: (
 
 |#
 ;;; SYNOPSIS
-(defun count-elements (list)
+(defun count-elements (list &optional (test #'eql))
 ;;; ****
   (loop with all-numbers = t
      with result = '()
      with found = '()
      for e in list do
-     (unless (member e found)
+     (unless (member e found :test test)
        ;; MDE Thu Jan  3 16:16:30 2013 
        (setf all-numbers (numberp e))
        (push e found)
-       (push (list e (count e list)) result))
+       (push (list e (count e list :test test)) result))
      finally (return
                (if all-numbers
                    ;; sort by element

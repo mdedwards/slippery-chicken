@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  12:36:02 Wed Jul  6 2022 CEST
+;;; $$ Last modified:  23:38:52 Tue Nov 28 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1836,6 +1836,82 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 (defun sc-set-p (thing)
   (typep thing 'sc-set))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sc-set/subset-from-harp-salzedo
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-11-28, Essen
+;;; 
+;;; DESCRIPTION
+;;; This method creates a subset from a given sc-set according to a specific
+;;; harp-pedaling indicated by a salzedo-list (cf. harp-salzedo-to-tl-set) and
+;;; returns either a new sc-set or a list of symbols (when :as-symbols = T)
+;;; in order to be further used as either an independent/new sc-set or a
+;;; pitch-list to be used in the subset-slot of e.g. a sc-set.
+;;;
+;;; ARGUMENTS
+;;; - A sc-set object which is the actual set to derive the subset from.
+;;; - A list, which is a salzedo list with the harp pedalling
+;;;   (cf. salzedo-to-set).
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - :id. The id of the subset to be generated. When :as-symbols = T, this
+;;;   argument will be ignored. 
+;;; - :lowest. The lowest pitch to be included in the subset. Default: 'b0
+;;; - :highest. The highest pitch to be included in the subset. Default: 'gs7
+;;; - :as-symbols. A boolean indica\ting whether a new sc-list object
+;;;   should (NIL) or a list of pitch symbols (NIL) should be returned.
+;;;   Default = NIL.
+;;; - :subsets. Inherited from make-sc-set. This will be ignored when
+;;;   :as-symbols = T.
+;;; - :related-sets. Inherited from make-sc-set. This will be ignored when
+;;;   :as-symbols = T.
+;;; - :auto-sort. Inherited from make-sc-set. This will be ignored when
+;;;   :as-symbols = T. Default = T.
+;;; 
+;;; RETURN VALUE
+;;; Either a sc-set or a list of pitch symbols.
+;;;
+;;; EXAMPLE
+#|
+(subset-from-harp-salzedo (make-sc-set '(C1 D1 E1 F1 GS1 AF1 AF2 BF2 C3 D3
+                                         E3 F3 GS3
+                                         AF3 BF3 C4 D4 E4 F4 GS4 AF4 BF4 C5
+                                         D5 E5 F5
+                                         C6 D6 E6 F6 GS6 AF6 BF6 C7 D7 E7))
+                          '(0 1 -1 0 1 0 -1)
+                          :as-symbols t)
+
+=>
+(D1 E1 AF1 AF2 BF2 D3 E3 AF3 BF3 D4 E4 AF4 BF4 D5 E5 D6 E6 AF6 BF6 D7 E7)
+|#
+;;; SYNOPSIS
+(defmethod subset-from-harp-salzedo ((s sc-set) salzedo
+                                     &key
+                                       id
+                                       (lowest 'b0)
+                                       (highest 'gs7)
+                                       as-symbols
+                                       subsets
+                                       related-sets
+                                       (auto-sort t))
+;;; ****
+  (let* ((salzedo-set (harp-salzedo-to-tl-set salzedo
+                                              :highest highest
+                                              :lowest lowest))
+         (salzedo-set-pitches (data salzedo-set))
+         (set-pitches (data s))
+         (subset (pitch-intersection set-pitches salzedo-set-pitches)))
+    (if as-symbols
+        (mapcar #'data subset)
+        (make-sc-set subset
+                     :id id))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sc-set.lsp

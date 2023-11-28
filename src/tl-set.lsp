@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  10:06:17 Thu Mar  4 2021 CET
+;;; $$ Last modified:  23:38:37 Tue Nov 28 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -851,6 +851,149 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
              (setf (data (nth j (data ral))) 
                    (transpose-pitch-list (data i) semitones :lowest lowest
                                          :highest highest))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* tl-set/harp-salzedo-to-tl-set
+;;; 
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-11-22, Essen
+;;; 
+;;; DESCRIPTION
+;;; This function creates a tl-set from a list of harp pedalling indications
+;;; (similar to those introduced by Salzedo). Thus, the resulting tl-set
+;;; represents all producible pitches on a concert harp within a given range
+;;; (defined by the :lowest and :highest slots). 
+;;;
+;;; ARGUMENTS
+;;; A 7-item list with the position of the pedals, where -1 indicates lowering
+;;; the respective note a half step, 0 means no alteration, 1 means raising the
+;;; note a half. The order of notes reflects the pedal structure of the concert
+;;; harp (i.e. D C B E F G A). Thus, '(0 1 0 0 0 -1 0) leads to the following
+;;; alteration: C# D E F Gb A B
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword-arguments:
+;;; - :id. The id of the sc-st to be generated. 
+;;; - :lowest. This is the lowest note to be contained in the set.
+;;;   Default = 'b0
+;;;   +slippery-chicken-standard-instrument-palette+.
+;;; - :highest. This is the highest note to be contained in the set.
+;;;   Default = 'gs7
+;;; - :limit-lower. A note-name symbol or a pitch object to indicate the
+;;;   lowest possible pitch in the tl-set object to be created (cf.
+;;;   make-tl-set). Default = The value of :lowest-written 'harp in
+;;;   +slippery-chicken-standard-instrument-palette+.
+;;; - :limit-upper. A note-name symbol or a pitch object to indicate the
+;;;   highest possible pitch in the tl-set object to be created (cf.
+;;;   make-tl-set). Default = The value of :highest-written 'harp in
+;;;   +slippery-chicken-standard-instrument-palette+.
+;;; - :subsets. Inherited from make-tl-set.
+;;; - :related-sets. Inherited from make-tl-set.
+;;; - :auto-sort. Inherited from make-tl-set. Default = T.
+;;; 
+;;; RETURN VALUE
+;;; An tl-set generated from the given data. 
+;;;
+;;; EXAMPLE
+#|
+(harp-salzedo-to-tl-set '(0 0 -1 0 0 1 -1))
+
+=>
+TL-SET: transposition: 0
+        limit-upper: NIL
+        limit-lower: NIL
+SC-SET: auto-sort: T, rm-dups: T, warn-dups: T used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+**************
+, 
+
+**** N.B. All pitches printed as symbols only, internally they are all 
+pitch-objects.
+
+
+    subsets: 
+    related-sets: 
+CHORD: auto-sort: T, marks: NIL, micro-tone: NIL, micro-tonality: 0.0
+centroid: NIL, dissonance: NIL
+SCLIST: sclist-length: 48, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (C1 D1 E1 F1 Gs1 Af1 Bf1 C2 D2 E2 F2 Gs2 Af2 Bf2 C3 D3 E3 F3 Gs3 Af3 Bf3
+       C4 D4 E4 F4 Gs4 Af4 Bf4 C5 D5 E5 F5 Gs5 Af5 Bf5 C6 D6 E6 F6 Gs6 Af6 Bf6
+       C7 D7 E7 F7 Gs7 Af7)
+**************
+|#
+;;; SYNOPSIS
+(defun harp-salzedo-to-tl-set (salzedo
+                               &key
+                                 id
+                                 (lowest 'b0)
+                                 (highest 'gs7)
+                                 (limit-lower (lowest-written
+                                               (get-standard-ins 'harp)))
+                                 (limit-upper (highest-written
+                                               (get-standard-ins 'harp)))
+                                 subsets
+                                 related-sets
+                                 (auto-sort t))
+;;; ****
+  (unless (pitch-p lowest)
+    (setf lowest (make-pitch lowest)))
+  (unless (pitch-p highest)
+    (setf highest (make-pitch highest)))
+  (let* (;; reorder salzedo list to diatonic order
+         (pedals (list (nth 1 salzedo)
+                       (nth 0 salzedo)
+                       (nth 3 salzedo)
+                       (nth 4 salzedo)
+                       (nth 5 salzedo)
+                       (nth 6 salzedo)
+                       (nth 2 salzedo)))
+         (diatonics '(c d e f g a b))
+         (lowest-octave (octave lowest))
+         (highest-octave (octave highest))
+         ;; now, generate the pitches to be used in the tl-set
+         (set-pitches
+           (loop for octave = lowest-octave then (1+ octave)
+                 while (<= octave highest-octave)
+                 append
+                 (loop for ped in pedals
+                       for diat in diatonics
+                       for pitch = (make-pitch
+                                    (intern
+                                     (case ped
+                                       (-1 (format nil "~af~a" diat octave))
+                                       (0 (format nil "~a~a" diat octave))
+                                       (1 (format nil "~as~a" diat octave)))))
+                       when (and (pitch>= pitch lowest)
+                                 (pitch<= pitch highest))
+                         collect pitch))))
+    (make-tl-set set-pitches
+                 :id id
+                 :subsets subsets
+                 :limit-lower limit-lower
+                 :limit-upper limit-upper
+                 :related-sets related-sets
+                 :auto-sort auto-sort)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF tl-set.lsp

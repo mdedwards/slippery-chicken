@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  23:38:37 Tue Nov 28 2023 CET
+;;; $$ Last modified:  00:17:09 Wed Nov 29 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -982,7 +982,11 @@ data: (C1 D1 E1 F1 Gs1 Af1 Bf1 C2 D2 E2 F2 Gs2 Af2 Bf2 C3 D3 E3 F3 Gs3 Af3 Bf3
                                      (case ped
                                        (-1 (format nil "~af~a" diat octave))
                                        (0 (format nil "~a~a" diat octave))
-                                       (1 (format nil "~as~a" diat octave)))))
+                                       (1 (format nil "~as~a" diat octave))
+                                       (t (error
+                                           "tl-set/harp-salzedo-to-tl-set: ~
+                                            Wrong salzedo-indication. Possible
+                                            values are: -1, 0, 1.")))))
                        when (and (pitch>= pitch lowest)
                                  (pitch<= pitch highest))
                          collect pitch))))

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  23:38:52 Tue Nov 28 2023 CET
+;;; $$ Last modified:  00:52:35 Wed Nov 29 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1864,7 +1864,7 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 ;;;   argument will be ignored. 
 ;;; - :lowest. The lowest pitch to be included in the subset. Default: 'b0
 ;;; - :highest. The highest pitch to be included in the subset. Default: 'gs7
-;;; - :as-symbols. A boolean indica\ting whether a new sc-list object
+;;; - :as-symbols. A boolean indicating whether a new sc-list object
 ;;;   should (NIL) or a list of pitch symbols (NIL) should be returned.
 ;;;   Default = NIL.
 ;;; - :subsets. Inherited from make-sc-set. This will be ignored when

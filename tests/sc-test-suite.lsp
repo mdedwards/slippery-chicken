@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  21:05:45 Thu Nov  9 2023 CET
+;;; $$ Last modified:  11:21:48 Wed Nov 29 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -18109,7 +18109,10 @@
                       :src-width 5))
       (= 20 (clm-play mini 4 nil 'grp-1 :check-overwrite nil :src-width 5))
       (= 6 (clm-play mini 2 nil 'grp-1 :num-sequences 3 :num-sections 1
-                     :src-width 5 :check-overwrite nil))
+                                       :src-width 5 :check-overwrite nil))
+      ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
+      ;; with this too
+      (reaper-play mini 1 nil 'grp-1 :check-overwrite nil)
       ;; MDE Sat Jan 20 10:31:49 2018
       ;; (print rsm)
       (rthm-seq-map-p rsm)
@@ -20276,7 +20279,8 @@
                                           (562 9.1 "better label" blue)))
             (file-write-ok "/tmp/test.rpp" 1500)
             ;; We'll get warnings about durations but ignore these for test
-            ;; purposes 
+            ;; purposes
+            ;; (print (write-item (first items2) t))
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
@@ -20774,6 +20778,11 @@
                                  (2 (1 1 1 1 1 1 1))
                                  (3 (1 1 1 1 1 1 1)))
                       :tempo-map '((1 (q 60)))
+                      :sndfile-palette
+                      `(((grp-1
+                          (test-sndfile-1.aiff test-sndfile-2.aiff
+                                               test-sndfile-3.aiff)))
+                        (,(file-from-sc-dir "tests/test-sndfiles-dir-1/")))
                       :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
                                               :pitch-seq-palette ((1 (2) 3))))
                                           (2 ((((4 4) (q) e (s) s h))
@@ -20789,6 +20798,9 @@
                                       (3 ((pno (1 2 1 2 1 2 1))
                                           (vln (1 2 1 2 1 2 1))))))))
               (sc-test-check
+               ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
+               ;; with this too
+               (reaper-play mini 1 nil 'grp-1 :check-overwrite nil))
                (multiple-value-bind (low high)
                    (player-ambitus mini 'vln
                                    :start-bar 3

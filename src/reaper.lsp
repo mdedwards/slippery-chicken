@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  17:02:25 Thu Oct 19 2023 CEST
+;;; $$ Last modified:  14:21:52 Tue Nov 28 2023 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -82,7 +82,13 @@
    ;; written into those. This can be any string though of course it makes sense
    ;; to put more than one item on a single track
    (track :accessor track :type string :initarg :track
-          :initform "reaper-lisp")))
+          :initform "reaper-lisp")
+   ;; MDE Tue Nov 28 14:16:25 2023, Heidhausen -- 
+   ;; this is the volume defined with the slider in media item properties
+   (slider-vol :accessor slider-vol :type number :initarg :slider-vol
+               :initform 1.0)
+   (item-vol :accessor item-vol :type number :initarg :item-vol :initform 1.0)
+   (pan :accessor pan :type number :initarg :pan :initform 0.0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a holder for reaper-items that will all be placed on a single user-named
@@ -231,8 +237,8 @@
     (error "reaper-item::write-item: the path slot is required."))
   ;; start: SOFFS, duration: LENGTH
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
-          (fade-out ri) (name ri) (start ri) (play-rate  ri)
-          (preserve-pitch ri)
+          (fade-out ri) (name ri) (item-vol ri) (pan ri) (slider-vol ri)
+          (start ri) (play-rate  ri) (preserve-pitch ri)
           (os-format-path (path ri) 
                           (if (get-sc-config 'reaper-files-for-windows)
                               'windows

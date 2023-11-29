@@ -4802,6 +4802,8 @@ seq-num 5, VN, replacing G3 with B6
          (output-start 0.0)
          (output-ok t)
          (this-play-chance-env '())
+         (this-duration-scaler-env '())
+         (this-src-scaler-env '())
          (events-before-max-start 0)
          (skip-this-event t)
          (total-skipped 0)
@@ -10809,7 +10811,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  17:56:14 Tue Oct 31 2023 CET
+;;; $$ Last modified:  20:08:32 Tue Nov 28 2023 CET
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

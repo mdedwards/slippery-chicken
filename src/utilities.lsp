@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  11:27:23 Wed Aug 23 2023 CEST
+;;; $$ Last modified:  09:27:34 Tue Nov 28 2023 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5267,7 +5267,7 @@ RETURNS:
        (every #'(lambda (x y) (equal-within-tolerance x y tolerance))
               list1 list2)))
 
-;;; (FSCALE 0 -10 10 1.9 .1) means we can map exponents of 1.9 to .1 from -10
+;;; (fscale 0 -10 10 1.9 .1) means we can map exponents of 1.9 to .1 from -10
 ;;; to 10 with a zero point returning an exponent of 1
 (defun fscale (val min max new-min new-max)
   (float (+ new-min (* (/ (- val min) (- max min))

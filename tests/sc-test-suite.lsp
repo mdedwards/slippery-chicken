@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:21:48 Wed Nov 29 2023 CET
+;;; $$ Last modified:  11:57:55 Wed Nov 29 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20875,6 +20875,39 @@
     (sc-test-check
       (file-write-ok "/tmp/insert-grace-notes.xml")
       (file-write-ok "/tmp/insert-grace-notes.eps"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Nov 28 23:39:22 2023
+;;; test-harp-salzedo-to-tl-set
+
+(sc-deftest test-harp-salzedo-to-tl-set ()
+  (let ((sc-set (harp-salzedo-to-tl-set '(0 0 -1 0 0 1 -1))))
+    (sc-test-check
+      (equal (mapcar #'data
+                     (data sc-set))
+             '(C1 D1 E1 F1 GS1 AF1 BF1 C2 D2 E2 F2 GS2 AF2
+               BF2 C3 D3 E3 F3 GS3 AF3 BF3 C4 D4
+               E4 F4 GS4 AF4 BF4 C5 D5 E5 F5 GS5
+               AF5 BF5 C6 D6 E6 F6 GS6 AF6 BF6 C7 D7 E7 F7
+               GS7 AF7)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Nov 28 23:49:01 2023
+;;; test-subset-from-harp-salzedo
+
+(sc-deftest test-subset-from-harp-salzedo ()
+  (let ((set-symbs (subset-from-harp-salzedo
+                    (make-sc-set '(C1 D1 E1 F1 GS1 AF1 AF2 BF2 C3 D3
+                                   E3 F3 GS3
+                                   AF3 BF3 C4 D4 E4 F4 GS4 AF4 BF4 C5
+                                   D5 E5 F5
+                                   C6 D6 E6 F6 GS6 AF6 BF6 C7 D7 E7))
+                    '(0 1 -1 0 1 0 -1)
+                    :as-symbols t)))
+    (sc-test-check
+      (equal set-symbs
+             '(D1 E1 AF1 AF2 BF2 D3 E3 AF3 BF3 D4 E4 AF4 BF4 D5 E5
+               D6 E6 AF6 BF6 D7 E7)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

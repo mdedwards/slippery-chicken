@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:57:55 Wed Nov 29 2023 CET
+;;; $$ Last modified:  13:56:47 Fri Dec  1 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -18089,7 +18089,9 @@
                        ((a (1 1 1))
                         (b (1 1 1))
                         (c (1 1 1 1)))))
-           :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)))))
+           ;; :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)))))
+           ;; reaper: chords and transp methods
+           :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)) :pitch-seq-palette (((5) 1)))))
            :rthm-seq-map rsm
            :snd-output-dir "/tmp/"
            :sndfile-palette
@@ -18112,7 +18114,11 @@
                                        :src-width 5 :check-overwrite nil))
       ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
       ;; with this too
-      (reaper-play mini 1 nil 'grp-1 :check-overwrite nil)
+      (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :tracks-per-player 2
+                   :pitch-synchronous t)
+      (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :tracks-per-player 2
+                                     :pitch-synchronous t :do-src 'transposition
+                                     :short-file-names t) 
       ;; MDE Sat Jan 20 10:31:49 2018
       ;; (print rsm)
       (rthm-seq-map-p rsm)
@@ -20261,7 +20267,7 @@
                               '(w (w) q h.+h+e (h)) ; 3 attacks
                               63
                               :input-start .9
-                              :play-rate 1.04
+                              :play-rate 1.04 :transposition 2.5
                               :preserve-pitch t)
         (let* ((rf1 (make-reaper-file 'otest1 items1 :cursor end-time1))
                (rf2  (make-reaper-file 'otest2 items2 :cursor end-time2))
@@ -20277,13 +20283,19 @@
             (write-reaper-file (make-reaper-file 'test nil)
                                :markers '(1 2 3.5 7 (49 8.021 "nice label")
                                           (562 9.1 "better label" blue)))
+            ;; just check the class allocation slots are being cloned
+            (string= (istring (first items3)) (istring (clone (first items3))))
+            (string= (record-path rf1) (record-path (clone rf1)))
             (file-write-ok "/tmp/test.rpp" 1500)
             ;; We'll get warnings about durations but ignore these for test
             ;; purposes
-            ;; (print (write-item (first items2) t))
+            (print (write-item (first items2) t))
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
+            (string= (tstring (get-first (tracks rf2)))
+                     (tstring (clone (get-first (tracks rf2)))))
+            ;; (print (get-first (tracks rf2)))
             (assoc-list-p (tracks rf1))
             (assoc-list-p (tracks rf2))
             (assoc-list-p (tracks rf3))
@@ -20766,47 +20778,48 @@
 ;;; test-player-ambitus
 
 (sc-deftest test-player-ambitus ()
-            (in-scale :chromatic)
-            (let* ((mini
-                     (make-slippery-chicken
-                      '+mini+
-                      :ensemble '(((pno (piano :midi-channel 1))
-                                   (vln (violin :midi-channel 2))))
-                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4
-                                          d4 e4 f4 g4 a4 bf4 cs5))))
-                      :set-map '((1 (1 1 1 1 1 1 1))
-                                 (2 (1 1 1 1 1 1 1))
-                                 (3 (1 1 1 1 1 1 1)))
-                      :tempo-map '((1 (q 60)))
-                      :sndfile-palette
-                      `(((grp-1
-                          (test-sndfile-1.aiff test-sndfile-2.aiff
-                                               test-sndfile-3.aiff)))
-                        (,(file-from-sc-dir "tests/test-sndfiles-dir-1/")))
-                      :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
-                                              :pitch-seq-palette ((1 (2) 3))))
-                                          (2 ((((4 4) (q) e (s) s h))
-                                              :pitch-seq-palette ((1 2 3))))
-                                          (3 ((((4 4) e (s) s h (q)))
-                                              :pitch-seq-palette ((2 3 3))))
-                                          (4 ((((4 4) (s) s h (q) e))
-                                              :pitch-seq-palette ((3 1 (2))))))
-                      :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
-                                          (vln (1 2 1 2 1 2 1))))
-                                      (2 ((pno (3 4 3 4 3 4 3))
-                                          (vln (3 4 3 4 3 4 3))))
-                                      (3 ((pno (1 2 1 2 1 2 1))
-                                          (vln (1 2 1 2 1 2 1))))))))
-              (sc-test-check
-               ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
-               ;; with this too
-               (reaper-play mini 1 nil 'grp-1 :check-overwrite nil))
-               (multiple-value-bind (low high)
-                   (player-ambitus mini 'vln
-                                   :start-bar 3
-                                   :end-bar 3)
-                 (and (eq 'b3 (data low))
-                      (eq 'a4 (data high)))))))
+  (in-scale :chromatic)
+  (let* ((mini
+           (make-slippery-chicken
+            '+mini+
+            :ensemble '(((pno (piano :midi-channel 1))
+                         (vln (violin :midi-channel 2))))
+            :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4
+                                d4 e4 f4 g4 a4 bf4 cs5))))
+            :set-map '((1 (1 1 1 1 1 1 1))
+                       (2 (1 1 1 1 1 1 1))
+                       (3 (1 1 1 1 1 1 1)))
+            :tempo-map '((1 (q 60)))
+            :sndfile-palette
+            `(((grp-1
+                (test-sndfile-1.aiff test-sndfile-2.aiff
+                                     test-sndfile-3.aiff)))
+              (,(file-from-sc-dir "tests/test-sndfiles-dir-1/")))
+            :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                    :pitch-seq-palette ((1 (2) 3))))
+                                (2 ((((4 4) (q) e (s) s h))
+                                    :pitch-seq-palette ((1 2 3))))
+                                (3 ((((4 4) e (s) s h (q)))
+                                    :pitch-seq-palette ((2 3 3))))
+                                (4 ((((4 4) (s) s h (q) e))
+                                    :pitch-seq-palette ((3 1 (2))))))
+            :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
+                                (vln (1 2 1 2 1 2 1))))
+                            (2 ((pno (3 4 3 4 3 4 3))
+                                (vln (3 4 3 4 3 4 3))))
+                            (3 ((pno (1 2 1 2 1 2 1))
+                                (vln (1 2 1 2 1 2 1))))))))
+    (sc-test-check
+      ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
+      ;; with this too
+      (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :min-channels 4
+                                     :tracks-per-player 5)
+      (multiple-value-bind (low high)
+          (player-ambitus mini 'vln
+                          :start-bar 3
+                          :end-bar 3)
+        (and (eq 'b3 (data low))
+             (eq 'a4 (data high)))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

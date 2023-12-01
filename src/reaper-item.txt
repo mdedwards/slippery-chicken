@@ -12,7 +12,7 @@
       NAME ~a
       VOLPAN ~a ~a ~a -1
       SOFFS ~a
-      PLAYRATE ~a ~a 0 -1 0 0.0025
+      PLAYRATE ~a ~a ~a -1 0 0.0025
       CHANMODE 0
       <SOURCE WAVE
         FILE \"~a\"

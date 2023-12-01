@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  14:21:52 Tue Nov 28 2023 CET
+;;; $$ Last modified:  12:14:18 Fri Dec  1 2023 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -67,6 +67,9 @@
    ;; no transposition on stretch?
    (preserve-pitch :accessor preserve-pitch :type boolean
                    :initarg :preserve-pitch :initform t)
+   ;; independently of play-rate a semitone transposition
+   (transposition :accessor transposition :type number :initarg :transposition
+                  :initform 0.0)
    ;; the output start-time (in seconds, in the reaper file) NB the input file
    ;; start time is the start slot of the sndfile class (in reaper the SOFFS
    ;; line)  
@@ -158,9 +161,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((ri reaper-item) stream)
   (format stream "~%REAPER-ITEM: fade-in: ~a, fade-out: ~a, play-rate: ~a, ~
-                  ~%preserve-pitch: ~a, start-time: ~a, name: ~a, track: ~a"
+                  ~%preserve-pitch: ~a, start-time: ~a, name: ~a, track: ~a ~
+                  ~%slider-vol: ~a, item-vol: ~a, pan: ~a, transposition: ~a"
           (fade-in ri) (fade-out ri) (play-rate ri) (preserve-pitch ri)
-          (start-time ri) (name ri) (track ri)))
+          (start-time ri) (name ri) (track ri) (slider-vol ri) (item-vol ri)
+          (pan ri) (transposition ri)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone ((ri reaper-item))
@@ -170,20 +175,21 @@
 (defmethod clone-with-new-class :around ((ri reaper-item) new-class)
   (declare (ignore new-class))
   (let ((sndfile (call-next-method)))
-    (setf (slot-value sndfile 'istring) (istring ri)
-          (slot-value sndfile 'fade-in) (fade-in ri)
+    (setf (slot-value sndfile 'fade-in) (fade-in ri)
           (slot-value sndfile 'fade-out) (fade-out ri)
           (slot-value sndfile 'preserve-pitch) (preserve-pitch ri)
           (slot-value sndfile 'start-time) (start-time ri)
           (slot-value sndfile 'name) (name ri)
           (slot-value sndfile 'track) (track ri)
+          (slot-value sndfile 'transposition) (transposition ri)
           (slot-value sndfile 'play-rate) (play-rate ri))
     sndfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((rt reaper-track) stream)
-  (format stream "~%REAPER-TRACK: channels: ~a"
-                  (channels rt)))
+  (format stream "~%REAPER-TRACK: channels: ~a, min-channels: ~a, ~
+                  max-channels: ~a"
+          (channels rt) (min-channels rt) (max-channels rt)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone ((rt reaper-track))
@@ -206,18 +212,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((rf reaper-file) stream)
   (format stream "~%REAPER-FILE: zoom: ~a, cursor: ~a, ~%record-path: ~a, ~
-                  ~%tempo: ~a~&time-sig: ~a" (zoom rf) (cursor rf)
-                  (record-path rf) (tempo rf) (time-sig rf)))
+                  ~%samplerate: ~a, tempo: ~a~&time-sig: ~a"
+          (zoom rf) (cursor rf) (record-path rf) (samplerate rf) (tempo rf)
+          (time-sig rf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod clone ((rf reaper-item))
-  (clone-with-new-class rf 'reaper-item))
+(defmethod clone ((rf reaper-file))
+  (clone-with-new-class rf 'reaper-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone-with-new-class :around ((rf reaper-file) new-class)
   (declare (ignore new-class))
   (let ((scl (call-next-method)))
     (setf (slot-value scl 'record-path) (strcpy (record-path rf))
+          (slot-value scl 'samplerate) (samplerate rf)
           (slot-value scl 'tempo) (clone (tempo rf))
           (slot-value scl 'zoom) (zoom rf)
           (slot-value scl 'cursor) (cursor rf)
@@ -238,7 +246,7 @@
   ;; start: SOFFS, duration: LENGTH
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
           (fade-out ri) (name ri) (item-vol ri) (pan ri) (slider-vol ri)
-          (start ri) (play-rate  ri) (preserve-pitch ri)
+          (start ri) (play-rate  ri) (preserve-pitch ri) (transposition ri)
           (os-format-path (path ri) 
                           (if (get-sc-config 'reaper-files-for-windows)
                               'windows
@@ -491,6 +499,8 @@
                                 (fade-in .005) (fade-out .005)
                                 ;; could also be a list (circular)
                                 (play-rate 1.0)
+                                ;; could also be a list (circular)
+                                (transposition 0.0)
                                 ;; if an event's duration is longer than the
                                 ;; sndfile we'll get a warning but by default
                                 ;; we'll force its duration
@@ -501,6 +511,7 @@
   (setq preserve-pitch (if preserve-pitch 1 0))
   (let ((sfs (force-list sndfiles))
         (play-rates (make-cscl (force-list play-rate)))
+        (transpositions (make-cscl (force-list transposition)))
         (input-starts (make-cscl (force-list input-start))))
     ;; MDE Sat Mar  5 15:33:43 2022, Heidhausen -- if no events are passed we
     ;; just use the duration of the sndfile
@@ -519,6 +530,7 @@
                      'reaper-item
                      :preserve-pitch preserve-pitch
                      :play-rate (get-next play-rates)
+                     :transposition (get-next transpositions)
                      :fade-out fade-out :fade-in fade-in
                      :start (get-next input-starts)
                      :start-time (if event (start-time event) 0.0)

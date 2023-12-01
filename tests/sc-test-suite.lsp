@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:56:47 Fri Dec  1 2023 CET
+;;; $$ Last modified:  15:01:15 Fri Dec  1 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20289,7 +20289,7 @@
             (file-write-ok "/tmp/test.rpp" 1500)
             ;; We'll get warnings about durations but ignore these for test
             ;; purposes
-            (print (write-item (first items2) t))
+            ;; (print (write-item (first items2) t))
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")

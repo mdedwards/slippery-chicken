@@ -525,7 +525,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; for use in env-mod
-(defun env-mod-aux (last-x last-y x y min max)
+(defun env-mod-aux (last-x last-y x y)
   (let* ((yfloordiff (- (floor y) (floor last-y)))
 	 (pos? (> yfloordiff 0))
 	 (ydiff (- y last-y))
@@ -537,9 +537,11 @@
        for new-x = (rationalize
 		    (+ last-x (abs (* (/ until-crossing ydiff) xdiff))))
        unless test collect new-x unless test collect
-	 (rescale (if pos? .9999999 0) 0 1 min max #'error #'rationalize)
+	 (if pos? .9999999 0)
+       ;;(rescale (if pos? .9999999 0) 0 1 min max #'error #'rationalize)
        collect (+ new-x (* .00001 mult)) collect
-	 (rescale (if pos? 0 .9999999) 0 1 min max #'error #'rationalize))))
+	 (if pos? 0 .9999999))))
+;;(rescale (if pos? 0 .9999999) 0 1 min max #'error #'rationalize)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-02 Tu>
@@ -548,7 +550,7 @@
 ;;; '(0 0  1 2) would lose all meaning -> '(0 0  1 0)
 ;;; Instead it should be '(0 0  1 2) -> '(0 0  .5 0.999999  .50001 0  1 .999999)
 ;;; env-mod tries to achieve that.
-(defun env-mod (envelope &optional (min 0) (max 1))
+(defun env-mod (envelope)
   (unless (listp envelope)
     (error "envelope in env-mod should be a list but is ~a" envelope))
   (flatten
@@ -558,8 +560,8 @@
       when (and (= 0 (mod y 1)) (not (= 0 y))) do (setf y (- y .0000001))
       when (< x last-x)
       do (warn "env-mod encountered am envelope with decreasing x-value")
-      unless (= fy1 fy2) collect (env-mod-aux last-x last-y x y min max)
-      collect x collect (rescale (mod y 1) 0 1 min max #'error #'rationalize)
+      unless (= fy1 fy2) collect (env-mod-aux last-x last-y x y)
+      collect x collect (mod y 1);(rescale (mod y 1) 0 1 min max #'error #'rationalize)
       do (setf last-x x last-y y))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -570,12 +572,10 @@
   (let* ((start-time (start-time reaper-envelope))
 	 (end-time (end-time reaper-envelope))
 	 (dur (- end-time start-time))
-	 (env-ls (env-mod (data reaper-envelope)
-			  (parameter-min reaper-envelope)
-			  (parameter-max reaper-envelope)))
-	 (env-len (lastx env-ls))
 	 (min (parameter-min reaper-envelope))
 	 (max (parameter-max reaper-envelope))
+	 (env-ls (env-mod (data reaper-envelope)))
+	 (env-len (lastx env-ls))
 	 points)
     (setf points
 	  (loop for x in env-ls by #'cddr and y in (cdr env-ls) by #'cddr

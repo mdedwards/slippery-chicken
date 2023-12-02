@@ -71,9 +71,11 @@
    ;; optional spatialisation data:
    ;; can be a breakpoint-list (env) or a list of envs.
    (angle-env :accessor angle-env :type list :initarg :angle-env
-	      :initform '(0 .5  100 .5))
+	      :initform '(0 0  100 0))
    (elevation-env :accessor elevation-env :type list :initarg :elevation-env
 		  :initform '(0 0  100 0))
+   (distance-env :accessor distance-env :type list :initarg :distance-env
+		 :initform '(0 1  100 1))
    ;; some sounds have a prominent fundamental which can be used for
    ;; transposing to specific pitches.  Give this here either in the form of a
    ;; real freq or a note, which will then be converted.
@@ -508,6 +510,9 @@ T
 ;;;   (the horizontal angle from the x-axis). -.5 represents the lowest point
 ;;;   at -90°, 0 the level of the listening position and .5 the top (90°).
 ;;;   This is, so that the span from 0 to 1 can represent the entire 360°.
+;;; - :distance-env. same as angle-env but represents the distance from the
+;;;   listening position. This is not really relevant for use in ambisonics.
+;;;   There the distance is usually 1.
 ;;;
 ;;; RETURN VALUE
 ;;; A sndfile object.
@@ -551,8 +556,9 @@ data: /path/to/sndfile-1.aiff
 (defun make-sndfile (path &key id data duration end (start 0.0)
                      (frequency nil)
 	             (amplitude 1.0)
-	             (angle-env '(0 .5  100 .5))
-		     (elevation-env '(0 0  100 0)))
+	             (angle-env '(0 0  100 0))
+		     (elevation-env '(0 0  100 0))
+		     (distance-env '(0 1  100 1)))
 ;;; **** 
   (if (and path (listp path))
       (progn
@@ -583,7 +589,8 @@ data: /path/to/sndfile-1.aiff
       (make-instance 'sndfile :id id :data data :path path :duration duration
                      :frequency frequency :end end :start start
                      :amplitude amplitude
-		     :angle-env angle-env :elevation-env elevation-env)))
+		     :angle-env angle-env :elevation-env elevation-env
+		     :distance-env distance-env)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

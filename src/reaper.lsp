@@ -1861,6 +1861,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 			    (angle-env snd) `(,(angle-env snd)))
        for elevation-envs = (if (listp (car (elevation-env snd)))
 				(elevation-env snd) `(,(elevation-env snd)))
+       for distance-envs = (if (listp (car (distance-env snd)))
+				(distance-env snd) `(,(distance-env snd)))
        for nr-of-voices = (min (channels snd) 8)
        ;; insert "encoder"
        do
@@ -1880,6 +1882,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 		   (scale-env
 		    (nth (mod k (length elevation-envs)) elevation-envs)
 		    180)
+		   :distance-env (nth (mod k (length distance-envs)) distance-envs)
 		   :minimum-samples (* (- end start) env-conversion-srate))
 		;; atm, the envelopes go from -1 to 1 but we should scale them
 		;; to fit between 0 and 1:

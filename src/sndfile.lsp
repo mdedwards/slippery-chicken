@@ -503,9 +503,11 @@ T
 ;;;   Default = 1.0
 ;;; - :angle-env. used for spatialization, fore example with
 ;;;   #'write-reaper-ambisonics-file. Can be an env (list of breakpoints) or
-;;;   a list of envs. This then represents the azimuth angle in a polar
-;;;   coordinate system. 0 and 1 represend 0° and 360° and are assumed to be in
-;;;   the front. 0.5 would thus be 180° and located behind the listener.
+;;;   a list of envs. A list of envs can be used to spatialize different channels
+;;;   of the soundfile differently. See the examples in
+;;;   write-reaper-ambisonics-file. This then represents the azimuth angle in a
+;;;   polar coordinate system. 0 and 1 represend 0° and 360° and are assumed to 
+;;;   be in the front. 0.5 would thus be 180° and located behind the listener.
 ;;; - :elevation-env. same as angle-env but represents the elevation angle.
 ;;;   (the horizontal angle from the x-axis). -.5 represents the lowest point
 ;;;   at -90°, 0 the level of the listening position and .5 the top (90°).

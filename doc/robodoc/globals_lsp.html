@@ -56,7 +56,7 @@
 
  Creation date:    30th May 2013
 
- $$ Last modified:  21:47:43 Thu Mar  2 2023 CET
+ $$ Last modified:  10:56:49 Wed Aug 23 2023 CEST
 
  SVN ID: $Id: <a href="./sclist_lsp.html#robo_top_of_doc">sclist.lsp</a> 963 2010-04-08 20:58:32Z medward2 $
 </pre>
@@ -78,15 +78,15 @@
    :id 'slippery-chicken-config-data
    :data
    ;; MDE Sun Mar 25 10:39:07 2012 -- The following two are used in
-   ;; <a href="./pitch_lsp.html#robo285">pitch</a>-seq::<a href="./pitch-seq_lsp.html#robo323">get-notes</a> to indicate which <a href="./event_lsp.html#robo197">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> would
-   ;; indicate that we should select the <a href="./event_lsp.html#robo192">highest</a> or <a href="./event_lsp.html#robo197">lowest</a> notes possible for
+   ;; <a href="./pitch_lsp.html#robo285">pitch</a>-seq::<a href="./pitch-seq_lsp.html#robo323">get-notes</a> to indicate which <a href="./event_lsp.html#robo197">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> would
+   ;; indicate that we should select the <a href="./chord_lsp.html#robo88">highest</a> or <a href="./event_lsp.html#robo197">lowest</a> notes possible for
    ;; the <a href="./instrument_lsp.html#robo284">instrument</a>/set.
    ;; 
-   ;; The first is used to indicate the <a href="./event_lsp.html#robo197">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> that would
-   ;; indicate that the <a href="./pitch-seq_lsp.html#robo323">get-notes</a> algorithm should select the <a href="./event_lsp.html#robo192">highest</a> notes
+   ;; The first is used to indicate the <a href="./event_lsp.html#robo197">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> that would
+   ;; indicate that the <a href="./pitch-seq_lsp.html#robo323">get-notes</a> algorithm should select the <a href="./chord_lsp.html#robo88">highest</a> notes
    ;; possible for the <a href="./instrument_lsp.html#robo284">instrument</a>/set.
    '((<a href="./pitch_lsp.html#robo285">pitch</a>-seq-<a href="./event_lsp.html#robo197">lowest</a>-equals-<a href="./instrument_lsp.html#robo242">prefers-high</a> 5)
-     ;; the <a href="./event_lsp.html#robo197">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> that would indicate that the <a href="./pitch-seq_lsp.html#robo323">get-notes</a>
+     ;; the <a href="./event_lsp.html#robo197">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> that would indicate that the <a href="./pitch-seq_lsp.html#robo323">get-notes</a>
      ;; algorithm should select the <a href="./event_lsp.html#robo197">lowest</a> notes possible for the
      ;; <a href="./instrument_lsp.html#robo284">instrument</a>/set.
      (<a href="./pitch_lsp.html#robo285">pitch</a>-seq-<a href="./event_lsp.html#robo197">lowest</a>-equals-<a href="./instrument_lsp.html#robo243">prefers-low</a> 1)
@@ -94,22 +94,22 @@
      ;; signalled if the were no pitches in a set for an <a href="./instrument_lsp.html#robo284">instrument</a> which should
      ;; be playing. We can now have a rest-sequence generated instead
      (<a href="./pitch_lsp.html#robo285">pitch</a>-seq-no-pitches-error t)
-     ;; MDE Thu Oct  8 16:27:19 2020, Heidhausen -- issue a warning if we <a href="./popcorn_lsp.html#robo382">scale</a>
-     ;; a <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo426">event</a> to longer than 10xwhole?
-     (<a href="./rhythm_lsp.html#robo287">rhythm</a>-<a href="./popcorn_lsp.html#robo382">scale</a>-warning t)
-     ;; MDE Sat Aug  3 16:39:40 2019 -- should <a href="./slippery-chicken_lsp.html#robo823">shorten-large-fast-leaps</a> issue a
+     ;; MDE Thu Oct  8 16:27:19 2020, Heidhausen -- issue a warning if we <a href="./popcorn_lsp.html#robo383">scale</a>
+     ;; a <a href="./rhythm_lsp.html#robo287">rhythm</a>/<a href="./event_lsp.html#robo428">event</a> to longer than 10xwhole?
+     (<a href="./rhythm_lsp.html#robo287">rhythm</a>-<a href="./popcorn_lsp.html#robo383">scale</a>-warning t)
+     ;; MDE Sat Aug  3 16:39:40 2019 -- should <a href="./slippery-chicken_lsp.html#robo828">shorten-large-fast-leaps</a> issue a
      ;; warning or not?
-     (<a href="./sc-map_lsp.html#robo575">shorten</a>-large-fast-leaps-warning t)
+     (<a href="./sc-map_lsp.html#robo577">shorten</a>-large-fast-leaps-warning t)
      ;; MDE Tue Jul 16 11:17:23 2019 -- if NIL don't even warn about no pitches
      ;; being available
      (<a href="./pitch_lsp.html#robo285">pitch</a>-seq-no-pitches-warning t)
      ;; Whether to automatically open EPS files generated with CMN via
-     ;; <a href="./set-map_lsp.html#robo634">cmn-display</a>.  Currently only works with SBCL and CCL on Mac OSX.
+     ;; <a href="./rthm-seq-palette_lsp.html#robo520">cmn-display</a>.  Currently only works with SBCL and CCL on Mac OSX.
      (<a href="./cmn_lsp.html#robo7">cmn</a>-display-auto-open #+sc-auto-open T #-sc-auto-open nil)
-     ;; Whether to automatically open PDF files generated with via <a href="./slippery-chicken_lsp.html#robo807">lp-display</a>.
+     ;; Whether to automatically open PDF files generated with via <a href="./slippery-chicken_lsp.html#robo810">lp-display</a>.
      ;; Currently only works with SBCL and CCL on Mac OSX.
      (lp-display-auto-open #+sc-auto-open T #-sc-auto-open nil)
-     ;; Whether to automatically open MIDI files generated with via <a href="./slippery-chicken_lsp.html#robo809">midi-play</a>.
+     ;; Whether to automatically open MIDI files generated with via <a href="./set-map_lsp.html#robo638">midi-play</a>.
      ;; Currently only works with SBCL and CCL on Mac OSX.
      (midi-play-auto-open #+sc-auto-open T #-sc-auto-open nil)
      ;; MDE Sat Dec  7 11:56:24 2019 -- if a <a href="./pitch_lsp.html#robo285">pitch</a> has a mark included in this
@@ -121,17 +121,18 @@
      ;; reboot so you shouldn't store any files you'd like to keep in there.
      (default-dir "/tmp/")
      ;; The full path to the <a href="./lilypond_lsp.html#robo12">lilypond</a> command.  We need to set this if we'll
-     ;; call <a href="./slippery-chicken_lsp.html#robo807">lp-display</a>, i.e. if we want to automatically call Lilypond and
+     ;; call <a href="./slippery-chicken_lsp.html#robo810">lp-display</a>, i.e. if we want to automatically call Lilypond and
      ;; open the resultant PDF directly from Lisp.  The default should work if
      ;; you have the Lilypond app in your Applications folder on OSX.
      (<a href="./lilypond_lsp.html#robo12">lilypond</a>-command
-      "/Applications/LilyPond.app/Contents/Resources/bin/<a href="./lilypond_lsp.html#robo12">lilypond</a>")
+      "/usr/local/bin/<a href="./lilypond_lsp.html#robo12">lilypond</a>")
+     ;; "/Applications/LilyPond.app/Contents/Resources/bin/<a href="./lilypond_lsp.html#robo12">lilypond</a>")
      ;; The default amplitude for all events that don't have amplitude/dynamic
      ;; set via some means such as marks.
      (default-amplitude 0.7)
-     ;; in init-instance of sc class, warn if we can't call <a href="./slippery-chicken_lsp.html#robo821">sc-init</a> (because it
+     ;; in init-instance of sc class, warn if we can't call <a href="./slippery-chicken_lsp.html#robo826">sc-init</a> (because it
      ;; will be called explicitly later)
-     (warn-no-<a href="./slippery-chicken_lsp.html#robo821">sc-init</a> t)
+     (warn-no-<a href="./slippery-chicken_lsp.html#robo826">sc-init</a> t)
      (warn-unused-<a href="./instruments_lsp.html#robo11">instruments</a> t)
      ;; whether to warn when there's no CMN mark for a given Lilypond mark
      (warn-no-<a href="./cmn_lsp.html#robo7">cmn</a>-mark t)
@@ -153,37 +154,37 @@
      (best-string-diad-range (7 11))
      (best-string-diad-microtones nil)
      ;; MDE Sat May 10 12:47:25 2014 -- whether to issue warning when we set
-     ;; the asco-msgs slot of a rest <a href="./event_lsp.html#robo426">event</a> (because they will only be written
+     ;; the asco-msgs slot of a rest <a href="./event_lsp.html#robo428">event</a> (because they will only be written
      ;; to an antescofo~ file if this happens to be a rest in the part we're
      ;; following and we can't know this in advance).
      ;; MDE Tue Dec 29 11:59:33 2020, Heidhausen -- which auxiliary routine to
-     ;; use for <a href="./slippery-chicken-edit_lsp.html#robo682">auto-clefs</a>. For years this was the best-clef-aux function but
+     ;; use for <a href="./slippery-chicken-edit_lsp.html#robo684">auto-clefs</a>. For years this was the best-clef-aux function but
      ;; we're now generally using best-clef-aux-new. Some might prefer the old
      ;; routine however, hence this option here.
      (best-clef-aux-fun best-clef-aux-new) 
      (asco-msg-rest-warning t)
-     ;; if we've added, say, an antescofo~ label to an <a href="./event_lsp.html#robo426">event</a> with a rehearal
+     ;; if we've added, say, an antescofo~ label to an <a href="./event_lsp.html#robo428">event</a> with a rehearal
      ;; letter, we'll get a warning as we can only have one antescofo label per
      ;; NOTE (though it's not an error to have two, the 2nd will be ignored).
      (asco-two-labels-warning t)
-     ;; the default spectral data used in the <a href="./chord_lsp.html#robo606">chord</a> class for things such as
-     ;; dissonance and spectral <a href="./sndfile_lsp.html#robo850">centroid</a> calcuation. See <a href="./spectra_lsp.html#robo_top_of_doc">spectra.lsp</a> for more
+     ;; the default spectral data used in the <a href="./chord_lsp.html#robo608">chord</a> class for things such as
+     ;; dissonance and spectral <a href="./sndfile_lsp.html#robo855">centroid</a> calcuation. See <a href="./spectra_lsp.html#robo_top_of_doc">spectra.lsp</a> for more
      ;; details about references into +slippery-chicken-<a href="./spectra_lsp.html#robo19">spectra</a>+ (such as
      ;; akoustik-piano-<a href="./spectra_lsp.html#robo19">spectra</a>) or see the <a href="./get-spectrum_lsp.html#robo9">get-spectrum</a> function in <a href="./chord_lsp.html#robo_top_of_doc">chord.lsp</a>
      ;; for a description of the format this data can take. Currently
-     ;; <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a> defines three <a href="./spectra_lsp.html#robo19">spectra</a>: akoustik-piano-<a href="./spectra_lsp.html#robo19">spectra</a>,
-     ;; clm-piano-<a href="./spectra_lsp.html#robo19">spectra</a>, and violin-<a href="./ensemble_lsp.html#robo391">ensemble</a>-<a href="./spectra_lsp.html#robo19">spectra</a>. Bear in mind that if
-     ;; you change this it would be best to start <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a> again (or at
-     ;; least regenerated a <a href="./piece_lsp.html#robo56">piece</a>'s data) so that <a href="./chord_lsp.html#robo606">chord</a>'s/set's
-     ;; dissonance/<a href="./sndfile_lsp.html#robo850">centroid</a> values are recalculated with the new <a href="./spectra_lsp.html#robo19">spectra</a>.
+     ;; <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> defines three <a href="./spectra_lsp.html#robo19">spectra</a>: akoustik-piano-<a href="./spectra_lsp.html#robo19">spectra</a>,
+     ;; clm-piano-<a href="./spectra_lsp.html#robo19">spectra</a>, and violin-<a href="./ensemble_lsp.html#robo393">ensemble</a>-<a href="./spectra_lsp.html#robo19">spectra</a>. Bear in mind that if
+     ;; you change this it would be best to start <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> again (or at
+     ;; least regenerated a <a href="./piece_lsp.html#robo56">piece</a>'s data) so that <a href="./chord_lsp.html#robo608">chord</a>'s/set's
+     ;; dissonance/<a href="./sndfile_lsp.html#robo855">centroid</a> values are recalculated with the new <a href="./spectra_lsp.html#robo19">spectra</a>.
      (default-<a href="./spectra_lsp.html#robo19">spectra</a> akoustik-piano-<a href="./spectra_lsp.html#robo19">spectra</a>)
      ;; MDE Tue Apr 19 12:05:49 2016 -- for debugging purposes, print info
-     ;; about the selection of pitches for an <a href="./instrument_lsp.html#robo284">instrument</a> given a <a href="./pitch-seq_lsp.html#robo616">pitch-seq</a> and
+     ;; about the selection of pitches for an <a href="./instrument_lsp.html#robo284">instrument</a> given a <a href="./pitch-seq_lsp.html#robo618">pitch-seq</a> and
      ;; set etc. (i.e. data passed to <a href="./pitch_lsp.html#robo285">pitch</a>-seq's <a href="./pitch-seq_lsp.html#robo323">get-notes</a> method). Note that
      ;; chords will be printed as a sublist (i.e. in parentheses).
      (verbose-<a href="./pitch_lsp.html#robo285">pitch</a>-selection nil)
-     ;; MDE Thu Oct 18 11:46:46 2018 -- since Sept. 18 the <a href="./slippery-chicken_lsp.html#robo604">slippery-chicken</a>
-     ;; method <a href="./slippery-chicken_lsp.html#robo827">update-slots</a> also calls handle-ties. This will break some older
+     ;; MDE Thu Oct 18 11:46:46 2018 -- since Sept. 18 the <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a>
+     ;; method <a href="./slippery-chicken_lsp.html#robo832">update-slots</a> also calls handle-ties. This will break some older
      ;; pieces so allow that to be skipped if necessary.
      (update-slots-handles-ties t)
      ;; font size for CMN bar numbers
@@ -191,10 +192,10 @@
      (diapason 440)
      ;; MDE Thu Dec 15 11:29:25 2022, Heidhausen -- some systems need to escape
      ;; spaces in paths otherwise they won't open in a shell called from lisp 
-     (system-open-file-escape-spaces t)
+     (system-open-file-escape-spaces nil)
      (autoconvert-eps-to-pdf nil)
      ;; LF  Thu Mar  30 14:04:33 2023
-     ;; If true, when reaper files are written with #'write-<a href="./reaper_lsp.html#robo618">reaper-file</a>,
+     ;; If true, when reaper files are written with #'<a href="./reaper_lsp.html#robo386">write-reaper-file</a>,
      ;; the pathnames to the soundfiles are converted to windows-type paths.
      ;; If nil, they will be unix-type paths.
      (reaper-files-for-windows nil)
@@ -202,14 +203,14 @@
      ;; The full path to the Csound command. This is required in order to be
      ;; to use csound-display, i.e. automatically call the Csound command to
      ;; render a sound file from a given orchestra and a score generated via
-     ;; <a href="./slippery-chicken_lsp.html#robo829">write-csound-score</a>.
+     ;; <a href="./slippery-chicken_lsp.html#robo834">write-csound-score</a>.
      (csound-command
       "/usr/local/bin/csound"))))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/globals.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/globals.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

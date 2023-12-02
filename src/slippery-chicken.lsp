@@ -4188,6 +4188,18 @@ seq-num 5, VN, replacing G3 with B6
     midi-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jun 17 14:28:41 2023, Heidhausen -- to avoid code dpulication in
+;;; clm-lay and reaper-play 
+(defmethod get-snds-from-palette ((sc slippery-chicken) sfp-refs sfp)
+  (when sfp-refs
+    (make-cscl
+     (loop for sfpr in sfp-refs
+           append (get-snds sfpr
+                            (if sfp
+                                sfp
+                                (sndfile-palette sc)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May 10 13:52:19 BST 2012: Conformed robodoc entry
 
@@ -4210,7 +4222,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; or percussion sounds, or a variety of sounds, as desired. See below for an
 ;;; example of a sndfile-palette.
 ;;; 
-;;; By default, as :pitch-synchronous default to NIL (see below) this method
+;;; By default, as :pitch-synchronous defaults to NIL (see below) this method
 ;;; does not attempt to match the pitches of the output sound file to those
 ;;; generated for the slippery-chicken object, rather, it generates its own
 ;;; sequence of pitches based on pitches from the current set. Instead of using
@@ -4755,20 +4767,10 @@ seq-num 5, VN, replacing G3 with B6
                           sum len))
          ;; DJR Thu  5 Sep 2019 12:41:00 BST
          ;; Update snds and snds2 to accept multiple sound-file-palette-refs
-         (snds (when sound-file-palette-ref
-                 (make-cscl
-                  (loop for sfpr in sound-file-palette-ref
-                     append (get-snds sfpr
-                                      (if sndfile-palette
-                                          sndfile-palette
-                                          (sndfile-palette sc)))))))
-         (snds2 (when sound-file-palette-ref2
-                  (make-cscl
-                   (loop for sfpr in sound-file-palette-ref2
-                      append (get-snds sfpr
-                                       (if sndfile-palette
-                                           sndfile-palette
-                                           (sndfile-palette sc)))))))
+         (snds (get-snds-from-palette sc sound-file-palette-ref
+                                      sndfile-palette))
+         (snds2 (get-snds-from-palette sc sound-file-palette-ref2
+                                       sndfile-palette))
          #|
          ;; DJR Mon 16 Sep 2019 01:26:11 BST ;
          ;; We'll sort this later. See below. ;
@@ -4800,6 +4802,8 @@ seq-num 5, VN, replacing G3 with B6
          (output-start 0.0)
          (output-ok t)
          (this-play-chance-env '())
+         (this-duration-scaler-env '())
+         (this-src-scaler-env '())
          (events-before-max-start 0)
          (skip-this-event t)
          (total-skipped 0)
@@ -5200,6 +5204,816 @@ seq-num 5, VN, replacing G3 with B6
               total-skipped total-events 
               (* 100.0 (/ total-skipped total-events))))
     total-events))
+
+;;; ****m* slippery-chicken/reaper-play
+;;; DESCRIPTION
+;;; Using the sound files (samples) defined for the given reference (group ID)
+;;; in the sndfile-palette slot of the slippery-chicken object, write a reaper
+;;; files using the pitch and timing information of one or more players' parts
+;;; from the slippery-chicken object.
+;;;
+;;; See clm-play for details of these related methods.
+;;;
+;;; One significant difference between this and clm-play is that reaper offers
+;;; the possibility of transposing sound files via playback rate (like clm) and
+;;; by pitch shift. Set :do-src 'transposition for the latter.
+;;;
+;;; ARGUMENTS
+;;; - A slippery chicken object.
+;;; - The ID of the starting section.
+;;; - The IDs of the player(s) whose events are to be used to obtain the
+;;;   rhythmic structure (and optionally, pitch content) of the resulting sound
+;;;   file. This can be a single symbol for an individual player, a list of
+;;;   player IDs, or NIL. If NIL, the event from all players' parts will be
+;;;   reflected in the output file. Default = NIL.
+;;; - The ID of the sound file group in the sndfile-palette slot of the
+;;;   slippery-chicken object that contains the source sound files from which
+;;;   the new sound file is to be generated.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :num-sections. An integer or NIL to indicate how many sections should be
+;;;   generated, including the starting section. If NIL, sound file data will
+;;;   be generated for all sections of the piece. NB If there are sub-sections
+;;;   this will include them in the total, i.e., if section 1 has 3 subsections
+;;;   and :num-sections is 2, we'll generate data from the first two
+;;;   subsections of section 1, not all subsections of main sections 1 and
+;;;   2. Default = NIL. 
+;;; - :from-sequence. An integer that is the number of the first sequence
+;;;   within the specified starting section to be used to generate the output
+;;;   file. This argument can only be used when num-sections = 1. Default = 1. 
+;;; - :num-sequences. NIL or an integer that indicates how many sequences are
+;;;   to be generated, including that specified by :from-sequence. If NIL, all
+;;;   sequences will be played. This argument can only be used when
+;;;   num-sections = 1 and the section has no subsections. Default = NIL.
+;;; - :srate. A number that is the sampling rate of the reaper project file
+;;;   (independent of the input files). Default = 48000.
+;;;   lead time of a specified number of seconds of silence prior to the sound
+;;;   output. 
+;;; - :inc-start. T or NIL to indicate whether playback of the source sound
+;;;   files is to begin at incrementally increasing positions in those files or
+;;;   at their respective 0.0 positions every time. If T, the method will
+;;;   increment the position in the source sound file from which playback is
+;;;   begun such that it reaches the end of the source sound file the last time
+;;;   it is 'played'. T = increment start times. Default = NIL.
+;;; - :ignore-rests. T or NIL to indicate whether silence should be
+;;;   incorporated into the resulting sound file to correspond with rests in
+;;;   the player's parts. If T, the sound files will play over the duration of
+;;;   rests. However, this is only true on a bar-by-bar basis; i.e., notes at
+;;;   the end of one bar will not be continued over into a rest in the next
+;;;   bar. This implies that rests at the start of a bar will not be turned
+;;;   into sounding notes. T = ignore resets. Default = T.
+;;; - :sound-file-palette-ref2. The ID of a sound file group in the given
+;;;   slippery-chicken object's sndfile-palette slot. If this reference is
+;;;   given, the method will invoke fibonacci-transitions to transition from
+;;;   the first specified group of source sound files to this one. If NIL, only
+;;;   one group of source sound files will be used. Default = NIL.
+;;; - :do-src. T, NIL, 'transposition, a number, or a note-name pitch symbol to
+;;;   indicate whether transposition of the source sound files for playback will
+;;;   be calculated such that the perceived fundamental frequencies of those
+;;;   sound files are shifted to match the pitches of the current set or score
+;;;   note. If do-src is a number (frequency in Hertz) or a note-name pitch
+;;;   symbol, the method will use only that pitch instead of the sound files'
+;;;   frequencies when transposing to the events' pitches. If :do-src
+;;;   'transposition, then reaper's pitch-adjust will be used instead of
+;;;   playback rate (default). NB Whichever is used, after being converted to a
+;;;   sample rate conversion factor, this is always multiplied by the src-scaler
+;;;   (see below). T = match sound files' frequencies to set pitches or score
+;;;   pitches via playback rate (depending on :pitch-synchronous). NIL means no
+;;;   transposition will be performed. Default = T.
+;;; - :pitch-synchronous: T or NIL to indicate whether the source sound files
+;;;   are to be transposed to match the pitches of the events in the given
+;;;   players' part. This will only be effective if the given source sound file
+;;;   has a perceptible frequency that has been specified using the sndfile
+;;;   object's :frequency slot in the sndfile-palette. :do-src must also be T
+;;;   for this to work. T = match pitches. Default = NIL.
+;;; - :reset-snds-each-rs. T or NIL to indicate whether to begin with the first
+;;;   source sound file of the specified group at the beginning of each
+;;;   rthm-seq. T = begin with the first sound file. Default = T.
+;;; - :reset-snds-each-player. T or NIL to indicate whether to begin with the
+;;;   first source sound file of the specified group for the beginning of each
+;;;   player's part. T = begin with the first sound file. Default = T. 
+;;; - :play-chance-env. A list of break-point pairs that determines the chance
+;;;   that a given event from the source player's part will be reflected in the
+;;;   new sound file. It is determined by random selection but uses a fixed
+;;;   seed that is re-initialized each time reaper-play is called. The following
+;;;   default ensures every note will play: '(0 100 100 100).
+;;; - :play-chance-env-exp. A number that will be applied as the exponent to
+;;;   the play-chance-env's y values to create an exponential interpolation
+;;;   between break-point pairs. Default = 0.5.
+;;; - :max-start-time. A number that is the last time-point in seconds for
+;;;   which events will be processed for the output file. If a maximum start
+;;;   time is specified here (in seconds), events after this will be
+;;;   skipped. The default value of 99999999 seconds (27778 hours) will result
+;;;   in all events being reflected in the sound file.
+;;; - :time-scaler. A number that will be the factor by which all start times
+;;;   are scaled for the output file (in effect a tempo scaler). If
+;;;   :ignore-rests is T, this will also have an indirect effect on
+;;;   durations. This argument should not be confused with
+;;;   :duration-scaler. Default = 1.0.
+;;; - :duration-scaler. A number that is the factor by which the duration of
+;;;   all  events in the output sound file will be scaled. This does not alter
+;;;   start times, and will therefore result in overlapping sounds if greater
+;;;   than 1.0. This is not to be confused with :time-scaler. 
+;;;   Instead of a simple number, :duration-scaler can also be an envelope 
+;;;   (a list of break-point pairs). This means you could smoothly transition
+;;;   from staccato-like to overlapping sounds in a single reaper-play call.
+;;;   Default = 1.0.
+;;; - :src-scaler: A number that is the factor by which all sample-rate
+;;;   conversion values will be scaled (for increasing or decreasing the
+;;;   transposition of the overall resulting sound file). 
+;;;   Instead of a simple number, :src-scaler can also be an envelope 
+;;;   (a list of break-point pairs), similar to :duration-scaler. Default = 1.0.
+;;; - :note-number. A number that is an index, representing the the nth pitch
+;;;   of the current set or chord (from the bottom) to be used for the lowest
+;;;   player. Default = 0.
+;;; - :duration-run-over. T or NIL to indicate whether the method will allow a
+;;;   sound file event to extend past the end of specified segment boundaries
+;;;   of a sound file in the sndfile-palette. T = allow. Default = NIL.
+;;; - :short-file-names. T or NIL to indicate whether abbreviated output file
+;;;   names will be automatically created instead of the usually rather long
+;;;   names. T = short. Default = NIL.
+;;; - :output-name-uniquifier. A user-specified string that will be
+;;;   incorporated into the file name, either at the end or the beginning
+;;;   depending on whether short-file-names is T or NIL. Default = "".
+;;; - :check-overwrite. T or NIL to indicate whether to query the user before
+;;;   overwriting existing sound files. T = query. Default = T.
+;;; - :sndfile-palette. NIL or a file name including path and extension that
+;;;   contains an external definition of a sndfile-palette. This will replace
+;;;   any sndfile-palette defined in the slippery-chicken object. If NIL, the
+;;;   one in the slippery-chicken object will be used. Default = NIL.
+;;; - :chords. NIL or a list of lists consisting of note-name symbols to be
+;;;   used as the pitches for the resulting sound file in place of the pitches
+;;;   from the set-map. There must be one chord specified for each sequence. If
+;;;   NIL, the pitches from the set-map will be used. Default = NIL.
+;;; - :chord-accessor. Sometimes the chord stored in the palette is not a
+;;;   simple list of data so we need to access the nth of the chord
+;;;   list. Default = NIL.
+;;; - :pan-min-max. Each event is panned randomly between two channels. Pan
+;;;   values are in degrees where 0 is channel 1 (left in stereo files) and 90
+;;;   is channel 2 (right). The values used are chosen from the following list
+;;;   of degrees: (15 25 35 45 55 65 75). However, these can be scaled to be
+;;;   within new limits by passing a two-element list to
+;;;   :pan-mix-max. E.g. '(40 50) would limit most values to the middle area
+;;;   of stereo space. Note that no matter how many channels a sound file or
+;;;   channel has, the item's panner is set as if it were stereo. Also that,
+;;;   for convenience, :min-channels and :max-channels can set the tracks'
+;;;   channel count, it is up to the user to take care of routing and,
+;;;   eventuallay, panning depending on the number of sound file and track
+;;;   channels used in the mix. Default = NIL (i.e. use the list given above).
+;;; - :pan-fun. If you want to take charge of selecting pan positions yourself,
+;;;   pass a function via this keyword. The function must take one argument: the
+;;;   current event, though of course, it can ignore it completely if
+;;;   preferred. The function should return a degree value: a number between 0
+;;;   and 90. Default = NIL.
+;;; - :min-channels and :max-channels 4. Set the reaper tracks' minimum and
+;;;   maximum channel counts. See these named slots in the reaper-track class
+;;;   definition and the cond in create-tracks for details of how these are
+;;;   handled.
+;;; - :snd-selector. By default the sound files in the given group are cycled
+;;;   through, one after the other, returning to the beginning when the end is
+;;;   reached. This can be changed by passing a function to :snd-selector. This
+;;;   function must take three arguments: the circular-sclist object that
+;;;   contains the group's sndfile objects (the sndfiles are in a simple list
+;;;   in the data slot); the pitch of the current event (if the event happens
+;;;   to be a chord, each pitch of the chord will be handled separately
+;;;   i.e. the :snd-selector function will be called for each pitch); and the
+;;;   event object. Of course any of these arguments may be ignored by the
+;;;   :snd-selector function; indeed it is imagined that the event object will
+;;;   be mostly ignored and the pitch object used instead, but it is
+;;;   nevertheless passed for completeness. For example, the following
+;;;   function, declared on-the-fly using lambda rather than separately with
+;;;   defun, makes reaper-play act as a traditional sampler would: Assuming our
+;;;   sndfile-palette group has a list of sound files whose frequencies really
+;;;   correspond to their perceived fundamentals (e.g. see the
+;;;   set-frequency-from-filename method, and the kontakt-to-sfp function) we
+;;;   choose the nearest sound file in the group to the frequency of the
+;;;   current event's pitch:
+;;;
+;;;            :snd-selector #'(lambda (sflist pitch event)
+;;;                              (declare (ignore event))
+;;;                              (get-nearest-by-freq
+;;;                               (frequency pitch) (data sflist)))
+;;;
+;;;   NB If :pitch-synchronous is NIL, then the pitch-or-chord slot of the event
+;;;   will be the pitch selected from the current set, rather than the actual
+;;;   pitch of the instrument in question.
+;;;   Default = NIL i.e. use the circular selection method.
+;;; - :snd-transitions. Set the transition from sound-file-ref to sound-file-ref
+;;;   over the course of the call to reaper-play using a custom envelope instead
+;;;   of the default fibonacci-transitions method, e.g. '(0 0 100 1). x-axis is
+;;;   arbitrary, y-axis should range from 0 to 1. When reading, y-values will be
+;;;   rounded.
+;;; - :file. reaper file name, if you don't want this to be auto-generated. A
+;;;   full path is expected.
+;;; - :fade-in :fade-out. The fade times expressed as a percentage of the
+;;;   duration of any given event/item. Default = 10%
+;;; - :tracks-per-player. How many reaper tracks to use per player. If > 1
+;;;   then the tracks will be used one after the other, in rotation, for each
+;;;   event. Particularly useful if there are lots of overlapping events due to
+;;;   e.g. :duration-scaler, or chords, of course. Default = 1.
+;;; 
+;;; RETURN VALUE
+;;; Total events generated (integer).
+;;; 
+;;; EXAMPLE
+#|
+;;; using playback speed to effect the transpositions:
+(reaper-play +second-law+ 1 nil 'source-sndfile-grp-1
+             :check-overwrite nil :tracks-per-player 2
+             :pitch-synchronous t)
+
+;;; using reaper's pitch adjust and keeping playback speed implicitly to 1.0
+(reaper-play +second-law+ 1 nil 'source-sndfile-grp-1
+             :check-overwrite nil :tracks-per-player 2
+             :pitch-synchronous t :do-src 'transposition)
+
+|#
+;;; SYNOPSIS
+(defmethod reaper-play ((sc slippery-chicken) section players 
+                        sound-file-palette-ref 
+                        &key 
+                        sound-file-palette-ref2
+                        (play-chance-env '(0 100 100 100))
+                        (max-start-time 99999999)
+                        (play-chance-env-exp 0.5)
+                        (time-scaler 1.0)
+                        (from-sequence 1)
+                        (num-sequences nil)
+                        (num-sections nil)
+                        (ignore-rests t)
+                        (time-offset 0.0)
+                        (chords nil)
+                        (chord-accessor nil)
+                        (note-number 0)
+                        (fade-in 10)
+                        (fade-out 10)
+                        (inc-start nil)
+                        ;; either a number or an envelope
+                        (src-scaler 1.0)
+                        (do-src t)
+                        (pitch-synchronous nil)
+                        ;; either a number or an envelope
+                        (duration-scaler 1.0)
+                        (short-file-names nil)
+                        ;; by default we generate filenames according to players
+                        ;; and other relevent data but if this is given then
+                        ;; we'll use it instead 
+                        (file nil)
+                        (check-overwrite t)
+                        (reset-snds-each-rs t)
+                        (reset-snds-each-player t)
+                        (duration-run-over nil)
+                        (srate 48000)
+                        (output-name-uniquifier "")
+                        (sndfile-palette nil)
+                        (tracks-per-player 1)
+                        ;; MDE Sat Oct  3 18:45:28 2015 -- for Cameron!
+                        pan-fun
+                        ;; MDE Thu Oct  1 21:03:59 2015 
+                        (pan-min-max nil) ; actually '(15 75) by default below
+                        ;; MDE Thu Oct  1 19:13:49 2015
+                        snd-selector
+                        (min-channels 2) (max-channels 4)
+                        ;; DJR Mon 16 Sep 2019 01:26:11 BST We can now set
+                        ;; snd-transitions with a custom envelope, e.g. '(0 0
+                        ;; 100 1). x-values are arbitrary, y-values are from 0
+                        ;; (for sound-file-palette-ref) and 1 (for
+                        ;; sound-file-palette-ref2).
+                        snd-transitions)
+;;; ****                               
+  (when (and (numberp num-sequences)
+             (has-subsections (get-section sc section)))
+    (error "slippery-chicken::reaper-play: :num-sequences (~a) should only be ~
+            specified ~%for a section (~a) with no subsections."
+           num-sequences section))
+  ;; if there's only one section
+  (when (and (not num-sections)
+             (= section 1)
+             (= 1 (get-num-sections sc)))
+    (setq num-sections 1))
+  ;; if we're playing more than one section then we shouldn't specify
+  ;; num-sequences as that might result in gaps in playback (e.g. if section 2
+  ;; had more seqs than requested)
+  (when (and num-sequences 
+             (or (not num-sections)
+                 (and num-sections (> num-sections 1))))
+    (error "slippery-chicken::reaper-play: num-sequences keyword should only ~
+            be used ~%when num-sections = 1."))
+  (when (and from-sequence (/= 1 from-sequence)
+             (or (not num-sections)
+                 (and num-sections (> num-sections 1))))
+    (error "slippery-chicken::reaper-play: from-sequence keyword should only ~
+            be used ~%when num-sections = 1."))
+  (unless (listp players)
+    (setq players (list players)))
+  ;; MDE Mon Apr  2 09:34:36 2012 
+  (unless players
+    (setq players (players sc)))
+  ;; re-initialise our random number generator.
+  (random-rep 100 t)
+  ;; carried over from clm-play: LMF Mon Jul 19 2021
+  ;; the argument to duration-scaler can be either a number or an envelope.
+  ;; When it is the former, it will now be converted to an envelope.
+  (when (atom duration-scaler)
+    (setq duration-scaler (list 0 duration-scaler 100 duration-scaler)))
+  ;; same for src-scaler
+  (when (atom src-scaler)
+    (setq src-scaler (list 0 src-scaler 100 src-scaler)))
+  ;; carried over from ckm-play: DJR Thu  5 Sep 2019 12:42:07 BST
+  ;; (force-list) the soundfile-palette-refs so we can use multiple refs later.
+  (setq sound-file-palette-ref (force-list sound-file-palette-ref)
+        sound-file-palette-ref2 (force-list sound-file-palette-ref2)
+        ;; convert percentages to scaler
+        fade-in (/ fade-in 100)
+        fade-out (/ fade-out 100))
+  (let* ((events (get-events-with-src sc section players 
+                                      ;; these have 0 duration so we must ignore
+                                      ;; them for now 
+                                      :ignore-grace-notes t
+                                      :time-scaler time-scaler
+                                      :from-sequence from-sequence
+                                      :num-sequences num-sequences
+                                      :num-sections num-sections
+                                      :ignore-rests ignore-rests
+                                      :chords chords
+                                      :pitch-synchronous pitch-synchronous
+                                      :chord-accessor chord-accessor
+                                      :note-number note-number))
+         (section1-num-seqs (if num-sequences
+                                num-sequences
+                                (num-seqs sc section)))
+         (num-players (length players))
+         (events-per-player (ml 0 num-players))
+         ;; clisp doesn't like (loop for player in events sum (loop for rs ...
+         (total-events (loop 
+                         for i from 0
+                         for player in events
+                         for len = (loop for rs in player sum (length rs))
+                         do (setf (nth i events-per-player) len)
+                         sum len))
+         ;; carried over from ckm-play: DJR Thu  5 Sep 2019 12:41:00 BST
+         ;; Update snds and snds2 to accept multiple sound-file-palette-refs
+         (snds (get-snds-from-palette sc sound-file-palette-ref
+                                      sndfile-palette))
+         (snds2 (get-snds-from-palette sc sound-file-palette-ref2
+                                       sndfile-palette))
+         (sndl nil)
+         (snd-group nil)
+         (srts '())
+         (freqs '())
+         (pitch-adjust (eq do-src 'transposition))
+         ;; will be nil when we're using the events' pitch data
+         (srt-freq (cond ((numberp do-src) do-src)
+                         ((and do-src
+                               (not (eq do-src t))
+                               (not pitch-adjust)
+                               (symbolp do-src))
+                          (note-to-freq do-src))))
+         ;; MDE Thu Oct  1 21:07:00 2015
+         (pan-vals '(15 25 35 45 55 65 75))
+         (duration 0.0)
+         (wanted-duration 0.0)
+         (wanted-duration-string "")
+         (first-event-start nil)
+         (input-start 0.0)
+         (latest-possible-start 0.0)
+         (available-dur 0.0)
+         (event-count 1)
+         (event-count-player 0)
+         (events-this-rs 0)
+         (output-start 0.0)
+         (output-ok t)
+         (this-play-chance-env '())
+         (this-duration-scaler-env '())
+         (this-src-scaler-env '())
+         (events-before-max-start 0)
+         (skip-this-event t)
+         (total-skipped 0)
+         (file-name
+           (string-downcase
+            (cond
+              (file file)
+              (short-file-names
+               (format nil "~{~a-~}~a~{~a-~}~{~a.~}~a-~a~a~a.rpp"
+                       (if (listp sound-file-palette-ref) 
+                           sound-file-palette-ref
+                           (list sound-file-palette-ref))
+                       (if sound-file-palette-ref2
+                           "to-"
+                           "")
+                       (when sound-file-palette-ref2
+                         (if (listp sound-file-palette-ref2) 
+                             sound-file-palette-ref2
+                             (list sound-file-palette-ref2)))
+                       (if (listp section) 
+                           section 
+                           (list section))
+                       from-sequence 
+                       (+ -1 from-sequence section1-num-seqs)
+                       output-name-uniquifier
+                       (if pitch-synchronous "-psync" "")))
+              (t (format nil
+                         "~a~a~{-~a~}~{-~a~}~{-~a~}~{-to-~a~}-seq~a-~a~a.rpp"
+                         output-name-uniquifier
+                         (string-trim "+" (id sc))
+                         (if (listp section) section (list section))
+                         players
+                         (if (listp sound-file-palette-ref) 
+                             sound-file-palette-ref
+                             (list sound-file-palette-ref))
+                         (when sound-file-palette-ref2
+                           (if (listp sound-file-palette-ref2) 
+                               sound-file-palette-ref2
+                               (list sound-file-palette-ref2)))
+                         from-sequence 
+                         (+ -1 from-sequence section1-num-seqs)
+                         (if pitch-synchronous "-psync" ""))))))
+         (output 
+           (unless file
+             ;; first convert spaces to -'s in output file name
+             (setq file-name (substitute #\- #\Space file-name))
+             (format nil "~a~a"
+                     (if (snd-output-dir sc)
+                         (snd-output-dir sc)
+                         "")
+                     file-name)))
+         ;; keep going (set to nil when max-start-time is exceeded)
+         (happy t)
+         (amp 1.0)
+         (reaper-items '())
+         (player-string "")
+         (player-strings nil)
+         (rthm-seqs nil))
+    ;; reaper file's VOLPAN line looks something like this
+    ;; VOLPAN 0.745098 -0.54 0.152439 -1
+    ;;
+    ;; 1) draggable item volume (slot: item-vol), then media item properties: 
+    ;; 2) pan (-1=L +1-R) (slot: pan), 
+    ;; 3) vol slider (slot: slider-vol)
+    ;; 4) unknown (with items seems to always be -1 and with tracks +1)
+    ;; Volumes are linear amp (so +6db = *2). Need to update reaper-item.txt to
+    ;; include these 3 params and also the reaper-item class and write-item
+    ;; method to reflect them
+    ;; 
+    ;; NB this will be pointless if we've passed a pan-fun
+    (when pan-min-max
+      (setq pan-vals (loop for p in pan-vals
+                           collect
+                              (rescale  ; convert degrees to -1.0 -> 1.0
+                               (fscale p 15 75 (first pan-min-max)
+                                       (second pan-min-max))
+                               0 90 -1.0 1.0))))
+    (when (and sound-file-palette-ref (zerop (sclist-length snds)))
+      (error "slippery-chicken::reaper-play: <snds>: No sounds for reference ~a"
+             sound-file-palette-ref))
+    (when (and sound-file-palette-ref2 (zerop (sclist-length snds2))
+               (error "slippery-chicken::reaper-play: <snds2>: ~
+                       No sounds for reference ~a"
+                      sound-file-palette-ref2)))
+    ;; DJR Mon 16 Sep 2019 01:26:11 BST
+    ;; are we setting snd-transitions by default with finonacci-transitions or
+    ;; with a custom envelope?
+    (if (and snd-transitions sound-file-palette-ref2)
+        (setq snd-transitions
+              (loop for num-events in events-per-player
+                    collect
+                       (loop for n below num-events
+                             collect
+                                (round
+                                 (interpolate n (new-lastx snd-transitions
+                                                           num-events))))))
+        (setq snd-transitions (loop for num-events in events-per-player
+                                    collect (fibonacci-transition num-events))))
+    (when (and check-overwrite (probe-file output))
+      (setf output-ok 
+            (yes-or-no-p "File exists: ~%~a  ~%Overwrite (yes or no) > " 
+                         output)))
+    ;; this is where we work out how many times we'll use the sndfiles for when
+    ;; inc-start is T 
+    (when output-ok
+      (format t "~%Output file will be ~%\"~a\"~%~%" output)
+      (when inc-start
+        (loop for snd in (data snds) do (reset-usage snd))
+        (when snds2
+          (loop for snd in (data snds2) do (reset-usage snd)))
+        (loop for player in events and snd-trans in snd-transitions do
+                 (setf snd-trans (copy-list snd-trans))
+                 (loop for rs in player do
+                          (loop 
+                            for event in rs 
+                            for sndlist =
+                               (when snds
+                                 (get-sndfiles-from-user-fun
+                                  event
+                                  (if (and snds2 (= 1 (pop snd-trans)))
+                                      snds2 snds)
+                                  snd-selector))
+                            do
+                               (loop
+                                 for snd in sndlist do
+                                 (unless snd
+                                   (error "slippery-chicken:: reaper-play: ~
+                                           snd is nil (whilst counting)!"))
+                                        (incf (will-be-used snd))))))
+        ;; here we reset them before starting, this is correct!
+        (reset snds)
+        (when snds2 (reset snds)))
+      ;; MDE Tue Apr 17 18:53:36 2012 -- get the lowest start time of all the
+      ;; players. events only includes sounding events here, not rests.
+      (setq first-event-start 
+            (loop
+              for player in events
+              ;; MDE Fri Jan  4 17:43:44 2019 -- bug fix: single players with
+              ;; bars-rest at beginning don't pick up the minimum start time
+              ;; unless we remove nils and flatten 
+              ;; for ffv = (print (first (first player)))
+              for ffv = (first (remove-if-not #'event-p (flatten player)))
+              if ffv minimize (start-time ffv)))
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; here we go! ;;;;;;
+      (loop
+        for player in events and player-name in players and snd-trans in
+        snd-transitions and player-count from 1
+        do
+           (setq player-string (string-downcase (string player-name))
+                 player-strings (make-cscl
+                                 (loop for i from 1 to tracks-per-player
+                                       collect (format nil "~a~a"
+                                                       player-string i)))
+                 snd-trans (copy-list snd-trans)
+                 event-count-player 0
+                 ;; 15/12/06 reset happy to the new player processes
+                 happy t
+                 events-before-max-start
+                 (count-events-before-max-start 
+                  player (- (+ max-start-time first-event-start)
+                            time-offset))
+                 this-play-chance-env 
+                 (new-lastx play-chance-env
+                            ;; 10/1/07 we want to use the whole
+                            ;; play-chance-env when we use max-start-time:
+                            ;; (1- events-this-player)))
+                            ;; got to take time-offset and the start time of
+                            ;; the first event into consideration, not just
+                            ;; max-start-time...
+                            events-before-max-start)
+                 ;; LMF Mon Jul 19 2021 -- same as this-play-chance-env
+                 this-duration-scaler-env
+                 (new-lastx duration-scaler events-before-max-start)
+                 this-src-scaler-env
+                 (new-lastx src-scaler events-before-max-start))
+           (format t "~%Processing player ~a/~a: ~a (resting players will ~
+                      not be processed)~%"
+                   player-count num-players (nth (1- player-count) players))
+           (when (and (numberp num-sections) (= 1 num-sections))
+             ;; MDE Tue Apr 3 09:54:46 2012 -- make sure we don't crash
+             ;; if the requested instrument is sitting this section out
+             (let ((rss (get-data-from-palette
+                         (flatten (list section player-name))
+                         (rthm-seq-map sc)
+                         nil)))         ; no warning
+               ;; this code will only work when we're processing 1 section
+               (setf rthm-seqs 
+                     (when rss
+                       (subseq 
+                        rss
+                        (1- from-sequence)
+                        (1- (+ from-sequence section1-num-seqs)))))))
+           (when reset-snds-each-player
+             (when snds (reset snds))
+             (when snds2 (reset snds2)))
+           (loop
+             for rs in player and rs-count from 0 while happy do
+                (setf events-this-rs (length rs))
+                (format t "~%    Processing rthm-seq ~a (~a events)~%"
+                        ;; print the rthm-seq id if we're only doing one
+                        ;; section otherwise the rthm-seq count MDE Tue Apr 3
+                        ;; 09:54:46 2012 -- make sure we don't crash if the
+                        ;; requested instrument is sitting this section out
+                        ;; 
+                        ;; MDE Wed Feb 24 19:54:51 2016 -- now rs is the
+                        ;; list of events but we need to know the id of
+                        ;; the original rthm-seq hence the nth. In any
+                        ;; case the following test was wrong; instead we
+                        ;; can just see if we've got a list of events in
+                        ;; rs
+                        (let ((tmp (when (and rthm-seqs rs)
+                                     (nth rs-count rthm-seqs))))
+                          (if tmp 
+                              (id tmp)
+                              (1+ rs-count)))
+                        events-this-rs)
+                (when reset-snds-each-rs
+                  (when snds (reset snds))
+                  (when snds2 (reset snds2)))
+                (loop
+                  for event in rs and rs-event-count from 0
+                  while happy
+                  do
+                     (setq snd-group (pop snd-trans)
+                           ;; MDE Mon Nov  4 11:11:07 2013 
+                           freqs (let ((f (frequency
+                                           (pitch-or-chord event))))
+                                   (if (listp f) f (list f)))
+                           sndl (if snds
+                                    ;; MDE Fri Oct  2 09:48:39 2015 
+                                    (get-sndfiles-from-user-fun
+                                     event
+                                     (if (and snds2 (= 1 snd-group))
+                                         snds2 snds)
+                                     snd-selector)
+                                    ;; MDE Tue Aug 8 16:21:34 2017
+                                    ;; -- anything so long as we can
+                                    ;; make the loop below work
+                                    (ml nil (length freqs)))
+                           duration (* (interpolate
+                                        event-count-player
+                                        this-duration-scaler-env)
+                                       (compound-duration-in-tempo
+                                        event))
+                           skip-this-event 
+                           ;; MDE Sat Nov 9 15:20:11 2013 -- only
+                           ;; when we've got events to output
+                           (unless (zerop events-before-max-start)
+                             (> (random-rep 100.0)
+                                (interpolate event-count-player 
+                                             this-play-chance-env
+                                             :exp
+                                             play-chance-env-exp)))
+                           ;; MDE Tue Apr 10 13:10:37 2012 -- see
+                           ;; note to do-src keyword above.
+                           srts (if do-src
+                                    ;; MDE Tue Apr 17 12:52:40 2012 -- update:
+                                    ;; we now have the pitch-synchronous
+                                    ;; option so need to handle chords so
+                                    ;; we'll not call the pitch method here
+                                    ;; but the event. This will return a list,
+                                    ;; even for a single pitch, so we'll have
+                                    ;; to loop through them.
+                                    (src-for-sample-freq  ; returns a list
+                                     (if srt-freq
+                                         srt-freq
+                                         (if
+                                          (and sndl
+                                               (not
+                                                (every #'not sndl)))
+                                          sndl 261.626))
+                                     ;; MDE Tue Apr 17 12:54:06 2012 -- see
+                                     ;; comment above. this used to be
+                                     ;; (pitch-or-chord event)
+                                     event)
+                                    '(1.0)))
+                     (loop
+                       for srt in srts and freq in freqs
+                       and snd in sndl
+                       do
+                          (setq srt (* (interpolate
+                                        event-count-player
+                                        this-src-scaler-env)
+                                       srt)
+                                amp (if snd (amplitude snd) 1.0))
+                          (when (<= srt 0.0)
+                            (error "slippery-chicken:: reaper-play: illegal ~
+                                    sample rate conversion: ~a"
+                                   srt))
+                          ;; MDE Mon Apr  9 12:31:07 2012
+                          (when snd
+                            (unless (duration snd)
+                              (error "~a~%slippery-chicken:: reaper-play: ~
+                                      sound duration is NIL!"
+                                     snd)))
+                          ;; given the srt, what's the longest output dur this
+                          ;; sound can make?
+                          (setq available-dur 
+                                (if snd
+                                    ;; todo: handle transpostion vs. play-rate
+                                    ;; here
+                                    (if  pitch-adjust
+                                         (duration snd)
+                                         (/ (duration snd) srt))
+                                    most-positive-short-float)
+                                wanted-duration-string ""
+                                input-start
+                                (if snd (start snd) 0.0))
+                          (when skip-this-event
+                            (incf total-skipped))
+                          (when inc-start
+                            (unless snd
+                              (error "~%slippery-chicken:: reaper-play: ~
+                                      can't do inc-start with no ~
+                                      sndfile-palette."))
+                            ;; todo: handle transpostion vs. play-rate here
+                            (setf latest-possible-start
+                                  (- (end snd) (if  pitch-adjust
+                                                    duration
+                                                    (* srt duration))))
+                            (unless
+                                (and (< latest-possible-start
+                                        (start snd))
+                                     (not (zerop
+                                           (will-be-used snd))))
+                              (incf input-start 
+                                    (* (has-been-used snd)
+                                       (/
+                                        (- latest-possible-start
+                                           (start snd))
+                                        (will-be-used snd)))))
+                            (incf (has-been-used snd)))
+                          (when (> duration available-dur)
+                            (setq wanted-duration duration
+                                  wanted-duration-string 
+                                  (if duration-run-over
+                                      (format nil " (~,3f available but ~
+                                                    duration-run-over is t)"
+                                              available-dur)
+                                      (format nil " (wanted ~,3f)"
+                                              wanted-duration)))
+                            (unless duration-run-over
+                              (setf duration available-dur)))
+                          (when (< duration 0)
+                            (warn "slippery-chicken::reaper-play: ~
+                                   Duration < 0  ?????~%"))
+                          (unless (start-time event)
+                            (error "~a~%slippery-chicken::reaper-play: ~
+                                    no start time!!!" event))
+                          (setq output-start (+ time-offset
+                                                (- (start-time event)
+                                                   first-event-start)))
+                          (when (> output-start max-start-time)
+                            (setq happy nil))
+                          (when happy
+                            (format t "        ~a/~a Events: ~a~
+                                 ~%             ~a ~a~
+                                 ~%             start-time ~,3f, input-start: ~
+                                 ~,3f, ~%             duration ~,3f~a, ~
+                                 ~%             amp ~,2f, srt ~,2f ~
+                                 (pitch-or-chord ~,3fHz, sample freq ~,3f)~%"
+                                    event-count total-events
+                                    (if skip-this-event "Skipped" 
+                                        "Written (not skipped)")
+                                    (if snd (path snd) "")
+                                    (if snds2
+                                        (format nil "(snd-group ~a)" 
+                                                (1+ snd-group))
+                                        "")
+                                    output-start input-start duration
+                                    wanted-duration-string amp srt 
+                                    ;; MDE Tue Apr 17 13:14:45 2012 -- added
+                                    ;; frequency method to chord also so that
+                                    ;; this doesn't fail
+                                    (frequency (pitch-or-chord event))
+                                    (if snd (frequency snd) "n/a")))
+                          (unless (or skip-this-event (not happy)
+                                      (zerop duration))
+                            (push 
+                             (make-reaper-item (path snd)
+                                               :fade-in (* duration fade-in)
+                                               :fade-out (* duration fade-out)
+                                               :duration duration
+                                               :start input-start
+                                               ;; in this method, by default, we
+                                               ;; simulate the sampling-rate
+                                               ;; conversion method of CLM where
+                                               ;; a change of 'speed' is
+                                               ;; accompanied by a change in
+                                               ;; pitch. But we also allow a
+                                               ;; change of pitch without a
+                                               ;; change in speed. This
+                                               ;; necessitates the 3rd arg
+                                               ;; (semitones) to the PLAYRATE
+                                               ;; line in the .rpp file and
+                                               ;; setting this to the
+                                               ;; transposition given to the
+                                               ;; reaper-item class
+                                               :play-rate (if pitch-adjust
+                                                              1.0
+                                                              srt)
+                                               :transposition (if pitch-adjust
+                                                                  (srt srt)
+                                                                  0.0)
+                                               :preserve-pitch nil
+                                               :start-time output-start
+                                               :item-vol amp
+                                               :track (get-next player-strings)
+                                               :pan
+                                               (if pan-fun
+                                                   (rescale
+                                                    (funcall pan-fun event)
+                                                    0 90 -1.0 1.0)
+                                                   (nth (random 7) pan-vals)))
+                             reaper-items)))
+                     (incf event-count-player)
+                     (incf event-count)))))
+    (write-reaper-file (make-reaper-file (id sc) (nreverse reaper-items)
+                                         :sample-rate srate)
+                       :min-channels min-channels
+                       :max-channels max-channels
+                       :file file-name)
+    (unless (zerop total-events)
+      (format t "~%~%~d/~d events skipped (~f%)"
+              total-skipped total-events 
+              (* 100.0 (/ total-skipped total-events))))
+    (values total-events file-name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/get-last-bar
@@ -6414,6 +7228,9 @@ data: NIL
 ;;;   engraver's spacing algorithm used, according to context).
 ;;; - :accidental-style. String. See the lilypond documentation for details of
 ;;;   applicable styles and their results. Default = 'modern.
+;;; - :links. T or NIL to indicate whether the generated PDF should contain
+;;;   notes that are clickable links to the lilypond source code or not. Default
+;;;   = T. 
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6512,8 +7329,8 @@ data: NIL
        ;; set to t if using bartok pizz and othersigns
        (use-custom-markup t)
        (rehearsal-letters-font-size 18)
-       ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95") 
-       (lp-version "2.20.0")
+       ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95")  "2.20.0")
+       (lp-version "2.24.1")
        ;; 24.7.11 (Pula) barlines through whole staff group or just a stave
        (group-barlines t)
        ;; 5.11.11 set to t if you want lilypond to optimize page breaks for
@@ -6558,6 +7375,9 @@ data: NIL
        dummy-staves
        ;; MDE Thu Feb  2 14:45:21 2017 -- fixed width rhythmic notation
        fixed-width
+       ;; MDE Sat Sep 30 16:55:40 2023, Heidhausen -- the PDF should contain
+       ;; links to the source code?
+       (links t)
        ;; sim to rehearsal letters
        (tempi-all-players t)
        (ekmelic-style "gost"))
@@ -6656,10 +7476,17 @@ data: NIL
                    (format stream 
                            "~&  \\override Staff.Stem #'stemlet-length = #~a~%"
                            stemlet-length))
-                 (princ "  \\compressFullBarRests" stream)
+                 ;; MDE Thu May 11 14:52:16 2023, Heidhausen -- changes for
+                 ;; version 2.21  
+                 ;; (princ "  \\compressFullBarRests" stream)
+                 (princ "  \\compressEmptyMeasures" stream)
                  ;; change the thickness of the barlines globally
-                 (format stream "~&  \\override Score.BarLine ~
-                                 #'hair-thickness = #~a" barline-thickness)
+                 ;; MDE Thu May 11 15:11:21 2023, Heidhausen -- version 2.21
+                 ;; changes 
+                 ;; (format stream "~&  \\override Score.BarLine ~
+                    ;;             #'hair-thickness = #~a" barline-thickness)
+                 (format stream "~&  \\override Score.BarLine.~
+                                 hair-thickness = #~a" barline-thickness)
                  (when page-turns
                    (format stream "~%  \\set Staff.minimumPageTurnLength = ~
                                    #(ly:make-moment ~a ~a)"
@@ -6801,6 +7628,8 @@ data: NIL
         (princ (get-lp-key-sig (first (key-sig sc)) (second (key-sig sc))) out)
         (terpri out)
         (princ "  \\numericTimeSignature" out)
+        (terpri out)
+        (princ (if links "\\pointAndClickOn" "\\pointAndClickOff") out)
         (terpri out)
         (princ "}" out)
         (terpri out)
@@ -8985,6 +9814,30 @@ data: (11 15)
                 (sort result #'< :key #'second)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/quarter-duration
+;;; DATE 
+;;; 23rd August 2023
+;;; 
+;;; DESCRIPTION
+;;; return the duration in quarter notes of a slippery-chicken piece
+;;; 
+;;; ARGUMENTS
+;;; the slippery chicken object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; start-bar and end-bar, both integers or if nil will default to 1 and the
+;;; number of bars in the piece 
+;;; 
+;;; RETURN VALUE
+;;; a float: total number of quarters
+;;; 
+;;; SYNOPSIS
+(defmethod quarter-duration ((sc slippery-chicken) &optional start-bar end-bar)
+;;; ****
+  (apply #'+ (map-over-bars sc start-bar end-bar (first (players sc))
+                            #'bar-duration)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -10399,7 +11252,7 @@ data: (11 15)
 ;;;   NB: When chords should be able to be processed (see above), the function
 ;;;       needs to be able to process events containing chords and return a list
 ;;;       of the length of the chord (e.g. via is-chord).
-;;;       For further detail, take a look at csound.lsp.
+;;;       For further detail, take a look at csound-p-fields-simple.
 ;;; - :comments. A boolean indicating whether additional comments should be
 ;;;   included into the generated score. The comments include the title,
 ;;;   composer and generation date of the sc piece resp. the csound-score.
@@ -10768,7 +11621,7 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  19:08:20 Sun May  7 2023 CEST
+;;; $$ Last modified:  14:51:00 Fri Dec  1 2023 CET
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)
@@ -10777,7 +11630,7 @@ data: (11 15)
   ;; this function. ignore
   ;; RP  Tue Feb 28 14:46:17 2023
   (declare (ignore event-num
-                   cs-instruments))
+                   cs-instrument))
   (let ((freq (get-frequency event))
         (amplitude (get-amplitude event)))
     (if (listp freq)
@@ -11250,6 +12103,5 @@ data: (11 15)
       (format stream "~%~%"))
     csound-file))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  17:30:47 Fri Dec 16 2022 CET
+;;; $$ Last modified:  19:58:52 Wed Aug 23 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2496,7 +2496,9 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod auto-beam ((rs rthm-seq) &optional (beat nil) (check-dur #'warn))
+(defmethod auto-beam ((rs rthm-seq) &optional (beat nil) (check-dur #'warn)
+                                              ignore)
+  (declare (ignore ignore))
   (loop for bar in (bars rs) do (auto-beam bar beat check-dur)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

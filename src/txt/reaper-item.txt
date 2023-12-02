@@ -10,9 +10,9 @@
       SEL 0
       IID 1
       NAME ~a
-      VOLPAN ~a 0 1 -1
+      VOLPAN ~a ~a ~a -1
       SOFFS ~a
-      PLAYRATE ~a ~a 0 -1 0 0.0025
+      PLAYRATE ~a ~a ~a -1 0 0.0025
       CHANMODE 0
       <SOURCE WAVE
         FILE \"~a\"

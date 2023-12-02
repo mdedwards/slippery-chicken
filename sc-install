@@ -48,7 +48,8 @@ fi
 # Install the necessary goodies ###############################################
 if ! command -v lilypond &> /dev/null
 then
-    echo "lilypond could not be found. Please install from http://lilypond.org"
+    #echo "lilypond could not be found. Please install from http://lilypond.org"
+    $INSTALL lilypond
 fi
 
 if ! command -v csh &> /dev/null

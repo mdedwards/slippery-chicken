@@ -62,7 +62,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  10:39:52 Sat Jun  6 2020 CEST
+;;; $$ Last modified:  10:37:45 Wed Jun  7 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -277,6 +277,10 @@
 ;;; Test to determine whether the method is currently at a period boundary. The
 ;;; object keeps track of its own internal state and position counter. This
 ;;; method is most effective when called repeatedly in a loop.
+;;;
+;;; Note that NIL is returned for the full first cycle rather than T then nil
+;;; as it is assumed that the beginning is a special case where state would
+;;; not want to be changed.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A recurring-event object.

@@ -41,7 +41,7 @@
 
  File:             <a href="#robo_top_of_doc">sndfile.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <strong>sndfile</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <strong>sndfile</strong>
 
  Version:          1.0.12
 
@@ -62,14 +62,14 @@
 
 
 <a name="sndfile2fcentroid"></a>
-<a name="robo850"></a><h2 class=robodoc>sndfile/centroid [ Methods ]</h2>
+<a name="robo855"></a><h2 class=robodoc>sndfile/centroid [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo289">sndfile</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> February 7th 2023, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Calculate the <a href="./utilities_lsp.html#robo890">average</a> spectral <strong>centroid</strong> of a sound file, <a href="./utilities_lsp.html#robo891">between</a> the start
+<pre> Calculate the <a href="./utilities_lsp.html#robo895">average</a> spectral <strong>centroid</strong> of a sound file, <a href="./utilities_lsp.html#robo896">between</a> the start
  and end points given. This requires CLM's scentroid.ins to be compiled
  and loaded in advance. Note that the averaging is done by FFT analysis every
  10 milliseconds and with an FFT size of 4096 samples. FFT frames that have
@@ -87,7 +87,7 @@
 
 
 <a name="sndfile2fmake2dsndfile"></a>
-<a name="robo851"></a><h2 class=robodoc>sndfile/make-sndfile [ Functions ]</h2>
+<a name="robo856"></a><h2 class=robodoc>sndfile/make-sndfile [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo289">sndfile</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -135,7 +135,7 @@
  - :amplitude. An number that is the amplitude which the user would like to
    designate for this sound file. This number may be of any value, as
    slippery chicken normalizes all sound file events; however, standard
-   practice would suggest that this should fall <a href="./utilities_lsp.html#robo891">between</a> 0.0 and 1.0.
+   practice would suggest that this should fall <a href="./utilities_lsp.html#robo896">between</a> 0.0 and 1.0.
    Default = 1.0
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -182,7 +182,7 @@ data: /path/to/<a href="#robo289">sndfile</a>-1.aiff
 
 
 <a name="sndfile2freset2dusage"></a>
-<a name="robo853"></a><h2 class=robodoc>sndfile/reset-usage [ Methods ]</h2>
+<a name="robo858"></a><h2 class=robodoc>sndfile/reset-usage [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo289">sndfile</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -200,10 +200,10 @@ data: /path/to/<a href="#robo289">sndfile</a>-1.aiff
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; First set the values of the WILL-BE-USED and HAS-BEEN-USED slots, as these
-;; are 0 when a new <a href="#robo289">sndfile</a> object is created using <a href="#robo851">make-sndfile</a>. Set the
-;; values, print them; <a href="./sndfile-ext_lsp.html#robo837">reset</a> both using <strong>reset-usage</strong>, and print again to see
+;; are 0 when a new <a href="#robo289">sndfile</a> object is created using <a href="#robo856">make-sndfile</a>. Set the
+;; values, print them; <a href="./activity-levels_lsp.html#robo26">reset</a> both using <strong>reset-usage</strong>, and print again to see
 ;; the change.
-(let ((sf-1 (<a href="#robo851">make-sndfile</a> "/path/to/<a href="#robo289">sndfile</a>-1.aiff"))))
+(let ((sf-1 (<a href="#robo856">make-sndfile</a> "/path/to/<a href="#robo289">sndfile</a>-1.aiff"))))
   (setf (will-be-used sf-1) 11)
   (setf (has-been-used sf-1) 13)
   (print (will-be-used sf-1))
@@ -224,7 +224,7 @@ data: /path/to/<a href="#robo289">sndfile</a>-1.aiff
 
 
 <a name="sndfile2fstereo"></a>
-<a name="robo855"></a><h2 class=robodoc>sndfile/stereo [ Methods ]</h2>
+<a name="robo860"></a><h2 class=robodoc>sndfile/stereo [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo289">sndfile</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -237,10 +237,10 @@ data: /path/to/<a href="#robo289">sndfile</a>-1.aiff
 <pre> Returns T if the CHANNELS slot is set to 2, otherwise returns NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; The method <a href="#robo851">make-sndfile</a> creates a <a href="#robo289">sndfile</a> object with the CHANNELS slot set
+<pre class="source">;; The method <a href="#robo856">make-sndfile</a> creates a <a href="#robo289">sndfile</a> object with the CHANNELS slot set
 ;; to NIL. Make a <a href="#robo289">sndfile</a> object, test to see whether the value of the CHANNELS
 ;; slot is 2; set the CHANNELS slot to 2 and test again.
-(let ((sf-1 (<a href="#robo851">make-sndfile</a> "/path/to/<a href="#robo289">sndfile</a>-1.aiff")))
+(let ((sf-1 (<a href="#robo856">make-sndfile</a> "/path/to/<a href="#robo289">sndfile</a>-1.aiff")))
   (print (<strong>stereo</strong> sf-1))
   (setf (channels sf-1) 2)
   (print (<strong>stereo</strong> sf-1)))
@@ -255,7 +255,7 @@ T
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/sndfile.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/sndfile.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

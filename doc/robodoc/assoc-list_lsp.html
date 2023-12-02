@@ -42,7 +42,7 @@
  this. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A key/data pair as a list, or a <a href="./named-object_lsp.html#robo603">named-object</a>.
+<pre> - A key/data pair as a list, or a <a href="./named-object_lsp.html#robo605">named-object</a>.
  - The <a href="#robo111">assoc-list</a> object to which it is to be added.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -50,11 +50,11 @@
  the end
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns T if the specified <a href="./named-object_lsp.html#robo603">named-object</a> is successfully added to the given
+<pre> Returns T if the specified <a href="./named-object_lsp.html#robo605">named-object</a> is successfully added to the given
  <a href="#robo111">assoc-list</a>. 
 
  Returns an error if an attempt is made to <strong>add</strong> NIL to the given <a href="#robo111">assoc-list</a>
- or if the given <a href="./named-object_lsp.html#robo603">named-object</a> is already present in the given <a href="#robo111">assoc-list</a>. 
+ or if the given <a href="./named-object_lsp.html#robo605">named-object</a> is already present in the given <a href="#robo111">assoc-list</a>. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((al (<a href="#robo42">make-assoc-list</a> 'test '((jim beam)
@@ -68,7 +68,7 @@
                                    (four roses)
                                    (wild turkey)))))
   (<strong>add</strong> '(makers mark) al)
-  (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> 'makers al))
+  (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> 'makers al))
 
 =&gt;
 NAMED-OBJECT: id: MAKERS, tag: NIL, 
@@ -90,7 +90,7 @@ data: MARK
 =&gt; T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>add</strong> (<a href="./named-object_lsp.html#robo603">named-object</a> (al assoc-list) &amp;optional front)
+<pre class="source">(defmethod <strong>add</strong> (<a href="./named-object_lsp.html#robo605">named-object</a> (al assoc-list) &amp;optional front)
 </pre>
 
 
@@ -110,7 +110,7 @@ data: MARK
  - The given <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the whole <a href="./named-object_lsp.html#robo603">named-object</a> to which the new element was added.
+<pre> Returns the whole <a href="./named-object_lsp.html#robo605">named-object</a> to which the new element was added.
 
  This method will abort with an error if a key is sought which does not
  exist within the given <a href="#robo111">assoc-list</a>. For such cases, use
@@ -149,7 +149,7 @@ data: (FIDO SPOT ROVER)
  - The the given <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the whole <a href="./named-object_lsp.html#robo603">named-object</a> to which the element was added when used
+<pre> Returns the whole <a href="./named-object_lsp.html#robo605">named-object</a> to which the element was added when used
  with a key that already exists within the given <a href="#robo111">assoc-list</a>.
 
  Returns T when used with a key that does not already exist in the given
@@ -218,14 +218,14 @@ data: (FIDO SPOT ROVER)
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the <a href="./named-object_lsp.html#robo603">named-object</a> (id, tag and data) that is identified by a
+<pre> Return the <a href="./named-object_lsp.html#robo605">named-object</a> (id, tag and data) that is identified by a
  specified key within a given <a href="#robo111">assoc-list</a>. 
 
  NB: This method returns the named object itself, not just the data
      associated with the key (use <a href="#robo36">get-data-data</a> for that). 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A symbol that is the key (id) of the <a href="./named-object_lsp.html#robo603">named-object</a> sought.
+<pre> - A symbol that is the key (id) of the <a href="./named-object_lsp.html#robo605">named-object</a> sought.
  - The <a href="#robo111">assoc-list</a> object in which it is be sought.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -236,7 +236,7 @@ data: (FIDO SPOT ROVER)
    optional argument. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./named-object_lsp.html#robo603">named-object</a> is returned if the specified key is found within the given
+<pre> A <a href="./named-object_lsp.html#robo605">named-object</a> is returned if the specified key is found within the given
  <a href="#robo111">assoc-list</a> object. 
 
  NIL is returned and a warning is printed if the specified key is not found
@@ -289,7 +289,7 @@ WARNING:
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> (Short-cut for (data (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> ...))
+<pre> (Short-cut for (data (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> ...))
  Get the data associated with the given key of the given <a href="#robo111">assoc-list</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -297,7 +297,7 @@ WARNING:
  - The <a href="#robo111">assoc-list</a> in which it is to be sought.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether to print a warning if no such <a href="./named-object_lsp.html#robo603">named-object</a>
+<pre> - T or NIL to indicate whether to print a warning if no such <a href="./named-object_lsp.html#robo605">named-object</a>
    can be found within the given <a href="#robo111">assoc-list</a> (default = T). 
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -332,14 +332,14 @@ WARNING:
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Returns the first <a href="./named-object_lsp.html#robo603">named-object</a> in the DATA slot of the given <a href="#robo111">assoc-list</a>
+<pre> Returns the first <a href="./named-object_lsp.html#robo605">named-object</a> in the DATA slot of the given <a href="#robo111">assoc-list</a>
  object.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - An <a href="#robo111">assoc-list</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./named-object_lsp.html#robo603">named-object</a> that is the first object in the DATA slot of the given
+<pre> A <a href="./named-object_lsp.html#robo605">named-object</a> that is the first object in the DATA slot of the given
  <a href="#robo111">assoc-list</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
@@ -416,7 +416,7 @@ data BEAM
  - the <a href="#robo111">assoc-list</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="./named-object_lsp.html#robo603">named-object</a>
+<pre> a <a href="./named-object_lsp.html#robo605">named-object</a>
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-nearest</strong> (key (al assoc-list) &amp;optional ignore1 ignore2)
@@ -428,11 +428,11 @@ data BEAM
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Returns the index position (zero-based) of a <a href="./named-object_lsp.html#robo603">named-object</a> within a given 
+<pre> Returns the index position (zero-based) of a <a href="./named-object_lsp.html#robo605">named-object</a> within a given 
  <a href="#robo111">assoc-list</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo111">assoc-list</a> key symbol (<a href="./named-object_lsp.html#robo603">named-object</a> id) of the object for which the 
+<pre> - The <a href="#robo111">assoc-list</a> key symbol (<a href="./named-object_lsp.html#robo605">named-object</a> id) of the object for which the 
    position is sought.
  - The <a href="#robo111">assoc-list</a> in which it is to be sought.
 </pre>
@@ -442,7 +442,7 @@ data BEAM
    objects located at indices lower than the given integer (default = 0). 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The integer index of the <a href="./named-object_lsp.html#robo603">named-object</a> within the given <a href="#robo111">assoc-list</a>.
+<pre> The integer index of the <a href="./named-object_lsp.html#robo605">named-object</a> within the given <a href="#robo111">assoc-list</a>.
 
  NIL is returned if the object is not present in the <a href="#robo111">assoc-list</a> starting
  with the index number given as the start argument (i.e., in the entire list
@@ -493,7 +493,7 @@ data BEAM
    index which doesn't exist is used for look-up.  T = warn. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the <a href="#robo111">assoc-list</a> as a <a href="./named-object_lsp.html#robo603">named-object</a>.
+<pre> Returns the <a href="#robo111">assoc-list</a> as a <a href="./named-object_lsp.html#robo605">named-object</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>make-assoc-list</strong> 'looney-tunes '((bugs bunny)
@@ -528,9 +528,9 @@ data: PIG)
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Map a function over the data in the <a href="#robo111">assoc-list</a>, i.e. call the given
- function/method on each data slot of each <a href="./named-object_lsp.html#robo603">named-object</a> in the <a href="#robo111">assoc-list</a>
- data slot. See also recursive-assoc-list's <a href="./recursive-assoc-list_lsp.html#robo411">rmap</a> method which does pretty
- much the same but acting recursively on each <a href="./named-object_lsp.html#robo603">named-object</a> (unless it is
+ function/method on each data slot of each <a href="./named-object_lsp.html#robo605">named-object</a> in the <a href="#robo111">assoc-list</a>
+ data slot. See also recursive-assoc-list's <a href="./recursive-assoc-list_lsp.html#robo413">rmap</a> method which does pretty
+ much the same but acting recursively on each <a href="./named-object_lsp.html#robo605">named-object</a> (unless it is
  itself recursive), rather than the named-object's data.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -568,8 +568,8 @@ data: PIG)
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> A destructive version of map-data: replace the data slot with the
- <a href="./named-object_lsp.html#robo603">named-object</a> returned by the 2nd argument after it is passed one
- <a href="./named-object_lsp.html#robo603">named-object</a> after another. 
+ <a href="./named-object_lsp.html#robo605">named-object</a> returned by the 2nd argument after it is passed one
+ <a href="./named-object_lsp.html#robo605">named-object</a> after another. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> See the <a href="#robo43">map-data</a> method in this class.
@@ -663,7 +663,7 @@ data: 1
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - an <a href="#robo111">assoc-list</a> object
- - a function that returns T or NIL after interrogating a <a href="./named-object_lsp.html#robo603">named-object</a> or
+ - a function that returns T or NIL after interrogating a <a href="./named-object_lsp.html#robo605">named-object</a> or
    subclass's slots
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -686,7 +686,7 @@ data: 1
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> A convenience method that's essentially the same as <a href="#robo50">set-data</a> but without
+<pre> A convenience method that's essentially the same as <a href="./recursive-assoc-list_lsp.html#robo415">set-data</a> but without
  having to pass the new ID in a list along with the new value. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -695,7 +695,7 @@ data: 1
  - The <a href="#robo111">assoc-list</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="./named-object_lsp.html#robo603">named-object</a> for the datum.
+<pre> The <a href="./named-object_lsp.html#robo605">named-object</a> for the datum.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>replace-data</strong> (key new-value (al assoc-list))
@@ -707,18 +707,18 @@ data: 1
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo111">assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Replace the <a href="./named-object_lsp.html#robo603">named-object</a> associated with a specified key within a given
- <a href="#robo111">assoc-list</a> object. This method replaces the whole <a href="./named-object_lsp.html#robo603">named-object</a>, not just
+<pre> Replace the <a href="./named-object_lsp.html#robo605">named-object</a> associated with a specified key within a given
+ <a href="#robo111">assoc-list</a> object. This method replaces the whole <a href="./named-object_lsp.html#robo605">named-object</a>, not just
  the data of that object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A key present within the given <a href="#robo111">assoc-list</a> object.
  - A key/data pair as a list.
- - The <a href="#robo111">assoc-list</a> object in which to find and replace the <a href="./named-object_lsp.html#robo603">named-object</a>
+ - The <a href="#robo111">assoc-list</a> object in which to find and replace the <a href="./named-object_lsp.html#robo605">named-object</a>
    associated with the specified key.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the new <a href="./named-object_lsp.html#robo603">named-object</a>.
+<pre> Returns the new <a href="./named-object_lsp.html#robo605">named-object</a>.
  
  Returns NIL when the given key is not present within the given <a href="#robo111">assoc-list</a>.
 </pre>
@@ -764,7 +764,7 @@ data: WILBUR
 <pre> Replace a given member of a given data list within a given <a href="#robo111">assoc-list</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The key (<a href="./named-object_lsp.html#robo603">named-object</a> id) associated with the data to be changed.
+<pre> - The key (<a href="./named-object_lsp.html#robo605">named-object</a> id) associated with the data to be changed.
  - The zero-based integer index of the member of the list to be changed.
  - The new value.
  - The <a href="#robo111">assoc-list</a> in which the change is to be made.
@@ -789,7 +789,7 @@ data: WILBUR
                                    (dog (fido spot rover))
                                    (cow bessie)))))
   (<strong>set-nth-of-data</strong> 'dog 0 'snoopy al) 
-  (<a href="./recursive-assoc-list_lsp.html#robo393">get-data</a> 'dog al))
+  (<a href="./recursive-assoc-list_lsp.html#robo395">get-data</a> 'dog al))
 
 =&gt; 
 NAMED-OBJECT: id: DOG, tag: NIL, 
@@ -803,14 +803,14 @@ data: (SNOOPY SPOT ROVER)
 <a name="circular2dsclist2fassoc2dlist"></a>
 <a name="robo111"></a><h2 class=robodoc>circular-sclist/assoc-list [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo607">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>assoc-list</strong>
 
  File:             <a href="#robo_top_of_doc">assoc-list.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt;
-                   <a href="./circular-sclist_lsp.html#robo607">circular-sclist</a> -&gt; <strong>assoc-list</strong> 
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt;
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <strong>assoc-list</strong> 
 
  Version:          1.0.12
 
@@ -831,7 +831,7 @@ data: (SNOOPY SPOT ROVER)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/assoc-list.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/assoc-list.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

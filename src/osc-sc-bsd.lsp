@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  10:53:16 Sat Nov 14 2020 CET
+;;; $$ Last modified:  14:54:52 Wed Jul 12 2023 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -107,7 +107,7 @@
                ;; test
                (int (handle-number +osc-sc-output-stream+ (second oscuff)))
                (quit (setf happy nil))
-               ;; save opening ( so evaluate lisp code
+               ;; saw opening ( so evaluate lisp code
                (lisp (osc-eval +osc-sc-output-stream+ oscuff print))
                (t (warn "osc-sc::osc-call: Don't understand ~a. Ignoring."
                         soscuff)

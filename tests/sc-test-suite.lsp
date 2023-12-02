@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:04:54 Sun May  7 2023 CEST
+;;; $$ Last modified:  15:01:15 Fri Dec  1 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3927,6 +3927,23 @@
     ;; remember: fs1 will be sorted lower when optional sort arg is t
     (= 4 (nth-value 1 (find-nearest-pitch '(b0 d1 cs2 d3 fs1 a4) 'fs3 t)))))
 
+;;; MDE Wed Aug 30 12:12:45 2023, Heidhausen 
+(sc-deftest test-partial-nodes ()
+    (in-scale :quarter-tone)
+  (let ((pn6 (partial-nodes 'd3 6))
+        (pn9 (partial-nodes 'e5 9)))
+    (sc-test-check
+      (equalp (mapcar #'id (partial-nodes 'd3 7))
+              '(EQS3 AF3 BQS3 EQS4 BQS4 BQS5))
+      (= 2 (length pn6))
+      (= 6 (length pn9))
+      (equal-within-tolerance 176.199 (frequency (first pn6)) .001)
+      (equal-within-tolerance .16 (pitch-bend (first pn6)))
+      (equal-within-tolerance .02 (pitch-bend (second pn6)))
+      (equalp (mapcar #'id pn9) '(FS5 AQF5 D6 FS6 FS7 FS8))
+      (equal-within-tolerance 5933.296 (frequency (sixth pn9)) .001)
+      (equal-within-tolerance .18 (pitch-bend (third pn9))))))
+      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Oct 18 15:07:34 2018 -- 
 (sc-deftest test-round-to-nearest ()
@@ -4924,10 +4941,13 @@
   (let ((l '(1 4 5 7 3 4 1 5 4 8 5 7 3 2 3 6 3 4 5 4 1 4 8 5 7 3 2))
         ;; MDE Thu Jan  3 16:18:19 2013 -- make sure it works with symbols too,
         ;; as claimed 
-        (ls '(ba ba black sheep sheep sheep)))
+        (ls '(ba ba black sheep sheep sheep))
+        (lss '("ba" "ba" "black" "sheep" "sheep" "sheep")))
     (sc-test-check
      (equalp (count-elements ls)
              '((sheep 3) (ba 2) (black 1)))
+     (equalp (print (count-elements lss #'string=))
+             '(("sheep" 3) ("ba" 2) ("black" 1)))
      (equalp (count-elements l)
              '((1 3) (2 2) (3 5) (4 6) (5 5) (6 1) (7 3) (8 2))))))
 
@@ -8310,7 +8330,7 @@
           (sf2 (msf 1 2))
           (sf3 (msf 2 4 .8))
           (sf4 (msf 1 3 .9))
-          ;;  MDE Tue Feb  7 17:12:33 2023, Heidhausen -- remake some to get
+          ;; MDE Tue Feb  7 17:12:33 2023, Heidhausen -- remake some to get
           ;; whole sndfile and test spectral centroid while we're at it
           (sfa4 (msf 2 4))
           (sfa5 (msf 2 5))
@@ -18090,7 +18110,9 @@ est)")))
                        ((a (1 1 1))
                         (b (1 1 1))
                         (c (1 1 1 1)))))
-           :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)))))
+           ;; :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)))))
+           ;; reaper: chords and transp methods
+           :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)) :pitch-seq-palette (((5) 1)))))
            :rthm-seq-map rsm
            :snd-output-dir "/tmp/"
            :sndfile-palette
@@ -18110,7 +18132,14 @@ est)")))
                       :src-width 5))
       (= 20 (clm-play mini 4 nil 'grp-1 :check-overwrite nil :src-width 5))
       (= 6 (clm-play mini 2 nil 'grp-1 :num-sequences 3 :num-sections 1
-                     :src-width 5 :check-overwrite nil))
+                                       :src-width 5 :check-overwrite nil))
+      ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
+      ;; with this too
+      (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :tracks-per-player 2
+                   :pitch-synchronous t)
+      (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :tracks-per-player 2
+                                     :pitch-synchronous t :do-src 'transposition
+                                     :short-file-names t) 
       ;; MDE Sat Jan 20 10:31:49 2018
       ;; (print rsm)
       (rthm-seq-map-p rsm)
@@ -19713,7 +19742,7 @@ est)")))
     (add-mark-to-note mini 1 '(4 2) 'vn '(rgb (0 1 0)))
     (add-mark-to-note mini 1 5 'vn 'flag-head)
     (add-mark-to-note mini 1 6 'vn '(rgb (0 0 1)))
-    (write-xml mini)
+    ;; (write-xml mini)))
     (lp-display mini)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -20264,7 +20293,7 @@ est)")))
                               '(w (w) q h.+h+e (h)) ; 3 attacks
                               63
                               :input-start .9
-                              :play-rate 1.04
+                              :play-rate 1.04 :transposition 2.5
                               :preserve-pitch t)
         (let* ((rf1 (make-reaper-file 'otest1 items1 :cursor end-time1))
                (rf2  (make-reaper-file 'otest2 items2 :cursor end-time2))
@@ -20275,16 +20304,30 @@ est)")))
           (probe-delete "/tmp/reaper-test3.rpp")
 	  (probe-delete "/tmp/reaper-test4.rpp")
 	  (probe-delete "/tmp/reaper-test5.rpp")
+	  (probe-delete "/tmp/test.rpp")
           (sc-test-check
+            ;; MDE Wed Oct 18 10:09:21 2023, Heidhausen -- check marker writing
+            ;; throws no errors when writing to the default path
+            (write-reaper-file (make-reaper-file 'test nil)
+                               :markers '(1 2 3.5 7 (49 8.021 "nice label")
+                                          (562 9.1 "better label" blue)))
+            ;; just check the class allocation slots are being cloned
+            (string= (istring (first items3)) (istring (clone (first items3))))
+            (string= (record-path rf1) (record-path (clone rf1)))
+            (file-write-ok "/tmp/test.rpp" 1500)
             ;; We'll get warnings about durations but ignore these for test
-            ;; purposes 
+            ;; purposes
+            ;; (print (write-item (first items2) t))
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
+	    (string= (tstring (get-first (tracks rf2)))
+                     (tstring (clone (get-first (tracks rf2)))))
 	    #+cl-ppcre(write-reaper-ambisonics-file list-of-sndfiles
 					  :file "/tmp/reaper-test4.rpp")
 	    #+cl-ppcre(write-reaper-sad-file list-of-sndfiles
-					  :file "/tmp/reaper-test5.rpp")
+					     :file "/tmp/reaper-test5.rpp")
+	    
             (assoc-list-p (tracks rf1))
             (assoc-list-p (tracks rf2))
             (assoc-list-p (tracks rf3))
@@ -20800,39 +20843,48 @@ est)")))
 ;;; test-player-ambitus
 
 (sc-deftest test-player-ambitus ()
-            (in-scale :chromatic)
-            (let* ((mini
-                     (make-slippery-chicken
-                      '+mini+
-                      :ensemble '(((pno (piano :midi-channel 1))
-                                   (vln (violin :midi-channel 2))))
-                      :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4
-                                          d4 e4 f4 g4 a4 bf4 cs5))))
-                      :set-map '((1 (1 1 1 1 1 1 1))
-                                 (2 (1 1 1 1 1 1 1))
-                                 (3 (1 1 1 1 1 1 1)))
-                      :tempo-map '((1 (q 60)))
-                      :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
-                                              :pitch-seq-palette ((1 (2) 3))))
-                                          (2 ((((4 4) (q) e (s) s h))
-                                              :pitch-seq-palette ((1 2 3))))
-                                          (3 ((((4 4) e (s) s h (q)))
-                                              :pitch-seq-palette ((2 3 3))))
-                                          (4 ((((4 4) (s) s h (q) e))
-                                              :pitch-seq-palette ((3 1 (2))))))
-                      :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
-                                          (vln (1 2 1 2 1 2 1))))
-                                      (2 ((pno (3 4 3 4 3 4 3))
-                                          (vln (3 4 3 4 3 4 3))))
-                                      (3 ((pno (1 2 1 2 1 2 1))
-                                          (vln (1 2 1 2 1 2 1))))))))
-              (sc-test-check
-               (multiple-value-bind (low high)
-                   (player-ambitus mini 'vln
-                                   :start-bar 3
-                                   :end-bar 3)
-                 (and (eq 'b3 (data low))
-                      (eq 'a4 (data high)))))))
+  (in-scale :chromatic)
+  (let* ((mini
+           (make-slippery-chicken
+            '+mini+
+            :ensemble '(((pno (piano :midi-channel 1))
+                         (vln (violin :midi-channel 2))))
+            :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4
+                                d4 e4 f4 g4 a4 bf4 cs5))))
+            :set-map '((1 (1 1 1 1 1 1 1))
+                       (2 (1 1 1 1 1 1 1))
+                       (3 (1 1 1 1 1 1 1)))
+            :tempo-map '((1 (q 60)))
+            :sndfile-palette
+            `(((grp-1
+                (test-sndfile-1.aiff test-sndfile-2.aiff
+                                     test-sndfile-3.aiff)))
+              (,(file-from-sc-dir "tests/test-sndfiles-dir-1/")))
+            :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                    :pitch-seq-palette ((1 (2) 3))))
+                                (2 ((((4 4) (q) e (s) s h))
+                                    :pitch-seq-palette ((1 2 3))))
+                                (3 ((((4 4) e (s) s h (q)))
+                                    :pitch-seq-palette ((2 3 3))))
+                                (4 ((((4 4) (s) s h (q) e))
+                                    :pitch-seq-palette ((3 1 (2))))))
+            :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
+                                (vln (1 2 1 2 1 2 1))))
+                            (2 ((pno (3 4 3 4 3 4 3))
+                                (vln (3 4 3 4 3 4 3))))
+                            (3 ((pno (1 2 1 2 1 2 1))
+                                (vln (1 2 1 2 1 2 1))))))))
+    (sc-test-check
+      ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
+      ;; with this too
+      (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :min-channels 4
+                                     :tracks-per-player 5)
+      (multiple-value-bind (low high)
+          (player-ambitus mini 'vln
+                          :start-bar 3
+                          :end-bar 3)
+        (and (eq 'b3 (data low))
+             (eq 'a4 (data high)))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -20840,30 +20892,100 @@ est)")))
 ;;; test-event-list-to-csound-score
 
 (sc-deftest test-event-list-to-csound-score ()
-            (let* ((rthms '(q e s s q e s te fs))
-                   (notes '(c4 d4 e4 f4))
-                   (notes-len (length notes))
-                   (events (events-update-time
-                            (loop
-                              for rthm in rthms
-                              for i from 0
-                              collect
-                              (make-event (nth (mod i notes-len)
-                                               notes)
-                                          rthm
-                                          :midi-channel (1+ (mod i 3)))))))
-              (probe-delete "/tmp/test.sco")
-              (sc-test-check
-               (event-list-to-csound-score events
-                                           '(1 2)
-                                           '("ins1" "ins2")
-                                           :csound-file "/tmp/test.sco")
-               (probe-delete "/tmp/test.sco")
-               (event-list-to-csound-score events
-                                           nil
-                                           '(1)
-                                           :csound-file "/tmp/test.sco"))))
-                                           
+  (let* ((rthms '(q e s s q e s te fs))
+         (notes '(c4 d4 e4 f4))
+         (notes-len (length notes))
+         (events (events-update-time
+                  (loop
+                    for rthm in rthms
+                    for i from 0
+                    collect
+                    (make-event (nth (mod i notes-len)
+                                     notes)
+                                rthm
+                                :midi-channel (1+ (mod i 3)))))))
+    (probe-delete "/tmp/test.sco")
+    (sc-test-check
+      (event-list-to-csound-score events
+                                  '(1 2)
+                                  '("ins1" "ins2")
+                                  :csound-file "/tmp/test.sco")
+      (probe-delete "/tmp/test.sco")
+      (event-list-to-csound-score events
+                                  nil
+                                  '(1)
+                                  :csound-file "/tmp/test.sco"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Sat Sep 30 15:59:11 2023
+;;; test-insert-bar-with-grace-notes
+
+(sc-deftest test-insert-bar-with-grace-notes ()
+  (in-scale :chromatic)
+  (let ((sc
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((vln (violin))))
+           :tempo-map '((1 (q 120)))
+           :set-palette '((set1 ((c4 d4 e4 f4 g4 a4))))
+           :set-map '((1 (set1 set1)))
+           :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
+                                      :pitch-seq-palette ((1 2 3 4 5)
+                                                          (5 4 3 2 1)))))
+           :rthm-seq-map '((1 ((vln (seq1 seq1)))))))
+        (bar (make-rthm-seq-bar '((4 4) (w)))))
+    ;;; fill the bar with rthms containing grace notes
+    (fill-with-rhythms bar
+                       (loop for p in '(b4 as4 d5 g4 f4)
+                             for r in '(q e. g s h)
+                             collect (make-event p r)))
+    (insert-bar (piece sc) bar 1 1 'vln 2 '(2 4 8 3 2))
+    (update-slots sc)
+    ;;; remove irrelevant tempo-changes in second bar
+    (delete-tempi sc 2)
+    ;;; remove extraneous time signatures (due to the bar added)
+    (update-write-time-sig2 (piece sc))
+    (update-slots sc)
+    (probe-delete "/tmp/insert-grace-notes.xml")
+    (probe-delete "/tmp/insert-grace-notes.eps")
+    (write-xml sc :file "/tmp/insert-grace-notes.xml")
+    (cmn-display sc :file "/tmp/insert-grace-notes.eps")
+    (sc-test-check
+      (file-write-ok "/tmp/insert-grace-notes.xml")
+      (file-write-ok "/tmp/insert-grace-notes.eps"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Nov 28 23:39:22 2023
+;;; test-harp-salzedo-to-tl-set
+
+(sc-deftest test-harp-salzedo-to-tl-set ()
+  (let ((sc-set (harp-salzedo-to-tl-set '(0 0 -1 0 0 1 -1))))
+    (sc-test-check
+      (equal (mapcar #'data
+                     (data sc-set))
+             '(C1 D1 E1 F1 GS1 AF1 BF1 C2 D2 E2 F2 GS2 AF2
+               BF2 C3 D3 E3 F3 GS3 AF3 BF3 C4 D4
+               E4 F4 GS4 AF4 BF4 C5 D5 E5 F5 GS5
+               AF5 BF5 C6 D6 E6 F6 GS6 AF6 BF6 C7 D7 E7 F7
+               GS7 AF7)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Nov 28 23:49:01 2023
+;;; test-subset-from-harp-salzedo
+
+(sc-deftest test-subset-from-harp-salzedo ()
+  (let ((set-symbs (subset-from-harp-salzedo
+                    (make-sc-set '(C1 D1 E1 F1 GS1 AF1 AF2 BF2 C3 D3
+                                   E3 F3 GS3
+                                   AF3 BF3 C4 D4 E4 F4 GS4 AF4 BF4 C5
+                                   D5 E5 F5
+                                   C6 D6 E6 F6 GS6 AF6 BF6 C7 D7 E7))
+                    '(0 1 -1 0 1 0 -1)
+                    :as-symbols t)))
+    (sc-test-check
+      (equal set-symbs
+             '(D1 E1 AF1 AF2 BF2 D3 E3 AF3 BF3 D4 E4 AF4 BF4 D5 E5
+               D6 E6 AF6 BF6 D7 E7)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

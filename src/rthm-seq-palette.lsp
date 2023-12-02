@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  11:14:07 Sat Dec 17 2022 CET
+;;; $$ Last modified:  19:58:31 Wed Aug 23 2023 CEST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1012,7 +1012,9 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 21 17:07:23 2015 
 (defmethod auto-beam ((rsp rthm-seq-palette) &optional (beat nil) 
-                                               (check-dur #'warn))
+                                                       (check-dur #'warn)
+                                                       ignore)
+  (declare (ignore ignore))
   (rmap rsp #'auto-beam beat check-dur))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

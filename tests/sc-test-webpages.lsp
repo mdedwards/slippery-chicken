@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:44:14 Tue Oct 27 2020 CET
+;;; $$ Last modified:  10:52:29 Fri May 12 2023 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 2976 2012-07-24 10:06:19Z sreed23 $
 ;;;
@@ -4052,14 +4052,16 @@
           "slippery-chicken-piece-playertwo.ly"))
        (o-files-sizes '(1200000 190 #+cmn 15000 180 900 210 160 210
                         150 210 150)) 
-       (sndfiles-dir-1 
+       (sndfiles-dir-1
+         (escape-spaces
         (concatenate 'string 
                      cl-user::+slippery-chicken-home-dir+ 
-                     "test-suite/test-sndfiles-dir-1/"))
+                     "tests/test-sndfiles-dir-1/")))
        (sndfiles-dir-2
+         (escape-spaces
         (concatenate 'string 
                      cl-user::+slippery-chicken-home-dir+ 
-                     "test-suite/test-sndfiles-dir-2/"))
+                     "tests/test-sndfiles-dir-2/")))
        (slippery-chicken
         (make-slippery-chicken
          '+sc-object+
@@ -4086,7 +4088,8 @@
                               ((test-sndfile-4.aiff)
                                (test-sndfile-5.aiff)
                                (test-sndfile-6.aiff))))
-                            ,(list sndfiles-dir-1 sndfiles-dir-2)))))
+                            ,(list
+                              sndfiles-dir-1 sndfiles-dir-2)))))
     (probe-delete-multi "/tmp/" o-files)
     (sc-test-check
       (midi-play slippery-chicken)
@@ -4121,11 +4124,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4186,11 +4189,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4253,11 +4256,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4318,11 +4321,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4386,11 +4389,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4457,11 +4460,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4550,11 +4553,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4617,11 +4620,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4685,11 +4688,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4794,11 +4797,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+
@@ -4856,11 +4859,11 @@
          (sndfiles-dir-1 
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-1/"))
+                       "tests/test-sndfiles-dir-1/"))
          (sndfiles-dir-2
           (concatenate 'string 
                        cl-user::+slippery-chicken-home-dir+ 
-                       "test-suite/test-sndfiles-dir-2/"))
+                       "tests/test-sndfiles-dir-2/"))
          (slippery-chicken
           (make-slippery-chicken
            '+sc-object+

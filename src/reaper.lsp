@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  21:08:09 Mon Oct  3 2022 CEST
+;;; $$ Last modified:  12:14:18 Fri Dec  1 2023 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -74,28 +74,6 @@
     :sad-channel-out
     ,(read-file-as-string (file-from-sc-dir "src/txt/sad-channel-out.txt"))))
 
-#|
-;;; one simple way of algorithmically generating a reaper file:
-(let* ((tempo 240)
-       (items
-         (make-reaper-items1
-          (get-sndfiles
-           (concatenate 'string
-                        cl-user::+slippery-chicken-home-dir+
-                        "tests/test-sndfiles-dir-2"))
-          '(e (w) (q) q (h) (e) e. (q.) q (w) e (w) e.)
-           tempo
-          :input-start '(0 .1 .2)
-          :play-rate '(1 1.02 1 .98 1.01 1 1.02)
-          :preserve-pitch t))
-       ;; NB the tempo of the reaper file is independent of the items
-       (rf (make-reaper-file 'reaper-test items :tempo tempo)))
-  (write-reaper-file rf))
-
-;;; or to write a reaper file just with markers (at times in seconds)
-(write-reaper-file (make-reaper-file 'test nil) :markers '(1 2 3.5 7))
-|#
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a single item/clip/sound object on a track
 (defclass reaper-item (sndfile)
@@ -112,7 +90,10 @@
    ;; no transposition on stretch?
    (preserve-pitch :accessor preserve-pitch :type boolean
                    :initarg :preserve-pitch :initform t)
-   ;; the output start-time (in seconds, in a reaper file) NB the input file
+   ;; independently of play-rate a semitone transposition
+   (transposition :accessor transposition :type number :initarg :transposition
+                  :initform 0.0)
+   ;; the output start-time (in seconds, in the reaper file) NB the input file
    ;; start time is the start slot of the sndfile class (in reaper the SOFFS
    ;; line)
    (start-time :accessor start-time :type number :initarg :start-time
@@ -127,7 +108,13 @@
    ;; written into those. This can be any string though of course it makes sense
    ;; to put more than one item on a single track
    (track :accessor track :type string :initarg :track
-          :initform "reaper-lisp")))
+          :initform "reaper-lisp")
+   ;; MDE Tue Nov 28 14:16:25 2023, Heidhausen -- 
+   ;; this is the volume defined with the slider in media item properties
+   (slider-vol :accessor slider-vol :type number :initarg :slider-vol
+               :initform 1.0)
+   (item-vol :accessor item-vol :type number :initarg :item-vol :initform 1.0)
+   (pan :accessor pan :type number :initarg :pan :initform 0.0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-02 Tu>
@@ -225,9 +212,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((ri reaper-item) stream)
   (format stream "~%REAPER-ITEM: fade-in: ~a, fade-out: ~a, play-rate: ~a, ~
-                  ~%preserve-pitch: ~a, start-time: ~a, name: ~a, track: ~a"
+                  ~%preserve-pitch: ~a, start-time: ~a, name: ~a, track: ~a ~
+                  ~%slider-vol: ~a, item-vol: ~a, pan: ~a, transposition: ~a"
           (fade-in ri) (fade-out ri) (play-rate ri) (preserve-pitch ri)
-          (start-time ri) (name ri) (track ri)))
+          (start-time ri) (name ri) (track ri) (slider-vol ri) (item-vol ri)
+          (pan ri) (transposition ri)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone ((ri reaper-item))
@@ -237,20 +226,21 @@
 (defmethod clone-with-new-class :around ((ri reaper-item) new-class)
   (declare (ignore new-class))
   (let ((sndfile (call-next-method)))
-    (setf (slot-value sndfile 'istring) (istring ri)
-          (slot-value sndfile 'fade-in) (fade-in ri)
+    (setf (slot-value sndfile 'fade-in) (fade-in ri)
           (slot-value sndfile 'fade-out) (fade-out ri)
           (slot-value sndfile 'preserve-pitch) (preserve-pitch ri)
           (slot-value sndfile 'start-time) (start-time ri)
           (slot-value sndfile 'name) (name ri)
           (slot-value sndfile 'track) (track ri)
+          (slot-value sndfile 'transposition) (transposition ri)
           (slot-value sndfile 'play-rate) (play-rate ri))
     sndfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((rt reaper-track) stream)
-  (format stream "~%REAPER-TRACK: channels: ~a"
-                  (channels rt)))
+  (format stream "~%REAPER-TRACK: channels: ~a, min-channels: ~a, ~
+                  max-channels: ~a"
+          (channels rt) (min-channels rt) (max-channels rt)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone ((rt reaper-track))
@@ -273,18 +263,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((rf reaper-file) stream)
   (format stream "~%REAPER-FILE: zoom: ~a, cursor: ~a, ~%record-path: ~a, ~
-                  ~%tempo: ~a~&time-sig: ~a" (zoom rf) (cursor rf)
-                  (record-path rf) (tempo rf) (time-sig rf)))
+                  ~%sample-rate: ~a, tempo: ~a~&time-sig: ~a"
+          (zoom rf) (cursor rf) (record-path rf) (sample-rate rf) (tempo rf)
+          (time-sig rf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod clone ((rf reaper-item))
-  (clone-with-new-class rf 'reaper-item))
+(defmethod clone ((rf reaper-file))
+  (clone-with-new-class rf 'reaper-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone-with-new-class :around ((rf reaper-file) new-class)
   (declare (ignore new-class))
   (let ((scl (call-next-method)))
     (setf (slot-value scl 'record-path) (strcpy (record-path rf))
+          (slot-value scl 'sample-rate) (sample-rate rf)
           (slot-value scl 'tempo) (clone (tempo rf))
           (slot-value scl 'zoom) (zoom rf)
           (slot-value scl 'cursor) (cursor rf)
@@ -304,12 +296,12 @@
     (error "reaper-item::write-item: the path slot is required."))
   ;; start: SOFFS, duration: LENGTH
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
-          (fade-out ri) (name ri) (amplitude ri) (start ri) (play-rate  ri)
-          (preserve-pitch ri)
-	  (os-format-path (path ri) 
-			  (if (get-sc-config 'reaper-files-for-windows)
-			      'windows
-			      'unix))))
+          (fade-out ri) (name ri) (item-vol ri) (pan ri) (slider-vol ri)
+          (start ri) (play-rate  ri) (preserve-pitch ri) (transposition ri)
+          (os-format-path (path ri) 
+                          (if (get-sc-config 'reaper-files-for-windows)
+                              'windows
+                              'unix))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-02 Tu>
@@ -351,8 +343,8 @@
 ;;; settings 
 (defmethod write-header ((rf reaper-file) stream master-channels)
   (format stream (header rf) (cursor rf) (zoom rf) (record-path rf)
-	  (sample-rate rf) (sample-rate rf) (bpm (tempo rf)) (num (time-sig rf))
-	  (denom (time-sig rf)) master-channels (master-volume rf)))
+          (sample-rate rf) (sample-rate rf) (bpm (tempo rf)) (num (time-sig rf))
+          (denom (time-sig rf)) master-channels (master-volume rf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod write-footer ((rf reaper-file) stream)
@@ -458,44 +450,101 @@
       rf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; By default the file will be written in slippery-chicken's 'default-dir using
-;;; the ID as file name, but :file will override this.
-;;; channels is initially nil, when an integer, set the number of channels
-;;; of all tracks (also master-track) to this number.
+;;; ****m* reaper/write-reaper-file
+;;; DESCRIPTION
+;;;
+;;; Write a reaper file from the reaper-items in the data slot.
+;;; 
+;;; ARGUMENTS
+;;; - a reaper-file object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments: 
+;;; - :file. The path of the reaper file to write. Default will be the id slot
+;;;   of the reaper-file object + .rpp, placed in the default-directory of
+;;;   slippery-chicken (itself /tmp by default).
+;;; - :markers. These are either a simple list of times (in seconds) or a
+;;;   mixture containing sublists such as (marker-number time-in-secs
+;;;   label-string colour), or just the first two or three of those. See the
+;;;   write-reaper-marker method for details. Default = NIL.
+;;; - :min-channels (default 2) and :max-channels (default 4). These are the
+;;;   minimum and maximum channel counts of the reaper-tracks which are usually
+;;;   dependent upon or influence the number of channels reflected in the sound
+;;;   files' playback. A sound file could have any number of channels of course
+;;;   and usually we'd use the maximum number of channels a track's sound files
+;;;   have to set the channels slot, but here we can limit these to something
+;;;   reasonable (or e.g. force 4-channel tracks even though all sound files are
+;;;   stereo).
+;;; 
+;;; RETURN VALUE
+;;; The patch to the generated reaper file.
+;;; 
+;;; EXAMPLE
+#|
+;;; one simple way of algorithmically generating a reaper file:
+(let* ((tempo 240)
+       (items
+         (make-reaper-items1
+          (get-sndfiles
+           (concatenate 'string
+                        cl-user::+slippery-chicken-home-dir+
+                        "tests/test-sndfiles-dir-2"))
+          '(e (w) (q) q (h) (e) e. (q.) q (w) e (w) e.)
+           tempo
+          :input-start '(0 .1 .2)
+          :play-rate '(1 1.02 1 .98 1.01 1 1.02)
+          :preserve-pitch t))
+       ;; NB the tempo of the reaper file is independent of the items
+       (rf (make-reaper-file 'reaper-test items :tempo tempo)))
+  (write-reaper-file rf))
+
+;;; or to write a reaper file with markers only, at times given in seconds
+(write-reaper-file (make-reaper-file 'test nil) :markers '(1 2 3.5 7))
+
+;;; mixed marker data starting with simple times
+(write-reaper-file (make-reaper-file 'test nil)
+  :markers '(1 2 3.5 7 (49 8.021 "nice label") ; number 49, time 8.021, named 
+             (562 9.1 "better label" blue))) ; sim. but with a recognised colour
+|#
+;;; SYNOPSIS
 (defmethod write-reaper-file ((rf reaper-file)
                               &key file markers
-                                (min-channels 2) (max-channels 4))
+                              (min-channels 2) (max-channels 4))
+;;; ****
   ;; make sure channels is multiple of 2
   (when (n-channels rf)
     (setf (n-channels rf) (if (evenp (n-channels rf))
 			      (n-channels rf)
-			      (1+ (n-channels rf)))))
+			    (1+ (n-channels rf)))))
   (let ((outfile (if file
                      file
-                     (default-dir-file (format nil "~a.rpp"
-                                               (string-downcase (id rf)))))))
+                   (default-dir-file (format nil "~a.rpp"
+                                             (string-downcase (id rf)))))))
     ;; sort the items into tracks unless this has already been done
     (unless (tracks rf) 
       (create-tracks rf :min-channels min-channels :max-channels max-channels
 		     :channels (n-channels rf)))
     (with-open-file 
-        (out outfile
-         :direction :output :if-does-not-exist :create
-         :if-exists :rename-and-delete)
-      (write-header rf out (or (n-channels rf) (max min-channels max-channels)))
-      ;; MDE Sun Sep 25 17:56:30 2022, Heidhausen -- reaper v6.64 at least
-      ;; writes markers before <PROJBAY> (the last entry in our header file) but
-      ;; doesn't complain when they come afterwards
-      (when markers
-        ;; these are either a list of times (in seconds) or a list of sublists
-        ;; with data in the order we'd supply to write-reaper-marker
-        (loop for m in markers and i from 1 do
-          (if (numberp m)
-              (write-reaper-marker i m "" out)
-              (apply #'write-reaper-marker m))))
-      ;; loop through the tracks and write them
-      (loop for track in (data (tracks rf)) do (write-track track out))
-      (write-footer rf out))
+     (out outfile
+          :direction :output :if-does-not-exist :create
+          :if-exists :rename-and-delete)
+     (write-header rf out (or (n-channels rf) (max min-channels max-channels)))
+     ;; MDE Sun Sep 25 17:56:30 2022, Heidhausen -- reaper v6.64 at least
+     ;; writes markers before <PROJBAY> (the last entry in our header file) but
+     ;; doesn't complain when they come afterwards
+     (when markers
+       (loop for m in markers and i from 1 do
+             (if (numberp m)
+                 (write-reaper-marker i m "" out)
+               (let* ((len (length m))
+                      (args (if (> len 3)
+                                (append (subseq m 0 3) (list out)
+                                        (last m))
+                              (econs m out))))
+                 (apply #'write-reaper-marker args)))))
+     ;; loop through the tracks and write them
+     (loop for track in (data (tracks rf)) do (write-track track out))
+     (write-footer rf out))
     outfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -741,6 +790,8 @@
                                 (fade-in .005) (fade-out .005)
                                 ;; could also be a list (circular)
                                 (play-rate 1.0)
+                                ;; could also be a list (circular)
+                                (transposition 0.0)
                                 ;; if an event's duration is longer than the
                                 ;; sndfile we'll get a warning but by default
                                 ;; we'll force its duration
@@ -751,6 +802,7 @@
   (setq preserve-pitch (if preserve-pitch 1 0))
   (let ((sfs (force-list sndfiles))
         (play-rates (make-cscl (force-list play-rate)))
+        (transpositions (make-cscl (force-list transposition)))
         (input-starts (make-cscl (force-list input-start))))
     ;; MDE Sat Mar  5 15:33:43 2022, Heidhausen -- if no events are passed we
     ;; just use the duration of the sndfile
@@ -769,6 +821,7 @@
                      'reaper-item
                      :preserve-pitch preserve-pitch
                      :play-rate (get-next play-rates)
+                     :transposition (get-next transpositions)
                      :fade-out fade-out :fade-in fade-in
                      :start (get-next input-starts)
                      :start-time (if event (start-time event) 0.0)
@@ -1215,7 +1268,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; ****
   (loop with pexp = (cddr (apply #'pexpand (cons generations proportions)))
         with beat-dur = (/ 60.0 tempo)
-        ;; hard-coded colours for now: white for level 1, yellow 2, blue 3, red 4
+        ;; hard-coded colours for now: white for level 1, yellow 2, blue 3,
+        ;; red 4
         with colours = '(33554431 33554176 16777471 0)
         for beat-num in pexp by #'cddr
         for letters in (rest pexp) by #'cddr
@@ -1616,7 +1670,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 	 (string "")
 	 rf)
     (loop for item in items and snd in list-of-sndfiles do
-	 (setf (amplitude item) (amplitude snd)))
+	 (setf (item-vol item) (amplitude snd)))
     (setf rf (create-tracks
 	      (make-reaper-file 'ambi items
 				:tempo (or tempo 60)
@@ -1821,7 +1875,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 	 rf)
     ;; set volume
     (loop for item in items and snd in list-of-sndfiles do
-      (setf (amplitude item) (amplitude snd)))
+      (setf (item-vol item) (amplitude snd)))
     ;; init the file
     (setf rf (create-tracks
 	      (make-reaper-file 'sad items

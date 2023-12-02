@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  15:18:00 Thu Dec  2 2021 CET
+;;; $$ Last modified:  15:35:14 Thu May 11 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -84,7 +84,7 @@
            ;; see p229 of lilypond.pdf: need to define this command in file
            ;; this is done for us in lilypond.ly, which will be included if we
            ;; call write-lp-data-for-all with :use-custom-markup T 
-           (bartok "^\\snapPizzicato ") 
+           (bartok "^\\snappizzicato ") 
            (pizz "^\"pizz.\" ")
            (ord "^\"ord.\" ")
            (pizzp "^\"(pizz.)\" ")
@@ -228,7 +228,9 @@
            ;; applies to. MDE Tue Jun 16 23:38:57 2020, Heidhausen -- again this
            ;; override should be OK (rather than tweak) as it's below the staff
            ;; rather than a property of a note (in a chord)
-           (hairpin0 "\\once \\override Hairpin #'circled-tip = ##t ")
+           ;; (hairpin0 "\\once \\override Hairpin #'circled-tip = ##t ")
+           ;; MDE Thu May 11 15:26:00 2023, Heidhausen -- version 2.21 changes
+           (hairpin0 "\\once \\override Hairpin.circled-tip = ##t ")
            ;; (dim0-beg "\\once \\override Hairpin #'circled-tip = ##t \\> ")
            (pause "\\fermata ")
            (long-pause "\\longfermata ")
@@ -348,11 +350,11 @@
               (format 
                nil
                (if override
-                   "\\once \\override NoteHead #'color = #(rgb-color ~a ~a ~a) ~
-                  \\once \\override Beam #'color = #(rgb-color ~a ~a ~a) ~
-                  \\once \\override Accidental #'color = #(rgb-color ~a ~a ~a) ~
-                  \\once \\override Flag #'color = #(rgb-color ~a ~a ~a) ~
-                  \\once \\override Stem #'color = #(rgb-color ~a ~a ~a) "
+                   "\\once \\override NoteHead.color = #(rgb-color ~a ~a ~a) ~
+                  \\once \\override Beam.color = #(rgb-color ~a ~a ~a) ~
+                  \\once \\override Accidental.color = #(rgb-color ~a ~a ~a) ~
+                  \\once \\override Flag.color = #(rgb-color ~a ~a ~a) ~
+                  \\once \\override Stem.color = #(rgb-color ~a ~a ~a) "
                    ;; MDE Tue Jun 16 23:33:15 2020, Heidhausen -- use tweak
                    ;; instead and set individual properties rather tweaking the
                    ;; whole note as that causes things like text to change color

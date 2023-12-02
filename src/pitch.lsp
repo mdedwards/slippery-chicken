@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  09:32:22 Wed Nov 30 2022 CET
+;;; $$ Last modified:  12:26:25 Wed Aug 30 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3963,5 +3963,77 @@ data: D1
                result))
     (nreverse result)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* pitch/partial-nodes
+;;; DATE
+;;; August 30th 2023
+;;; 
+;;; DESCRIPTION
+;;; Calculate the pitches that represent the nodal/touching points to achieve a
+;;; particular partial number from a given open-string. Note that despite the
+;;; general rule that nodes are available from one to 1- the desired partial,
+;;; not all can be used because they coincide with lower-order
+;;; partials. E.g. to get the 4th partial (double octave, usually achieved by
+;;; touching a perfect fourth above the open string) we have nodes at 1/4 and
+;;; 3/4 but not at 2/4 because that is 1/2 i.e. the second partial.
+;;; 
+;;; See also https://en.wikipedia.org/wiki/String_harmonic
+;;; 
+;;; ARGUMENTS
+;;; - the pitch of the open string either as a symbol or pitch object
+;;; - the desired partial number (where 1 = the open string)
+;;; 
+;;; RETURN VALUE
+;;; a list of ascending pitch objects representing the nodal/touching
+;;; points. Note that the last pitch will always be the harmonic sounding pitch.
+;;; last 
+;;; 
+;;; EXAMPLE
+#|
+(partial-nodes 'd3 6)
+(
+PITCH: frequency: 176.199, midi-note: 53, midi-channel: 1 
+       pitch-bend: 0.16 
+... 
+data: F3
+**************
+
+ 
+PITCH: frequency: 880.994, midi-note: 81, midi-channel: 1 
+       pitch-bend: 0.02 
+...
+data: A5
+**************
+)
+
+;;; the closest pitches, rounded to a quarter-tone (the default scale) for
+;;; then7th partial on the cello's D string (II) :
+(mapcar #'id (partial-nodes 'd3 7))
+--> (EQS3 AF3 BQS3 EQS4 BQS4 BQS5)
+|#
+;;; SYNOPSIS
+(defun partial-nodes (open-string partial)
+;;; ****
+  (let* ((nodes '((2 1)
+                  (3 1 2)
+                  (4 1 3)
+                  (5 1 2 3 4)
+                  (6 1 5)
+                  (7 1 2 3 4 5 6)
+                  (8 1 3 5 7)
+                  (9 1 2 4 5 7 8)
+                  (10 1 3 7 9)
+                  (11 1 2 3 4 5 6 7 8 9 10)
+                  (12 1 5 7 11)
+                  (13 1 2 3 4 5 6 7 8 9 10 11 12)
+                  (14 1 3 5 9 11 13)
+                  (15 1 2 4 7 8 11 13 14)
+                  (16 1 3 5 7 9 11 13 15)))
+         (node (nth (- partial 2) nodes))
+         (m (first node)))
+    (setq open-string (frequency (make-pitch open-string)))
+    (loop for n in (reverse (rest node))
+          collect (make-pitch (* open-string (/ m n))))))
+    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

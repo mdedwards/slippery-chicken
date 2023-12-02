@@ -33,7 +33,7 @@
 
 
 <a name="reaper2freaper2dlayer2dsounds"></a>
-<a name="robo383"></a><h2 class=robodoc>reaper/reaper-layer-sounds [ Functions ]</h2>
+<a name="robo384"></a><h2 class=robodoc>reaper/reaper-layer-sounds [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -47,7 +47,7 @@
  seconds by default. So the files are mixed together in the order of the
  first argument, with the longest file in the mix determining the overall
  duration and the shorter files beginning after a wait of &lt;indent&gt; multiplied
- by the difference <a href="./utilities_lsp.html#robo891">between</a> the longest and shorter files'
+ by the difference <a href="./utilities_lsp.html#robo896">between</a> the longest and shorter files'
  durations. E.g. with a longest file duration of 60 seconds and a shorter
  file of 30 seconds, given :indent 0.5 the shorter file's start time would be
  15 seconds; if its duration was 20 seconds, the start time would be 20.
@@ -72,41 +72,41 @@
  :min-fade. The proportion of a sound file's duration that should be used if
  :max-fade can't be used for both fade-in and fade-out. This should generally
  be &lt; 0.5 but is not enforced. Default = 0.5.
- :<a href="#robo618">reaper-file</a>. The path of the <a href="#robo618">reaper-file</a> to be written. If this is NIL then
- no file is written and the <a href="#robo618">reaper-file</a> object is returned instead, with all
- mixes present. This could be used to <a href="./sc-set_lsp.html#robo576">add</a> more tracks before writing the
+ :<a href="#robo620">reaper-file</a>. The path of the <a href="#robo620">reaper-file</a> to be written. If this is NIL then
+ no file is written and the <a href="#robo620">reaper-file</a> object is returned instead, with all
+ mixes present. This could be used to <a href="./sc-set_lsp.html#robo578">add</a> more tracks before writing the
  reaper file (see example below). Default = "/tmp/reaper-layer-sounds.rpp"
  :min-channels. The minimum number of a channels a reaper track should
  have. Usually this will be set to be the maximum number of channels any of
- the files on a single track have. But if you have a bunch of <a href="./sndfile_lsp.html#robo855">stereo</a> files
+ the files on a single track have. But if you have a bunch of <a href="./sndfile_lsp.html#robo860">stereo</a> files
  you want to place on, say, a track which should become 5th order ambisonics,
  you can set this to 36. Note that all reaper tracks should have an even
  number of channels so however the channel number is achieved it will be
- rouned up to the <a href="./utilities_lsp.html#robo931">nearest</a> even number if necessary. Default = 2.
+ rouned up to the <a href="./utilities_lsp.html#robo936">nearest</a> even number if necessary. Default = 2.
  :max-channels. This can be set to override the number of channels of any
  given sound file, should it have more channels than you want, for some
  reason. Default = 4.
- :gap. The gap in seconds <a href="./utilities_lsp.html#robo891">between</a> the end of the previous mix and the start
+ :gap. The gap in seconds <a href="./utilities_lsp.html#robo896">between</a> the end of the previous mix and the start
  of the next. Default = 10 seconds.
  :<a href="./permutations_lsp.html#robo314">shuffle</a>. Whether to <a href="./permutations_lsp.html#robo314">shuffle</a> the mixes before writing. See above for
  details. Default = T.
  :indent. How far in to start the shorter sounds, as a function of their
  duration difference to the longest file (see above). 0.5 would have them
- centered bang in the <a href="./utilities_lsp.html#robo926">middle</a>. By default the golden mean, 0.618034 (what
+ centered bang in the <a href="./utilities_lsp.html#robo931">middle</a>. By default the golden mean, 0.618034 (what
  else?) i.e. (/ (- (sqrt 5) 1) 2).
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> If :<a href="#robo618">reaper-file</a> is given, then the path will be returned after writing,
- otherwise a <a href="#robo618">reaper-file</a> object is returned.
+<pre> If :<a href="#robo620">reaper-file</a> is given, then the path will be returned after writing,
+ otherwise a <a href="#robo620">reaper-file</a> object is returned.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((overlaps (<a href="#robo384">reaper-overlap-sounds</a>
-                 (<a href="./sndfile-palette_lsp.html#robo842">get-sndfiles</a> "/Volumes/slim500/snd/samples/ambience/rain") 
-                 :<a href="#robo618">reaper-file</a> nil))
-      (layers (<strong>reaper-layer-sounds</strong> (<a href="./sndfile-palette_lsp.html#robo842">get-sndfiles</a> "~/ic/projects/mete/clm") 4
-                                   :<a href="#robo618">reaper-file</a> nil)))
-  (<a href="./sc-set_lsp.html#robo576">add</a> (<a href="./assoc-list_lsp.html#robo37">get-first</a> (tracks overlaps)) (tracks layers))
-  (write-<a href="#robo618">reaper-file</a> layers :min-channels 36
+<pre class="source">(let ((overlaps (<a href="#robo385">reaper-overlap-sounds</a>
+                 (<a href="./sndfile-palette_lsp.html#robo847">get-sndfiles</a> "/Volumes/slim500/snd/samples/ambience/rain") 
+                 :<a href="#robo620">reaper-file</a> nil))
+      (layers (<strong>reaper-layer-sounds</strong> (<a href="./sndfile-palette_lsp.html#robo847">get-sndfiles</a> "~/ic/projects/mete/clm") 4
+                                   :<a href="#robo620">reaper-file</a> nil)))
+  (<a href="./sc-set_lsp.html#robo578">add</a> (<a href="./assoc-list_lsp.html#robo37">get-first</a> (tracks overlaps)) (tracks layers))
+  (<a href="#robo386">write-reaper-file</a> layers :min-channels 36
                      :file "~/ic/projects/mete/reaper/mete-clm-with-rain.rpp"))
 </pre>
 <p class="item_name">SYNOPSIS</p>
@@ -114,13 +114,13 @@
                             &amp;key (<a href="./tempo_lsp.html#robo290">tempo</a> 60)
                               (max-fade 15) ; seconds
                               (min-fade .4) ; proportion of duration
-                              (<a href="#robo618">reaper-file</a> "/tmp/reaper-layer-sounds.rpp")
+                              (<a href="#robo620">reaper-file</a> "/tmp/reaper-layer-sounds.rpp")
                               ;; e.g. if you want all tracks to be 26 channels
                               ;; despite the number of channels in the sound
                               ;; files set this here
                               (min-channels 2)
                               (max-channels 4)
-                              ;; gap in seconds <a href="./utilities_lsp.html#robo891">between</a> groups
+                              ;; gap in seconds <a href="./utilities_lsp.html#robo896">between</a> groups
                               (gap 10)
                               ;; <a href="./permutations_lsp.html#robo314">shuffle</a> (fixed-seed) the subgroups so that the
                               ;; sound files are not simply processed by
@@ -131,7 +131,7 @@
 
 
 <a name="reaper2freaper2doverlap2dsounds"></a>
-<a name="robo384"></a><h2 class=robodoc>reaper/reaper-overlap-sounds [ Functions ]</h2>
+<a name="robo385"></a><h2 class=robodoc>reaper/reaper-overlap-sounds [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -151,46 +151,110 @@
  sound files can have any duration and be overlapped in any order, this
  proportion is applied to the shortest of any two sound files to be
  cross-faded. default = 0.5.
- :<a href="#robo618">reaper-file</a>. The path of the <a href="#robo618">reaper-file</a> to be written. If this is NIL then
- no file is written and the <a href="#robo618">reaper-file</a> object is returned instead, with all
- mixes present. This could be used to <a href="./sc-set_lsp.html#robo576">add</a> more tracks before writing the
+ :<a href="#robo620">reaper-file</a>. The path of the <a href="#robo620">reaper-file</a> to be written. If this is NIL then
+ no file is written and the <a href="#robo620">reaper-file</a> object is returned instead, with all
+ mixes present. This could be used to <a href="./sc-set_lsp.html#robo578">add</a> more tracks before writing the
  reaper file (see example in reaper-layer-sounds). Default =
  "/tmp/reaper-layer-sounds.rpp"
- :min-channels. See <a href="#robo383">reaper-layer-sounds</a>. Default = 2.
- :max-channels. See <a href="#robo383">reaper-layer-sounds</a>. Default = 4.
+ :min-channels. See <a href="#robo384">reaper-layer-sounds</a>. Default = 2.
+ :max-channels. See <a href="#robo384">reaper-layer-sounds</a>. Default = 4.
  :track-name. The string used to name the track in reaper. Default =
  "overlaps"
  :<a href="./tempo_lsp.html#robo290">tempo</a>. The BPM value that should be written to the reaper project, if
  desired. Default = 60.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> If :<a href="#robo618">reaper-file</a> is given, then the path will be returned after writing,
- otherwise a <a href="#robo618">reaper-file</a> object is returned. See <a href="#robo383">reaper-layer-sounds</a> for an
+<pre> If :<a href="#robo620">reaper-file</a> is given, then the path will be returned after writing,
+ otherwise a <a href="#robo620">reaper-file</a> object is returned. See <a href="#robo384">reaper-layer-sounds</a> for an
  example.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>reaper-overlap-sounds</strong> (sndfiles &amp;key (<a href="./tempo_lsp.html#robo290">tempo</a> 60) (min-channels 2)
                                          (max-channels 4) (overlap .5)
                                          (track-name "overlaps")
-                                         (<a href="#robo618">reaper-file</a>
+                                         (<a href="#robo620">reaper-file</a>
                                           "/tmp/reaper-layer-sounds.rpp"))
 </pre>
 
 
+<a name="reaper2fwrite2dreaper2dfile"></a>
+<a name="robo386"></a><h2 class=robodoc>reaper/write-reaper-file [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Write a reaper file from the reaper-items in the data slot.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - a <a href="#robo620">reaper-file</a> object
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments: 
+ - :file. The path of the reaper file to write. Default will be the id slot
+   of the <a href="#robo620">reaper-file</a> object + .rpp, placed in the default-directory of
+   <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> (itself /tmp by default).
+ - :markers. These are either a simple list of times (in seconds) or a
+   mixture containing sublists such as (marker-number time-in-secs
+   label-string colour), or just the first two or three of those. See the
+   write-reaper-marker method for details. Default = NIL.
+ - :min-channels (default 2) and :max-channels (default 4). These are the
+   minimum and maximum channel counts of the reaper-tracks which are usually
+   dependent upon or influence the number of channels reflected in the sound
+   files' playback. A sound file could have any number of channels of course
+   and usually we'd use the maximum number of channels a track's sound files
+   have to set the channels slot, but here we can <a href="./set-palette_lsp.html#robo647">limit</a> these to something
+   reasonable (or e.g. force 4-channel tracks even though all sound files are
+   <a href="./sndfile_lsp.html#robo860">stereo</a>).
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> The patch to the generated reaper file.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; one simple way of algorithmically generating a reaper file:
+(let* ((<a href="./tempo_lsp.html#robo290">tempo</a> 240)
+       (items
+         (make-reaper-items1
+          (<a href="./sndfile-palette_lsp.html#robo847">get-sndfiles</a>
+           (concatenate 'string
+                        cl-user::+slippery-chicken-home-dir+
+                        "tests/test-sndfiles-dir-2"))
+          '(e (w) (q) q (h) (e) e. (q.) q (w) e (w) e.)
+           <a href="./tempo_lsp.html#robo290">tempo</a>
+          :input-start '(0 .1 .2)
+          :play-rate '(1 1.02 1 .98 1.01 1 1.02)
+          :preserve-<a href="./pitch_lsp.html#robo285">pitch</a> t))
+       ;; NB the <a href="./tempo_lsp.html#robo290">tempo</a> of the reaper file is independent of the items
+       (rf (make-<a href="#robo620">reaper-file</a> 'reaper-test items :<a href="./tempo_lsp.html#robo290">tempo</a> <a href="./tempo_lsp.html#robo290">tempo</a>)))
+  (<strong>write-reaper-file</strong> rf))
+
+;;; or to write a reaper file with markers only, at times given in seconds
+(<strong>write-reaper-file</strong> (make-<a href="#robo620">reaper-file</a> 'test nil) :markers '(1 2 3.5 7))
+
+;;; mixed marker data starting with simple times
+(<strong>write-reaper-file</strong> (make-<a href="#robo620">reaper-file</a> 'test nil)
+  :markers '(1 2 3.5 7 (49 8.021 "nice label") ; number 49, time 8.021, named 
+             (562 9.1 "better label" blue))) ; sim. but with a recognised colour
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>write-reaper-file</strong> ((rf reaper-file)
+                              &amp;key file markers
+                                   (min-channels 2) (max-channels 4))
+</pre>
+
+
 <a name="sclist2freaper2dfile"></a>
-<a name="robo618"></a><h2 class=robodoc>sclist/reaper-file [ Classes ]</h2>
+<a name="robo620"></a><h2 class=robodoc>sclist/reaper-file [ Classes ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo288">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 
 
 <a name="sclist2freaper2dtrack"></a>
-<a name="robo619"></a><h2 class=robodoc>sclist/reaper-track [ Classes ]</h2>
+<a name="robo621"></a><h2 class=robodoc>sclist/reaper-track [ Classes ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo288">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 
 
 <a name="sndfile2freaper2ditem"></a>
-<a name="robo852"></a><h2 class=robodoc>sndfile/reaper-item [ Classes ]</h2>
+<a name="robo857"></a><h2 class=robodoc>sndfile/reaper-item [ Classes ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sndfile_lsp.html#robo289">sndfile</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
@@ -198,12 +262,12 @@
 
  File:             <a href="#robo_top_of_doc">reaper.lsp</a>            
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sndfile_lsp.html#robo289">sndfile</a> -&gt;
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sndfile_lsp.html#robo289">sndfile</a> -&gt;
                    <strong>reaper-item</strong>
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt;
-                   <a href="#robo619">reaper-track</a>
- Class Hierarchy:  <a href="./named-object_lsp.html#robo603">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt;
-                   <a href="#robo618">reaper-file</a>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt;
+                   <a href="#robo621">reaper-track</a>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt;
+                   <a href="#robo620">reaper-file</a>
 
  Version:          1.0.12
 
@@ -216,22 +280,22 @@
 
  Creation date:    January 21st 2021
 
- $$ Last modified:  21:08:09 Mon Oct  3 2022 CEST
+ $$ Last modified:  17:02:25 Thu Oct 19 2023 CEST
 
  SVN ID: $Id: <a href="./sclist_lsp.html#robo_top_of_doc">sclist.lsp</a> 963 2010-04-08 20:58:32Z medward2 $
 </pre>
 
 
 <a name="utilities2fpdivide2dreaper2dmarkers"></a>
-<a name="robo944"></a><h2 class=robodoc>utilities/pdivide-reaper-markers [ Functions ]</h2>
+<a name="robo949"></a><h2 class=robodoc>utilities/pdivide-reaper-markers [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./utilities_lsp.html#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Write to standard out (terminal/interpreter) marker data for a reaper file
- generated from calls to the <a href="./utilities_lsp.html#robo943">pdivide</a> function.
+ generated from calls to the <a href="./utilities_lsp.html#robo948">pdivide</a> function.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> Takes the same arguments as the <a href="./utilities_lsp.html#robo943">pdivide</a> function
+<pre> Takes the same arguments as the <a href="./utilities_lsp.html#robo948">pdivide</a> function
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T
@@ -242,18 +306,18 @@
 
 
 <a name="utilities2fpexpand2dreaper2dmarkers"></a>
-<a name="robo947"></a><h2 class=robodoc>utilities/pexpand-reaper-markers [ Functions ]</h2>
+<a name="robo952"></a><h2 class=robodoc>utilities/pexpand-reaper-markers [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./utilities_lsp.html#robo20">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 4th 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Using the <a href="./utilities_lsp.html#robo945">pexpand</a> function, we write marker information in a format which
+<pre> Using the <a href="./utilities_lsp.html#robo950">pexpand</a> function, we write marker information in a format which
  can be read by the Reaper (version 4/5+) DAW software. Though we can think
- of the outputs of <a href="./utilities_lsp.html#robo945">pexpand</a> to be in beats, seconds, bars, or any arbitrary
- <a href="./popcorn_lsp.html#robo382">scale</a>, the timings of Reaper markers are in seconds, hence the need here
- for an initial <a href="./tempo_lsp.html#robo290">tempo</a>. In other words, we treat the output of <a href="./utilities_lsp.html#robo945">pexpand</a> to be
+ of the outputs of <a href="./utilities_lsp.html#robo950">pexpand</a> to be in beats, seconds, bars, or any arbitrary
+ <a href="./popcorn_lsp.html#robo383">scale</a>, the timings of Reaper markers are in seconds, hence the need here
+ for an initial <a href="./tempo_lsp.html#robo290">tempo</a>. In other words, we treat the output of <a href="./utilities_lsp.html#robo950">pexpand</a> to be
  beat counts; if you would prefer to interpret these as bars, simply divide
  the <a href="./tempo_lsp.html#robo290">tempo</a> by the number of beats per bar. If there are to be <a href="./tempo_lsp.html#robo290">tempo</a> changes
  in the mix/<a href="./piece_lsp.html#robo56">piece</a> Reaper itself will update the markers' positions when the
@@ -266,8 +330,8 @@
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the <a href="./tempo_lsp.html#robo290">tempo</a> in BPM
- - the number of generations: see the <a href="./utilities_lsp.html#robo945">pexpand</a> function
- - (&amp;rest) the proportions: see the <a href="./utilities_lsp.html#robo945">pexpand</a> function
+ - the number of generations: see the <a href="./utilities_lsp.html#robo950">pexpand</a> function
+ - (&amp;rest) the proportions: see the <a href="./utilities_lsp.html#robo950">pexpand</a> function
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always T
@@ -324,7 +388,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/reaper.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-05-04 14:12:46</p>
+<p>Generated from ./../../src/reaper.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
 </div> <!-- footer -->
 </body>
 </html>

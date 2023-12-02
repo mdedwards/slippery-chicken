@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  13:56:47 Fri Apr  1 2022 CEST
+;;; $$ Last modified:  10:23:59 Mon Sep 25 2023 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1528,7 +1528,7 @@ NIL
                                    notehead tuplet-actual-normals)
   (let ((bracket (bracket r))
         (beam (beam r))
-        (xml-rthm (xml-simple-rhythm (letter-value r))))
+        xml-rthm)
     ;; (print 'here) (print tuplet-actual-normals)
     (if (is-grace-note r)
         ;; MDE Mon Jan  8 11:52:34 2018 -- Dorico expects the <grace /> tag
@@ -1537,7 +1537,8 @@ NIL
         ;; (format stream "~&        <grace />~
         (format stream "~&        <type>eighth</type>~
                         ~&        <stem default-y=\"3\">up</stem>")
-        (progn 
+        (progn
+          (setq xml-rthm (xml-simple-rhythm (letter-value r)))
           (when (is-rest r)
             (format stream "~&        <rest />"))
           (format stream "~&        <duration>~a</duration>"

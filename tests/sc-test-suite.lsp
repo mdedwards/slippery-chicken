@@ -16573,7 +16573,7 @@ est)")))
        (676.1075 676.79114 677.1503 677.57904 678.12366)
        (799.29205 799.8019 800.58984 800.96063 801.13446 801.45886)
        (804.98145 805.2016 805.5724 805.83887 806.31396)))))
-     
+
 ;;; SAR Fri Jun 15 13:18:25 BST 2012
 (sc-deftest test-utilities-wavelab-to-audacity-marker-file ()
   (let ((out (concatenate 'string
@@ -20301,6 +20301,28 @@ est)")))
     (edit-file "/tmp/reaper-test.rpp" str "this is a test :)")
     (equalp "this is a test :)"
 	    (read-file-as-string "/tmp/reaper-test.rpp"))))
+
+;;; LF <2023-12-02 Sa>
+(sc-deftest test-utilities-coordinates ()
+  (sc-test-check
+    (equalp
+     (polar-to-cartesian 0 45 1)
+     '(0.0 0.70710677 0.70710677))
+    (equalp
+     (cartesian-to-polar 0 0 1)
+     '(0 90 1))
+    (multiple-value-bind (x y z)
+	(convert-polar-envelopes '(0 0  1 180) '(0 30  .5 0  1 45)
+				 :minimum-samples 5)
+      (equalp x
+	      '(0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145
+		100.0 8.6595606e-17))
+      (equalp y
+	      '(0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75
+		-0.65328145 100.0 -0.70710677))
+      (equalp z
+	      '(0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343
+		100.0 0.70710677)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 20 12:10:05 2021, Heidhausen -- an example from Simon Bahr that

@@ -73,7 +73,7 @@
    (angle-env :accessor angle-env :type list :initarg :angle-env
 	      :initform '(0 .5  100 .5))
    (elevation-env :accessor elevation-env :type list :initarg :elevation-env
-		  :initform '(0 .5  100 .5))
+		  :initform '(0 0  100 0))
    ;; some sounds have a prominent fundamental which can be used for
    ;; transposing to specific pitches.  Give this here either in the form of a
    ;; real freq or a note, which will then be converted.
@@ -502,9 +502,12 @@ T
 ;;; - :angle-env. used for spatialization, fore example with
 ;;;   #'write-reaper-ambisonics-file. Can be an env (list of breakpoints) or
 ;;;   a list of envs. This then represents the azimuth angle in a polar
-;;;   coordinate system.
+;;;   coordinate system. 0 and 1 represend 0° and 360° and are assumed to be in
+;;;   the front. 0.5 would thus be 180° and located behind the listener.
 ;;; - :elevation-env. same as angle-env but represents the elevation angle.
-;;;   (the horizontal angle from the x-axis).
+;;;   (the horizontal angle from the x-axis). -.5 represents the lowest point
+;;;   at -90°, 0 the level of the listening position and .5 the top (90°).
+;;;   This is, so that the span from 0 to 1 can represent the entire 360°.
 ;;;
 ;;; RETURN VALUE
 ;;; A sndfile object.
@@ -549,7 +552,7 @@ data: /path/to/sndfile-1.aiff
                      (frequency nil)
 	             (amplitude 1.0)
 	             (angle-env '(0 .5  100 .5))
-		     (elevation-env '(0 .5  100 .5)))
+		     (elevation-env '(0 0  100 0)))
 ;;; **** 
   (if (and path (listp path))
       (progn

@@ -4255,8 +4255,8 @@ WARNING:
 ;;; that the elevation is the angle from true horizontal, not vertical...
 ;;; 
 ;;; ARGUMENTS
-;;; - The horizonal angle from the X axis (alpha, azimuth angle) in degree
-;;; - The vertical angle from the X axis (polar, elevation) between 0 and 180°
+;;; - The horizonal angle from the Y axis (alpha, azimuth angle) in degree.
+;;; - The vertical angle from the X axis (polar, elevation) between +-180°
 ;;; - The distance from the origin (the radius), 0 <= distance <= 1
 ;;; 
 ;;; RETURN VALUE
@@ -4266,20 +4266,20 @@ WARNING:
 #|
 (polar-to-cartesian 0 45 1)
 
-=> (0.70710677 0.0 0.70710677)
+=> (0.0 0.70710677 0.70710677)
 
 |#
 ;;; SYNOPSIS
 (defun polar-to-cartesian (angle elevation distance)
 ;;; ****
-  (unless (<= 0 elevation 180) (error "elevation ~a out of bounds" elevation))
+  (unless (<= -180 elevation 180) (error "elevation ~a out of bounds" elevation))
   (unless (>= distance 0) (error "distance ~a out of bounds" distance))
   (let* ((sina (sin (degree-to-radian angle)))
 	 (sine (sin (degree-to-radian elevation)))
 	 (cosa (cos (degree-to-radian angle)))
 	 (cose (cos (degree-to-radian elevation)))
-	 (x (* distance cosa cose))
-	 (y (* distance sina cose))
+	 (x (* distance sina cose))
+	 (y (* distance cosa cose))
 	 (z (* distance sine)))
     `(,x ,y ,z)))
 
@@ -4304,9 +4304,9 @@ WARNING:
 ;;; 
 ;;; EXAMPLE
 #|
-(cartesian-to-polar .5 .5 .5)
+(cartesian-to-polar 0 0 1)
 
-=> (45 30001/1000 433/250)
+=> (0 90 1)
 
 |#
 ;;; SYNOPSIS
@@ -4318,7 +4318,7 @@ WARNING:
   (let* ((distance
 	  (/ (round (* (sqrt (+ (expt x 2) (expt y 2) (expt z 2))) 1000)) 1000))
 	 (elevation
-	  (/ (round (* (radian-to-degree (atan z distance))  1000)) 1000))
+	  (/ (round (* (radian-to-degree (asin (/ z distance)))  1000)) 1000))
 	 (angle (/ (round (* (radian-to-degree (atan y x)) 1000)) 1000)))
     `(,angle ,elevation ,distance)))
 
@@ -4331,7 +4331,8 @@ WARNING:
 ;;; DESCRIPTION
 ;;; Convert a set of an angle-env and elevation-env into an envelope for the
 ;;; x, y and z coordinates. Distance is assumed to be 1, if no additional
-;;; distance-env is given.
+;;; distance-env is given. The x axis represents left (-1) and right (+1).
+;;; The y axis is front (+1) to back (-1), z goes up (+1) to head-level (0).
 ;;; 
 ;;; ARGUMENTS
 ;;; - An angle-env
@@ -4353,9 +4354,9 @@ WARNING:
 #|
 (convert-polar-envelopes '(0 0  1 180) '(0 30  .5 0  1 45) :minimum-samples 5)
 
-=> (0 0.8660254 1/4 0.68301266 0.5 6.123234e-17 3/4 -0.65328145 1 -0.70710677)
-=> (0 0.0 1/4 0.68301266 0.5 1.0 3/4 0.65328145 1 8.6595606e-17)
-=> (0 0.5 1/4 0.25881904 0.5 0.0 3/4 0.38268343 1 0.70710677)
+=> (0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145 100.0 8.6595606e-17)
+=> (0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75 -0.65328145 100.0 -0.70710677)
+=> (0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343 100.0 0.70710677)
 
 |#
 ;;; SYNOPSIS
@@ -4381,8 +4382,8 @@ WARNING:
     (setf all-x (sort all-x #'<))
     (loop for i in all-x
        for new = (polar-to-cartesian
-		  (* (interpolate i angle-env) 360)
-		  (* (interpolate i elevation-env) 90)
+		  (interpolate i angle-env)
+		  (interpolate i elevation-env)
 		  (interpolate i distance-env))
        collect i into x-env collect (first new) into x-env
        collect i into y-env collect (second new) into y-env

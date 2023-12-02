@@ -657,7 +657,7 @@
 ;;; one you want. For example, the angle-parameter for the iem stereo encoder is
 ;;; the 6th.
 ;;; :parameter-min. The minimm value the envelope will have in reaper. Usually
-;;; it is 0 but for example for panorama it could be -1. This is less important
+;;; it is 0 but for example for panorama it could be -1. This is less important.
 ;;; :parameter-max. The maximum value the envelope will have in reaper. Usually
 ;;; it is 1 but for example for volume it could be 2. This is less important.
 ;;; :is-visible. t or nil, wheter the envelope will be visible (opened) in the
@@ -1477,7 +1477,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; 
 ;;; DESCRIPTION
 ;;; Create a reaper file that contains all the data to spatialize sndfiles using
-;;; the ambisonics method.
+;;; the ambisonics method. For more information on the spatialization data, see
+;;; #'make-sndfile
 ;;; 
 ;;; ARGUMENTS
 ;;; - a list of sndfile objects: their angle-env and elevation-env arguments
@@ -1516,6 +1517,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; is the elevation-argument. If this is a list of numbers, the first element
 ;;; will be used for the first elevation-env of the sndfile and the second for
 ;;; the second env etc. (when more than one is given for each sndfile).
+;;; :angle-offset. An offset for the rotation of the scene, where 1 = 360°.
+;;; Default is 0.5, so that the angle 0 is the front for the iem plugins.
 ;;; :envs-use-start-times. If nil, all envelopes start at the minimal
 ;;; start-time. If t, the envelopes use the start time of the respective
 ;;; sndfile.
@@ -1582,6 +1585,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 				       (decoder :blue-ripple-decoder)
 				       (angle-parameter-slot 6)
 				       (elevation-parameter-slot 7)
+				       (angle-offset 0.5)
 				       (envs-use-start-times t)
 				       (envs-use-end-times t)
 				       envs-duration
@@ -1598,6 +1602,7 @@ Here's where I pasted the data into the .RPP Reaper file:
     (error "ambi-order should be an integer between 1 and 8 but is ~a"
 	   ambi-order))
   (unless file (setf file (default-dir-file "ambisonics.rpp")))
+  ;; variables
   (let* ((paths (loop for snd in list-of-sndfiles collect (path snd)))
 	 (items (make-reaper-items4 paths start-times))
 	 (looped-start-times
@@ -1635,6 +1640,7 @@ Here's where I pasted the data into the .RPP Reaper file:
     (unless envs-only
       (setf string
 	    (insert-plugin string (getf *plugins-for-reaper* decoder) 0 t)))
+    ;; get the envelopes
     (loop for i from 1 and snd in list-of-sndfiles
        for start = (if envs-use-start-times
 		       (nth (1- i) looped-start-times)
@@ -1658,7 +1664,10 @@ Here's where I pasted the data into the .RPP Reaper file:
 	      (setf string (insert-envelope
 			    string
 			    (make-reaper-envelope
-			     (nth (mod k (length angle-envs)) angle-envs)
+			     ;; offsetting the rotation of the scene \w env-plus
+			     (env-plus
+			      (nth (mod k (length angle-envs)) angle-envs)
+			      angle-offset)
 			     :parameter-slot (nth (mod k (length angle-slots))
 						  angle-slots)
 			     :start-time start
@@ -1668,8 +1677,12 @@ Here's where I pasted the data into the .RPP Reaper file:
 		    string (insert-envelope
 			    string
 			    (make-reaper-envelope
-			     (nth (mod k (length elevation-envs))
-				  elevation-envs)
+			     ;; convert range -1:1 to 0:1
+			     (scale-env
+			      (env-plus (nth (mod k (length elevation-envs))
+					    elevation-envs)
+					1)
+			      .5)
 			     :parameter-slot (nth
 					      (mod k (length elevation-slots))
 					      elevation-slots)
@@ -1715,8 +1728,10 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; the soundfiles on each track has, but is at least 2 and not more than 8.
 ;;; :tempo. The BPM value that should be written to the reaper project, if
 ;;; desired. Default = 60.
-;;; :init-volume. Volume multipliers for all faders.
+;;; :init-volume. Volume multpiliers for all faders.
 ;;; -0dB would be 1, Default = -12dB.
+;;; :angle-offset. An offset for the rotation of the scene, where 1 = 360°.
+;;; Default is 0, so that the angle 0 is the front.
 ;;; :env-conversion-srate. This number is the minimum amount of times per second
 ;;; that an additional point is calculated and converted from polar to cartesian
 ;;; coordinates. Default = 4, which means that at least every .25 seconds there
@@ -1761,7 +1776,6 @@ Here's where I pasted the data into the .RPP Reaper file:
  :envs-use-start-times t
  :envs-use-end-times t)
 
-
 ;;; spatialize one sndfile with two channels, that are opposite and circling
 ;;; each other:
 (write-reaper-sad-file 
@@ -1780,6 +1794,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 				(nr-of-master-channels 2)
 				(tempo 60)
 				(init-volume .2511)
+				(angle-offset 0)
 				(env-conversion-srate 4)
 				(envs-use-start-times t)
 				(envs-use-end-times t)
@@ -1794,6 +1809,7 @@ Here's where I pasted the data into the .RPP Reaper file:
     (error "list-of-sndfile is not a list of sndfiles but: ~a"
 	   list-of-sndfiles))
   (unless file (setf file (default-dir-file "sad.rpp")))
+  ;; variables
   (let* ((paths (loop for snd in list-of-sndfiles collect (path snd)))
 	 (items (make-reaper-items4 paths start-times))
 	 (looped-start-times
@@ -1803,8 +1819,10 @@ Here's where I pasted the data into the .RPP Reaper file:
 	 (max-time 0)
 	 (string "")
 	 rf)
+    ;; set volume
     (loop for item in items and snd in list-of-sndfiles do
-	 (setf (amplitude item) (amplitude snd)))
+      (setf (amplitude item) (amplitude snd)))
+    ;; init the file
     (setf rf (create-tracks
 	      (make-reaper-file 'sad items
 				:tempo (or tempo 60)
@@ -1831,6 +1849,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 	    string
 	    (insert-plugin string (getf *plugins-for-reaper* :sad-channel-out)
 			   0 t)))
+    ;; get the envelopes
     (loop for i from 1 and snd in list-of-sndfiles
        for start = (if envs-use-start-times
 		       (nth (1- i) looped-start-times)
@@ -1851,19 +1870,22 @@ Here's where I pasted the data into the .RPP Reaper file:
 				       i)))
        ;; insert envelopes:
 	 (loop for k from 0 below nr-of-voices do
+	   ;; converto polar envelopes to x y z
 	      (multiple-value-bind (x y z)
 		  (convert-polar-envelopes
-		   (nth (mod k (length angle-envs)) angle-envs)
-		   (nth (mod k (length elevation-envs)) elevation-envs)
+		   (scale-env
+		    (env-plus (nth (mod k (length angle-envs)) angle-envs)
+			      angle-offset)
+		    360)
+		   (scale-env
+		    (nth (mod k (length elevation-envs)) elevation-envs)
+		    180)
 		   :minimum-samples (* (- end start) env-conversion-srate))
 		;; atm, the envelopes go from -1 to 1 but we should scale them
 		;; to fit between 0 and 1:
-		(setf x (loop for x in x by #'cddr and y in (cdr x) by #'cddr
-			   collect x collect (rationalize (* (1+ y) .5)))
-		      y (loop for x in y by #'cddr and y in (cdr y) by #'cddr
-			   collect x collect (rationalize (* (1+ y) .5)))
-		      z (loop for x in z by #'cddr and y in (cdr z) by #'cddr
-			   collect x collect (rationalize (* (1+ y) .5))))
+		(setf x (scale-env (env-plus x 1) .5)
+		      y (scale-env (env-plus y 1) .5)
+		      z (scale-env (env-plus z 1) .5))
 		(setf string
 		      (insert-envelope
 		       string

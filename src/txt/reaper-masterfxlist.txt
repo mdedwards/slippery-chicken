@@ -1,0 +1,6 @@
+"  <MASTERFXLIST
+    WNDRECT 24 52 655 408
+    SHOW 0
+    LASTSEL 0
+    DOCKED 0
+  >"

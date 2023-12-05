@@ -198,7 +198,8 @@
      ;; render a sound file from a given orchestra and a score generated via
      ;; write-csound-score.
      (csound-command
-      "/usr/local/bin/csound"))))
+      "/usr/local/bin/csound")
+     (path-to-ppcre nil))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -46,6 +46,7 @@
 #+sbcl (require :sb-bsd-sockets)
 #+sbcl (require :sb-posix)
 #+sbcl (unlock-package "COMMON-LISP")
+(require :asdf)
 
 (defparameter +slippery-chicken-version+ "1.0.12")
 
@@ -96,7 +97,7 @@
   (let* ((title (format nil "slippery chicken ~a"
                         +slippery-chicken-version+))
          (sc-logo (concatenate 'string +slippery-chicken-src-path+
-                               "sc-ascii-logo.txt"))
+                               "txt/sc-ascii-logo.txt"))
          (in (open sc-logo :if-does-not-exist nil)))
     (when logo
       (if in 
@@ -225,6 +226,7 @@
 (sc-compile-and-load "palette.lsp")
 (sc-compile-and-load "pitch-seq-palette.lsp")
 (sc-compile-and-load "globals.lsp")
+(sc::import-ppcre)
 (sc-compile-and-load "sc-map.lsp")
 (sc-compile-and-load "set-map.lsp")
 (sc-compile-and-load "tempo.lsp")

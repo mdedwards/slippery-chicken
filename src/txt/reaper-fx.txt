@@ -1,0 +1,5 @@
+"    BYPASS 0 0 0
+~a    PRESETNAME Default
+    FLOATPOS 0 0 0 0
+    FXID ~a
+    WAK 0 0"

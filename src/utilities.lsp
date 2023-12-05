@@ -1713,6 +1713,10 @@
 ;;; - :x-max. A number that is the maximum value for all x values after
 ;;;   scaling. NB: This optional argument can only be used if a value has been
 ;;;   specified for the :x-scaler.
+;;; - :first-x. If a number, scale the x-axis so that this is the first x-value.
+;;;   This then ignores x-scaler.
+;;; - :last-x. If a number, scale the x-axis so that this is the last x-value.
+;;;   This then ignores x-scaler.
 ;;; 
 ;;; RETURN VALUE
 ;;; An envelope in the form of a list of break-point pairs.
@@ -1740,17 +1744,30 @@
 
 => (9 53.0 50 189.0 90 7.0 90 200.0 90 3.0)
 
+;;; 'Stretching' the envelope by providing first-x and last-x values
+(scale-env '(1 0 5 1 20 0) 1 :first-x 0 :last-x 100)
+
+=> (0.0 0 21.052631 1 100.0 0)
+
 |#
 ;;; SYNOPSIS
-(defun scale-env (env y-scaler &key x-scaler 
-                                    (x-min most-negative-double-float)
-                                    (y-min most-negative-double-float)
-                                    (x-max most-positive-double-float)
-                                    (y-max most-positive-double-float))
+(defun scale-env (env y-scaler &key x-scaler first-x last-x
+                                 (x-min most-negative-double-float)
+                                 (y-min most-negative-double-float)
+                                 (x-max most-positive-double-float)
+				 (y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
-     collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
-                 x) 
+     collect (cond ((or first-x last-x)
+		    (let* ((old-first (first env))
+			   (old-last (lastx env)))
+		      (min x-max
+			   (max x-min
+				(rescale x old-first old-last
+					 (or first-x old-first)
+					 (or last-x old-last))))))
+		   (x-scaler (min x-max (max x-min (* x x-scaler))))
+		   (t x))
      collect (min y-max (max y-min (* y y-scaler)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3543,6 +3560,88 @@ WARNING:
 (defun read-from-default-dir-file (file)
   (read-from-file (concatenate 'string (get-sc-config 'default-dir) file)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/read-file-as-string
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; April 30th 2023.
+;;;
+;;; DESCRIPTION
+;;; Read an entire file (not just an s-expression) a into string and return it
+;;; 
+;;; ARGUMENTS
+;;; - A string that is the path to a file (directory and filename)
+;;; 
+;;; RETURN VALUE
+;;; A string with the contents of the file
+;;; 
+;;; EXAMPLE
+#|
+(read-from-file "/path/to/lisp-lorem-ipsum.txt")
+|#
+;;; SYNOPSIS
+(defun read-file-as-string (infile)
+;;; ****
+  (with-open-file (instream infile :direction :input :if-does-not-exist nil)
+    (when instream 
+      (let ((string (make-string (file-length instream))))
+        (read-sequence string instream)
+        string))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/edit-file
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; April 30th 2023.
+;;;
+;;; DESCRIPTION
+;;; a simple wrapper to open a file as a string and save it into a lexical
+;;; variable. This variable is then set to the return values of the expressions
+;;; within the body of edit-file. Eventually the new value of the variable is
+;;; written into the original file. This was originally designed to be used with
+;;; the editing functions in reaper.lsp (set-track-channels etc.).
+;;; 
+;;; ARGUMENTS
+;;; - A string that is the path to a file (directory and filename)
+;;; - A name for the lexical variable - this can be used within body
+;;; (without quote)
+;;; 
+;;; RETURN VALUE
+;;; whatever was written into the file
+;;; 
+;;; EXAMPLE
+#|
+;;; set all faders of project.rpp to 0.5 and use "anything" as lexical variable
+(edit-file "/E/project.rpp" anything
+      (set-all-faders anything .5))
+|#
+#|
+;;; more complex: insert a plugin on 3 tracks in two ways
+(edit-file "/E/project.rpp" project
+  (insert-plugin project *iem-stereo-encoder* 1)
+  (insert-plugin project *iem-stereo-encoder* 2)
+  (insert-plugin project *iem-stereo-encoder* 3))
+;;; alternatively:
+(edit-file "/E/project.rpp" project
+  (loop for i from 1 to 3 with temp-var = project
+     do (setf temp-var (insert-plugin temp-var *iem-stereo-encoder* i))
+       finally (return temp-var)))
+|#
+;;; SYNOPSIS
+(defmacro edit-file (file var &body body)
+;;; ****
+  `(let* ((,var (read-file-as-string ,file)))
+     (setf ,@(loop for i in `,body collect `,var collect i))
+     (with-open-file 
+	      (out ,file :direction :output :if-exists :rename-and-delete)
+	    (princ ,var out))
+     (format t "~&succesfully edited ~a" ,file)
+     ,var))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon May  7 22:47:10 BST 2012: Added robodoc entry
@@ -4089,6 +4188,207 @@ WARNING:
         (when warn
           (warn "utilities::dynamic-to-amplitude: unrecognised dynamics: ~a"
                 dynamic)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/degree-to-radian
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert an angle in degrees to its equivalent in radians
+;;; 
+;;; ARGUMENTS
+;;; - The number in degrees
+;;; 
+;;; RETURN VALUE
+;;; The number in radians
+;;; 
+;;; EXAMPLE
+#|
+(degree-to-radian 180)
+
+=> 3.141592653589793d0
+
+|#
+;;; SYNOPSIS
+(defun degree-to-radian (degree)
+;;; ****
+  (rationalize (* pi (/ degree 180))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/radian-to-degree
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert an angle in radians to its equivalent in degrees
+;;; 
+;;; ARGUMENTS
+;;; - The number in radians
+;;; 
+;;; RETURN VALUE
+;;; The number in degrees
+;;; 
+;;; EXAMPLE
+#|
+(radian-to-degree pi)
+
+=> 180
+
+|#
+;;; SYNOPSIS
+(defun radian-to-degree (radian)
+;;; ****
+  (rationalize (* 180 (/ radian pi))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/polar-to-cartesian
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert a point in a 3D coordinate space from the polar system to cartesian
+;;; coordinates. This differs from the normal definition of this conversion, in
+;;; that the elevation is the angle from true horizontal, not vertical...
+;;; 
+;;; ARGUMENTS
+;;; - The horizonal angle from the Y axis (alpha, azimuth angle) in degree.
+;;; - The vertical angle from the X axis (polar, elevation) between +-180°
+;;; - The distance from the origin (the radius), 0 <= distance <= 1
+;;; 
+;;; RETURN VALUE
+;;; A list that holds the x y and z coordinates for the point.
+;;; 
+;;; EXAMPLE
+#|
+(polar-to-cartesian 0 45 1)
+
+=> (0.0 0.70710677 0.70710677)
+
+|#
+;;; SYNOPSIS
+(defun polar-to-cartesian (angle elevation distance)
+;;; ****
+  (unless (<= -180 elevation 180) (error "elevation ~a out of bounds" elevation))
+  (unless (>= distance 0) (error "distance ~a out of bounds" distance))
+  (let* ((sina (sin (degree-to-radian angle)))
+	 (sine (sin (degree-to-radian elevation)))
+	 (cosa (cos (degree-to-radian angle)))
+	 (cose (cos (degree-to-radian elevation)))
+	 (x (* distance sina cose))
+	 (y (* distance cosa cose))
+	 (z (* distance sine)))
+    `(,x ,y ,z)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/cartesian-to-polar
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert a point in a 3D coordinate space from the cartesian system to polar
+;;; coordinates. This differs from the normal definition of this conversion, in
+;;; that the elevation is the angle from true horizontal, not vertical...
+;;; 
+;;; ARGUMENTS
+;;; - The x-coordinate
+;;; - The y-coordinate
+;;; - The z-coordinate
+;;; 
+;;; RETURN VALUE
+;;; A list that holds the angle (azimuth), elevation and distance of the point.
+;;; 
+;;; EXAMPLE
+#|
+(cartesian-to-polar 0 0 1)
+
+=> (0 90 1)
+
+|#
+;;; SYNOPSIS
+(defun cartesian-to-polar (x y z)
+;;; ****
+  (unless (<= -1 x 1) (error "x ~a out of bounds" x))
+  (unless (<= -1 y 1) (error "y ~a out of bounds" y))
+  (unless (<= -1 z 1) (error "z ~a out of bounds" z))
+  (let* ((distance
+	  (/ (round (* (sqrt (+ (expt x 2) (expt y 2) (expt z 2))) 1000)) 1000))
+	 (elevation
+	  (/ (round (* (radian-to-degree (asin (/ z distance)))  1000)) 1000))
+	 (angle (/ (round (* (radian-to-degree (atan y x)) 1000)) 1000)))
+    `(,angle ,elevation ,distance)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/convert-polar-envelopes
+;;;
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;; 
+;;; DESCRIPTION
+;;; Convert a set of an angle-env and elevation-env into an envelope for the
+;;; x, y and z coordinates. Distance is assumed to be 1, if no additional
+;;; distance-env is given. The x axis represents left (-1) and right (+1).
+;;; The y axis is front (+1) to back (-1), z goes up (+1) to head-level (0).
+;;; 
+;;; ARGUMENTS
+;;; - An angle-env
+;;; - An elevation-env
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :distance-env. A distance-env...
+;;; :minimum-samples. A number - minimal amount of points between first and
+;;; last point of the envelopes at which to convert. If nil, only the original
+;;; points of the envelopes are used, this however doesn't always fully
+;;; represent the envelopes... Going from 0° to 180° is something else than
+;;; going from y = 1 to y = -1.
+;;; 
+;;; RETURN VALUE
+;;; A list that holds the three envelopes for x, y and z
+;;; 
+;;; EXAMPLE
+#|
+(convert-polar-envelopes '(0 0  1 180) '(0 30  .5 0  1 45) :minimum-samples 5)
+
+=> (0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145 100.0 8.6595606e-17)
+=> (0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75 -0.65328145 100.0 -0.70710677)
+=> (0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343 100.0 0.70710677)
+
+|#
+;;; SYNOPSIS
+(defun convert-polar-envelopes (angle-env elevation-env
+				&key (distance-env '(0 1 1 1))
+				  minimum-samples)
+;;; ****
+  ;; stretch the envelopes so they align:
+  (setf angle-env (scale-env angle-env 1 :first-x 0 :last-x 100)
+	elevation-env (scale-env elevation-env 1 :first-x 0 :last-x 100)
+	distance-env (scale-env distance-env 1 :first-x 0 :last-x 100))
+  (let* ((angle-all-x (loop for x in angle-env by #'cddr collect x))
+	 (elevation-all-x (loop for x in elevation-env by #'cddr collect x))
+	 (distance-all-x (loop for x in distance-env by #'cddr collect x))
+	 (all-x angle-all-x))
+    (loop for i in elevation-all-x
+       unless (member i all-x :test #'=) do (push i all-x))
+    (loop for i in distance-all-x
+       unless (member i all-x :test #'=) do (push i all-x))
+    (when minimum-samples
+      (loop for i from 0 to 100 by (/ 100 (1- minimum-samples))
+	 unless (member i all-x :test #'=) do (push i all-x)))
+    (setf all-x (sort all-x #'<))
+    (loop for i in all-x
+       for new = (polar-to-cartesian
+		  (interpolate i angle-env)
+		  (interpolate i elevation-env)
+		  (interpolate i distance-env))
+       collect i into x-env collect (first new) into x-env
+       collect i into y-env collect (second new) into y-env
+       collect i into z-env collect (third new) into z-env
+       finally (return (values x-env y-env z-env)))))
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5532,6 +5832,8 @@ RETURNS:
 ;;; the range of arguments two and three. This would normally be #'error,
 ;;; #'warn or NIL. If #'warn or NIL, argument 1 will be hard-limited to the
 ;;; original range. Default = #'error
+;;; :type-of-result. Usually this function uses float precision, but by setting
+;;; type-of-result to #'double-float or #'rationalize, it is more precise.
 ;;; 
 ;;; RETURN VALUE
 ;;; The value within the new range (a number)
@@ -5542,7 +5844,8 @@ RETURNS:
 ==> 50.0
 |#
 ;;; SYNOPSIS
-(defun rescale (val min max new-min new-max &optional (out-of-range #'error))
+(defun rescale (val min max new-min new-max &optional (out-of-range #'error)
+					      (type-of-result #'float))
 ;;; ****
   (flet ((oor () ; in case we need to call it on more than one occasion...
            (when (functionp out-of-range)
@@ -5558,9 +5861,9 @@ RETURNS:
                  (<= val max))
       (oor)
       (setf val (if (> val max) max min)))
-    (let* ((range1 (float (- max min)))
-           (range2 (float (- new-max new-min)))
-           (prop (float (/ (- val min) range1))))
+    (let* ((range1 (funcall type-of-result (- max min)))
+           (range2 (funcall type-of-result (- new-max new-min)))
+           (prop (funcall type-of-result (/ (- val min) range1))))
       (+ new-min (* prop range2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6189,15 +6492,15 @@ yes_foo, 1 2 3 4;
 (defun decider (selector weights)
 ;;; ****  
   (labels ((helper (selector ls1 index sum)
-             (cond ((null ls1) (1- (length weights)))
-                   ((< selector sum) index)
-                   (t (helper selector
-                              (cdr ls1)
-                              (+ index 1)
-                              (+ sum (car ls1)))))))
-    (helper (rescale selector 0 1 0 (loop for i in weights sum i))
-            (cdr weights) 0 (car weights))))
-
+	     (cond ((null ls1) (1- (length weights)))
+		   ((< selector sum) index)
+		   (t (helper selector
+			      (cdr ls1)
+			      (+ index 1)
+			      (+ sum (rationalize (car ls1))))))))
+    (helper (rescale (rationalize selector) 0 1 0 (loop for i in weights sum
+						       (rationalize i)))
+	    (cdr weights) 0 (rationalize (car weights)))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/visualize
 ;;; AUTHOR
@@ -6324,6 +6627,47 @@ yes_foo, 1 2 3 4;
       ((or windows test1) (format nil "~a:~a" device rest))
       ;; if type is unknown, no error but unix type path:
       (t (format nil "/~a~a" device rest)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF <2023-05-21 So>
+;;; import the ppcre library
+;;; you could (set-sc-config 'path-to-ppcre "...") to install into another
+;;; directory.
+#+(not cl-ppcre)
+(defun import-ppcre (&key update (mkdir "/usr/bin/mkdir") (git "/usr/bin/git"))
+;;; ****
+  ;; set the directory:
+  (let* ((dir (or (get-sc-config 'path-to-ppcre)
+		  (make-pathname
+		   :directory
+		   (butlast (pathname-directory
+			     cl-user::+slippery-chicken-home-dir+)))))
+	 (target-dir (format nil "~appcre/" dir)))
+    ;; check if the git command is found:
+    (unless (probe-file git)
+      (warn "utilities::import-ppcre: Cannot find the git command at: ~a. ~
+          ppcre can not be installed automatically" git))
+    (when (probe-file git)
+      #+(and (or ccl sbcl) unix)
+      (progn
+	(if (probe-file (concatenate 'string target-dir "cl-ppcre.asd"))
+	    (if update (progn (format t "~&updating ~a~&" target-dir)
+			      (shell git "-C" target-dir "pull"))
+		(print "PPCRE seems to be installed, if you want to update it, ~
+                   evaluate (import-ppcre :update t)"))
+	    (progn
+	      (shell mkdir target-dir)
+	      (shell git
+		     "clone"
+		     "https://github.com/edicl/cl-ppcre.git"
+		     target-dir)))
+	(asdf:load-asd
+	 (merge-pathnames "cl-ppcre.asd" target-dir))
+	(asdf:load-system :cl-ppcre))
+      #-(and (or ccl sbcl) unix)
+      (warn "utilities::import-ppcre: Sorry but this currently only runs ~
+           with SBCL or CCL on a unix system. Please install the ppcre-library ~
+           by hand and load it before loading SC"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

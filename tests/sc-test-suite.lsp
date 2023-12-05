@@ -16439,6 +16439,27 @@
        vulputate ipsum lacus porta risus a vulputate magna justo a
        est))))
 
+;;; LF <2023-05-11 Do>
+(sc-deftest test-utilities-read-file-as-string ()
+  (sc-test-check
+    (equalp
+     (read-file-as-string
+      (concatenate 'string 
+                   cl-user::+slippery-chicken-home-dir+
+                   "tests/lisp-lorem-ipsum.txt")) 
+     "(Lorem ipsum dolor sit amet consectetur adipiscing elit Cras consequat
+convallis justo vitae consectetur Mauris in nibh vel est tempus
+lobortis Suspendisse potenti Sed mauris massa adipiscing vitae dignissim
+condimentum volutpat vel felis Fusce augue dui pulvinar ultricies imperdiet
+sed pharetra eu quam Integer in vulputate velit Aliquam erat
+volutpat Vivamus sit amet orci eget eros consequat tincidunt Nunc elementum
+adipiscing lobortis Morbi at lorem est eget mattis erat Donec ac risus a dui
+malesuada lobortis ac at est Integer at interdum tortor Vivamus hendrerit
+consequat augue Quisque aliquam tellus nec vestibulum lobortis risus turpis
+luctus ligula in bibendum felis sem pulvinar dolor Vivamus rhoncus nisi
+gravida porta vulputate ipsum lacus porta risus a vulputate magna justo a
+est)")))
+
 ;;; SAR Fri Jun 15 12:49:41 BST 2012
 (sc-deftest test-utilities-parse-wavelab-marker-file-for-loops ()
   (sc-test-check
@@ -16572,7 +16593,7 @@
        (676.1075 676.79114 677.1503 677.57904 678.12366)
        (799.29205 799.8019 800.58984 800.96063 801.13446 801.45886)
        (804.98145 805.2016 805.5724 805.83887 806.31396)))))
-     
+
 ;;; SAR Fri Jun 15 13:18:25 BST 2012
 (sc-deftest test-utilities-wavelab-to-audacity-marker-file ()
   (let ((out (concatenate 'string
@@ -20248,11 +20269,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan 28 16:40:13 2021, Heidhausen -- reaper tests
 (sc-deftest test-reaper ()
-  (let ((sndfiles (get-sndfiles
+  (let* ((sndfiles (get-sndfiles
                    (concatenate 'string
                                 cl-user::+slippery-chicken-home-dir+
                                 ;; only three in here
-                                "tests/test-sndfiles-dir-2"))))
+                                "tests/test-sndfiles-dir-2")))
+	 (list-of-sndfiles
+	  (loop for snd in sndfiles collect
+	       (make-sndfile snd
+			     :angle-env '((0 0  .5 .5  .8 8  1 3.25) (0 1 1 0))
+			     :elevation-env '(0 0  .6 .5  2 .5)))))
     (multiple-value-bind
           (items1 end-time1)
         (make-reaper-items1 sndfiles
@@ -20276,7 +20302,9 @@
           (probe-delete "/tmp/reaper-test.rpp")
           (probe-delete "/tmp/reaper-test2.rpp")
           (probe-delete "/tmp/reaper-test3.rpp")
-          (probe-delete "/tmp/test.rpp")
+	  (probe-delete "/tmp/reaper-test4.rpp")
+	  (probe-delete "/tmp/reaper-test5.rpp")
+	  (probe-delete "/tmp/test.rpp")
           (sc-test-check
             ;; MDE Wed Oct 18 10:09:21 2023, Heidhausen -- check marker writing
             ;; throws no errors when writing to the default path
@@ -20293,14 +20321,51 @@
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
-            (string= (tstring (get-first (tracks rf2)))
+	    (string= (tstring (get-first (tracks rf2)))
                      (tstring (clone (get-first (tracks rf2)))))
-            ;; (print (get-first (tracks rf2)))
+	    #+cl-ppcre(write-reaper-ambisonics-file list-of-sndfiles
+					  :file "/tmp/reaper-test4.rpp")
+	    #+cl-ppcre(write-reaper-sad-file list-of-sndfiles
+					     :file "/tmp/reaper-test5.rpp")
+	    
             (assoc-list-p (tracks rf1))
             (assoc-list-p (tracks rf2))
             (assoc-list-p (tracks rf3))
             (file-write-ok "/tmp/reaper-test.rpp" 4200)
-            (file-write-ok "/tmp/reaper-test2.rpp" 4200)))))))
+            (file-write-ok "/tmp/reaper-test2.rpp" 4200)
+	    #+cl-ppcre(file-write-ok "/tmp/reaper-test4.rpp" 14500)
+	    #+cl-ppcre(file-write-ok "/tmp/reaper-test5.rpp" 201000)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF <2023-05-11 Do>
+;;; this happens after test-reaper to recycle the reaper-test files
+(sc-deftest test-utilities-edit-file ()
+  (sc-test-check
+    (edit-file "/tmp/reaper-test.rpp" str "this is a test :)")
+    (equalp "this is a test :)"
+	    (read-file-as-string "/tmp/reaper-test.rpp"))))
+
+;;; LF <2023-12-02 Sa>
+(sc-deftest test-utilities-coordinates ()
+  (sc-test-check
+    (equalp
+     (polar-to-cartesian 0 45 1)
+     '(0.0 0.70710677 0.70710677))
+    (equalp
+     (cartesian-to-polar 0 0 1)
+     '(0 90 1))
+    (multiple-value-bind (x y z)
+	(convert-polar-envelopes '(0 0  1 180) '(0 30  .5 0  1 45)
+				 :minimum-samples 5)
+      (equalp x
+	      '(0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145
+		100.0 8.6595606e-17))
+      (equalp y
+	      '(0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75
+		-0.65328145 100.0 -0.70710677))
+      (equalp z
+	      '(0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343
+		100.0 0.70710677)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 20 12:10:05 2021, Heidhausen -- an example from Simon Bahr that

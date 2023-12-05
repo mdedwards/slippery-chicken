@@ -6005,7 +6005,7 @@ seq-num 5, VN, replacing G3 with B6
                      (incf event-count-player)
                      (incf event-count)))))
     (write-reaper-file (make-reaper-file (id sc) (nreverse reaper-items)
-                                         :samplerate srate)
+                                         :sample-rate srate)
                        :min-channels min-channels
                        :max-channels max-channels
                        :file file-name)

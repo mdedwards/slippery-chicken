@@ -6640,8 +6640,8 @@ yes_foo, 1 2 3 4;
   (let* ((dir (or (get-sc-config 'path-to-ppcre)
 		  (make-pathname
 		   :directory
-		   (butlast (pathname-directory
-			     cl-user::+slippery-chicken-home-dir+)))))
+		   (pathname-directory
+			     cl-user::+slippery-chicken-src-path+))))
 	 (target-dir (format nil "~appcre/" dir)))
     ;; check if the git command is found:
     (unless (probe-file git)

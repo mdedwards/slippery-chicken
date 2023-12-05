@@ -6633,21 +6633,26 @@ yes_foo, 1 2 3 4;
 ;;; import the ppcre library
 ;;; you could (set-sc-config 'path-to-ppcre "...") to install into another
 ;;; directory.
-#+(not cl-ppcre)
-(defun import-ppcre (&key update (mkdir "/usr/bin/mkdir") (git "/usr/bin/git"))
+;;#+(not cl-ppcre)
+(defun import-ppcre (&key update mkdir (git "/usr/bin/git"))
 ;;; ****
+  #+darwin(unless mkdir (setf mkdir "/bin/mkdir"))
+  #+linux(unless mkdir (setf mkdir "/usr/bin/mkdir"))
   ;; set the directory:
   (let* ((dir (or (get-sc-config 'path-to-ppcre)
 		  (make-pathname
 		   :directory
-		   (butlast (pathname-directory
-			     cl-user::+slippery-chicken-home-dir+)))))
+		   (pathname-directory
+			     cl-user::+slippery-chicken-src-path+))))
 	 (target-dir (format nil "~appcre/" dir)))
     ;; check if the git command is found:
-    (unless (probe-file git)
+    (unless (and mkdir (probe-file mkdir))
+      (warn "utilities::import-ppcre: Cannot find the mkdir command at: ~a. ~
+          ppcre can not be installed automatically" mkdir))
+    (unless (and git (probe-file git))
       (warn "utilities::import-ppcre: Cannot find the git command at: ~a. ~
           ppcre can not be installed automatically" git))
-    (when (probe-file git)
+    (when (and mkdir git (probe-file git) (probe-file mkdir))
       #+(and (or ccl sbcl) unix)
       (progn
 	(if (probe-file (concatenate 'string target-dir "cl-ppcre.asd"))

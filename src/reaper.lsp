@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  12:14:18 Fri Dec  1 2023 CET
+;;; $$ Last modified:  18:42:37 Tue Dec 12 2023 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -80,7 +80,7 @@
   ((istring :accessor istring :type string :allocation :class
             ;; read in the text for an item
             :initform (read-from-file
-		       (file-from-sc-dir "src/txt/reaper-item.txt")))
+                       (file-from-sc-dir "src/txt/reaper-item.txt")))
    ;; these are the actual mouse-draggable fades in seconds
    (fade-in :accessor fade-in :type number :initarg :fade-in :initform 0.005)
    (fade-out :accessor fade-out :type number :initarg :fade-out :initform 0.005)
@@ -121,20 +121,20 @@
 (defclass reaper-envelope (sclist)
   ((env-type :accessor env-type :initform 'volume :initarg :env-type)
    (start-time :accessor start-time :initform nil :initarg :start-time
-	       :type number)
+               :type number)
    (end-time :accessor end-time :initform nil :initarg :end-time :type number)
    (parameter-slot :accessor parameter-slot :type integer
-		   :initarg :parameter-slot :initform 0)
+                   :initarg :parameter-slot :initform 0)
    (parameter-min :accessor parameter-min :initarg :parameter-min :type number
-		  :initform 0)
+                  :initform 0)
    (parameter-max :accessor parameter-max :initarg :parameter-max :type number
-		  :initform 1)
+                  :initform 1)
    (is-visible :accessor is-visible :initarg :is-visible  :type boolean
-	       :initform t)
+               :initform t)
    ;; the string that will be printed in the reaper file
    (env-string :accessor env-string :type string :initarg :env-string
-	       :initform (read-file-as-string (file-from-sc-dir
-					       "src/txt/reaper-env.txt")))))
+               :initform (read-file-as-string (file-from-sc-dir
+                                               "src/txt/reaper-env.txt")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a holder for reaper-items that will all be placed on a single user-named
@@ -156,7 +156,7 @@
      (max-channels :accessor max-channels :type integer :initarg :max-channels
                    :initform 4)
      (track-volume :accessor track-volume :initarg :track-volume :initform .5
-		  :type number)
+                  :type number)
      ;; the reaper text read in from a file 
      (tstring :accessor tstring :type string :allocation :class
               :initform (read-from-file (file-from-sc-dir
@@ -172,7 +172,7 @@
   ((record-path :accessor record-path :type string :initarg :record-path
                 :initform "/tmp/")
    (sample-rate :accessor sample-rate :type integer :initarg :sample-rate
-	       :initform 44100)
+               :initform 44100)
    (time-sig :accessor time-sig :initarg :time-sig :initform '(4 4))
    (tempo :accessor tempo :type number :initarg :tempo :initform 60)
    ;; zoom factor for the time line. At the moment this gives me about 80
@@ -181,9 +181,9 @@
    ;; number of channels every track has. If nil, this number is automatically
    ;; decided for each track
    (n-channels :accessor n-channels :initarg :n-channels :initform nil
-	       :type integer)
+               :type integer)
    (master-volume :accessor master-volume :initarg :master-volume :initform .5
-		  :type number)
+                  :type number)
    ;; where to place the cursor (e.g. at the end of a sequence of items,
    ;; including rests)
    (cursor :accessor cursor :type number :initarg :cursor :initform 0.0)
@@ -233,7 +233,8 @@
           (slot-value sndfile 'name) (name ri)
           (slot-value sndfile 'track) (track ri)
           (slot-value sndfile 'transposition) (transposition ri)
-          (slot-value sndfile 'play-rate) (play-rate ri))
+          (slot-value sndfile 'play-rate) (play-rate ri)
+          (slot-value sndfile 'pan) (pan ri))
     sndfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -310,15 +311,15 @@
 ;;; and end in seconds within the reaper-file.
 (defmethod write-reaper-envelope ((env reaper-envelope) stream)
   (format stream (env-string env)
-	  (format nil
-		  (if (is-parmenv (env-type env)) "~a ~a ~a ~a" "~a ~a ~a")
-		  (write-reaper-envelope-aux (env-type env))
-		  (if (is-parmenv (env-type env)) (parameter-slot env) "")
-		  (or (parameter-min env) "")
-		  (or (parameter-max env) ""))
-	  (generate-reaper-id)
-	  (if (is-visible env) 1 0)
-	  (generate-automation-data env)))
+          (format nil
+                  (if (is-parmenv (env-type env)) "~a ~a ~a ~a" "~a ~a ~a")
+                  (write-reaper-envelope-aux (env-type env))
+                  (if (is-parmenv (env-type env)) (parameter-slot env) "")
+                  (or (parameter-min env) "")
+                  (or (parameter-max env) ""))
+          (generate-reaper-id)
+          (if (is-visible env) 1 0)
+          (generate-automation-data env)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod (setf track) :around (track (ri reaper-item))
@@ -334,7 +335,7 @@
 ;;; write all items in a track to a reaper stream, using the tstring as template
 (defmethod write-track ((rt reaper-track) stream)
   (format stream (tstring rt) (string-downcase (string (id rt)))
-	  (track-volume rt) (channels rt))
+          (track-volume rt) (channels rt))
   (loop for item in (data rt) do (write-item item stream))
   (format stream "~&  >"))
 
@@ -365,11 +366,11 @@
 ;;; todo: meaningful tracknames?
 (defmethod create-tracks ((rf reaper-file)
                           &key (min-channels 2) (max-channels 4)
-			    channels track-volumes (sort-track-names t))
+                            channels track-volumes (sort-track-names t))
   ;; make sure channels is multiple of 2
   (when channels (setf channels (if (evenp (round channels))
-				    (round channels)
-				    (1+ (round channels)))))
+                                    (round channels)
+                                    (1+ (round channels)))))
   (unless track-volumes (setf track-volumes '(1)))
   (setf track-volumes (force-list track-volumes))
   (when (> min-channels max-channels)
@@ -377,10 +378,10 @@
   ;; items can of course use any name in their track slot, but get all unique
   ;; names here as this will determine how many tracks are written.
   (let* ((unique-track-names (remove-duplicates (mapcar #'track (data rf))
-						:test #'string=))
-	 (track-names (if sort-track-names
-			  (sort unique-track-names #'string<)
-			  unique-track-names))
+                                                :test #'string=))
+         (track-names (if sort-track-names
+                          (sort unique-track-names #'string<)
+                          unique-track-names))
          ;; create an assoc-list using the track names as IDs and empty lists
          ;; (to cons into) with the items further down
          (al (make-assoc-list
@@ -438,10 +439,10 @@
             (loop for i from 0 and track in (data al) collect
                  (make-instance 'reaper-track :id (id track) :data (data track)
                                 :channels (or channels (get-num-channels
-							(data track)))
-				:track-volume (nth (mod i (length
-							   track-volumes))
-						   track-volumes)
+                                                        (data track)))
+                                :track-volume (nth (mod i (length
+                                                           track-volumes))
+                                                   track-volumes)
                                 :min-channels min-channels
                                 :max-channels max-channels)))
       ;; (print al)
@@ -514,8 +515,8 @@
   ;; make sure channels is multiple of 2
   (when (n-channels rf)
     (setf (n-channels rf) (if (evenp (n-channels rf))
-			      (n-channels rf)
-			    (1+ (n-channels rf)))))
+                              (n-channels rf)
+                            (1+ (n-channels rf)))))
   (let ((outfile (if file
                      file
                    (default-dir-file (format nil "~a.rpp"
@@ -523,7 +524,7 @@
     ;; sort the items into tracks unless this has already been done
     (unless (tracks rf) 
       (create-tracks rf :min-channels min-channels :max-channels max-channels
-		     :channels (n-channels rf)))
+                     :channels (n-channels rf)))
     (with-open-file 
      (out outfile
           :direction :output :if-does-not-exist :create
@@ -569,27 +570,27 @@
 ;;; "{B1E049E1-FA47-6E73-1EEE-C0817D973E48}"
 (defun generate-reaper-id ()
   (format nil "{~8,'0x-~4,'0x-~4,'0x-~4,'0x-~12,'0x}"
-	  (random (expt 16 8)) (random (expt 16 4)) (random (expt 16 4))
-	  (random (expt 16 4)) (random (expt 16 12))))
+          (random (expt 16 8)) (random (expt 16 4)) (random (expt 16 4))
+          (random (expt 16 4)) (random (expt 16 12))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; for use in env-mod
 (defun env-mod-aux (last-x last-y x y)
   (let* ((yfloordiff (- (floor y) (floor last-y)))
-	 (pos? (> yfloordiff 0))
-	 (ydiff (- y last-y))
-	 (xdiff (- x last-x)))
+         (pos? (> yfloordiff 0))
+         (ydiff (- y last-y))
+         (xdiff (- x last-x)))
     (loop for i from 0 below (abs yfloordiff)
        for mult = 2 then 1
        for until-crossing = (+ i (if pos? (- 1 (mod last-y 1)) (mod last-y 1)))
        for test = (= 0 until-crossing)
        for new-x = (rationalize
-		    (+ last-x (abs (* (/ until-crossing ydiff) xdiff))))
+                    (+ last-x (abs (* (/ until-crossing ydiff) xdiff))))
        unless test collect new-x unless test collect
-	 (if pos? .9999999 0)
+         (if pos? .9999999 0)
        ;;(rescale (if pos? .9999999 0) 0 1 min max #'error #'rationalize)
        collect (+ new-x (* .00001 mult)) collect
-	 (if pos? 0 .9999999))))
+         (if pos? 0 .9999999))))
 ;;(rescale (if pos? 0 .9999999) 0 1 min max #'error #'rationalize)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -619,21 +620,21 @@
 ;;; data (string), apply env-mod.
 (defun generate-automation-data (reaper-envelope)
   (let* ((start-time (start-time reaper-envelope))
-	 (end-time (end-time reaper-envelope))
-	 (dur (- end-time start-time))
-	 (min (parameter-min reaper-envelope))
-	 (max (parameter-max reaper-envelope))
-	 (env-ls (env-mod (data reaper-envelope)))
-	 (env-len (lastx env-ls))
-	 points)
+         (end-time (end-time reaper-envelope))
+         (dur (- end-time start-time))
+         (min (parameter-min reaper-envelope))
+         (max (parameter-max reaper-envelope))
+         (env-ls (env-mod (data reaper-envelope)))
+         (env-len (lastx env-ls))
+         points)
     (setf points
-	  (loop for x in env-ls by #'cddr and y in (cdr env-ls) by #'cddr
-	     collect
-	       (format nil "PT ~a ~a 0 0"
-		       (float (+ (* (/ x env-len) dur) start-time))
-		       (if (is-parmenv (env-type reaper-envelope))
-			   (float (mod y 1))
-			   (rescale (mod y 1.0) 0 1 min max)))))
+          (loop for x in env-ls by #'cddr and y in (cdr env-ls) by #'cddr
+             collect
+               (format nil "PT ~a ~a 0 0"
+                       (float (+ (* (/ x env-len) dur) start-time))
+                       (if (is-parmenv (env-type reaper-envelope))
+                           (float (mod y 1))
+                           (rescale (mod y 1.0) 0 1 min max)))))
     points))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -717,22 +718,22 @@
 ;;;
 ;;; SYNOPSIS
 (defun make-reaper-envelope (env &key (env-type 'parmenv)
-				   start-time
-				   end-time
-				   parameter-slot
-				   parameter-min
-				   parameter-max
-				   (is-visible t))
+                                   start-time
+                                   end-time
+                                   parameter-slot
+                                   parameter-min
+                                   parameter-max
+                                   (is-visible t))
 ;;; ****
   (unless (and (listp env) (= 0 (mod (length env) 2)))
     (error "env in make-reaper-envelope is either not a list or malformed: ~&~a"
-	   env))
+           env))
   (setf env-type (intern (string env-type) :sc))
   (unless (or (not (is-parmenv env-type)) (equal 'parmenv env-type))
     (warn "env-type ~a not supported, set to parmenv" env-type))
   (case env-type
     ((panning-pre panning-pre-fx pan-pre pan-pre-fx panning pan auxpanning
-		  auxpan aux-panning aux-pan)
+                  auxpan aux-panning aux-pan)
      (unless parameter-min (setf parameter-min -1))
      (unless parameter-max (setf parameter-max 1)))
     (t
@@ -741,23 +742,23 @@
   (unless start-time (setf start-time (first env)))
   (unless end-time (setf end-time (lastx env)))
   (make-instance 'reaper-envelope
-		 :data env
-		 :env-type env-type
-		 :start-time start-time
-		 :end-time end-time
-		 :parameter-slot parameter-slot
-		 :parameter-min parameter-min
-		 :parameter-max parameter-max
-		 :is-visible is-visible))
+                 :data env
+                 :env-type env-type
+                 :start-time start-time
+                 :end-time end-time
+                 :parameter-slot parameter-slot
+                 :parameter-min parameter-min
+                 :parameter-max parameter-max
+                 :is-visible is-visible))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-02 Tu>
 ;;; write the neccessary plugin data for reaper to a stream
 (defun write-plugin (plugin-binary-string stream)
   (format stream
-	  (read-from-file (file-from-sc-dir "src/txt/reaper-fx.txt"))
-	  plugin-binary-string
-	  (generate-reaper-id)))
+          (read-from-file (file-from-sc-dir "src/txt/reaper-fx.txt"))
+          plugin-binary-string
+          (generate-reaper-id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; for make-reaper-items-aux. rhythms could be a rthm-seq too
@@ -831,8 +832,8 @@
                                    (pathname-name path)
                                    (if event (data event) "?"))
                      :track (format nil "~3,'0d-~a"
-				    (1+ (mod i num-tracks))
-				    (or track-base-name (pathname-name path)))
+                                    (1+ (mod i num-tracks))
+                                    (or track-base-name (pathname-name path)))
                      :path path
                      :duration dur)
            ;; override sndfile::update to allow the duration to be longer than
@@ -920,11 +921,11 @@
 (defun make-reaper-items4 (sndfiles &optional (start-times '(0)))
 ;;; ****
   (let ((items (apply #'make-reaper-items-aux
-			      (list sndfiles nil 0.0
-				    :num-tracks (length sndfiles)
-				    :fade-in 0.0
-				    :fade-out 0.0
-				    :track-base-name nil))))
+                              (list sndfiles nil 0.0
+                                    :num-tracks (length sndfiles)
+                                    :fade-in 0.0
+                                    :fade-out 0.0
+                                    :track-base-name nil))))
     ;; must set start-times by hand now, as we had no rhythms
     (loop for item in items and i from 0 do
       (setf (start-time item) (nth (mod i (length start-times)) start-times)))
@@ -941,7 +942,7 @@
                    (t (error "write-reaper-marker: unknown colour: ~a"
                              colour)))))
   (format stream "~&  MARKER ~a ~,3f \"~a\" 0 ~a 1"
-	  number time label colour))
+          number time label colour))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* reaper/reaper-layer-sounds
@@ -1141,7 +1142,7 @@
         ;; if :reaper-file is nil just return the reaper-file object so that
         ;; e.g. more tracks can be added
         (create-tracks rf :min-channels min-channels
-		       :max-channels max-channels))))
+                       :max-channels max-channels))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a couple of old routines. todo: These could/should be updated to write into
@@ -1290,24 +1291,24 @@ Here's where I pasted the data into the .RPP Reaper file:
 (defun set-master-channels (string &optional (number-of-master-channels 16))
   (let* ((scan (ppcre:create-scanner "MASTER_NCH [0-9]+")))
     (ppcre:regex-replace-all scan string
-			     (format nil "MASTER_NCH ~a"
-				     number-of-master-channels))))
+                             (format nil "MASTER_NCH ~a"
+                                     number-of-master-channels))))
 
 #+cl-ppcre
 (defun set-track-channels (string &optional (number-of-track-channels 16))
   (let* ((scan (ppcre:create-scanner "NCHAN [0-9]+")))
     (ppcre:regex-replace-all scan string
-			     (format nil "NCHAN ~a"
-				     number-of-track-channels))))
+                             (format nil "NCHAN ~a"
+                                     number-of-track-channels))))
 
 #+cl-ppcre
 (defun set-all-faders (string &optional (set-to .5))
   (let* ((scan (ppcre:create-scanner
-		"AUTOMODE ..{2,6}?VOLPAN [0-9]+?\[.]?[0-9]*"
-		:single-line-mode t)))
+                "AUTOMODE ..{2,6}?VOLPAN [0-9]+?\[.]?[0-9]*"
+                :single-line-mode t)))
     (ppcre:regex-replace-all scan string
-			     (format nil "AUTOMODE 0~&    VOLPAN ~a"
-				     set-to))))
+                             (format nil "AUTOMODE 0~&    VOLPAN ~a"
+                                     set-to))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* reaper/insert-envelope
@@ -1353,29 +1354,29 @@ Here's where I pasted the data into the .RPP Reaper file:
     (error "string in insert-plugin must be a string but is: ~a" string))
   (unless (stringp plugin-binary-string)
     (error "plugin-binary-string in insert-plugin must be a string but is: ~a"
-	   plugin-binary-string))
+           plugin-binary-string))
   (unless (numberp track-nr)
     (error "track-nr in insert-plugin must be a number but is: ~a" track-nr))
   (let* ((master? (>= 0 track-nr))
-	 ;; different scans when or master or other track:
-	 (place (if master?
-		    "MASTER_SEL [0-9]+"
-		    ;; TODO: detect whitespaces and newlines instead of .{1,5}?
-		    "MAINSEND [0-9]+ [0-9]+"))
-	 (fx (if master? "MASTERFXLIST" "FXCHAIN"))
-	 (find-fx-chain (ppcre:create-scanner place :single-line-mode t))
-	 (fx-exist (ppcre:create-scanner fx :single-line-mode t))
-	 (fx-exist? nil)
-	 (n 0)
-	 track
-	 (track-start 0)
-	 (track-end 0))
+         ;; different scans when or master or other track:
+         (place (if master?
+                    "MASTER_SEL [0-9]+"
+                    ;; TODO: detect whitespaces and newlines instead of .{1,5}?
+                    "MAINSEND [0-9]+ [0-9]+"))
+         (fx (if master? "MASTERFXLIST" "FXCHAIN"))
+         (find-fx-chain (ppcre:create-scanner place :single-line-mode t))
+         (fx-exist (ppcre:create-scanner fx :single-line-mode t))
+         (fx-exist? nil)
+         (n 0)
+         track
+         (track-start 0)
+         (track-end 0))
     ;; find the right track
     (ppcre:do-matches (st nd find-fx-chain string)
       (when (or master? (= (1- track-nr) n))
-	(setf track (subseq string st nd)
-	      track-start st
-	      track-end nd))
+        (setf track (subseq string st nd)
+              track-start st
+              track-end nd))
       (incf n))
     ;; are any effects already on the track?
     (setf fx-exist? (ppcre:scan fx-exist track))
@@ -1383,37 +1384,37 @@ Here's where I pasted the data into the .RPP Reaper file:
     (unless track (warn "no track with number ~a found" track-nr))
     (when track
       (unless fx-exist?
-	(setf track
-	      (ppcre:regex-replace
-	       find-fx-chain
-	       track
-	       (if master?
-		   (format
-		    nil
-		    "MASTER_SEL 0~&~a"
-		    (read-from-file
-		     (file-from-sc-dir "src/txt/reaper-masterfxlist.txt")))
-		   (format
-		    nil
-		    "MAINSEND 1 0~&~a"
-		    (read-from-file
-		     (file-from-sc-dir "src/txt/reaper-trackfxchain.txt")))))))
+        (setf track
+              (ppcre:regex-replace
+               find-fx-chain
+               track
+               (if master?
+                   (format
+                    nil
+                    "MASTER_SEL 0~&~a"
+                    (read-from-file
+                     (file-from-sc-dir "src/txt/reaper-masterfxlist.txt")))
+                   (format
+                    nil
+                    "MAINSEND 1 0~&~a"
+                    (read-from-file
+                     (file-from-sc-dir "src/txt/reaper-trackfxchain.txt")))))))
       (setf track
-	    (if (or pre (not fx-exist?))
-		(ppcre:regex-replace
-		 "DOCKED [0-9]+"
-		 track
-		 (format
-		  nil
-		  "DOCKED 0~&~a"
-		  (write-plugin plugin-binary-string nil)))
-		(ppcre:regex-replace
-		 "WAK [0-9]+ [0-9]+"
-		 track
-		 (format
-		  nil
-		  "WAK 0 0~&~a"
-		  (write-plugin plugin-binary-string nil))))))
+            (if (or pre (not fx-exist?))
+                (ppcre:regex-replace
+                 "DOCKED [0-9]+"
+                 track
+                 (format
+                  nil
+                  "DOCKED 0~&~a"
+                  (write-plugin plugin-binary-string nil)))
+                (ppcre:regex-replace
+                 "WAK [0-9]+ [0-9]+"
+                 track
+                 (format
+                  nil
+                  "WAK 0 0~&~a"
+                  (write-plugin plugin-binary-string nil))))))
     ;; write with new track
     (with-output-to-string (out)
       (write-string string out :end track-start)
@@ -1451,10 +1452,10 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; project.rpp and give it the duration of the sndfile.
 (let ((snd (make-sndfile "/E/sound.wav" :angle-env '(0 0 1 1 2 .5))))
   (insert-envelope (read-file-as-string "/E/project.rpp")
-		   (make-reaper-envelope (angle-env snd)
-					 :env-type 'parmenv
-					 :parameter-slot 6)
-		   1 0 (duration snd)))
+                   (make-reaper-envelope (angle-env snd)
+                                         :env-type 'parmenv
+                                         :parameter-slot 6)
+                   1 0 (duration snd)))
 |#
 ;;; SYNOPSIS
 #+cl-ppcre
@@ -1468,53 +1469,53 @@ Here's where I pasted the data into the .RPP Reaper file:
     (error "reaper-envelope in insert-envelope must be a reaper-envelope ~
             object but is: ~a" reaper-envelope))
   (let* ((master? (>= 0 track-nr))
-	 (parmenv? (is-parmenv (env-type reaper-envelope)))
-	 (envelope-string (write-reaper-envelope reaper-envelope nil))
-	 ;; different scans when master or other track:
-	 (place (if master?
-		    "MASTER_SEL [0-9]+.*?<PROJBAY"
-		    ;; TODO: detect whitespaces and newlines instead of .{1,5}?
-		    ;; or detect <Track
-		    "<TRACK .*?>.{1,5}?>"))
-	 (insert (if parmenv?
-		     "WAK [0-9]+ [0-9]+"
-		     (if master?
-			 "<PROJBAY"
-			 "MAINSEND [0-9]+ [0-9]+")))
-	 (find-track (ppcre:create-scanner place :single-line-mode t))
-	 (find-old (ppcre:create-scanner
-		    (format nil (if parmenv? "<~a ~a.*?>" "<~a.*?>")
-			    (write-reaper-envelope-aux
-			     (env-type reaper-envelope))
-			    (parameter-slot reaper-envelope))
-		    :single-line-mode t))
-	 (insert-here (ppcre:create-scanner insert :single-line-mode t))
-	 (n 0)
-	 track
-	 (track-start 0)
-	 (track-end 0))
+         (parmenv? (is-parmenv (env-type reaper-envelope)))
+         (envelope-string (write-reaper-envelope reaper-envelope nil))
+         ;; different scans when master or other track:
+         (place (if master?
+                    "MASTER_SEL [0-9]+.*?<PROJBAY"
+                    ;; TODO: detect whitespaces and newlines instead of .{1,5}?
+                    ;; or detect <Track
+                    "<TRACK .*?>.{1,5}?>"))
+         (insert (if parmenv?
+                     "WAK [0-9]+ [0-9]+"
+                     (if master?
+                         "<PROJBAY"
+                         "MAINSEND [0-9]+ [0-9]+")))
+         (find-track (ppcre:create-scanner place :single-line-mode t))
+         (find-old (ppcre:create-scanner
+                    (format nil (if parmenv? "<~a ~a.*?>" "<~a.*?>")
+                            (write-reaper-envelope-aux
+                             (env-type reaper-envelope))
+                            (parameter-slot reaper-envelope))
+                    :single-line-mode t))
+         (insert-here (ppcre:create-scanner insert :single-line-mode t))
+         (n 0)
+         track
+         (track-start 0)
+         (track-end 0))
     ;; find the right track
     (ppcre:do-matches (st nd find-track string)
       (when (or master? (= (1- track-nr) n))
-	(setf track (subseq string st nd)
-	      track-start st
-	      track-end nd))
+        (setf track (subseq string st nd)
+              track-start st
+              track-end nd))
       (incf n))
     ;; delete old envelope:
     (when track (setf track (ppcre:regex-replace find-old track "")))
     ;; insert new:
     (if (not track)
-	(warn "no track with number ~a found" track-nr)
-	(setf track
-	  (ppcre:regex-replace
-	   insert-here
-	   track
-	   (if parmenv?
-	       (format nil "~a~&WAK 0 0" envelope-string)
-	       (if master?
-		   (format nil "~a~&  <PROJBAY" envelope-string)
-		   ;; TODO: how to not hardcode 1 and 0 here?
-		   (format nil "MAINSEND 1 0~&~a" envelope-string))))))
+        (warn "no track with number ~a found" track-nr)
+        (setf track
+          (ppcre:regex-replace
+           insert-here
+           track
+           (if parmenv?
+               (format nil "~a~&WAK 0 0" envelope-string)
+               (if master?
+                   (format nil "~a~&  <PROJBAY" envelope-string)
+                   ;; TODO: how to not hardcode 1 and 0 here?
+                   (format nil "MAINSEND 1 0~&~a" envelope-string))))))
     ;; insert new track into project
     (with-output-to-string (out)
       (write-string string out :end track-start)
@@ -1600,14 +1601,14 @@ Here's where I pasted the data into the .RPP Reaper file:
 (set-sc-config 'reaper-files-for-windows t)
 (write-reaper-ambisonics-file
  `(,(make-sndfile "/E/pads.wav"
-			  :angle-env '(0 0  .5 .5  .8 4  1 3.5)
-			  :elevation-env '(0 0  .6 .5  2 .5))
+                          :angle-env '(0 0  .5 .5  .8 4  1 3.5)
+                          :elevation-env '(0 0  .6 .5  2 .5))
     ,(make-sndfile "/E/synths.wav"
-			  :angle-env '(0 0  .5 .5  .8 8  1 3.25)
-			  :elevation-env '(0 0.5  1 .5))
+                          :angle-env '(0 0  .5 .5  .8 8  1 3.25)
+                          :elevation-env '(0 0.5  1 .5))
     ,(make-sndfile "/E/drums.wav"
-			  :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
-			  :elevation-env '(0 0.5  1 .5)))
+                          :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
+                          :elevation-env '(0 0.5  1 .5)))
  :file "/E/spatial.rpp"
  :ambi-order 3
  :envs-use-start-times t
@@ -1618,9 +1619,9 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; each other:
 (write-reaper-ambisonics-file 
  `(,(make-sndfile "/E/code/feedback/intro.wav"
-		  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
-			       (0 .5  .5 1  .8 4.5  1 4))
-		  :elevation-env '(0 0  .6 .5  2 .5)))
+                  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
+                               (0 .5  .5 1  .8 4.5  1 4))
+                  :elevation-env '(0 0  .6 .5  2 .5)))
  :file "/E/code/test.rpp"
  :encoder :iem-multi-encoder
  :angle-parameter-slot '(7 12)
@@ -1629,63 +1630,63 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; SYNOPSIS
 #+cl-ppcre
 (defun write-reaper-ambisonics-file (list-of-sndfiles
-				     &key file
-				       (start-times '(0))
-				       (sample-rate 48000)
-				       (ambi-order 3)
-				       (tempo 60)
-				       (init-volume .2511)
-				       (encoder :iem-stereo-encoder)
-				       (decoder :blue-ripple-decoder)
-				       (angle-parameter-slot 6)
-				       (elevation-parameter-slot 7)
-				       (angle-offset 0.5)
-				       (envs-use-start-times t)
-				       (envs-use-end-times t)
-				       envs-duration
-				       envs-only
-				       (envs-visible t))
+                                     &key file
+                                       (start-times '(0))
+                                       (sample-rate 48000)
+                                       (ambi-order 3)
+                                       (tempo 60)
+                                       (init-volume .2511)
+                                       (encoder :iem-stereo-encoder)
+                                       (decoder :blue-ripple-decoder)
+                                       (angle-parameter-slot 6)
+                                       (elevation-parameter-slot 7)
+                                       (angle-offset 0.5)
+                                       (envs-use-start-times t)
+                                       (envs-use-end-times t)
+                                       envs-duration
+                                       envs-only
+                                       (envs-visible t))
 ;;; ****
   ;; sanity checks:
   (unless (and (listp list-of-sndfiles)
-	       (every #'(lambda (x) (equal 'sndfile (type-of x)))
-		      list-of-sndfiles))
+               (every #'(lambda (x) (equal 'sndfile (type-of x)))
+                      list-of-sndfiles))
     (error "list-of-sndfile is not a list of sndfiles but: ~a"
-	   list-of-sndfiles))
+           list-of-sndfiles))
   (unless (and (integerp ambi-order) (< 0 ambi-order 9))
     (error "ambi-order should be an integer between 1 and 8 but is ~a"
-	   ambi-order))
+           ambi-order))
   (unless file (setf file (default-dir-file "ambisonics.rpp")))
   ;; variables
   (let* ((paths (loop for snd in list-of-sndfiles collect (path snd)))
-	 (items (make-reaper-items4 paths start-times))
-	 (looped-start-times
-	    (loop for i from 0 below (length list-of-sndfiles) collect
-		 (nth (mod i (length start-times)) start-times)))
-	 (min-time (apply #'min start-times))
-	 (max-time 0)
-	 (angle-slots (force-list angle-parameter-slot))
-	 (elevation-slots (force-list (list elevation-parameter-slot)))
-	 (channel-nr (expt (1+ ambi-order) 2))
-	 (string "")
-	 rf)
+         (items (make-reaper-items4 paths start-times))
+         (looped-start-times
+            (loop for i from 0 below (length list-of-sndfiles) collect
+                 (nth (mod i (length start-times)) start-times)))
+         (min-time (apply #'min start-times))
+         (max-time 0)
+         (angle-slots (force-list angle-parameter-slot))
+         (elevation-slots (force-list (list elevation-parameter-slot)))
+         (channel-nr (expt (1+ ambi-order) 2))
+         (string "")
+         rf)
     (loop for item in items and snd in list-of-sndfiles do
-	 (setf (item-vol item) (amplitude snd)))
+         (setf (item-vol item) (amplitude snd)))
     (setf rf (create-tracks
-	      (make-reaper-file 'ambi items
-				:tempo (or tempo 60)
-				:sample-rate sample-rate
-				:n-channels channel-nr
-				:master-volume init-volume)
-	      :channels channel-nr
-	      :track-volumes init-volume
-	      :sort-track-names nil))
+              (make-reaper-file 'ambi items
+                                :tempo (or tempo 60)
+                                :sample-rate sample-rate
+                                :n-channels channel-nr
+                                :master-volume init-volume)
+              :channels channel-nr
+              :track-volumes init-volume
+              :sort-track-names nil))
     ;; when no duration is given and we don't use end-times, look for the file
     ;; that is playing the longest
     (unless (or envs-duration envs-use-end-times)
       (setf max-time (loop for snd in list-of-sndfiles and i from 0
-			maximize (+ (nth i looped-start-times)
-				    (duration snd)))))
+                        maximize (+ (nth i looped-start-times)
+                                    (duration snd)))))
     ;; write the file
     (unless envs-only (write-reaper-file rf :file file))
     (unless envs-only (format t "~&succesfully wrote ~a" file))
@@ -1693,59 +1694,59 @@ Here's where I pasted the data into the .RPP Reaper file:
     (setf string (read-file-as-string file))
     (unless envs-only
       (setf string
-	    (insert-plugin string (getf *plugins-for-reaper* decoder) 0 t)))
+            (insert-plugin string (getf *plugins-for-reaper* decoder) 0 t)))
     ;; get the envelopes
     (loop for i from 1 and snd in list-of-sndfiles
        for start = (if envs-use-start-times
-		       (nth (1- i) looped-start-times)
-		       min-time)
+                       (nth (1- i) looped-start-times)
+                       min-time)
        for end = (if envs-duration (+ start envs-duration)
-		     (if envs-use-end-times (+ start (duration snd))
-			 max-time))
+                     (if envs-use-end-times (+ start (duration snd))
+                         max-time))
        for angle-envs = (if (listp (car (angle-env snd)))
-			    (angle-env snd) `(,(angle-env snd)))
+                            (angle-env snd) `(,(angle-env snd)))
        for elevation-envs = (if (listp (car (elevation-env snd)))
-				(elevation-env snd) `(,(elevation-env snd)))
+                                (elevation-env snd) `(,(elevation-env snd)))
        for nr-of-voices = (max (length angle-envs) (length elevation-envs))
        ;; insert encoders:
        do
-	 (unless envs-only
-	   (setf string (insert-plugin string
-				       (getf *plugins-for-reaper* encoder)
-				       i)))
+         (unless envs-only
+           (setf string (insert-plugin string
+                                       (getf *plugins-for-reaper* encoder)
+                                       i)))
        ;; insert envelopes:
-	 (loop for k from 0 below nr-of-voices do
-	      (setf string (insert-envelope
-			    string
-			    (make-reaper-envelope
-			     ;; offsetting the rotation of the scene \w env-plus
-			     (env-plus
-			      (nth (mod k (length angle-envs)) angle-envs)
-			      angle-offset)
-			     :parameter-slot (nth (mod k (length angle-slots))
-						  angle-slots)
-			     :start-time start
-			     :end-time end
-			     :is-visible envs-visible)
-			    i)
-		    string (insert-envelope
-			    string
-			    (make-reaper-envelope
-			     ;; convert range -1:1 to 0:1
-			     (scale-env
-			      (env-plus (nth (mod k (length elevation-envs))
-					    elevation-envs)
-					1)
-			      .5)
-			     :parameter-slot (nth
-					      (mod k (length elevation-slots))
-					      elevation-slots)
-			     :start-time start
-			     :end-time end
-			     :is-visible envs-visible)
-			    i))))
+         (loop for k from 0 below nr-of-voices do
+              (setf string (insert-envelope
+                            string
+                            (make-reaper-envelope
+                             ;; offsetting the rotation of the scene \w env-plus
+                             (env-plus
+                              (nth (mod k (length angle-envs)) angle-envs)
+                              angle-offset)
+                             :parameter-slot (nth (mod k (length angle-slots))
+                                                  angle-slots)
+                             :start-time start
+                             :end-time end
+                             :is-visible envs-visible)
+                            i)
+                    string (insert-envelope
+                            string
+                            (make-reaper-envelope
+                             ;; convert range -1:1 to 0:1
+                             (scale-env
+                              (env-plus (nth (mod k (length elevation-envs))
+                                            elevation-envs)
+                                        1)
+                              .5)
+                             :parameter-slot (nth
+                                              (mod k (length elevation-slots))
+                                              elevation-slots)
+                             :start-time start
+                             :end-time end
+                             :is-visible envs-visible)
+                            i))))
     (with-open-file 
-	(out file :direction :output :if-exists :rename-and-delete)
+        (out file :direction :output :if-exists :rename-and-delete)
       (princ string out))
     (format t "~&succesfully edited ~a" file)
     file))
@@ -1818,14 +1819,14 @@ Here's where I pasted the data into the .RPP Reaper file:
 (set-sc-config 'reaper-files-for-windows t)
 (write-reaper-sad-file
  `(,(make-sndfile "/E/pads.wav"
-			  :angle-env '(0 0  .5 .5  .8 4  1 3.5)
-			  :elevation-env '(0 0  .6 .5  2 .5))
+                          :angle-env '(0 0  .5 .5  .8 4  1 3.5)
+                          :elevation-env '(0 0  .6 .5  2 .5))
     ,(make-sndfile "/E/synths.wav"
-			  :angle-env '(0 0  .5 .5  .8 8  1 3.25)
-			  :elevation-env '(0 0.5  1 .5))
+                          :angle-env '(0 0  .5 .5  .8 8  1 3.25)
+                          :elevation-env '(0 0.5  1 .5))
     ,(make-sndfile "/E/drums.wav"
-			  :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
-			  :elevation-env '(0 0.5  1 .5)))
+                          :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
+                          :elevation-env '(0 0.5  1 .5)))
  :file "/E/spatial.rpp"
  :envs-use-start-times t
  :envs-use-end-times t)
@@ -1834,64 +1835,64 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; each other:
 (write-reaper-sad-file 
  `(,(make-sndfile "/E/code/feedback/intro.wav"
-		  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
-			       (0 .5  .5 1  .8 4.5  1 4))
-		  :elevation-env '(0 0  .6 .5  2 .5)))
+                  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
+                               (0 .5  .5 1  .8 4.5  1 4))
+                  :elevation-env '(0 0  .6 .5  2 .5)))
  :file "/E/code/test.rpp")
 |#
 ;;; SYNOPSIS
 #+cl-ppcre
 (defun write-reaper-sad-file (list-of-sndfiles
-			      &key file
-				(start-times '(0))
-				(sample-rate 48000)
-				(nr-of-master-channels 2)
-				(tempo 60)
-				(init-volume .2511)
-				(angle-offset 0)
-				(env-conversion-srate 4)
-				(envs-use-start-times t)
-				(envs-use-end-times t)
-				envs-duration
-				envs-only
-				(envs-visible t))
+                              &key file
+                                (start-times '(0))
+                                (sample-rate 48000)
+                                (nr-of-master-channels 2)
+                                (tempo 60)
+                                (init-volume .2511)
+                                (angle-offset 0)
+                                (env-conversion-srate 4)
+                                (envs-use-start-times t)
+                                (envs-use-end-times t)
+                                envs-duration
+                                envs-only
+                                (envs-visible t))
 ;;; ****
   ;; sanity checks:
   (unless (and (listp list-of-sndfiles)
- 	       (every #'(lambda (x) (equal 'sndfile (type-of x)))
-		      list-of-sndfiles))
+               (every #'(lambda (x) (equal 'sndfile (type-of x)))
+                      list-of-sndfiles))
     (error "list-of-sndfile is not a list of sndfiles but: ~a"
-	   list-of-sndfiles))
+           list-of-sndfiles))
   (unless file (setf file (default-dir-file "sad.rpp")))
   ;; variables
   (let* ((paths (loop for snd in list-of-sndfiles collect (path snd)))
-	 (items (make-reaper-items4 paths start-times))
-	 (looped-start-times
-	    (loop for i from 0 below (length list-of-sndfiles) collect
-		 (nth (mod i (length start-times)) start-times)))
-	 (min-time (apply #'min start-times))
-	 (max-time 0)
-	 (string "")
-	 rf)
+         (items (make-reaper-items4 paths start-times))
+         (looped-start-times
+            (loop for i from 0 below (length list-of-sndfiles) collect
+                 (nth (mod i (length start-times)) start-times)))
+         (min-time (apply #'min start-times))
+         (max-time 0)
+         (string "")
+         rf)
     ;; set volume
     (loop for item in items and snd in list-of-sndfiles do
       (setf (item-vol item) (amplitude snd)))
     ;; init the file
     (setf rf (create-tracks
-	      (make-reaper-file 'sad items
-				:tempo (or tempo 60)
-				:sample-rate sample-rate
-				:n-channels nr-of-master-channels
-				:master-volume init-volume)
-	      :max-channels 8
-	      :track-volumes init-volume
-	      :sort-track-names nil))
+              (make-reaper-file 'sad items
+                                :tempo (or tempo 60)
+                                :sample-rate sample-rate
+                                :n-channels nr-of-master-channels
+                                :master-volume init-volume)
+              :max-channels 8
+              :track-volumes init-volume
+              :sort-track-names nil))
     ;; when no duration is given and we don't use end-times, look for the file
     ;; that is playing the longest
     (unless (or envs-duration envs-use-end-times)
       (setf max-time (loop for snd in list-of-sndfiles and i from 0
-			maximize (+ (nth i looped-start-times)
-				    (duration snd)))))
+                        maximize (+ (nth i looped-start-times)
+                                    (duration snd)))))
     ;; write the file
     (unless envs-only (write-reaper-file rf :file file))
     (unless envs-only (format t "~&succesfully wrote ~a" file))
@@ -1899,82 +1900,82 @@ Here's where I pasted the data into the .RPP Reaper file:
     (setf string (read-file-as-string file))
     (unless envs-only
       (setf string
-	    (insert-plugin string (getf *plugins-for-reaper* :sad-mix) 0 t)
-	    string
-	    (insert-plugin string (getf *plugins-for-reaper* :sad-channel-out)
-			   0 t)))
+            (insert-plugin string (getf *plugins-for-reaper* :sad-mix) 0 t)
+            string
+            (insert-plugin string (getf *plugins-for-reaper* :sad-channel-out)
+                           0 t)))
     ;; get the envelopes
     (loop for i from 1 and snd in list-of-sndfiles
        for start = (if envs-use-start-times
-		       (nth (1- i) looped-start-times)
-		       min-time)
+                       (nth (1- i) looped-start-times)
+                       min-time)
        for end = (if envs-duration (+ start envs-duration)
-		     (if envs-use-end-times (+ start (duration snd))
-			 max-time))
+                     (if envs-use-end-times (+ start (duration snd))
+                         max-time))
        for angle-envs = (if (listp (car (angle-env snd)))
-			    (angle-env snd) `(,(angle-env snd)))
+                            (angle-env snd) `(,(angle-env snd)))
        for elevation-envs = (if (listp (car (elevation-env snd)))
-				(elevation-env snd) `(,(elevation-env snd)))
+                                (elevation-env snd) `(,(elevation-env snd)))
        for distance-envs = (if (listp (car (distance-env snd)))
-				(distance-env snd) `(,(distance-env snd)))
+                                (distance-env snd) `(,(distance-env snd)))
        for nr-of-voices = (min (channels snd) 8)
        ;; insert "encoder"
        do
-	 (unless envs-only
-	   (setf string (insert-plugin string
-				       (getf *plugins-for-reaper* :sad-send)
-				       i)))
+         (unless envs-only
+           (setf string (insert-plugin string
+                                       (getf *plugins-for-reaper* :sad-send)
+                                       i)))
        ;; insert envelopes:
-	 (loop for k from 0 below nr-of-voices do
-	   ;; converto polar envelopes to x y z
-	      (multiple-value-bind (x y z)
-		  (convert-polar-envelopes
-		   (scale-env
-		    (env-plus (nth (mod k (length angle-envs)) angle-envs)
-			      angle-offset)
-		    360)
-		   (scale-env
-		    (nth (mod k (length elevation-envs)) elevation-envs)
-		    180)
-		   :distance-env (nth (mod k (length distance-envs)) distance-envs)
-		   :minimum-samples (* (- end start) env-conversion-srate))
-		;; atm, the envelopes go from -1 to 1 but we should scale them
-		;; to fit between 0 and 1:
-		(setf x (scale-env (env-plus x 1) .5)
-		      y (scale-env (env-plus y 1) .5)
-		      z (scale-env (env-plus z 1) .5))
-		(setf string
-		      (insert-envelope
-		       string
-		       (make-reaper-envelope
-			x
-			:parameter-slot (nth k '(6 14 22 30 38 46 54 62))
-			:start-time start
-			:end-time end
-			:is-visible envs-visible)
-		       i)
-		      string
-		      (insert-envelope
-		       string
-		       (make-reaper-envelope
-			y
-			:parameter-slot (nth k '(7 15 23 31 39 47 55 63))
-			:start-time start
-			:end-time end
-			:is-visible envs-visible)
-		       i)
-		      string
-		      (insert-envelope
-		       string
-		       (make-reaper-envelope
-			z
-			:parameter-slot (nth k '(8 16 24 32 40 48 56 64))
-			:start-time start
-			:end-time end
-			:is-visible envs-visible)
-		       i)))))
+         (loop for k from 0 below nr-of-voices do
+           ;; converto polar envelopes to x y z
+              (multiple-value-bind (x y z)
+                  (convert-polar-envelopes
+                   (scale-env
+                    (env-plus (nth (mod k (length angle-envs)) angle-envs)
+                              angle-offset)
+                    360)
+                   (scale-env
+                    (nth (mod k (length elevation-envs)) elevation-envs)
+                    180)
+                   :distance-env (nth (mod k (length distance-envs)) distance-envs)
+                   :minimum-samples (* (- end start) env-conversion-srate))
+                ;; atm, the envelopes go from -1 to 1 but we should scale them
+                ;; to fit between 0 and 1:
+                (setf x (scale-env (env-plus x 1) .5)
+                      y (scale-env (env-plus y 1) .5)
+                      z (scale-env (env-plus z 1) .5))
+                (setf string
+                      (insert-envelope
+                       string
+                       (make-reaper-envelope
+                        x
+                        :parameter-slot (nth k '(6 14 22 30 38 46 54 62))
+                        :start-time start
+                        :end-time end
+                        :is-visible envs-visible)
+                       i)
+                      string
+                      (insert-envelope
+                       string
+                       (make-reaper-envelope
+                        y
+                        :parameter-slot (nth k '(7 15 23 31 39 47 55 63))
+                        :start-time start
+                        :end-time end
+                        :is-visible envs-visible)
+                       i)
+                      string
+                      (insert-envelope
+                       string
+                       (make-reaper-envelope
+                        z
+                        :parameter-slot (nth k '(8 16 24 32 40 48 56 64))
+                        :start-time start
+                        :end-time end
+                        :is-visible envs-visible)
+                       i)))))
     (with-open-file 
-	(out file :direction :output :if-exists :rename-and-delete)
+        (out file :direction :output :if-exists :rename-and-delete)
       (princ string out))
     (format t "~&succesfully edited ~a" file)
     file))

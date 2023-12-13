@@ -52,28 +52,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :slippery-chicken)
 
-;; this is a property list that holds the (partially binary) data for the
-;; the respective plugins, as it appears in a reaper project file:
-(defparameter *plugins-for-reaper*
-  `(:iem-stereo-encoder
-    ,(read-file-as-string (file-from-sc-dir "src/txt/iem-stereo-encoder.txt"))
-    :iem-multi-encoder
-    ,(read-file-as-string (file-from-sc-dir "src/txt/iem-multi-encoder.txt"))
-    :iem-binaural-decoder
-    ,(read-file-as-string (file-from-sc-dir "src/txt/iem-binaural-decoder.txt"))
-    :iem-simple-decoder
-    ,(read-file-as-string (file-from-sc-dir "src/txt/iem-simple-decoder.txt"))
-    :iem-allra-decoder
-    ,(read-file-as-string (file-from-sc-dir "src/txt/iem-allra-decoder.txt"))
-    :blue-ripple-decoder
-    ,(read-file-as-string (file-from-sc-dir "src/txt/blue-ripple.txt"))
-    :sad-send
-    ,(read-file-as-string (file-from-sc-dir "src/txt/sad-send.txt"))
-    :sad-mix
-    ,(read-file-as-string (file-from-sc-dir "src/txt/sad-mix.txt"))
-    :sad-channel-out
-    ,(read-file-as-string (file-from-sc-dir "src/txt/sad-channel-out.txt"))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a single item/clip/sound object on a track
 (defclass reaper-item (sndfile)
@@ -194,7 +172,38 @@
    ;; this will be set when create-tracks is called. It'll be an assoc-list with
    ;; all the reaper-items sorted into data lists associated with the track
    ;; names generated/given when the reaper-items were initialised.
-   (tracks :accessor tracks :initform nil)))
+   (tracks :accessor tracks :initform nil)
+   ;; this is a property list that holds the (partially binary) data for the
+   ;; the respective plugins, as it appears in a reaper project file:
+   (plugins :accessor plugins :allocation :class
+	    :initform
+	    `(:iem-stereo-encoder
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/iem-stereo-encoder.txt"))
+	      :iem-multi-encoder
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/iem-multi-encoder.txt"))
+	      :iem-binaural-decoder
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/iem-binaural-decoder.txt"))
+	      :iem-simple-decoder
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/iem-simple-decoder.txt"))
+	      :iem-allra-decoder
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/iem-allra-decoder.txt"))
+	      :blue-ripple-decoder
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/blue-ripple.txt"))
+	      :sad-send
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/sad-send.txt"))
+	      :sad-mix
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/sad-mix.txt"))
+	      :sad-channel-out
+	      ,(read-file-as-string
+		(file-from-sc-dir "src/txt/sad-channel-out.txt"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1330,7 +1339,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; file with a text editor and find and copy the string <VST ..... >.
 ;;; See "slippery-chicken/src/txt/iem-stereo-encoder.txt" for an example).
 ;;; To use that plugin in write-spatial-reaper-file (of possibly others), add
-;;; it to the *plugins-for-reaper* property-list.
+;;; it to the 'plugins' slot in the definition of the reaper-file class.
 ;;; - the number of the track, on which to insert the plugin (master is 0)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
@@ -1554,11 +1563,12 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; desired. Default = 60.
 ;;; :init-volume. Volume multipliers for all faders.
 ;;; -0dB would be 1, Default = -12dB.
-;;; :encoder. The indicator to find the binary data for the plugin that will be
-;;; inserted into all tracks except the master track in *plugins-for-reaper*.
+;;; :encoder. The key to find the binary data for the plugin that will be
+;;; inserted into all tracks except the master track in the 'plugins' slot
+;;; of the reaper-file class.
 ;;; Default: :iem-stereo-encoder
-;;; :decoder. The indicator to find the binary data for the plugin that will be
-;;; inserted on the master track in *plugins-for-reaüer*.
+;;; :decoder. The key to find the binary data for the plugin that will be
+;;; inserted on the master track in the 'plugins' slot of the reaper-file class.
 ;;; Default: :blue-ripple-decoder
 ;;; :angle-parameter-slot. The automation slot that the angle-env will controll.
 ;;; This should be changed when other plugins are used than the defaults.
@@ -1601,14 +1611,14 @@ Here's where I pasted the data into the .RPP Reaper file:
 (set-sc-config 'reaper-files-for-windows t)
 (write-reaper-ambisonics-file
  `(,(make-sndfile "/E/pads.wav"
-                          :angle-env '(0 0  .5 .5  .8 4  1 3.5)
-                          :elevation-env '(0 0  .6 .5  2 .5))
+			  :angle-env '(0 0  .5 .5  .8 4  1 3.5)
+			  :elevation-env '(0 0  .6 .25  2 .5))
     ,(make-sndfile "/E/synths.wav"
-                          :angle-env '(0 0  .5 .5  .8 8  1 3.25)
-                          :elevation-env '(0 0.5  1 .5))
+			  :angle-env '(0 0  .5 .5  .8 8  1 3.25)
+			  :elevation-env '(0 0.5  1 .25))
     ,(make-sndfile "/E/drums.wav"
-                          :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
-                          :elevation-env '(0 0.5  1 .5)))
+			  :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
+			  :elevation-env '(0 0.5  1 .25)))
  :file "/E/spatial.rpp"
  :ambi-order 3
  :envs-use-start-times t
@@ -1619,9 +1629,9 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; each other:
 (write-reaper-ambisonics-file 
  `(,(make-sndfile "/E/code/feedback/intro.wav"
-                  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
-                               (0 .5  .5 1  .8 4.5  1 4))
-                  :elevation-env '(0 0  .6 .5  2 .5)))
+		  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
+			       (0 .5  .5 1  .8 4.5  1 4))
+		  :elevation-env '(0 0  .6 .25  2 .5)))
  :file "/E/code/test.rpp"
  :encoder :iem-multi-encoder
  :angle-parameter-slot '(7 12)
@@ -1819,14 +1829,14 @@ Here's where I pasted the data into the .RPP Reaper file:
 (set-sc-config 'reaper-files-for-windows t)
 (write-reaper-sad-file
  `(,(make-sndfile "/E/pads.wav"
-                          :angle-env '(0 0  .5 .5  .8 4  1 3.5)
-                          :elevation-env '(0 0  .6 .5  2 .5))
+			  :angle-env '(0 0  .5 .5  .8 4  1 3.5)
+			  :elevation-env '(0 0  .6 .25  2 .5))
     ,(make-sndfile "/E/synths.wav"
-                          :angle-env '(0 0  .5 .5  .8 8  1 3.25)
-                          :elevation-env '(0 0.5  1 .5))
+			  :angle-env '(0 0  .5 .5  .8 8  1 3.25)
+			  :elevation-env '(0 0.5  1 .25))
     ,(make-sndfile "/E/drums.wav"
-                          :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
-                          :elevation-env '(0 0.5  1 .5)))
+			  :angle-env '(0 .5  .5 1  .8 8.5  1 3.75)
+			  :elevation-env '(0 0.5  1 .25)))
  :file "/E/spatial.rpp"
  :envs-use-start-times t
  :envs-use-end-times t)
@@ -1835,9 +1845,9 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; each other:
 (write-reaper-sad-file 
  `(,(make-sndfile "/E/code/feedback/intro.wav"
-                  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
-                               (0 .5  .5 1  .8 4.5  1 4))
-                  :elevation-env '(0 0  .6 .5  2 .5)))
+		  :angle-env '((0 0  .5 .5  .8 4  1 3.5)
+			       (0 .5  .5 1  .8 4.5  1 4))
+		  :elevation-env '(0 0  .6 .25  2 .5)))
  :file "/E/code/test.rpp")
 |#
 ;;; SYNOPSIS
@@ -1900,10 +1910,10 @@ Here's where I pasted the data into the .RPP Reaper file:
     (setf string (read-file-as-string file))
     (unless envs-only
       (setf string
-            (insert-plugin string (getf *plugins-for-reaper* :sad-mix) 0 t)
-            string
-            (insert-plugin string (getf *plugins-for-reaper* :sad-channel-out)
-                           0 t)))
+	    (insert-plugin string (getf (plugins rf) :sad-mix) 0 t)
+	    string
+	    (insert-plugin string (getf (plugins rf) :sad-channel-out)
+			   0 t)))
     ;; get the envelopes
     (loop for i from 1 and snd in list-of-sndfiles
        for start = (if envs-use-start-times
@@ -1921,10 +1931,10 @@ Here's where I pasted the data into the .RPP Reaper file:
        for nr-of-voices = (min (channels snd) 8)
        ;; insert "encoder"
        do
-         (unless envs-only
-           (setf string (insert-plugin string
-                                       (getf *plugins-for-reaper* :sad-send)
-                                       i)))
+	 (unless envs-only
+	   (setf string (insert-plugin string
+				       (getf (plugins rf) :sad-send)
+				       i)))
        ;; insert envelopes:
          (loop for k from 0 below nr-of-voices do
            ;; converto polar envelopes to x y z

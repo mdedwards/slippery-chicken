@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:01:15 Fri Dec  1 2023 CET
+;;; $$ Last modified:  14:04:48 Thu Dec  7 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7411,7 +7411,7 @@
                 (B0 A4 E6) 
                 (BQS0 A6 CS7 E7 B7))))))
 
-;;; MDE Fri Aug 24 15:43:18 2018 
+;;; MDE Fri Aug 24 15:43:18 2018
 #+clm
 (sc-deftest test-set-palette-from-spectra ()
   (let ((sp (set-palette-from-spectra 
@@ -7419,9 +7419,10 @@
               'string cl-user::+slippery-chicken-home-dir+ 
               "tests/test-sndfiles-dir-1/test-sndfile-3.aiff"))))
     (print-simple sp) ; just to make sure it works
+    (print sp)
+    (print (get-all-refs sp))
     (sc-test-check
       (= 7 (sclist-length sp)))))
-
 
 ;;; SAR Wed Jun 13 15:02:57 BST 2012
 (sc-deftest test-set-palette-gen-max-coll-file ()
@@ -20274,11 +20275,11 @@ est)")))
                                 cl-user::+slippery-chicken-home-dir+
                                 ;; only three in here
                                 "tests/test-sndfiles-dir-2")))
-	 (list-of-sndfiles
-	  (loop for snd in sndfiles collect
-	       (make-sndfile snd
-			     :angle-env '((0 0  .5 .5  .8 8  1 3.25) (0 1 1 0))
-			     :elevation-env '(0 0  .6 .5  2 .5)))))
+         (list-of-sndfiles
+          (loop for snd in sndfiles collect
+               (make-sndfile snd
+                             :angle-env '((0 0  .5 .5  .8 8  1 3.25) (0 1 1 0))
+                             :elevation-env '(0 0  .6 .5  2 .5)))))
     (multiple-value-bind
           (items1 end-time1)
         (make-reaper-items1 sndfiles
@@ -20302,9 +20303,9 @@ est)")))
           (probe-delete "/tmp/reaper-test.rpp")
           (probe-delete "/tmp/reaper-test2.rpp")
           (probe-delete "/tmp/reaper-test3.rpp")
-	  (probe-delete "/tmp/reaper-test4.rpp")
-	  (probe-delete "/tmp/reaper-test5.rpp")
-	  (probe-delete "/tmp/test.rpp")
+          (probe-delete "/tmp/reaper-test4.rpp")
+          (probe-delete "/tmp/reaper-test5.rpp")
+          (probe-delete "/tmp/test.rpp")
           (sc-test-check
             ;; MDE Wed Oct 18 10:09:21 2023, Heidhausen -- check marker writing
             ;; throws no errors when writing to the default path
@@ -20321,20 +20322,20 @@ est)")))
             (write-reaper-file rf1 :file "/tmp/reaper-test.rpp")
             (write-reaper-file rf2 :file "/tmp/reaper-test2.rpp")
             (write-reaper-file rf3 :file "/tmp/reaper-test3.rpp")
-	    (string= (tstring (get-first (tracks rf2)))
+            (string= (tstring (get-first (tracks rf2)))
                      (tstring (clone (get-first (tracks rf2)))))
-	    #+cl-ppcre(write-reaper-ambisonics-file list-of-sndfiles
-					  :file "/tmp/reaper-test4.rpp")
-	    #+cl-ppcre(write-reaper-sad-file list-of-sndfiles
-					     :file "/tmp/reaper-test5.rpp")
-	    
+            #+cl-ppcre(write-reaper-ambisonics-file list-of-sndfiles
+                                          :file "/tmp/reaper-test4.rpp")
+            #+cl-ppcre(write-reaper-sad-file list-of-sndfiles
+                                             :file "/tmp/reaper-test5.rpp")
+            
             (assoc-list-p (tracks rf1))
             (assoc-list-p (tracks rf2))
             (assoc-list-p (tracks rf3))
             (file-write-ok "/tmp/reaper-test.rpp" 4200)
             (file-write-ok "/tmp/reaper-test2.rpp" 4200)
-	    #+cl-ppcre(file-write-ok "/tmp/reaper-test4.rpp" 14500)
-	    #+cl-ppcre(file-write-ok "/tmp/reaper-test5.rpp" 201000)))))))
+            #+cl-ppcre(file-write-ok "/tmp/reaper-test4.rpp" 14500)
+            #+cl-ppcre(file-write-ok "/tmp/reaper-test5.rpp" 201000)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-11 Do>
@@ -20343,7 +20344,7 @@ est)")))
   (sc-test-check
     (edit-file "/tmp/reaper-test.rpp" str "this is a test :)")
     (equalp "this is a test :)"
-	    (read-file-as-string "/tmp/reaper-test.rpp"))))
+            (read-file-as-string "/tmp/reaper-test.rpp"))))
 
 ;;; LF <2023-12-02 Sa>
 (sc-deftest test-utilities-coordinates ()
@@ -20355,17 +20356,17 @@ est)")))
      (cartesian-to-polar 0 0 1)
      '(0 90 1))
     (multiple-value-bind (x y z)
-	(convert-polar-envelopes '(0 0  1 180) '(0 30  .5 0  1 45)
-				 :minimum-samples 5)
+        (convert-polar-envelopes '(0 0  1 180) '(0 30  .5 0  1 45)
+                                 :minimum-samples 5)
       (equalp x
-	      '(0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145
-		100.0 8.6595606e-17))
+              '(0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145
+                100.0 8.6595606e-17))
       (equalp y
-	      '(0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75
-		-0.65328145 100.0 -0.70710677))
+              '(0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75
+                -0.65328145 100.0 -0.70710677))
       (equalp z
-	      '(0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343
-		100.0 0.70710677)))))
+              '(0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343
+                100.0 0.70710677)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 20 12:10:05 2021, Heidhausen -- an example from Simon Bahr that

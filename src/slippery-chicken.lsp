@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:32:13 Tue Feb 28 2023 CET
+;;; $$ Last modified:  16:56:09 Wed Dec 13 2023 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5404,8 +5404,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   of the default fibonacci-transitions method, e.g. '(0 0 100 1). x-axis is
 ;;;   arbitrary, y-axis should range from 0 to 1. When reading, y-values will be
 ;;;   rounded.
-;;; - :file. reaper file name, if you don't want this to be auto-generated. A
-;;;   full path is expected.
+;;; - :file. reaper file name, if you don't want this to be auto-generated.
+;;;   Automatically generated file names will be placed in the default-dir as
+;;;   defined in the sc-config. A full path is expected.
 ;;; - :fade-in :fade-out. The fade times expressed as a percentage of the
 ;;;   duration of any given event/item. Default = 10%
 ;;; - :tracks-per-player. How many reaper tracks to use per player. If > 1
@@ -5595,40 +5596,42 @@ seq-num 5, VN, replacing G3 with B6
             (cond
               (file file)
               (short-file-names
-               (format nil "~{~a-~}~a~{~a-~}~{~a.~}~a-~a~a~a.rpp"
-                       (if (listp sound-file-palette-ref) 
-                           sound-file-palette-ref
-                           (list sound-file-palette-ref))
-                       (if sound-file-palette-ref2
-                           "to-"
-                           "")
-                       (when sound-file-palette-ref2
-                         (if (listp sound-file-palette-ref2) 
-                             sound-file-palette-ref2
-                             (list sound-file-palette-ref2)))
-                       (if (listp section) 
-                           section 
-                           (list section))
-                       from-sequence 
-                       (+ -1 from-sequence section1-num-seqs)
-                       output-name-uniquifier
-                       (if pitch-synchronous "-psync" "")))
-              (t (format nil
-                         "~a~a~{-~a~}~{-~a~}~{-~a~}~{-to-~a~}-seq~a-~a~a.rpp"
-                         output-name-uniquifier
-                         (string-trim "+" (id sc))
-                         (if (listp section) section (list section))
-                         players
-                         (if (listp sound-file-palette-ref) 
-                             sound-file-palette-ref
-                             (list sound-file-palette-ref))
-                         (when sound-file-palette-ref2
-                           (if (listp sound-file-palette-ref2) 
-                               sound-file-palette-ref2
-                               (list sound-file-palette-ref2)))
-                         from-sequence 
-                         (+ -1 from-sequence section1-num-seqs)
-                         (if pitch-synchronous "-psync" ""))))))
+               (default-dir-file
+                (format nil "~{~a-~}~a~{~a-~}~{~a.~}~a-~a~a~a.rpp"
+                        (if (listp sound-file-palette-ref) 
+                            sound-file-palette-ref
+                            (list sound-file-palette-ref))
+                        (if sound-file-palette-ref2
+                            "to-"
+                            "")
+                        (when sound-file-palette-ref2
+                          (if (listp sound-file-palette-ref2) 
+                              sound-file-palette-ref2
+                              (list sound-file-palette-ref2)))
+                        (if (listp section) 
+                            section 
+                            (list section))
+                        from-sequence 
+                        (+ -1 from-sequence section1-num-seqs)
+                        output-name-uniquifier
+                        (if pitch-synchronous "-psync" ""))))
+              (t (default-dir-file
+                  (format nil
+                          "~a~a~{-~a~}~{-~a~}~{-~a~}~{-to-~a~}-seq~a-~a~a.rpp"
+                          output-name-uniquifier
+                          (string-trim "+" (id sc))
+                          (if (listp section) section (list section))
+                          players
+                          (if (listp sound-file-palette-ref) 
+                              sound-file-palette-ref
+                              (list sound-file-palette-ref))
+                          (when sound-file-palette-ref2
+                            (if (listp sound-file-palette-ref2) 
+                                sound-file-palette-ref2
+                                (list sound-file-palette-ref2)))
+                          from-sequence 
+                          (+ -1 from-sequence section1-num-seqs)
+                          (if pitch-synchronous "-psync" "")))))))
          (output 
            (unless file
              ;; first convert spaces to -'s in output file name
@@ -11621,7 +11624,6 @@ data: (11 15)
 ;;; (in case the event contains a chord) with p4- and p5-values (see
 ;;; above).
 ;;;
-;;; $$ Last modified:  14:51:46 Mon Dec  4 2023 CET
 ;;;
 ;;; SYNOPSIS
 (defun csound-p-fields-simple (event event-num cs-instrument)

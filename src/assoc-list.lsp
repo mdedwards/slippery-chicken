@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  08:48:26 Tue Feb 15 2022 CET
+;;; $$ Last modified:  14:06:22 Thu Dec  7 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -559,7 +559,12 @@ data: MARK
   ;; void 
   ;; (setf (slot-value al 'data) (econs (data al) (clone named-object)))
   ;; MDE Tue Mar 31 12:38:33 2020 -- allow items to be added to the front
+  ;; MDE Thu Dec  7 14:05:26 2023, Heidhausen -- this needs thinking through
+  ;; again, as basic as it is: we should be calling (setf (data al) ... so that
+  ;; setf methods of all dependent classes are called, but at the moment the
+  ;; tests don't pass when doing that. Might take a while to figure out.
   (setf (slot-value al 'data) (if front
+  ;; (setf (data al) (if front
                                   (cons named-object (data al))
                                   (econs (data al) named-object)))
   (incf (sclist-length al))

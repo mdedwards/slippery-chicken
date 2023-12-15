@@ -1704,7 +1704,7 @@ Here's where I pasted the data into the .RPP Reaper file:
     (setf string (read-file-as-string file))
     (unless envs-only
       (setf string
-            (insert-plugin string (getf *plugins-for-reaper* decoder) 0 t)))
+            (insert-plugin string (getf (plugins rf) decoder) 0 t)))
     ;; get the envelopes
     (loop for i from 1 and snd in list-of-sndfiles
        for start = (if envs-use-start-times
@@ -1722,7 +1722,7 @@ Here's where I pasted the data into the .RPP Reaper file:
        do
          (unless envs-only
            (setf string (insert-plugin string
-                                       (getf *plugins-for-reaper* encoder)
+                                       (getf (plugins rf) encoder)
                                        i)))
        ;; insert envelopes:
          (loop for k from 0 below nr-of-voices do

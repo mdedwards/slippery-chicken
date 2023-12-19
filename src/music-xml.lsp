@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  22:23:02 Tue Dec 19 2023 CET
+;;; $$ Last modified:  23:20:12 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -592,7 +592,7 @@
 ;;; DESCRIPTION
 ;;; This function returns the MusicXML-markup for a harp salzedo pedalling
 ;;; indication from a given salzedo-list (cf. harp-salzedo-to-tl-set).
-;;; N.B.: Though, the MusicXML standard provides the facility to define
+;;; N.B.: Though the MusicXML standard provides the facility to define
 ;;; harp pedal indications (via <harp-pedals>), most music notation programs,
 ;;; as of now (2023-12-19), do not support this specific element. Thus, the
 ;;; harp pedalling will be included via a <words>-tag. The pedal instruction

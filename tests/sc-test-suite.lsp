@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:04:48 Thu Dec  7 2023 CET
+;;; $$ Last modified:  14:51:09 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -18113,7 +18113,8 @@ est)")))
                         (c (1 1 1 1)))))
            ;; :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)))))
            ;; reaper: chords and transp methods
-           :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)) :pitch-seq-palette (((5) 1)))))
+           :rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
+                                   :pitch-seq-palette (((5) 1)))))
            :rthm-seq-map rsm
            :snd-output-dir "/tmp/"
            :sndfile-palette

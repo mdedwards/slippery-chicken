@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  22:23:53 Tue Dec 19 2023 CET
+;;; $$ Last modified:  23:17:54 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -511,10 +511,6 @@
 ;;;
 ;;; ARGUMENTS
 ;;; - The salzedo list. E.g. '(0 -1 1 0 1 -1 1) for d, cf, bs, e, fs, gf, as
-;;;
-;;; OPTIONAL ARGUMENTS
-;;; - A boolean indicating whether to return the markup for a diagram (T), or
-;;;   text markup.
 ;;;
 ;;; EXAMPLE
 #|

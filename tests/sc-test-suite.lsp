@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:51:09 Tue Dec 19 2023 CET
+;;; $$ Last modified:  22:34:30 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20988,6 +20988,36 @@ est)")))
       (equal set-symbs
              '(D1 E1 AF1 AF2 BF2 D3 E3 AF3 BF3 D4 E4 AF4 BF4 D5 E5
                D6 E6 AF6 BF6 D7 E7)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Dec 19 22:26:45 2023
+;;; test-salzedo-marks
+
+(sc-deftest test-salzedo-marks ()
+  (in-scale :chromatic)
+  (let ((sc
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((hrp (harp))))
+           :tempo-map '((1 (q 120)))
+           :set-palette '((set1 ((c4 d4 e4 f4 g4 a4))))
+           :set-map '((1 (set1 set1)))
+           :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
+                                      :pitch-seq-palette ((1 2 3 4 5)
+                                                          (5 4 3 2 1)))))
+           :rthm-seq-map '((1 ((hrp (seq1 seq1)))))))
+        (bar (make-rthm-seq-bar '((4 4) (w)))))
+    (add-mark-to-note sc 1 1 'hrp
+                      '(salzedo (1 -1 1 0 1 -1 1)))
+    (probe-delete "/tmp/salzedo-marks.xml")
+    (probe-delete "/tmp/salzedo-marks.eps")
+    (probe-delete "/tmp/salzedo-marks.pdf")
+    (write-xml sc :file "/tmp/salzedo-marks.xml")
+    (cmn-display sc :file "/tmp/salzedo-marks.eps")
+    (lp-display sc :base-path "/tmp/")
+    (sc-test-check
+      (file-write-ok "/tmp/salzedo-marks.xml")
+      (file-write-ok "/tmp/salzedo-marks.eps"))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

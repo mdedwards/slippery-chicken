@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  15:35:14 Thu May 11 2023 CEST
+;;; $$ Last modified:  22:23:53 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -371,6 +371,10 @@
            ;; e.g. '(key fs major), but note that they will appear _after_ the
            ;; note they're attached to.
            (key (get-lp-key-sig (second mark) (third mark)))
+           ;;; A salzedo mark for harp pedalling indications
+           ;;; E.g.: '(salzedo (1 1 0 -1 1 0 -1))
+           ;;; RP  Tue Dec 19 19:01:57 2023
+           (salzedo (lp-salzedo-mark (second mark)))
            (t (unless silent
                 (error "lilypond::lp-get-mark: unrecognised mark as list: ~a"
                        mark)))))
@@ -441,6 +445,89 @@
        ;; as this won't need to work on separate notes in a chord
        (format nil "\\once \\override TupletNumber.text = ~
                     #tuplet-number::calc-fraction-text \\times ~a { " tup)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* lilypond/salzedo-to-ly-string
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-12-19
+;;; 
+;;; DESCRIPTION
+;;; This method converts a salzedo list to a string to be used with LilyPond's
+;;; \harp-pedal markup. Cf.
+;;; https://lilypond.org/doc/v2.23/Documentation/notation/harp
+;;;
+;;; N.B.: Steinberg's Dorico notation software uses the same syntax for entering
+;;; harp pedal diagrams. 
+;;;
+;;; ARGUMENTS
+;;; A salzedo list (cf. harp-salzedo-to-tl-set). 
+;;; 
+;;; RETURN VALUE
+;;; The LilyPond salzedo-string. 
+;;;
+;;; EXAMPLE
+#|
+(salzedo-to-ly-string '(0 1 0 1 -1 1 0))
+=>
+"-v-|v^v-"
+|#
+;;; SYNOPSIS
+(defun salzedo-to-ly-string (salzedo)
+  ;;; sanity checks
+  (unless (salzedo-p salzedo)
+    (error "lilypond::salzedo-to-ly-string: The given list ~a is not a valid ~
+            salzedo-list." salzedo))
+  (let ((translation (loop for ped in salzedo
+                           for i from 0
+                           for trans = (case ped
+                                         (-1 "^")
+                                         (0 "-")
+                                         (1 "v"))
+                           append
+                           (if (eq i 2)
+                               (list trans "|")
+                               (list trans))
+                           )))
+    (format nil "~{~a~}" translation)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* lp-salzedo-mark
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-12-19
+;;; 
+;;; DESCRIPTION
+;;; Returns the LilyPond markup for a harp salzedo pedal-mark given as a salzedo
+;;; list (cf. harp-salzedo-to-tl-set).
+;;;
+;;; ARGUMENTS
+;;; - The salzedo list. E.g. '(0 -1 1 0 1 -1 1) for d, cf, bs, e, fs, gf, as
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - A boolean indicating whether to return the markup for a diagram (T), or
+;;;   text markup.
+;;;
+;;; EXAMPLE
+#|
+(lp-salzedo-mark '(1 -1 1 0 1 0 1))
+;; => "_\\markup { \\harp-pedal \"v^v|-v-v\" }"
+|#
+;;; SYNOPSIS
+(defun lp-salzedo-mark (salzedo)
+  ;;; ****
+  (unless (salzedo-p salzedo)
+    (error "lilypond::lp-salzedo-mark: ~a is not of type salzedo list" salzedo))
+  (let ((lp-salzedo (salzedo-to-ly-string salzedo)))
+    (format nil "_\\markup { \\harp-pedal \"~a\" }" lp-salzedo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

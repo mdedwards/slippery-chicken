@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  22:34:30 Tue Dec 19 2023 CET
+;;; $$ Last modified:  23:13:13 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -21009,6 +21009,12 @@ est)")))
         (bar (make-rthm-seq-bar '((4 4) (w)))))
     (add-mark-to-note sc 1 1 'hrp
                       '(salzedo (1 -1 1 0 1 -1 1)))
+    (add-salzedo-pedal (get-nth-event 2
+                                      (get-nth-bar 0
+                                                   (get-sequenz-from-bar-num
+                                                    (piece sc)
+                                                    1 'hrp)))
+                       '(1 0 0 1 0 -1 1))
     (probe-delete "/tmp/salzedo-marks.xml")
     (probe-delete "/tmp/salzedo-marks.eps")
     (probe-delete "/tmp/salzedo-marks.pdf")

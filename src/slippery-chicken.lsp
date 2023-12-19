@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:56:09 Wed Dec 13 2023 CET
+;;; $$ Last modified:  09:30:56 Tue Dec 19 2023 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -7184,7 +7184,11 @@ data: NIL
 ;;;   eps graphics files (whereupon those graphics files would need to be in
 ;;;   the same folder as your lilypond files). Default = T.
 ;;; - :lp-version. A string that will be added to each .ly file generated in
-;;;   conjunction with the LilyPond \version command. Default = "2.18.2"
+;;;   conjunction with the LilyPond \version command. Default = "2.42.1". NB
+;;;   Lilypond syntax changes every now and then. If you get errors that can't
+;;;   be explained by a user error, please post an issue on GitHub, as it might
+;;;   be that we need to update the generated code to reflect Lilypond's new
+;;;   syntax.
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
 ;;;   to every event object in the given slippery-chicken object. If NIL, no
 ;;;   processes will be applied. Default = NIL.

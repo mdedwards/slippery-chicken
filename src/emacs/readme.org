@@ -43,6 +43,7 @@ E.g.:
  :pitch-seq-palette (1 2 3))<- CURSOR HERE (=> valid)
 #+end_src
 
+** further reading…
 
 For more examples on the usage of this mode, have a look at
 ~sc-slippery-chicken.el~.

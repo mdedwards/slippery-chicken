@@ -113,9 +113,6 @@
 ;;; RETURN VALUE
 ;;; The number of notes in the rthm-seq-list.
 ;;;
-;;; EXAMPLE
-
-
 ;;; SYNOPSIS
 (defun sc-get-num-notes (&optional rs-list)
   ;;; ****

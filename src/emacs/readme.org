@@ -34,7 +34,7 @@ before (e.g. via ~.swank.lisp~ or ~.sbclrc~) before sing the mode.
 
 The ~sc-mode~ can be used to verify manually entered rthm-seqs. For doing that,
 just place the cursor in your Emacs frame after the last closing parenthesis of
-the rthm-seq to be tests and launch ~sc-valudate-rthm-seq~ (or hit ~C-c v r~).
+the rthm-seq to be tests and launch ~sc-validate-rthm-seq~ (or hit ~C-c v r~).
 
 E.g.:
 

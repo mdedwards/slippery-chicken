@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  15:19:07 Thu Dec  2 2021 CET
+;;; $$ Last modified:  22:24:29 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -389,6 +389,9 @@
               ;; here 
               (list (cmn-get-key-sig (cdr mark))))
              ;; |#
+             ;;; no harp pedal marks in CMN
+             ;;; RP  Tue Dec 19 21:20:27 2023
+             (salzedo (no-cmn-mark 'salzedo))
              (t (list (apply #'sc-cmn-text mark)))))
           ;; otherwise it might be a cmn-mark (e.g. text) already
           (t (list mark)))))))

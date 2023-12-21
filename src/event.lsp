@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:55:51 Thu Jan 26 2023 CET
+;;; $$ Last modified:  23:07:13 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5280,6 +5280,45 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
                  #'(lambda (x y) (if (listp y)
                                      (eq x (first y))
                                      (eq x y)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/add-salzedo-pedal
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-12-19
+;;; 
+;;; DESCRIPTION
+;;; Adds a salzedo mark for harp pedalling to the given event object. The
+;;; pedalling must be given as a salzedo-list (cf. salzedo-p and
+;;; harp-salzedo-to-tl-set).
+;;; Not available for CMN (as of 2023-12-19). 
+;;;
+;;; ARGUMENTS
+;;; - An event object.
+;;; - A salzedo list (see above). 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether or not to print a warning when trying to 
+;;;   attach an arrow and accompanying marks to a rest. Default = NIL. 
+;;; 
+;;; RETURN VALUE
+;;; Returns T.
+;;;
+;;; SYNOPSIS
+(defmethod add-salzedo-pedal ((e event) salzedo &optional warn-rest)
+  ;;; ****
+  (unless (salzedo-p salzedo)
+    (error "event::add-salzedo-pedal: The salzedo pedalling must be a salzedo ~
+            list."))
+  (when (and warn-rest (is-rest e))
+    (warn "~a~%event::add-salzedo-pedal: add arrow to rest?" e))
+  (add-mark e (list 'salzedo salzedo)))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF event.lsp

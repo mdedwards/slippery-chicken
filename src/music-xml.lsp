@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  09:11:32 Fri Aug 25 2023 CEST
+;;; $$ Last modified:  23:20:12 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -416,6 +416,10 @@
                   ;; todo: implement key sigs!
                   (key (no-xml-mark 'key))
                   ;; (get-xml-key-sig (second mark) (third mark)))
+                  ;;; Salzedo pedal marks
+                  ;;; The second element must be a salzedo list
+                  ;;; RP  Tue Dec 19 18:19:35 2023
+                  (salzedo (xml-salzedo stream (second mark)))
                   (t (unless silent
                        (error "music-xml::xml-get-mark: unrecognised mark as ~
                                list: ~a" mark)))))
@@ -576,8 +580,79 @@
                 (1+ (mod bracket-number 6))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* music-xml/xml-salzedo
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-12-19
+;;; 
+;;; DESCRIPTION
+;;; This function returns the MusicXML-markup for a harp salzedo pedalling
+;;; indication from a given salzedo-list (cf. harp-salzedo-to-tl-set).
+;;; N.B.: Though the MusicXML standard provides the facility to define
+;;; harp pedal indications (via <harp-pedals>), most music notation programs,
+;;; as of now (2023-12-19), do not support this specific element. Thus, the
+;;; harp pedalling will be included via a <words>-tag. The pedal instruction
+;;; is given with the respective characters as defined in the SMuFL Harp
+;;; techniques table
+;;; (https://w3c.github.io/smufl/latest/tables/harp-techniques.html). 
+;;; For correct representation, the font-family attribute is set to the
+;;; music font. As some notation programs are not capable of dealing with
+;;; generic font-families (e.g. "music"), a list of common music/engraving
+;;; font-families is given as the standard value to the font-family argument.
+;;;
+;;; ARGUMENTS
+;;; - The output stream.
+;;; - A salzedo list.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword-arguments:
+;;; - :placement. The location of the text mark. Default = 'b.
+;;; - :font-size. The font size. Default = 14.
+;;; - :font-family. The font family used to display the mark. This should be
+;;;   SMuFL compatible. Default = "Bravura, Opus, Maestro, Leland, music".
+;;; 
+;;; RETURN VALUE
+;;; The MusicXML-markup for the pedal indication written to the stream.
+;;;
+;;; SYNOPSIS
+(defun xml-salzedo (stream salzedo &key
+                                     (placement 'b)
+                                     (font-size 14)
+                                     (font-family
+                                      "Bravura, Opus, Maestro, Leland, music"))
+  ;;; ****
+  (unless (salzedo-p salzedo)
+    (error "music-xml::xml-salzedo: ~a is not of type salzedo." salzedo))
+  (let ((dorico-salzedo
+          (loop for s in salzedo
+                for i from 0
+                for trans = (case s
+                              ;;; characters according to the
+                              ;;; SMuFL specification
+                              (-1 #\U+E680)
+                              (0 #\U+E681)
+                              (1 #\U+E682))
+                append
+                (if (eq i 2)
+                    (list trans #\U+E683)
+                    (list trans)))))
+    (xml-words stream 
+               (format nil "~{~a~}" dorico-salzedo)
+               placement
+               (format
+                nil
+                "font-family=\"~a\" font-size=\"~a\" ~
+                 xml:space=\"preserve\""
+                font-family font-size))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun xml-write-marks (list stream)
   (loop for m in (force-list list) do (xml-get-mark m stream)))
+
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF music-xml.lsp

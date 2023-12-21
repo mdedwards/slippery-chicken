@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    23rd November 2011
 ;;;
-;;; $$ Last modified:  14:52:36 Mon Dec  4 2023 CET
+;;; $$ Last modified:  15:00:28 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id: second-law-clm.lsp 3565 2013-05-28 20:21:46Z medward2 $
 ;;;
@@ -224,6 +224,12 @@
 (reaper-play +second-law+ 1 nil 'source-sndfile-grp-1
              :check-overwrite nil :tracks-per-player 2
              :output-name-uniquifier "with-speed-"
+             :pitch-synchronous t)
+
+(reaper-play +second-law+ 1 nil 'source-sndfile-grp-1
+             :check-overwrite nil :tracks-per-player 2
+             :pan-min-max '(0 90)
+             :output-name-uniquifier "with-speed-wide"
              :pitch-synchronous t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

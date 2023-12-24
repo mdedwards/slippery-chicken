@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  23:20:12 Tue Dec 19 2023 CET
+;;; $$ Last modified:  15:55:49 Sun Dec 24 2023 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -581,6 +581,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun xml-pedal-tuning (stream pedal alteration)
+  ;; sanity checks
+  (unless (and (<= -1 alteration)
+               (>= 1 alteration))
+    (error "music-xml::xml-pedal-tuning: The pedal alteration ~a is not valid."
+           alteration))
+  (unless (find pedal '(d c b e f g a))
+    (error "music-xml::xml-pedal-tuning: The pedal ~a is not valid." pedal))
+  (let ((direction-content
+          (format nil
+                  "~&              <pedal-step>~a</pedal-step>~
+                   ~&              <pedal-alter>~a</pedal-alter>"
+                  pedal alteration)))
+    (format stream "~&            <pedal-tuning>~
+                    ~&~a~
+                    ~&            </pedal-tuning>~
+                    ~&"
+            direction-content)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* music-xml/xml-salzedo
 ;;; AUTHOR
@@ -592,17 +614,23 @@
 ;;; DESCRIPTION
 ;;; This function returns the MusicXML-markup for a harp salzedo pedalling
 ;;; indication from a given salzedo-list (cf. harp-salzedo-to-tl-set).
+;;; 
 ;;; N.B.: Though the MusicXML standard provides the facility to define
 ;;; harp pedal indications (via <harp-pedals>), most music notation programs,
 ;;; as of now (2023-12-19), do not support this specific element. Thus, the
-;;; harp pedalling will be included via a <words>-tag. The pedal instruction
-;;; is given with the respective characters as defined in the SMuFL Harp
-;;; techniques table
+;;; harp pedalling can be included via a <words>-tag. This can be achieved by
+;;; setting the respective config variable accordingly via
+;;; (set-sc-config 'xml-salzedo-as-text t).
+;;;  The pedal instruction is then given with the respective characters as
+;;; defined in the SMuFL Harp techniques table
 ;;; (https://w3c.github.io/smufl/latest/tables/harp-techniques.html). 
 ;;; For correct representation, the font-family attribute is set to the
 ;;; music font. As some notation programs are not capable of dealing with
 ;;; generic font-families (e.g. "music"), a list of common music/engraving
 ;;; font-families is given as the standard value to the font-family argument.
+;;;
+;;; If (get-sc-config 'xml-salzedo-as-text) = NIL, the salzedo mark will be
+;;; output according to the MusicXML-standard (via the <harp-pedals> element). 
 ;;;
 ;;; ARGUMENTS
 ;;; - The output stream.
@@ -610,6 +638,9 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword-arguments:
+;;; - :as-text. When T, the pedal mark will be exported as a <words> text mark,
+;;;   instead of the MusicXML <harp-pedals> element (see above).
+;;;   Default = The value of (get-sc-config 'xml-salzedo-as-text).
 ;;; - :placement. The location of the text mark. Default = 'b.
 ;;; - :font-size. The font size. Default = 14.
 ;;; - :font-family. The font family used to display the mark. This should be
@@ -620,6 +651,8 @@
 ;;;
 ;;; SYNOPSIS
 (defun xml-salzedo (stream salzedo &key
+                                     (as-text
+                                      (get-sc-config 'xml-salzedo-as-text))
                                      (placement 'b)
                                      (font-size 14)
                                      (font-family
@@ -627,27 +660,39 @@
   ;;; ****
   (unless (salzedo-p salzedo)
     (error "music-xml::xml-salzedo: ~a is not of type salzedo." salzedo))
-  (let ((dorico-salzedo
-          (loop for s in salzedo
-                for i from 0
-                for trans = (case s
-                              ;;; characters according to the
-                              ;;; SMuFL specification
-                              (-1 #\U+E680)
-                              (0 #\U+E681)
-                              (1 #\U+E682))
-                append
-                (if (eq i 2)
-                    (list trans #\U+E683)
-                    (list trans)))))
-    (xml-words stream 
-               (format nil "~{~a~}" dorico-salzedo)
-               placement
-               (format
-                nil
-                "font-family=\"~a\" font-size=\"~a\" ~
-                 xml:space=\"preserve\""
-                font-family font-size))))
+  (if as-text
+      (let ((dorico-salzedo
+              (loop for s in salzedo
+                    for i from 0
+                    for trans = (case s
+                                  ;;; characters according to the
+                                  ;;; SMuFL specification
+                                  (-1 #\U+E680)
+                                  (0 #\U+E681)
+                                  (1 #\U+E682))
+                    append
+                    (if (eq i 2)
+                        (list trans #\U+E683)
+                        (list trans)))))
+        (xml-words stream 
+                   (format nil "~{~a~}" dorico-salzedo)
+                   placement
+                   (format
+                    nil
+                    "font-family=\"~a\" font-size=\"~a\" ~
+                     xml:space=\"preserve\""
+                    font-family font-size)))
+      (let ((pedal-tunings
+              (loop for alteration in salzedo
+                    for pedal in '(d c b e f g a)
+                    collect
+                    (xml-pedal-tuning nil pedal alteration))))
+        (xml-direction stream "harp-pedals" 
+                       (format nil
+                               "~%~a~&          "
+                               (apply #'concatenate
+                                      (cons 'string pedal-tunings)))
+                       nil 'b))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun xml-write-marks (list stream)

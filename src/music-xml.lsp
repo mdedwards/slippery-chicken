@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  15:55:49 Sun Dec 24 2023 CET
+;;; $$ Last modified:  16:34:16 Sun Dec 24 2023 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -644,7 +644,8 @@
 ;;; - :placement. The location of the text mark. Default = 'b.
 ;;; - :font-size. The font size. Default = 14.
 ;;; - :font-family. The font family used to display the mark. This should be
-;;;   SMuFL compatible. Default = "Bravura, Opus, Maestro, Leland, music".
+;;;   SMuFL compatible. Default = The value of
+;;;   (get-sc-config 'xml-engraving-font).
 ;;; 
 ;;; RETURN VALUE
 ;;; The MusicXML-markup for the pedal indication written to the stream.
@@ -656,7 +657,7 @@
                                      (placement 'b)
                                      (font-size 14)
                                      (font-family
-                                      "Bravura, Opus, Maestro, Leland, music"))
+                                      (get-sc-config 'xml-engraving-font)))
   ;;; ****
   (unless (salzedo-p salzedo)
     (error "music-xml::xml-salzedo: ~a is not of type salzedo." salzedo))

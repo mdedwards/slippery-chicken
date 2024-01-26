@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  23:13:13 Tue Dec 19 2023 CET
+;;; $$ Last modified:  16:00:35 Sun Dec 24 2023 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20995,6 +20995,7 @@ est)")))
 
 (sc-deftest test-salzedo-marks ()
   (in-scale :chromatic)
+  (set-sc-config 'xml-salzedo-as-text t)
   (let ((sc
           (make-slippery-chicken
            '+mini+
@@ -21022,8 +21023,39 @@ est)")))
     (cmn-display sc :file "/tmp/salzedo-marks.eps")
     (lp-display sc :base-path "/tmp/")
     (sc-test-check
-      (file-write-ok "/tmp/salzedo-marks.xml")
-      (file-write-ok "/tmp/salzedo-marks.eps"))))
+     (file-write-ok "/tmp/salzedo-marks.xml")
+     (file-write-ok "/tmp/salzedo-marks.eps")))
+  (set-sc-config 'xml-salzedo-as-text nil)
+  (let ((sc
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((hrp (harp))))
+           :tempo-map '((1 (q 120)))
+           :set-palette '((set1 ((c4 d4 e4 f4 g4 a4))))
+           :set-map '((1 (set1 set1)))
+           :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
+                                      :pitch-seq-palette ((1 2 3 4 5)
+                                                          (5 4 3 2 1)))))
+           :rthm-seq-map '((1 ((hrp (seq1 seq1)))))))
+        (bar (make-rthm-seq-bar '((4 4) (w)))))
+    (add-mark-to-note sc 1 1 'hrp
+                      '(salzedo (1 -1 1 0 1 -1 1)))
+    (add-salzedo-pedal (get-nth-event 2
+                                      (get-nth-bar 0
+                                                   (get-sequenz-from-bar-num
+                                                    (piece sc)
+                                                    1 'hrp)))
+                       '(1 0 0 1 0 -1 1))
+    (probe-delete "/tmp/salzedo-marks.xml")
+    (probe-delete "/tmp/salzedo-marks.eps")
+    (probe-delete "/tmp/salzedo-marks.pdf")
+    (write-xml sc :file "/tmp/salzedo-marks.xml")
+    (cmn-display sc :file "/tmp/salzedo-marks.eps")
+    (lp-display sc :base-path "/tmp/")
+    (sc-test-check
+     (file-write-ok "/tmp/salzedo-marks.xml")
+     (file-write-ok "/tmp/salzedo-marks.eps")))
+  (set-sc-config 'xml-salzedo-as-text t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

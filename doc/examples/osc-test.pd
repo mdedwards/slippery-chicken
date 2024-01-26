@@ -1,6 +1,0 @@
-#N canvas 388 289 423 379 10;
-#X obj 25 70 osc-sc-eval;
-#X obj 25 103 print;
-#X msg 25 35 (fibonacci-transition 100);
-#X connect 0 0 1 0;
-#X connect 2 0 0 0;

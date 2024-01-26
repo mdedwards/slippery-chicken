@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified:  10:21:02 Tue Aug 28 2018 CEST
+;;; $$ Last modified:  11:23:34 Tue Jan 16 2024 CET
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -170,9 +170,9 @@
             (normalise t)
             (start-analysis 0.0) 
             (highest-bin (/ fftsize 2))
-	    ;; DJR Mon 13 Jan 2020 14:34:06 GMT
-	    ;; Force new analysis?
-	    (perform-new-analysis? nil))
+            ;; DJR Mon 13 Jan 2020 14:34:06 GMT
+            ;; Force new analysis?
+            (perform-new-analysis? nil))
   (declare (special *slippery-chicken-get-spectrum-last-result*))
   (declare (special *slippery-chicken-get-spectrum-peak-amps*))
   (declare (special *slippery-chicken-get-spectrum-peak-freqs*))
@@ -192,7 +192,7 @@
               start-analysis)
            (eq (fifth *slippery-chicken-get-spectrum-last-result*) order-by)
            (= (sixth *slippery-chicken-get-spectrum-last-result*) num-partials)
-	   (null perform-new-analysis?))
+           (null perform-new-analysis?))
       (progn
         (print "Using previous analysis")
         (values (first *slippery-chicken-get-spectrum-last-result*)
@@ -274,7 +274,7 @@
                 got-partials)
           (values freqs amps)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;; Hacked code from Bill's san.ins 
 (defscins spec-an
     (file &key (fftsize 4096) (max-peaks 200)

@@ -1,0 +1,589 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - l-systems</title> 
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>L-systems</h2>
+
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated example files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/l-systems-examples.lsp">l-systems-examples.lsp</a></li>
+        </ul>
+        <p class="close"><a href="#files" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p> 
+        <br />
+      </div>
+
+      <p class="nb">NB: An exercise relating to the material covered
+        in this tutorial can be found on
+        the <a href="./exercises.html#lsys">Exercises</a> page.</p>
+
+      <p>L-systems, or <em>Lindenmayer Systems</em>, are recursive formulas
+        used to model self-similar objects or processes. They were developed in
+        1968 by Hungarian botanist Aristid Lindenmayer (1925&ndash;1989) to
+        model growth processes in plants, but have since been used in many
+        other fields, including in the generation of fractal images.</p>
+
+      <p><em>slippery chicken</em> has a class and methods available for using
+        L-systems to generate self-similar lists, which can in turn be used to
+        govern any of the musical data which a <code>slippery-chicken</code>
+        object may contain. For an example of the use of L-systems in
+        a <em>slippery chicken</em> composition, see the tutorial
+        on <a href="./tempus-perfectum.html"><em>Tempus Perfectum</em></a>.</p>
+    
+      <h3 id="general"><a href="#general" id="general-div-show"
+                        onclick="showHide('general-div');return false;">+</a>
+        L-system basics</h3>
+      <div id="general-div" class="more">
+        <p>L-systems consist of three basic components: a list of individual
+          symbols that will be used to make strings; a list of rules for how to
+          expand each symbol into a longer string of symbols; and an initial
+          state, or <em>axiom</em>, with which the process is to begin.</p>
+        
+        <p>A loop is then used to apply the rules to each symbol of the new,
+          longer strings at each pass, returning an even longer string each
+          time.</p>
+
+        <h4>A simple example</h4>
+        <p>As a common first example, the following L-system uses the
+          symbols <tt>A</tt> and <tt>B</tt>. Its rules state that at each pass,
+          every <tt>A</tt> in the current string is to be converted
+          to <tt>AB</tt>, and every <tt>B</tt> is to be converted
+          to <tt>A</tt>. The whole process will start with an initial axiom
+          of <tt>A</tt>. </p>
+
+        <pre class="source">
+Symbols: A, B
+Rules: A => AB, B => A 
+Axiom: A
+
+Produces:
+    pass 0 : A
+    pass 1 : AB
+    pass 2 : ABA
+    pass 3 : ABAAB
+    pass 4 : ABAABABA
+    pass 5 : ABAABABAABAAB
+    pass 6 : ABAABABAABAABABAABABA
+    pass 7 : ABAABABAABAABABAABABAABAABABAABAAB</pre>
+
+        <p>Or, to break the above example down into its
+          routes<sup><a href="#1"> [1]</a></sup>:</p> 
+
+        <pre class="source">
+                 A
+                _|_
+               A   B
+              _|   |
+             A B   A
+            _| |   |_
+           A B A   A B
+          _| | |_  |_ \   
+         A B A A B A B A
+
+    [etc.]</pre>
+
+        <h4>Notes</h4>
+        <p class="footnote" id="1">[1] Adapted from
+          the <a href="http://www.biologie.uni-hamburg.de/b-online/e28_3/lsys.html">University
+          of Hamburg Biology webpages</a></p>
+        
+        <p class="close"><a href="#general" id="general-div-hide"
+              class="hideLink" onclick="showHide('general-div');return
+              false;">close</a></p>
+      </div>
+
+
+      <h3 id="fractals"><a href="#fractals" id="fractals-div-show"
+                        onclick="showHide('fractals-div');return false;">+</a>
+        L-systems in graphics and fractals</h3>
+      <div id="fractals-div" class="more">
+
+        <h4>Turtle Graphics</h4>
+        <p>The use of L-systems to produce fractal graphics is often combined
+          with an approach to automated drawing called <em>Turtle
+          Graphics</em>, which were originally a feature of the
+          <a href="http://el.media.mit.edu/logo-foundation/index.html">Logo</a>
+          programming language (a dialect of Lisp).</p>
+
+        <p>Using Turtle Graphics, the symbols of an L-system's resulting string
+          are converted into drawing instructions, the most basic of which are
+          "draw a line forward", or "draw nothing". In conjunction with
+          L-systems, Turtle Graphics also provide for the specification
+          of <em>constant</em> symbols, which don't change the string at all,
+          but tell the program, for example, to "change the direction of the
+          line by an angle of <em>n</em> degrees", or to "begin a branch",
+          etc. </p>
+
+        <h4>Sierpinski Triangle</h4>
+        <p>A simple example of using an L-system to control Turtle Graphics can
+          be seen in a brief set of symbols and rules that produce a
+          "Sierpinski Triangle". The L-system uses the symbols <tt>A</tt>
+          and <tt>B</tt>. Both of these are translated into instructions to
+          "draw a line forward". The system also includes the
+          constants <tt>+</tt> and <tt>-</tt>, which don't result in anything
+          being drawn, but instead instruct the graphics program to turn left
+          or right by the specified angle before drawing the next line. The
+          rules are that every <tt>A</tt> becomes <tt>B-A-B</tt>, and
+          every <tt>B</tt> becomes <tt>A+B+A</tt>. The axiom
+          is <tt>A</tt>. </p>
+
+        <pre class="source">
+Symbols: A, B
+    both mean "draw forward"
+Constants: +, -
+    + means "turn left by angle"
+    - means "turn right by angle"
+Rules: 
+    A => B-A-B
+    B => A+B+A
+Axiom: A</pre>
+
+        <p>An angle of 60 degrees produces the following image after 6
+          iterations:</p><br />
+
+        <table class="image">
+          <tr><td><img class="fragment"
+                       src="./resources/sierpinsky-60-6-lstgr-html5c.png"
+                       alt="sierpinsky-60-6-lstgr-html5c.png" width="300"
+                       /></td></tr>
+          <caption>Image generated using<br /> L-Systems Turtle Graphics
+            Renderer at <br />
+            <a href="http://www.kevs3d.co.uk/dev/lsystems">http://www.kevs3d.co.uk/dev/lsystems</a></caption>
+        </table>
+
+        <h4>Fractal plant</h4>
+        <p>A second example of L-systems and graphics produces an image that
+          resembles a plant. It uses the symbols <tt>F</tt> and <tt>X</tt>,
+          which translate into the instructions to "draw a line forward" in the
+          one case and to "draw nothing" in the other. As constants, it again
+          uses the <tt>+</tt> and <tt>-</tt> symbols to change the angle, and
+          additionally includes the symbols <tt>[</tt> and <tt>]</tt>, which
+          mean to "create a node and begin a branch", and "end the branch and
+          return to the most recent node". Its rules are that every <tt>X</tt>
+          becomes <tt>F-[[X]+X]+F[+FX]-X</tt>, and every <tt>F</tt>
+          becomes <tt>FF</tt>. It starts with an axiom of <tt>X</tt>. </p>
+
+        <pre class="source">
+Symbols: F, X
+    F means "draw forward"
+    X means "draw nothing"
+Constants: -, +, [, ]
+    - means "turn left by angle"
+    + means "turn right by angle"
+    [ means "create node and begin branch"
+    ] means "end branch and return to most recent node"
+Rules: 
+    X => F-[[X]+X]+F[+FX]-X
+    F => FF
+Axiom: X</pre>
+
+        <p>An angle of 25 degrees produces the following image after 6
+          iterations:</p><br />
+
+        <table class="image">
+          <tr><td><img class="fragment"
+                       src="./resources/plant-fractal-25-6-lstgr-html5c.png"
+                       alt="plant-fractal-25-6-lstgr-html5c.png" width="300"
+                       /></td></tr>
+          <caption>Image generated using<br /> L-Systems Turtle Graphics
+            Renderer at <br />
+            <a href="http://www.kevs3d.co.uk/dev/lsystems">http://www.kevs3d.co.uk/dev/lsystems</a></caption>
+        </table>
+
+        <p class="close"><a href="#fractals" id="fractals-div-hide"
+              class="hideLink" onclick="showHide('fractals-div');return
+              false;">close</a></p>
+      </div>
+
+      <h3 id="l-sys-sc"><a href="#l-sys-sc" id="l-sys-sc-div-show"
+                        onclick="showHide('l-sys-sc-div');return false;">+</a>
+        L-systems in <em>slippery chicken</em></h3>
+      <div id="l-sys-sc-div" class="more">
+        <p>In <em>slippery chicken</em>, L-systems can be used to generate
+          self-similar lists based on a collection of items, rules, and an
+          axiom. The <em>slippery chicken</em> implementation of L-systems
+          does not include constants (i.e. no branching).</p>
+
+        <p><em>slippery chicken's</em> L-system class and methods generate a
+          sequence of key references from a set of specified rules and use
+          these to retrieve data from a list of key-data pairs
+          (<a href="../robodoc/assoc-list_lsp.html"><code>assoc-list</code></a>
+          object). Extensions to the algorithm allow the user to implement
+          Fibonacci-based transitions between the data items, or to generate
+          linear lists from the data without using L-system rules.</p>
+
+        <h4>The l-for-lookup object</h4>
+        <p>At the core of <em>slippery chicken's</em> L-system implementation
+          is the <code>l-for-lookup</code> object. This object takes an ID, a
+          list of key-data pairs (each element of the data list must also be a
+          list), and a list of rules created from the keys of the list of
+          elements. Both the keys and the data of the rules must consist of the
+          keys from the list of elements.</p>
+
+        <p>For example, the following creates an <code>l-for-lookup</code>
+          object based on the rules <tt>A=>B</tt> and <tt>B=>A</tt>: </p>
+
+        <pre class="source">
+(make-l-for-lookup 'l-sys
+                   '((1 ((a)))   ; elements 
+                     (2 ((b))))
+                   '((1 (1 2))   ; rules
+                     (2 (1))))</pre>
+
+        <p>A number of methods are then available to create lists based on the
+          elements and rules specified in the <code>l-for-lookup</code>
+          object. </p>
+
+        <h4>get-l-sequence</h4>
+        <p>The <code>get-l-sequence</code> method operates by collecting a list
+          of keys, without using those keys as look-up references and therefore
+          not converting the list of keys into a list of corresponding data
+          elements. It takes as its arguments the <code>l-for-lookup</code>
+          object, an axiom (the starting key), and an integer that indicates
+          the length of the resulting list.</p>
+
+        <pre class="source">
+(let* ((lfl (make-l-for-lookup 'l-sys
+                               '((1 ((a)))
+                                 (2 ((b))))
+                               '((1 (1 2)) (2 (1))))))
+  (get-l-sequence lfl 1 29))
+
+=> (1 2 1 1 2 1 2 1 1 2 1 1 2 1 2 1 1 2 1 2 1 1 2 1 1 2 1 2 1)</pre>
+
+        <p>The <code>l-for-lookup</code> object to be accessed by this method
+          can thus be made without specifying a list of elements (by
+          using <code>NIL</code> instead).</p>
+
+        <pre class="source">
+(let* ((lfl (make-l-for-lookup 'l-sys
+                               nil
+                               '((1 (1 2)) (2 (1))))))
+  (get-l-sequence lfl 1 29))
+
+=> (1 2 1 1 2 1 2 1 1 2 1 1 2 1 2 1 1 2 1 2 1 1 2 1 1 2 1 2 1)</pre>
+
+        <p>A musical implementation of this object and method may look like
+          the following: </p>
+
+        <pre class="source">
+(let* ((num-seqs 29)
+       (lfl (make-l-for-lookup 'l-sys
+                               nil
+                               '((1 (1 2)) (2 (1)))))
+       (rs-map (get-l-sequence lfl 1 num-seqs))
+       (mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :set-palette '((1 ((c4 e4 g4))))
+         :set-map `((1 ,(loop repeat num-seqs collect 1)))
+         :rthm-seq-palette '((1 ((((2 4) q q))
+                                 :pitch-seq-palette ((1 2))))
+                             (2 ((((2 4) - s s (s) s - - s (32) 32 32 32 - (s)))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1)))))
+         :rthm-seq-map `((1 ((vn ,rs-map)))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/l-systems-get-l-sequence.png"
+                       alt="l-systems-get-l-sequence.png"
+                       width="788"/></td></tr> 
+        </table>
+
+        <h4>do-simple-lookup</h4>
+        <p>The <code>do-simple-lookup</code> method takes as its arguments
+          an <code>l-for-lookup</code> object, an axiom (which must be one of
+          the keys from the list of elements), and an integer to specify the
+          length of the list to be returned.</p>
+
+        <p>The method then performs L-system iterations based on the rules of
+          the specified <code>l-for-lookup</code> object, collecting the keys
+          specified in the rules until it returns a list whose length is equal
+          to or greater than the length specified. (If the list is longer, it
+          is truncated.) It then uses the list of keys to look up the
+          associated data, essentially converting the list of keys into a list
+          of the corresponding data elements.</p>
+
+        <pre class="source">
+(let* ((lfl (make-l-for-lookup 'l-sys
+                               '((1 ((a)))
+                                 (2 ((b))))
+                               '((1 (1 2)) (2 (1))))))
+   (do-simple-lookup lfl 1 29))
+
+=>
+
+((A) (B) (A) (A) (B) (A) (B) (A) (A) (B) (A) (A) (B) (A) (B) (A) (A) (B)
+ (A) (B) (A) (A) (B) (A) (A) (B) (A) (B) (A))</pre>
+
+        <p>A very handy utility function in <em>slippery chicken</em> is
+          the <code>flatten</code> function, which makes a "flat" list out of
+          any list of sub-lists. Using that function with the above example,
+          the method returns a list of just the data:</p>
+
+        <pre class="source">
+(let* ((lfl (make-l-for-lookup 'l-sys
+                               '((1 ((a)))
+                                 (2 ((b))))
+                               '((1 (1 2)) (2 (1))))))
+  (flatten (do-simple-lookup lfl 1 29)))
+
+=> (A B A A B A B A A B A A B A B A A B A B A A B A A B A B A)</pre>
+
+        <p>A possible musical implementation of this method may look like the
+          following: </p>
+
+        <pre class="source">
+(let* ((num-seqs 29)
+       (lfl (make-l-for-lookup 'l-sys
+                               '((1 ((a)))
+                                 (2 ((b))))
+                               '((1 (1 2)) (2 (1)))))
+       (rs-map (flatten (do-simple-lookup lfl 1 29)))
+       (mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :set-palette '((1 ((c4 e4 g4))))
+         :set-map `((1 ,(loop repeat num-seqs collect 1)))
+         :rthm-seq-palette '((a ((((2 4) q q))
+                                 :pitch-seq-palette ((1 2))))
+                             (b ((((2 4) - s s (s) s - - s (32) 32 32 32 - (s)))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1)))))
+         :rthm-seq-map `((1 ((vn ,rs-map)))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/l-systems-do-simple-lookup.png"
+                       alt="l-systems-do-simple-lookup.png"
+                       width="788"/></td></tr> 
+        </table>
+
+        <p class="close"><a href="#l-sys-sc" id="l-sys-sc-div-hide"
+              class="hideLink" onclick="showHide('l-sys-sc-div');return
+              false;">close</a></p>
+      </div>
+
+      <h3 id="fibs"><a href="#fibs" id="fibs-div-show"
+                        onclick="showHide('fibs-div');return false;">+</a>
+        Combining L-systems and Fibonacci-based transitions</h3>
+      <div id="fibs-div" class="more">
+        <p><em>slippery chicken</em> provides an extension to the L-system
+          approach through a combination of L-system look-ups with
+          Fibonacci-based transitions (see the manual page
+          on <a href="./fibonacci.html">Fibonacci functions</a> for more
+          detail). This is done using the <code>do-lookup</code> method.</p>
+
+        <p>In order for the Fibonacci transitions of the <code>do-lookup</code>
+          method to be evident in the resulting list, the data of at least one
+          of the key-data pairs must contain at least two sub-lists. In the
+          final list returned by the method, the instances of the keys for
+          elements with more than one sub-list will be replaced by gradual
+          transitions through each of the sub-lists.</p>
+
+        <p>For example, the item with key <code>1</code> in the list of
+          elements from the following <code>l-for-lookup</code> object has the
+          sub-lists <code>(a)</code> and <code>(c)</code>. In the list produced
+          by <code>do-lookup</code>, the first sub-list at key <code>1</code>
+          (<code>a</code>) will gradually be replaced by the second,
+          (<code>c</code>).</p>
+
+        <pre class="source">
+(let* ((lfl (make-l-for-lookup 'l-sys-a
+                               '((1 ((a) (c)))
+                                 (2 ((b))))
+                               '((1 (1 2)) (2 (1))))))
+   (do-lookup lfl 1 73))
+
+=> 
+(A B A A B A B A A B A C B A B A A B A B C A B A A B A B C A B A C B A B A
+ C B A B C A B C C B A B C A B C B A C B C A B C B C A B C C B C B C C B)</pre>
+
+        <p>This is an example with multiple lists in each element, each of
+          which in turn contains multiple items to transition over:</p>
+
+        <pre class="source">
+(let* ((lfl 
+        (make-l-for-lookup 'l-sys-a
+                           '((1 ((a b c) (1 2 3) (ant bird cat) (10 20 30)))
+                             (2 ((two) (999))))
+                           '((1 (1 2)) (2 (1))))))
+  (do-lookup lfl 1 73))
+
+=>
+(A TWO B 1 TWO C TWO 2 A TWO 3 B 999 1 TWO C 2 TWO A 999 3 1 TWO 2 3 TWO 1
+ 999 ANT 2 TWO BIRD 3 999 CAT TWO 1 ANT 999 2 TWO BIRD 3 999 CAT ANT TWO
+ BIRD 999 CAT ANT TWO 10 999 BIRD 20 999 CAT 30 TWO ANT 999 10 BIRD 999 20
+ CAT 999 30 999 10 20 999)
+        </pre>
+
+        <p>A musical usage of this method may look as follows:</p>
+
+        <pre class="source">
+(let* ((num-seqs 73)
+       (lfl (make-l-for-lookup 'l-sys-a
+                           '((1 ((a b c) (d e) (f g h)))
+                             (2 ((i))))
+                           '((1 (1 2)) (2 (1)))))
+       (rs-map (do-lookup lfl 1 num-seqs))
+       (mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :set-palette '((1 ((c4 e4 g4))))
+         :set-map `((1 ,(loop repeat num-seqs collect 1)))
+         :rthm-seq-palette '((a ((((2 4) - s s (s) s - - s (32) 32 32 32 - (s)))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1))))
+                             (b ((((2 4) - s (s) s s - (32) - 32 32 32 (s) s -))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1))))
+                             (c ((((2 4) (s) - s s (32) 32 - - 32 32 (s) s s -))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1))))
+                             (d ((((2 4) - s s (32) 32 32 32 - (s) - s s - (s)))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1))))
+                             (e ((((2 4) - s (32) 32 32 32 - (s) - s s (s) s -))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1))))
+                             (f ((((2 4) (32) - 32 32 32 (s) s - - s (s) s s -))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1))))
+                             (g ((((2 4) - 32 32 32 (32) s s - (s) - s s - (s)))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1))))
+                             (h ((((2 4) - 32 32 (s) s s - (s) - s s (32) 32 -))
+                                 :pitch-seq-palette ((1 2 3 1 3 2 1))))
+                             (i ((((2 4) h))
+                                 :pitch-seq-palette ((1)))))
+         :rthm-seq-map `((1 ((vn ,rs-map)))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/l-systems-do-lookup.png"
+                       alt="l-systems-do-lookup.png"
+                       width="788"/></td></tr> 
+        </table>
+
+        <p class="close"><a href="#fibs" id="fibs-div-hide" class="hideLink"
+              onclick="showHide('fibs-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="linear"><a href="#linear" id="linear-div-show"
+                        onclick="showHide('linear-div');return false;">+</a>
+        Non-L-system use of L-system object data</h3>
+      <div id="linear-div" class="more">
+        <p><em>slippery chicken</em> also provides an option for using the rules
+          of an <code>l-for-lookup</code> object without using L-system
+          data. If this option is chosen, the
+          corresponding <code>l-for-lookup</code> object can be made without
+          any data, by substituting the data with <code>NIL</code>. </p>
+
+        <p>The <code>get-linear-sequence</code> method creates a list from the
+          rules of an <code>l-for-lookup</code> object's key-data pairs. It does
+          so by collecting the <em>next</em> element from the given key-data
+          pair each time that pair is accessed. When the last element of that
+          pair has been retrieved, the method returns to the head of that
+          pair's data list.</p>
+
+        <p>The method then uses the element collected as the key for the
+          next collection. All of the elements must therefore consist of
+          only the keys from the list of key-data pairs.</p>
+
+        <pre class="source">
+(let* ((lfl (make-l-for-lookup 'lfl-test
+                                nil
+                               '((1 (2 3))
+                                 (2 (3 1 2))
+                                 (3 (1))))))
+   (get-linear-sequence lfl 1 23))
+
+=> (1 2 3 1 3 1 2 1 3 1 2 2 3 1 3 1 2 1 3 1 2 2 3)</pre>
+
+        <p>This method can be very useful for algorithmically generating chord
+          sequences within a composition, as the following example
+          demonstrates: </p>
+
+        <pre class="source">
+(let* ((num-seqs 23)
+       (lfl (make-l-for-lookup 'lfl-test
+                                nil
+                               '((1 (2 3))
+                                 (2 (3 1 2))
+                                 (3 (1)))))
+       (s-map (get-linear-sequence lfl 1 num-seqs))
+       (mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :set-palette '((1 ((c4 e4 g4)))
+                        (2 ((c4 f4 a4)))
+                        (3 ((d4 g4 b4))))
+         :set-map `((1 ,s-map))
+         :rthm-seq-palette '((1 ((((2 4) q e (s) s))
+                                 :pitch-seq-palette ((1 2 3)))))
+         :rthm-seq-map `((1 ((vn ,(loop repeat num-seqs collect 1))))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <br />
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/l-systems-chord-seqs.png"
+                       alt="l-systems-chord-seqs.png"
+                       width="798"/></td></tr> 
+        </table>
+
+        <p>Another example of such use of the <code>l-for-lookup</code> class
+        can be found in the manual page <a href="tonal.html">Tonal composition
+        with slippery chicken</a>.<p>
+
+        <p class="close"><a href="#linear" id="linear-div-hide"
+              class="hideLink" onclick="showHide('linear-div');return
+              false;">close</a></p>
+      </div>
+
+      <!-- **************************************************************** -->
+      <!-- This spacer <br> is necessary as a buffer between the content and
+           the footer. It cannot be added as padding to #push, since #push has
+           to be the same size as #footer in order for the dynamic placement to
+           work properly --> <br /><br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

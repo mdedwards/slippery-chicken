@@ -1,0 +1,809 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - score layout</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** --> 
+      
+      <h2>Score layout</h2>
+
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated example files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/scores-examples.lsp">scores-examples.lsp</a></li>  
+        </ul>
+        <p class="close"><a href="#" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p> 
+        <br />
+      </div>
+
+      <p class="nb">NB: An exercise relating to the material covered
+        in this tutorial can be found on
+        the <a href="./exercises.html#scores">Exercises</a> page.</p>
+
+      <p>Score layout in <em>slippery chicken</em> is done primarily using
+        keyword arguments to the <code>make-slippery-chicken</code>
+        function. Arguments are available for inserting elements into the
+        header, for defining attributes of the systems, and for attributes
+        related to measures. Not all arguments are available for both CMN and
+        LilyPond output. </p>
+
+      <p><em>slippery chicken</em> itself does not produce printable
+        output. Instead, it generates the data and files necessary for
+        printable output to be produced by third-party software,
+        namely <a href="https://ccrma.stanford.edu/software/cmn/">Common Music
+        Notation</a> (CMN) and <a href="http://lilypond.org/">LilyPond</a>. See
+        the <a href="../installation.html">installation</a> page for details on
+        how to obtain these applications and prepare
+        <em>slippery chicken</em> for use with them. Specifics on how to
+        generate the output, once the keyword arguments have been set in
+        the <code>make-slippery-chicken</code> function, can be found on the
+        <a href="./output.html">output</a> page. </p>
+
+      <p>Because the printable output is not produced by 
+        <em>slippery chicken</em> itself, tweaking of scores (such as moving
+        colliding symbols on the page etc.) is not possible using
+        <em>slippery chicken</em> code. However, since both CMN and LilyPond
+        produce vector-based graphics files, their output can be easily edited
+        in a click-and-drag manner using third-party SVG software such as 
+        <a href="http://www.adobe.com/products/illustrator.html">Adobe
+        Illustrator</a> or the open source
+        alternative <a href="http://inkscape.org/">Inkscape</a>. More on
+        tweaking output using these applications can be found on
+        the <a href="./output.html#svg">output</a> page. </p>
+      
+      <h3 id="header"><a href="#header" id="header-div-show"
+                         onclick="showHide('header-div');return false;">+</a>
+        The header</h3>
+      <div id="header-div" class="more">
+        <p>The header in a score generally consists of the title and the
+          composer of the work. For LilyPond, these can be set within
+          the <code>make-slippery-chicken</code> function using
+          the <code>:title</code> and <code>:composer</code> keywords:</p>
+
+        <pre class="source">
+(make-slippery-chicken
+ '+new-piece+
+ :title "A Slippery Chicken Piece"
+ :composer "Joe Green"</pre>
+
+        <p>LilyPond output for the above settings would produce the following
+          header: </p>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-header.png"
+                       alt="scores-header.png"
+                       width="767"/></td></tr>
+        </table>
+
+        <p class="nb">NB: Only English characters can be used in the
+          title. Accents and umlauts etc. are not supported.</p>
+        
+        <p class="nb">NB: Only the <code>:title</code>, and not
+          the <code>:composer</code> keyword, is available for CMN.</p>
+
+        <p class="close"><a href="#" id="header-div-hide" class="hideLink"
+              onclick="showHide('header-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="keys"><a href="#keys" id="keys-div-show"
+                       onclick="showHide('keys-div');return false;">+</a>
+        Key signatures</h3>
+      <div id="keys-div" class="more">
+
+        <p>Key signatures in <em>slippery chicken</em> can be placed by two
+          means. Firstly, the user can place an initial key signature in the
+          first bar using the <code>:key-sig</code> argument of
+          the <code>make-slippery-chicken</code> function. Secondly, mid-piece
+          key changes can also be inserted using
+          the <code>add-mark-to-note</code> <a href="post-gen-editing.html">post-generation
+          editing</a> method.</p>
+
+        <h4>CMN vs. LilyPond</h4>
+        <p>Key signatures are handled differently by CMN and LilyPond. CMN
+          places the key signature as a graphic symbol, and does not
+          automatically change accidentals in the subsequent musical
+          notation. The user will have to enter pitches without accidentals in
+          order for the score to appear correct, which will affect the MIDI
+          output.</p>
+
+        <p>LilyPond allows the user to enter actual pitches, and will
+          automatically remove any accidentals in the key signature from the
+          subsequent music (or add natural signs accordingly), while
+          maintaining the original pitch. The resulting MIDI output will
+          accurately reflect the score.</p>
+
+        <h4>Initial key signatures</h4>
+        <p>Key signatures for the start of a piece can be placed by using
+          the <code>:key-sig</code> argument of
+          the <code>make-slippery-chicken</code> function and specifying a
+          note-name symbol (without octave indicator) and <tt>major</tt>
+          or <tt>minor</tt>, as such:</p>
+
+        <pre class="source">
+:set-palette '((1 ((ef4 f4 g4 af4 bf4 c5 d5 ef5))))
+:key-sig '(ef major)</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-key-sig.png"
+                       alt="scores-key-sig.png"
+                       width="486"/></td></tr>
+          <caption>LilyPond output using the above parameters</caption>
+        </table>
+
+        <h4>Key changes</h4>
+        <p>Key changes after the first bar are added as a mark. A key signature
+          mark can be added for CMN output using
+          the <a href="post-gen-editing.html">post-generation editing</a>
+          methods <code>add-mark-before</code>
+          or <code>add-mark-before-note</code>. For LilyPond, key signature
+          marks can be added using either of those methods or
+          the <code>add-mark-to-note</code> method.
+
+        <p>The <code>add-mark-before</code>
+          and <code>add-mark-before-note</code> methods result in the key
+          signature being placed immediately before the specified event object
+          in the resulting score. The <code>add-mark-to-note</code> method
+          results in the key signature being placed immediately <em>after</em>
+          the specified event, so key changes at the bar line must be placed on
+          the last note of the previous bar.</p> 
+
+        <p>The key-signature mark takes the form of a list, with the first
+          element being the word <tt>key</tt>, followed by the note-name symbol
+          and mode type:</p>
+
+        <pre class="source">
+(let* ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :key-sig '(ef major)
+        :avoid-melodic-octaves nil
+        :set-palette '((1 ((ef4 f4 g4 af4 bf4 c5 d5 ef5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (add-mark-before-note mini 2 1 'vn '(key af major))
+  (add-mark-before-note mini 3 1 'vn '(key a major))
+  (cmn-display mini)
+  (add-mark-to-note mini 2 8 'vn '(key a major))
+  (add-mark-to-note mini 1 8 'vn '(key af major))
+  (write-lp-data-for-all mini))</pre>
+
+        <table class="image">
+          <!-- for 150ppi CMN png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-key-change-cmn.png"
+                       alt="scores-key-change-cmn.png"
+                       width="630"/></td></tr>
+          <caption>CMN output of the above code</caption>
+        </table>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-key-change-lp.png"
+                       alt="scores-key-change-lp.png"
+                       width="578"/></td></tr>
+          <caption>LilyPond output of the above code</caption>
+        </table>
+
+        <h4>Key signatures in non-C scores</h4>
+        <p>The key signature feature of <em>slippery chicken</em> does not
+          currently automatically transpose key signatures for non-C scores,
+          which is the default output for both <code>cmn-display</code>
+          and <code>write-lp-data-for-all</code>. A simple work-around is to
+          change the key signatures manually when generating scores in which
+          the players' parts are displayed as written pitches, or when
+          extracting parts (also see the section on extracting <a href="#parts"
+          onclick="jumpShow('parts-div')">parts</a> below).</p>
+
+        <p class="close"><a href="#" id="keys-div-hide" class="hideLink"
+              onclick="showHide('keys-div');return false;">close</a></p>
+      </div>
+      
+      <h3 id="systems">Systems</h3>
+      <h4 id="order"><a href="#order" id="order-div-show"
+                        onclick="showHide('order-div');return false;">+</a>
+        Score order</h4>
+      <div id="order-div" class="more">
+        <p>The order in which instruments appear in the printable score output
+          is determined in <em>slippery chicken</em> by the order in which
+          players are listed in the <code>ensemble</code> block.</p>
+
+        <pre class="source">
+:ensemble '(((fl (flute :midi-channel 1))
+             (ob (oboe :midi-channel 2))
+             (hn (french-horn :midi-channel 3))
+             (tp (b-flat-trumpet :midi-channel 4))
+             (vn (violin :midi-channel 5))
+             (va (viola :midi-channel 6))
+             (vc (cello :midi-channel 7))))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-order.png"
+                       alt="scores-order.png"
+                       width="800"/></td></tr>
+        </table>
+        
+        <p class="close"><a href="#" id="order-div-hide" class="hideLink"
+              onclick="showHide('order-div');return false;">close</a></p>
+      </div>
+      
+      <h4 id="groups"><a href="#groups" id="groups-div-show"
+                         onclick="showHide('groups-div');return false;">+</a>
+        Staff groups</h4>
+      <div id="groups-div" class="more">
+        <p>By default, <em>slippery chicken</em> will place all of the players
+          of the ensemble into one group, resulting in a single group bracket
+          in the score that encloses all players, as seen in the example
+          above. However, the user can specify groupings of players using
+          the <code>staff-groupings</code> keyword argument.</p>
+
+        <p>This argument takes a list of integers that indicate how many
+          consecutive players from the <code>ensemble</code> are to be grouped
+          together in one bracket in each system of the score. Thus,
+          a <code>staff-groupings</code> value of <code>'(2 2 3)</code> applied
+          to the ensemble above would indicate groupings of 2 players
+          (<code>fl</code> and <code>ob</code>), 2 players (<code>hn</code> and
+          <code>tp</code>), and 3 players (<code>vln</code>, <code>vla</code>,
+          and <code>vlc</code>). When setting the value
+          of <code>staff-groupings</code>, the sum of the numbers in the list
+          must be equal to the total number of players in the ensemble.</p>
+
+        <pre class="source">
+:ensemble '(((fl (flute :midi-channel 1))
+             (ob (oboe :midi-channel 2))
+             (hn (french-horn :midi-channel 3))
+             (tp (b-flat-trumpet :midi-channel 4))
+             (vn (violin :midi-channel 5))
+             (va (viola :midi-channel 6))
+             (vc (cello :midi-channel 7))))
+:staff-groupings '(2 2 3)</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/scores-groups.png"
+                       alt="scores-group.png" width="800"/></td></tr>
+        </table>
+
+        <p class="nb">NB: CMN and LilyPond handle single-staff groups
+          differently. By default, CMN will place a group bracket around
+          single-staff groups while LilyPond will leave the group bracket out
+          if there is only one instrument in that group.</p>
+
+        <p class="close"><a href="#" id="groups-div-hide" class="hideLink"
+              onclick="showHide('groups-div');return false;">close</a></p>
+      </div>
+
+      <h4 id="bars-per-sys"><a href="#bars-per-sys" id="bars-per-sys-div-show"
+                             onclick="showHide('bars-per-sys-div');return
+                             false;">+</a> 
+        Bars per system</h4>
+      <div id="bars-per-sys-div" class="more">
+        <p>CMN has an additional option for determining the number of bars
+          placed in each system. This can be done using
+          the <code>:bars-per-system-map</code> keyword argument of
+          the <code>make-slippery-chicken</code> function. This feature does
+          not affect LilyPond layout, as LilyPond determines bars-per-system
+          automatically.</p>
+
+        <p>The value passed to this argument must be a list of two-item lists,
+          each of which consists of a bar number paired with a number of
+          measures. An entry such as (3 5), for example, would indicate that
+          CMN is to place 5 measures per system starting with bar 3.</p>
+
+        <p>The following, for example, will result in CMN output that has one
+          measure in the first system, two in the next, three in the system
+          after that (starting with bar 3), and four and five measures in the
+          last two systems (starting with bars 7 and 11 respectively).</p>
+
+        <pre class="source">
+:bars-per-system-map '((1 1) (2 2) (3 3) (7 4) (11 5))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-bars-per-sys.png"
+                       alt="scores-bars-per-sys.png" width="800"/></td></tr> 
+        </table>
+
+        <p class="close"><a href="#" id="bars-per-sys-div-hide" class="hideLink"
+              onclick="showHide('bars-per-sys-div');return
+              false;">close</a></p>
+      </div>     
+
+      <h3 id="bars">Bars</h3>
+      <h4 id="lines"><a href="#lines" id="lines-div-show"
+                        onclick="showHide('lines-div');return false;">+</a> 
+        Bar line types</h4>
+      <div id="lines-div" class="more">
+        <p>By default <em>slippery chicken</em> produces data for score output
+          in which all bar lines are normal (i.e. single) except for the right
+          bar line of the last measure, which is a final double bar line.</p>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-barlines-default.png"
+                       alt="scores-barlines-default.png"
+                       width="476"/></td></tr>
+        </table>
+        
+        <p>Bar line types can be changed by the user by means
+          of <a href="post-gen-editing.html">post-generation editing</a>, using
+          the <code>change-bar-line-type</code> method. <em>slippery
+          chicken</em> currently has 6 bar line types, which are indicated by
+          number IDs. They are:</p>
+        
+        <table class="simple-center">
+          <tr><td>0</td><td>normal</td></tr>
+          <tr><td>1</td><td>double</td></tr>
+          <tr><td>2</td><td>final double</td></tr>
+          <tr><td>3</td><td>begin repeat</td></tr>
+          <tr><td>4</td><td>begin and end repeat</td></tr>
+          <tr><td>5</td><td>end repeat</td></tr>
+        </table>
+
+        <p>The <code>change-bar-line-type</code> method takes as its first
+          argument a <code>slippery-chicken</code> object (or the variable it
+          has been assigned to), followed by the number of the bar whose right
+          bar line is to be changed, and the ID of the bar line type:</p>
+
+        <pre class="source">
+(let* ((bar-lines-piece
+       (make-slippery-chicken
+        '+bar-lines-piece+
+        :title "bar-lines piece"
+        :ensemble '(((fl (flute :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
+        :rthm-seq-map '((1 ((fl (1 1 1))))))))
+  (change-bar-line-type bar-lines-piece 1 1)
+  (change-bar-line-type bar-lines-piece 3 5)
+  (write-lp-data-for-all bar-lines-piece :base-path "/tmp/"))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-barlines-change.png"
+                       alt="scores-barlines-change.png" width="741"/></td></tr>
+        </table>
+
+        <p class="nb">NB: This is a score function only. Repeat bar lines will
+          not be reflected in playback with MIDI or CLM.</p>
+
+        <p class="close"><a href="#" id="lines-div-hide" class="hideLink"
+              onclick="showHide('lines-div');return false;">close</a></p>
+      </div>
+
+      <h4 id="letters"><a href="#letters" id="letters-div-show"
+                        onclick="showHide('letters-div');return false;">+</a>
+        Rehearsal letters</h4>
+      <div id="letters-div" class="more">
+        <p>Data for rehearsal letters can be attached either by including a
+          value for the <code>rehearsal-letters</code> keyword argument of
+          the <code>make-slippery-chicken</code> function, or through
+          post-generation editing.</p>
+
+        <p>The <code>rehearsal-letters</code> keyword argument takes a list of
+          measure numbers, to which consecutive rehearsal letters are
+          automatically added. No indication of the actual letter is
+          necessary.</p>
+
+        <pre class="source">
+:rehearsal-letters '(3 6 10)</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-letters-single.png"
+                       alt="scores-letters-single.png"
+                       width="800"/></td></tr>
+        </table>
+
+        <p>Placing individual rehearsals through post-generation editing is
+          done using the <code>set-rehearsal-letter</code> method, which takes
+          a <code>slippery-chicken</code> object (which can also be given as a
+          local variable or the global variable defined as the first argument
+          to the <code>make-slippery-chicken</code> function), a bar number,
+          and a letter as its arguments.</p.>
+
+        <pre class="source">
+(set-rehearsal-letter mini 3 'A)</pre>
+
+        <h5>Difference between CMN and LilyPond</h5>
+        <p>CMN and LilyPond differ in their manner of drawing rehearsal letters
+          into a score. CMN enters the letter in a large, bold font, with no
+          frame. LilyPond frames each letter in a thin box.</p>
+
+        <h5>Right bar lines only</h5>
+        <p><em>slippery chicken</em> attaches rehearsal letters to bar lines,
+          which are only placed at the end of a given measure. When attaching a
+          letter to measure 5, therefore, the letter will actually be attached
+          to the right bar line of measure 4 (the user still
+          enters <code>5</code> in the <code>rehearsal-letters</code>
+          list). Thus, no rehearsal letter can be placed on the first measure
+          of a piece.</p>
+
+        <h5>Adding rehearsal letters to all parts</h5>
+        <p>By default, rehearsal letters are only added to those players' parts
+          that are at the top of each group. This means that rehearsal letters
+          will not be present in the other players' music when extracting
+          parts.  The user can indicate that letters are to be added to all
+          players' parts by setting
+          the <code>:rehearsal-letters-all-players</code> argument of
+          the <code>cmn-display</code> and <code>write-lp-data-for-all</code>
+          methods to <code>T</code>. Although the rehearsal letters will now be
+          in all players' parts, LilyPond will still automatically only place
+          them above the groups in the score, while CMN will also place the
+          letters over all instruments in the score as well.</p>
+        
+        <p class="close"><a href="#" id="letters-div-hide" class="hideLink"
+              onclick="showHide('letters-div');return false;">close</a></p>
+      </div>
+
+      <h4 id="clefs"><a href="#clefs" id="clefs-div-show"
+                        onclick="showHide('clefs-div');return false;">+</a>
+        Clefs</h4>
+      <div id="clefs-div" class="more">
+        <p>By default, clefs in <em>slippery chicken</em> are handled
+          automatically based on the values of
+          the <code>clefs</code>, <code>starting-clef</code>,
+          and <code>clefs-in-c</code> slots of the
+          individual <code>instrument</code> objects. (See the page
+          on <a href="./instruments.html#instruments">instruments</a> and the
+          source code documentation
+          on <a href="../robodoc/instrument_lsp.html#instrument2fmake2dinstrument"><code>make-instrument</code></a>
+          for more detail on these three slots.)
+          The <code>write-lp-data-for-all</code> and <code>cmn-display</code>
+          methods will also automatically place mid-measure clefs by default if
+          a given <code>instrument</code> object has been defined with more
+          than one clef.</p>
+
+        <h5>Disabling the automatic clef-changes feature of the output
+          methods</h5>
+        <p>The user can choose to prevent
+          the <code>write-lp-data-for-all</code> and <code>cmn-display</code>
+          methods from automatically placing clef changes by setting
+          their <code>:auto-clefs</code> keyword argument
+          to <code>NIL</code>. Disabling this feature prevents these methods
+          from running
+          the <a href="../robodoc/slippery-chicken-edit_lsp.html#slippery2dchicken2dedit2fauto2dclefs"><code>auto-clefs</code></a>
+          algorithm internally before writing their output to a file. Turning
+          this feature off does not affect the placement of
+          the <code>starting-clef</code> for the given instrument.</p>
+
+        <pre class="source">
+(cmn-display +sc-object+ :file "/tmp/mini.eps" :auto-clefs nil)
+
+(write-lp-data-for-all +sc-object+ :base-path "/tmp/" :auto-clefs nil)</pre>
+
+        <h5>Using auto-clefs as a post-generation editing method instead</h5>
+        <p>Setting the <code>:auto-clefs</code> argument to <code>NIL</code>
+          will require the user to manually add <em>all</em> clef changes. If
+          the user is basically satisfied with the results of
+          the <code>auto-clefs</code> algorithm but would like to delete or
+          move a number of the resulting clef changes manually, the method can
+          be disabled as a feature of the output methods and called as a
+          post-generation editing method in conjunction with
+          the <a href="../robodoc/slippery-chicken-edit_lsp.html#slippery2dchicken2dedit2fadd2dclef"><code>add-clef</code></a>
+          and <a href="../robodoc/slippery-chicken-edit_lsp.html#slippery2dchicken2dedit2fdelete2dclefs"><code>delete-clefs</code></a>
+          methods instead, prior to the call to <code>cmn-display</code>
+          or <code>write-lp-data-for-all</code>. This enables the user to
+          have <em>slippery chicken</em> automatically place clef changes and
+          then manually delete some of those clefs or insert others. </p>
+
+        <pre class="source">
+(auto-clefs +sc-object+)
+(delete-clefs +sc-object+ 'vc 1 5)
+(add-clef +sc-object+ 'vc 2 2 'tenor)
+(add-clef +sc-object+ 'vc 3 3 'treble)
+(write-lp-data-for-all +sc-object+ :base-path "/tmp/" :auto-clefs nil)</pre>
+
+        <h5>The add-clef and delete-clefs methods</h5>
+        <p>The user can manually insert or remove a clef for a given player at
+          any point in the piece using
+          the <a href="./post-gen-editing.html">post-generation editing</a>
+          methods <a href="../robodoc/slippery-chicken-edit_lsp.html#slippery2dchicken2dedit2fadd2dclef"><code>add-clef</code></a>
+          and <a href="../robodoc/slippery-chicken-edit_lsp.html#slippery2dchicken2dedit2fdelete2dclefs"><code>delete-clefs</code></a>. If
+          these methods are used, the <code>:auto-clefs</code> argument within
+          the calls to <code>cmn-display</code>
+          or <code>write-lp-data-for-all</code> must be set
+          to <code>NIL</code>, as changes made using <code>add-clef</code>
+          and <code>delete-clefs</code> will otherwise be overwritten.</p>
+
+        <p>The <code>add-clef</code> method can be used to place a clef sign
+          before a given event object (including rests) in the score by
+          specifying the player, bar number, event number, and new clef:</p>
+
+        <pre class="source">
+(let* ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 72)))
+        :set-palette '((1 ((g3 a3 b3 c4 d4 e4 f4 g4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -))
+                                :pitch-seq-palette (1 2 3 4 5 6 7 8))))
+        :avoid-melodic-octaves nil
+        :rthm-seq-map '((1 ((vc (1 1 1)))))))) 
+  (add-clef mini 'vc 2 2 'tenor)
+  (add-clef mini 'vc 3 3 'treble)
+  (write-lp-data-for-all mini :base-path "/tmp/" :auto-clefs nil))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/scores-clefs.png"
+                       alt="scores-clefs.png" width="500"/></td></tr>
+        </table>
+
+        <p>The <code>delete-clefs</code> method functions in a similar manner,
+          but does not require a new clef to be specified, and does require
+          that a clef is already present in the given event object:</p>
+
+        <pre class="source">
+(let* ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 72)))
+        :set-palette '((1 ((g3 a3 b3 c4 d4 e4 f4 g4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -))
+                                :pitch-seq-palette (1 2 3 4 5 6 7 8))))
+        :avoid-melodic-octaves nil
+        :rthm-seq-map '((1 ((vc (1 1 1)))))))) 
+  (add-clef mini 'vc 2 2 'tenor)
+  (add-clef mini 'vc 3 3 'treble)
+  (delete-clefs mini 'vc 2 2)
+  (delete-clefs mini 'vc 3 3)
+  (write-lp-data-for-all mini :base-path "/tmp/" :auto-clefs nil))</pre>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment"
+                       src="./resources/scores-delete-clefs.png"
+                       alt="scores-delete-clefs.png" width="473"/></td></tr>
+        </table>
+
+        <p class="close"><a href="#" id="clefs-div-hide" class="hideLink"
+              onclick="showHide('clefs-div');return false;">close</a></p>
+      </div>
+
+      <h3 id="c-scores-and-parts">C- scores and generating parts</h3>
+      <h4 id="c-scores"><a href="#c-scores" id="c-scores-div-show"
+                           onclick="showHide('c-scores-div');return
+                                    false;">+</a> 
+        C-scores</h4>
+      <div id="c-scores-div" class="more">      
+        <p>By default, all scores generated from the data of
+          a <code>slippery-chicken</code> object will be produced at written
+          pitch. Scores at concert pitch, or "in C", can be generated by
+          setting the <code>:in-c</code> argument of
+          the <code>cmn-display</code> and <code>write-lp-data-for-all</code>
+          methods to <code>T</code>. </p>
+
+        <p>Default generation at written pitch:</p>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/scores-transposed.png"
+                       alt="scores-transposed.png" width="644"/></td></tr>
+        </table>
+
+        <p>Setting the <code>:in-c</code> argument to <code>T</code>:</p>
+        
+        <pre class="source">
+(write-lp-data-for-all mini :base-path "/tmp/" :in-c t)</pre>
+
+        <p>&hellip;produces C-scores:</p>
+
+        <table class="image">
+          <!-- for 150ppi LP png fragment examples scale by .75 -->
+          <tr><td><img class="fragment" src="./resources/scores-in-c.png"
+                       alt="scores-in-c.png" width="626"/></td></tr>
+        </table>
+
+        <p class="nb">NB: If the <code>clefs-in-c</code> slot of a
+          given <code>instrument</code> object is set, the clefs used in C
+          scores for a given instrument will be drawn only from those
+          clefs. This can be helpful, for instance, when writing for an
+          instrument that sounds in the bass clef but is written in the treble,
+          such as the bass clarinet or the baritone saxophone.</p>
+
+        
+        <p class="close"><a href="#" id="c-scores-div-hide" class="hideLink"
+              onclick="showHide('c-scores-div');return false;">close</a></p>
+      </div>
+      
+      <h4 id="parts"><a href="#parts" id="parts-div-show"
+                        onclick="showHide('parts-div');return false;">+</a>
+        Parts and sectional scores</h4>
+      <div id="parts-div" class="more">     
+        <h5>CMN</h5>
+        <p>Generating parts using <code>cmn-display</code> is done by
+          specifying a value for the optional keyword
+          argument <code>:players</code>. This argument takes a list of one or
+          more of the <code>player</code> IDs from the <code>ensemble</code>
+          and produces scores with only those players.</p>
+
+        <p>Parts are generated for individual players in CMN by setting
+          the <code>players</code> keyword argument to a list of only one
+          player. </p>
+
+        <pre class="source">
+(cmn-display mini :file "/tmp/mini.eps" :players '(tbn))</pre>
+
+        <p>Using <code>cmn-display</code> to produce a sectional score that
+          contains only the music for the
+          players <code>hrn</code>, <code>tpt</code>, <code>tbn</code>,
+          and <code>tba</code>, can be done as such:</p>
+
+        <pre class="source">
+(cmn-display mini :file "/tmp/mini.eps" :players '(hrn tpt tbn tba))</pre>
+
+        <h5>LilyPond</h5>
+        <p>The files required to generate parts using LilyPond are produced
+          automatically by the <code>write-lp-data-for-all</code> method, as
+          described on the <a href="./output.html#lilypond">output</a> page.
+          All LilyPond parts are automatically generated in the transposing key
+          of the given instruments regardless of the value of
+          the <code>:in-c</code> argument, which only affects
+          the <code>-score.ly</code> file.</p>
+
+        <p>Sectional scores in LilyPond are produced in the same manner as for
+          CMN, by using the <code>:players</code> argument. The individual
+          parts for this sectional score will also be automatically
+          generated.</p>
+
+        <pre class="source">
+(write-lp-data-for-all mini :base-path "/tmp/" :players '(hrn tpt tbn tba))</pre>
+
+        <p class="close"><a href="#" id="parts-div-hide" class="hideLink"
+              onclick="showHide('parts-div');return false;">close</a></p>
+</div>
+
+      <h4 id="piano"><a href="#piano" id="piano-div-show"
+                           onclick="showHide('piano-div');return
+                                    false;">+</a> 
+<h4>Some remarks on piano music</h4>
+
+<p>Anyone who has input a piano score into notation software knows that it's not
+as easy as, say, creating a woodwind part. First of all there are chords, then
+you have two staves, on top of which you might have multiple parts per stave,
+and on top of that you might have groups of beamed notes that cross back and
+forth from the left to the right hand (so-called cross-staff notation). </p>
+
+<p>From the perspective of <code>slippery-chicken</code>, there's no difference
+whatsoever between a keyboard part and any other part. You add a piano to an
+ensemble as with any other player by setting the instrument to
+<code>'piano</code>. But each new player gets only one new staff, so if you want
+two staves you should probably add a second 'player'.</p>
+
+<p>It's most convenient to think of the two hands as two separate 'players' and
+create separate contrapuntal parts for them. I've made several piano pieces with
+<code>slippery-chicken</code> and that's generally been my approach. In order to
+aid this, the <code>piano-lh</code> instrument is available---this is the same
+as the piano but it has no staff name and begins in the bass clef. You can then
+keep the two hands within a manageable range by using the set limits arguments to
+<code>make-slippery-chicken</code>, for example:
+
+<pre class="source">
+ :set-limits-high '((piano-lh (0 b3 100 b3)))
+ :set-limits-low  '((piano-rh (0 c4 100 c4)))
+</pre>
+
+<p>Chords are handled as with any other instrument but bear in mind that you can
+specify your own chord-selection function and apply these to any
+instrument. More on this is given in the documentation for <a
+href="chords.html">chords</a> and in the section <em>Indicating chords in the
+pitch-seq curve</em> in the documentation for <a
+href="pitches.html#curves">pitch-seq basics</a>. Note that multiple voices on
+one stave are not supported in <code>slippery-chicken</code> so if you need to
+do this then your only option is to create several parts in
+<code>slippery-chicken</code> then combine them onto one stave via MIDI import
+into the notation software of your choice.  </p>
+
+<p>Cross-staff notation is possible in <code>slippery-chicken</code> but only
+when you use Lilypond output. In order to accomplish this you'll need to create
+a dummy part which has no notes then simply add marks to events in order to
+switch back and forth between staves (this could be automated by examining pitch
+height: see below). The staff name you pass as part of the mark will be the same
+as the lower case version of your player name but with all - and _ characters
+removed. If you're in any doubt, look at the "music = { " block in the generated
+Lilypond -def.ly file. In any case here's a complete example along with the
+output notation: </p>
+
+<pre class="source">
+(let ((sc
+       (make-slippery-chicken
+        '+cross-staff+
+        :ensemble '(((rh (piano))
+                     (lh (piano-lh))))
+        :set-palette
+        '((1 ((c1 a1 ds2 cs3 g3 d4 f4 bf4 e5 b5 gs6 fs7)))
+          (2 ((bf1 ef2 af2 g3 cs4 e4 c5 e5 b5 f6 d7 fs7 a7))))
+        :set-map '((1 (1 2)))
+        :rthm-seq-palette '((1 ((((2 4) - e e e e -) (- e e e e -))
+                                :pitch-seq-palette ((1 2 (7) (8) 1 2 1 (8))))))
+        :rthm-seq-map '((1 ((lh (1 1))))))))
+  ;; we don't always want to use the double bass clef
+  (set-standard-instrument-slot 'clefs '(bass) 'piano-lh)
+  (add-mark-before-note sc 3 4 'lh '(staff "rh"))
+  (add-mark-before-note sc 4 1 'lh '(staff "lh"))
+  (add-mark-before-note sc 4 4 'lh '(staff "rh"))
+ (lp-display sc :title nil :dummy-staves 'rh))
+</pre>
+
+<p> <img src="./resources/cross-staff.png" alt="cross-staff-notation.png"/> </p>
+
+<p>If you're using a lot of (nested) tuplets you might get Lilypond warnings
+similar to "no viable initial configuration found: may not find
+good beam slope" but in my experience you can ignore these and still
+get good output.
+
+<p>Here's an illustrative example (i.e. incomplete code so it won't run)
+of how to do automatic cross-staff notation:
+
+<pre class="source">
+(flet ((change-staff (e which)
+         (add-mark-before e (list 'staff which))))
+  (next-event +jitterbug+ 'solo t 1)
+  (loop with current-clef = 'bass
+     for event = (next-event +jitterbug+ 'solo t nil nil)
+     while event
+     for pht = (get-degree event :average t)
+     for clef = (if (> pht 59) 'treble 'bass)
+     do
+       (cond ((and (eq clef 'treble) (eq current-clef 'bass))
+              (setq current-clef 'treble)
+              (change-staff event "rh"))
+             ((and (eq clef 'bass) (eq current-clef 'treble))
+              (setq current-clef 'bass)
+              (change-staff event "solo")))))
+</pre>
+
+
+<div id="piano-div" class="more">
+  </div>
+
+
+      <!-- **************************************************************** -->
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br /><br />
+      <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

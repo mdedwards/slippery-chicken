@@ -1,0 +1,844 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>sc-map.lsp</title>
+<!-- Source: ./../../src/sc-map.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="recursive2dassoc2dlist2fsc2dmap"></a>
+<a name="robo414"></a><h2 class=robodoc>recursive-assoc-list/sc-map [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>sc-map</strong>
+
+ File:             <a href="#robo_top_of_doc">sc-map.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
+                   <strong>sc-map</strong>
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Implementation of the <strong>sc-map</strong> class for mapping rhythmic
+                   sequences, chords etc. to specific parts of a <a href="./piece_lsp.html#robo56">piece</a>. 
+                   The extension to the <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> class is in the
+                   data returned when <a href="#robo569">get-data-from-palette</a> is called: being
+                   a map, the data returned by the superclass <a href="./recursive-assoc-list_lsp.html#robo395">get-data</a>
+                   function is actually a reference into a <a href="./palette_lsp.html#robo405">palette</a>.  Instead
+                   of just returning this reference, with
+                   <a href="#robo569">get-data-from-palette</a> we then use this as a lookup into
+                   the <a href="./palette_lsp.html#robo405">palette</a> slot.  If the reference happens to be a list,
+                   then each element of the list is used as a reference into
+                   the <a href="./palette_lsp.html#robo405">palette</a> and the resulting objects are returned in a
+                   list.   
+
+                   TODO: When in a list of references, perhaps the <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a>
+                   references for a <a href="./section_lsp.html#robo58">section</a>, a single reference is also a
+                   list this can be one of two things: the reference is to a
+                   recursive <a href="./palette_lsp.html#robo405">palette</a>, whereupon the data will simply be
+                   returned for that reference; or, the reference is a list
+                   of references that together build up an object consisting
+                   of the referenced smaller objects.  This is the case
+                   when, for example, 4-bar sequences in one or more
+                   <a href="./instruments_lsp.html#robo11">instruments</a> are accompanied by groups of 4 single bar
+                   sequences in others:
+
+                   (2
+                    ((bsn ((r1-1 r1-2 r1-3 r1-5) 20 1 ...))
+                     (trb (2 23 3 ...))))
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    March 21st 2001
+
+ $$ Last modified:  17:18:41 Fri Sep 18 2020 CEST
+
+ SVN ID: $Id$
+</pre>
+
+
+<a name="sc2dmap2fcount2dref"></a>
+<a name="robo565"></a><h2 class=robodoc>sc-map/count-ref [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> February 13th 2018, Heidhausen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Count the number of times a map reference occurs, e.g. how often a
+ particular <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> or set is used in a <a href="./piece_lsp.html#robo56">piece</a>.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo414">sc-map</a> reference
+ - the reference we're counting
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> an integer reflecting the number of occurences of &lt;ref&gt;
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>count-ref</strong> ((scm sc-map) ref)
+</pre>
+
+
+<a name="sc2dmap2fdelete2dnth2din2dmap"></a>
+<a name="robo566"></a><h2 class=robodoc>sc-map/delete-nth-in-map [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> 05 Feb 2011 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Replace the element at the specified location within the specified list of
+ a given <a href="#robo414">sc-map</a> object with NIL.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A list that is the map-ref; i.e., the path of IDs into the list to be
+   searched. 
+ - An integer that is the zero-based index of the element to be returned
+   from the specified list.
+ - An <a href="#robo414">sc-map</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Always returns NIL
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(let ((mscm (<a href="#robo572">make-sc-map</a> 'scm-test
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
+  (<strong>delete-nth-in-map</strong> '(1 vn) 1 mscm)
+  (<a href="#robo569">get-data-from-palette</a> '(1 vn) mscm))
+
+=&gt; 
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: (1 NIL 3 4 5)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>delete-nth-in-map</strong> (map-ref nth (scm sc-map))
+</pre>
+
+
+<a name="sc2dmap2fdouble"></a>
+<a name="robo567"></a><h2 class=robodoc>sc-map/double [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> 13-Feb-2011
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Change the specified sequences of one or more specified <a href="./slippery-chicken_lsp.html#robo821">players</a> within an
+ existing <a href="#robo414">sc-map</a> object to <strong>double</strong> the rhythms of the corresponding sequences
+ of another specified <a href="./player_lsp.html#robo286">player</a>.
+
+ This allows an existing map, for example, to have several <a href="./slippery-chicken_lsp.html#robo821">players</a> playing
+ in rhythmic unison.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - An <a href="#robo414">sc-map</a> object.
+ - A <a href="./section_lsp.html#robo58">section</a> reference (i.e. <a href="./section_lsp.html#robo58">section</a> ID or list of <a href="./section_lsp.html#robo58">section</a>-subsection IDs). 
+ - An integer that is the 1-based number of the first sequence within the
+   given <a href="./section_lsp.html#robo58">section</a> to be changed.
+ - An integer that is the 1-based number of the last sequence within the
+   given <a href="./section_lsp.html#robo58">section</a> to be changed.
+ - The ID of the <a href="./player_lsp.html#robo286">player</a> whose part is to serve as the source for the
+   doubling. 
+ - An ID or list of IDs of the <a href="./player_lsp.html#robo286">player</a>(s) whose parts are to be changed. 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns NIL.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Create an <a href="#robo414">sc-map</a> with parts for <a href="./slippery-chicken_lsp.html#robo821">players</a> 'fl and 'cl containing only NILs
+;;; and print the corresponding data. Double the second and third sequence of
+;;; the 'vn part of that <a href="./section_lsp.html#robo58">section</a> into the 'fl and 'cl parts and print the same
+;;; data again to see the change.
+(let ((scm (<a href="#robo572">make-sc-map</a> 'sc-m 
+                        '((1
+                           ((fl (nil nil nil))
+                            (cl (nil nil nil))
+                            (vn (set1 set3 set2))
+                            (va (set2 set3 set1))
+                            (vc (set3 set1 set2))))
+                          (2
+                           ((vn (set1 set2 set1))
+                            (va (set2 set1 set3))
+                            (vc (set1 set3 set3))))
+                          (3
+                           ((vn (set1 set1 set3))
+                            (va (set1 set3 set2))
+                            (vc (set3 set2 set3))))))))
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 fl) scm))
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 cl) scm))
+  (<strong>double</strong> scm 1 2 3 'vn '(fl cl))
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 fl) scm))
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 cl) scm)))
+
+=&gt;
+(NIL NIL NIL) 
+(NIL NIL NIL) 
+(NIL SET3 SET2) 
+(NIL SET3 SET2)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>double</strong> ((scm sc-map) <a href="./section_lsp.html#robo58">section</a>-ref start-seq end-seq master-<a href="./player_lsp.html#robo286">player</a>
+                   doubling-<a href="./slippery-chicken_lsp.html#robo821">players</a>)
+</pre>
+
+
+<a name="sc2dmap2fget2dall2ddata2dfrom2dpalette"></a>
+<a name="robo568"></a><h2 class=robodoc>sc-map/get-all-data-from-palette [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Given an <a href="#robo414">sc-map</a> object that has been bound to a <a href="./palette_lsp.html#robo405">palette</a> object of any type,
+ return all of the <a href="./palette_lsp.html#robo405">palette</a> data contained in the given <a href="#robo414">sc-map</a> object as it
+ has been allocated to the map, in the order in which it appears in the map.
+
+ The given <a href="#robo414">sc-map</a> object must be bound to a <a href="./palette_lsp.html#robo405">palette</a> object for this method
+ to work. If no <a href="./palette_lsp.html#robo405">palette</a> object has been bound to the given <a href="#robo414">sc-map</a> object,
+ the method returns NIL and prints a warning.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - An <a href="#robo414">sc-map</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> - A list of objects, the type depending on the given <a href="./palette_lsp.html#robo405">palette</a>.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Create a <a href="./set-palette_lsp.html#robo302">set-palette</a> object and an <a href="#robo414">sc-map</a> object, bind them using the
+;; &lt;<a href="./palette_lsp.html#robo405">palette</a>&gt; argument of the <a href="#robo572">make-sc-map</a> function, and print the results of
+;; applying the <strong>get-all-data-from-palette</strong> method by printing the data of each
+;; of the objects in the list it returns as note-name symbols.
+(let* ((sp (<a href="./set-palette_lsp.html#robo649">make-set-palette</a> 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
+                                       (set2 ((d2 c3 b3 a4 g5 f6)))
+                                       (set3 ((e2 d3 c4 b4 a5 g6))))))
+      (scm (<a href="#robo572">make-sc-map</a> 'sc-m '((sec1
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3)))))
+                        :<a href="./palette_lsp.html#robo405">palette</a> sp)))
+  (loop for cs in (<strong>get-all-data-from-palette</strong> scm)
+     collect (<a href="./pitch_lsp.html#robo347">pitch-list-to-symbols</a> (data cs))))
+
+=&gt;
+((C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6)
+ (D2 C3 B3 A4 G5 F6) (E2 D3 C4 B4 A5 G6) (C2 B2 A3 G4 F5 E6)
+ (E2 D3 C4 B4 A5 G6) (C2 B2 A3 G4 F5 E6) (D2 C3 B3 A4 G5 F6)
+ (C2 B2 A3 G4 F5 E6) (D2 C3 B3 A4 G5 F6) (C2 B2 A3 G4 F5 E6)
+ (D2 C3 B3 A4 G5 F6) (C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6)
+ (C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (E2 D3 C4 B4 A5 G6)
+ (C2 B2 A3 G4 F5 E6) (C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6)
+ (C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6)
+ (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6) (E2 D3 C4 B4 A5 G6))
+
+;; Applying the method to an <a href="#robo414">sc-map</a> object that is not bound to a <a href="./palette_lsp.html#robo405">palette</a>
+;; object returns NIL
+(let ((scm (<a href="#robo572">make-sc-map</a> 'sc-m '((sec1
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3))))))))
+  (<strong>get-all-data-from-palette</strong> scm))
+
+=&gt;
+NIL
+WARNING:
+   sc-map::get-all-data-from-<a href="./palette_lsp.html#robo405">palette</a>: 
+   <a href="./palette_lsp.html#robo405">palette</a> slot is nil so can't return data from it. 
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>get-all-data-from-palette</strong> ((scm sc-map))
+</pre>
+
+
+<a name="sc2dmap2fget2ddata2dfrom2dpalette"></a>
+<a name="robo569"></a><h2 class=robodoc>sc-map/get-data-from-palette [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Given an <a href="#robo414">sc-map</a> object that has been bound to a <a href="./palette_lsp.html#robo405">palette</a> object of any type,
+ return the <a href="./palette_lsp.html#robo405">palette</a> data contained at the location within the given <a href="#robo414">sc-map</a>
+ object as specified by the &lt;IDs&gt; argument. 
+ 
+ Deeper levels of the map can be accessed by specifying a path of IDs into
+ the given <a href="#robo414">sc-map</a> object.
+
+ If no <a href="./palette_lsp.html#robo405">palette</a> object has been bound to the given <a href="#robo414">sc-map</a> object, the method
+ returns the contents of the <a href="#robo414">sc-map</a> object at the specified location
+ instead. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A symbol or list of symbols that is/are the ID or path of nested IDs
+   within the given <a href="#robo414">sc-map</a> object for which the data is sought.
+ - The <a href="#robo414">sc-map</a> object in which the data is sought.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - T or NIL to indicate whether to print a warning if the specified ID is
+   not found in the given <a href="#robo414">sc-map</a> object. T = print warning. Default = T.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> The named object or list of named objects associated with the specified ID
+ or path of IDs.
+
+ If the specified ID is not found within the given <a href="#robo414">sc-map</a> object, the method
+ returns NIL. If the optional &lt;warn&gt; argument is set to T, a warning is also
+ printed in this case.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Create a <a href="./palette_lsp.html#robo405">palette</a> object and an <a href="#robo414">sc-map</a> object and bind them using the
+;;; &lt;<a href="./palette_lsp.html#robo405">palette</a>&gt; keyword argument of the <a href="#robo572">make-sc-map</a> function. Then apply the
+;;; <strong>get-data-from-palette</strong> object to a nested ID in the <a href="#robo414">sc-map</a> object. Loop
+;;; through the data of the named objects in the list returned and return them
+;;; as note-name symbols. 
+(let* ((sp (<a href="./set-palette_lsp.html#robo649">make-set-palette</a> 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
+                                        (set2 ((d2 c3 b3 a4 g5 f6)))
+                                        (set3 ((e2 d3 c4 b4 a5 g6))))))
+      (scm (<a href="#robo572">make-sc-map</a> 'sc-m '((sec1
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3)))))
+                        :<a href="./palette_lsp.html#robo405">palette</a> sp)))
+  (loop for cs in (<strong>get-data-from-palette</strong> '(sec1 vn) scm)
+     collect (<a href="./pitch_lsp.html#robo347">pitch-list-to-symbols</a> (data cs))))
+
+=&gt; ((C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6))
+
+;; If applied to an <a href="#robo414">sc-map</a> object that is not bound to a <a href="./palette_lsp.html#robo405">palette</a>, the contents
+;; of the <a href="#robo414">sc-map</a> object at the specified location are returned and a warning is
+;; printed by default 
+(let ((scm (<a href="#robo572">make-sc-map</a> 'sc-m '((sec1
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3))))))))
+   (<strong>get-data-from-palette</strong> '(sec1 vn) scm))
+
+=&gt; 
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: (SET1 SET3 SET2)
+**************
+, NO-PALETTE
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>get-data-from-palette</strong> (ids (scm sc-map) &amp;optional (warn t))
+</pre>
+
+
+<a name="sc2dmap2fget2dnth2dfrom2dmap"></a>
+<a name="robo570"></a><h2 class=robodoc>sc-map/get-nth-from-map [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Get the element located at the nth position within a given <a href="#robo414">sc-map</a>
+ object. Both the map-ref (the path of IDs into the list to be searched) and
+ the nth must be specified.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A list that is the map-ref; i.e., the path of IDs into the list to be
+   searched. 
+ - An integer that is the zero-based index of the element to be returned
+   from the specified list.
+ - An <a href="#robo414">sc-map</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns the element located at the given index.
+
+ Returns NIL if the index does not exist.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Specify the path of IDs into the desired list ("map-ref") as a list, then
+;; the position to be read from within the list located there.
+(let ((mscm (<a href="#robo572">make-sc-map</a> 'scm-test
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
+  (<strong>get-nth-from-map</strong> '(1 vn) 1 mscm))
+
+=&gt; 2
+
+;; Returns NIL if the specified index does not exist
+(let ((mscm (<a href="#robo572">make-sc-map</a> 'scm-test
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
+  (<strong>get-nth-from-map</strong> '(3 vn) 1 mscm))
+
+=&gt; NIL
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>get-nth-from-map</strong> (map-ref nth (scm sc-map))
+</pre>
+
+
+<a name="sc2dmap2fget2dnth2dfrom2dpalette"></a>
+<a name="robo571"></a><h2 class=robodoc>sc-map/get-nth-from-palette [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Given an <a href="#robo414">sc-map</a> object that is bound to a <a href="./palette_lsp.html#robo405">palette</a> object of any type,
+ return the data of the <a href="./palette_lsp.html#robo405">palette</a> object located at the nth position of the
+ list found at the specified ID or path of nested IDs.
+
+ If the given <a href="#robo414">sc-map</a> object is not bound to a <a href="./palette_lsp.html#robo405">palette</a> object, NIL is
+ returned instead. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - An ID or list of IDs that are the path to the list within the given
+   <a href="#robo414">sc-map</a> object from which the specified nth position is to be returned. 
+ - A zero-based integer that is the position within the list found at the
+   path specified from which the given element is to be returned.
+ - An <a href="#robo414">sc-map</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> - An element/object of the type contained within the given <a href="./palette_lsp.html#robo405">palette</a> object
+   of the given <a href="#robo414">sc-map</a> object.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Create a <a href="./set-palette_lsp.html#robo302">set-palette</a> object and an <a href="#robo414">sc-map</a> object, bind them using the
+;;; &lt;<a href="./palette_lsp.html#robo405">palette</a>&gt; object of the <a href="#robo572">make-sc-map</a> function, and apply the
+;;; <strong>get-nth-from-palette</strong> method
+(let* ((sp (<a href="./set-palette_lsp.html#robo649">make-set-palette</a> 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
+                                       (set2 ((d2 c3 b3 a4 g5 f6)))
+                                       (set3 ((e2 d3 c4 b4 a5 g6))))))
+      (scm (<a href="#robo572">make-sc-map</a> 'sc-m '((sec1
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3)))))
+                        :<a href="./palette_lsp.html#robo405">palette</a> sp)))
+  (<strong>get-nth-from-palette</strong> '(sec1 vn) 0 scm))
+
+=&gt; 
+COMPLETE-SET: complete: NIL
+              num-missing-non-chromatic: 12
+              num-missing-chromatic: 6
+              missing-non-chromatic: (BQS BQF AQS AQF GQS GQF FQS EQS EQF DQS
+                                      DQF CQS)
+              missing-chromatic: (BF AF FS EF D CS)
+TL-SET: transposition: 0
+        <a href="./set-palette_lsp.html#robo647">limit</a>-upper: NIL
+        <a href="./set-palette_lsp.html#robo647">limit</a>-lower: NIL
+SC-SET: auto-sort: T, used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+**************
+
+
+**** N.B. All pitches printed as symbols only, internally they are all 
+<a href="./pitch_lsp.html#robo285">pitch</a>-objects.
+
+
+    subsets: 
+    related-sets: 
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 6, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SET1, tag: NIL, 
+data: (C2 B2 A3 G4 F5 E6)
+**************
+
+;;; Applying the method to an <a href="#robo414">sc-map</a> object that is not bound to a <a href="./palette_lsp.html#robo405">palette</a>
+;;; object returns NIL
+(let ((scm (<a href="#robo572">make-sc-map</a> 'sc-m '((sec1
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3))))))))
+  (<strong>get-nth-from-palette</strong> '(sec1 vn) 0 scm))
+
+=&gt; NIL
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>get-nth-from-palette</strong> (sc-map-ref nth (scm sc-map))
+</pre>
+
+
+<a name="sc2dmap2fmake2dsc2dmap"></a>
+<a name="robo572"></a><h2 class=robodoc>sc-map/make-sc-map [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Create an <a href="#robo414">sc-map</a> object, which will be used for mapping rhythmic sequences,
+ chords etc. to specific parts of a <a href="./piece_lsp.html#robo56">piece</a>. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - The ID of the resulting <a href="#robo414">sc-map</a> object. 
+ - A list of data, most likely recursive.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :warn-not-found. T or NIL to indicate whether a warning is printed when
+   an index which doesn't exist is used for look-up.  T = warn. Default = T.
+ - :recurse-simple-data. T or NIL to indicate whether to recursively
+   instantiate a <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> in place of data that appears to be a
+   simple <a href="./assoc-list_lsp.html#robo111">assoc-list</a> (i.e. a 2-element list). If NIL, the data of 2-element
+   lists whose second element is a number or a symbol will be ignored,
+   therefore remaining as a list. For example, this data would normally
+   result in a recursive call: (y ((2 23) (7 28) (18 2))).  
+   T = recurse. Default = T.
+ - :replacements. A list of lists in the format '(((1 2 vla) 3 20b) ((2 3
+   vln) 4 16a)) that indicate changes to individual elements of lists within
+   the given <a href="#robo414">sc-map</a> object. (Often <a href="#robo414">sc-map</a> data is generated algorithmically,
+   but individual elements of the lists need to be changed.) Each such list
+   indicates a change, the first element of the list being the reference
+   into the <a href="#robo414">sc-map</a> (the viola voice of <a href="./section_lsp.html#robo58">section</a> 1 subsection 2 in the first
+   element here, for example), the second element being the nth of the data
+   list to change for this key, and the third being the new data.
+ - :<a href="./palette_lsp.html#robo405">palette</a>. A <a href="./palette_lsp.html#robo405">palette</a> object or NIL. If a <a href="./palette_lsp.html#robo405">palette</a> object is specified or
+   defined here, it will be automatically bound to the given <a href="#robo414">sc-map</a>
+   object. Default = NIL
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> An <a href="#robo414">sc-map</a> object.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Create an <a href="#robo414">sc-map</a> object with contents that could be used as a <a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> 
+(<strong>make-sc-map</strong> 'scm-test
+             '((1
+                ((vn (1 2 3 4 5))
+                 (va (2 3 4 5 1))
+                 (vc (3 4 5 1 2)))) 
+               (2
+                ((vn (6 7 8))
+                 (va (7 8 6))
+                 (vc (8 6 7)))) 
+               (3
+                ((vn (9))
+                 (va (9))
+                 (vc (9))))))
+
+=&gt;
+SC-MAP: <a href="./palette_lsp.html#robo405">palette</a> id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SCM-TEST, tag: NIL, 
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: NIL
+                      full-ref: (1)
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-SCM-TEST", tag: NIL, 
+data: (
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: (1 2 3 4 5)
+[...]
+
+;;; Create an <a href="#robo414">sc-map</a> object and automatically bind it to a <a href="./set-palette_lsp.html#robo302">set-palette</a> object
+;;; using the &lt;<a href="./palette_lsp.html#robo405">palette</a>&gt; keyword argument. Then read the PALETTE slot of the
+;;; <a href="#robo414">sc-map</a> created to see its contents.
+(let ((scm 
+       (<strong>make-sc-map</strong> 
+        'scm-test
+        '((1
+           ((vn (1 2 3 4 5))
+            (va (2 3 4 5 1))
+            (vc (3 4 5 1 2)))) 
+          (2
+           ((vn (6 7 8))
+            (va (7 8 6))
+            (vc (8 6 7)))) 
+          (3
+           ((vn (9))
+            (va (9))
+            (vc (9)))))
+        :<a href="./palette_lsp.html#robo405">palette</a> (<a href="./set-palette_lsp.html#robo649">make-set-palette</a> 'set-pal 
+                                   '((set1 ((c2 b2 a3 g4 f5 e6)))
+                                     (set2 ((d2 c3 b3 a4 g5 f6)))
+                                     (set3 ((e2 d3 c4 b4 a5 g6))))))))
+  (<a href="./palette_lsp.html#robo405">palette</a> scm))
+
+=&gt;
+
+SET-PALETTE: 
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SET-PAL, tag: NIL, 
+data: (
+COMPLETE-SET: complete: NIL
+[...]
+data: (C2 B2 A3 G4 F5 E6)
+[...]
+COMPLETE-SET: complete: NIL
+[...]
+data: (D2 C3 B3 A4 G5 F6)
+[...]
+COMPLETE-SET: complete: NIL
+[...]
+data: (E2 D3 C4 B4 A5 G6)
+)
+
+;;; An example using replacements
+(<strong>make-sc-map</strong> 'sc-m 
+             '((1
+                ((vn (set1 set3 set2))
+                 (va (set2 set3 set1))
+                 (vc (set3 set1 set2))))
+               (2
+                ((vn (set1 set2 set1))
+                 (va (set2 set1 set3))
+                 (vc (set1 set3 set3))))
+               (3
+                ((vn (set1 set1 set3))
+                 (va (set1 set3 set2))
+                 (vc (set3 set2 set3)))))
+             :replacements '(((1 va) 2 set2)))
+
+=&gt;
+
+SC-MAP: <a href="./palette_lsp.html#robo405">palette</a> id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SC-M, tag: NIL, 
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: NIL
+                      full-ref: (1)
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-SC-M", tag: NIL, 
+data: (
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: (SET1 SET3 SET2)
+**************
+
+       
+NAMED-OBJECT: id: VA, tag: NIL, 
+data: (SET2 SET2 SET1)
+**************
+
+       
+NAMED-OBJECT: id: VC, tag: NIL, 
+data: (SET3 SET1 SET2)
+**************
+)
+
+[...]
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>make-sc-map</strong> (id scm &amp;key (<a href="./palette_lsp.html#robo405">palette</a> nil) (warn-not-found t)
+                    (recurse-simple-data t) (replacements nil))
+</pre>
+
+
+<a name="sc2dmap2fnum2dsequences"></a>
+<a name="robo573"></a><h2 class=robodoc>sc-map/num-sequences [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> January 27th 2018
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Return the number of sequences in the map as a whole (i.e. counting all
+ sections and subsections). This method also works on subsections. Note that
+ the first time this method is used it sets the :<strong>num-sequences</strong> slot which
+ will then be used in subsequent queries until the data is changed. However,
+ if you've not specifically called this method on a subsection, its slot will
+ not yet be set.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - an <a href="#robo414">sc-map</a> object
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> An integer
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>num-sequences</strong> ((scm sc-map))
+</pre>
+
+
+<a name="sc2dmap2fremove2dref"></a>
+<a name="robo574"></a><h2 class=robodoc>sc-map/remove-ref [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> August 24th 2018
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Remove or replace a reference from a map. If there's no replacement then the
+ data list will be shorter (if the reference is present) thereafter (which
+ could cause problems .
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - an <a href="#robo414">sc-map</a> object
+ - the <a href="./section_lsp.html#robo58">section</a> reference (symbol, list, etc.)
+ - the reference in the data list that should be removed
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the replacement reference, if any. If, for example in a <a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a>, you
+   want to replace a <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> reference with nil, so that the <a href="./player_lsp.html#robo286">player</a> sits out
+   a sequence, then pass '(nil) as the replacement.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> The <a href="#robo414">sc-map</a> object.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>remove-ref</strong> ((scm sc-map) <a href="./section_lsp.html#robo58">section</a> ref &amp;optional replacement)
+</pre>
+
+
+<a name="sc2dmap2fshorten"></a>
+<a name="robo577"></a><h2 class=robodoc>sc-map/shorten [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo414">sc-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> July 10th 2020, Heidhausen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> <strong>shorten</strong> the length of the map for a given <a href="./section_lsp.html#robo58">section</a>
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="./section_lsp.html#robo58">section</a> reference
+ - the new length (integer)
+ - the <a href="#robo414">sc-map</a> object
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the shortened <a href="#robo414">sc-map</a> object
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>shorten</strong> (<a href="./section_lsp.html#robo58">section</a> new-length (scm sc-map))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/sc-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>wolfram.lsp</title>
+<!-- Source: ./../../src/wolfram.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="assoc2dlist2fwolfram"></a>
+<a name="robo52"></a><h2 class=robodoc>assoc-list/wolfram [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./assoc-list_lsp.html#robo111">assoc-list</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <a href="./rhythm_lsp.html#robo287">rhythm</a>
+
+ File:             <a href="#robo_top_of_doc">wolfram.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt;
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <strong>wolfram</strong>
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Implementation of the <strong>wolfram</strong> class for one-dimensional
+                   binary cellular automata introduced by Stephen Wolfram in
+                   1983. The rule number is the decimal representation of
+                   the binary number indicated by the eight transition rules
+                   (i.e. the results given the triplet test cases; see the
+                   rules slot below).
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    7th June 2017, Edinburgh
+
+ $$ Last modified:  17:16:57 Mon Feb 10 2020 CET
+
+ SVN ID: $Id: <a href="#robo_top_of_doc">wolfram.lsp</a> 6210 2017-04-07 11:42:29Z medward2 $
+</pre>
+
+
+<a name="wolfram2fdefwolfram"></a>
+<a name="robo987"></a><h2 class=robodoc>wolfram/defwolfram [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 6th 2017, Edinburgh
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Define your own Wolfram function to create an object with the flavour in
+ the rules passed. See below for several examples.
+
+ In addition, the name of the newly created function will be added to an
+ internal list of all functions defined by this macro, so that (try-all) can
+ be called (see below).
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the name of the function you're defining (symbol)
+ - the list of rules
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the default width (integer&gt;0) for the Wolfram object that will be created
+ - the default initial-state: 1 or 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the name of the function (symbol), just as with defun.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmacro <strong>defwolfram</strong> (fun rules &amp;optional (w 100) (is 0))
+</pre>
+
+
+<a name="wolfram2fgenerate"></a>
+<a name="robo988"></a><h2 class=robodoc>wolfram/generate [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 6th 2017, Edinburgh
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Generate the cellular automata rows using the given rules. N.B. Each time
+ this method is called, the results (data slot) of the previous calls are
+ deleted. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo52">wolfram</a> object
+ - the number of generations (rows) to <strong>generate</strong>
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> &lt;start&gt; is the value of the <a href="./utilities_lsp.html#robo931">middle</a> cell of the first row (or just to the
+ left of <a href="./utilities_lsp.html#robo931">middle</a>, if width is an even number). All cells to the left and
+ right of it will be in &lt;initial-state&gt;. This should be 0 or 1 only.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> The data slot, which will be the rows in the form of a list of
+ named-objects containing the ID (starting from 1) and the list of cell
+ values.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>generate</strong> ((w <a href="#robo52">wolfram</a>) generations &amp;optional (start 1))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr110"></a>
+<a name="robo989"></a><h2 class=robodoc>wolfram/make-wolfram-r110 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 7th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b01101110 = 110
+ This is the one Wolfram suggests might be Turing complete. This was proved
+ in 2000. "Rule 110, like the Game of Life, exhibits what Wolfram calls
+ "Class 4 behavior", which is neither completely stable nor completely
+ chaotic. Localized structures appear and interact in various
+ complicated-looking ways" (<a href="https://en.wikipedia.org/wiki/Rule_110)">https://en.wikipedia.org/wiki/Rule_110)</a>
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">so this one only goes up to column 7 when called with width of 12:
+      .     
+     ..     
+    ...     
+   .. .     
+  .....     
+ ..   .     
+...  ..     
+. . ...     
+..... .     
+.   ...     
+.  .. .     
+. .....     
+...   .     
+. .  ..     
+... ...     
+. ... .      
+then the last 2 lines repeat
+
+but called with width of 60:
+                              .                             
+                             ..                             
+                            ...                             
+                           .. .                             
+                          .....                             
+                         ..   .                             
+                        ...  ..                             
+                       .. . ...                             
+                      ....... .                             
+                     ..     ...                             
+                    ...    .. .                             
+                   .. .   .....                             
+                  .....  ..   .                             
+                 ..   . ...  ..                             
+                ...  .... . ...                             
+               .. . ..  ..... .                             
+              ........ ..   ...                             
+             ..      ....  .. .                             
+            ...     ..  . .....                             
+           .. .    ... ....   .                             
+          .....   .. ...  .  ..                             
+         ..   .  ..... . .. ...                             
+        ...  .. ..   ........ .                             
+       .. . ......  ..      ...                             
+      .......    . ...     .. .                             
+     ..     .   .... .    .....                             
+    ...    ..  ..  ...   ..   .                             
+   .. .   ... ... .. .  ...  ..                             
+  .....  .. ... ...... .. . ...                             
+ ..   . ..... ...    ........ .                             
+...  ....   ... .   ..      ...                             
+. . ..  .  .. ...  ...     .. .                             
+...... .. ..... . .. .    .....                             
+.    ......   ........   ..   .                             
+.   ..    .  ..      .  ...  ..                             
+.  ...   .. ...     .. .. . ...                             
+. .. .  ..... .    .......... .                             
+...... ..   ...   ..        ...                             
+.    ....  .. .  ...       .. .                             
+.   ..  . ..... .. .      .....                             
+.  ... ....   ......     ..   .                             
+. .. ...  .  ..    .    ...  ..                             
+...... . .. ...   ..   .. . ...                             
+.    ........ .  ...  ....... .                             
+.   ..      ... .. . ..     ...                             
+.  ...     .. .........    .. .                             
+. .. .    .....       .   .....                             
+......   ..   .      ..  ..   .                             
+.    .  ...  ..     ... ...  ..                             
+.   .. .. . ...    .. ... . ...                             
+.  .......... .   ..... ..... .                             
+. ..        ...  ..   ...   ...                             
+....       .. . ...  .. .  .. .                             
+.  .      ....... . ..... .....                             
+. ..     ..     .....   ...   .                             
+|#
+(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r110</strong>
+    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 1) ((1 0 0) 0) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr126"></a>
+<a name="robo990"></a><h2 class=robodoc>wolfram/make-wolfram-r126 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 6th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b01111110 = 126
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">width: 12, initial-state: 0
+      .     
+     ...    
+    .. ..   
+   .......  
+  ..     .. 
+ ....   ....
+..  .. ..  .
+............
+.          .
+..        ..
+...      ...
+. ..    .. .
+.....  .....
+.   ....   .
+.. ..  .. ..
+............
+using 1, the following repeats but not forever
+............
+            
+.          .
+..        ..
+ ..      .. 
+....    ....
+   ..  ..   
+. ........ .
+...      ...
+  ..    ..  
+.....  .....
+    ....    
+.  ..  ..  .
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r126</strong> 
+    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr150"></a>
+<a name="robo991"></a><h2 class=robodoc>wolfram/make-wolfram-r150 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 7th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b10010110 = 150
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">width: 12, initial-state: 0 
+non-repeating  but lovely patterns
+      .     
+     ...    
+    . . .   
+   .. . ..  
+  .   .   . 
+ ... ... ...
+. .   .   . 
+. .. ... ...
+.     .   . 
+..   ... ...
+  . . .   . 
+ .. . .. ...
+.   .     . 
+.. ...   ...
+    . . . . 
+   .. . . ..
+  .   . .   
+ ... .. ..  
+. .       . 
+. ..     ...
+.   .   . . 
+.. ... .. ..
+    .       
+   ...      
+  . . .     
+ .. . ..    
+.   .   .   
+.. ... ...  
+    .   . . 
+   ... .. ..
+  . .       
+ .. ..      
+.     .     
+..   ...    
+  . . . .   
+ .. . . ..  
+.   . .   . 
+.. .. .. ...
+          . 
+         ...
+        . . 
+       .. ..
+      .     
+     ...    
+    . . .   
+   .. . ..  
+  .   .   . 
+ ... ... ...
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r150</strong> 
+    '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr151"></a>
+<a name="robo992"></a><h2 class=robodoc>wolfram/make-wolfram-r151 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 7th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b10010111 = 151
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">      .     
+............
+ .......... 
+. ........ .
+.  ......  .
+... .... ...
+ .   ..   . 
+.....  .....
+ ... .. ... 
+. .      . .
+. ........ .
+.  ......  .
+then the last 7 lines repeat
+|#
+(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r151</strong>
+    '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 1)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr159"></a>
+<a name="robo993"></a><h2 class=robodoc>wolfram/make-wolfram-r159 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 7th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b10011111 = 159
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">      .     
+............
+........... 
+.......... .
+.........  .
+........ ...
+.......  .. 
+...... ... .
+.....  ..  .
+.... ... ...
+...  ..  .. 
+.. ... ... .
+.  ..  ..  .
+then the last 4 lines repeat
+|#
+(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r159</strong>
+    '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 1)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr190"></a>
+<a name="robo994"></a><h2 class=robodoc>wolfram/make-wolfram-r190 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 6th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b10111110 = 190
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">width: 12, initial-state: 0
+      .     
+     ...    
+    ... .   
+   ... ...  
+  ... ... . 
+ ... ... ...
+... ... ... 
+.. ... ... .
+. ... ... ..
+.... ... .. 
+... ... .. .
+.. ... .. ..
+. ... .. .. 
+.... .. .. .
+... .. .. ..
+.. .. .. .. 
+. .. .. .. .    
+then last three rows repeat
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r190</strong> 
+    '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr25"></a>
+<a name="robo995"></a><h2 class=robodoc>wolfram/make-wolfram-r25 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 6th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b00011001 = 25
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">width: 12, initial-state: 0
+      .     
+.....  .....
+.    . .    
+ ...    ....
+ .  ... .   
+  . .    ...
+.    ... .  
+ ... .    ..
+ .    ... . 
+  ... .    .
+. .    ...  
+   ... .  ..
+.. .    . . 
+.   ...    .
+ .. .  ...  
+ .   . .  ..
+  ..    . . 
+. . ...    .
+    .  ...  
+...  . .  ..
+.  .    . . 
+ .  ...    .
+  . .  ...  
+.    . .  ..
+ ...    . . 
+ .  ...    .
+  . .  ...  
+.    . .  .. 
+then last four rows repeat
+
+also very nice starting with 0 instead of 1 (no obvious repeats):
+(<a href="#robo988">generate</a> w 100 0)
+............
+.           
+ ...........
+ .          
+  ..........
+. .         
+   .........
+.. .        
+.   ........
+ .. .       
+ .   .......
+  .. .      
+. .   ......
+   .. .     
+.. .   .....
+.   .. .    
+ .. .   ....
+ .   .. .   
+  .. .   ...
+. .   .. .  
+   .. .   ..
+.. .   .. . 
+.   .. .   .
+ .. .   ..  
+ .   .. . ..
+  .. .    . 
+. .   ...  .
+   .. .  .  
+.. .   .  ..
+.   ..  . . 
+ .. . .    .
+ .     ...  
+  .... .  ..
+. .     . . 
+   ....    .
+.. .   ...  
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r25</strong>
+    '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1)
+      ((0 1 1) 1) ((0 1 0) 0) ((0 0 1) 0) ((0 0 0) 1)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr30"></a>
+<a name="robo996"></a><h2 class=robodoc>wolfram/make-wolfram-r30 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 6th 2017, Edinburgh.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> This is the default Wolfgram object: #b00011110 = 30
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; so width: 12, initial-state: 0
+(let ((w (<strong>make-wolfram-r30</strong> 12 0)))
+  (<a href="#robo988">generate</a> w 100)
+  (<a href="#robo1001">print-matrix</a> w :row-number nil :off "." :on 'X)
+  (<a href="#robo1001">print-matrix</a> w :row-number nil))
+      .     
+     ...    
+    ..  .   
+   .. ....  
+  ..  .   . 
+ .. .... ...
+..  .    .  
+. ....  ... 
+. .   ...  .
+. .. ..  ...
+. .  . ...  
+. .... .  . 
+. .    .....
+. ..  ..    
+. . ... .   
+. . .   ..  
+. . .. .. . 
+. . .  .  ..
+. . ....... 
+. . .      .
+. . ..    ..
+. . . .  .. 
+. . . .... .
+. . . .    .
+. . . ..  ..
+. . . . ... 
+. . . . .  .
+. . . . ....
+. . . . .   
+. . . . ..  
+. . . . . . 
+. . . . . ..   
+then last two rows repeat
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r30</strong> 
+    '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr62"></a>
+<a name="robo997"></a><h2 class=robodoc>wolfram/make-wolfram-r62 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 7th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b00111110 = 62
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">      .     
+     ...    
+    ..  .   
+   .. ....  
+  .. ..   . 
+ .. .. . ...
+.. .. ....  
+. .. ..   . 
+... .. . ...
+.  .. ....  
+.... ..   . 
+.   .. . ...
+.. .. ....  
+. .. ..   . 
+... .. . ...
+.  .. .... 
+then the last 6 lines repeat
+|#
+(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r62</strong>
+    '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr73"></a>
+<a name="robo998"></a><h2 class=robodoc>wolfram/make-wolfram-r73 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 8th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b01001001 = 73
+ Suggested by Orestis Papadopoulos
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">      .     
+.....   ....
+.   . . .  .
+  .         
+.   ........
+  . .      .
+.     ....  
+  ... .  . .
+. . .       
+      ......
+..... .    .
+.   .   ..  
+  .   . .. .
+then the last 2 lines repeat
+|#
+(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r73</strong>
+    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 0) ((0 1 1) 1)
+      ((0 1 0) 0) ((0 0 1) 0) ((0 0 0) 1)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr82"></a>
+<a name="robo999"></a><h2 class=robodoc>wolfram/make-wolfram-r82 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 6th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b01010010 = 82
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">width: 12, initial-state: 0 
+non-repeating  but lovely patterns
+      .     
+     . .    
+    .   .   
+   . . . .  
+  .       . 
+ . .     . .
+.   .   .   
+ . . . . .  
+.         . 
+ .       . .
+. .     .   
+   .   . .  
+  . . .   . 
+ .     . . .
+. .   .     
+   . . .    
+  .     .   
+ . .   . .  
+.   . .   . 
+ . .   . . .
+.   . .     
+ . .   .    
+.   . . .   
+ . .     .  
+.   .   . . 
+ . . . .   .
+.       . . 
+ .     .   .
+. .   . . . 
+   . .     .
+  .   .   . 
+ . . . . . .
+.           
+ .          
+. .         
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r82</strong> 
+    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
+      ((0 1 0) 0) ((0 0 1) 1) ((0 0 0) 0)))
+</pre>
+
+
+<a name="wolfram2fmake2dwolfram2dr93"></a>
+<a name="robo1000"></a><h2 class=robodoc>wolfram/make-wolfram-r93 [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 7th 2017, Edinburgh. 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> #b01011101 = 93
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the width of a row. Default = 100.
+ - the initial state of the object. Default = 0.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the function name as a symbol but when called a <a href="#robo52">wolfram</a> object with the
+ given rules. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">      .     
+..... ......
+.   ...    .
+... . .... .
+. .....  ...
+...   .. . .
+. ... ......
+... ...    .
+. ... .... .
+... ...  ...
+. ... .. . .
+... ........
+. ...      .
+... ...... .
+. ...    ...
+... .... . .
+. ...  .....
+... .. .   .
+. ........ .
+...      ...
+. ...... . .
+...    .....
+. .... .   .
+...  ..... .
+. .. .   ...
+........ . .
+.      .....
+...... .   .
+.    ..... .
+.... .   ...
+.  ..... . .
+.. .   .....
+...... .   .
+.    ..... .
+then the last 5 lines repeat
+|#
+(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r93</strong>
+    '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 0) ((0 0 0) 1)))
+</pre>
+
+
+<a name="wolfram2fprint2dmatrix"></a>
+<a name="robo1001"></a><h2 class=robodoc>wolfram/print-matrix [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 6th 2017, Edinburgh
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Print the state of the cells to the terminal. On and off could
+ theoretically be any object but of course single characters are
+ clearest. See the <a href="#robo987">defwolfram</a> definitions below for examples.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo52">wolfram</a> object
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :stream. The stream to print to. Default t which means it prints to the
+   terminal. 
+ - :on. what to print when a cell has the value 1. Default: the . character
+ - :off. what to print when a cell has the value 0. Default: space
+ - :row-number: whether to print row numbers. Default t.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> T
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>print-matrix</strong> ((w <a href="#robo52">wolfram</a>) &amp;key (stream t) (on #\.) (off #\ )
+                                       (row-number nil))
+</pre>
+
+
+<a name="wolfram2ftry2dall"></a>
+<a name="robo1002"></a><h2 class=robodoc>wolfram/try-all [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> June 10th 2017, Edinburgh
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Try all of the Wolfram rules defined via <a href="#robo987">defwolfram</a>. An instance of each
+ rule set defined will be created, the rows will be generated, and
+ <a href="#robo1001">print-matrix</a> will be called. This allows you to see and compare the results
+ of each rule set using the same parameters.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> none required
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ :width. The width slot (number of columns) for the Wolfram objects. Any
+ positive ingeger. Default = 100.
+ :initial-state. The initial-state (i.e. default) slot for the Wolfram
+ objects. 0 or 1. Default = 0.
+ :start. The value of the <a href="./utilities_lsp.html#robo931">middle</a> cell of the first row. See <a href="#robo988">generate</a> method
+ for more details. 0 or 1. Default = 1.
+ :generations. The number of rows to <a href="#robo988">generate</a>. Any positive integer. Default
+ = 30.
+ :stream, :on, :off, :row-number: see <a href="#robo1001">print-matrix</a> method.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> T
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>try-all</strong> (&amp;key (width 100) (initial-state 0) (start 1) (generations 30)
+                  (stream t) (on #\.) (off #\ ) (row-number nil))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/wolfram.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

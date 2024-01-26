@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>permutations.lsp</title>
+<!-- Source: ./../../src/permutations.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="sc2fpermutations"></a>
+<a name="robo15"></a><h2 class=robodoc>sc/permutations [ Modules ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_modules.html#robo_top_of_doc">Modules</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>permutations</strong>
+
+ File:             <a href="#robo_top_of_doc">permutations.lsp</a>
+
+ Class Hierarchy:  none, no classes defined.
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Various permutation functions.
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    10th November 2002
+
+ $$ Last modified:  15:46:37 Fri Jun  3 2022 CEST
+
+ SVN ID: $Id$
+</pre>
+
+
+<a name="permutations2favoid2dcommon2delements"></a>
+<a name="robo305"></a><h2 class=robodoc>permutations/avoid-common-elements [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> December 6th 2019, Heidhausen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Taking a list of sublists, move the sublists around to try and avoid
+ consecutive sublists having common elements. Note that even if it's not
+ possible to completely solve this problem, a re-ordered list will be
+ returned along with a warning detailing where things were no longer
+ possible. No further, more complex attempts are made at that point. NB In
+ that case shuffling before calling this function might help
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the list of sublists (of any element type)
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :test. The function to be passed to (intersection) for testing equivalence
+   amongst list elements. Default = #'eq
+ - :accept. The number of common elements to accept amongst sublists. Default
+   = 0
+ - :warn. Issue a warning if we can't complete? Default = T
+ - :all-on-fail. Return the unprocessed (failing) elements if we can't
+   complete? If NIL then we'll return less sublists than given but there will
+   be no common elements, at least. Default = T.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> a list: the first argument with re-ordered sublists.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(<strong>avoid-common-elements</strong>
+ '((1 2 3) (4 5 6) (5 4 6) (4 6 1) (2 3 4) (2 3 1) (1 3 2)))
+--&gt;
+WARNING: <a href="#robo15">permutations</a>::avoid-common-elements: did 4 but can't complete. 
+Current: (1 3 2)
+Rest: ((4 6 1) (2 3 4))
+((1 2 3) (4 5 6) (2 3 1) (5 4 6) (1 3 2) (4 6 1) (2 3 4))
+
+(<strong>avoid-common-elements</strong>
+ '((1 2 3) (4 5 6) (5 4 6) (3 2 1) (2 3 1) (6 5 4) (3 1 2)))
+--&gt;
+((1 2 3) (4 5 6) (3 2 1) (5 4 6) (2 3 1) (6 5 4) (3 1 2))
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>avoid-common-elements</strong> (lists &amp;key (test #'eq) (accept 0) (warn t)
+                                      (all-on-fail t))
+</pre>
+
+
+<a name="permutations2finefficient2dpermutations"></a>
+<a name="robo306"></a><h2 class=robodoc>permutations/inefficient-permutations [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Return a shuffled, non-systematic list of all possible <a href="#robo15">permutations</a> of a  
+ set of consecutive integers beginning with zero. 
+
+ The function's first argument, &lt;level&gt;, is an integer that determines how
+ many consecutive integers from 0 are to be used for the process. An
+ optional keyword argument &lt;max&gt; allows the user to specify the maximum
+ number of <a href="#robo15">permutations</a> to return. 
+
+ This function differs from the "<a href="#robo15">permutations</a>" function in that it's result
+ is not ordered systematically. 
+
+ The function simply returns a list of &lt;max&gt; <a href="#robo15">permutations</a> of the numbers
+ less than &lt;level&gt;; it does not <a href="#robo311">permutate</a> a given list.   
+
+ The function is inefficient in so far as it simply shuffles the numbers and
+ so always has to check whether the new list already contains the shuffled
+ before storing it. 
+ 
+ The order of the <a href="#robo15">permutations</a> returned will always be the same unless &lt;fix&gt;
+ is set to NIL. 
+
+ Keyword argument &lt;skip&gt; allows the user to skip a number of <a href="#robo15">permutations</a>,
+ which is only sensible if :fix is set to T. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> An integer that indicates how many consecutive integers from 0 are to be
+ used for the process. 
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :max. An integer that indicates the maximum number of <a href="#robo15">permutations</a> to be
+   returned.
+ - :skip. An integer that indicates a number of <a href="#robo15">permutations</a> to skip.
+ - :fix. T or NIL to indicate whether the given sequence should always be
+   shuffled with the same (fixed) random seed (thus always producing the
+   same result). T = fixed seed. Default = T.
+ - :if-not-enough. A function object (or NIL) to call when :max was
+   requested but we can't return that many results.  Default = #'error. 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A list.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Creating a shuffled, non-systematic list of all <a href="#robo15">permutations</a> of consecutive
+;; integers 0 to 4 
+(<strong>inefficient-permutations</strong> 4)
+
+=&gt; ((2 3 0 1) (3 1 2 0) (2 0 3 1) (1 0 2 3) (1 2 3 0) (0 2 3 1) (2 1 0 3)
+    (0 1 2 3) (2 3 1 0) (1 2 0 3) (3 0 1 2) (3 1 0 2) (1 3 2 0) (1 0 3 2)
+    (2 0 1 3) (3 2 1 0) (2 1 3 0) (3 2 0 1) (1 3 0 2) (0 2 1 3) (3 0 2 1)
+    (0 1 3 2) (0 3 2 1) (0 3 1 2))
+
+;; Using 0 to 4 again, but limiting the number of results returned to a maximum
+;; of 7
+(<strong>inefficient-permutations</strong> 4 :max 7)
+
+=&gt; ((2 3 0 1) (3 1 2 0) (2 0 3 1) (1 0 2 3) (1 2 3 0) (0 2 3 1) (2 1 0 3))
+
+;; The same call will return the same "random" results each time by default
+(loop repeat 4 do (print (<strong>inefficient-permutations</strong> 3 :max 5)))
+
+=&gt;
+((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0)) 
+((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0)) 
+((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0)) 
+((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0))
+
+;; Setting the :fix argument to NIL will result in different returns
+(loop repeat 4 do (print (<strong>inefficient-permutations</strong> 3 :max 5 :fix nil)))
+
+=&gt;
+((1 0 2) (0 1 2) (1 2 0) (2 1 0) (0 2 1)) 
+((1 2 0) (2 0 1) (2 1 0) (1 0 2) (0 1 2)) 
+((0 1 2) (1 0 2) (2 0 1) (1 2 0) (2 1 0)) 
+((0 2 1) (1 2 0) (0 1 2) (2 0 1) (1 0 2))
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>inefficient-permutations</strong> (level &amp;key (max nil) (skip 0) (fix t)
+                                         (if-not-enough #'error))
+</pre>
+
+
+<a name="permutations2finefficiently2dpermutate"></a>
+<a name="robo307"></a><h2 class=robodoc>permutations/inefficiently-permutate [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Return a shuffled, non-systematically ordered list of all possible
+ <a href="#robo15">permutations</a> of an original list of elements of any type. An optional
+ keyword argument &lt;max&gt; allows the user to specify the maximum number of
+ <a href="#robo15">permutations</a> to return.
+
+ As opposed to the function "<a href="#robo311">permutate</a>", <strong>inefficiently-permutate</strong> returns the
+ elements of the specified &lt;list&gt; as a flat list, unless the keyword
+ argument &lt;sublists&gt; is set to T, whereupon the function returns the result
+ as a list of lists, each one being a permutation of &lt;list&gt;.
+
+ The function is inefficient in so far as it simply shuffles the numbers and
+ so always has to check whether the new list already contains the shuffled
+ sublist before storing it.
+ 
+ The order of the <a href="#robo15">permutations</a> returned will always be the same unless &lt;fix&gt;
+ is set to NIL. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A list.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :max. An integer that indicates the maximum number of <a href="#robo15">permutations</a> to be
+   returned.
+ - :skip. An integer that indicates a number of <a href="#robo15">permutations</a> to skip.
+ - :fix. T or NIL to indicate whether the given sequence should always be
+   shuffled with the same (fixed) random seed (thus always producing the
+   same result). T = fixed seed. Default = T.
+ - :sublists. T or NIL to indicate whether the returned result should be
+   flattened into a one-dimensional list or should be left as a list of
+   lists. T = leave as list of lists. Default = NIL.
+ - :<a href="./slippery-chicken_lsp.html#robo769">clone</a>. T or NIL to indicate whether objects in the list should be cloned
+   as they are permutated (so that they are unique objects rather than
+   shared data space).  Useful perhaps if e.g. you're cloning chords which
+   will then have their own marks. etc.  If T then the list must contain
+   <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> named-objects or types subclassed from them (as is every
+   <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> class).
+ - :if-not-enough. A function object (or NIL) to call when :max was
+   requested but we can't return that many results.  Default = #'error. 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A list.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; By default the function returns a flattened list of all possible
+;; <a href="#robo15">permutations</a> in a shuffled (random) order
+(<strong>inefficiently-permutate</strong> '(a b c))
+
+=&gt; (C A B C B A A C B B A C B C A A B C)
+
+;; The length of the list returned can be potentially shortened using the :max
+;; keyword argument. Note here that the value given here refers to the number
+;; of <a href="#robo15">permutations</a> before the list is flattened, not to the number of
+;; individual items in the flattened list.
+(<strong>inefficiently-permutate</strong> '(a b c) :max 3)
+
+=&gt; (C A B C B A A C B) 
+
+;; By default the function is set to using a fixed random seed, causing it to
+;; return the same result each time
+(loop repeat 4 do (print (<strong>inefficiently-permutate</strong> '(a b c))))
+
+=&gt;
+(C A B C B A A C B B A C B C A A B C) 
+(C A B C B A A C B B A C B C A A B C) 
+(C A B C B A A C B B A C B C A A B C) 
+(C A B C B A A C B B A C B C A A B C) 
+
+;; Setting the :fix keyword argument to NIL allows the function to produce
+;; different output each time
+(loop repeat 4 do (print (<strong>inefficiently-permutate</strong> '(a b c) :fix nil)))
+
+=&gt;
+(B A C A C B B C A A B C C B A C A B) 
+(A C B B A C C B A C A B B C A A B C) 
+(A C B B A C B C A A B C C A B C B A) 
+(B A C A B C C A B C B A B C A A C B) 
+
+;; Setting the :sublists keyword argument to T causes the function to return a
+;; list of lists instead
+(<strong>inefficiently-permutate</strong> '(a b c) :sublists t)
+
+=&gt; ((C A B) (C B A) (A C B) (B A C) (B C A) (A B C))
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>inefficiently-permutate</strong> (list &amp;key (max nil) (skip 0) (fix t)
+                                <a href="./slippery-chicken_lsp.html#robo769">clone</a> (sublists nil) (if-not-enough #'error))
+</pre>
+
+
+<a name="permutations2fmove2drepeats"></a>
+<a name="robo308"></a><h2 class=robodoc>permutations/move-repeats [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Move, when possible, any elements within a given list that are repeated
+ consecutively.  
+
+ When two consecutive elements repeat, such as the c in '(a b c c b a),
+ the function moves the repeated element to the next place in the given
+ list that won't produce a repetition. When no such place can be found in
+ the remainder of the list, the offending element is moved to the end of the
+ given list and a warning is printed.
+
+ This function can be applied to simple lists and lists with sublists.
+ However, due to this function being designed for--but not limited to--use
+ with the results of <a href="#robo15">permutations</a>, if the list has sublists, then instead of
+ repeating sublists being moved, the last element of a sublist is checked
+ for repetition with the first element of the next sublist. See the first
+ example below.
+
+ NB: This function only moves elements further along the list; it won't place
+     them earlier than their original position.  Thus:
+     
+     (<strong>move-repeats</strong> '(3 3 1)) 
+
+     will return (3 1 3), while 
+
+     (<strong>move-repeats</strong> '(1 3 3)) 
+
+     will leave the list untouched and print a warning. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A list.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - A function that serves as the comparison test. Default = #'eq. 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A list.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Used with a list of lists.  Note that the repeating C, end of sublist 1,
+;;; beginning of sublist 2, is moved, not the whole repeating sublist (c a b).
+(<strong>move-repeats</strong> '((a b c) (c a b) (c a b) (d e f) (a b c) (g h i)))
+
+=&gt; ((A B C) (D E F) (C A B) (C A B) (A B C) (G H I))
+
+;;; Works with simple lists too:
+(<strong>move-repeats</strong> '(1 2 3 3 4 5 6 7 8 8 9 10))
+
+=&gt; (1 2 3 4 3 5 6 7 8 9 8 10)
+
+;; Moves the offending element to the end of the list and prints a warning when
+;; no solution can be found  
+(<strong>move-repeats</strong> '((a b c d) (d c b a) (b c a d) (c a b d)))
+
+=&gt; ((A B C D) (B C A D) (C A B D) (D C B A))
+WARNING:
+   move-repeats: can't find non-repeating place! 
+   present element: (D C B A), elements left: 1
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>move-repeats</strong> (list &amp;key (warn t) (test #'eq))
+</pre>
+
+
+<a name="permutations2fmulti2dshuffle"></a>
+<a name="robo309"></a><h2 class=robodoc>permutations/multi-shuffle [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Applies the <a href="#robo314">shuffle</a> function a specified number of times to a specified
+ list.  
+ 
+ NB: As with the plain <a href="#robo314">shuffle</a> function, the order of the <a href="#robo15">permutations</a>
+     returned will always be the same unless the keyword argument
+     :fix is set to NIL.   
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A sequence.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :start. A zero-based index integer indicating the first element of a
+   subsequence to be shuffled. Default = 0.
+ - :end. A zero-based index integer indicating the last element of a
+   subsequence to be shuffled. Default = the length of the given sequence.
+ - :copy. T or NIL to indicate whether the given sequence should be copied
+   before it is modified or should be destructively shuffled. 
+   T = copy. Default = T.
+ - :fix. T or NIL to indicate whether the given sequence should always be
+   shuffled with the same (fixed) random seed (thus always producing the
+   same result). T = fixed seed. Default = T.
+ - :<a href="./activity-levels_lsp.html#robo26">reset</a>. T or NIL to indicate whether the random state should be <a href="./activity-levels_lsp.html#robo26">reset</a>
+   before the function is performed.  T = <a href="./activity-levels_lsp.html#robo26">reset</a>. Default = T.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> - A sequence.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Simple <strong>multi-shuffle</strong> with default keywords.
+(<strong>multi-shuffle</strong> '(a b c d e f g) 3)
+
+=&gt; (B A C E D G F)
+
+;; Always returns the same result by default.
+(loop repeat 4 do (print (<strong>multi-shuffle</strong> '(a b c d e f g) 3)))
+
+=&gt;
+(B A C E D G F) 
+(B A C E D G F) 
+(B A C E D G F) 
+(B A C E D G F)
+
+;; Set keyword argument :fix to NIL to return different results each time 
+(loop repeat 4 do (print (<strong>multi-shuffle</strong> '(a b c d e f g) 3 :fix nil)))
+
+=&gt;
+(G C F B D E A) 
+(A G F B D C E) 
+(A B D G C F E) 
+(G C A D E F B)
+
+;; Set keyword arguments :start and :end to <a href="#robo314">shuffle</a> just a subsequence of the
+;; given sequence
+(loop repeat 4 
+   do (print (<strong>multi-shuffle</strong> '(a b c d e f g) 3
+                            :fix nil
+                            :start 2
+                            :end 5)))
+
+=&gt;
+(A B D E C F G) 
+(A B E C D F G) 
+(A B E D C F G) 
+(A B D C E F G)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>multi-shuffle</strong> (seq num-shuffles &amp;key 
+                      (start 0) 
+                      (end (length seq))
+                      (copy t)
+                      (fix t)
+                      (<a href="./activity-levels_lsp.html#robo26">reset</a> t))
+</pre>
+
+
+<a name="permutations2fmulti2dshuffle2dwith2dperms"></a>
+<a name="robo310"></a><h2 class=robodoc>permutations/multi-shuffle-with-perms [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Return one permutation from a shuffled list of <a href="#robo15">permutations</a> of the
+ specified list. The second argument determines how many shuffled
+ <a href="#robo15">permutations</a> will be in the list from which the resulting permutation is
+ selected. Similar to the "multi-<a href="#robo314">shuffle</a>" function, but uses the function
+ "inefficient-<a href="#robo15">permutations</a>" as part of the process.
+
+ The &lt;num-shuffles&gt; argument allows the user to always return the same
+ specific permutation.
+
+ NB: This function always uses a fixed random seed and has no optional
+     arguments to allow the user to alter that setting.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A list.
+ - An integer that is the number of consecutive shuffles to be collected in
+   the list from which the resulting permutation is selected.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> - A list that is a single permutation of the specified list.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Returns a permutation of a shuffled version of the specified list
+(let ((l '(0 1 2 3 4)))
+  (<strong>multi-shuffle-with-perms</strong> l 7))
+
+=&gt; (3 1 4 2 0) 
+
+;; Always returns the same result
+(loop repeat 4 do (print (<strong>multi-shuffle-with-perms</strong> '(0 1 2 3 4) 7)))
+
+=&gt;
+(3 1 4 2 0) 
+(3 1 4 2 0) 
+(3 1 4 2 0) 
+(3 1 4 2 0)
+
+;; Different &lt;num-shuffles&gt; values return different <a href="#robo15">permutations</a>
+(loop for i from 0 to 5 
+   do (print (<strong>multi-shuffle-with-perms</strong> '(0 1 2 3 4) i)))
+
+=&gt;
+(0 1 2 3 4) 
+(1 4 2 0 3) 
+(0 3 1 4 2) 
+(4 0 2 1 3) 
+(1 2 3 4 0) 
+(2 1 3 0 4)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>multi-shuffle-with-perms</strong> (seq num-shuffles)
+</pre>
+
+
+<a name="permutations2fpermutate"></a>
+<a name="robo311"></a><h2 class=robodoc>permutations/permutate [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Systematically produce a list of all possible <a href="#robo15">permutations</a> of an original
+ list of elements of any type.
+
+ NB: Such lists can quickly become very long, so <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a>
+     automatically defaults to outputting the resulting list to a file and 
+     printing a warning when the results exceed a certain length. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A list with elements of any type.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - allow-file: whether to allow the results to be written to a file rather
+ than returned to the interpreter. This will only happen if the length of
+ the list is &gt; 8. The advantage is that you can then read in the file rather
+ than slowly regenerate the results if you need them again.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A list of lists that are all possible <a href="#robo15">permutations</a> of the original,
+ specified list.
+
+ Interrupts with an error if the method is passed anything but a list. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Simple usage
+(<strong>permutate</strong> '(a b c))
+
+=&gt; ((A B C) (B A C) (A C B) (C A B) (B C A) (C B A))
+
+;; When the list is more than 8 elements long, the resulting <a href="#robo15">permutations</a> are
+;; written to a file due to the very high number of results
+(<strong>permutate</strong> '(1 2 3 4 5 6 7 8 9))
+
+=&gt;
+WARNING: <a href="#robo15">permutations</a>::<a href="#robo15">permutations</a>: This call will return 362880 
+results so they are being written to the file 
+'/tmp/<a href="#robo15">permutations</a>.txt'.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>permutate</strong> (list &amp;optional (allow-file t))
+</pre>
+
+
+<a name="permutations2fpermutations"></a>
+<a name="robo312"></a><h2 class=robodoc>permutations/permutations [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Systematically produce a list of all possible <strong>permutations</strong> of a set of
+ consecutive integers beginning with zero. The function's only argument,
+ &lt;level&gt;, is an integer that determines how many consecutive integers from 0
+ are to be used for the process.
+
+ This is a more efficient permutation algorithm, but the results will always 
+ be in a certain order, with the same number at the end until that
+ permutation is exhausted, then the number below that etc. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> An integer that indicates how many consecutive integers from 0 are to be
+ used for the process.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - allow-file: whether to allow the results to be written to a file rather
+ than returned to the interpreter. This will only happen if the length of
+ the list is &gt; 8. The advantage is that you can then read in the file rather
+ than slowly regenerate the results if you need them again.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A list of sequences (lists), each of which is a permutation of the
+ original. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Produce a list consisting of all <strong>permutations</strong> that can be made of 4
+;; consecutive integers starting with 0 (i.e., (0 1 2 3))
+(<strong>permutations</strong> 4)
+
+=&gt;
+((0 1 2 3) (1 0 2 3) (0 2 1 3) (2 0 1 3) (1 2 0 3) (2 1 0 3) (0 1 3 2)
+ (1 0 3 2) (0 3 1 2) (3 0 1 2) (1 3 0 2) (3 1 0 2) (0 2 3 1) (2 0 3 1)
+ (0 3 2 1) (3 0 2 1) (2 3 0 1) (3 2 0 1) (1 2 3 0) (2 1 3 0) (1 3 2 0)
+ (3 1 2 0) (2 3 1 0) (3 2 1 0))
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>permutations</strong> (level &amp;optional (allow-file t))
+</pre>
+
+
+<a name="permutations2frandom2drep"></a>
+<a name="robo313"></a><h2 class=robodoc>permutations/random-rep [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Return a random non-negative number that is less than the specified
+ value. An optional argument allows for the random state to be <a href="./activity-levels_lsp.html#robo26">reset</a>.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A number.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - T or NIL to indicate whether the random state should be <a href="./activity-levels_lsp.html#robo26">reset</a> before the
+   function is performed. T = <a href="./activity-levels_lsp.html#robo26">reset</a>. Default = NIL.  
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A number.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">  ;; By default returns a different value each time
+  (loop repeat 10 do (print (<strong>random-rep</strong> 5)))
+  
+  =&gt;
+  1 
+  3 
+  4 
+  4 
+  3 
+  4 
+  2 
+  0 
+  2 
+  0
+
+  ;; Setting the optional argument to T resets the random state before
+  ;; performing the function
+  (loop repeat 10 do (print (<strong>random-rep</strong> 5 t)))
+
+  =&gt;
+  3 
+  3 
+  3 
+  3 
+  3 
+  3 
+  3 
+  3 
+  3 
+  3
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">  (defun <strong>random-rep</strong> (below &amp;optional (<a href="./activity-levels_lsp.html#robo26">reset</a> nil))
+</pre>
+
+
+<a name="permutations2fshuffle"></a>
+<a name="robo314"></a><h2 class=robodoc>permutations/shuffle [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">permutations</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Create a random ordering of a given sequence or a subsequence of a given
+ sequence.  By default we used fixed-seed randomness so we can guarantee the
+ same results each time (perhaps counter-intuitively).  So the order of the
+ <a href="#robo15">permutations</a> returned will always be the same unless keyword argument :fix
+ is set to NIL.  
+
+ NB: This function is a modified form of Common Music's <strong>shuffle</strong> function.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A sequence (list, vector (string)).
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :start. A zero-based index integer indicating the first element of a
+   subsequence to be shuffled. Default = 0.
+ - :end. A zero-based index integer indicating the last element of a
+   subsequence to be shuffled. Default = the length of the given sequence.
+ - :copy. T or NIL to indicate whether the given sequence should be copied
+   before it is modified or should be destructively shuffled. 
+   T = copy. Default = T.
+ - :fix. T or NIL to indicate whether the given sequence should always be
+   shuffled with the same (fixed) random seed (thus always producing the
+   same result). T = fixed seed. Default = T.
+ - :<a href="./activity-levels_lsp.html#robo26">reset</a>. T or NIL to indicate whether the random state should be <a href="./activity-levels_lsp.html#robo26">reset</a>
+   before the function is performed.  T = <a href="./activity-levels_lsp.html#robo26">reset</a>. Default = T.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A list.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Simple <strong>shuffle</strong> with default keywords.
+(<strong>shuffle</strong> '(1 2 3 4 5 6 7))
+
+=&gt; (5 4 3 6 7 1 2)
+
+;; Always returns the same result by default.
+(loop repeat 4 do (print (<strong>shuffle</strong> '(1 2 3 4 5 6 7))))
+
+=&gt;
+(5 4 3 6 7 1 2) 
+(5 4 3 6 7 1 2) 
+(5 4 3 6 7 1 2) 
+(5 4 3 6 7 1 2)
+
+;; Set keyword argument :fix to NIL to return different results each time 
+(loop repeat 4 do (print (<strong>shuffle</strong> '(1 2 3 4 5 6 7) :fix nil)))
+
+=&gt;
+(1 2 6 3 5 4 7) 
+(1 3 5 2 7 4 6) 
+(4 7 2 5 1 6 3) 
+(1 5 3 7 4 2 6)
+
+;; Set the keyword argument :<a href="./activity-levels_lsp.html#robo26">reset</a> to t only at the beginning so we get the
+;; same result that time but different (but repeatable) results thereafter.
+(loop repeat 3 do
+     (print 'start)
+     (loop for i below 4 
+        do (print (<strong>shuffle</strong> '(1 2 3 4 5 6 7) :<a href="./activity-levels_lsp.html#robo26">reset</a> (zerop i)))))
+
+=&gt;
+START 
+(5 4 3 6 7 1 2) 
+(4 6 5 2 3 1 7) 
+(3 4 1 6 5 7 2) 
+(3 2 7 4 1 6 5) 
+START 
+(5 4 3 6 7 1 2) 
+(4 6 5 2 3 1 7) 
+(3 4 1 6 5 7 2) 
+(3 2 7 4 1 6 5) 
+START 
+(5 4 3 6 7 1 2) 
+(4 6 5 2 3 1 7) 
+(3 4 1 6 5 7 2) 
+(3 2 7 4 1 6 5) 
+
+
+;; Set keyword arguments :start and :end to <strong>shuffle</strong> just a subsequence of the
+;; given sequence
+(loop repeat 4 
+   do (print (<strong>shuffle</strong> '(1 2 3 4 5 6 7) 
+                      :fix nil
+                      :start 2
+                      :end 5)))
+
+=&gt;
+(1 2 5 4 3 6 7) 
+(1 2 3 5 4 6 7) 
+(1 2 4 5 3 6 7) 
+(1 2 3 4 5 6 7)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>shuffle</strong> (seq &amp;key 
+                (start 0) 
+                (end (length seq))
+                (copy t)
+                (fix t)
+                (<a href="./activity-levels_lsp.html#robo26">reset</a> t)
+                &amp;aux (width (- end start)))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/permutations.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

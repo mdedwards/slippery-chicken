@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - other downloads</title>
+    <link href="sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="./show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("./");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+
+      <!-- **************************************************************** --> 
+
+      <h3>Other downloads</h3> 
+
+      <p><a href="media/lilypond-graphics.zip">Lilypond graphics files</a> for
+      marks <code>mphonic-arr</code>, <code>sing-arr</code>,
+      <code>aeolian-light</code> etc.  </p>
+
+      <!-- **************************************************************** --> 
+
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br />
+
+      <div id="push"></div>
+      
+    </div>
+
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>clm.lsp</title>
+<!-- Source: ./../../src/clm.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="clm2fclm2dloops"></a>
+<a name="robo122"></a><h2 class=robodoc>clm/clm-loops [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Generate a sound file from an existing specified sound file by shuffling
+ and repeating specified segments within the source sound file. 
+
+ This function was first introduced in the composition "breathing Charlie"
+ (under the name loops): see charlie-loops.lsp in that project for examples.
+
+ The first required argument to the function is the name of the sound file,
+ including path and extension, looped. This must be a mono file.
+
+ The second required argument (entry-points) is a list of times, in seconds,
+ where attacks (or something significant) happen in the file. These are used
+ to create loop start/end points.
+ 
+ Be careful when doing shuffles as if, e.g., the transpositions list is more
+ than 6 elements, shuffling will take a very long time.
+ 
+ The entry-points are used randomly so that any segment may start at any
+ point and transition to any other segment (i.e. skipping intervening
+ segments, always forwards however). There are always two segments in use at
+ any time. The function randomly selects which segments are used, then a
+ transition (see <a href="./l-for-lookup_lsp.html#robo272">fibonacci</a>-transitions) from repeated segment 1 to repeated
+ segment 2 is made. Then the next segment is chosen and the process is
+ repeated (i.e. from previous segment 2 to new segment) until the
+ max-start-time (in seconds) is achieved.
+ 
+ <a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> are first shuffled and then made into a circular
+ list. Then they are expanded to create the transpositions (each number
+ becomes a series of 1s and 0s--length is the number itself--with a
+ transition from all 0s to all 1s: e.g. (<a href="./l-for-lookup_lsp.html#robo275">fibonacci-transition</a> 20) -&gt; (0 0 0
+ 0 1 0 0 1 0 1 0 1 0 1 0 1 0 1 1 1) This is then used to select one or the
+ other of the current two segments.
+
+ The sample-rate transpositions are simply randomly permutated and selected.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - The name of a sound file, including path and extension.
+ - A list of numbers that are time in seconds. These serve as the
+   "entry-points", i.e. loop markers within the file, and delineate the
+   beginning and end of segments that will be shuffled and played back at
+   random in the resulting file.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments.
+ - :max-perms. A number that is the maximum number of <a href="./permutations_lsp.html#robo15">permutations</a> generated
+   for the transitions. Default = 1000.
+ - :<a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a>. A list of numbers that serve as the number of
+   steps in each transition from one segment to the next. These numbers will
+   be used as the first argument to the call to <a href="./l-for-lookup_lsp.html#robo275">fibonacci-transition</a>.
+   Default = '(34 21 13 8)
+ - :max-start-time. A number that is the maximum time in second at which a
+   segment can start in the resulting sound file. Default = 60.0.
+ - :output-dir. The directory path for the output file. 
+   Default = (get-sc-config 'default-dir). 
+ - :srate. The sampling rate. If specified by the user, this will generally
+   be a number. By default it takes the CLM global sample-rate, i.e.
+   clm::*clm-srate*
+ - :data-format. The data format of the resulting file. This must be
+   preceded by the clm <a href="./package_lsp.html#robo14">package</a> qualifier. See clm.html for types of data
+   formats, such as mus-bshort, mus-l24float etc. 
+   Default is the whatever the CLM global clm::*clm-data-format* is set to. 
+ - :header-type. The header type of the resulting file. This must be
+   preceded by the clm <a href="./package_lsp.html#robo14">package</a> qualifier. See clm.html for possible header
+   types, such as mus-riff, mus-aifc etc. By default it takes the CLM global
+   clm::*clm-header-type*.
+ - :<a href="./sndfile_lsp.html#robo289">sndfile</a>-extension. A string or NIL. If a string, this will be appended
+   to the resulting sound file as a file extension. If NIL, the sound file
+   extension will automatically be selected based on the header type.  NB:
+   This argument does not affect the header type! Default = NIL.
+ - :channels. An integer that is the number of channels in the resulting
+   output. If greater than one, the segments will be automatically panned
+   amongst the channels. Default = 1.
+ - :transpositions. A list of number that are transpositions in
+   <a href="./utilities_lsp.html#robo970">semitones</a>. These will be shuffled and applied randomly to each
+   consecutive segment in the output. Default = '(0).
+ - :num-shuffles. An integer that will indicate how many times the lists
+   passed to <a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> and entry-points will be shuffled before
+   generating output. Default = - 1.
+ - :suffix. A string that will be automatically appended to the end of the
+   file name. Default = "".
+ - :src-width. A number that represents the accuracy of the sample-rate
+   conversions undertaken for transposition. The higher this number is, the
+   more accurate the transposition will be, but the longer it will take to
+   process the file. Default = 5.
+ - :scaled-to. The normalisation target. Usually &lt; 1.0. Default = 0.99.
+ - :pan. Whether amplitude panning should be applied or simple output to
+   individual channels. Default = T.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns the name of the file generated. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; A straightforward example with a number of the variables.
+(<strong>clm-loops</strong> "/path/to/<a href="./sndfile_lsp.html#robo289">sndfile</a>-3.aiff"
+           '(0.180 2.164 4.371 7.575 9.4 10.864)
+           :<a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> '(1 2 3 4 5)
+           :max-perms 7
+           :output-dir "/tmp/"
+           :channels 1
+           :transpositions '(1 12 -12)
+           :num-shuffles 3
+           :src-width 20)
+
+=&gt; "/tmp/<a href="./sndfile_lsp.html#robo289">sndfile</a>-3-loops-from-00m00.180-.wav"
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">#+clm
+(defun <strong>clm-loops</strong> (<a href="./sndfile_lsp.html#robo289">sndfile</a> entry-points
+                  &amp;key
+                    (max-perms 1000)
+                    (<a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> '(34 21 13 8))
+                    (max-start-time 60.0)
+                    (output-dir (get-sc-config 'default-dir))
+                    (srate clm::*clm-srate*)
+                    (data-format clm::*clm-data-format*)
+                    ;; MDE Fri May 11 15:33:45 2012 
+                    (header-type clm::*clm-header-type*)
+                    ;; MDE Fri May 11 15:34:17 2012 -- 
+                    (<a href="./sndfile_lsp.html#robo289">sndfile</a>-extension nil)
+                    (channels 1)
+                    ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
+                    (scaled-to .99)
+                    ;; <a href="./utilities_lsp.html#robo970">semitones</a>
+                    (transpositions '(0))
+                    ;; added 31/7/05 to vary the order of
+                    ;; entry points, transpositions and
+                    ;; <a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> (could be 0!)
+                    (num-shuffles 1) 
+                    (suffix "")
+                    (pan t)
+                    (src-width 5))
+</pre>
+
+
+<a name="clm2fclm2dloops2dall"></a>
+<a name="robo123"></a><h2 class=robodoc>clm/clm-loops-all [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Similar to <a href="#robo122">clm-loops</a>, but takes a list of lists of entry points (which can
+ also be generated using the <a href="#robo124">random-loop-points</a> function, for example) and
+ produces one output sound file for each list of entry points that list
+ contains. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A string that is the name of the source sound file including directory
+   path and extension.
+ - A list of lists of numbers that are entry points (loop markers) in the
+   specified source sound file.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :max-perms. A number that is the maximum number of <a href="./permutations_lsp.html#robo15">permutations</a> generated
+   for the transitions. Default = 1000.
+ - :<a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a>. A list of numbers that serve as the number of
+   steps in each transition from one segment to the next. These numbers will
+   be used as the first argument to the call to <a href="./l-for-lookup_lsp.html#robo275">fibonacci-transition</a>.
+   Default = '(34 21 13 8).
+ - :max-start-time. A number that is the maximum time in seconds at which a
+   loop segment can start in the resulting sound file. So this is the
+   approximate duration. If a list, then the durations will be used
+   circularly for each output sound file. Default = 60.0.
+ - :output-dir. The directory path for the output file. 
+   Default = (get-sc-config 'default-dir).
+ - :srate. The sampling rate. If specified by the user, this will generally
+   be a number. By default it takes the CLM global sample-rate, i.e.
+   clm::*clm-srate*
+ - :data-format. The data format of the resulting file. This must be
+   preceded by the clm <a href="./package_lsp.html#robo14">package</a> qualifier. See clm.html for types of data
+   formats, such as mus-bshort, mus-l24float etc. 
+   Default is the whatever the CLM global clm::*clm-data-format* is set to. 
+ - :header-type. The header type of the resulting file. This must be
+   preceded by the clm <a href="./package_lsp.html#robo14">package</a> qualifier. See clm.html for possible header
+   types, such as mus-riff, mus-aifc etc. By default it takes the CLM global
+   clm::*clm-header-type*.
+ - :<a href="./sndfile_lsp.html#robo289">sndfile</a>-extension. A string or NIL. If a string, this will be appended
+   to the resulting sound file as a file extension. If NIL, the sound file
+   extension will automatically be selected based on the header type.  NB:
+   This argument does not affect the header type! Default = NIL.
+ - :channels. An integer that is the number of channels in the resulting
+   output. If greater than one, the segments will be automatically panned
+   amongst the channels. Default = 1.
+ - :do-shuffles. T or NIL to indicate whether to <a href="./permutations_lsp.html#robo314">shuffle</a> the lists passed to
+   <a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> and entry-points before generating output. 
+   T = do shuffles. Default = T.
+ - :start-after. A number. All loops will be excluded that start before this
+   number of seconds. Default = -1.0.
+ - :stop-after. A number. All loops will be excluded that start after this
+   number of seconds. Default =  99999999.0.
+ - :suffix. A string that will be automatically appended to the end of the
+   file name. Default = "".
+ - :transpositions. A list of number that are transpositions in
+   <a href="./utilities_lsp.html#robo970">semitones</a>. These will be shuffled and applied randomly to each
+   consecutive segment in the output. Default = '(0).
+ - :transposition-offset. A number that is an additional number of <a href="./utilities_lsp.html#robo970">semitones</a>
+   to be added to each transposition value before performing the
+   transposition. Default = 0.0.
+ - :src-width. A number that represents the accuracy of the sample-rate
+   conversions undertaken for transposition. The higher this number is, the
+   more accurate the transposition will be, but the longer it will take to
+   process the file. Default = 5.
+ - :scaled-to. The normalisation target. Usually &lt; 1.0. Default = 0.99.
+ - :pan. Whether amplitude panning should be applied or simple output to
+   individual channels. Default = T.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns NIL.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(<strong>clm-loops-all</strong>
+ (concatenate 'string 
+              cl-user::+slippery-chicken-home-dir+
+              "test-suite/test-sndfiles-dir-1/test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-3.aiff")
+ '((0.794 0.961 1.061 1.161 1.318 1.436 1.536)
+   (0.787 0.887 0.987 1.153 1.310 1.510)
+   (0.749 0.889 1.056 1.213 1.413)
+   (0.311 0.411 0.611 0.729)
+   (0.744 0.884 1.002))
+ :max-perms 6
+ :<a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> '(31 8 21 13)
+ :output-dir "/tmp/"
+ :channels 1
+ :transpositions '(1 12 -12)
+ :src-width 20)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">#+clm
+(defun <strong>clm-loops-all</strong> (<a href="./sndfile_lsp.html#robo289">sndfile</a> entry-points-list 
+                      &amp;key 
+                        (max-perms 1000)
+                        (<a href="./l-for-lookup_lsp.html#robo276">fibonacci-transitions</a> '(34 21 13 8))
+                        (max-start-time 60.0)
+                        (output-dir (get-sc-config 'default-dir))
+                        (srate clm::*clm-srate*)
+                        (data-format clm::*clm-data-format*)
+                        ;; MDE Fri May 11 15:33:45 2012 
+                        (header-type clm::*clm-header-type*)
+                        ;; MDE Fri May 11 15:34:17 2012 -- 
+                        (<a href="./sndfile_lsp.html#robo289">sndfile</a>-extension nil)
+                        (channels 1)
+                        (do-shuffles t) ;; see <a href="#robo122">clm-loops</a>
+                        ;; exclude all those loops who start before this
+                        ;; number of seconds. 
+                        (start-after -1.0)                      
+                        (stop-after 99999999.0)
+                        (suffix "")
+                        ;; <a href="./utilities_lsp.html#robo970">semitones</a>
+                        ;; 6/10/06: using just one list of transpositions passed
+                        ;; onto <a href="#robo122">clm-loops</a> created the same tone structure for
+                        ;; every file generated (boring).  This list will now be
+                        ;; shuffled and 10 versions collected which will then be
+                        ;; passed (circularly) one after the other to <a href="#robo122">clm-loops</a>.
+                        (transpositions '(0))
+                        ;; MDE Thu Aug 26 15:56:34 2021, Heidhausen -- added
+                        (pan t)
+                        ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
+                        (scaled-to .99)
+                        (transposition-offset 0.0)
+                        (src-width 5))
+</pre>
+
+
+<a name="clm2frandom2dloop2dpoints"></a>
+<a name="robo124"></a><h2 class=robodoc>clm/random-loop-points [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Return a list of lists of randomly generated entry points (loop markers)
+ for use with <a href="#robo123">clm-loops-all</a>.
+
+ This function also produces an output text file containing the same list of
+ lists. This file is in Lisp syntax and can therefore be accessed using
+ <a href="./utilities_lsp.html#robo960">read-from-file</a>. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A string that is the file name, including directory path and extension,
+   of the output file to produce.
+ - A string that is the sound file for which to <a href="./wolfram_lsp.html#robo988">generate</a> random entry
+   points. 
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :min-points. An integer that is the least number of entry points to
+   <a href="./wolfram_lsp.html#robo988">generate</a> for each list. Default = 5.
+ - :max-points. An integer that is the greatest number of entry points to
+   <a href="./wolfram_lsp.html#robo988">generate</a> for each list. Default = 13.
+ - :min-dur. A number that is the shortest duration <a href="./utilities_lsp.html#robo896">between</a> two entry
+   points. Default = 0.05.
+ - :num-loop-sets. An integer that is the number of lists of entry points to
+   <a href="./wolfram_lsp.html#robo988">generate</a>. Default = 20.
+ - :scalers. A list of fractions that are durations relative to the min-dur,
+   such that, for example, a min-dur of 0.05 with a scaler of 13/8 would
+   result in a scaled duration of 0.08125. The fractions in this list will
+   be chosen at random when calculating the duration of the next loop
+   segment. Default = '(1/1 2/1 3/2 5/3 8/5 13/8).
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(<strong>random-loop-points</strong> 
+ "/tmp/outfile" 
+ "/path/to/test-<a href="./sndfile_lsp.html#robo289">sndfile</a>-3.aiff"
+ :min-points 3
+ :max-points 7
+ :min-dur 0.1
+ :num-loop-sets 5
+ :scalers '(1/1 2/1 3/2 5/3 7/5 11/7 13/11))
+
+=&gt; ((0.789 0.929 1.079) (0.028 0.228 0.368 0.487 0.687) (0.014 0.164 0.321)
+    (0.256 0.406 0.524 0.681) (0.069 0.235 0.353 0.472 0.572 0.69))
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">#+clm
+(defun <strong>random-loop-points</strong> (outfile <a href="./sndfile_lsp.html#robo289">sndfile</a> 
+                           &amp;key 
+                           ;; MDE Thu May 17 17:02:15 2012 -- could also be
+                           ;; :error or anything else that with-open-file
+                           ;; accepts 
+                           (if-outfile-exists :overwrite) 
+                           ;; the minimum number of time points for an output
+                           ;; loop--number of looped sound segments is 1- this
+                           (min-points 5)
+                           ;; max number of time points--the actual number of
+                           ;; points will be randomly chosen <a href="./utilities_lsp.html#robo896">between</a> these two
+                           ;; numbers. 
+                           (max-points 13)
+                           ;; minimum duration of a loop segment--this number
+                           ;; will actually be used and scaled by scalers
+                           (min-dur 0.05)
+                           ;; how many sets of loops should be generated
+                           (num-loop-sets 20)
+                           ;; scalers for the min-dur: these are all
+                           ;; proportions relative to min-dur so if we have
+                           ;; 13/8 in this list and min-dur of 0.05 then the
+                           ;; duration for such a segment would be 0.08125.
+                           ;; these will be chosen at random when calculating
+                           ;; the next loop segment duration
+                           (scalers '(1/1 2/1 3/2 5/3 8/5 13/8)))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/clm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

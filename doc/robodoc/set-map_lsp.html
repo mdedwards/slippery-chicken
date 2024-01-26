@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>set-map.lsp</title>
+<!-- Source: ./../../src/set-map.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="sc2dmap2fset2dmap"></a>
+<a name="robo576"></a><h2 class=robodoc>sc-map/set-map [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sc-map_lsp.html#robo414">sc-map</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>set-map</strong>
+
+ File:             <a href="#robo_top_of_doc">set-map.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
+                   <a href="./sc-map_lsp.html#robo414">sc-map</a> -&gt; <strong>set-map</strong>
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Implementation of the <strong>set-map</strong> class for mapping sets for
+                   a <a href="./piece_lsp.html#robo56">piece</a>.   
+ 
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    March 11th 2010
+
+ $$ Last modified:  15:12:08 Sat Mar 20 2021 CET
+
+ SVN ID: $Id$
+</pre>
+
+
+<a name="set2dmap2fcmn2ddisplay"></a>
+<a name="robo636"></a><h2 class=robodoc>set-map/cmn-display [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo576">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> January 30th 2016
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Generate musical notation of the <a href="#robo576">set-map</a> object using CMN. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> a <a href="#robo576">set-map</a> object
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> see the <a href="./set-palette_lsp.html#robo302">set-palette</a> class for a description of the keyword arguments.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> T
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>cmn-display</strong> ((sm set-map) &amp;rest keyargs &amp;key &amp;allow-other-keys)
+</pre>
+
+
+<a name="set2dmap2fgen2dmidi2dchord2dseq"></a>
+<a name="robo637"></a><h2 class=robodoc>set-map/gen-midi-chord-seq [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo576">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Write a midi file with each set in the <a href="#robo576">set-map</a> played as a <a href="./chord_lsp.html#robo608">chord</a> at 1
+ second intervals.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo576">set-map</a> object.
+ - The path+file-name for the midi file to be written.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the <a href="./tempo_lsp.html#robo290">tempo</a> in beats per minute. Default = 60.
+ - subsets-id, related-sets-id. If you want to <a href="./wolfram_lsp.html#robo988">generate</a> a MIDI file of just
+   a named subset or related-set, pass the ID here. NB this ID will have to
+   exist for all sets.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns T.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(let ((mini
+       (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
+        '+mini+
+        :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((vn (violin :midi-channel 1))))
+        :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((c3 e3 g3 a3 c4 d4 g4 a4 b4 e5))))
+        :<a href="#robo576">set-map</a> '((1 (1 1 1)))
+        :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((2 4) q e s s))
+                                :<a href="./pitch-seq-palette_lsp.html#robo300">pitch-seq-palette</a> ((1 2 3 4)))))
+        :<a href="./rthm-seq-map_lsp.html#robo575">rthm-seq-map</a> '((1 ((vn (1 1 1))))))))
+  (<strong>gen-midi-chord-seq</strong> (<a href="#robo576">set-map</a> mini) "/tmp/mchsq.mid"))
+
+=&gt; T
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>gen-midi-chord-seq</strong> ((sm set-map) midi-file
+                               &amp;optional (<a href="./tempo_lsp.html#robo290">tempo</a> 60.0) subsets-id
+                                 related-sets-id)
+</pre>
+
+
+<a name="set2dmap2fmidi2dplay"></a>
+<a name="robo638"></a><h2 class=robodoc>set-map/midi-play [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo576">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Write a MIDI file containing the sets in order of the <a href="#robo576">set-map</a>.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo576">set-map</a> object
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :midi-file. The path (string) of the midi file to write. Default is to
+   use the ID of the <a href="./set-palette_lsp.html#robo302">set-palette</a> and write it into the default directory.
+ - :<a href="./tempo_lsp.html#robo290">tempo</a>. The <a href="./tempo_lsp.html#robo290">tempo</a> of the MIDI file in beats per minute. Default = 60.
+ - :auto-open. Whether to open the midi file after generating (not available
+   on all operating systems). Default is (get-sc-config
+   'midi-play-auto-open) which itself defaults to sc-auto-open in the
+   *features* list.
+ - :related-sets-id :subsets-id. If you want to <a href="./wolfram_lsp.html#robo988">generate</a> a MIDI file of just
+   a named subset or related-set, pass the ID here. NB this ID will have to
+   exist for all sets.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> T
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>midi-play</strong> ((sm set-map)
+                      &amp;key
+                        ;; MDE Sat Mar 20 12:05:17 2021, Heidhausen
+                        related-sets-id subsets-id
+                        (<a href="./tempo_lsp.html#robo290">tempo</a> 60.0)
+                        (auto-open (get-sc-config 'midi-play-auto-open))
+                        (midi-file
+                         (format nil "~a~a.mid"
+                                 (get-sc-config 'default-dir)
+                                 (string-downcase (string (id sm))))))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/set-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

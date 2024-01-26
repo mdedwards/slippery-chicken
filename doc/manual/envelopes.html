@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - envelopes</title>  
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>Envelopes</h2>   
+
+      <p>Many of <em>slippery chicken's</em> features allow the user to specify
+        predetermined changes to the value of a single parameter over time by
+        defining what are known as <em>envelopes</em>. Envelopes in signal
+        processing refer to the contour, or <em>curve</em>, created by the
+        amplitude peaks of a waveform. This image shows the envelope of the
+        given waveform in red: </p>
+
+      <br />
+      <table class="image">
+        <tr><td><img class="fragment"
+                     src="./resources/envelopes-wave-curve.png"
+                     alt="envelopes-wave-curve" 
+                     width="660"
+                     height="120"/></td></tr>
+      </table>
+
+      <h4>x-y (or "breakpoint") pairs</h4>
+      <p>Since envelopes are linear constructions, they can be described or
+        defined by pairs of values, the first of each pair being
+        the <em>x-axis</em> value (often representing <em>time</em>) and the
+        second being the <em>y-axis</em> value of the envelope at that
+        point. For example, in the envelope above, at x-axis 0.000 the envelope
+        has a y-axis value of 0.0; at x-axis 0.020 the envelope has a value of
+        0.8; at 0.030 the envelope has a value of 0.5, where it remains until
+        0.060; and at x-axis 0.100 the envelope returns to a y-value of
+        0.0. The following x-y pairs are thus present in the above
+        envelope:</p> <br />
+      <pre>(0.000 0.0) (0.020 0.8) (0.030 0.5) (0.060 0.5) (0.100 0.0)</pre>
+      <br />
+
+      <p>These pairs of x and y values are often referred to as 
+        <em>breakpoint pairs</em>, and in <em>slippery chicken</em> they are
+        generally given in lists without any extra parentheses, commas, or
+        other delineating marks. The envelope from the image above can be
+        represented as the following list of breakpoint pairs:</p>
+
+      <pre class="source">
+(0.000 0.0 0.020 0.8 0.030 0.5 0.060 0.5 0.100 0.0)</pre>
+
+      <h4>x-values in slippery chicken can have any arbitrary scale</h4>
+      <p>The x-values in <em>slippery chicken's</em> envelopes can span any
+        arbitrary number range and will be automatically scaled
+        accordingly. For example, the x-values from the above image could be
+        given as:</p>
+      
+      <pre class="source">
+(0.000 y1 0.020 y2 0.030 y3 0.060 y4 0.100 y5)</pre>
+
+      <p>or</p>
+
+      <pre class="source">
+(0.0 y1 0.2 y2 0.3 y3 0.6 y4 1.0 y5)</pre>      
+
+      <p>or</p>
+
+      <pre class="source">
+(0 y1 20 y2 30 y3 60 y4 100 y5)</pre>
+
+      <p>or even</p>
+
+      <pre class="source">
+(1.0 y1 2772.4001 y2 4158.1 y3 8315.2 y4 13858.0 y5)</pre>
+
+      <p>In each case, the x-axis of the envelope created will start with the
+        first x-value and end with the last x-value of the list of breakpoint
+        pairs, and the length of each segment of the resulting envelope will be
+        scaled to correspond to the remaining x-values in the list.</p>
+
+      <h4>Envelope segments</h4>
+      <p>When an envelope is generated based on a user-defined list of
+        breakpoint pairs, the resulting curve is created by essentially drawing
+        a straight line between each of the y-values in those pairs. This
+        produces an envelope with one fewer segments than there are x-y
+        pairs. The more breakpoint pairs there are in the list, the more
+        segments the resulting curve will have. </p>
+
+      <p>The following envelope is made from the three sets of breakpoint
+      pairs:<br />
+        <tt>(0 0.0 50 0.9 100 0.3)</tt>. It therefore has two segments:</p>
+
+      <br />
+      <table class="image">
+        <tr><td><img class="fragment"
+                     src="./resources/envelopes-2-segs.png"
+                     alt="envelopes-2-segs.png" width="330" /></td></tr>
+      </table>
+
+      <p>This envelope is made from the nine sets of breakpoint pairs:<br />
+        <tt>(0 76 1 88 2 85 3 85 5 87 8 79 13 72 21 69 30 67)</tt>.<br /> It
+        therefore has eight segments:</p>
+        
+      <br />
+      <table class="image">
+        <tr><td><img class="fragment"
+                     src="./resources/envelopes-8-segs.png"
+                     alt="envelopes-8-segs.png" width="330" /></td></tr>
+      </table>
+
+
+      <p>Because envelopes are made of segments, any definition of an envelope
+        must consist of <em>at least two</em> breakpoint pairs.</p>
+
+      <h4>Interpolation</h4>
+      <p>The breakpoint pairs stipulated by the user only create a finite
+        number of points on the envelope's overall final shape. All of the
+        other points needed to create the segments between the breakpoints are
+        calculated automatically by Lisp
+        using <em>interpolation</em>. Different interpolation algorithms will
+        produce segments with different shapes, such as exponential or
+        hyperbolic curves, or simply straight lines. <em>slippery chicken</em>
+        generates the segments for most of its envelopes using straight lines,
+        through <em>linear interpolation</em>.</p>
+
+      <h4>Various parameters that are controlled by envelopes</h4>
+      <p>Envelopes can be used to control any time-based parameter, not just
+        signal amplitude. For example, <em>slippery chicken</em> uses envelopes
+        to control features such as the activity levels (playing or resting) of
+        the instruments
+        in <a href="../robodoc/rthm-chain_lsp.html#rthm2dchain2fmake2drthm2dchain"><code>rthm-chain</code></a>
+        objects, to shape the volume of output produced by
+        the <a href="../robodoc/slippery-chicken_lsp.html#slippery2dchicken2fclm2dplay"><code>clm-play</code></a>
+        method, or to determine the highest and lowest pitches for individual
+        instruments (or the whole ensemble) using
+        the <code>set-limits-high</code> and <code>set-limits-low</code> slots
+        of
+        the <a href="../robodoc/slippery-chicken_lsp.html#slippery2dchicken2fmake2dslippery2dchicken"><code>slippery-chicken</code></a>
+        class. <em>(NB: In the case of the <code>set-limits-</code> slots, the
+        note-name symbols given by the user are first converted to MIDI pitch
+        integers so that the interpolation can be performed.)</em></p>
+
+      <p>More on how envelopes are used to influence these features can be
+        found in the source code documentation for the individual classes,
+        methods, and functions. </p>
+
+    <!-- **************************************************************** --> 
+    <!-- This spacer <br> is necessary as a buffer between the content and
+         the footer. It cannot be added as padding to #push, since #push has to
+         be the same size as #footer in order for the dynamic placement to work
+         properly --> 
+    <br /><br />
+    <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

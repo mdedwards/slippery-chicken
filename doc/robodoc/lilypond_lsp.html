@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>lilypond.lsp</title>
+<!-- Source: ./../../src/lilypond.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="sc2flilypond"></a>
+<a name="robo12"></a><h2 class=robodoc>sc/lilypond [ Modules ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_modules.html#robo_top_of_doc">Modules</a> ]</p>
+
+
+<a name="lilypond2flp2dget2dmark"></a>
+<a name="robo282"></a><h2 class=robodoc>lilypond/lp-get-mark [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo12">lilypond</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> lp-get-mark:
+ Translation function for LilyPond marks (dynamics, accents, etc.).  Not
+ generally called by the user but the list of symbols that can be used will
+ be useful.  If &lt;silent&gt; then non-existing marks will not produce
+ warnings/errors (but we'll return nil). 
+ MDE Thu Sep 15 10:50:47 2016 -- default to the
+ config setting 
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">           (a "-&gt; ")                    ; accent
+           (lhp "-+ ")
+           ;; see p229 of <a href="#robo12">lilypond</a>.pdf: need to define this command in file
+           ;; this is done for us in <a href="#robo12">lilypond</a>.ly, which will be included if we
+           ;; call <a href="./slippery-chicken_lsp.html#robo835">write-lp-data-for-all</a> with :use-custom-markup T 
+           (bartok "^\\snappizzicato ") 
+           (pizz "^\"pizz.\" ")
+           (ord "^\"ord.\" ")
+           (pizzp "^\"(pizz.)\" ")
+           (clb "^\"clb\"")
+           (cl "^\"cl\" ")
+           (col-legno "^\"col legno\" ")
+           (clt "^\"clt\" ")
+           (arco "^\"arco\" ")
+           (batt "^\"batt.\" ")
+           (spe "^\"spe\" ")
+           (sp "^\"sul pont.\" ")
+           (st "^\"sul tasto\" ")
+           (mv "^\"molto vib.\" ")
+           (sv "^\"senza vib.\" ")
+           (poco-crini "^\"poco crini\" ")
+           (s "-. ")
+           (ss "-! ") ; MDE Thu Dec 2 15:16:27 2021, Heidhausen
+           (nail (no-lp-mark 'nail))
+           (stopped (no-lp-mark 'stopped))
+           (as "-&gt;-. ")
+           (at "-&gt;-- ")
+           (ts "-_ ")
+           (te "-- ")
+           ;; so unmeasured is implicit
+           (t3 (format nil ":~a " (* 32 (expt 2 num-flags))))
+           (flag "\\flageolet ")
+           (niente "^\markup { niente } ")
+           (pppp "\\pppp ")
+           (ppp "\\ppp ")
+           (pp "\\pp ")
+           (p "\\p ")
+           (mp "\\mp ")
+           (mf "\\mf ")
+           (f "\\f ")
+           (ff "\\ff ")
+           (fff "\\fff ")
+           (ffff "\\ffff ")
+           ;; MDE Sat Aug 11 15:51:16 2012 -- dynamics in parentheses
+           (ffff-p "\\parenFFFF ")
+           (fff-p "\\parenFFF ")
+           (ff-p "\\parenFF ")
+           (f-p "\\parenF ")
+           (mf-p "\\parenMF ")
+           (mp-p "\\parenMP ")
+           (p-p "\\parenP ")
+           (pp-p "\\parenPP ")
+           (ppp-p "\\parenPPP ")
+           (pppp-p "\\parenPPPP ")
+           (sfz "\\sfz ")
+           (downbow "\\downbow ")
+           (upbow "\\upbow ")
+           (open "\\open ")
+           (I "^\\markup { \\teeny \"I\" } ")
+           (II "^\\markup { \\teeny \"II\" } ")
+           (III "^\\markup { \\teeny \"III\" } ")
+           (IV "^\\markup { \\teeny \"IV\" } ")
+           ;; MDE Thu Dec 26 14:14:34 2013 -- guitar string numbers
+           (c1 "\\1 ")
+           (c2 "\\2 ")
+           (c3 "\\3 ")
+           (c4 "\\4 ")
+           (c5 "\\5 ")
+           (c6 "\\6 ")
+           (beg-sl "( ")
+           (end-sl  ") ")
+           ;; MDE Fri Apr  6 21:57:59 2012 -- apparently LP can't have nested
+           ;; slurs but it does have phrase marks:  
+           (beg-phrase "\\( ")
+           (end-phrase "\\) ")
+           ;; there's no start gliss / end gliss in <a href="#robo12">lilypond</a>
+           (beg-gliss "\\glissando ")
+           (end-gliss "")
+           ;; 13.4.11
+           (beg-8va "\\ottava #1 ")
+           (end-8va "\\ottava #0 ")
+           (beg-8vb "\\ottava #-1 ")
+           (end-8vb "\\ottava #0 ")
+           ;; MDE Mon Jan 18 11:43:43 2016
+           (beg-15ma "\\ottava #2 ")
+           (end-15ma "\\ottava #0 ")
+           (beg-15mb "\\ottava #-2 ")
+           (end-15mb "\\ottava #0 ")
+           ;; NB note heads used to be added via (<a href="./sc-set_lsp.html#robo578">add</a>-mark-before) but can now
+           ;; be added by <a href="./pitch_lsp.html#robo326">add-mark</a> and friends (16.6.20) so if adding new heads
+           ;; , make sure to <a href="./sc-set_lsp.html#robo578">add</a> the mark symbol to the <a href="./utilities_lsp.html#robo933">move-elements</a> call in
+           ;; <a href="./event_lsp.html#robo428">event</a>::separate-marks-before
+           ;; 
+           ;; (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
+           (circled-x "\\tweak #'style #'xcircle ")
+           ;; (x-head "\\once \\override NoteHead #'style = #'cross ")
+           (x-head "\\xNote ")
+           ;; (triangle "\\once \\override NoteHead #'style = #'triangle ")
+           (triangle "\\tweak #'style #'triangle ")
+           ;; (triangle-up "\\once \\override NoteHead #'style = #'do ")
+           (triangle-up "\\tweak #'style #'do ")
+           (airy-head (no-lp-mark 'airy-head)) 
+           ;; this has to be added to the <a href="./event_lsp.html#robo428">event</a> _before_ the one which needs to
+           ;; start with these noteheads.
+           (improvOn "\\improvisationOn ")
+           (improvOff "\\improvisationOff ")
+           ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
+           ;; triangle on its side (pointing left)
+           ;; (wedge "\\once \\override NoteHead #'style = #'fa ")
+           (wedge "\\tweak #'style #'fa ")
+           ;; (square "\\once \\override NoteHead #'style = #'la ")
+           (square "\\tweak #'style #'la ")
+           ;; (mensural "\\once \\override NoteHead #'style = #'slash ")
+           ;;(flag-head "\\once \\override NoteHead #'style = #'harmonic-mixed
+           ;;")  
+           ;; MDE Mon Apr 30 20:46:06 2012 -- see <a href="./event_lsp.html#robo428">event</a>::get-lp-data for how
+           ;; this is handled 
+           (flag-head "\\harmonic ") ; diamond
+           ;; MDE Mon Apr 30 20:46:31 2012 -- flag-heads by default don't
+           ;; display dots so we need to <a href="./sc-set_lsp.html#robo578">add</a>-mark-before to get these to
+           ;; display or turn them off again
+           (flag-dots-on "\\set harmonicDots = ##t ")
+           (flag-dots-off "\\set harmonicDots = ##f ")
+           ;; circle head but stem extends through it like a vertical slash
+           (none (no-lp-mark 'none))
+           (<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-f (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-f))
+           (<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-n (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-n))
+           (<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-s (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-s))
+           (beg-<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-a "\\pitchedTrill ") ; must be before note
+           ;; we'll also need e.g. (<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-note g5) to give the note in ()
+           (end-<a href="./slippery-chicken-edit_lsp.html#robo760">trill</a>-a "\\stopTrillSpan ") ; after note
+           ;; (no-lp-mark 'square))
+           (slash (no-lp-mark 'slash))
+           ;; MDE Sat Dec 28 11:37:22 2013 -- up and down arrows on arpeggio
+           ;; lines will need more complex treatment (need a note-before mark
+           ;; :/ ) 
+           (arp "\\arpeggio ")
+           (arrow-up (no-lp-mark 'arrow-up))
+           (arrow-down (no-lp-mark 'arrow-down))
+           (cresc-beg "\\&lt; ")
+           (cresc-end "\\! ")
+           (dim-beg "\\&gt; ")
+           (dim-end "\\! ")
+           (&lt;&lt; "&lt;&lt; ")
+           (&gt;&gt; "&gt;&gt; ")
+           ;; NB this override has to come exactly before the note/dynamic it
+           ;; applies to. MDE Tue Jun 16 23:38:57 2020, Heidhausen -- again this
+           ;; override should be OK (rather than tweak) as it's below the staff
+           ;; rather than a property of a note (in a <a href="./chord_lsp.html#robo608">chord</a>)
+           ;; (hairpin0 "\\once \\override Hairpin #'circled-tip = ##t ")
+           ;; MDE Thu May 11 15:26:00 2023, Heidhausen -- version 2.21 changes
+           (hairpin0 "\\once \\override Hairpin.circled-tip = ##t ")
+           ;; (dim0-beg "\\once \\override Hairpin #'circled-tip = ##t \\&gt; ")
+           (pause "\\fermata ")
+           (long-pause "\\longfermata ")
+           (short-pause
+            "^\\markup { \\musicglyph #\"scripts.ushortfermata\" } ")
+           ;; MDE Thu Apr  5 16:17:11 2012 -- these need the graphics files in
+           ;; <a href="#robo12">lilypond</a>-graphics.zip to be in the same directory as the
+           ;; generated <a href="#robo12">lilypond</a> files  
+           (aeolian-light "^\\aeolianLight ") 
+           (aeolian-dark "^\\aeolianDark ")
+           ;; this one uses the graphic for close bracket
+           (bracket-end "^\\bracketEnd ")
+           (mphonic "^\\mphonic ")
+           (mphonic-arr "^\\mphonicArr ")
+           (mphonic-cons "^\\mphonicCons ")
+           (mphonic-diss "^\\mphonicDiss ")
+           (mphonic-cluster "^\\mphonicCluster ")
+           (sing "^\\sing ")
+           (high-<a href="./sine_lsp.html#robo17">sine</a> "^\\high-<a href="./sine_lsp.html#robo17">sine</a> ")
+           (noise "^\\noise ")
+           (focus "^\\focus ")
+           (balance "^\\balance ")
+           (alternate "^\\alternate ")
+           (sing-arr "^\\singArr ")
+           (arrow-up-down "^\\arrowUpDown ")
+           ;; end <a href="#robo12">lilypond</a>-graphics.zip files
+           ;; these must have been set up with the <a href="./event_lsp.html#robo428">event</a>::<a href="./event_lsp.html#robo163">add-arrow</a> method
+           (start-arrow "\\startTextSpan ")
+           (<a href="./event_lsp.html#robo173">end-arrow</a> "\\stopTextSpan ")
+           (harm "^\\flageolet ")
+           ;; 2.3.11
+           ;; write sost. pedal as text (usually held for long time so brackets
+           ;; not a good idea)
+           ;; MDE Wed May 25 12:40:57 2016 -- update: do use the LP
+           ;; sost. brackets after all
+           (sost "\\sostenutoOn ")
+           (sost-up "\\sostenutoOff ")
+           (sost^ "\\sostenutoOff\\sostenutoOn ")
+           (ped "\\sustainOn ")
+           (ped^ "\\sustainOff\\sustainOn ")
+           (ped-up "\\sustainOff ")
+           (uc "\\unaCorda ")
+           (tc "\\treCorde ")
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/lilypond.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

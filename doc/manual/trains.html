@@ -1,0 +1,1423 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - reeling trains</title>  
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>"Reeling Trains" &mdash; Composing with Rhythm Chains</h2>   
+      
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/reeling-trains.lsp">The source code for
+              this composition</a></li>
+          <li><a href="../media/reeling-trains.eps">The CMN score of this
+              piece</a></li>
+          <li><a href="../media/_reeling-trains-score.pdf">The LilyPond score
+              of this piece</a></li>
+          <li><a href="../media/reeling-trains.mid">The MIDI file of this
+              piece</a></li> 
+          <li><a href="../media/reeling-trains-mix.mp3">An MP3 of the MIDI
+              mockup of this piece using sample instruments</a></li>
+        </ul>
+        <p class="close"><a href="#files" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p>
+      </div>
+
+      <p>This demo composition and tutorial focuses on <em>slippery
+          chicken's</em> <em>rhythm chains</em> feature. It also implements two
+          user-defined functions and the <code>process-events-by-time</code>
+          method to distribute dynamics and articulation throughout the
+          instruments over the course of the piece, and it makes use of
+          the <code>map-over-bars</code>, <code>consolidate-notes</code>,
+          and <code>auto-slur</code> methods for further automatic adjustment
+          of the piece created before outputting the result.</p> 
+
+      <p>More on the <code>rthm-chain</code> class can be found on
+          the <a href="./rhythm-chains.html">rhythm chains</a> page of the user
+          manual. </p>
+
+      <h3 id="code"><a href="#code" id="code-div-show"
+                       onclick="showHide('code-div');return false;">+</a>
+        The Code</h3>
+      <div id="code-div" class="more">
+
+      <pre class="source">
+;; A function to place dynamics on random notes in the score
+(defun place-dyns (event)
+  (when (equalp (start-time event) 0.0)
+    (random-rep 10 t))
+  (unless (is-rest event)
+    (when (> (random-rep 100) 67)
+      (setf (marks event) 
+            (list (nth (random-rep 8) '(ppp pp p mp mf f ff fff)))))))
+
+;; A function to place articulations (accent or staccato) on random notes in
+;; the score
+(defun place-arts (event)
+  (when (equalp (start-time event) 0.0)
+    (random-rep 10 t))
+  (unless (is-rest event)
+    (when (> (random-rep 100) 67)
+      (setf (marks event) 
+            (list (nth (random-rep 5) '(a s)))))))
+
+;; Disabling the chord function on the string instruments (no double-stops) 
+(loop for i in '(violin viola cello)
+     do
+     (set-slot 'chords
+               nil
+               i
+               +slippery-chicken-standard-instrument-palette+))
+
+;; Changing the chord function for the piano instruments
+(loop for i in '(piano piano-lh)
+   do
+     (set-slot 'chord-function
+               'chord-fun1
+               i
+               +slippery-chicken-standard-instrument-palette+))
+
+(let* ((num-seqs 137) ; The number of sequences in the rthm-chain to be made
+       ;; Defining the rthm-chain object
+       (rch
+        (make-rthm-chain
+         'test-rch 
+         num-seqs
+         '((((e) e) ; the 1-beat fragments: 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s))
+           (({ 3 (te) te (te) }) ; what we transition to
+            ({ 3 - te (te) te - })
+            ({ 3 (te) - te te - })
+            ({ 3 (te) (te) te }))
+           (((q)) ; the second transition
+            (- s e s -)
+            ({ 3 te (tq) })
+            (s (e.)))
+           ((- e e -) ; the third transition
+            (- s s s - (s))
+            ((32) 32 (e.))
+            ((q))))
+         '((((q q) ; the 2/4 bars: 4 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.))
+            (({ 3 te te +te te +te te }) ; what we transition to
+             (q - s e. -)
+             (q (s) e.)
+             (q (s) - s e -))
+            ((q - +e e -) ; the second transition
+             ((e) e +e e)
+             (q - s (e) s -)
+             ((s) e. +s e.)))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))
+            (({ 3 (te) (te) te +te te +te } (q)) ; what we transition to
+             (- e. s - (q) (s) - s e -)
+             ({ 3 te te +te } (q) q)
+             ({ 3 - te +te te - } (e) e { 3 (te) (te) te }))
+            ((q +q +q) ; the second transition
+             (q +q (q))
+             (- e e - +q (q))
+             (s (e.) (q) (q)))))
+         ;; The proportion of rests or sounding notes in each passage
+         :activity-curve '(0 5 20 7 30 8 50 3 70 5 80 8 100 10)
+         ;; The durations to be used for the inserted rests
+         :rests '(s e s q)
+         ;; The durations to be used for the inserted rhythms
+         :sticking-rthms '(e h e. w s e h s)
+         ;; The activity-curve for the sticking rhythms
+         :sticking-curve '(0 2 20 3 30 5 50 8 80 10 100 2)
+         ;; The number of times each sticking rhythm is repeated
+         :sticking-repeats '(3 5 3 5 8)
+         ;; The number of consecutive sequences that have the same 
+         ;; harmonic set
+         :harmonic-rthm-curve '(0 1 10 2 30 3 40 1 50 2 80 4 90 5 100 1) 
+         ;; The min and max beat duration of bars generated; beat taken from
+         ;; the given time signature.
+         :split-data '(4 7)
+         ;; The IDs for the original two players
+         :players '(fl cl))))
+  ;; Adding new voices based on the content of the original two, these with
+  ;; offsets however to avoid completely identical voices.
+  (add-voice rch '(1 fl) 'ob 1)
+  (add-voice rch '(1 cl) 'bn 1)
+  (add-voice rch '(1 fl) 'pnr 2)
+  (add-voice rch '(1 cl) 'pnl 2)
+  (add-voice rch '(1 fl) 'vn 3)
+  (add-voice rch '(1 fl) 'va 4)
+  (add-voice rch '(1 cl) 'vc 3)
+  (add-voice rch '(1 cl) 'vb 4)
+  ;; Creating automatically generated pitch-seq palettes for the rthm-seqs made 
+  (create-psps (palette rch))
+  ;; A series of variables for the make-slippery-chicken function, starting
+  ;; with the definition of the set-palette
+  (let* ((sp '((1 ((c3 cs3 d3 e3 fs3 g3 c4 cs4 e4 c5 gs5 cs6 d6
+                       ds6))) 
+               (2 ((b2 c3 fs3 gs3 ds4 e4 d5 ds5 cs6)))
+               (3 ((af2 f3 fs3 d4 e4 fs4 a4 d5 e5 c6 af6)))
+               (4 ((b2 c3 df3 f3 af3 c4 e4 d5 c6)))
+               (5 ((bf2 g3 e4 ef5 d6)))
+               (6 ((f3 ef4 a4 d5 e5 df6)))
+               (7 ((a2 b2 af3 f4 ef5 e5 c6)))
+               (8 ((e4 a4 c5 g5 af5 e6)))
+               (9 ((e4 df5 bf5)))
+               (10 ((b1 a2 g3 e4 df5 a5)))
+               (11 ((ef3 bf3 e4 b4 d5 f5 c6 ef6)))
+               (12 ((f3 df4 e4 b4 e5 f5 c6 g6)))
+               (13 ((e4 b4 df5)))
+               (14 ((d4 ef4 bf4)))
+               (15 ((df4 bf4 a5 fs6)))
+               (16 ((d4 ef4 f4 g4)))
+               (17 ((g1 bf1 fs2 af2 f3 fs3 e4)))
+               (18 ((ef1 df2 b2 a3 e4 f4 fs4 d5 a5 bf5)))
+               (19 ((e4 f4 g4 b4 c5 g5 af5 e6 f6)))
+               (20 ((bf3 b3 e4 f4 bf4)))
+               (21 ((e3 f3 df4 d4 ds4 f4 df5 d5 b5)))
+               (22 ((d3 g3 a3 e4 af4 ef5 df5)))
+               (23 ((g4 af4 df5 d5 af5 df6 d6)))
+               (24 ((af3 e4 a4 e5 bf5)))
+               (25 ((df2 a2 e3 ef4 d5 af5)))
+               (26 ((b2 ef3 df4 e4 c5 g5 ef6)))
+               (27 ((d1 a1 ef2 c3 a3 f4)))
+               (28 ((df3 g3 c4 df4 d4 e4)))
+               (29 ((c3 b3 e4 df5 b5)))
+               (30 ((ds1 ef2 b2 c3 g3 af3 d4 e4 b4 fs5 d6)))
+               (31 ((d1 ef2 a2 ef3 bf3 e4 d5 bf5 g6)))))
+         ;; Creating the set-palette using the procession algorithm
+         (sm (procession (num-rthm-seqs rch) (length sp)))
+         ;; Determining the high and low pitches for each instrument for each
+         ;; harmonic set. Every time the same set occurs, the same instruments
+         ;; will have the same limits.
+         (sls '((fl ((1 gs5 c7) (2 d5 c7) (3 e5 c7) (4 d5 c7) (5 ef5 c7) 
+                     (6 e5 c7) (7 ef5 c7) (8 g5 c7) (9 df5 c7) (10 df5 c7) 
+                     (11 d5 c7) (12 e5 c7) (13 df5 c7) (14 bf4 c7) (15 a5 c7) 
+                     (16 g4 c7) (17 e4 c7) (18 d5 c7) (19 g5 c7) (20 bf4 c7) 
+                     (21 df5 c7) (22 ef5 c7) (23 af5 c7) (24 e5 c7)
+                     (25 d5 c7) (26 g5 c7) (27 f4 c7) (28 e4 c7) (29 df5 c7) 
+                     (30 fs5 c7) (31 d5 c7)))
+                (ob ((1 g4 a5) (2 g4 a5) (3 g4 a5) (4 g4 a5) (5 g4 a5) 
+                     (6 g4 a5) (7 g4 a5) (8 g4 a5) (9 g4 a5) (10 g4 a5) 
+                     (11 g4 a5) (12 g4 a5) (13 g4 a5) (14 g4 a5) (15 g4 a5) 
+                     (16 g4 a5) (17 e4 a5) (18 g4 a5) (19 g4 a5) (20 g4 a5) 
+                     (21 g4 a5) (22 g4 a5) (23 g4 a5) (24 g4 a5) (25 g4 a5)
+                     (26 g4 a5) (27 f4 a5) (28 e4 a5) (29 g4 a5) (30 g4 a5) 
+                     (31 g4 a5)))
+                (cl ((1 b4 c6) (2 b4 c6) (3 b4 c6) (4 b4 c6) (5 b4 c6) 
+                     (6 b4 c6) (7 b4 c6) (8 b4 c6) (9 b4 c6) (10 b4 c6) 
+                     (11 b4 c6) (12 b4 c6) (13 b4 c6) (14 bf4 c6) (15 b4 c6) 
+                     (16 g4 c6) (17 e4 c6) (18 b4 c6) (19 b4 c6) (20 bf4 c6) 
+                     (21 b4 c6) (22 b4 c6) (23 b4 c6) (24 b4 c6) (25 b4 c6)
+                     (26 b4 c6) (27 f4 c6) (28 e4 c6) (29 b4 c6) (30 b4 c6) 
+                     (31 b4 c6)))
+                (bn ((1 a2 d4) (2 a2 d4) (3 a2 d4) (4 a2 d4) (5 a2 d4) 
+                     (6 a2 d4) (7 a2 d4) (8 a2 e4) (9 a2 e4) (10 a2 d4) 
+                     (11 a2 d4) (12 a2 d4) (13 a2 e4) (14 a2 d4) (15 a2 d4) 
+                     (16 a2 d4) (17 a2 d4) (18 a2 d4) (19 a2 e4) (20 a2 d4) 
+                     (21 a2 d4) (22 a2 d4) (23 a2 g4) (24 a2 d4) (25 a2 d4)
+                     (26 a2 d4) (27 a2 d4) (28 a2 d4) (29 a2 d4) (30 a2 d4) 
+                     (31 a2 d4)))
+                (vb ((1 c4 f6) (2 c4 f6) (3 c4 f6) (4 c4 f6) (5 c4 f6) 
+                     (6 c4 f6) (7 c4 f6) (8 c4 f6) (9 c4 f6) (10 c4 f6) 
+                     (11 c4 f6) (12 c4 f6) (13 c4 f6) (14 c4 f6) (15 c4 f6) 
+                     (16 c4 f6) (17 c4 f6) (18 c4 f6) (19 c4 f6) (20 c4 f6) 
+                     (21 c4 f6) (22 c4 f6) (23 c4 f6) (24 c4 f6) (25 c4 f6) 
+                     (26 c4 f6) (27 c4 f6) (28 c4 f6) (29 c4 f6) (30 c4 f6) 
+                     (31 c4 f6)))
+                (pnr ((1 c4 c8) (2 c4 c8) (3 c4 c8) (4 c4 c8) (5 c4 c8) 
+                      (6 c4 c8) (7 c4 c8) (8 g5 c8) (9 df5 c8) (10 c4 c8) 
+                      (11 c4 c8) (12 c4 c8) (13 b4 c8) (14 ef4 c8) (15 a5 c8)
+                      (16 f4 c8) (17 f3 c8) (18 c4 c8) (19 c5 c8) 
+                      (20 e4 c8) (21 df5 c8) (22 c4 c8) (23 af5 c8) (24 a4 c8) 
+                      (25 c4 c8) (26 c4 c8) (27 a3 c8) (28 c4 c8) (29 c4 c8) 
+                      (30 c4 c8) (31 c4 c8)))
+                (pnl ((1 a0 b3) (2 a0 b3) (3 a0 b3) (4 a0 b3) (5 a0 b3) 
+                      (6 a0 b3) (7 a0 b3) (8 a0 c5) (9 a0 e4) (10 a0 b3) 
+                      (11 a0 b3) (12 a0 b3) (13 a0 e4) (14 a0 d4) 
+                      (15 a0 bf4) (16 a0 ef4) (17 a0 af2) (18 a0 b3) 
+                      (19 a0 b4) (20 a0 b3) (21 a0 ds4) (22 a0 b3) (23 a0 d5)
+                      (24 a0 e4) (25 a0 b3) (26 a0 b3) (27 a0 c3) (28 a0 b3) 
+                      (29 a0 b3) (30 a0 b3) (31 a0 b3))) 
+                (vn ((1 a4 c7) (2 a4 c7) (3 a4 c7) (4 a4 c7) (5 a4 c7) 
+                     (6 a4 c7) (7 a4 c7) (8 a4 c7) (9 a4 c7) (10 a4 c7) 
+                     (11 a4 c7) (12 a4 c7) (13 a4 c7) (14 a4 c7) (15 a4 c7) 
+                     (16 f4 c7) (17 e4 c7) (18 a4 c7) (19 a4 c7) (20 f4 c7) 
+                     (21 a4 c7) (22 a4 c7) (23 a4 c7) (24 a4 c7) (25 a4 c7) 
+                     (26 a4 c7) (27 a3 c7) (28 d4 c7) (29 a4 c7) (30 a4 c7) 
+                     (31 a4 c7)))
+                (va ((1 g3 gs4) (2 g3 gs4) (3 g3 gs4) (4 g3 gs4) (5 g3 gs4) 
+                     (6 g3 gs4) (7 g3 gs4) (8 g3 gs4) (9 g3 gs4) 
+                     (10 g3 gs4) (11 g3 gs4) (12 g3 gs4) (13 g3 gs4)
+                     (14 g3 gs4) (15 g3 gs4) (16 g3 gs4) (17 g3 gs4) 
+                     (18 g3 gs4) (19 g3 gs4) (20 g3 gs4) (21 g3 gs4) 
+                     (22 g3 gs4) (23 g3 gs4) (24 g3 gs4) (25 g3 gs4) 
+                     (26 g3 gs4) (27 g3 gs4) (28 g3 gs4) (29 g3 gs4) 
+                     (30 g3 gs4) (31 g3 gs4))) 
+                (vc ((1 c2 fs3) (2 c2 fs3) (3 c2 fs3) (4 c2 fs3) (5 c2 fs3) 
+                     (6 c2 fs3) (7 c2 fs3) (8 c2 e4) (9 c2 e4) 
+                     (10 c2 fs3) (11 c2 fs3) (12 c2 fs3) (13 c2 e4)
+                     (14 c2 d4) (15 c2 df4) (16 c2 d4) (17 c2 fs3) 
+                     (18 c2 fs3) (19 c2 e4) (20 c2 b3) (21 c2 fs3) 
+                     (22 c2 fs3) (23 c2 g4) (24 c2 af3) (25 c2 fs3) 
+                     (26 c2 fs3) (27 c2 fs3) (28 c2 fs3) (29 c2 fs3) 
+                     (30 c2 fs3) (31 c2 fs3)))))
+         ;; Creating a list for just the low set-limits, with consecutive
+         ;; integers as x-values so there are equal number of breakpoint pairs
+         ;; as sets in the set-palette
+         (sll (loop for p in sls
+                 collect
+                   (list (first p)
+                         (loop for s in sm
+                            for i from 1
+                            collect i
+                            collect (second (nth (1- s) (second p)))))))
+         ;; Creating a list for just the high set-limits, with consecutive
+         ;; integers as x-values so there are equal number of breakpoint pairs
+         ;; as sets in the set-palette
+         (slh (loop for p in sls
+                 collect
+                   (list (first p)
+                         (loop for s in sm
+                            for i from 1
+                            collect i
+                            collect (third (nth (1- s) (second p)))))))
+         ;; Creating the sc object
+         (reeling-trains
+          (make-slippery-chicken
+           '+reeling-trains+
+           :title "reeling trains"
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (ob (oboe :midi-channel 2))
+                        (cl (b-flat-clarinet :midi-channel 3))
+                        (bn (bassoon :midi-channel 4))
+                        (vb (vibraphone :midi-channel 5))
+                        (pnr (piano :midi-channel 6))
+                        (pnl (piano-lh :midi-channel 7))
+                        (vn (violin :midi-channel 8))
+                        (va (viola :midi-channel 9))
+                        (vc (cello :midi-channel 11))))
+           :staff-groupings '(4 1 2 3)
+           :set-palette sp
+           :set-map `((1 ,sm))
+           :set-limits-low sll 
+           :set-limits-high slh
+           :tempo-map '((1 (q 72)))
+           ;; The rs palette and map can be taken directly from the rthm-chain
+           ;; object. 
+           :rthm-seq-palette (palette rch)
+           :rthm-seq-map rch)))
+    ;; add random dynamics
+    (process-events-by-time reeling-trains #'place-dyns)
+    ;; add random articulations
+    (process-events-by-time reeling-trains #'place-arts)
+    ;; remove repeated dynamics
+    (remove-extraneous-dynamics reeling-trains)
+    ;; remove specific marks
+    (loop for pm in '((1 1 (cl bn vb pnr pnl vc) s) (2 1 vc ppp) 
+                      (2 2 (vn vc) s) (2 3 vc ff) (3 1 va p) (3 2 (ob va) s) 
+                      (3 2 vc fff) (5 3 ob f) (5 2 vn mf) (6 3 bn p) (8 4 ob s) 
+                      (9 1 fl s) (12 1 vn s) (17 1 ob ff) (17 2 fl ppp)
+                      (19 3 vc mf) (20 2 cl s) (26 2 vn s) (26 2 va p) 
+                      (27 1 bn p) (27 2 va s) (28 3 ob ff) (35 1 vn s)
+                      (38 2 bn fff) (42 2 vc f) (44 1 bn s) (47 2 ob mp)
+                      (47 3 bn ppp) (51 1 pnr s) (53 1 (fl vb) s) 
+                      (53 2 (vb vc) s) (53 2 pnl mf) (54 2 vn s) (58 1 vc pp) 
+                      (61 1 bn s) (61 4 (ob pnr va) (mf fff ppp)) (62 1 ob s) 
+                      (62 2 va s) (63 2 va s) (65 1 pnr s) (66 1 ob pp)
+                      (66 3 ob s) (66 3 fl s) (70 2 fl mf) (72 1 va p) 
+                      (73 2 vn s) (74 2 vn fff) (75 3 cl pp) (76 2 ob s)
+                      (77 2 ob s) (85 1 bn s) (85 3 vb ff) (85 4 bn s)
+                      (85 5 cl p) (85 5 bn a) (85 5 vc a) 
+                      (86 3 (bn vc) (pp fff)) (86 4 vc s) (86 5 vb f) 
+                      (87 2 ob s) (90 2 vb mf) (90 3 bn ff) (96 2 ob pp) 
+                      (97 1 fl pp) (98 4 vn mf) (100 1 ob mf) (101 1 fl p)
+                      (101 1 vn s) (101 2 vn p) (102 1 vn s) (103 1 ob s)
+                      (103 1 vc mf) (105 1 vn s) (105 1 vb mp) (106 2 va fff)
+                      (106 2 vc s) (106 3 vb s) (106 3 vn f) (106 5 vb ff)
+                      (106 5 pnl ff) (106 5 vc p) (110 2 vn s) (110 3 va s)
+                      (110 3 vn mp) (110 2 va ppp) (111 2 ob fff) 
+                      (114 2 vn fff) (114 2 ob mp) (114 3 pnr ppp) 
+                      (116 3 vb mp) (118 2 pnr s) (118 2 vn mf) (120 2 va s)
+                      (120 2 cl pp) (120 3 pnr mp) (125 3 fl f) (125 3 va p)
+                      (125 3 va mp) (131 2 vn mf) (132 1 fl mp) (134 1 va ppp)
+                      (137 1 vn s) (137 2 fl fff) (138 2 pnr p) (139 1 va mp)
+                      (139 3 vn p) (142 2 vn s) (143 1 vn f) (144 1 pnr ff)
+                      (151 3 ob f) (153 1 bn s) (156 1 pnl s) (156 2 bn fff)
+                      (156 3 vb pp) (156 3 pnl fff) (156 3 va f) (156 5 vc a)
+                      (156 6 vb mf) (158 3 pnr ff) (163 2 fl p) (163 2 vn mp)
+                      (163 3 ob fff) (166 1 (fl va) (p mf)) (166 2 ob p) 
+                      (167 1 cl f) (169 3 ob mp) (170 2 vn mf) (172 3 pnr s)
+                      (172 3 vn pp) (173 1 pnr s) (173 1 vb ff) (173 3 vn mp)
+                      (175 4 pnr mf) (175 4 vn ff) (175 4 va p) (176 2 cl s)
+                      (178 2 pnr pp) (178 2 va ff))
+       do 
+         (rm-marks-from-notes reeling-trains 
+                              (first pm) 
+                              (second pm) 
+                              (third pm)
+                              (fourth pm)))
+    ;; add diminuendo marks
+    (loop for pdcr in '((pnr 2 2 4 1) (pnl 2 4 4 1) (vn 2 2 2 3) (bn 5 1 5 2)
+                        (bn 14 1 14 2) (fl 17 1 18 1) (ob 26 1 27 2) 
+                        (fl 26 2 27 2) (ob 54 1 54 3) (vn 81 1 81 2) 
+                        (ob 103 1 103 2) (bn 102 2 103 2) (vb 102 2 103 2) 
+                        (va 107 1 107 2) (va 118 1 118 3) (va 169 1 169 3) 
+                        (vn 172 2 172 4) (va 176 1 176 2)) 
+       do
+         (add-mark-to-note reeling-trains
+                           (second pdcr)
+                           (third pdcr)
+                           (first pdcr)
+                           'dim-beg)
+         (add-mark-to-note reeling-trains
+                           (fourth pdcr)
+                           (fifth pdcr)
+                           (first pdcr)
+                           'dim-end))
+    ;; add crescendo marks
+    (loop for pdcr in '((va 2 2 4 3) (va 10 1 10 3) (cl 14 1 14 2) 
+                        (va 17 2 18 1) (va 26 1 27 1) (fl 35 1 35 3) 
+                        (ob 48 1 48 3) (vb 53 1 53 3) (pnl 54 1 54 2) 
+                        (pnr 57 1 57 3) (fl 65 2 66 2) (bn 67 1 67 2) 
+                        (va 66 3 67 1) (fl 77 3 78 1) (va 83 1 83 2) 
+                        (fl 93 1 94 1) (va 93 2 94 1) (va 98 3 98 5) 
+                        (pnr 106 1 106 3) (ob 110 1 110 3) (fl 142 2 143 2) 
+                        (cl 145 1 145 3) (cl 164 1 164 2) (vb 170 1 170 2)
+                        (vn 175 3 175 5) (vc 176 1 176 2))
+       do
+         (add-mark-to-note reeling-trains
+                           (second pdcr)
+                           (third pdcr)
+                           (first pdcr)
+                           'cresc-beg)
+         (add-mark-to-note reeling-trains
+                           (fourth pdcr)
+                           (fifth pdcr)
+                           (first pdcr)
+                           'cresc-end))
+    ;; consolidate sounding durations
+    (map-over-bars reeling-trains 1 nil nil #'consolidate-notes)
+    ;; make the first dynamic forte
+    (loop for p in '(fl ob cl bn vb pnr pnl vn va vc)
+       do
+         (add-mark-to-note reeling-trains 1 1 p 'f))
+    ;; auto-slur
+    (auto-slur reeling-trains '(fl ob cl bn vb pnr pnl vn va vc) 
+               :over-accents nil
+               :rm-staccatos nil)
+    ;; output
+    (midi-play reeling-trains :midi-file "/tmp/reeling-trains.mid")
+    (cmn-display reeling-trains 
+                 :file "/tmp/reeling-trains.eps"
+                 :size 14
+                 :auto-clefs nil
+                 :in-c t)
+    (write-lp-data-for-all reeling-trains
+                           :auto-clefs nil
+                           :in-c t)))</pre>
+
+        <p class="close"><a href="#code" id="code-div-hide" class="hideLink"
+                            onclick="showHide('code-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="funs"><a href="#funs" id="funs-div-show"
+                       onclick="showHide('funs-div');return false;">+</a>
+        Functions to auto-insert dynamics and articulation</h3>
+      <div id="funs-div" class="more">
+        <p>The musical material for this piece is generated automatically by
+          the algorithms associated with the <code>rthm-chain</code> class. The
+          ultimate sequences of the given rhythm fragments will be influenced
+          by the <code>procession</code> function as well as by values passed
+          to the <code>rthm-chain</code> object's slots for controlling
+          activity levels and the automatic insertion of rests and notes. For
+          this reason, the final outcome will be rather difficult to predict,
+          and the smallest changes to any of those parameters may result in
+          very different content.</p>
+
+        <p>Correspondingly, this demo composition uses a post-generation data
+          editing method called <code>process-events-by-time</code> in
+          conjunction with two user-defined functions to automatically place
+          dynamics and articulation into the score <em>after</em> the notes,
+          rests, and rhythms have all be generated.</p>
+
+        <h4>process-events-by-time</h4>
+        <p>The <code>process-events-by-time</code> method will be covered in
+          more detail below, but its basic function is described here briefly
+          as a background to the first two functions defined in the code for
+          the piece. </p>
+
+        <p>The method essentially takes two arguments: The
+          <code>slippery-chicken</code> object to process, and a
+          function that modifies individual events. It then passes through the
+          events of the generated piece in absolute chronological order,
+          regardless of the player, and applies the specified function to every
+          event in chronological sequence.</p>
+
+        <h4>place-dyns and place-arts</h4> <p>The two user-defined functions
+        here, <code>place-dyns</code> and <code>place-arts</code>, are
+        essentially the same except for the marks they apply. They use
+        fixed-seed random processes to select articulation and dynamic marks.
+        They each first test to see if the current <code>event</code> object is
+        at the beginning of the piece by checking to see if its
+        <code>start-time</code> slot is <code>0.0</code>. If it is, they call
+        the <code>random-rep</code> function once with the optional argument
+        <code>T</code> to reset the random state of the current Lisp
+        environment. This ensures that the exact same pseudo-random series of
+        marks are chosen for the same notes each time the piece is generated
+        within that Lisp.</p>
+
+        <p>The functions then test to see whether the
+          current <code>event</code> object is a rest or not. If not, they
+          choose a random number between 0 and 99, and if that number is
+          greater than 67 (i.e. roughly a third of the time), they replace
+          the <code>marks</code> slot of that <code>event</code> object with a
+          random mark from a specified list of marks. In the first function,
+          these marks are all dynamics, and in the second they are articulation
+          (either an accent or a staccato). </p>
+
+        <p>Both functions use 
+          <em>slippery chicken's</em> <code>random-rep</code> function again to
+          choose the mark, by pseudo-randomly selecting the position within the
+          list for the mark to be added. The articulation function includes an
+          additional degree of sparsity in its placement of marks, in that it
+          chooses a random number between 0 and 4 for the index position,
+          although there are only two marks in the given list.</p>
+
+        <pre class="source">
+;; A function to place dynamics on random notes in the score
+(defun place-dyns (event)
+  (when (equalp (start-time event) 0.0)
+    (random-rep 10 t))
+  (unless (is-rest event)
+    (when (> (random-rep 100) 67)
+      (setf (marks event) 
+            (list (nth (random-rep 8) '(ppp pp p mp mf f ff fff)))))))
+
+;; A function to place articulations (accent or staccato) on random notes in
+;; the score
+(defun place-arts (event)
+  (when (equalp (start-time event) 0.0)
+    (random-rep 10 t))
+  (unless (is-rest event)
+    (when (> (random-rep 100) 67)
+      (setf (marks event) 
+            (list (nth (random-rep 5) '(a s)))))))</pre>
+
+        <p>These two functions are defined first, outside of the scope of the
+          rest of the code, as they are called within the primary block of code
+          that follows.</p>
+
+
+        <p class="close"><a href="#funs" id="funs-div-hide" class="hideLink"
+                            onclick="showHide('funs-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="chords"><a href="#chords" id="chords-div-show"
+                         onclick="showHide('chords-div');return false;">+</a>
+        Adjusting the chord functions</h3>
+      <div id="chords-div" class="more">
+        <p>The next two loops in the the code for this piece adjust the chord
+          functions for the <code>instrument</code> objects which the piece is
+          to use.</p>
+         
+        <h4>Turning off double-stop capability in the strings</h4>
+        <p>By default, the <code>violin</code>, <code>viola</code>,
+          and <code>cello</code> instruments of
+          the <code>+slippery-chicken-standard-instrument-palette+</code> are
+          set to be chord-capable. This allows double-stops to be incorporated
+          into pieces where chords are indicated. For this piece, the strings
+          are to play single notes only, so the first loop changes
+          the <code>chords</code> slot of the
+          corresponding <code>instrument</code> objects
+          to <code>NIL</code>. </p>
+        
+        <pre class="source">
+;; Disabling the chord function on the string instruments (no double-stops) 
+(loop for i in '(violin viola cello)
+     do
+     (set-slot 'chords
+               nil
+               i
+               +slippery-chicken-standard-instrument-palette+))</pre>
+
+        <p></p>
+
+        <h4>Changing the default chord function for the piano parts</h4>
+        <p>The default chord function for the <code>piano</code>
+          and <code>piano-lh</code> instruments of
+          the <code>+slippery-chicken-standard-instrument-palette+</code>
+          attempts to create four-note chords from consecutive pitches in the
+          current set. Since the pitch sets used in this piece contain
+          consecutive pitches that are minor and major seconds apart, this
+          default function would potentially create four-note clusters in the
+          resulting piano parts.</p>
+
+        <p>To avoid the creation of such clusters, this piece sets
+          the <code>chord-function</code> slots of the
+          corresponding <code>piano</code> and <code>piano-lh</code>
+          instruments to <code>chord-fun1</code>, which attempts to create only
+          three-note chords from every <em>second</em> pitch in the set.</p>
+
+        <pre class="source">
+;; Changing the chord function for the piano instruments
+(loop for i in '(piano piano-lh)
+   do
+     (set-slot 'chord-function
+               'chord-fun1
+               i
+               +slippery-chicken-standard-instrument-palette+))</pre>
+
+        <p class="close"><a href="#chords" id="chords-div-hide"
+                            class="hideLink"
+                            onclick="showHide('chords-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="frags"><a href="#frags" id="frags-div-show"
+                         onclick="showHide('frags-div');return false;">+</a>
+        Defining the rhythm fragments</h3>
+      <div id="frags-div" class="more">
+
+        <p>The next section in the code for this piece consists of the
+          definition of the 1-beat, 2-beat, and 3-beat rhythmic fragments that
+          are to serve as the source material for the resulting
+          composition. Each of these lists will be used implicitly in
+          conjunction with the <code>procession</code> algorithm to generate
+          the chains of rhythms for the piece (see the <a
+           href="./rhythm-chains.html">rhythm chains</a> page for more
+          detail).</p>
+
+        <p>Each group also includes at least two <em>transition</em> sublists
+          as well. This will result in a <em>fibonacci-based</em> transition
+          from the initial fragments to the final fragments in each group over
+          the course of the piece (again, see
+          the <a href="./rhythm-chains.html">rhythm chains</a> page). </p>  
+
+        <pre class="source">
+(let* ((num-seqs 137) ; The number of sequences in the rthm-chain to be made
+       ;; Defining the rthm-chain object
+       (rch
+        (make-rthm-chain
+         'test-rch 
+         num-seqs
+         '((((e) e) ; the 1-beat fragments: 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s))
+           (({ 3 (te) te (te) }) ; what we transition to
+            ({ 3 - te (te) te - })
+            ({ 3 (te) - te te - })
+            ({ 3 (te) (te) te }))
+           (((q)) ; the second transition
+            (- s e s -)
+            ({ 3 te (tq) })
+            (s (e.)))
+           ((- e e -) ; the third transition
+            (- s s s - (s))
+            ((32) 32 (e.))
+            ((q))))
+         '((((q q) ; the 2/4 bars: 4 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.))
+            (({ 3 te te +te te +te te }) ; what we transition to
+             (q - s e. -)
+             (q (s) e.)
+             (q (s) - s e -))
+            ((q - +e e -) ; the second transition
+             ((e) e +e e)
+             (q - s (e) s -)
+             ((s) e. +s e.)))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))
+            (({ 3 (te) (te) te +te te +te } (q)) ; what we transition to
+             (- e. s - (q) (s) - s e -)
+             ({ 3 te te +te } (q) q)
+             ({ 3 - te +te te - } (e) e { 3 (te) (te) te }))
+            ((q +q +q) ; the second transition
+             (q +q (q))
+             (- e e - +q (q))
+             (s (e.) (q) (q)))))</pre>
+
+        <h4>num-seqs</h4>
+        <p>The second argument to the <code>make-rthm-chain</code> function
+          called above is passed the variable <code>num-seqs</code>, which is
+          defined as <code>137</code> in the first line of
+          this <code>let*</code> enclosure. This simple variable allows for
+          the quick-and-easy modification of the length of the piece generated
+          through the modification of just one number.</p>
+
+        <p class="close"><a href="#frags" id="frags-div-hide"
+                            class="hideLink"
+                            onclick="showHide('frags-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="inserts"><a href="#inserts" id="inserts-div-show"
+                         onclick="showHide('inserts-div');return false;">+</a>
+        Setting activity and auto-insertion of rests and rhythms</h3>
+      <div id="inserts-div" class="more">
+        <p>The <code>rthm-chain</code> class has numerous slots whose values
+          influence the final sequences of the musical material generated. Most
+          of these are also made conveniently accessible through keyword
+          arguments to the <code>make-rthm-chain</code> function. A number of
+          these will be looked at here briefly. For a complete list, see the
+          source code documentation
+          for <a href="../robodoc/rthm-chain_lsp.html#rthm2dchain2fmake2drthm2dchain">rthm-chain</a>. More
+          information on <em>curves</em> (<em>envelopes</em>) can be found on
+          the <a href="./envelopes.html">envelopes</a> page.</p>
+
+        <h4>activity-curve</h4>
+        <p>The <code>activity-curve</code> slot takes a list of breakpoint
+          pairs to define how active the instruments are over the course of the
+          piece. As with other <em>slippery chicken</em> curves, the x-values
+          of the <code>activity-curve</code> can span any arbitrary
+          (increasing) range, which will then be scaled to the duration of the
+          entire piece.</p>
+
+        <p>The y-values for this curve must be between <code>1</code> and
+          <code>10</code>, and these values indicate the amount of overall
+          activity at that given point in the piece. A value of <code>10</code>
+          indicates that all beats generated for the <code>rthm-chain</code>
+          object will consist of sounding notes, while a value of
+          <code>1</code> indicates that only 1 in 10 beats will have sounding
+          notes, with the remainder being rests. This algorithm is
+          deterministic, not stochastic, so the results will be the same each
+          time the piece is re-generated.</p>
+
+        <p>The activity curve for the <code>rthm-chain</code> object in this
+          piece varies between <code>3</code> and <code>10</code> over the
+          course of the piece:</p>
+
+        <pre class="source">
+         ;; The proportion of rests to sounding notes in each passage
+         :activity-curve '(0 5 20 7 30 8 50 3 70 5 80 8 100 10)</pre>
+
+        <h4>rests</h4>
+        <p>The <code>rests</code> slot of the <code>rthm-chain</code> object
+          takes a list of rhythms from which the durations will be selected
+          when applying the automatic rest-insertion algorithm. This list
+          defaults to <code>(e q q. w)</code>, but has been specified as
+          follows for this piece, so as to result in shorter rests being
+          inserted than is default:</p>
+        
+        <pre class="source">
+         ;; The durations to be used for the inserted rests
+         :rests '(s e s q)</pre>
+
+        <p>The order in which specific durations are chosen for insertion is
+          based on the <code>rest-cycle</code> slot. More on
+          the <code>rest-cycle</code> and other rest-related slots can be found
+          in
+          the <a href="../robodoc/rthm-chain_lsp.html#rthm2dchain2fmake2drthm2dchain">rthm-chain</a>
+          source code documentation.</p>
+
+        <h4>sticking-rthms</h4>
+        <p>In addition to automatically inserting rests,
+          the <code>rthm-chain</code> class also automatically inserts
+          so-called <code>sticking-rhythms</code>. These are notes of specified
+          durations that are inserted at various points throughout the piece
+          (always after rests), according to predefined curves, and
+          repeated in a broken-record manner. The default sticking rhythms are
+          <code>(e e e. q e s)</code>, but these have been changed to the
+          following for this piece, so as to incur a greater number of
+          sustained durations over the course of the composition:</p>
+
+        <pre class="source">
+         ;; The durations to be used for the inserted rhythms
+         :sticking-rthms '(e h e. w s e h s)</pre>
+
+        <h4>sticking-curve</h4>
+        <p>Similar to the <code>activity-curve</code>, the
+          <code>sticking-curve</code> slot acts as an activity envelope to
+          control the degree of repetition when inserting sticking
+          rhythms. </p>
+
+        <pre class="source">
+         ;; The activity-curve for the sticking rhythms
+         :sticking-curve '(0 2 20 3 30 5 50 8 80 10 100 2)</pre>
+
+        <h4>sticking-repeats</h4>
+        <p>The <code>sticking-repeats</code> slot takes a list of integers that
+          indicate the number of repetitions applied in sticking segments. When
+          the values of this list have been exhausted, the method cycles to the
+          beginning and continues drawing from the head of the list again.</p>
+        
+        <pre class="source">
+         ;; The number of times each sticking rhythm is repeated
+         :sticking-repeats '(3 5 3 5 8)</pre>
+
+        <h4>harmonic-rthm-curve</h4>
+        <p>The general speed of harmonic motion in the resulting piece can be
+          influenced by defining a <code>harmonic-rthm-curve</code>. This curve
+          determines how many slower (2-beat and 3-beat) rhythm fragments are
+          combined into one <code>rthm-seq</code> (each <code>rthm-seq</code>
+          in a <code>slippery-chicken</code> object takes only one set of
+          pitches</code>).  </p>
+
+        <pre class="source">
+         ;; The number of consecutive sequences that have the same
+         ;; harmonic set
+         :harmonic-rthm-curve '(0 1 10 2 30 3 40 1 50 2 80 4 90 5 100 1)</pre>
+
+        <h4>split-data</h4>
+        <p>The <code>split-data</code> slot allows the user to set target
+          values for the minimum and maximum number of beats in the bars
+          generated for the resulting piece. These values are targets only; the
+          method may create bars of different lengths if the data generated
+          cannot be otherwise split. The values given here will apply to a
+          different beat basis depending on the time signature of each bar,
+          rather than on a consistent beat basis. The default value is
+          <code>(2 5)</code>, but has been changed for this piece to avoid
+          very short bars:</p>
+
+        <pre class="source">
+         ;; The min and max beat duration of bars generated; beat taken from
+         ;; the given time signature.
+         :split-data '(4 7)</pre>
+
+        <p class="close"><a href="#inserts" id="inserts-div-hide"
+                            class="hideLink"
+                            onclick="showHide('inserts-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="players"><a href="#players" id="players-div-show"
+                         onclick="showHide('players-div');return false;">+</a>
+        Setting up the players and adding voices</h3>
+      <div id="players-div" class="more">
+        <p>The last slot of the <code>rthm-chain</code> object that is
+          explicitly set for this piece is the <code>players</code>
+          slot. The <code>rthm-chain</code> class initially generates music
+          data with only two voices, and these two voices must be assigned
+          player IDs that correspond to the players in
+          the <code>ensemble</code> slot of the
+          associated <code>slippery-chicken</code> object.</p>
+
+        <pre class="source">
+         ;; The IDs for the original two players
+         :players '(fl cl))))</pre>
+
+        <h4>add-voice</h4>
+        <p>The <code>add-voice</code> method allows the user to automatically
+          expand the content of the <code>rthm-chain</code> object generated to
+          include further voices. Each new voice is based on sequences drawn
+          from one of the original two voices in the
+          initial <code>rthm-chain</code> object, and must be assigned a player
+          ID. An additional integer can be passed to the method to indicate a
+          specific offset of the sequences chosen. More on this method can be
+          found on the <a href="./rhythm-chains.html">rhythm chains</a> manual
+          page. </p>
+
+        <pre class="source">
+  ;; Adding new voices based on the content of the original two, these with
+  ;; offsets however to avoid completely identical voices.
+  (add-voice rch '(1 fl) 'ob 1)
+  (add-voice rch '(1 cl) 'bn 1)
+  (add-voice rch '(1 fl) 'pnr 2)
+  (add-voice rch '(1 cl) 'pnl 2)
+  (add-voice rch '(1 fl) 'vn 3)
+  (add-voice rch '(1 fl) 'va 4)
+  (add-voice rch '(1 cl) 'vc 3)
+  (add-voice rch '(1 cl) 'vb 4)</pre>
+
+        <p>The IDs specified in the above slot and method correspond to
+          the <code>ensemble</code> slot of the
+          subsequent <code>slippery-chicken</code> object, as can be seen
+          here:</p> 
+
+        <pre class="source">
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (ob (oboe :midi-channel 2))
+                        (cl (b-flat-clarinet :midi-channel 3))
+                        (bn (bassoon :midi-channel 4))
+                        (vb (vibraphone :midi-channel 5))
+                        (pnr (piano :midi-channel 6))
+                        (pnl (piano-lh :midi-channel 7))
+                        (vn (violin :midi-channel 8))
+                        (va (viola :midi-channel 9))
+                        (vc (cello :midi-channel 11))))</pre>
+
+        <p class="close"><a href="#players" id="players-div-hide"
+                            class="hideLink"
+                            onclick="showHide('players-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="psps"><a href="#psps" id="psps-div-show"
+                         onclick="showHide('psps-div');return false;">+</a>
+        Automatic pitch-seq-palettes</h3>
+      <div id="psps-div" class="more">
+        <p>The <code>rthm-chain</code> object contains an automatically
+          generated palette of <code>rthm-seq</code> objects and
+          a <code>rthm-seq-map</code>. The <code>rthm-seq</code> objects must
+          have curves assigned to them for their melodic contours
+          (<code>pitch-seqs</code>), and these can be automatically generated
+          for all <code>rthm-seqs</code> in a <code>rthm-chain</code> using
+          the <code>create-psps</code> method, which takes
+          a <code>rthm-seq-palette</code> object as its only required
+          argument. The <code>rthm-seq-palette</code> for a
+          given <code>rthm-chain</code> object can be accessed using
+          the <code>palette</code> accessor keyword.</p>
+
+        <pre class="source">
+  ;; Creating automatically generated pitch-seq palettes for the rthm-seqs made 
+  (create-psps (palette rch))</pre>
+
+        <p class="close"><a href="#psps" id="psps-div-hide" class="hideLink"
+                            onclick="showHide('psps-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="pitches"><a href="#pitches" id="pitches-div-show"
+                         onclick="showHide('pitches-div');return false;">+</a>
+        The set-palette and the set-map</h3>
+      <div id="pitches-div" class="more">
+        <p>The <code>set-palette</code> and the <code>set-map</code> for this
+          piece are defined as variables prior to the call
+          to <code>make-slippery-chicken</code>. </p>
+
+        <h4>set-palette</h4>
+        <p>The <code>set-palette</code> consists of 31 pitch collections with
+          consecutive numerical IDs from <code>1</code>
+          to <code>31</code>. </p> 
+
+        <pre class="source">
+  (let* ((sp '((1 ((c3 cs3 d3 e3 fs3 g3 c4 cs4 e4 c5 gs5 cs6 d6
+                       ds6))) 
+               (2 ((b2 c3 fs3 gs3 ds4 e4 d5 ds5 cs6)))
+               (3 ((af2 f3 fs3 d4 e4 fs4 a4 d5 e5 c6 af6)))
+               (4 ((b2 c3 df3 f3 af3 c4 e4 d5 c6)))
+               (5 ((bf2 g3 e4 ef5 d6)))
+               (6 ((f3 ef4 a4 d5 e5 df6)))
+               (7 ((a2 b2 af3 f4 ef5 e5 c6)))
+               (8 ((e4 a4 c5 g5 af5 e6)))
+               (9 ((e4 df5 bf5)))
+               (10 ((b1 a2 g3 e4 df5 a5)))
+               (11 ((ef3 bf3 e4 b4 d5 f5 c6 ef6)))
+               (12 ((f3 df4 e4 b4 e5 f5 c6 g6)))
+               (13 ((e4 b4 df5)))
+               (14 ((d4 ef4 bf4)))
+               (15 ((df4 bf4 a5 fs6)))
+               (16 ((d4 ef4 f4 g4)))
+               (17 ((g1 bf1 fs2 af2 f3 fs3 e4)))
+               (18 ((ef1 df2 b2 a3 e4 f4 fs4 d5 a5 bf5)))
+               (19 ((e4 f4 g4 b4 c5 g5 af5 e6 f6)))
+               (20 ((bf3 b3 e4 f4 bf4)))
+               (21 ((e3 f3 df4 d4 ds4 f4 df5 d5 b5)))
+               (22 ((d3 g3 a3 e4 af4 ef5 df5)))
+               (23 ((g4 af4 df5 d5 af5 df6 d6)))
+               (24 ((af3 e4 a4 e5 bf5)))
+               (25 ((df2 a2 e3 ef4 d5 af5)))
+               (26 ((b2 ef3 df4 e4 c5 g5 ef6)))
+               (27 ((d1 a1 ef2 c3 a3 f4)))
+               (28 ((df3 g3 c4 df4 d4 e4)))
+               (29 ((c3 b3 e4 df5 b5)))
+               (30 ((ds1 ef2 b2 c3 g3 af3 d4 e4 b4 fs5 d6)))
+               (31 ((d1 ef2 a2 ef3 bf3 e4 d5 bf5 g6)))))</pre>
+
+        <h4>set-map</h4>
+        <p>The <code>set-map</code> is automatically generated using
+          the <code>rthm-chain</code> class's <code>procession</code>
+          function. It accesses the <code>num-rthm-seqs</code> slot of the
+          given <code>rthm-chain</code> object to obtain the number of items
+          that need to be in that map (one for each <code>rthm-seq</code>), and
+          uses the length of the variable <code>sp</code>
+          (the <code>set-palette</code> defined above) as its second argument,
+          thereby determining that it is to create its output from a list of
+          elements consisting of integers <code>1</code>
+          to <code>31</code>.</p>
+
+        <pre class="source">
+         ;; Creating the set-palette using the procession algorithm
+         (sm (procession (num-rthm-seqs rch) (length sp)))</pre>
+
+        <p>These two variables will be passed directly to
+          the <code>:set-palette</code> and <code>:set-map</code> keyword
+          arguments of the <code>make-slippery-chicken</code> function. </p>
+
+        <p class="close"><a href="#pitches" id="pitches-div-hide"
+                            class="hideLink"
+                            onclick="showHide('pitches-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="limits"><a href="#limits" id="limits-div-show"
+                         onclick="showHide('limits-div');return false;">+</a>
+        Set-limits for each instrument and each set</h3>
+      <div id="limits-div" class="more">
+
+        <p>The next three variables determine the <code>set-limits-high</code>
+          and <code>set-limits-low</code> envelopes for each player in the
+          piece. Usually these limits would be specified explicitly with an
+        envelope but here we use another mechanism for expressing this data
+          which seems more appropriate to the piece in hand. Essentially we use
+          the <code>set-map</code> to create the envelope, ensuring that when
+          a specific set occurs then the upper and lower pitches for each
+          player are drawn from our hand-typed data.</p>
+
+        <p>The <code>sls</code> variable consists of a list of the player IDs
+          paired with lists of 3-item sublists, each of those consisting of an
+          integer and two note-name symbols. The integers refer to pitch sets
+          in the <code>set-palette</code>, and the two pitches represent the
+          lowest and highest pitches to be played by the given player whenever
+          that set occurs in the piece. There is one sublist for each set for
+          each player.</p>
+
+        <pre class="source">
+         ;; Determining the high and low pitches for each instrument for each
+         ;; harmonic set. Every time the same set occurs, the same instruments
+         ;; will have the same limits.
+         (sls '((fl ((1 gs5 c7) (2 d5 c7) (3 e5 c7) (4 d5 c7) (5 ef5 c7) 
+                     (6 e5 c7) (7 ef5 c7) (8 g5 c7) (9 df5 c7) (10 df5 c7) 
+                     (11 d5 c7) (12 e5 c7) (13 df5 c7) (14 bf4 c7) (15 a5 c7) 
+                     (16 g4 c7) (17 e4 c7) (18 d5 c7) (19 g5 c7) (20 bf4 c7) 
+                     (21 df5 c7) (22 ef5 c7) (23 af5 c7) (24 e5 c7)
+                     (25 d5 c7) (26 g5 c7) (27 f4 c7) (28 e4 c7) (29 df5 c7) 
+                     (30 fs5 c7) (31 d5 c7)))
+                (ob ((1 g4 a5) (2 g4 a5) (3 g4 a5) (4 g4 a5) (5 g4 a5) 
+                     (6 g4 a5) (7 g4 a5) (8 g4 a5) (9 g4 a5) (10 g4 a5) 
+                     (11 g4 a5) (12 g4 a5) (13 g4 a5) (14 g4 a5) (15 g4 a5) 
+                     (16 g4 a5) (17 e4 a5) (18 g4 a5) (19 g4 a5) (20 g4 a5) 
+                     (21 g4 a5) (22 g4 a5) (23 g4 a5) (24 g4 a5) (25 g4 a5)
+                     (26 g4 a5) (27 f4 a5) (28 e4 a5) (29 g4 a5) (30 g4 a5) 
+                     (31 g4 a5)))
+                (cl ((1 b4 c6) (2 b4 c6) (3 b4 c6) (4 b4 c6) (5 b4 c6) 
+                     (6 b4 c6) (7 b4 c6) (8 b4 c6) (9 b4 c6) (10 b4 c6) 
+                     (11 b4 c6) (12 b4 c6) (13 b4 c6) (14 bf4 c6) (15 b4 c6) 
+                     (16 g4 c6) (17 e4 c6) (18 b4 c6) (19 b4 c6) (20 bf4 c6) 
+                     (21 b4 c6) (22 b4 c6) (23 b4 c6) (24 b4 c6) (25 b4 c6)
+                     (26 b4 c6) (27 f4 c6) (28 e4 c6) (29 b4 c6) (30 b4 c6) 
+                     (31 b4 c6)))
+                (bn ((1 a2 d4) (2 a2 d4) (3 a2 d4) (4 a2 d4) (5 a2 d4) 
+                     (6 a2 d4) (7 a2 d4) (8 a2 e4) (9 a2 e4) (10 a2 d4) 
+                     (11 a2 d4) (12 a2 d4) (13 a2 e4) (14 a2 d4) (15 a2 d4) 
+                     (16 a2 d4) (17 a2 d4) (18 a2 d4) (19 a2 e4) (20 a2 d4) 
+                     (21 a2 d4) (22 a2 d4) (23 a2 g4) (24 a2 d4) (25 a2 d4)
+                     (26 a2 d4) (27 a2 d4) (28 a2 d4) (29 a2 d4) (30 a2 d4) 
+                     (31 a2 d4)))
+                (vb ((1 c4 f6) (2 c4 f6) (3 c4 f6) (4 c4 f6) (5 c4 f6) 
+                     (6 c4 f6) (7 c4 f6) (8 c4 f6) (9 c4 f6) (10 c4 f6) 
+                     (11 c4 f6) (12 c4 f6) (13 c4 f6) (14 c4 f6) (15 c4 f6) 
+                     (16 c4 f6) (17 c4 f6) (18 c4 f6) (19 c4 f6) (20 c4 f6) 
+                     (21 c4 f6) (22 c4 f6) (23 c4 f6) (24 c4 f6) (25 c4 f6) 
+                     (26 c4 f6) (27 c4 f6) (28 c4 f6) (29 c4 f6) (30 c4 f6) 
+                     (31 c4 f6)))
+                (pnr ((1 c4 c8) (2 c4 c8) (3 c4 c8) (4 c4 c8) (5 c4 c8) 
+                      (6 c4 c8) (7 c4 c8) (8 g5 c8) (9 df5 c8) (10 c4 c8) 
+                      (11 c4 c8) (12 c4 c8) (13 b4 c8) (14 ef4 c8) (15 a5 c8)
+                      (16 f4 c8) (17 f3 c8) (18 c4 c8) (19 c5 c8) 
+                      (20 e4 c8) (21 df5 c8) (22 c4 c8) (23 af5 c8) (24 a4 c8) 
+                      (25 c4 c8) (26 c4 c8) (27 a3 c8) (28 c4 c8) (29 c4 c8) 
+                      (30 c4 c8) (31 c4 c8)))
+                (pnl ((1 a0 b3) (2 a0 b3) (3 a0 b3) (4 a0 b3) (5 a0 b3) 
+                      (6 a0 b3) (7 a0 b3) (8 a0 c5) (9 a0 e4) (10 a0 b3) 
+                      (11 a0 b3) (12 a0 b3) (13 a0 e4) (14 a0 d4) 
+                      (15 a0 bf4) (16 a0 ef4) (17 a0 af2) (18 a0 b3) 
+                      (19 a0 b4) (20 a0 b3) (21 a0 ds4) (22 a0 b3) (23 a0 d5)
+                      (24 a0 e4) (25 a0 b3) (26 a0 b3) (27 a0 c3) (28 a0 b3) 
+                      (29 a0 b3) (30 a0 b3) (31 a0 b3))) 
+                (vn ((1 a4 c7) (2 a4 c7) (3 a4 c7) (4 a4 c7) (5 a4 c7) 
+                     (6 a4 c7) (7 a4 c7) (8 a4 c7) (9 a4 c7) (10 a4 c7) 
+                     (11 a4 c7) (12 a4 c7) (13 a4 c7) (14 a4 c7) (15 a4 c7) 
+                     (16 f4 c7) (17 e4 c7) (18 a4 c7) (19 a4 c7) (20 f4 c7) 
+                     (21 a4 c7) (22 a4 c7) (23 a4 c7) (24 a4 c7) (25 a4 c7) 
+                     (26 a4 c7) (27 a3 c7) (28 d4 c7) (29 a4 c7) (30 a4 c7) 
+                     (31 a4 c7)))
+                (va ((1 g3 gs4) (2 g3 gs4) (3 g3 gs4) (4 g3 gs4) (5 g3 gs4) 
+                     (6 g3 gs4) (7 g3 gs4) (8 g3 gs4) (9 g3 gs4) 
+                     (10 g3 gs4) (11 g3 gs4) (12 g3 gs4) (13 g3 gs4)
+                     (14 g3 gs4) (15 g3 gs4) (16 g3 gs4) (17 g3 gs4) 
+                     (18 g3 gs4) (19 g3 gs4) (20 g3 gs4) (21 g3 gs4) 
+                     (22 g3 gs4) (23 g3 gs4) (24 g3 gs4) (25 g3 gs4) 
+                     (26 g3 gs4) (27 g3 gs4) (28 g3 gs4) (29 g3 gs4) 
+                     (30 g3 gs4) (31 g3 gs4))) 
+                (vc ((1 c2 fs3) (2 c2 fs3) (3 c2 fs3) (4 c2 fs3) (5 c2 fs3) 
+                     (6 c2 fs3) (7 c2 fs3) (8 c2 e4) (9 c2 e4) 
+                     (10 c2 fs3) (11 c2 fs3) (12 c2 fs3) (13 c2 e4)
+                     (14 c2 d4) (15 c2 df4) (16 c2 d4) (17 c2 fs3) 
+                     (18 c2 fs3) (19 c2 e4) (20 c2 b3) (21 c2 fs3) 
+                     (22 c2 fs3) (23 c2 g4) (24 c2 af3) (25 c2 fs3) 
+                     (26 c2 fs3) (27 c2 fs3) (28 c2 fs3) (29 c2 fs3) 
+                     (30 c2 fs3) (31 c2 fs3)))))</pre>
+
+        <h4>Separating low from high</h4>
+        <p>The two individual <code>set-limits-low</code>
+          and <code>set-limits-high</code> lists are then collected using
+          loops:</p>
+
+        <pre class="source">
+         ;; Creating a list for just the low set-limits, with consecutive
+         ;; integers as x-values so there are equal number of breakpoint pairs
+         ;; as sets in the set-palette
+         (sll (loop for p in sls
+                 collect
+                   (list (first p)
+                         (loop for s in sm
+                            for i from 1
+                            collect i
+                            collect (second (nth (1- s) (second p)))))))
+         ;; Creating a list for just the high set-limits, with consecutive
+         ;; integers as x-values so there are equal number of breakpoint pairs
+         ;; as sets in the set-palette
+         (slh (loop for p in sls
+                 collect
+                   (list (first p)
+                         (loop for s in sm
+                            for i from 1
+                            collect i
+                            collect (third (nth (1- s) (second p)))))))</pre>
+
+        <p>These will be passed directly to the corresponding keyword
+          arguments within the <code>make-slippery-chicken</code>
+          function.</p>
+
+        <p class="close"><a href="#limits" id="limits-div-hide"
+                            class="hideLink"
+                            onclick="showHide('limits-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="msc"><a href="#msc" id="msc-div-show"
+                         onclick="showHide('msc-div');return false;">+</a>
+        The call to make-slippery-chicken</h3>
+      <div id="msc-div" class="more">
+        <p>With all of these variables declared, the call to
+          the <code>make-slippery-chicken</code> function remains quite
+          sleek. Only the global variable, title, ensemble, staff groups, and
+          tempo must be specified explicitly; the remaining keyword arguments
+          can be passed the variables declared above. </p>
+
+        <pre class="source">
+         ;; Creating the sc object
+         (reeling-trains
+          (make-slippery-chicken
+           '+reeling-trains+
+           :title "reeling trains"
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (ob (oboe :midi-channel 2))
+                        (cl (b-flat-clarinet :midi-channel 3))
+                        (bn (bassoon :midi-channel 4))
+                        (vb (vibraphone :midi-channel 5))
+                        (pnr (piano :midi-channel 6))
+                        (pnl (piano-lh :midi-channel 7))
+                        (vn (violin :midi-channel 8))
+                        (va (viola :midi-channel 9))
+                        (vc (cello :midi-channel 11))))
+           :staff-groupings '(4 1 2 3)
+           :set-palette sp
+           :set-map `((1 ,sm))
+           :set-limits-low sll 
+           :set-limits-high slh
+           :tempo-map '((1 (q 72)))
+           ;; The rs palette and map can be taken directly from the rthm-chain
+           ;; object. 
+           :rthm-seq-palette (palette rch)
+           :rthm-seq-map rch)))</pre>
+
+        <p class="close"><a href="#msc" id="msc-div-hide"
+                            class="hideLink"
+                            onclick="showHide('msc-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="marks"><a href="#marks" id="marks-div-show"
+                         onclick="showHide('marks-div');return false;">+</a>
+        Post-generation placement and editing of marks</h3>
+      <div id="marks-div" class="more">
+        <p>With the pitch and rhythm data now generated and stored in
+          a <code>slippery-chicken</code> object, the next few post-generating
+          editing entries are used to apply and manipulate marks in the
+          piece. </p>
+
+        <h4>process-events-by-time</h4>
+        <p>As mentioned above, the <code>process-events-by-time</code> method
+          is used here to randomly place dynamics and articulations into the
+          score. The method takes as its two required arguments the name of
+          the <code>slippery-chicken</code> object to be processed, and the
+          name of the function to apply to each event in that object. It is
+          called here once with the <code>place-dyns</code> function, and once
+          with the <code>place-arts</code> function, both defined above. </p>
+
+        <pre class="source">
+    ;; add random dynamics
+    (process-events-by-time reeling-trains #'place-dyns)
+    ;; add random articulations
+    (process-events-by-time reeling-trains #'place-arts)</pre>
+
+        <h4>remove-extraneous-dynamics</h4>
+        <p>One possible side-effect of placing marks randomly is that the score
+          may then contain two or more identical dynamics in sequence in the
+          same part. The <code>remove-extraneous-dynamics</code> method
+          resolves this by deleting all consecutive repetitions of a given
+          dynamic in the same part.</p>
+
+        <pre class="source">
+    ;; remove repeated dynamics
+    (remove-extraneous-dynamics reeling-trains)</pre>
+
+        <h4>rm-marks-from-notes</h4>
+        <p>If the user is not completely satisfied with some of the randomly
+          placed marks, the <code>rm-marks-from-notes</code> method can be used
+          to remove specific marks from specific notes, as is done here.</p>
+
+        <p>Since the two user-defined functions for random marks placement use
+          the <code>random-rep</code> function and reset the random state each
+          time, the marks placed, though random, will be identical each time
+          the piece is generated in the same Lisp environment. This allows the
+          user to create a list of bar numbers, note numbers, players, and
+          marks for specific dynamics and articulations to be removed from the
+          score. In this piece, this list is then passed to
+          the <code>rm-marks-from-notes</code> method, using
+          the <code>first</code>, <code>second</code>, <code>third</code>,
+          and <code>fourth</code> functions to retrieve the values for its
+          arguments from that list. </p>
+
+        <pre class="source">
+    ;; remove specific marks
+    (loop for pm in '((1 1 (cl bn vb pnr pnl vc) s) (2 1 vc ppp) 
+                      (2 2 (vn vc) s) (2 3 vc ff) (3 1 va p) (3 2 (ob va) s) 
+                      (3 2 vc fff) (5 3 ob f) (5 2 vn mf) (6 3 bn p) (8 4 ob s) 
+                      (9 1 fl s) (12 1 vn s) (17 1 ob ff) (17 2 fl ppp)
+                      (19 3 vc mf) (20 2 cl s) (26 2 vn s) (26 2 va p) 
+                      (27 1 bn p) (27 2 va s) (28 3 ob ff) (35 1 vn s)
+                      (38 2 bn fff) (42 2 vc f) (44 1 bn s) (47 2 ob mp)
+                      (47 3 bn ppp) (51 1 pnr s) (53 1 (fl vb) s) 
+                      (53 2 (vb vc) s) (53 2 pnl mf) (54 2 vn s) (58 1 vc pp) 
+                      (61 1 bn s) (61 4 (ob pnr va) (mf fff ppp)) (62 1 ob s) 
+                      (62 2 va s) (63 2 va s) (65 1 pnr s) (66 1 ob pp)
+                      (66 3 ob s) (66 3 fl s) (70 2 fl mf) (72 1 va p) 
+                      (73 2 vn s) (74 2 vn fff) (75 3 cl pp) (76 2 ob s)
+                      (77 2 ob s) (85 1 bn s) (85 3 vb ff) (85 4 bn s)
+                      (85 5 cl p) (85 5 bn a) (85 5 vc a) 
+                      (86 3 (bn vc) (pp fff)) (86 4 vc s) (86 5 vb f) 
+                      (87 2 ob s) (90 2 vb mf) (90 3 bn ff) (96 2 ob pp) 
+                      (97 1 fl pp) (98 4 vn mf) (100 1 ob mf) (101 1 fl p)
+                      (101 1 vn s) (101 2 vn p) (102 1 vn s) (103 1 ob s)
+                      (103 1 vc mf) (105 1 vn s) (105 1 vb mp) (106 2 va fff)
+                      (106 2 vc s) (106 3 vb s) (106 3 vn f) (106 5 vb ff)
+                      (106 5 pnl ff) (106 5 vc p) (110 2 vn s) (110 3 va s)
+                      (110 3 vn mp) (110 2 va ppp) (111 2 ob fff) 
+                      (114 2 vn fff) (114 2 ob mp) (114 3 pnr ppp) 
+                      (116 3 vb mp) (118 2 pnr s) (118 2 vn mf) (120 2 va s)
+                      (120 2 cl pp) (120 3 pnr mp) (125 3 fl f) (125 3 va p)
+                      (125 3 va mp) (131 2 vn mf) (132 1 fl mp) (134 1 va ppp)
+                      (137 1 vn s) (137 2 fl fff) (138 2 pnr p) (139 1 va mp)
+                      (139 3 vn p) (142 2 vn s) (143 1 vn f) (144 1 pnr ff)
+                      (151 3 ob f) (153 1 bn s) (156 1 pnl s) (156 2 bn fff)
+                      (156 3 vb pp) (156 3 pnl fff) (156 3 va f) (156 5 vc a)
+                      (156 6 vb mf) (158 3 pnr ff) (163 2 fl p) (163 2 vn mp)
+                      (163 3 ob fff) (166 1 (fl va) (p mf)) (166 2 ob p) 
+                      (167 1 cl f) (169 3 ob mp) (170 2 vn mf) (172 3 pnr s)
+                      (172 3 vn pp) (173 1 pnr s) (173 1 vb ff) (173 3 vn mp)
+                      (175 4 pnr mf) (175 4 vn ff) (175 4 va p) (176 2 cl s)
+                      (178 2 pnr pp) (178 2 va ff))
+       do 
+         (rm-marks-from-notes reeling-trains 
+                              (first pm) 
+                              (second pm) 
+                              (third pm)
+                              (fourth pm)))</pre>
+
+        <h4>Adding diminuendos and crescendos</h4>
+        <p>Two more loops are used in a similar manner to add diminuendo and
+          crescendo marks to the score. The lists created specify the player
+          ID, the bar and note numbers where the mark is to begin, and the bar
+          and note numbers where the mark is to end. These are then passed to
+          the <code>add-mark-to-note</code> method in conjunction with
+          the <code>dim-beg</code>/<code>cresc-beg</code>
+          and <code>dim-end</code>/<code>cresc-end</code> marks to insert
+          those marks into the score.</p>
+
+        <pre class="source">
+    ;; add diminuendo marks
+    (loop for pdcr in '((pnr 2 2 4 1) (pnl 2 4 4 1) (vn 2 2 2 3) (bn 5 1 5 2)
+                        (bn 14 1 14 2) (fl 17 1 18 1) (ob 26 1 27 2) 
+                        (fl 26 2 27 2) (ob 54 1 54 3) (vn 81 1 81 2) 
+                        (ob 103 1 103 2) (bn 102 2 103 2) (vb 102 2 103 2) 
+                        (va 107 1 107 2) (va 118 1 118 3) (va 169 1 169 3) 
+                        (vn 172 2 172 4) (va 176 1 176 2)) 
+       do
+         (add-mark-to-note reeling-trains
+                           (second pdcr)
+                           (third pdcr)
+                           (first pdcr)
+                           'dim-beg)
+         (add-mark-to-note reeling-trains
+                           (fourth pdcr)
+                           (fifth pdcr)
+                           (first pdcr)
+                           'dim-end))
+    ;; add crescendo marks
+    (loop for pdcr in '((va 2 2 4 3) (va 10 1 10 3) (cl 14 1 14 2) 
+                        (va 17 2 18 1) (va 26 1 27 1) (fl 35 1 35 3) 
+                        (ob 48 1 48 3) (vb 53 1 53 3) (pnl 54 1 54 2) 
+                        (pnr 57 1 57 3) (fl 65 2 66 2) (bn 67 1 67 2) 
+                        (va 66 3 67 1) (fl 77 3 78 1) (va 83 1 83 2) 
+                        (fl 93 1 94 1) (va 93 2 94 1) (va 98 3 98 5) 
+                        (pnr 106 1 106 3) (ob 110 1 110 3) (fl 142 2 143 2) 
+                        (cl 145 1 145 3) (cl 164 1 164 2) (vb 170 1 170 2)
+                        (vn 175 3 175 5) (vc 176 1 176 2))
+       do
+         (add-mark-to-note reeling-trains
+                           (second pdcr)
+                           (third pdcr)
+                           (first pdcr)
+                           'cresc-beg)
+         (add-mark-to-note reeling-trains
+                           (fourth pdcr)
+                           (fifth pdcr)
+                           (first pdcr)
+                           'cresc-end))</pre>
+
+        <h4>One starting dynamic for all parts</h4>
+        <p>A final dynamic is added to the first note of all players' parts to
+          produce an initial dynamic for all players in the piece:</p>
+
+        <pre class="source">
+    ;; make the first dynamic forte
+    (loop for p in '(fl ob cl bn vb pnr pnl vn va vc)
+       do
+         (add-mark-to-note reeling-trains 1 1 p 'f))</pre>
+
+        <h4>auto-slur</h4>
+        <p>The last kind of mark to be added here is
+          the <em>slur</em>. The <code>auto-slur</code> method automatically
+          places slur marks into the parts of the specified players. By default
+          it slurs all notes between two rests, slurring over accents and first
+          removing all staccatos from the specified part.</p>
+
+        <p>Since accents and staccatos have been already placed in this piece,
+          the optional keyword arguments <code>over-accents</code>
+          and <code>rm-staccatos</code> for this method are both set
+          to <code>NIL</code>. This will result in slurs that always end prior
+          to an accent, and in staccato markings being left in the
+          score. Unwanted staccato markings were removed in the above steps,
+          however, thus leaving the score as desired.</p>
+
+        <pre class="source">
+    ;; auto-slur
+    (auto-slur reeling-trains '(fl ob cl bn vb pnr pnl vn va vc) 
+               :over-accents nil
+               :rm-staccatos nil)</pre>
+                                          
+
+        <p class="close"><a href="#marks" id="marks-div-hide" class="hideLink"
+                            onclick="showHide('marks-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="consol"><a href="#consol" id="consol-div-show"
+                         onclick="showHide('consol-div');return false;">+</a>
+        Consolidating durations</h3>
+      <div id="consol-div" class="more">
+        <p>The last post-generation editing method to be called here prior to
+          the output methods is <code>map-over-bars</code>. This method can be
+          used in conjunction with a second method or function to apply that
+          second function to every bar in a specified range of a specified
+          player's part. </p>
+
+        <p>The method takes as its arguments the <code>slippery-chicken</code>
+          object to be processed, two integers indicating the first and last
+          bars to process within that object, and the ID of the player whose
+          part is to be changed. If the end bar and player arguments are set
+          to <code>NIL</code>, all bars from the start bar to the end of the
+          piece in all players' parts will be processed. </p>
+
+        <p>The use of <code>map-over-bars</code> in this piece applies
+          the <code>consolidate-notes</code> method to every bar of the piece
+          in all players' parts. It is important that this be called prior to
+          the <code>auto-slur</code> method, as
+          the <code>consolidate-notes</code> method may remove a number of
+          <code>event</code> objects during the consolidation process. </p>
+
+        <pre class="source">
+    ;; consolidate sounding durations
+    (map-over-bars reeling-trains 1 nil nil #'consolidate-notes)</pre>
+
+
+        <p class="close"><a href="#consol" id="consol-div-hide"
+                            class="hideLink"
+                            onclick="showHide('consol-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="output"><a href="#output" id="output-div-show"
+                         onclick="showHide('output-div');return false;">+</a>
+        Output</h3>
+      <div id="output-div" class="more">
+        <p>With the music generated, the marks placed, and the durations
+          consolidated, the final step is to generate the MIDI and score
+          output for the composition. This is done in the same manner as
+          described in the other tutorials, with the addition of the
+          specification of the font-size for the CMN output, and the
+          indication that both the CMN and LilyPond scores are to be in C. For
+          the scope of this piece, as well, the <code>auto-clefs</code>
+          function has been disabled, as the <code>set-limits-</code> values
+          have been specified such that clef changes are not necessary.</p> 
+
+        <pre class="source">
+    ;; output
+    (midi-play reeling-trains :midi-file "/tmp/reeling-trains.mid")
+    (cmn-display reeling-trains 
+                 :file "/tmp/reeling-trains.eps"
+                 :size 14
+                 :auto-clefs nil
+                 :in-c t)
+    (write-lp-data-for-all reeling-trains
+                           :auto-clefs nil
+                           :in-c t)))</pre>
+
+        <p class="close"><a href="#output" id="output-div-hide"
+                            class="hideLink"
+                            onclick="showHide('output-div');return
+                            false;">close</a></p>
+      </div>
+
+      <!-- <br /> -->
+      <!-- <table class="image"> -->
+      <!--   <tr><td><img class="fragment" -->
+      <!--                src="./resources/enharmonics-enharmonic.png" -->
+      <!--                alt="enharmonics-enharmonic.png" -->
+      <!--                width="375"</td></tr> -->
+      <!--   <caption>Example as typeset by LilyPond</caption> -->
+      <!-- </table> -->
+
+    <!-- **************************************************************** --> 
+    <!-- This spacer <br> is necessary as a buffer between the content and
+         the footer. It cannot be added as padding to #push, since #push has to
+         be the same size as #footer in order for the dynamic placement to work
+         properly --> 
+    <br /><br />
+    <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

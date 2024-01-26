@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>rthm-seq-map.lsp</title>
+<!-- Source: ./../../src/rthm-seq-map.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="rthm2dseq2dmap2fadd2dplayer"></a>
+<a name="robo509"></a><h2 class=robodoc>rthm-seq-map/add-player [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> January 18th 2018, Heidhausen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Add a <a href="./player_lsp.html#robo286">player</a> to a <a href="#robo575">rthm-seq-map</a>. The data (3rd) argument defines the <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a>
+ references (IDs) to be used for the new <a href="./player_lsp.html#robo286">player</a>. This is a very flexible
+ argument: 
+ 
+ If not given, then NIL will be added to the map, resulting in the new <a href="./player_lsp.html#robo286">player</a>
+ not playing at all.
+
+ If a single reference ID is given, then that will be used throughout each
+ <a href="./section_lsp.html#robo58">section</a> of the map.
+
+ If a list of references is given, then items will be popped out of the list
+ sequentially and used for the new <a href="./player_lsp.html#robo286">player</a>. In this case the length of the
+ list does not matter as if it's too long the last elements will simply be
+ unused, and if it's too short then NIL will be returned when the list is
+ exhausted, resulting in the new <a href="./player_lsp.html#robo286">player</a> not playing from that point
+ onwards. The exception here is if the cycle (4th) argument is T, whereupon
+ the list of references will be used circularly, restarting the list when the
+ end is reached.
+
+ Otherwise a function can be passed: this function should take four
+ arguments: the <a href="#robo575">rthm-seq-map</a> object (which it can then analyse/query to make
+ decisions); the full reference to the current (sub)<a href="./section_lsp.html#robo58">section</a> for which
+ references should be provided; the number of references which are needed
+ for this (sub)<a href="./section_lsp.html#robo58">section</a>; and the <a href="./player_lsp.html#robo286">player</a> being added. It must return a list of
+ references for each given <a href="./section_lsp.html#robo58">section</a>. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo575">rthm-seq-map</a> object
+ - the new <a href="./player_lsp.html#robo286">player</a> to <a href="./sc-set_lsp.html#robo578">add</a> (ID only: the same which will be referenced in the
+   <a href="./ensemble_lsp.html#robo393">ensemble</a> slot of a <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> object)
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :data. the <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> references to use for the new <a href="./player_lsp.html#robo286">player</a> or a
+   function. See above. Default NIL.
+ - :cycle. T or NIL to cycle the references. See above. Default NIL.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the same <a href="#robo575">rthm-seq-map</a> object but with the new <a href="./player_lsp.html#robo286">player</a> now added.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; will use <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> 1 throughout the <a href="./piece_lsp.html#robo56">piece</a>
+(<strong>add-player</strong> m 'cl 1)
+;; will use 1 2 3 4 5 then nil thereafter
+(<strong>add-player</strong> m 'ob '(1 2 3 4 5))
+;; forcing a reference into a recursive <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> to be used just once
+(<strong>add-player</strong> m 'db '((bass dense 1)))
+;; forcing it to be used repeatedly
+(<strong>add-player</strong> m 'db '((bass dense 1)) t)
+;; a simple example with a function: rs1 for <a href="./section_lsp.html#robo58">section</a> 1, rs3 for <a href="./section_lsp.html#robo58">section</a> three
+;;; otherwise rs1a 
+(<strong>add-player</strong> m 'bsn #'(lambda (rsm <a href="./section_lsp.html#robo58">section</a>-ref num-refs <a href="./player_lsp.html#robo286">player</a>)
+                             (ml (case <a href="./section_lsp.html#robo58">section</a>-ref
+                                   (sec1 'rs1)
+                                   (sec3 'rs3)
+                                   (t 'rs1a))
+                                 num-refs)))
+;; db will be added but it won't play anything (unless references are added
+;;; later but before <a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a> is called)
+(<strong>add-player</strong> m 'db)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>add-player</strong> ((rsm rthm-seq-map) <a href="./player_lsp.html#robo286">player</a> &amp;key data cycle)
+</pre>
+
+
+<a name="rthm2dseq2dmap2fadd2drepeats"></a>
+<a name="robo510"></a><h2 class=robodoc>rthm-seq-map/add-repeats [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> 30-Dec-2010
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Generate repeating sequences at given cycle points using <a href="./recurring-event_lsp.html#robo119">recurring-event</a>
+ data. This extends the number of items in the map.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo575">rthm-seq-map</a> object.
+ - A list of two-item lists of integers that determine the cycle
+   pattern. This list will have the format of the <a href="./recurring-event_lsp.html#robo119">recurring-event</a> class's
+   DATA slot (see recurring-<a href="./event_lsp.html#robo_top_of_doc">event.lsp</a>).
+ - A list of two-item lists of integers that determine the number of repeats
+   made (or references into the :repeats list). This list is also processed
+   cyclically (i.e. the <a href="./recurring-event_lsp.html#robo119">recurring-event</a> class's RETURN-DATA-CYCLE slot).
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :<a href="./section_lsp.html#robo58">section</a>. The <a href="./section_lsp.html#robo58">section</a> map reference. Default = 1.
+ - :repeats-indices. A list of the number of repeat bars returned by the
+    cycle data (i.e. <a href="./recurring-event_lsp.html#robo119">recurring-event</a> class's RETURN-DATA slot). Generally
+    this will remain NIL and the number of repeats will be expressed
+    directly in the third argument, but it could be useful to use references
+    into this list there instead, since the <a href="./recurring-event_lsp.html#robo119">recurring-event</a> class already
+    makes this possible. Default = NIL.
+ - :start. An integer that is the number of the bar/<a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> where the
+   process is to begin. Default = 1.
+ - :end. An integer that is the number of the bar/<a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> where the process
+   is to end. NIL = process all bars/rthm-seqs. Default = NIL.
+ - :print. T or NIL to indicate whether to print the <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> ID and the
+   number repetitions to the listener. T = print. Default = NIL.
+ - :repeat-rest-seqs.  T or NIL to indicate whether sequences consisting of
+   just rests should be repeated also.  This will need the :<a href="./palette_lsp.html#robo405">palette</a> in order
+   to work.  Default = T. 
+ - :<a href="./palette_lsp.html#robo405">palette</a>.  The <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> to check that sequences are not
+   rest sequences, if about to repeat them and repeat-rest-seqs is NIL.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> An integer that is the number of sequences added.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Straightforward usage, additionally printing the DATA slot before and after
+;;; applying the method
+(let ((mrsm
+       (<a href="#robo515">make-rthm-seq-map</a> 
+        'rsm-test
+        '((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+        :<a href="./palette_lsp.html#robo405">palette</a> (<a href="./rthm-seq-palette_lsp.html#robo524">make-rsp</a> 
+                  'rs-pal
+                  '((1 ((((2 4) q e s s))))
+                    (2 ((((2 4) e s s q))))
+                    (3 ((((2 4) s s q e)))))))))
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 vn) mrsm))
+  ;; so there'll be a repeat after two events three times in a row, then after
+  ;; three events twice in a row. The number of repeats will be 5 three times
+  ;; in a row, then 8 twice in a row.
+  (<strong>add-repeats</strong> mrsm '((2 3) (3 2)) '((5 3) (8 2)))
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 vn) mrsm)))
+
+=&gt;
+(1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1) 
+(1 2 3 3 3 3 3 2 1 1 1 1 1 3 1 1 1 1 1 3 2 3 3 3 3 3 3 3 3 1 2 1 1 1 1 1 1
+ 1 1 3 1 1 1 1 1 3 2 2 2 2 2 1) 
+
+;;; Using the :start, :end, and :print arguments
+(let ((mrsm
+       (<a href="#robo515">make-rthm-seq-map</a> 
+        'rsm-test
+        '((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+        :<a href="./palette_lsp.html#robo405">palette</a> (<a href="./rthm-seq-palette_lsp.html#robo524">make-rsp</a> 
+                  'rs-pal
+                  '((1 ((((2 4) q e s s))))
+                    (2 ((((2 4) e s s q))))
+                    (3 ((((2 4) s s q e)))))))))
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 vn) mrsm))
+  (<strong>add-repeats</strong> mrsm '((1 6) (2 6)) '((11 6) (23 3))
+               :start 3
+               :end 11
+               :print t)
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 vn) mrsm)))
+
+=&gt;
+(1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1) 
+2 x 11
+1 x 11
+3 x 11
+1 x 11
+3 x 11
+2 x 11
+1 x 23
+(1 2 3 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 3 3 3 3 3 3 3 3 3 3 3 1
+ 1 1 1 1 1 1 1 1 1 1 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 3 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 3 1 3 2 1) 
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>add-repeats</strong> ((rsm rthm-seq-map) repeat-every repeats &amp;key
+                        (repeat-rest-seqs t) <a href="./palette_lsp.html#robo405">palette</a>
+                        (<a href="./section_lsp.html#robo58">section</a> 1) repeats-indices (start 1) end print)
+</pre>
+
+
+<a name="rthm2dseq2dmap2fadd2drepeats2dsimple"></a>
+<a name="robo511"></a><h2 class=robodoc>rthm-seq-map/add-repeats-simple [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Add repeats of a specified <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> within the given <a href="#robo575">rthm-seq-map</a> object a
+ specified number of times. 
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo575">rthm-seq-map</a> object.
+ - An integer that is the number of the <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> (position within the
+   rthm-seq-map) to be repeated.
+ - An integer that is the number of times that <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> is to be repeated.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :<a href="./section_lsp.html#robo58">section</a>. An integer that is the ID of the <a href="./section_lsp.html#robo58">section</a> in which the repeat
+   operation is to be performed.
+ - :print. T or NIL to indicate whether to print the <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> ID and the
+   number repetitions to the listener. T = print. Default = NIL.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Always returns T.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Print the DATA of the given <a href="#robo575">rthm-seq-map</a>, apply the method, and print again
+;;; to see the difference.
+(let ((mrsm
+       (<a href="#robo515">make-rthm-seq-map</a> 
+        'rsm-test
+        '((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+        :<a href="./palette_lsp.html#robo405">palette</a> (<a href="./rthm-seq-palette_lsp.html#robo524">make-rsp</a> 
+                  'rs-pal
+                  '((1 ((((2 4) q e s s))))
+                    (2 ((((2 4) e s s q))))
+                    (3 ((((2 4) s s q e)))))))))
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 vn) mrsm))
+  (<strong>add-repeats-simple</strong> mrsm 3 13)
+  (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(1 vn) mrsm)))
+
+=&gt;
+(1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1) 
+(1 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1) 
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>add-repeats-simple</strong> ((rsm rthm-seq-map) start-seq repeats &amp;key
+                               (<a href="./section_lsp.html#robo58">section</a> 1) print)
+</pre>
+
+
+<a name="rthm2dseq2dmap2fcheck2dnum2dsequences"></a>
+<a name="robo512"></a><h2 class=robodoc>rthm-seq-map/check-num-sequences [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Check to ensure that each <a href="./player_lsp.html#robo286">player</a> in each <a href="./section_lsp.html#robo58">section</a> of the given <a href="#robo575">rthm-seq-map</a>
+ object has the same number of references as every other <a href="./instrument_lsp.html#robo284">instrument</a>. If not,
+ drop into the debugger with an error.
+
+ NB: This function is called automatically every time <a href="#robo515">make-rthm-seq-map</a> is
+     called so it shouldn't generally be necessary for the user to call this
+     method.  However, if the <a href="#robo575">rthm-seq-map</a> is changed somehow, it might be a
+     good idea to recheck.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo575">rthm-seq-map</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns T if all <a href="./slippery-chicken_lsp.html#robo821">players</a> have the same number of references in each
+ <a href="./section_lsp.html#robo58">section</a>, otherwise drops into the debugger with an error.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Passes the test:
+(let ((rsmt (<a href="#robo515">make-rthm-seq-map</a> 
+             'rsm-test
+             '((sec1 ((vn (rs1a rs3a rs2a))
+                      (va (rs1b rs3b rs2b))
+                      (vc (rs1a rs3b rs2a))))
+               (sec2 ((vn (rs1a rs2a rs1a))
+                      (va (rs1a rs2a rs1b))
+                      (vc (rs1a rs2b rs1a))))
+               (sec3 ((vn (rs1a rs1a rs3a))
+                      (va (rs1a rs1a rs3b))
+                      (vc (rs1a rs1b rs3a))))
+               (sec4 ((vn (rs1a rs1a rs1a))
+                      (va (rs1a rs1a rs1b))
+                      (vc (rs1a rs1b rs1a))))))))
+  (<strong>check-num-sequences</strong> rsmt))
+
+=&gt; T
+
+;;; Doesn't pass the test; drops into debugger with an error.
+(let ((rsmt (<a href="#robo515">make-rthm-seq-map</a> 
+             'rsm-test
+             '((sec1 ((vn (rs1a rs3a rs2a))
+                      (va (rs1b rs3b))
+                      (vc (rs1a rs3b rs2a))))
+               (sec2 ((vn (rs1a))
+                      (va (rs1a rs2a rs1b))
+                      (vc (rs1a rs2b rs1a))))
+               (sec3 ((vn (rs1a rs3a))
+                      (va (rs1a))
+                      (vc (rs1a rs1b rs3a))))
+               (sec4 ((vn (rs1a))
+                      (va (rs1a rs1a rs1b))
+                      (vc (rs1a rs1a))))))))
+  (<strong>check-num-sequences</strong> rsmt))
+
+=&gt;
+rthm-seq-map::check-num-sequences: In <a href="#robo575">rthm-seq-map</a> RSM-TEST-5, <a href="./instrument_lsp.html#robo284">instrument</a> VA: 
+Each <a href="./instrument_lsp.html#robo284">instrument</a> must have the same number of sequences for any given <a href="./section_lsp.html#robo58">section</a>: 
+(RS1B RS3B)
+   [Condition of type SIMPLE-ERROR]
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>check-num-sequences</strong> (rsm)
+</pre>
+
+
+<a name="rthm2dseq2dmap2fget2dmap2drefs"></a>
+<a name="robo513"></a><h2 class=robodoc>rthm-seq-map/get-map-refs [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> 29-Dec-2010
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Return the list of <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> references for the given <a href="./player_lsp.html#robo286">player</a> and
+ <a href="./section_lsp.html#robo58">section</a>.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo575">rthm-seq-map</a> object.
+ - The ID of the <a href="./section_lsp.html#robo58">section</a> in which the references are sought.
+ - The ID of the <a href="./player_lsp.html#robo286">player</a> for whom the references are sought.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A list of references (each of which might also  be a list).
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(let ((rsmt (<a href="#robo515">make-rthm-seq-map</a> 
+             'rsm-test-5
+             '((sec1 ((vn (rs1 rs3 rs2))
+                      (va (rs2 rs3 rs1))
+                      (vc (rs3 rs1 rs2))))
+               (sec2 ((vn (rs1 rs2 rs1))
+                      (va (rs2 rs1 rs3))
+                      (vc (rs1 rs3 rs3))))
+               (sec3 ((vn (rs1 rs1 rs3))
+                      (va (rs1 rs3 rs2))
+                      (vc (rs3 rs2 rs3)))))
+             :<a href="./palette_lsp.html#robo405">palette</a> (<a href="./rthm-seq-palette_lsp.html#robo524">make-rsp</a> 
+                       'rs-pal
+                       '((rs1 ((((2 4) q e s s))))
+                         (rs2 ((((2 4) e s s q))))
+                         (rs3 ((((2 4) s s q e)))))))))
+  (<strong>get-map-refs</strong> rsmt 'sec3 'vc))
+
+=&gt; (RS3 RS2 RS3)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>get-map-refs</strong> ((rsm rthm-seq-map) <a href="./section_lsp.html#robo58">section</a> <a href="./player_lsp.html#robo286">player</a>)
+</pre>
+
+
+<a name="rthm2dseq2dmap2fget2dtime2dsig2dral"></a>
+<a name="robo514"></a><h2 class=robodoc>rthm-seq-map/get-time-sig-ral [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Collate the IDs of all <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> objects in a given <a href="#robo575">rthm-seq-map</a> into groups
+ based on identical time signatures and return this as a
+ <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> object that has the same structure of the map. 
+
+ Instead of having the list of <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> references for each
+ <a href="./section_lsp.html#robo58">section</a>/<a href="./instrument_lsp.html#robo284">instrument</a>, the method returns an <a href="./assoc-list_lsp.html#robo111">assoc-list</a> whose keys are the
+ <a href="./time-sig_lsp.html#robo291">time-sig</a> tags, with the corresponding data being circular-sclists of
+ <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> IDs.  
+
+ The result is a <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> for each <a href="./instrument_lsp.html#robo284">instrument</a>/<a href="./section_lsp.html#robo58">section</a> that can
+ be queried to find the <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> refs of all rthm-seqs that share the same
+ bar/<a href="./time-sig_lsp.html#robo291">time-sig</a> structure; e.g., all those that have a 2/4 bar followed by a
+ 3/4 bar etc.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo575">rthm-seq-map</a> object.
+ - A <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> object.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(let* ((mini
+        (<a href="./slippery-chicken_lsp.html#robo811">make-slippery-chicken</a>
+         '+mini+
+         :<a href="./ensemble_lsp.html#robo393">ensemble</a> '(((sax (alto-sax :midi-channel 1))))
+         :<a href="./set-palette_lsp.html#robo302">set-palette</a> '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+         :<a href="./set-map_lsp.html#robo576">set-map</a> '((1 (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)))
+         :<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> '((1 ((((4 4) h q e s s) ((2 4) h))))
+                             (2 ((((4 4) h q e s s))))
+                             (3 ((((4 4) h q e s s))))
+                             (4 ((((4 4) h q q) ((2 4) q q))))
+                             (5 ((((4 4) h q e s s))))
+                             (6 ((((4 4) h q q) ((2 4) q q)))))
+         :<a href="#robo575">rthm-seq-map</a> '((1 ((sax (1 2 3 5 2 4 6 2 3 1 3 2 3 2 1 3 2)))))))
+       (tsral (<strong>get-time-sig-ral</strong> (<a href="#robo575">rthm-seq-map</a> mini) (<a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> mini))))
+  (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> 1 tsral))
+
+=&gt; 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 1
+                      linked: T
+                      full-ref: (1)
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 1, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-+MINI+-RTHM-SEQ-MAP", tag: NIL, 
+data: (
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: (1 SAX), next: NIL
+NAMED-OBJECT: id: SAX, tag: NIL, 
+data: (
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0404-0204", tag: NIL, 
+data: (4 6 1)
+**************
+
+       
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0404", tag: NIL, 
+data: (5 3 2)
+**************
+)
+**************
+)
+**************
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>get-time-sig-ral</strong> ((rsm rthm-seq-map) (rsp rthm-seq-<a href="./palette_lsp.html#robo405">palette</a>))
+</pre>
+
+
+<a name="rthm2dseq2dmap2fmake2drthm2dseq2dmap"></a>
+<a name="robo515"></a><h2 class=robodoc>rthm-seq-map/make-rthm-seq-map [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Make a <a href="#robo575">rthm-seq-map</a> object.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - The ID of the <a href="#robo575">rthm-seq-map</a> object to be made.
+ - A list of nested lists, generally taking the form 
+   '((section1 ((player1 (<a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> ids))
+                (player2 (<a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> ids))
+                (etc... (etc...))))
+     (section2 ((player1 (<a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> ids))
+                (player2 (<a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> ids))
+                (etc...)))
+     (etc...))
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :<a href="./palette_lsp.html#robo405">palette</a>. A <a href="./palette_lsp.html#robo405">palette</a> object or NIL. If a <a href="./palette_lsp.html#robo405">palette</a> object is specified or
+   defined here, it will be automatically bound to the given <a href="#robo575">rthm-seq-map</a>
+   object. Default = NIL.
+ - :warn-not-found. T or NIL to indicate whether a warning is printed when
+   an index which doesn't exist is used for look-up.  
+   T = warn. Default = NIL.
+ - :replacements. A list of lists in the format 
+   '(((1 2 vla) 3 20b) ((2 3 vln) 4 16a)) that indicate changes to
+   individual elements of lists within the given <a href="#robo575">rthm-seq-map</a> object. (Often
+   <a href="#robo575">rthm-seq-map</a> data is generated algorithmically but individual elements of
+   the lists need to be changed.)  Each such list indicates a change, the
+   first element of the list being the reference into the <a href="#robo575">rthm-seq-map</a> (the
+   vla <a href="./player_lsp.html#robo286">player</a> of <a href="./section_lsp.html#robo58">section</a> 1, subsection 2 in the first example here), the
+   second element is the nth of the data list for this key to change, and
+   the third is the new data. Default = NIL.
+ - :recurse-simple-data. T or NIL to indicate whether to recursively
+   instantiate a <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> in place of data that appears to be a
+   simple <a href="./assoc-list_lsp.html#robo111">assoc-list</a> (i.e. a 2-element list). If NIL, the data of 2-element
+   lists whose second element is a number or a symbol will be ignored,
+   therefore remaining as a list. For example, this data would normally
+   result in a recursive call: (y ((2 23) (7 28) (18 2))).  
+   T = recurse. Default = T.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A <a href="#robo575">rthm-seq-map</a> object.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Straightforward usage
+(<strong>make-rthm-seq-map</strong> 'rsm-test
+                    '((1 ((vn (1 2 3 4))
+                          (va (2 3 4 1))
+                          (vc (3 4 1 2))))
+                      (2 ((vn (4 5 6))
+                          (va (5 6 4))
+                          (vc (6 4 5))))
+                      (3 ((vn (7 8 9 1 2))
+                          (va (8 9 1 2 7))
+                          (vc (9 1 2 7 8))))))
+
+=&gt;
+
+RTHM-SEQ-MAP: num-<a href="./slippery-chicken_lsp.html#robo821">players</a>: 3 
+              <a href="./slippery-chicken_lsp.html#robo821">players</a>: (VA VC VN)
+SC-MAP: <a href="./palette_lsp.html#robo405">palette</a> id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: RSM-TEST, tag: NIL, 
+data: (
+[...]
+
+;;; An example using the :replacements argument and binding directly to a
+;;; specified <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> object.
+(<strong>make-rthm-seq-map</strong> 'rsm-test
+                   '((1 ((vn (1 2 3 4))
+                         (va (2 3 4 1))
+                         (vc (3 4 1 2))))
+                     (2 ((vn (4 5 6))
+                         (va (5 6 4))
+                         (vc (6 4 5))))
+                     (3 ((vn (7 8 9 1 2))
+                         (va (8 9 1 2 7))
+                         (vc (9 1 2 7 8)))))
+                   :<a href="./palette_lsp.html#robo405">palette</a> (<a href="./rthm-seq-palette_lsp.html#robo524">make-rsp</a> 
+                             'rs-pal
+                             '((rs1 ((((2 4) q e s s))))
+                               (rs2 ((((2 4) e s s q))))
+                               (rs3 ((((2 4) s s q e))))))
+                   :replacements '(((1 vn) 2 7)
+                                   ((2 va) 1 1)
+                                   ((3 vc) 1 0)))
+
+=&gt;
+RTHM-SEQ-MAP: num-<a href="./slippery-chicken_lsp.html#robo821">players</a>: 3 
+              <a href="./slippery-chicken_lsp.html#robo821">players</a>: (VA VC VN)
+SC-MAP: <a href="./palette_lsp.html#robo405">palette</a> id: RS-PAL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: RSM-TEST, tag: NIL, 
+data: (
+[...]
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>make-rthm-seq-map</strong> (id rsm &amp;key (<a href="./palette_lsp.html#robo405">palette</a> nil) (warn-not-found nil)
+                                      (replacements nil)
+                                      (recurse-simple-data t))
+</pre>
+
+
+<a name="rthm2dseq2dmap2frsm2dcount2dnotes"></a>
+<a name="robo516"></a><h2 class=robodoc>rthm-seq-map/rsm-count-notes [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Returns the number of notes in the given <a href="#robo575">rthm-seq-map</a> object for the
+ specified <a href="./player_lsp.html#robo286">player</a> and <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a>.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo575">rthm-seq-map</a> object.
+ - The ID of the <a href="./player_lsp.html#robo286">player</a> whose notes are to be counted.
+ - The <a href="./rthm-seq-palette_lsp.html#robo301">rthm-seq-palette</a> object whose <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> object IDs are referred to by
+   the given <a href="#robo575">rthm-seq-map</a> object.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - T or NIL to indicate whether to count just the number of notes that need
+   new events (i.e., not counting tied notes; also not counting chords,
+   since chords need only one <a href="./event_lsp.html#robo428">event</a>) or the total number of notes in that
+   <a href="./player_lsp.html#robo286">player</a>'s part in the score. T = count just attacked notes. Default = T. 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns an integer that is the number of notes counted.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(let ((rsmt (<a href="#robo515">make-rthm-seq-map</a> 
+             'rsm-test
+             '((sec1 ((vn (rs1 rs3 rs2))
+                      (va (rs2 rs3 rs1))
+                      (vc (rs3 rs1 rs2))))
+               (sec2 ((vn (rs1 rs2 rs1))
+                      (va (rs2 rs1 rs3))
+                      (vc (rs1 rs3 rs3))))
+               (sec3 ((vn (rs1 rs1 rs3))
+                      (va (rs1 rs3 rs2))
+                      (vc (rs3 rs2 rs3)))))))
+      (rspt (<a href="./rthm-seq-palette_lsp.html#robo524">make-rsp</a> 
+             'rs-pal
+             '((rs1 ((((2 4) q (e) s s))))
+               (rs2 ((((2 4) e +s (s) q))))
+               (rs3 ((((2 4) (s) s +q e))))))))
+  (print (<strong>rsm-count-notes</strong> rsmt 'vn rspt))
+  (print (<strong>rsm-count-notes</strong> rsmt 'va rspt nil)))
+
+=&gt; 
+23 
+27
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>rsm-count-notes</strong> (<a href="#robo575">rthm-seq-map</a> <a href="./player_lsp.html#robo286">player</a> <a href="./palette_lsp.html#robo405">palette</a> &amp;optional (<a href="./rhythm_lsp.html#robo435">just-attacks</a> t))
+</pre>
+
+
+<a name="rthm2dseq2dmap2fset2dmap2drefs"></a>
+<a name="robo518"></a><h2 class=robodoc>rthm-seq-map/set-map-refs [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo575">rthm-seq-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> 30-Dec-2010
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Change the reference IDs of the specified <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> objects in the given
+ <a href="#robo575">rthm-seq-map</a> object.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo575">rthm-seq-map</a> object.
+ - The ID of the <a href="./section_lsp.html#robo58">section</a> in which references are to be set.
+ - The ID of the <a href="./player_lsp.html#robo286">player</a> for whom the references are to be set.
+ - A list of the new <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> IDs (references) 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns the modified named object whose ID is the specified <a href="./player_lsp.html#robo286">player</a>.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(let ((rsmt (<a href="#robo515">make-rthm-seq-map</a> 
+             'rsm-test-5
+             '((sec1 ((vn (rs1 rs3 rs2))
+                      (va (rs2 rs3 rs1))
+                      (vc (rs3 rs1 rs2))))
+               (sec2 ((vn (rs1 rs2 rs1))
+                      (va (rs2 rs1 rs3))
+                      (vc (rs1 rs3 rs3))))
+               (sec3 ((vn (rs1 rs1 rs3))
+                      (va (rs1 rs3 rs2))
+                      (vc (rs3 rs2 rs3)))))
+             :<a href="./palette_lsp.html#robo405">palette</a> (<a href="./rthm-seq-palette_lsp.html#robo524">make-rsp</a> 
+                       'rs-pal
+                       '((rs1 ((((2 4) q e s s))))
+                         (rs2 ((((2 4) e s s q))))
+                         (rs3 ((((2 4) s s q e)))))))))
+  (<strong>set-map-refs</strong> rsmt 'sec2 'vc '(rs2 rs3 rs2)))
+
+=&gt; 
+NAMED-OBJECT: id: VC, tag: NIL, 
+data: (RS2 RS3 RS2)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>set-map-refs</strong> ((rsm rthm-seq-map) <a href="./section_lsp.html#robo58">section</a> <a href="./player_lsp.html#robo286">player</a> new-refs)
+</pre>
+
+
+<a name="sc2dmap2frthm2dseq2dmap"></a>
+<a name="robo575"></a><h2 class=robodoc>sc-map/rthm-seq-map [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sc-map_lsp.html#robo414">sc-map</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>rthm-seq-map</strong>
+
+ File:             <a href="#robo_top_of_doc">rthm-seq-map.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
+                   <a href="./sc-map_lsp.html#robo414">sc-map</a> -&gt; <strong>rthm-seq-map</strong>
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Implementation of the <strong>rthm-seq-map</strong> class which maps
+                   references to <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> objects for the <a href="./slippery-chicken_lsp.html#robo821">players</a> in the
+                   <a href="./piece_lsp.html#robo56">piece</a>.  Extensions to the <a href="./sc-map_lsp.html#robo414">sc-map</a> superclass are the
+                   collection of all the <a href="./slippery-chicken_lsp.html#robo821">players</a> in the <a href="./piece_lsp.html#robo56">piece</a> and a
+                   check to make sure that each list each <a href="./instrument_lsp.html#robo284">instrument</a> has the
+                   same number of <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> references for each <a href="./section_lsp.html#robo58">section</a>. 
+
+                   Instances of this class must declare sections and
+                   <a href="./slippery-chicken_lsp.html#robo821">players</a> so if the <a href="./piece_lsp.html#robo56">piece</a> is in one <a href="./section_lsp.html#robo58">section</a>, give it
+                   the label 1 or whatever, e.g.
+
+                   '((1
+                      ((vln (2 20 1 9 10 22 16 25 6 14 21 17 4 9 13 2))
+                       (vla (2 23 3 7 13 22 19 3 8 12 23 14 2 10 15 4))
+                       (vc (2 21 3 12 11 22 16 1 8 17 23 20 24 9 12 2)))))
+
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    July 28th 2001
+
+ $$ Last modified:  14:17:07 Fri Jan 20 2023 CET
+
+ SVN ID: $Id$
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/rthm-seq-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

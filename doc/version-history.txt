@@ -1,0 +1,1934 @@
+There are many changes made between each release; only the changes relevant to
+the user are included below.
+
+================================================================================
+25/2/21: 1.0.12
+
+Directory structure reorganised a little to reflect the merging of the
+regression tests with the main github repo. Nothing significant in this move
+reflected in workflow expectations, but users should be aware that cloning or
+updating from git will result in a different directory structure as well as the
+downloading of the documentation.
+
+--------------------------------------------------------------------------------
+Date:   Thu Feb 11 09:15:39 2021 +0100
+
+pitch-seq::get-notes: instead of issuing an error, will use the
+default-chord-fun if instrument's chords slot is t but chord-function is NIL
+
+--------------------------------------------------------------------------------
+Date:    Sat Feb 6 15:05:57 2021 +0100
+
+moved dynamic updates from pedal-to-controllers into add-mark :after in the
+event class
+
+--------------------------------------------------------------------------------
+Date:    Fri Feb 5 11:05:27 2021 +0100
+
+added print-to-string for chord
+
+--------------------------------------------------------------------------------
+Date:    Wed Feb 3 15:00:28 2021 +0100
+
+ensured that remix-in gets a list with at least four different elements
+
+--------------------------------------------------------------------------------
+Date:    Tue Feb 2 20:57:37 2021 +0100
+
+changes to respell-bar and enharmonics-exist because they used the old
+is-single-pitch method, which allowed one-note chords
+
+--------------------------------------------------------------------------------
+Date:    Sat Jan 30 17:41:17 2021 +0100
+
+improvements to sndfilenet::auto-followers
+
+--------------------------------------------------------------------------------
+Date:    Sat Jan 30 17:41:06 2021 +0100
+
+improvements to sndfilenet::auto-followers
+
+--------------------------------------------------------------------------------
+Date:    Fri Jan 29 13:16:17 2021 +0100
+
+added get-parameters function (for getting parameter values out of text files
+(e.g. reaper))
+
+--------------------------------------------------------------------------------
+Date:    Thu Jan 28 17:02:30 2021 +0100
+
+warning instead of error when sndfile::duration slot given is > snd's duration
+
+--------------------------------------------------------------------------------
+Date:    Thu Jan 28 16:32:05 2021 +0100
+
+added reaper file writing routines (reaper.lsp)
+
+--------------------------------------------------------------------------------
+Date:    Fri Jan 22 14:07:27 2021 +0100
+
+some changes to reflect round-to-nearest improvements, plus ccl tests
+
+--------------------------------------------------------------------------------
+Date:    Fri Jan 22 14:01:39 2021 +0100
+
+due to rounding/float differences between sbcl and ccl, round-to-nearest now
+first rounds to the nearest cent before then finding the nearest note in the
+given scale
+
+--------------------------------------------------------------------------------
+Date:    Wed Jan 6 14:32:07 2021 +0100
+
+added :auto-followers to make-sfn (sndfilenet)
+
+--------------------------------------------------------------------------------
+Date:    Wed Jan 6 14:24:49 2021 +0100
+
+improvements to find-sndfile and sndfilenet::reset
+
+--------------------------------------------------------------------------------
+Date:    Wed Dec 30 18:39:39 2020 +0100
+
+added :min-hairpin to write-lp-data-for-all to allow hairpins to be made longer
+and avoid lilypond warnings / dynamic collisions
+
+--------------------------------------------------------------------------------
+Date:    Wed Dec 30 18:04:34 2020 +0100
+
+add-player now puts a double bar line at the end of the piece
+
+--------------------------------------------------------------------------------
+Date:    Wed Dec 30 13:07:13 2020 +0100
+
+add-player methods now use keyword args instead of optional
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 29 17:50:38 2020 +0100
+
+added best-clef tests
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 29 17:50:03 2020 +0100
+
+improvements to auto-clefs through provision of best-clef-aux-new and switching
+between this and the old method via set-sc-config 'best-clef-aux-fun
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 29 13:24:20 2020 +0100
+
+auto-clefs: separated in-clef-range and needs-ledgers out of
+orig. best-clef-aux
+
+--------------------------------------------------------------------------------
+Date:    Sat Dec 19 19:25:54 2020 +0100
+
+updated porc-equal to reflect new is-single-pitch
+
+--------------------------------------------------------------------------------
+Date:    Sat Dec 19 19:20:08 2020 +0100
+
+changed event::is-single-pitch to return t for one-note chord objects
+
+--------------------------------------------------------------------------------
+Date:    Sat Dec 19 12:27:49 2020 +0100
+
+force-in-range (ins chord) now removes duplicate pitches
+
+--------------------------------------------------------------------------------
+Date:    Thu Dec 17 17:50:50 2020 +0100
+
+instrument::reset-stats now also resets lowest/highest-played to nil
+
+--------------------------------------------------------------------------------
+Date:    Thu Dec 10 16:24:13 2020 +0100
+
+in lilypond, rgb marks added to events now use (again) override to apply colour
+to whole chords, whereas when rgb added to pitches within chords, we use tweak
+so as to be able to colour individual chord notes
+
+--------------------------------------------------------------------------------
+Date:    Thu Dec 10 10:33:23 2020 +0100
+
+lilypond has made changes to the way landscape scores and system spacing is
+defined; these are reflected in write-lp-data-for-all
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 8 18:44:33 2020 +0100
+
+osc-send-cue-nums method (sndfilenet.lsp) is now called preload-cues
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 8 18:30:51 2020 +0100
+
+Merge pull request #42 from levinericzimmermann/add-ekmelily
+
+added new scale twelfth-tone-ekm (thanks Levin!)
+
+--------------------------------------------------------------------------------
+Date:    Mon Dec 7 13:13:33 2020 +0100
+
+added new scale twelfth-tone-ekm (Levin)
+
+--------------------------------------------------------------------------------
+Date:    Tue Dec 1 17:22:15 2020 +0100
+
+changed default Verdana to Courier font in cmn.lsp as OSX Preview app was
+complaining font was missing
+
+--------------------------------------------------------------------------------
+Date:    Tue Nov 10 20:47:03 2020 +0100
+
+improvements to sndfilenet
+
+--------------------------------------------------------------------------------
+Date:    Mon Nov 9 13:38:22 2020 +0100
+
+changes to sc-sc-bsd, sndfile-ext, and sndfilenet to make osc-eval handle list
+results by sending mulitple udp messages
+
+
+
+================================================================================
+27/10/20: 1.0.11
+
+--------------------------------------------------------------------------------
+
+Date:   Thu Oct 8 17:16:21 2020 +0200
+
+changed computer midi prog number to 100 (was 1 by default)
+
+--------------------------------------------------------------------------------
+Date: Thu Oct 8 17:06:53 2020 +0200
+
+added event::add-midi-program-changes method
+
+--------------------------------------------------------------------------------
+Date: Thu Oct 8 16:30:19 2020 +0200
+
+added (set-sc-config 'rhythm-scale-warning ...) to avoid warning when we scale a
+rhythm to 10x a whole note
+
+--------------------------------------------------------------------------------
+Date: Wed Oct 7 14:31:02 2020 +0200
+
+added :max-start-time arg to events-update-time
+
+--------------------------------------------------------------------------------
+Date: Tue Sep 29 14:54:56 2020 +0200
+
+piano-chord-fun-both-hands can accept a nil index
+
+--------------------------------------------------------------------------------
+Date: Tue Sep 29 11:45:28 2020 +0200
+
+added scale-as-rests to rhythm class
+
+--------------------------------------------------------------------------------
+Date: Mon Sep 28 15:35:44 2020 +0200
+
+added get-last-bar and get-last-event method to the sc class
+
+--------------------------------------------------------------------------------
+Date: Sat Sep 26 17:16:51 2020 +0200
+
+all stats now generated by default for instrument (incl. highest/lowest played)
+
+--------------------------------------------------------------------------------
+Date: Sat Sep 26 16:42:52 2020 +0200
+
+added highest/lowest played pitches of whole piece to instrument objects. Note
+that the slippery-chicken method update-instrument-slots will need to be called
+before these are generated.
+
+--------------------------------------------------------------------------------
+Date: Fri Sep 25 15:13:09 2020 +0200
+
+changed assoc-list map-data and nmap-data to take &rest args instead of
+&optional
+
+--------------------------------------------------------------------------------
+Date: Thu Sep 24 19:05:27 2020 +0200
+
+attached tempo to first event when calling bars-to-sc
+
+--------------------------------------------------------------------------------
+Date: Thu Sep 24 17:04:10 2020 +0200
+
+positions and subseqs functions added, time-sig preferences in
+get-preferred-time-sig
+
+--------------------------------------------------------------------------------
+Date: Wed Sep 23 16:40:23 2020 +0200
+
+added another float-int-p case to rsb:auto-tuplets so that tuplets can start
+e.g. on the 4th semiquaver of a 7/16 bar
+
+--------------------------------------------------------------------------------
+Date: Wed Sep 23 15:46:16 2020 +0200
+
+added default tempo-map to make-minimal-sc
+
+--------------------------------------------------------------------------------
+Date: Thu Sep 17 16:19:49 2020 +0200
+
+added :start-at to procession
+
+--------------------------------------------------------------------------------
+Date: Sat Sep 12 18:31:11 2020 +0200
+
+added make-events3
+
+--------------------------------------------------------------------------------
+Date: Sat Aug 22 16:23:13 2020 +0200
+
+made osc-call print results of eval if :print t
+
+--------------------------------------------------------------------------------
+Date: Tue Aug 11 17:59:20 2020 +0100
+
+added get-nearest-note methods
+
+--------------------------------------------------------------------------------
+Date: Tue Aug 11 11:08:32 2020 +0100
+
+Added :scaled-by and :scaled-to args to clm-play
+
+--------------------------------------------------------------------------------
+Date: Wed Aug 5 14:54:39 2020 +0200
+
+made sure new player added to instruments-hierarch when calling
+double-player-inverted
+
+--------------------------------------------------------------------------------
+Date: Tue Aug 4 21:25:21 2020 +0200
+
+stopped shorten-large-fast-leaps from creating fast repeated notes
+
+--------------------------------------------------------------------------------
+Date: Tue Aug 4 14:47:58 2020 +0200
+
+improved get-set-for-bar-num method
+
+--------------------------------------------------------------------------------
+Date: Tue Aug 4 14:23:19 2020 +0200
+
+don't force fast-leap-threshold to .125 in sc-init
+
+--------------------------------------------------------------------------------
+Date: Tue Aug 4 12:16:43 2020 +0200
+
+updated common-notes to always return at least a 2nd value (the common pitches)
+and octavise-repeated-notes now has the option to only transpose the repeated
+notes, not any other notes in a chord
+
+--------------------------------------------------------------------------------
+Date: Mon Aug 3 19:04:32 2020 +0200
+
+made error into warning for pitches not in set in method
+shorten-large-fast-leaps
+
+--------------------------------------------------------------------------------
+Date: Thu Jul 16 13:51:52 2020 +0200
+
+added octavise-repeated-notes and double-player-inverted methods to
+slippery-chicken class
+
+--------------------------------------------------------------------------------
+Date: Sat Jul 11 16:10:01 2020 +0200
+
+added rsb::invert method to turn rests into notes and vice-versa
+
+--------------------------------------------------------------------------------
+Date: Sat Jul 11 13:00:47 2020 +0200
+
+added get-set-for-bar-num method
+
+--------------------------------------------------------------------------------
+Date: Wed Jul 8 17:35:17 2020 +0200
+
+fixed event::write-xml problem that was writing noteheads twice
+
+--------------------------------------------------------------------------------
+Date: Fri Jul 3 13:43:35 2020 +0100
+
+fancy logo (thanks to Dan Ross)
+
+--------------------------------------------------------------------------------
+Date: Wed Jul 1 13:24:09 2020 +0200
+
+added one-to-many utilities fun; also made sure float-list= has lists of equal
+length
+
+--------------------------------------------------------------------------------
+Date: Wed Jun 17 15:51:16 2020 +0100
+
+(Dan Ross) Added import-audio.lsp -- very much BETA stage at the mo
+
+--------------------------------------------------------------------------------
+Date: Tue Jun 16 23:44:51 2020 +0200
+
+made lilypond colours tweaks rather than overrides so that individual notes in a
+chord can be coloured differently
+
+--------------------------------------------------------------------------------
+Date: Tue Jun 16 18:33:32 2020 +0200
+
+changed note-head shape code in lilypond to use \tweak instead of \once (thanks
+to Simon Bahr)
+
+--------------------------------------------------------------------------------
+Date: Tue Jun 16 13:56:58 2020 +0200
+
+fixed get-lp-data in pitch class so that note heads come first
+
+--------------------------------------------------------------------------------
+Date: Tue Jun 16 12:29:05 2020 +0200
+
+changed get-lp-data in the pitch class so that marks aren't downcased (with
+Simon Bahr)
+
+--------------------------------------------------------------------------------
+Date: Tue Jun 9 18:01:14 2020 +0200
+
+added reset-midi-channels to sc class so that events whose pitch objects have
+been changed take on the midi-channels allocated to their players
+
+--------------------------------------------------------------------------------
+Date: Sat Jun 6 17:13:58 2020 +0200
+
+added make-rsp-from-unit-multipliers; rests can now be indicated in the
+submethods using () notation
+
+--------------------------------------------------------------------------------
+Date: Sat May 2 11:05:30 2020 +0200
+
+made rm-pitch-duplicates remove enharmonics
+
+--------------------------------------------------------------------------------
+Date: Fri May 1 18:09:10 2020 +0200
+
+wrap method now transposes optionally
+
+--------------------------------------------------------------------------------
+Date: Fri May 1 14:32:58 2020 +0200
+
+added invert and top-to-bottom chord methods
+
+--------------------------------------------------------------------------------
+Date: Fri May 1 11:32:34 2020 +0200
+
+added make-chord-from-intervals function
+
+--------------------------------------------------------------------------------
+Date: Thu Apr 23 14:49:32 2020 +0200
+
+interpolate improvements
+
+--------------------------------------------------------------------------------
+Date: Wed Apr 15 11:15:59 2020 +0200
+
+get-sndfiles can now handle pathnames if e.g. we've passed the result of
+merge-pathnames
+
+--------------------------------------------------------------------------------
+Date: Sat Apr 11 15:29:57 2020 +0200
+
+added semitones-precision function for rounding transpositions to nearest 1/4
+tone, 1/8 tone etc.
+
+--------------------------------------------------------------------------------
+Date: Wed Apr 8 17:40:08 2020 +0200
+
+added write-to-file function
+
+--------------------------------------------------------------------------------
+Date: Tue Mar 31 15:10:07 2020 +0200
+
+increased buffer size in osc-call from osc-sc-bsd.lsp
+
+--------------------------------------------------------------------------------
+Date: Tue Mar 31 12:48:17 2020 +0200
+
+changed assoc-list::add so that 1) we can pass a 3-element list to include a
+tag; 2) we use the previously ignored optional arg to allow elements to be added
+to the front of the data list instead of always to the end
+
+--------------------------------------------------------------------------------
+Date: Tue Mar 3 13:59:11 2020 +0000
+
+Improvements for write-list-to-coll
+
+--------------------------------------------------------------------------------
+Date: Tue Feb 18 16:09:55 2020 +0000
+
+Added write-list-to-coll function (Dan Ross)
+
+--------------------------------------------------------------------------------
+Date: Tue Feb 18 13:37:28 2020 +0000
+
+enharmonics: multiple players now allowed. start, end, and players arguments can
+handle nil
+
+--------------------------------------------------------------------------------
+Date: Mon Feb 17 16:52:55 2020 +0000
+
+Updated sharp-to-flat and flat-to-sharp methods
+
+--------------------------------------------------------------------------------
+Date: Mon Feb 17 15:10:34 2020 +0100
+
+set freq of sndfile to be c4 if auto-detect returns 0Hz
+
+--------------------------------------------------------------------------------
+Date: Thu Feb 13 14:49:23 2020 +0100
+
+bug fix to events-update-time: start-time-qtrs default of 0.0 was overriding
+start-time of 1.0; now it's dependent if start-time-qtrs isn't explicitly given
+
+--------------------------------------------------------------------------------
+Date: Tue Feb 11 10:04:48 2020 +0000
+
+Updated and fixed flats-to-sharps and shaprs-to-flats methods
+
+--------------------------------------------------------------------------------
+Date: Sat Feb 8 13:06:58 2020 +0100
+
+force rqq durations to be rationals (so 1.5 in a 3/8 bar works as it's forced to
+be 3/2
+
+--------------------------------------------------------------------------------
+Date: Thu Feb 6 17:43:31 2020 +0000
+
+Added string-to-list function
+
+--------------------------------------------------------------------------------
+Date: Fri Jan 24 10:14:19 2020 +0100
+
+added support for xdg-open on linux (auto-opening files: with Simon Bahr)
+
+--------------------------------------------------------------------------------
+Date: Fri Jan 24 08:05:26 2020 +0100
+
+all.lsp now loads osc code on linux
+
+--------------------------------------------------------------------------------
+Date: Thu Jan 23 12:10:38 2020 +0100
+
+modified osc-eval to automatically return T or NIL to 1 or 0
+
+--------------------------------------------------------------------------------
+Date: Wed Jan 22 11:35:31 2020 +0000
+
+fast-microtone-to-chromatic added a t to check-ties call
+
+--------------------------------------------------------------------------------
+Date: Mon Jan 13 17:21:38 2020 +0000
+
+Added get-section-bar-nums method (Dan Ross)
+
+--------------------------------------------------------------------------------
+Date: Mon Jan 13 14:44:35 2020 +0000
+
+Added perform-new-analysis? key arg to (get-spectrum) (Dan Ross)
+
+--------------------------------------------------------------------------------
+Date: Fri Jan 10 15:29:38 2020 +0100
+
+fix to get-section-refs and midi-play so that all sections are rendered for sc
+objects created via bars-to-sc
+
+--------------------------------------------------------------------------------
+Date: Fri Jan 10 10:51:38 2020 +0100
+
+added warn optional arg to get-section
+
+--------------------------------------------------------------------------------
+Date: Thu Jan 9 17:12:13 2020 +0000
+
+bars-to-sc now lets you add a new section to an already existing part (Dan Ross)
+
+--------------------------------------------------------------------------------
+Date: Thu Jan 9 10:11:53 2020 +0100
+
+fixes to nearest-chromatic pitch slot for 12th tone scale
+
+--------------------------------------------------------------------------------
+Date: Sat Jan 4 14:21:36 2020 +0100
+
+fix to get-nearest-by-time rsb method
+
+--------------------------------------------------------------------------------
+Date: Fri Jan 3 11:54:12 2020 +0100
+
+added midi-play-pitch-list function
+
+--------------------------------------------------------------------------------
+Date: Mon Dec 16 15:31:58 2019 +0100
+
+added get-nearest-by-start-time to rthm-seq-bar class
+
+--------------------------------------------------------------------------------
+Date: Sat Dec 14 12:09:25 2019 +0100
+
+moved the plot method out of the popcorn class into the sclist class
+
+--------------------------------------------------------------------------------
+Date: Sat Dec 7 12:16:45 2019 +0100
+
+added 'midi-play-ignore-marks to set-sc-config so that if certain marks (such as
+flag-head for harmonic node) mean a note shouldn't be played, we ignore it.
+
+--------------------------------------------------------------------------------
+Date: Fri Dec 6 14:36:16 2019 +0100
+
+added avoid-common-elements function to aid with ordering lists of sublists
+
+--------------------------------------------------------------------------------
+Date: Thu Dec 5 11:39:43 2019 +0100
+
+added Lilypond support for breva, longa, and maxima rhythms
+
+--------------------------------------------------------------------------------
+Date: Tue Dec 3 17:27:57 2019 +0100
+
+fixed bug in sc::initial-staff-lines: for (percussion) instruments that don't
+use 5 staff lines, the instrument object was not being stored in an initial
+event's instrument-change slot, so write-xml was failing
+
+--------------------------------------------------------------------------------
+Date: Sat Nov 16 00:10:49 2019 +0000
+
+Added single-pitch-chord-to-pitch method
+
+--------------------------------------------------------------------------------
+Date: Tue Nov 12 07:41:45 2019 +0100
+
+improvement to make-hammer-friendly routine
+
+--------------------------------------------------------------------------------
+Date: Fri Nov 8 09:30:49 2019 +0100
+
+changed the assoc-list add method so that it no longer clones objects it adds;
+also fixed a bug in bars-to-sc that caused all programme changes to be written
+to midi channel 1 for all new players added
+
+--------------------------------------------------------------------------------
+Date:   Tue Oct 29 12:40:15 2019 +0000
+
+Added sharp-to-flat, flat-to-sharp, and similar methods (Dan Ross)
+
+================================================================================
+9/10/19: 1.0.10. Thanks to Dan Ross who has now come on board and helped address
+several of the issues below. 
+
+--------------------------------------------------------------------------------
+Date:   Fri Oct 4 16:26:12 2019 +0200
+
+added sc::make-hammer-friendly to slightly reduce durations of repeated notes so
+that they work on disklaviers
+
+--------------------------------------------------------------------------------
+Date:   Mon Sep 30 18:25:21 2019 +0200
+
+added a call to set-last-midi-channel in events-update-time so that we can keep
+track of midi-channels globally and make an educated guess as to which channel
+pedal marks should be sent on when they're attached to rests.
+
+--------------------------------------------------------------------------------
+Date:   Wed Sep 18 19:03:13 2019 +0100
+
+added tie-repeated-notes method to slippery-chicken class
+
+--------------------------------------------------------------------------------
+Date:   Wed Sep 18 18:17:35 2019 +0100
+
+added pitch-or-chord= and pitch-or-chord-p functions
+
+--------------------------------------------------------------------------------
+Date:   Mon Sep 16 01:31:47 2019 +0100
+
+clm-play snd-transitions can now be set with a custom envelope
+
+--------------------------------------------------------------------------------
+Date:   Thu Sep 5 12:50:56 2019 +0100
+
+clm-play can now accept lists of sound-file-palette-refs
+
+--------------------------------------------------------------------------------
+Date:   Wed Sep 4 18:29:16 2019 +0100
+
+Added fast-microtone-to-chromatic method to slippery-chicken class
+
+--------------------------------------------------------------------------------
+Date:   Sun Sep 1 11:27:25 2019 +0100
+
+Added map-over-events method to slippery chicken class
+
+--------------------------------------------------------------------------------
+Date:   Sun Sep 1 11:03:48 2019 +0100
+
+Added map-over-notes method to slippery chicken class
+
+--------------------------------------------------------------------------------
+Date:   Fri Aug 30 10:44:41 2019 +0200
+
+fixed wavelab to audacity marker translation for new format
+
+--------------------------------------------------------------------------------
+Date:   Thu Aug 22 17:22:10 2019 +0100
+
+Added swap-marks method
+
+--------------------------------------------------------------------------------
+Date:   Thu Aug 22 15:26:32 2019 +0100
+
+Added :decay-time arg to clm-play
+
+--------------------------------------------------------------------------------
+Date:   Sat Aug 3 16:45:44 2019 +0200
+
+added new sc-config key to turn on/off warnings when shortening fast leaps:
+'shorten-large-fast-leaps-warning
+
+--------------------------------------------------------------------------------
+Date:   Tue Jul 16 11:33:16 2019 +0200
+
+added 'pitch-seq-no-pitches-warning to +slippery-chicken-config-data+ so that
+not even warnings are issued when rest sequences are created to make up for no
+notes being available to an instrument
+
+--------------------------------------------------------------------------------
+Date:   Fri Jul 12 18:26:48 2019 +0200
+
+putting pedalling into the :marks slot of a rthm-seq now works i.e. you don't
+have to do it post-gen anymore
+
+--------------------------------------------------------------------------------
+Date:   Fri Jun 21 10:03:32 2019 +0200
+
+fixed bug in least-used-octave-aux where very high notes would trigger an error;
+also added :highest-wins key arg to limit-shift-octave rather than always using
+T
+
+--------------------------------------------------------------------------------
+Date:   Thu May 23 13:20:52 2019 +0200
+
+added afu.lsp for sets of deterministic 'quasi-random' numbers
+
+--------------------------------------------------------------------------------
+Date:   Mon Feb 25 19:58:35 2019 +0100
+
+added autoc.lsp for auto-correlation pitch detection of sound files
+
+--------------------------------------------------------------------------------
+Date:   Mon Feb 25 19:26:52 2019 +0100
+
+fixed bug in the tl-set limit method (limiting the subsets wasn't being saved)
+
+--------------------------------------------------------------------------------
+Date:   Sat Feb 23 13:13:32 2019 +0100
+
+made it possible to pass symbols instead of numbers to change-bar-line-type
+
+--------------------------------------------------------------------------------
+Date:   Wed Jan 30 18:56:24 2019 +0100
+
+better chord importing via midi-file-to-events
+
+--------------------------------------------------------------------------------
+Date:   Sat Jan 12 16:45:08 2019 +0100
+
+added section-densities method to slippery-chicken as well as limits and
+new-limits to sclist
+
+--------------------------------------------------------------------------------
+Date:   Thu Jan 10 15:49:52 2019 +0100
+
+added force-natural-harmonics and force-harmonics methods to slippery-chicken
+class
+
+--------------------------------------------------------------------------------
+Date:   Thu Jan 10 10:16:09 2019 +0100
+
+improvements to natural-harmonic? instrument method to allow harp harmonics
+and return nodal points as pitches
+
+--------------------------------------------------------------------------------
+Date:   Tue Jan 8 19:34:32 2019 +0100
+
+added natural-harmonic? method to instrument class, along with related slots, to
+determine whether any given pitch can be played as a natural harmonic on a
+string instrument
+
+--------------------------------------------------------------------------------
+Date:   Sat Jan 5 11:51:11 2019 +0100
+
+now issuing a warning when a tempo < 4 is written to a MIDI file
+
+--------------------------------------------------------------------------------
+Date:   Fri Jan 4 17:47:39 2019 +0100
+
+bug fix for single player clm-play calls with rests at beginning (thanks Levin
+Zimmermann
+
+--------------------------------------------------------------------------------
+Date:   Fri Dec 21 18:58:36 2018 +0100
+
+minor updates to sndfile handling
+
+--------------------------------------------------------------------------------
+Date:   Fri Dec 21 18:29:13 2018 +0100
+
+sndfile-palette no longer triggers an error when it can't find a sndfile, rather
+it simply warns and skips the offender
+
+--------------------------------------------------------------------------------
+Date:   Fri Dec 7 18:33:44 2018 +0100
+
+improvements to the orchestrate method, in particular dynamic handling
+
+--------------------------------------------------------------------------------
+Date:   Thu Dec 6 16:45:58 2018 +0100
+
+improvement to orchestrate method to avoid instruments' missing pitches; also
+added mallet-chord-fun-both-hands and piano-chord-fun-both-hands for better
+chord selection
+
+--------------------------------------------------------------------------------
+Date:   Thu Dec 6 11:20:41 2018 +0100
+
+orchestration now handles artificial-harmonics for the double-bass correctly
+
+--------------------------------------------------------------------------------
+Date:   Fri Nov 30 09:07:37 2018 +0100
+
+fixed event-list-to-midi-file for playing chords
+
+--------------------------------------------------------------------------------
+Date:   Wed Nov 28 19:21:17 2018 +0100
+
+added amplitude slot to pitch class, voice-chord method to event class so that
+we can have individual amplitudes for notes in a chord
+
+--------------------------------------------------------------------------------
+Date:   Wed Nov 28 18:25:04 2018 +0100
+
+added orchestrate statistics
+
+--------------------------------------------------------------------------------
+Date:   Fri Nov 23 17:00:49 2018 +0100
+
+combo-chord-possible? searching a bit deeper and working better
+
+--------------------------------------------------------------------------------
+Date:   Thu Nov 22 10:16:32 2018 +0100
+
+improvements to orchestrate method; fix to xml-placement and order swapped of
+xml-words optional args to avoid errors
+
+--------------------------------------------------------------------------------
+Date:   Tue Nov 20 17:58:55 2018 +0100
+
+fix to event's (setf pitch-or-chord) &friends: in twelfth-tone scale and acting
+on very low pitches, changing the sounding pitch would result in incorrect
+transposed/written pitches; this was due to rounding errors in Lisp (our old
+friend) so the arithmetic is now limited to 4 decimal places
+
+--------------------------------------------------------------------------------
+Date:   Mon Nov 19 11:07:47 2018 +0100
+
+fix to the number of dots added when rqq is used; see the too-many-dots flet in
+fix-nested-tuplets method
+
+--------------------------------------------------------------------------------
+Date:   Thu Nov 8 18:21:02 2018 +0100
+
+added the orchestrate method to slippery-chicken; preliminary but limited tests
+looking good
+
+--------------------------------------------------------------------------------
+Date:   Thu Nov 1 11:05:01 2018 +0100
+
+added the nmap-data to the assoc-list class for destructively modifying data of
+elements
+
+--------------------------------------------------------------------------------
+Date:   Tue Oct 30 18:12:37 2018 +0100
+
+added the add-player method to the slippery-chicken class. This is a
+post-generation method to add a player using the structure of an existing
+player. All the new player's bars will be empty (rest bars) but ready for adding
+events to.
+
+--------------------------------------------------------------------------------
+Date:   Thu Oct 25 17:33:55 2018 +0200
+
+abstracted out code for the sc-set thin method then built it into a chord method
+also
+
+--------------------------------------------------------------------------------
+Date:   Fri Oct 19 17:47:00 2018 +0200
+
+added the force-in-range method to slippery-chicken
+
+--------------------------------------------------------------------------------
+Date:   Fri Oct 19 14:37:01 2018 +0200
+
+all round-to-nearest methods now use the :scale keyword argument
+
+--------------------------------------------------------------------------------
+Date:   Thu Oct 18 17:15:38 2018 +0200
+
+added :players keyword as a synonym for :voices in midi-play; also the
+set-midi-channels method in the slippery-chicken class allows events' channels
+to be changed post-generation
+
+--------------------------------------------------------------------------------
+Date:   Thu Oct 18 16:38:15 2018 +0200
+
+added round-to-nearest method to slippery-chicken class so you can make a piece
+in one scale then round to another, less accurate scale; also added
+'update-slots-handle-ties to config data so that old pieces can still be created
+without error (see globals.lsp)
+
+--------------------------------------------------------------------------------
+Date:   Sat Oct 13 11:05:56 2018 +0200
+
+fix to write-xml so that notes in chords write their notehead property after
+duration and tie info for the whole event
+
+--------------------------------------------------------------------------------
+Date:   Fri Oct 12 09:05:24 2018 +0200
+
+fixed the bars-to-sc function to make empty bars work (set the
+player-section-ref slot of the bars properly)
+
+--------------------------------------------------------------------------------
+Date:   Wed Oct 10 17:40:01 2018 +0200
+
+if no pitches are available given the current set/instrument combo, we can now
+switch off errors and have rest sequences instead: (set-sc-config
+'pitch-seq-no-pitches-error nil)
+
+--------------------------------------------------------------------------------
+Date:   Tue Sep 25 08:25:21 2018 +0200
+
+change to event::force-artificial-harmonic to make sure that perfect fourths are
+used instead of enharmonic equivalents
+
+--------------------------------------------------------------------------------
+Date:   Mon Sep 24 18:01:44 2018 +0200
+
+added set-standard-range function for the standard instrument palette
+
+--------------------------------------------------------------------------------
+Date:   Mon Sep 24 10:50:00 2018 +0200
+
+change to set-palette-from-spectra to round-to-nearest at the set (rather than
+palette) level and remove-duplicate pitches after that operation
+
+--------------------------------------------------------------------------------
+Date:   Fri Sep 21 17:56:31 2018 +0200
+
+added max-items method to sclist class (meaning also available in chords, sets,
+etc.
+
+
+================================================================================
+20/9/18: 1.0.9
+
+------------------------------------------------------------------------
+Date:   Thu Sep 20 14:35:50 2018 +0100
+
+updated app to use sbcl 1.4.11, clm-5, and slime-2.22
+------------------------------------------------------------------------
+Date:   Wed Sep 19 14:45:31 2018 +0200
+
+added the thin method to slippery-chicken to thin out events in a
+slippery-chicken object using an activity curve.
+
+------------------------------------------------------------------------
+Date:   Sat Sep 8 15:05:11 2018 +0200
+
+pitch-round now copies over midi-channel and other slots
+
+------------------------------------------------------------------------
+Date:   Thu Sep 6 15:29:57 2018 +0200
+
+added :transposition-curve to make-slippery chicken
+
+------------------------------------------------------------------------
+Date:   Fri Aug 24 15:45:56 2018 +0200
+
+added set-palette-from-spectra method and also midi-channel arguments to
+make-complete-set so that when experimenting with algorithmic set generation,
+microtonal midi files are written by default.
+
+------------------------------------------------------------------------
+Date:   Thu Aug 23 17:58:00 2018 +0200
+
+added :lowest and :highest to transpose methods
+
+------------------------------------------------------------------------
+Date:   Sat Jul 28 10:37:14 2018 +0200
+
+added as default (auto-set-subset-id
++slippery-chicken-standard-instrument-palette+) to set the subset-id slot to be
+the same as the id slot for each instrument in the palette.
+
+------------------------------------------------------------------------
+Date:   Fri Jul 27 19:15:27 2018 +0200
+
+changed the get-notes method to look for subsets with the player ID before
+looking for the instrument's subset-id 
+
+------------------------------------------------------------------------
+Date:   Fri Jul 27 18:00:36 2018 +0200
+
+added auto-set-subset-id to instrument and instrument-palette classes and also
+updated get-notes method to not issue an error when there is a subset-id for the
+instrument but no corresponding subset in the set
+
+------------------------------------------------------------------------
+Date:   Mon Jul 23 11:31:18 2018 +0200
+
+changed default midi-channel from 0 to 1 in make-pitch
+
+------------------------------------------------------------------------
+Date:   Tue Jul 17 14:50:47 2018 +0200
+
+added Dan Ross's change to make-minimal-sc to avoid errors (thanks Dan!)
+
+------------------------------------------------------------------------
+Date:   Wed Jul 11 13:02:49 2018 +0200
+
+bug fix for create-analysis-data (thanks again Dan Ross!)
+
+------------------------------------------------------------------------
+Date:   Thu Feb 22 12:31:27 2018 +0100
+
+music-xml can now handle fingerings of any integer, not just 0-5
+
+------------------------------------------------------------------------
+Date:   Tue Feb 20 12:43:23 2018 +0100
+
+added set-limits-by-section to slippery-chicken class, for retroactively
+creating set-limits curves on a section-by-section basis
+
+------------------------------------------------------------------------
+Date:   Mon Feb 19 15:36:38 2018 +0100
+
+bug fix to update-rsm
+
+------------------------------------------------------------------------
+Date:   Tue Feb 13 17:36:29 2018 +0100
+
+added count-ref method to sc-map
+
+------------------------------------------------------------------------
+Date:   Sat Feb 3 11:53:56 2018 +0100
+
+added slippery-chicken method map-over-sequenzes
+
+------------------------------------------------------------------------
+Date:   Fri Feb 2 16:18:57 2018 +0100
+
+added the overwrite keyword arg to rthm-seq-palette's create-psps methods so
+that where some pitch curves are given, others can be auto-created
+
+------------------------------------------------------------------------
+Date:   Sat Jan 27 12:09:21 2018 +0100
+
+added rsp-id slot to rthm-seq-bar to show provenance of bars
+
+------------------------------------------------------------------------
+Date:   Thu Jan 25 15:09:47 2018 +0100
+
+add-player added to the rthm-seq-map class
+
+------------------------------------------------------------------------
+Date:   Wed Jan 10 19:48:25 2018 +0100
+
+made ensemble (recurse-simple-data :initform nil) so that if we have doubling
+players with two instruments we don't get errors from auto-midi-channels 
+
+------------------------------------------------------------------------
+Date:   Wed Jan 10 17:22:03 2018 +0100
+
+changed divisions from 16383 to 16382 in rsb::write-xml: this resolves 5/8 rest
+bar XML import problems in dorico 
+
+------------------------------------------------------------------------
+Date:   Mon Jan 8 16:48:57 2018 +0100
+
+bug fix for writing grace notes in xml files
+
+------------------------------------------------------------------------
+Date:   Fri Jan 5 10:53:43 2018 +0100
+
+bug fix make-rhythm
+
+------------------------------------------------------------------------
+Date:   Fri Jan 5 10:43:21 2018 +0100
+
+added :is-tied-from to make-rhythm and make-event
+
+------------------------------------------------------------------------
+Date:   Sun Dec 31 17:38:55 2017 +0100
+
+fixed set-written-pitch-or-chord bug caused by the newly destructive nature of
+the tranpose method 
+
+------------------------------------------------------------------------
+Date:   Tue Dec 12 14:48:20 2017 +0100
+
+fixed list-permutations problem that saw returned lists getting screwed up
+without copy-list (for Sebastian Wendt) 
+
+
+================================================================================
+18.11.17:  1.0.8
+
+Date:   Tue Oct 31 16:59:50 2017 +0100
+
+updated app to use sbcl 1.4.0, clm-5, and slime-2.20; reconfigured
+some packages (including common music 2) to use the ASDF 3.0 interface
+
+------------------------------------------------------------------------
+Date:   Mon Oct 30 11:02:55 2017 +0100
+
+added sndfilenet class, moving some sndfile-palette functionality into
+the new class; those who have used max-play and friends should revisit
+code where necessary
+------------------------------------------------------------------------
+Date:   Mon Aug 7 15:47:09 2017 +0100
+
+made the transposition method (chord, sets) destructive by default 
+------------------------------------------------------------------------
+Date:   Sat Jun 10 15:17:32 2017 +0100
+
+added try-all function to wolfram
+------------------------------------------------------------------------
+Date:   Wed Jun 7 16:05:15 2017 +0000
+
+added wolfram.lsp for one-dimensional binary cellular automata
+lots of wolfram codes added
+------------------------------------------------------------------------
+Date:   Sat Jun 3 13:24:40 2017 +0000
+
+added sc-set::thin
+------------------------------------------------------------------------
+Date:   Fri Apr 7 11:42:29 2017 +0000
+
+fix to xml tuplet problems (rsb::recreate-tuplets)
+------------------------------------------------------------------------
+Date:   Mon Mar 27 17:38:19 2017 +0000
+
+added music-xml output support
+------------------------------------------------------------------------
+Date:   Fri Mar 3 10:24:43 2017 +0000
+
+added dedication slot to slippery-chicken class (for dedication lines
+in Lilypond scores)
+------------------------------------------------------------------------
+Date:   Thu Feb 16 17:50:35 2017 +0000
+
+created rthm-seq-bar::replace-rhythms, moving over most of functionality of
+replace-events (piece class)
+------------------------------------------------------------------------
+Date:   Thu Feb 16 11:21:20 2017 +0000
+
+fix to rsb::auto-beam so as not to back out once we see 1/4 note rests
+------------------------------------------------------------------------
+Date:   Mon Feb 13 20:28:35 2017 +0000
+
+moved get-last from assoc-list to sclist
+------------------------------------------------------------------------
+Date:   Thu Feb 9 20:31:43 2017 +0000
+
+added player-ambitus method to slippery-chicken class
+------------------------------------------------------------------------
+Date:   Tue Feb 7 20:46:53 2017 +0000
+
+added scaling of letter-value to rhythm::scale
+------------------------------------------------------------------------
+Date:   Thu Feb 2 16:49:16 2017 +0000
+
+added :fixed-width to lp-display and friends so complex rhythms are
+represented by their horizontal width as well as rhythmic value
+------------------------------------------------------------------------
+Date:   Mon Jan 30 20:20:01 2017 +0000
+
+added round-to-nearest to set-palette class, and count-microtones to
+slippery-chicken
+------------------------------------------------------------------------
+Date:   Sat Dec 17 15:15:09 2016 +0000
+
+fixed extensions nil problem when init'ing sndfile-palettes in make-sc
+------------------------------------------------------------------------
+Date:   Thu Dec 15 15:01:12 2016 +0000
+
+added harp instrument
+------------------------------------------------------------------------
+Date:   Tue Dec 13 09:54:08 2016 +0000
+
+added transpose method to set-palette class
+------------------------------------------------------------------------
+Date:   Thu Nov 10 11:31:00 2016 +0000
+
+added midi2qlist for playing converted MIDI files in PD/Max
+------------------------------------------------------------------------
+Date:   Fri Aug 26 08:14:29 2016 +0000
+
+added add-half-beat-rest to sc and rsb classes
+------------------------------------------------------------------------
+Date:   Wed Jul 13 08:51:56 2016 +0000
+
+increased array size for control-wave so we can get the sample at the
+full duration
+------------------------------------------------------------------------
+Date:   Mon Jul 11 19:36:33 2016 +0000
+
+added control-wave.lsp
+
+
+
+================================================================================
+2.7.16:  1.0.7
+
+------------------------------------------------------------------------
+r5873 | medward2 | 2016-06-28 17:44:27 +0100 (Tue, 28 Jun 2016) | 1 line
+
+added midi-file-to-events function for importing complete midi files
+to slippery chicken events
+------------------------------------------------------------------------
+r5872 | medward2 | 2016-06-28 12:28:07 +0100 (Tue, 28 Jun 2016) | 1
+line
+
+fixed pitch-bend writing in midi files
+------------------------------------------------------------------------
+r5871 | medward2 | 2016-06-28 12:00:24 +0100 (Tue, 28 Jun 2016) | 1 line
+
+midi-to-note now handles floats and so returns microtones where
+appropriate 
+------------------------------------------------------------------------
+r5868 | medward2 | 2016-06-16 18:02:40 +0100 (Thu, 16 Jun 2016) | 1 line
+
+pitch lists / sets now work without specifying 8ve numbers for every
+note in the list
+------------------------------------------------------------------------
+r5867 | medward2 | 2016-06-16 16:11:18 +0100 (Thu, 16 Jun 2016) | 1 line
+
+added :tempo-change key arg to make-event to actually make a tempo
+change with the new event
+------------------------------------------------------------------------
+r5848 | medward2 | 2016-06-14 09:53:34 +0100 (Tue, 14 Jun 2016) | 1 line
+
+midi velocities are now updated at midi-play, including hairpins, so
+that dynamics apply to following notes.
+------------------------------------------------------------------------
+r5830 | medward2 | 2016-06-08 11:46:38 +0100 (Wed, 08 Jun 2016) | 1 line
+
+added rescale function
+------------------------------------------------------------------------
+r5814 | medward2 | 2016-05-30 20:08:21 +0100 (Mon, 30 May 2016) | 1 line
+
+added sost^ mark (piano middle pedal up and down) and fixed small bug
+in rm-repeated-pitches
+------------------------------------------------------------------------
+r5792 | medward2 | 2016-05-25 20:08:08 +0100 (Wed, 25 May 2016) | 1
+line
+
+fibonacci-transitions can now even have a morph-env
+------------------------------------------------------------------------
+r5724 | medward2 | 2016-05-13 14:47:23 +0100 (Fri, 13 May 2016) | 1 line
+
+changed rsb::is-full to return a second value indicating over or
+underfull bars 
+------------------------------------------------------------------------
+r5722 | medward2 | 2016-05-13 12:19:49 +0100 (Fri, 13 May 2016) | 1 line
+
+made make-rest-bar have a default of nil for write-time-sig
+------------------------------------------------------------------------
+r5719 | medward2 | 2016-05-03 12:35:16 +0100 (Tue, 03 May 2016) | 1 line
+
+added staff-basic-distance to write-lp-data-for-all in order to be
+able to increase the distance between staves within a system
+------------------------------------------------------------------------
+r5718 | medward2 | 2016-05-03 08:27:35 +0100 (Tue, 03 May 2016) | 1
+line
+
+added year slot to slippery-chicken--this will be added to composer
+line at the top of scores
+------------------------------------------------------------------------
+r5716 | medward2 | 2016-04-29 20:30:58 +0100 (Fri, 29 Apr 2016) | 1
+line
+
+fix to get-notes so that cmn-display on a rthm-seq-palette works
+(printing was crashing) 
+------------------------------------------------------------------------
+r5689 | medward2 | 2016-04-26 17:34:37 +0100 (Tue, 26 Apr 2016) | 1 line
+
+added midi-control-changes slot to event class; also made add-mark set
+control messages for pedalling if ped, ped-up, or ped^ is added to an
+event
+------------------------------------------------------------------------
+r5666 | medward2 | 2016-04-23 19:42:07 +0100 (Sat, 23 Apr 2016) | 1
+line
+
+added rm-repeated-pitches to slippery chicken class to make 'tunes'
+with changing pitches where repeated pitches were somehow generated
+------------------------------------------------------------------------
+r5631 | medward2 | 2016-04-19 18:49:02 +0100 (Tue, 19 Apr 2016) | 1
+line
+
+added possibility to (set-sc-config 'verbose-pitch-selection t) so we
+can see details of the pitch selection algorithm when calling
+make-slippery-chicken
+------------------------------------------------------------------------
+r5630 | medward2 | 2016-04-11 11:20:14 +0100 (Mon, 11 Apr 2016) | 1
+line
+
+changed osc-call's sequence length from 512 to 4096 to increase the
+amount of data we can send between apps
+------------------------------------------------------------------------
+r5593 | medward2 | 2016-03-05 17:06:47 +0000 (Sat, 05 Mar 2016) | 1 line
+
+added the wrap method to chord and fixed some issues with
+transpositions
+------------------------------------------------------------------------
+r5533 | medward2 | 2016-01-30 14:08:12 +0000 (Sat, 30 Jan 2016) | 1
+line
+
+added cmn-display to the set-map class by abstracting the code from
+the set-palette class into functions that deal with lists of set
+objects (and recursive palettes) and making the class methods merely
+placeholders to call the cmn-display-sets function
+------------------------------------------------------------------------
+r5532 | medward2 | 2016-01-29 20:17:57 +0000 (Fri, 29 Jan 2016) | 1
+line
+
+added :permutate to auto-sequence to allow for a different sequence
+selection algorithm aimed at the same goal
+
+
+
+================================================================================
+18.1.16:  1.0.6
+
+------------------------------------------------------------------------
+r5440 | medward2 | 2015-11-14 14:20:25 +0000 (Sat, 14 Nov 2015) | 1 line
+
+added more voices to the standard instrument palette and allowed use
+of tenor-8vb clef (for tenor voice)
+------------------------------------------------------------------------
+r5439 | medward2 | 2015-11-14 12:42:34 +0000 (Sat, 14 Nov 2015) | 1 line
+
+added instrument-change check for staff-lines
+------------------------------------------------------------------------
+r5438 | medward2 | 2015-11-13 11:32:35 +0000 (Fri, 13 Nov 2015) | 1 line
+
+documented arbitrary LP code
+------------------------------------------------------------------------
+r5422 | medward2 | 2015-11-13 10:53:08 +0000 (Fri, 13 Nov 2015) | 1 line
+
+made sure starting percussion clef and < 5 starting staff lines works
+------------------------------------------------------------------------
+r5421 | medward2 | 2015-11-13 10:17:23 +0000 (Fri, 13 Nov 2015) | 1 line
+
+instrument objects can now specify :staff-lines and changing instrument
+at any point in a piece will change the number of staff lines if
+necessary (works only in Lilypond)
+
+------------------------------------------------------------------------
+r5420 | medward2 | 2015-10-21 12:25:48 +0100 (Wed, 21 Oct 2015) | 1 line
+
+added two-sided option to write-lp-data-for-all/lp-display
+------------------------------------------------------------------------
+r5404 | medward2 | 2015-10-03 18:55:06 +0100 (Sat, 03 Oct 2015) | 1 line
+
+added :pan-fun to clm-play
+------------------------------------------------------------------------
+r5399 | medward2 | 2015-10-02 18:37:27 +0100 (Fri, 02 Oct 2015) | 1 line
+
+added kontakt-to-sfp method for converting .nki files to
+soundfile-palettes.
+------------------------------------------------------------------------
+r5397 | medward2 | 2015-10-02 10:40:31 +0100 (Fri, 02 Oct 2015) | 1 line
+
+fixed clm-play to handle chords correctly
+------------------------------------------------------------------------
+r5396 | medward2 | 2015-10-01 22:01:46 +0100 (Thu, 01 Oct 2015) | 1 line
+
+added :snd-selector to clm-play so we can choose sndfiles by e.g. pitch
+after using sfp:set-frequency-from-filename for working with sample
+libraries
+------------------------------------------------------------------------
+r5393 | medward2 | 2015-09-30 15:24:09 +0100 (Wed, 30 Sep 2015) | 1 line
+
+added print-for-init to sndfile-palette class so we can save palettes to
+a file for reading back in after doing freq analysis
+------------------------------------------------------------------------
+r5391 | medward2 | 2015-09-25 15:01:07 +0100 (Fri, 25 Sep 2015) | 1 line
+
+fixed bug in make-sfp-from-folder when there are no subfolders; also
+made automatic freq detection an option in sndfile-palette, rather than
+default when freq isn't given for a sndfile
+------------------------------------------------------------------------
+r5388 | medward2 | 2015-09-17 17:40:26 +0100 (Thu, 17 Sep 2015) | 1 line
+
+midi-play: can now pass a function to :force-velocity e.g. to randomise
+events' amplitudes
+------------------------------------------------------------------------
+r5387 | medward2 | 2015-09-16 17:26:21 +0100 (Wed, 16 Sep 2015) | 1 line
+
+added coloured markers to pexpand-reaper-markers
+------------------------------------------------------------------------
+r5384 | medward2 | 2015-09-07 12:01:50 +0100 (Mon, 07 Sep 2015) | 1 line
+
+added auto-correlation pitch detection as a default for all sndfile
+objects, unless frequency is passed 'by hand'
+------------------------------------------------------------------------
+r5383 | medward2 | 2015-09-04 15:38:25 +0100 (Fri, 04 Sep 2015) | 1 line
+
+added pexpand-reaper-markers function
+------------------------------------------------------------------------
+r5381 | medward2 | 2015-08-20 15:55:02 +0100 (Thu, 20 Aug 2015) | 1 line
+
+limit-shift-octave method now also in the set-palette class, with curves
+------------------------------------------------------------------------
+r5376 | medward2 | 2015-08-12 17:40:43 +0100 (Wed, 12 Aug 2015) | 1 line
+
+added chord class's similarity method to compare two chords
+------------------------------------------------------------------------
+r5374 | medward2 | 2015-08-06 18:10:52 +0100 (Thu, 06 Aug 2015) | 1 line
+
+added spectra.lsp and others for calculating spectral data
+e.g. get-spectra-al
+------------------------------------------------------------------------
+r5373 | medward2 | 2015-08-05 15:43:50 +0100 (Wed, 05 Aug 2015) | 1 line
+
+added get-spectrum.lsp
+------------------------------------------------------------------------
+r5367 | medward2 | 2015-07-31 11:59:18 +0100 (Fri, 31 Jul 2015) | 1 line
+
+added auto-sequence to the set-palette class
+------------------------------------------------------------------------
+r5366 | medward2 | 2015-07-29 12:38:01 +0100 (Wed, 29 Jul 2015) | 1 line
+
+made sc-set a subclass of chord rather than sclist so that it can
+inherit new chord slots such as dissonance and centroid
+------------------------------------------------------------------------
+r5364 | medward2 | 2015-07-28 16:54:26 +0100 (Tue, 28 Jul 2015) | 1 line
+
+added calculate-spectral-centroid to chord class
+------------------------------------------------------------------------
+r5360 | medward2 | 2015-07-27 19:49:56 +0100 (Mon, 27 Jul 2015) | 1 line
+
+added calculate-dissonance for the chord class: uses a perceptually
+validated method for complex chords taking partials into account
+------------------------------------------------------------------------
+r5359 | medward2 | 2015-07-24 21:53:22 +0100 (Fri, 24 Jul 2015) | 1 line
+
+added average-pitch method to sc-set
+------------------------------------------------------------------------
+r5358 | medward2 | 2015-07-24 20:56:12 +0100 (Fri, 24 Jul 2015) | 1 line
+
+added the play-all chord function to play all the notes in the given
+set as a chord
+------------------------------------------------------------------------
+r5357 | medward2 | 2015-07-24 12:23:59 +0100 (Fri, 24 Jul 2015) | 1 line
+
+added get-last-attacks and get-nth-attack-with-tied in rthm-seq-bar
+class
+------------------------------------------------------------------------
+r5355 | medward2 | 2015-07-23 10:55:37 +0100 (Thu, 23 Jul 2015) | 1 line
+
+20/7/15 added set-standard-instrument-slot for convenience of not having
+to type +slippery-chicken-standard-instrument-palette+
+------------------------------------------------------------------------
+r5354 | medward2 | 2015-07-22 19:47:48 +0100 (Wed, 22 Jul 2015) | 1 line
+
+added pexpand-section-length
+------------------------------------------------------------------------
+r5332 | medward2 | 2015-07-01 12:56:52 +0100 (Wed, 01 Jul 2015) | 1 line
+
+added activity-levels-env class
+------------------------------------------------------------------------
+r5291 | medward2 | 2015-06-03 18:34:44 +0100 (Wed, 03 Jun 2015) | 1 line
+
+rests possible--in ()--in rqq
+------------------------------------------------------------------------
+r5287 | medward2 | 2015-05-29 11:15:07 +0100 (Fri, 29 May 2015) | 1 line
+
+replaced and reimplemented rqq code to make it generate proper SC
+rhythms instead of relying on CMN
+------------------------------------------------------------------------
+r5286 | medward2 | 2015-05-25 11:38:28 +0100 (Mon, 25 May 2015) | 1 line
+
+added remove-pair
+------------------------------------------------------------------------
+r5244 | medward2 | 2015-03-26 19:31:05 +0000 (Thu, 26 Mar 2015) | 1 line
+
+added :indent to write-lp-data-for-all (and lp-display) so that you can
+choose to have no first system indentation at the beginning of a score
+------------------------------------------------------------------------
+r5243 | medward2 | 2015-03-26 18:59:10 +0000 (Thu, 26 Mar 2015) | 1 line
+
+added :title to write-lp-data-for-all (and lp-display) so that you can
+choose to display (T) or not display a title (NIL), or add a title on
+the fly by passing a string
+------------------------------------------------------------------------
+r5242 | medward2 | 2015-03-25 19:00:03 +0000 (Wed, 25 Mar 2015) | 1 line
+
+added exaggerate-env
+------------------------------------------------------------------------
+r5222 | medward2 | 2015-03-12 16:34:02 +0000 (Thu, 12 Mar 2015) | 1 line
+
+added limit-high-low to utilities
+------------------------------------------------------------------------
+r5221 | medward2 | 2015-03-05 19:07:16 +0000 (Thu, 05 Mar 2015) | 1 line
+
+changed the default ports of osc-call and osc-sc-eval.maxpat to 8090
+and 8091
+------------------------------------------------------------------------
+r5220 | medward2 | 2015-03-01 16:00:47 +0000 (Sun, 01 Mar 2015) | 1 line
+
+added balance mark/image to lilypond.ly
+------------------------------------------------------------------------
+r5217 | medward2 | 2015-02-04 19:53:00 +0000 (Wed, 04 Feb 2015) | 1 line
+
+added :makenote-compatible to write-antescofo to reverse the order of
+duration and channel in writing midi notes; this means the 4-element
+list of a midi-note can now be sent directly to makenote in maxmsp
+------------------------------------------------------------------------
+r5200 | medward2 | 2015-01-26 17:57:43 +0000 (Mon, 26 Jan 2015) | 1 line
+
+write-antescofo now writes MIDI program changes and can round tempi
+------------------------------------------------------------------------
+r5197 | medward2 | 2015-01-23 18:22:51 +0000 (Fri, 23 Jan 2015) | 1 line
+
+fixes to write-antescofo to make sure bar number messages are being
+sent at the right time
+------------------------------------------------------------------------
+r5195 | medward2 | 2015-01-20 12:38:51 +0000 (Tue, 20 Jan 2015) | 1 line
+
+added time-sig::num-beats-at-tempo
+------------------------------------------------------------------------
+r5193 | medward2 | 2015-01-19 19:25:23 +0000 (Mon, 19 Jan 2015) | 1 line
+
+added messages-first keyword to write-antescofo method to allow
+antescofo messages to be written before the note data
+------------------------------------------------------------------------
+r5192 | medward2 | 2015-01-17 17:55:52 +0000 (Sat, 17 Jan 2015) | 1 line
+
+added :write-player to replace-multi-bar-events so we can ensure all
+new events have the player slot correctly set; default is NIL however
+------------------------------------------------------------------------
+r5175 | medward2 | 2015-01-12 15:51:51 +0000 (Mon, 12 Jan 2015) | 1 line
+
+fix to event::get-lp-data so that it works with nested tuplets
+(e.g. cello in slippery when wet bar 1
+------------------------------------------------------------------------
+r5141 | medward2 | 2014-10-28 21:44:10 +0000 (Tue, 28 Oct 2014) | 1 line
+
+added chord::get-highest
+
+================================================================================
+20.10.14:  1.0.5
+
+------------------------------------------------------------------------
+r5041 | medward2 | 2014-10-04 19:23:37 +0100 (Sat, 04 Oct 2014) | 1 line
+
+added chord method artificial-harmonic?
+------------------------------------------------------------------------
+r5039 | medward2 | 2014-09-07 19:06:44 +0100 (Sun, 07 Sep 2014) | 1 line
+
+changed consolidate-rests and *-max to return the rsb object instead of T;
+improved consolidate-rests method.
+------------------------------------------------------------------------
+r5011 | medward2 | 2014-06-28 16:09:06 +0100 (Sat, 28 Jun 2014) | 1 line
+
+fixed bug in get-events-sorted-by-time hit when calling tie-over...(player
+slots were nil) 
+------------------------------------------------------------------------
+r4993 | medward2 | 2014-06-09 13:41:33 +0100 (Mon, 09 Jun 2014) | 1 line
+
+added :between-system-space to write-lp-data-for-all
+------------------------------------------------------------------------
+r4992 | medward2 | 2014-06-07 19:16:27 +0100 (Sat, 07 Jun 2014) | 1 line
+
+added procession-mirror
+------------------------------------------------------------------------
+r4990 | medward2 | 2014-06-02 18:48:06 +0100 (Mon, 02 Jun 2014) | 1 line
+
+changed app to find cmn-all.lisp and friends in OSX 10.9
+------------------------------------------------------------------------
+r4955 | medward2 | 2014-05-28 17:29:37 +0100 (Wed, 28 May 2014) | 1 line
+
+can now change staff names at sc init
+------------------------------------------------------------------------
+r4952 | medward2 | 2014-05-26 10:45:18 +0100 (Mon, 26 May 2014) | 1 line
+
+osc-call can now be silent; updated doc also
+------------------------------------------------------------------------
+r4933 | medward2 | 2014-05-14 20:13:36 +0100 (Wed, 14 May 2014) | 1 line
+
+antescofo: grace notes working in both group and follower notes
+------------------------------------------------------------------------
+r4930 | medward2 | 2014-05-10 12:57:58 +0100 (Sat, 10 May 2014) | 1 line
+
+added (get-sc-config 'asco-msg-rest-warning)
+------------------------------------------------------------------------
+r4913 | medward2 | 2014-05-09 13:27:39 +0100 (Fri, 09 May 2014) | 1 line
+
+improved rationalize-if-simple
+------------------------------------------------------------------------
+r4897 | medward2 | 2014-05-09 11:31:19 +0100 (Fri, 09 May 2014) | 1 line
+
+fractions and beat2ms added to write-antescofo
+------------------------------------------------------------------------
+r4862 | medward2 | 2014-05-08 11:10:32 +0100 (Thu, 08 May 2014) | 1 line
+
+antescofo labels and messages seem to be working
+------------------------------------------------------------------------
+r4853 | medward2 | 2014-05-05 18:58:45 +0100 (Mon, 05 May 2014) | 1 line
+
+write-antescofo seems to be working.
+------------------------------------------------------------------------
+r4848 | medward2 | 2014-04-30 10:38:30 +0100 (Wed, 30 Apr 2014) | 1 line
+
+added get-clusters
+------------------------------------------------------------------------
+r4846 | medward2 | 2014-04-28 11:18:10 +0100 (Mon, 28 Apr 2014) | 1 line
+
+added envelope-boundaries function for finding sharp changes in envelope y
+values 
+------------------------------------------------------------------------
+r4844 | medward2 | 2014-04-21 20:36:18 +0100 (Mon, 21 Apr 2014) | 1 line
+
+added utilities::interleave
+------------------------------------------------------------------------
+r4827 | medward2 | 2014-04-21 18:48:21 +0100 (Mon, 21 Apr 2014) | 1 line
+
+fixed clm-play bug that was causing sections which begin with a rest seq to
+generate no events for the whole section 
+------------------------------------------------------------------------
+r4810 | medward2 | 2014-04-04 14:51:06 +0100 (Fri, 04 Apr 2014) | 1 line
+
+fixed tuplets to work with any(?) irrational
+------------------------------------------------------------------------
+r4806 | medward2 | 2014-03-24 20:22:21 +0000 (Mon, 24 Mar 2014) | 1 line
+
+added glock, xyl and celesta instruments
+
+
+
+
+
+================================================================================
+14.1.14:   1.0.4
+
+------------------------------------------------------------------------
+r4351 | medward2 | 2014-01-09 09:35:31 +0000 (Thu, 09 Jan 2014) | 1 line
+
+improved remove-extraneous-dynamics; added has-hairpin method, etc.
+------------------------------------------------------------------------
+r4347 | medward2 | 2013-12-31 04:37:04 +0000 (Tue, 31 Dec 2013) | 1 line
+
+added :up and :down to stack et al
+------------------------------------------------------------------------
+r4346 | medward2 | 2013-12-30 12:46:28 +0000 (Mon, 30 Dec 2013) | 1 line
+
+changed white-degree of pitch class to reflect lowest midi octave being -1
+instead of 0; also made is-sharp etc. work for that octave .
+------------------------------------------------------------------------
+r4345 | medward2 | 2013-12-28 13:11:39 +0000 (Sat, 28 Dec 2013) | 1 line
+
+moved notes-before in event:get-lp-data as there was a bug with tuplets and
+notes-before 
+------------------------------------------------------------------------
+r4344 | medward2 | 2013-12-25 05:39:15 +0000 (Wed, 25 Dec 2013) | 1 line
+
+removed src comparison from pitch=
+------------------------------------------------------------------------
+r4339 | medward2 | 2013-12-06 16:40:57 +0000 (Fri, 06 Dec 2013) | 1 line
+
+changed amongst other things :force-midi-channel to T instead of NIL in
+make-chord 
+------------------------------------------------------------------------
+r4335 | medward2 | 2013-12-03 11:22:02 +0000 (Tue, 03 Dec 2013) | 1 line
+
+changes to a-weighting
+------------------------------------------------------------------------
+r4333 | medward2 | 2013-11-18 15:23:07 +0000 (Mon, 18 Nov 2013) | 1 line
+
+added slippery-chicken method get-phrases
+------------------------------------------------------------------------
+r4264 | medward2 | 2013-11-16 12:26:43 +0000 (Sat, 16 Nov 2013) | 1 line
+
+added :clone and :if-not-enough to inefficiently-permutate
+------------------------------------------------------------------------
+r4262 | medward2 | 2013-11-14 17:55:52 +0000 (Thu, 14 Nov 2013) | 1 line
+
+added high-sine and noise graphics & accompanying Lilypond marks
+------------------------------------------------------------------------
+r4261 | medward2 | 2013-11-14 16:07:49 +0000 (Thu, 14 Nov 2013) | 1 line
+
+added 'warn-no-cmn-mark and 'warn-no-lp-mark for sc-config to turn off missing
+mark warnings when writing scores in either package 
+------------------------------------------------------------------------
+r4259 | medward2 | 2013-11-14 14:59:16 +0000 (Thu, 14 Nov 2013) | 1 line
+
+added add-mark-before etc. to pitch so we can have different coloured notes and
+note heads on individual notes in a chord 
+------------------------------------------------------------------------
+r4257 | medward2 | 2013-11-13 19:05:03 +0000 (Wed, 13 Nov 2013) | 1 line
+
+added add-pitches method to event
+------------------------------------------------------------------------
+r4229 | medward2 | 2013-11-04 14:08:06 +0000 (Mon, 04 Nov 2013) | 1 line
+
+clm-play can now call user-defined instruments.
+------------------------------------------------------------------------
+r4226 | medward2 | 2013-10-30 19:57:54 +0000 (Wed, 30 Oct 2013) | 1 line
+
+fixed bug in rsb::total-degrees that was summing tied notes so averaging for
+tessitura wasn't working when sc::update-instruments-total-duration was
+called. 
+------------------------------------------------------------------------
+r4221 | medward2 | 2013-10-28 20:18:37 +0000 (Mon, 28 Oct 2013) | 1 line
+
+re-init working with hyperboles--big step forward to being able to reinitialise
+sc objects with new data 
+------------------------------------------------------------------------
+r4219 | medward2 | 2013-10-26 18:22:58 +0100 (Sat, 26 Oct 2013) | 1 line
+
+added sc-set::add-harmonics and tightened up setf methods
+------------------------------------------------------------------------
+r4202 | medward2 | 2013-10-26 12:08:11 +0100 (Sat, 26 Oct 2013) | 1 line
+
+fixed sc-set so that (setf subsets) inits ral and pitch-objects
+------------------------------------------------------------------------
+r4201 | medward2 | 2013-10-23 21:13:55 +0100 (Wed, 23 Oct 2013) | 1 line
+
+added sc::get-nearest-event method
+------------------------------------------------------------------------
+r4199 | medward2 | 2013-10-23 18:05:39 +0100 (Wed, 23 Oct 2013) | 1 line
+
+added rsp-subseq method
+------------------------------------------------------------------------
+r4194 | medward2 | 2013-10-17 19:38:51 +0100 (Thu, 17 Oct 2013) | 1 line
+
+fixed bug that caused midi-play to fail in pieces with sub-sub-sections
+------------------------------------------------------------------------
+r4192 | medward2 | 2013-10-09 14:34:35 +0100 (Wed, 09 Oct 2013) | 1 line
+
+force-in-range method added
+------------------------------------------------------------------------
+r4189 | medward2 | 2013-09-07 17:34:21 +0100 (Sat, 07 Sep 2013) | 1 line
+
+added defer slot to sc and created sc-init method so it's now possible to
+subclass sc 
+------------------------------------------------------------------------
+r4188 | medward2 | 2013-09-06 10:00:26 +0100 (Fri, 06 Sep 2013) | 1 line
+
+added decimate-env
+------------------------------------------------------------------------
+r4183 | medward2 | 2013-09-04 13:24:32 +0100 (Wed, 04 Sep 2013) | 1 line
+
+fixed bug in rthm-seq::get-nth-rhythm; added rthm-seq::clear-ties-beg-end for
+use in split-into-single-bars 
+------------------------------------------------------------------------
+r4182 | medward2 | 2013-09-03 21:44:42 +0100 (Tue, 03 Sep 2013) | 1 line
+
+added split-into-single-bars for rthm-seq and rsp
+------------------------------------------------------------------------
+r4180 | medward2 | 2013-09-03 10:49:33 +0100 (Tue, 03 Sep 2013) | 1 line
+
+added proportions functions for dividing or expanding durations from
+proportional ratios 
+------------------------------------------------------------------------
+r4177 | medward2 | 2013-08-29 10:40:47 +0100 (Thu, 29 Aug 2013) | 1 line
+
+stack now working by frequency as well as by note intervals
+------------------------------------------------------------------------
+r4174 | medward2 | 2013-08-27 17:52:01 +0100 (Tue, 27 Aug 2013) | 1 line
+
+LP now resolves < 1/4 tones to nearest 1/4 tone; check-beams improved
+
+------------------------------------------------------------------------
+r4170 | medward2 | 2013-08-25 13:38:53 +0100 (Sun, 25 Aug 2013) | 1 line
+
+added sc-force-rest2 and changed get-event to be able to not trigger an error;
+also made rhythms store their bar position and events the player they belong
+to; also added update-instrument-slots and related methods 
+------------------------------------------------------------------------
+r4154 | medward2 | 2013-07-03 16:34:06 +0100 (Wed, 03 Jul 2013) | 1 line
+
+added kontakt-to-coll
+------------------------------------------------------------------------
+r4046 | medward2 | 2013-06-22 11:47:38 +0100 (Sat, 22 Jun 2013) | 1 line
+
+system-open-file now working in CCL
+
+
+
+
+================================================================================
+24.6.13:   1.0.3
+
+------------------------------------------------------------------------
+r4006 | medward2 | 2013-06-19 16:53:34 +0100 (Wed, 19 Jun 2013) | 1 line
+
+Various configuration variables are now more easily user-controllable
+via (set-sc-config) rather than global variables.
+
+------------------------------------------------------------------------
+r3939 | medward2 | 2013-06-18 16:54:41 +0100 (Tue, 18 Jun 2013) | 1 line
+
+'Minimal' versions of slippery chicken Lisp images for Windows and OSX
+are now offered alongside the source code and OSX app.  This will make
+installation very much simpler for new users who don't need
+CLM--essentially just download, unzip, and double-click.
+
+------------------------------------------------------------------------
+r3935 | medward2 | 2013-06-18 12:07:19 +0100 (Tue, 18 Jun 2013) | 1 line
+
+Added ccl.lsp to Common Music to make CM run more easily in Clozure
+Common Lisp.  Clozure can now also open EPS and MIDI files and will
+run Lilypond automatically, opening the PDF afterwards, just like SBCL.
+
+------------------------------------------------------------------------
+r3878 | medward2 | 2013-06-15 13:31:37 +0100 (Sat, 15 Jun 2013) | 1 line
+
+Improvements to osc-sc, including osc-sc-eval.maxpat and a better
+osc-test.maxpat (both in doc/examples).
+
+------------------------------------------------------------------------
+r3877 | medward2 | 2013-06-15 11:27:10 +0100 (Sat, 15 Jun 2013) | 1 line
+
+Updated app to run sbcl-1.1.8 and SLIME 2013-04-02
+
+------------------------------------------------------------------------
+r3743 | medward2 | 2013-06-12 20:03:58 +0100 (Wed, 12 Jun 2013) | 1 line
+
+Added sc-default-amplitude to user configuration instead of always
+defaulting to 0.7 in new event instances.
+
+------------------------------------------------------------------------
+r3740 | medward2 | 2013-06-10 22:39:15 +0100 (Mon, 10 Jun 2013) | 1 line
+
+rthm-seq-map's add-repeats method now has a mechanism to avoid repeating
+rest seqs across simultaneous parts.
+
+================================================================================
+
+10.6.13:    1.0.2
+
+------------------------------------------------------------------------
+r3658 | medward2 | 2013-06-04 22:01:40 +0100 (Tue, 04 Jun 2013) | 1 line
+
+Added OSC support for communication between e.g. MaxMSP and Lisp.
+Only works with SBCL on OSX.
+------------------------------------------------------------------------
+r3625 | medward2 | 2013-06-03 14:15:24 +0100 (Mon, 03 Jun 2013) | 1 line
+
+Added update-app-src function for SVN updating of source from within SC
+------------------------------------------------------------------------
+r3575 | medward2 | 2013-06-01 15:30:20 +0100 (Sat, 01 Jun 2013) | 1 line
+
+added lp-display for generation and opening of the score PDF from within Lisp
+using Lilypond  
+------------------------------------------------------------------------
+r3574 | medward2 | 2013-06-01 13:34:34 +0100 (Sat, 01 Jun 2013) | 1 line
+
+We now use +sc-default-dir+ instead of /tmp when generating files.  cmn-display
+and midi-play also now use the title or object ID as part of the filename
+instead of e.g. cmn.eps 
+------------------------------------------------------------------------
+r3571 | medward2 | 2013-05-30 20:06:45 +0100 (Thu, 30 May 2013) | 1 line
+
+change-pitches can now be passed written pitches for transposing instruments
+------------------------------------------------------------------------
+r3569 | medward2 | 2013-05-30 18:39:00 +0100 (Thu, 30 May 2013) | 1 line
+
+created globals.lsp for user-configured preferences
+------------------------------------------------------------------------
+r3564 | medward2 | 2013-05-28 21:02:29 +0100 (Tue, 28 May 2013) | 1 line
+
+changed get-harmonics to treat arg1 as a specific partial num
+------------------------------------------------------------------------
+r3563 | medward2 | 2013-05-28 11:31:56 +0100 (Tue, 28 May 2013) | 1 line
+
+added :force-naturals to sc::enharmonics
+------------------------------------------------------------------------
+r3558 | medward2 | 2013-05-21 10:36:58 +0100 (Tue, 21 May 2013) | 1 line
+
+Added robodoc for activity-levels class
+------------------------------------------------------------------------
+r3538 | medward2 | 2013-05-18 09:29:15 +0100 (Sat, 18 May 2013) | 1 line
+
+Fixed bug that stopped us making a set-palette from existing sets. Also made
+dynamics given as :marks in a rthm-seq-palette set the amplitude slot of the
+resulting sequence's events.
+
+
+
+
+
+================================================================================
+2.5.13:     1.0.1 
+
+r3469 | medward2 | 2013-04-20 15:45:09 +0100 (Sat, 20 Apr 2013) | 1 line
+
+allowed make-event to specify given pitch as being the written note
+------------------------------------------------------------------------
+r3468 | medward2 | 2013-04-20 13:51:16 +0100 (Sat, 20 Apr 2013) | 1 line
+
+bars-to-sc working with existing sc objects!
+------------------------------------------------------------------------
+r3463 | medward2 | 2013-04-19 09:20:16 +0100 (Fri, 19 Apr 2013) | 1 line
+
+added checks for beams on rests when calling cmn-display
+------------------------------------------------------------------------
+r3461 | medward2 | 2013-04-18 14:12:10 +0100 (Thu, 18 Apr 2013) | 1 line
+
+fixed midi-note-float problem
+------------------------------------------------------------------------
+r3459 | medward2 | 2013-04-03 21:21:31 +0100 (Wed, 03 Apr 2013) | 1 line
+
+added cmn-display-pitch-list method
+------------------------------------------------------------------------
+r3458 | medward2 | 2013-04-03 19:04:38 +0100 (Wed, 03 Apr 2013) | 1 line
+
+get-linear-sequence now accesses rules not the data slot; updated all tests and
+documentation to reflect this 
+------------------------------------------------------------------------
+r3440 | medward2 | 2013-03-29 15:54:14 +0000 (Fri, 29 Mar 2013) | 1 line
+
+added do-lookup-linear method to l-for-lookup
+------------------------------------------------------------------------
+r3435 | medward2 | 2013-03-28 13:04:33 +0000 (Thu, 28 Mar 2013) | 1 line
+
+package exports now sorted
+------------------------------------------------------------------------
+r3432 | medward2 | 2013-03-27 19:50:10 +0000 (Wed, 27 Mar 2013) | 1 line
+
+clarified documentation for pitch-seqs with named instruments; added unit test
+for such 
+------------------------------------------------------------------------
+r3412 | medward2 | 2013-02-12 19:15:25 +0000 (Tue, 12 Feb 2013) | 1 line
+
+added bass guitar to standard instruments palette
+------------------------------------------------------------------------
+r3378 | reed@seanreed.ie | 2012-12-23 15:20:54 +0000 (Sun, 23 Dec 2012) | 1 line
+
+added links to example lisp code for videos.html
+------------------------------------------------------------------------
+r3361 | medward2 | 2012-12-16 11:45:30 +0000 (Sun, 16 Dec 2012) | 1 line
+
+added sndfile-ext class
+
+--------------------------------------------------------------------------------
+EOF

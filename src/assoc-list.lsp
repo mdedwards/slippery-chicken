@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  18:23:54 Fri Jan 26 2024 CET
+;;; $$ Last modified:  14:06:22 Thu Dec  7 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -563,10 +563,8 @@ data: MARK
   ;; again, as basic as it is: we should be calling (setf (data al) ... so that
   ;; setf methods of all dependent classes are called, but at the moment the
   ;; tests don't pass when doing that. Might take a while to figure out.
-  ;; (setf (slot-value al 'data) (if front
-  ;; MDE Fri Jan 26 18:23:16 2024, Heidhausen -- fixed. The issues was in
-  ;; ral-to-set-palette where one tricky case wasn't being handled properly  
-  (setf (data al) (if front
+  (setf (slot-value al 'data) (if front
+  ;; (setf (data al) (if front
                                   (cons named-object (data al))
                                   (econs (data al) named-object)))
   (incf (sclist-length al))

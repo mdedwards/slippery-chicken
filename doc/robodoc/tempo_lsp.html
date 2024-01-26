@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>tempo.lsp</title>
+<!-- Source: ./../../src/tempo.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="linked2dnamed2dobject2ftempo"></a>
+<a name="robo290"></a><h2 class=robodoc>linked-named-object/tempo [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>tempo</strong>
+
+ File:             <a href="#robo_top_of_doc">tempo.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <strong>tempo</strong>
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Implementation of the <strong>tempo</strong> class which holds very simple
+                   <strong>tempo</strong> information, simply the type of beat and the number
+                   of beats per minute etc. 
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    March 11th 2001
+
+ $$ Last modified:  10:56:52 Sat Nov 27 2021 CET
+
+ SVN ID: $Id$
+</pre>
+
+
+<a name="tempo2fmake2dtempo"></a>
+<a name="robo871"></a><h2 class=robodoc>tempo/make-tempo [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo290">tempo</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Make a <a href="#robo290">tempo</a> object.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A number indicating beats per minute. If this is &gt;= 10000 we'll treat the
+ argument as a usecs slot (number of microseconds quarter note) and calcuate
+ the BPM from that. That gives us a maximum BPM of 5999 before we start
+ thinking these are usecs (should be fine).
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :beat. Sets the "beat" value of the beats per minute; i.e., 'q (or 4) for
+   "quarter = xx bpm" etc. Default = 4.
+ - :id. Sets the ID of the <a href="#robo290">tempo</a> object.
+ - :description. A text description (string) of the <a href="#robo290">tempo</a>, such as "Allegro
+   con brio" etc.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A <a href="#robo290">tempo</a> object.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Default beat is a quarter, thus the following makes a <a href="#robo290">tempo</a> object of
+;; quarter=60. 
+(<strong>make-tempo</strong> 60)
+
+=&gt; 
+TEMPO: bpm: 60, beat: 4, beat-value: 4.0, qtr-dur: 1.0 
+       qtr-bpm: 60.0, usecs: 1000000, description: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: 60
+
+;; Set the beat using the :beat keyword argument. Thus, the following makes a
+;; <a href="#robo290">tempo</a> object of dotted-quarter = 96.
+(<strong>make-tempo</strong> 96 :beat 'q.)
+
+;; Add a text description, which is stored in the <a href="#robo290">tempo</a> object's DESCRIPTION
+;; slot. 
+(let ((tt (<strong>make-tempo</strong> 76 :beat 2 :description "Allegretto")))
+  (description tt))
+
+=&gt; "Allegretto"
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>make-tempo</strong> (bpm &amp;key (beat 4) id description)
+</pre>
+
+
+<a name="tempo2ftempo2dequal"></a>
+<a name="robo872"></a><h2 class=robodoc>tempo/tempo-equal [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo290">tempo</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Test to determine whether the values of two <a href="#robo290">tempo</a> objects are equal.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A first <a href="#robo290">tempo</a> object.
+ - A second <a href="#robo290">tempo</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Returns T if the values of the two <a href="#robo290">tempo</a> objects are equal, otherwise NIL. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;; Equal
+(let ((tt1 (<a href="#robo871">make-tempo</a> 60))
+      (tt2 (<a href="#robo871">make-tempo</a> 60)))
+  (<strong>tempo-equal</strong> tt1 tt2))
+
+=&gt; T
+
+;; Not equal
+(let ((tt1 (<a href="#robo871">make-tempo</a> 60))
+      (tt2 (<a href="#robo871">make-tempo</a> 96)))
+  (<strong>tempo-equal</strong> tt1 tt2))
+
+=&gt; NIL
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>tempo-equal</strong> ((t1 <a href="#robo290">tempo</a>) (t2 <a href="#robo290">tempo</a>))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/tempo.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

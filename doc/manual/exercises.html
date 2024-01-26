@@ -1,0 +1,590 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - exercises</title>  
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>Exercises</h2>   
+      
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/exercises.lsp">The source code from all of
+              the examples on this page</a></li>
+        </ul>
+
+        <p class="close"><a href="#files" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p>
+      </div>
+
+      <p>This page provides a series of exercises that were initially written
+	to accompany the 2012 workshops in Edinburgh and Karlsruhe. Each one
+	builds on the content from one of the pages of the manual, taking the
+	main points from that page and providing the user with functional code
+	that can be modified to meet the goals stipulated.</p> 
+
+      <p>There are no right or wrong answers to these exercises; they can all
+	be solved in many different ways. They simply provide the source code,
+	a suggested task that can be easily achieved with that code, and an
+	environment for the "learning by tweaking" approach that so many of us
+	have followed in our own endeavors to use computer programming in
+	musical contexts.</p>
+
+      <h3 id="core"><a href="#core" id="core-div-show"
+                       onclick="showHide('core-div');return false;">+</a>
+	Core usage</h3>
+      <div id="core-div" class="more">
+	<p>This exercise is based on the material, topics, and techniques
+	    covered on the the <a href="./coreUsage.html">core usage</a> manual
+	    page.</p>
+
+	<p>Using the "mini" template below, modify (or in some cases add) the
+	  following parameters through hand-coding (no loops or algorithms) to
+	  generate your own short 1-section piece:</p>
+	<ul>
+	  <li><code>:title</code></li>
+	  <li><code>:ensemble</code></li>
+	  <li><code>:staff-groupings</code></li>
+	  <li><code>:tempo-map</code></li>
+	  <li><code>:set-limits-high</code></li>
+	  <li><code>:set-limits-low</code></li>
+	  <li><code>:set-palette</code> (changing the number of sets)</li>
+	  <li><code>:set-map</code> (changing the length of the map)<br /> 
+	    <em>Caution: Remember that the length of the set-map and the length
+	    of each player's list of seqs in the rthm-seq-map must always be
+	    equal.</em></li>
+	  <li><code>:rthm-seq-palette</code> (changing the number of seqs)</li>
+	  <li><code>:rthm-seq-map</code> (changing the length of the map)<br />
+	    <em>Caution: Remember that the length of the set-map and the length
+	    of each player's list of seqs in the rthm-seq-map must always be
+	    equal.</em></li>
+	  <li>output file names</li>
+	</ul>
+
+	<pre class="source">
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :title "mini template"
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-limits-high '((vn (0 c7 100 c7))
+                            (va (0 d5 100 d5))
+                            (vc (0 a4 100 a4)))
+         :set-limits-low '((vn (0 a4 100 a4))
+                           (va (0 d4 100 d4))
+                           (vc (0 g2 100 g2)))
+         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5)))
+                        (2 ((cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+         :set-map '((1 (1 2 1 2 1)))
+         :rthm-seq-palette '((1 ((((2 4) (s) e (s) - e e -))
+                                 :pitch-seq-palette ((1 2 3))))
+                             (2 ((((2 4) e (s) s - +s e - (s)))
+                                 :pitch-seq-palette ((2 3 1))))
+                             (3 ((((2 4) - e e - e (e)))
+                                 :pitch-seq-palette ((3 1 2)))))
+         :rthm-seq-map '((1 ((vn (1 2 3 2 1))
+                             (va (2 3 2 1 2))
+                             (vc (3 2 1 2 3))))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <p class="close"><a href="#core" id="core-div-hide"
+                            class="hideLink"
+                            onclick="showHide('core-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="looping"><a href="#looping" id="looping-div-show"
+                       onclick="showHide('looping-div');return false;">+</a>
+        Intra-phrasal looping &mdash; fibonacci-transitions and chop</h3>
+      <div id="looping-div" class="more">
+	<p>This exercise is based on the material, topics, and techniques
+	    covered on the
+	    the <a href="./intraphrasal-loops.html">intra-phrasal looping</a>
+	    manual page.</p>
+
+	<p>Using the template below and referencing the examples before it:</p> 
+	<ol>
+	  <li>Generate the <code>set-map</code>
+	    using <code>fibonacci-transitions</code>
+	    or <code>remix-in</code>.</li> 
+	  <li>Assign your own <code>rthm-seq-palette</code> to one variable and
+	    a chopped version of that palette to another.</li>
+	   <li>Replace the <code>rthm-seq-palette</code> with the variable
+	     assigned to the chopped palette.</li>
+	  <li>Use the <code>print-simple</code> method to print out the bars
+	    contained in <code>chop</code>.</li>
+	  <li>Use two-item references, consisting of
+	    the <code>rthm-seq-palette</code> number paired with
+	    the <code>rthm-seq</code> number, as the contents of the
+	    <code>rthm-seq-map</code>. </li>
+	  <li>Apply <code>re-bar</code> and generate output.</li>
+	  <li>Stay with only one player for now.</li>
+	</ol>
+
+	<pre class="source">
+;;; print-simple example
+;;; ----------------------------------------------------------------------------
+
+(let* ((orig-palette (make-rsp 'orig ; original rthm-seq-palette
+                               '((1 ((((1 4) - s e s - ))
+                                     :pitch-seq-palette ((1 2 3))))
+                                 (2 ((((1 4) - e. s - ))
+                                     :pitch-seq-palette ((1 2))))
+                                 (3 ((((1 4) - (e.) s - ))
+                                     :pitch-seq-palette ((1)))))))
+       (chopped-palette (chop orig-palette ; chopped rthm-seq-palette
+                              '((1 4)                    ; \
+                                (1 3) (2 4)              ; - chop points  
+                                (1 2) (2 3) (3 4)        ; /|
+                                (1 1) (2 2) (3 3) (4 4)) ; /
+                              's)))
+  (print-simple chopped-palette))
+
+;;; chopped example 
+;;; ----------------------------------------------------------------------------
+
+(let* ((orig-palette (make-rsp 'orig ; original rthm-seq-palette
+                               '((1 ((((1 4) - s e s - ))
+                                     :pitch-seq-palette ((1 2 3))))
+                                 (2 ((((1 4) - e. s - ))
+                                     :pitch-seq-palette ((1 2))))
+                                 (3 ((((1 4) - (e.) s - ))
+                                     :pitch-seq-palette ((1)))))))
+       (chopped-palette (chop orig-palette ; chopped rthm-seq-palette
+                              '((1 4) 
+                                (1 3) (2 4) 
+                                (1 2) (2 3) (3 4) 
+                                (1 1) (2 2) (3 3) (4 4)) ; chop points  
+                              's)) ; chopping unit
+       (chop-examp
+        (make-slippery-chicken
+         '+chop-examp+
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :bars-per-system-map '((1 10))
+         :set-palette '((1 ((c4 d4 e4))))
+         :set-map '((1 (1 1 1 1 1)))
+         :rthm-seq-palette chopped-palette
+         :rthm-seq-map '((1 ((vn ((1 1) (1 2) (1 3) (2 1) (3 2)))))))))
+  (re-bar chop-examp :min-time-sig '(1 4))
+  (midi-play chop-examp)
+  (cmn-display chop-examp)
+  (write-lp-data-for-all chop-examp))
+
+
+;;; template
+;;; ----------------------------------------------------------------------------
+
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :title "mini template"
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5)))
+                        (2 ((cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+         :set-map '((1 (1 2 1 2 1)))
+         :rthm-seq-palette '((1 ((((2 4) (s) e (s) - e e -))
+                                 :pitch-seq-palette ((1 2 3)))))
+         :rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))
+</pre>
+
+
+        <p class="close"><a href="#looping" id="looping-div-hide"
+                            class="hideLink"
+                            onclick="showHide('looping-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="clm"><a href="#clm" id="clm-div-show"
+                       onclick="showHide('clm-div');return false;">+</a>
+	sc and CLM</h3>
+      <div id="clm-div" class="more">
+	<p>This exercise is based on the material, topics, and techniques
+	  covered on the the <a href="./sc-and-clm.html">sc and CLM</a> manual
+	  page.</p>
+
+	<p>Using the template below and sound files available
+	  from <a href="http://michael-edwards.org/sc/media/test-sndfiles.zip">michael-edwards.org/sc/media/test-sndfiles.zip</a>:</p> 
+
+	<ol type="arabic">
+	  <li>Modify the <code>set-palette</code>
+	    and <code>set-map</code>, <code>rthm-seq-palette</code>
+	    and <code>rthm-seq-map</code> to your liking.</li>
+	  <li>Modify the <code>sndfile-palette</code> to reflect the location
+	    of the given or your own sound files.</li>
+	  <li>Generate a series of sound files with calls
+	    to <code>clm-play</code>, using different parameters and keywords.
+	    <ol type="lower-alpha">
+	      <li>Based on one voice only, with one group</li>
+	      <li>Based on all voices</li>
+	      <li>Using various degrees of reverb</li>
+	      <li>By setting start- and end-times within the
+		<code>sndfile-palette</code></li>
+	      <li>Once pitch-synchronous, once not</li>
+	      <li>Modifying base-frequency settings</li>
+	      <li>Choosing a second group for fibonacci transitioning</li>
+	      <li>Resetting the sounds each seq/player</li>
+	      <li>using the <code>:time-scaler</code> argument</li>
+	    </ol>
+	  </li>
+	</ol>
+
+	<pre class="source">
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((fl (flute :midi-channel 1))
+                      (ob (oboe :midi-channel 2))
+                      (bn (bassoon :midi-channel 3))))
+         :set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2
+                                c3 d3 e3 f3 g3 a3 b3
+                                c4 d4 e4 f4 g4 a4 b4
+                                c5 d5 e5 f5 g5 a5 b5 c6))))
+         :set-map '((1 (1 1 1 1 1 1 1 1 1 1 1)))
+         :rthm-seq-palette 
+         '((1 ((((2 4) (s) - s e - - e e -)
+                (q - e s s -)
+                ((5 8)  - e s s e - q))
+               :pitch-seq-palette ((1 1 3 5 4 6 3 5 5 7 9 6 5))))
+           (2 ((((2 4) - e e - - e (s) s -)
+                (- e s s - q)
+                ((5 8)  - s s e - q e))
+               :pitch-seq-palette ((1 1 3 2 3 3 4 2 3 2 2 4 6))))
+           (3 ((((2 4) - e e - (s) - s e - )
+                (- s s e - - +e e -)
+                ((5 8)  - e e - - +e e - - s s -))
+               :pitch-seq-palette ((4 1 1 1 1 3 5 7 9 10 11 10 7)))))
+         :rthm-seq-map '((1 ((fl (3 2 1 1 3 3 3 2 1 1 2))
+                             (ob (1 1 3 2 2 3 2 1 3 3 1))
+                             (bn (1 2 2 1 3 3 1 1 3 2 3)))))
+         :snd-output-dir "/tmp/"
+         :sndfile-palette 
+         '(((developing-group
+             ((test-sndfile-1.aiff)
+              (test-sndfile-2.aiff)
+              (test-sndfile-3.aiff)))
+            (percussive-group
+             ((test-sndfile-4.aiff)
+              (test-sndfile-5.aiff)
+              (test-sndfile-6.aiff))))
+           ("/Users/medward2/lisp/sc/test-suite/test-sndfiles-dir-1/"
+            "/Users/medward2/lisp/sc/test-suite/test-sndfiles-dir-2/")))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini)
+  (clm-play mini 1 nil 'percussive-group))</pre>
+
+        <p class="close"><a href="#clm" id="clm-div-hide"
+                            class="hideLink"
+                            onclick="showHide('clm-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="pgde"><a href="#pgde" id="pgde-div-show"
+                       onclick="showHide('pgde-div');return false;">+</a>
+	Post-generation data editing</h3>
+      <div id="pgde-div" class="more">
+	<p>This exercise is based on the material, topics, and techniques
+	    covered on the
+	    the <a href="./post-gen-editing.html">post-generation data
+	    editing</a> manual page.</p>
+
+	<p>Using the template below, add dynamics and other marks, trills, and
+	  ties, change individual pitches, and move/copy events using the
+	  following post-generation methods: </p>
+
+	<ol>
+	  <li>add-mark-to-note</li>
+	  <li>trill</li>
+	  <li>tie-over-rest</li>
+	  <li>tie-over-all-rests</li>
+	  <li>change-pitch</li>
+	  <li>move-events</li>
+	  <li>double-events</li>
+	</ol>
+
+	<pre class="source">
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :title "mini template"
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-limits-high '((vn (0 c7 100 c7))
+                            (va (0 d5 100 d5))
+                            (vc (0 a4 100 a4)))
+         :set-limits-low '((vn (0 a4 100 a4))
+                           (va (0 d4 100 d4))
+                           (vc (0 g2 100 g2)))
+         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5)))
+                        (2 ((cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+         :set-map '((1 (1 2 1 2 1)))
+         :rthm-seq-palette '((1 ((((2 4) (s) e (s) - e e -))
+                                 :pitch-seq-palette ((1 2 3))))
+                             (2 ((((2 4) e (s) s - +s e - (s)))
+                                 :pitch-seq-palette ((2 3 1))))
+                             (3 ((((2 4) - e e - e (e)))
+                                 :pitch-seq-palette ((3 1 2)))))
+         :rthm-seq-map '((1 ((vn (1 2 3 2 1))
+                             (va (2 3 2 1 2))
+                             (vc (3 2 1 2 3))))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <p class="close"><a href="#pgde" id="pgde-div-hide"
+                            class="hideLink"
+                            onclick="showHide('pgde-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="scores"><a href="#scores" id="scores-div-show"
+			 onclick="showHide('scores-div');return false;">+</a>
+	Score layout</h3>
+      <div id="scores-div" class="more">
+	<p>This exercise is based on the material, topics, and techniques
+	    covered on the the <a href="./scores.html">score layout</a> manual
+	    page.</p>
+
+	<p>Using the following template, add code to change the header, alter
+	  score order, change staff groupings, modify bars-per-system in CMN,
+	  change bar-line types, add rehearsal letters, change clefs, and
+	  extract parts.</p>
+
+	<pre class="source">
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-limits-high '((vn (0 c7 100 c7))
+                            (va (0 d5 100 d5))
+                            (vc (0 a4 100 a4)))
+         :set-limits-low '((vn (0 a4 100 a4))
+                           (va (0 d4 100 d4))
+                           (vc (0 g2 100 g2)))
+         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5)))
+                        (2 ((cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+         :set-map '((1 (1 2 1 2 1 2 1 2 1 2 1)))
+         :rthm-seq-palette '((1 ((((2 4) (s) e (s) - e e -))
+                                 :pitch-seq-palette ((1 2 3))))
+                             (2 ((((2 4) e (s) s - +s e - (s)))
+                                 :pitch-seq-palette ((2 3 1))))
+                             (3 ((((2 4) - e e - e (e)))
+                                 :pitch-seq-palette ((3 1 2)))))
+         :rthm-seq-map '((1 ((vn (1 2 3 2 1 2 3 1 2 3 1))
+                             (va (2 3 2 1 2 3 1 2 3 1 2))
+                             (vc (3 2 1 2 3 1 2 3 1 2 3))))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <p class="close"><a href="#scores" id="scores-div-hide"
+                            class="hideLink"
+                            onclick="showHide('scores-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="perms"><a href="#perms" id="perms-div-show"
+			 onclick="showHide('perms-div');return false;">+</a>
+	Permutations</h3>
+      <div id="perms-div" class="more">
+	<p>This exercise is based on the material, topics, and techniques
+	    covered on the the <a href="./permutations.html">permutations</a>
+	    manual page.</p>
+
+	<p>Based on the following example, use a number of the permutations
+	  functions to generate the set-map and rthm-seq-maps.</p>
+	<ol>
+	  <li>permutations</li>
+	  <li>inefficient-permutations</li>
+	  <li>permutate</li>
+	  <li>inefficiently-permutate</li>
+	  <li>shuffle</li>
+	</ol>
+	
+	<pre class="source">
+(let* ((perms (permutations 4))
+       (mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :tempo-map '((1 (q 84)))
+         :set-palette '((0 ((d4 a4 d5 e5 a5 d6)))
+                        (1 ((d4 e4 a4 d5 e5 a5 d6)))
+                        (2 ((e4 a4 e5 a5 e6)))
+                        (3 ((e4 a4 b4 e5 a5 b5 e5))))
+         :set-limits-high '((vn (0 d5 50 c7 100 g4)))
+         :set-limits-low '((vn (0 g3 50 e5 100 c4)))
+         :set-map `((1 ,(flatten (loop for p in perms
+                                    collect p))))
+         :rthm-seq-palette '((0 ((((4 4) - 32 32 - (e.) (s) - s s s - 
+                                   - { 3 ts ts ts } (e) - - (s) 32 32 - (e)))  
+                                 :pitch-seq-palette ((1 2 1 4 3 2 3 5 2 3)))) 
+                             (1 ((((5 8) { 3 - ts ts ts - } s (s) (s) s (s) s 
+                                   - s s -))
+                                 :pitch-seq-palette ((7 5 2 3 2 2 5 7))))
+                             (2 ((((3 4) (s) - s s s - +q +s s (e)))
+                                 :pitch-seq-palette ((2 3 7 6))))
+                             (3 ((((3 8) (s) - 32 32 - s (e.)))
+                                 :pitch-seq-palette ((7 6 3)))))
+         :rthm-seq-map `((1 ((vn 
+                              ,(flatten (loop for p in perms
+                                           collect p))))))))) 
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <p class="close"><a href="#perms" id="perms-div-hide" class="hideLink"
+                            onclick="showHide('perms-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="lsys"><a href="#lsys" id="lsys-div-show"
+			 onclick="showHide('lsys-div');return false;">+</a>
+	L-systems</h3>
+      <div id="lsys-div" class="more">
+	<p>This exercise is based on the material, topics, and techniques
+	    covered on the the <a href="./l-systems.html">l-systems</a> manual
+	    page.</p>
+
+	<p>Based on the following example, use make-l-for-lookup to make your
+	  own l-for-lookup object and do-simple-lookup to generate the set-map
+	  and rthm-seq-map for a slippery-chicken piece.</p>
+
+	<pre class="source">
+(let* ((num-bars 37)
+       (lfl (make-l-for-lookup 'l-sys
+                               '((1 ((a)))
+                                 (2 ((b))))
+                               '((1 (1 2)) (2 (1)))))
+       (l-sys-list (flatten (do-simple-lookup lfl 1 num-bars)))
+       (mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))))
+         :tempo-map '((1 (q 84)))
+         :set-palette '((a ((e4 a4 b4 e5 a5 b5 e5)))
+                        (b ((e4 fs4 gs4 b4 cs5 e5 b5))))
+         :set-limits-high '((vn (0 d5 50 c7 100 g4)))
+         :set-limits-low '((vn (0 g3 50 e5 100 c4)))
+         :set-map (list (list 1 l-sys-list))
+         :rthm-seq-palette '((a ((((4 4) - 32 32 - (e.) (s) - s s s - 
+                                   - { 3 ts ts ts } (e) - - (s) 32 32 - (e)))  
+                                 :pitch-seq-palette ((1 2 1 4 3 2 3 5 2 3)))) 
+                             (b ((((5 8) { 3 - ts ts ts - } s (s) (s) s (s) s 
+                                   - s s -))
+                                 :pitch-seq-palette ((7 5 2 3 2 2 5 7)))))
+         :rthm-seq-map (list 
+                        (list 1 
+                              (list 
+                               (list 'vn l-sys-list)))))))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+        <p class="close"><a href="#lsys" id="lsys-div-hide" class="hideLink"
+                            onclick="showHide('lsys-div');return
+                            false;">close</a></p>
+      </div> 
+
+      <h3 id="chains"><a href="#chains" id="chains-div-show"
+			 onclick="showHide('chains-div');return false;">+</a> 
+	Rhythm Chains</h3>
+      <div id="chains-div" class="more">
+	<p>This exercise is based on the material, topics, and techniques
+	    covered on the the <a href="./rhythm-chains.html">rhythm chains</a>
+	    manual page.</p>
+
+	<p>Based on the following example, make your own rthm-chain object and
+	  use it as the source material for manually determined rthm-seq
+	  map. Apply re-bar before generating output.</p>
+
+	<pre class="source">
+(let* ((rch
+        (make-rthm-chain
+         'test-rch 143
+         '((((e) e) ; 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s))
+           (({ 3 (te) te (te) }) ; what we transition to
+            ({ 3 - te (te) te - })
+            ({ 3 (te) - te te - })
+            ({ 3 (te) (te) te })))
+         '((((q q) ; the 2/4 bars: 4 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.))
+            (({ 3 te+te te+te te+te }) ; what we transition to
+             (q - s e. -)
+             (q (s) e.)
+             (q (s) - s e -)))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))
+            (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+             (- e. s - (q) (s) - s e -)
+             ({ 3 te+te te } (q) q)
+             ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
+         :players '(fl cl))))
+  (create-psps (palette rch))
+  (let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((fl (flute :midi-channel 1))
+                        (cl (b-flat-clarinet :midi-channel 2))))
+           :set-palette '((1 ((e2 a2 cs4 fs4 gs4 a4 b4 e5 gs5 b5 e6))))
+           :set-map `((1 ,(ml 1 (num-rthm-seqs rch))))
+           :rthm-seq-palette (palette rch)
+           :rthm-seq-map rch)))
+    (re-bar mini :min-time-sig '(4 4))
+    (midi-play mini)
+    (cmn-display mini)
+    (write-lp-data-for-all mini)))</pre>
+
+        <p class="close"><a href="#chains" id="chains-div-hide"
+                            class="hideLink"
+                            onclick="showHide('chains-div');return
+                            false;">close</a></p>
+      </div> 
+
+    <!-- **************************************************************** --> 
+    <!-- This spacer <br> is necessary as a buffer between the content and
+         the footer. It cannot be added as padding to #push, since #push has to
+         be the same size as #footer in order for the dynamic placement to work
+         properly --> 
+    <br /><br />
+    <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

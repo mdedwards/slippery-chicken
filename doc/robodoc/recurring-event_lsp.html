@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>recurring-event.lsp</title>
+<!-- Source: ./../../src/recurring-event.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="circular2dsclist2frecurring2devent"></a>
+<a name="robo119"></a><h2 class=robodoc>circular-sclist/recurring-event [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <a href="./rthm-chain_lsp.html#robo517">rthm-chain</a>
+
+ File:             <a href="#robo_top_of_doc">recurring-event.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <strong>recurring-event</strong>
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          class used in <a href="./rthm-chain_lsp.html#robo517">rthm-chain</a>
+                   This class allows for the periodic/cyclic return of given
+                   data.  It is intended for situations where you want to
+                   do/collect something every several events, but the cycle
+                   period changes.  E.g. (the data slot is) something like
+                   '((2 3) (3 2) (5 3) (8 2)) which means every two events
+                   three times, then every 3 events twice, every 5 events
+                   thrice etc.
+
+                   If you want to return specific data on these cycle
+                   points, provide it in the return-data slot, with the
+                   indices into this data in the return-data-cycle slot.
+
+                   simple example, without return-data
+                   (let* ((re (<a href="#robo388">make-re</a> '((2 3) (3 2) (5 3) (8 2))
+                                       :return-data nil 
+                                       :return-data-cycle nil)))
+                     (loop repeat 100 collect (<a href="#robo389">on-it</a> re)))
+
+                   =&gt; (NIL NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL
+                       NIL T NIL NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL
+                       NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T
+                       NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL
+                       NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL NIL NIL
+                       NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T NIL T
+                       NIL T NIL NIL T NIL NIL T NIL)
+ 
+                   (let* ((re (<a href="#robo388">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
+                                       ;; the data about to be collected 
+                                       :return-data '(a b c d)
+                                       ;; the indices into the data; this
+                                       ;; means we'll return A (nth 0)
+                                       ;; thrice, D (nth 3) twice, C once,
+                                       ;; and B 5x
+                                       :return-data-cycle 
+                                       '((0 3) (3 2) (2 1) (1 5))))) 
+                     (loop repeat 100 collect (<a href="#robo387">get-it</a> re)))
+
+                   =&gt; (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL
+                       NIL C NIL NIL NIL NIL B NIL NIL NIL NIL B NIL NIL NIL
+                       NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL B
+                       NIL A NIL A NIL NIL A NIL NIL D NIL NIL NIL NIL D NIL
+                       NIL NIL NIL C NIL NIL NIL NIL B NIL NIL NIL NIL NIL
+                       NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL B NIL B
+                       NIL A NIL NIL A NIL NIL A NIL)
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    4th February 2010
+
+ $$ Last modified:  10:37:45 Wed Jun  7 2023 CEST
+
+ SVN ID: $Id$
+</pre>
+
+
+<a name="recurring2devent2fget2dit"></a>
+<a name="robo387"></a><h2 class=robodoc>recurring-event/get-it [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo119">recurring-event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Get the next element from the return-data. This method is most effective
+ when called repeatedly (e.g. within a loop) when the return-data and
+ return-data-cycle slots have been set. In those cases the return-data-cycle
+ element will be used as look-up into return-data. If no return-data has
+ been specified, then the element itself will be returned.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo119">recurring-event</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Data from the return-data slot (or the return-data-cycle element) when
+ we're on a boundary, otherwise NIL. 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Used together with return-data
+(let ((re (<a href="#robo388">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
+                   :return-data '(a b c d)
+                   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+  (loop repeat 50 collect (<strong>get-it</strong> re)))
+
+=&gt; (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL NIL C NIL NIL NIL NIL
+    B NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL
+    NIL B NIL B NIL A NIL A)
+
+;;; Used without return-data
+(let ((re (<a href="#robo388">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
+                   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+  (loop repeat 50 collect (<strong>get-it</strong> re)))
+
+=&gt; (NIL NIL 0 NIL 0 NIL 0 NIL NIL 3 NIL NIL 3 NIL NIL NIL NIL 2 NIL NIL NIL NIL
+    1 NIL NIL NIL NIL 1 NIL NIL NIL NIL NIL NIL NIL 1 NIL NIL NIL NIL NIL NIL
+    NIL 1 NIL 1 NIL 0 NIL 0)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>get-it</strong> ((re recurring-<a href="./event_lsp.html#robo428">event</a>))
+</pre>
+
+
+<a name="recurring2devent2fmake2dre"></a>
+<a name="robo388"></a><h2 class=robodoc>recurring-event/make-re [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo119">recurring-event</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Make an instance of a <a href="#robo119">recurring-event</a> object, which allows for the
+ periodic/cyclic return of given data. The <a href="#robo119">recurring-event</a> object is
+ intended for situations in which the user would like to perform an action
+ or collect data every several events, but with a varying cycle period.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A list of two-item lists that indicate the period pattern by which the
+   action or data collection is to be performed. For example, a value such
+   as '((2 3) (3 2) (5 3) (8 2)) will result in the action being performed
+   every 2 events three times, then every 3 events twice, every 5 events
+   thrice etc.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :return-data. If the <a href="#robo119">recurring-event</a> object is to be used to collect
+   data, that data can be specified in this slot, with the indices into this
+   data in the return-data-cycle slot. The return-data and return-data-cycle
+   slots must be used together.
+ - :return-data-cycle. If data is specified using :return-data, the indices
+   into that data must be specified here. For example, the value 
+   '((0 3) (3 2) (2 1) (1 5)) will the data item at (nth 0) thrice, that at
+   (nth 3) twice, that at (nth 2) once, and that at (nth 1) five times.
+ - :id. An optional ID can also be specified for the <a href="#robo119">recurring-event</a> object
+   created. 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> A <a href="#robo119">recurring-event</a> object.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Simple usage with no specified data
+(<strong>make-re</strong> '((2 3) (3 2) (5 3) (8 2)))
+=&gt; 
+RECURRING-EVENT: current-period: 2, current-repeats: 3
+                 pcount: -1, rcount: 0
+                 return-data: NIL, return-data-cycle: NIL
+CIRCULAR-SCLIST: current 1
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 4, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 3) (3 2) (5 3) (8 2))
+
+;;; Usage with specified :return-data and :return-data-cycle
+(<strong>make-re</strong> '((2 3) (3 2) (5 3) (8 2))
+         :return-data '(a b c d)
+         :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))
+
+=&gt;
+RECURRING-EVENT: current-period: 2, current-repeats: 3
+                 pcount: -1, rcount: 0
+                 return-data: (A B C D), return-data-cycle: 
+CYCLE-REPEATS: folded: ((0 3) (3 2) (2 1) (1 5))
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 11, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (0 0 0 3 3 2 1 1 1 1 1)
+**************
+
+CIRCULAR-SCLIST: current 1
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 4, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 3) (3 2) (5 3) (8 2))
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>make-re</strong> (data &amp;key return-data return-data-cycle id)
+</pre>
+
+
+<a name="recurring2devent2fon2dit"></a>
+<a name="robo389"></a><h2 class=robodoc>recurring-event/on-it [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo119">recurring-event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DESCRIPTION</p>
+<pre> Test to determine whether the method is currently at a period boundary. The
+ object keeps track of its own internal state and position counter. This
+ method is most effective when called repeatedly in a loop.
+
+ Note that NIL is returned for the full first cycle rather than T then nil
+ as it is assumed that the beginning is a special case where state would
+ not want to be changed.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo119">recurring-event</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> T or NIL.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; Straightforward usage
+(let ((re (<a href="#robo388">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
+                   :return-data '(a b c d)
+                   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+  (loop repeat 50 collect (<strong>on-it</strong> re)))
+
+=&gt; (NIL NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL NIL NIL NIL
+    T NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL
+    NIL T NIL T NIL T NIL T)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>on-it</strong> ((re recurring-<a href="./event_lsp.html#robo428">event</a>))
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/recurring-event.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

@@ -1,0 +1,418 @@
+
+chop.html,203
+slippery chicken documentation - chop5,178
+header("../");content18,869
+chop22,1086
+Three levels of chop128,6550
+Referencing rthm-seq objects contained in a chopped157,8299
+footer();push249,13103
+
+chords.html,1143
+slippery chicken documentation - chord functions5,185
+header("../");content18,887
+Chord functions22,1104
++prep-div-show24,1190
+The user can indicate that prep-div27,1357
+closeprep-div-hide62,3065
++default-div-show66,3216
+If the default-div69,3378
+closedefault-div-hide104,5244
++pre-defined-div-show109,5491
+A number of chord functions have been predefined in thepre-defined-div112,5623
+The piano-chord-funpno-chrd-fun121,6284
+The chord-fun1 and chord-fun2 functionschord-fun1-2156,8103
+closepre-defined-div-hide235,11932
+User-defined chord functionsuser-defined238,11982
++chord-aux-div-show241,12185
+The chord-aux-div244,12312
+closechord-aux-div-hide339,17471
++breakdown-div-show344,17704
+Since breakdown-div347,17855
+you are coming307513,25891
+closebreakdown-div-hide523,26536
++ss-fun-1-div-show529,26824
+One possible approach to writing user-defined chord functionsss-fun-1-div532,26956
+closess-fun-1-div-hide685,35106
++ss-fun-2-div-show690,35300
+The user may also want to have several chords available to anss-fun-2-div693,35459
+closess-fun-2-div-hide802,41500
+footer();push813,42002
+
+coreUsage.html,887
+slippery chicken documentation - "primary disposition" &emdash; core5,185
+header("../");content19,905
++files-div-show24,1180
+Thefiles-div28,1304
+closefiles-div-hide40,1971
+"Primary Disposition" &mdash; A guide to the core usage of 43,2065
++code-div-show65,3176
+The code is first presented on its own here, then explained point bycode-div68,3290
+closecode-div-hide157,7552
+The code explained160,7639
+The call to call184,8658
+The instruments and ensemble206,9676
+Tempotempo271,13018
+Pitch collectionspitch-sets293,14208
+Rhythmsrhythms349,17198
+Pitch curvespitch-curves373,18427
+Articulation, dynamics, slursmarks400,19793
+The structure446,22313
+The output498,25062
+MIDImidi508,25558
+Common Music Notationcmn524,26423
+LilyPondlilypond540,27308
+Processing the code and producing outputevaluating573,28910
+Conclusion606,30782
+footer();push637,32221
+
+ensemble.html,717
+slippery chicken documentation - players and the ensemble5,185
+header("../");content18,896
+Players and the ensemble22,1113
++players-div-show29,1474
+slippery chickenplayers-div32,1617
+closeplayers-div-hide112,6037
++ensemble-div-show117,6262
+for the singular? -->ensemble-div122,6458
+closeensemble-div-hide206,11746
++change-map-div-show210,11910
+If a player has been defined as doubling on more than onechange-map-div213,12080
+closechange-map-div-hide263,14966
++hierarchy-div-show267,15134
+slippery chickenhierarchy-div270,15297
+closehierarchy-div-hide305,17367
++mt-chans-div-show310,17594
+slippery chickenmt-chans-div313,17720
+closemt-chans-div-hide357,20332
+footer();push368,20793
+
+fibonacci.html,406
+slippery chicken documentation - fibonacci functions5,185
+header("../");content18,892
+Fibonacci functions22,1109
++trans-div-show32,1694
+fibonacci-transitiontrans-div35,1884
+closetrans-div-hide120,6022
++remix-div-show124,6168
+The remix-div128,6320
+closeremix-div-hide174,8898
++examples-div-show178,9053
+The examples-div181,9204
+closeexamples-div-hide255,12525
+footer();push266,13021
+
+index.html,253
+slippery chicken documentation - manual table of contents5,185
+header("../");content18,894
+Manual Table of Contents28,1403
+Demo compositions and tutorials29,1441
+Featured algorithms82,4177
+Supporting documentation95,4622
+footer();push280,12882
+
+instruments.html,855
+slippery chicken documentation - instruments and5,185
+header("../");content19,914
+Instruments and instrument-palettes23,1131
++instruments-div-show30,1482
+The instruments-div33,1644
+closeinstruments-div-hide85,4232
++palettes-div-show90,4462
+In order for palettes-div93,4553
+closepalettes-div-hide111,5583
++separate-div-show116,5815
+One option for defining new instruments or new versions of existingseparate-div119,5926
+closeseparate-div-hide177,9058
++combining-div-show182,9300
+Two or more existing combining-div185,9431
+closecombining-div-hide221,11033
++adding-div-show225,11192
+If the user would like to simply add aadding-div228,11382
+closeadding-div-hide266,12909
++changing-div-show271,13133
+Any of the values stored in the various changing-div274,13281
+closechanging-div-hide304,14784
+footer();push315,15274
+
+intraphrasal-loops.html,1137
+slippery chicken documentation - "second law" - intra-phrasal5,178
+header("../");content19,893
++files-div-show25,1209
+The slippery-chicken filefiles-div29,1298
+closefiles-div-hide41,1922
+"Second Law" &mdash; Intra-phrasal looping44,2016
++code-div-show63,3165
+The code is first presented on its own here, then explained point bycode-div66,3244
+closecode-div-hide223,8413
+The code explained226,8496
+Setting the variables247,9399
+The original rthm-seq-paletteorig-rsp271,10865
+Adjusting instrument attributes for the scope of theinst-atts285,11529
+Setting tessitura for one piecetessitura338,13866
+Well-considered set palettesset-planning355,14660
+An application of fibonacci-transitionsfibonacci382,16084
+An application of the chop methodchop454,19130
+Combining chop and fibonacci-transitions forlooping523,21895
+The :rthm-seq-map and orchestrationrsm-and-orch525,21994
+Assembling the rthm-seq-map from the chopassembling593,24700
+Equal lengthsequal-lengths686,28924
+Calling functions for editing material generated by slippery705,30148
+re-bar707,30236
+The output731,31469
+footer();push771,32946
+
+marks.html,1044
+slippery chicken documentation - articulation, dynamics, performance5,185
+header("../");content19,941
+Articulation, dynamics, performance indications,art-dyn-perf23,1158
++kw-art-dyn-div-show48,2817
+Articulation, dynamics and some performance indications can bekw-art-dyn-div51,2988
+closekw-art-dyn-div-hide144,8093
++kw-noteheads-div-show149,8343
+The kw-noteheads-div152,8477
+closekw-noteheads-div-hide178,9542
++lp-arrows-div-show184,9852
+LilyPond has an additional option for placing horizontal arrowslp-arrows-div187,9968
+closelp-arrows-div-hide231,12209
++lp-graphics-div-show236,12454
+A number of marks available in lp-graphics-div239,12595
+closelp-graphics-div-hide349,18008
+Tables of markstables352,18103
++art-perf-div-show355,18281
+markart-perf-div360,18446
+closeart-perf-div-hide575,25663
++dynamics-div-show580,25889
+markdynamics-div585,26027
+closedynamics-div-hide657,28163
++noteheads-div-show662,28394
+marknoteheads-div667,28536
+closenoteheads-div-hide716,30022
+footer();push729,30570
+
+notenames-scales.html,355
+slippery chicken documentation - note-names and scales5,185
+header("../");content18,891
+Note names and scales22,1102
++notenames-div-show25,1280
+slippery chickennotenames-div28,1391
+closenotenames-div-hide82,4698
++scales-div-show86,4855
+Scales (or tuning systems) in scales-div89,4992
+closescales-div-hide271,11811
+footer();push282,12296
+
+objects-slots.html,327
+slippery chicken documentation - objects, slots, methods, functions,5,185
+header("../");content19,925
+Objects, slots, methods, functions, and arguments23,1137
+Methodsmethods66,3584
+Functions and argumentsfunctions82,4409
+The make- functionsmake118,6248
+make-slippery-chickenmake-sc151,7879
+footer();push195,10423
+
+output.html,827
+slippery chicken documentation - output5,185
+header("../");content18,878
+Output22,1095
++midi-div-show48,2351
+MIDI output can be generated by midi-div51,2482
+closemidi-div-hide98,5033
++cmn-div-show102,5178
+CMN's output can be useful as a preview, as it is easy to generatecmn-div105,5305
+closecmn-div-hide141,7162
++cmn-frags-div-show145,7318
+The cmn-frags-div148,7491
+closecmn-frags-div-hide194,9676
++cmn-sets-div-show198,9835
+closecmn-sets-div-hide202,10051
++lilypond-div-show245,12112
+While lilypond-div248,12211
+closelilypond-div-hide308,15594
++svg-div-show312,15737
+While both CMN and LilyPond strive to produce scores without thesvg-div315,15877
+closesvg-div-hide331,16899
++clm-div-show335,17037
+CLM output in clm-div338,17175
+closeclm-div-hide351,17693
+footer();push362,18178
+
+pitches.html,1181
+slippery chicken documentation - pitches5,185
+header("../");content18,879
+Pitches22,1096
+set basics45,2273
++set-palettes-div-show48,2455
+The user defines all the possible sets of pitches for a compositionset-palettes-div51,2581
+closeset-palettes-div-hide85,4485
++set-maps-div-show89,4602
+The set-maps-div91,4742
+closeset-maps-div-hide137,7114
+pitch-seq basics140,7211
++curves-div-show142,7304
+The linear contours of pitches automatically chosen by curves-div145,7467
+closecurves-div-hide277,13752
++multi-ps-div-show282,13976
+There can be as many separate multi-ps-div285,14121
+closemulti-ps-div-hide355,17826
+Advanced pitch-seq and set topics358,17927
++selection-div-show361,18116
+Generalselection-div364,18271
+closeselection-div-hide507,26628
++set-limits-div-show512,26865
+In addition to the definition of the highest and lowest pitches ofset-limits-div515,26992
+closeset-limits-div-hide577,30626
++adding-subsets-div-show584,30951
+Each set in a adding-subsets-div587,31109
+closeadding-subsets-div-hide662,34907
++subset-id-div-show668,35139
+The subset-id-div672,35303
+closesubset-id-div-hide744,39012
+footer();push756,39506
+
+post-gen-editing.html,655
+slippery chicken documentation - post-generation data5,185
+header("../");content20,915
+Post-generation data editing24,1132
++events-notes-div-show48,2564
+The primary two kinds of data within aevents-notes-div51,2680
+closeevents-notes-div-hide68,3614
++basic-div-show72,3722
+A number of methods exist for editing data withinbasic-div75,3858
+closebasic-div-hide116,5789
++few-specific-div-show121,5994
+The full list of methods available for post-generation editing of thefew-specific-div126,6283
+closefew-specific-div-hide211,11436
++all-div-show216,11605
+add-clefall-div222,11763
+closeall-div-hide286,19215
+footer();push299,19702
+
+rhythms.html,840
+slippery chicken documentation - rhythms5,185
+header("../");content18,877
+Rhythms22,1094
++durations-div-show37,1938
+Numeric representationdurations-div40,2047
+closedurations-div-hide79,3956
++rests-div-show83,4113
+Rhythmic values in parentheses represent rests of the givenrests-div86,4249
+closerests-div-hide116,5539
++dots-div-show120,5682
+Dotted values are indicated by placing a period after the rhythmicdots-div123,5813
+closedots-div-hide146,7047
++ties-div-show150,7189
+Ties from one rhythm to the ties-div154,7321
+closeties-div-hide180,8885
++beams-div-show184,9030
+By default, beams-div187,9165
+closebeams-div-hide210,10419
++tuplets-div-show214,10571
+Tuplet rhythmic durations can also be represented either numericallytuplets-div217,10714
+closetuplets-div-hide348,17297
+footer();push359,17791
+
+rsp-rsm.html,461
+slippery chicken documentation - rthm-seq-palettes and5,185
+header("../");content19,915
+rthm-seq-palettes and rthm-seq-maps23,1133
++rthm-seq-div-show41,2154
+Like the rthm-seq-div44,2253
+closerthm-seq-div-hide134,7013
++rsp-div-show139,7220
+The user defines all of the possible fixed sequences of rhythmsrsp-div142,7323
+closersp-div-hide189,9777
++rsm-div-show194,9973
+The rsm-div197,10082
+closersm-div-hide250,13032
+footer();push261,13523
+
+sc-and-clm.html,1299
+slippery chicken documentation - slippery chicken and clm5,185
+header("../");content18,896
+slippery chicken and CLM22,1114
++out-div-show34,1810
+The user must first designate the output path for the new sound fileout-div37,1963
+closeout-div-hide46,2312
++pal-div-show50,2456
+The user must then definepal-div53,2600
+closepal-div-hide82,4149
++call-div-show86,4290
+In its most straightforward form,call-div89,4438
+closecall-div-hide112,5664
++what-it-does-div-show117,5912
+The what-it-does-div120,6031
+closewhat-it-does-div-hide179,9890
++start-end-dur-div-show185,10133
+Unless otherwise indicated, the start-end-dur-div188,10288
+closestart-end-dur-div-hide298,16791
++freq-div-show302,16896
+slippery chickenfreq-div305,17038
+closefreq-div-hide366,20528
++groups-div-show370,20682
+The groups-div373,20839
+closegroups-div-hide412,23007
++other-sf-div-show417,23237
+Two other useful slots of the other-sf-div420,23371
+closeother-sf-div-hide455,25134
++other-clmp-div-show460,25370
+The other-clmp-div463,25504
+closeother-clmp-div-hide542,29556
++out-args-div-show547,29791
+The out-args-div550,29935
+closeout-args-div-hide612,33431
++own-part-div-show617,33657
+Since own-part-div620,33812
+closeown-part-div-hide682,36655
+footer();push693,37142
+
+scores.html,1323
+slippery chicken documentation - score layout5,185
+header("../");content18,884
+Score layout22,1102
++header-div-show54,2998
+The header in a score generally consists of the title and theheader-div57,3141
+closeheader-div-hide86,4314
+Systemssystems89,4409
++order-div-show91,4503
+The order in which instruments will appear in score output isorder-div94,4644
+closeorder-div-hide116,5581
++groups-div-show120,5736
+By default, groups-div123,5882
+closegroups-div-hide162,7979
++bars-per-sys-div-show167,8221
+CMN has an additional option for determining the number of barsbars-per-sys-div170,8341
+closebars-per-sys-div-hide198,9785
+Barsbars201,9840
++lines-div-show203,9928
+By default lines-div206,10073
+closelines-div-hide264,12825
++letters-div-show268,12977
+Data for rehearsal letters can be attached either by settingletters-div271,13128
+closeletters-div-hide320,15579
++clefs-div-show324,15727
+By default, clefs in clefs-div327,15862
+closeclefs-div-hide402,19857
+Transposed scores and generating partstransposed-and-parts405,19945
++transposed-div-show408,20170
+By default, all scores generated from the data oftransposed-div411,20296
+closetransposed-div-hide449,22088
++parts-div-show453,22245
+CMNparts-div456,22385
+closeparts-div-hide494,24397
+footer();push505,24880
+
+tempo.html,509
+slippery chicken documentation - changing the tempo5,185
+header("../");content18,890
+Changing the tempo22,1107
++tempo-map-div-show33,1753
+The tempo-map-div36,1855
+closetempo-map-div-hide88,4206
++tempo-curve-div-show93,4448
+Instead of using references to static bar numbers, changes to thetempo-curve-div96,4537
+closetempo-curve-div-hide143,6725
++tempo-chop-div-show148,6964
+As described in the documentationtempo-chop-div151,7107
+closetempo-chop-div-hide183,9013
+footer();push195,9503

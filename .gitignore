@@ -1,0 +1,13 @@
+/bin
+!/bin/readme.txt
+\#*
+/src/cm*/bin
+scripts/
+pr-poster/
+slippery-chicken.wiki/
+src/app-skeleton/
+videos-resources/
+workshops/
+.DS_Store
+sc.asd
+/src/ppcre/

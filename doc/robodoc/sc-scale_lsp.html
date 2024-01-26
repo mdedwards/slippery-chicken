@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./../../src/sc-scale.lsp</title>
+<!-- Source: ./../../src/sc-scale.lsp -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2010) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=../head-foot.js></script>
+<script type=text/javascript src=./head-foot.js></script>
+qq(<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+<script type="text/javascript">header("../");</script>
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+
+
+<script type="text/javascript">header("../");</script>
+</div>
+
+<script type="text/javascript">header("../");</script>
+</div>
+
+<script type="text/javascript">header("../");</script>
+</div>
+
+<script type="text/javascript">header("../");</script>
+</div>
+
+<script type="text/javascript">header("../");</script>
+</div>
+
+<script type="text/javascript">header("../");</script>
+</div>
+
+<script type="text/javascript">header(./);</script>
+</div>
+
+<script type=text/javascript>header(./);</script>
+</div>
+<div id=0x22content0x22>
+<script type=text/javascript>header(./);</script>
+</div>
+
+<script type=text/javascript>header(./);</script>
+</div>)
+<div id=qq(content)>
+<script type=text/javascript>header(./);</script>
+</div>
+
+<script type=text/javascript>header(./);</script>
+</div>
+<div id="logo">
+<a name="robo_top_of_doc">slippery chicken</a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="sc2dscale2fget2dscale"></a>
+<a name="robo350"></a><h2 class=robodoc>sc-scale/get-scale [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo387">sc-scale</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">FUNCTION</p>
+<pre> get-<a href="./time-sig_lsp.html#robo434">scale</a>: uses the &lt;steps&gt; slot to create a <a href="./time-sig_lsp.html#robo434">scale</a> starting on the given
+ note and extending up to MIDI note 127.  The <a href="./time-sig_lsp.html#robo434">scale</a> will only repeat at
+ octaves if such is the structure of the notes passed at initialisation.
+ This is usually only called automatically at initialisation etc.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo387">sc-scale</a> object
+ - the note to begin the <a href="./time-sig_lsp.html#robo434">scale</a> on (as a symbol e.g. 'c0) and to store
+   in the tonic slot.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> a list of the <a href="./pitch_lsp.html#robo144">pitch</a> objects in the <a href="./time-sig_lsp.html#robo434">scale</a>; these are also stored in the
+ <a href="./time-sig_lsp.html#robo434">scale</a>-pitches slot. 
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>get-scale</strong> ((scsc <a href="#robo387">sc-scale</a>) start-note)
+</pre>
+
+
+<a name="sc2dscale2fmake2dsc2dscale"></a>
+<a name="robo351"></a><h2 class=robodoc>sc-scale/make-sc-scale [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo387">sc-scale</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">FUNCTION</p>
+<pre> make-sc-<a href="./time-sig_lsp.html#robo434">scale</a>: returns an <a href="#robo387">sc-scale</a> object starting on the given &lt;tonic&gt; and
+ using the interval structure given in notes.  NB The notes aren't
+ necessarily used, rather their interval structure is simply mapped onto the
+ starting-note and repeated upwards until we've reached MIDI note 127.
+ NB The <a href="./time-sig_lsp.html#robo434">scale</a> will only repeat at octaves if that is the interval structure
+ of &lt;notes&gt;
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the starting note, as a <a href="./pitch_lsp.html#robo144">pitch</a> symbol (e.g. 'c0)
+ - a <a href="./pitch_lsp.html#robo144">pitch</a> symbol list that provides the interval structure for the <a href="./time-sig_lsp.html#robo434">scale</a>
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> an <a href="#robo387">sc-scale</a> object
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; A non-octave repeating <a href="./time-sig_lsp.html#robo434">scale</a>:
+;;; (<strong>make-sc-scale</strong> 'c0 '(d e gs as d ef g a bf cs d ef gf))
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>make-sc-scale</strong> (tonic notes)
+</pre>
+
+
+<a name="sc2dscale2fsc2dscale2ddegree"></a>
+<a name="robo352"></a><h2 class=robodoc>sc-scale/sc-scale-degree [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo387">sc-scale</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">FUNCTION</p>
+<pre> sc-<a href="./time-sig_lsp.html#robo434">scale</a>-degree: find a given note and return the degree in a given octave.
+ Strictly speaking, we're searching for a particular <a href="./pitch_lsp.html#robo144">pitch</a> class e.g. given
+ 'Ds1, find the degree of the first D# in, say, octave 6.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo387">sc-scale</a> instance
+ - the <a href="./pitch_lsp.html#robo144">pitch</a> whose class we're looking for
+ - the octave to search
+ - (optional default nil) whether to return the position in the <a href="./time-sig_lsp.html#robo434">scale</a> list
+   instead of the degree (T or NIL) 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> integer: the degree, counting from 1, of the found note.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; DATE 14.8.2010
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>sc-scale-degree</strong> ((scsc <a href="#robo387">sc-scale</a>) <a href="./pitch_lsp.html#robo144">pitch</a> octave &amp;optional return-nth)
+</pre>
+
+
+<a name="sc2dscale2fsc2dscale2dnote"></a>
+<a name="robo353"></a><h2 class=robodoc>sc-scale/sc-scale-note [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo387">sc-scale</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">FUNCTION</p>
+<pre> sc-<a href="./time-sig_lsp.html#robo434">scale</a>-note: Get the <a href="./pitch_lsp.html#robo144">pitch</a> object (or if &lt;nth&gt; is t, the position in the
+ list of <a href="./time-sig_lsp.html#robo434">scale</a> notes across the complete range) for the note with &lt;degree&gt;
+ (1-based) in &lt;octave&gt;.  As there's no concept of a tonic repeating at
+ octaves, degree 1 in the given octave is simply the first note &gt;= the C in
+ this octave.
+ NB If you pass &lt;tonic&gt; this will change the instance's tonic and
+ re-calculate <a href="./time-sig_lsp.html#robo434">scale</a>-pitches accordingly before getting the <a href="./pitch_lsp.html#robo144">pitch</a>.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo387">sc-scale</a> object
+ - the degree (1-based) of the <a href="./time-sig_lsp.html#robo434">scale</a>, counting from the first note of the
+   <a href="./time-sig_lsp.html#robo434">scale</a> above or on the C in the given octave.  This can of course be
+   negative. 
+ - the octave we want the <a href="./pitch_lsp.html#robo144">pitch</a> from (middle C = octave 4)
+ - (key :tonic default nil): the new starting note for the <a href="./time-sig_lsp.html#robo434">scale</a> (usually
+   the <a href="./event_lsp.html#robo97">lowest</a> note the <a href="./time-sig_lsp.html#robo434">scale</a> should start on).
+ - (key :nth default nil): return the position of the requested degree in
+   the whole <a href="./time-sig_lsp.html#robo434">scale</a> list, instead of the <a href="./pitch_lsp.html#robo144">pitch</a> object.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> either the <a href="./pitch_lsp.html#robo144">pitch</a> object or its position in the <a href="./time-sig_lsp.html#robo434">scale</a> list.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">;;; (let ((s (<a href="#robo351">make-sc-scale</a> 'c0 '(d e gs as d ef g a bf cs d ef gf)))
+;;;       (pat '(-1 2 4  3 6 -2 -1 2 6  7 3 6 2)))
+;;;   (loop for p in pat collect
+;;;        (data (<strong>sc-scale-note</strong> s p 4))))
+;;;  --&gt; (A3 EF4 F4 E4 BF4 F3 A3 EF4 BF4 D5 E4 BF4 EF4)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>sc-scale-note</strong> ((scsc <a href="#robo387">sc-scale</a>) degree octave &amp;key tonic nth)
+</pre>
+
+
+<a name="sclist2fsc2dscale"></a>
+<a name="robo387"></a><h2 class=robodoc>sclist/sc-scale [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo147">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>sc-scale</strong>
+
+ File:             <a href="#robo_top_of_doc">sc-scale.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo375">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo152">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo147">sclist</a> -&gt; <strong>sc-scale</strong>
+
+ Version:          1.0
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          Implementation of a <a href="./time-sig_lsp.html#robo434">scale</a> object that can initialize its
+                   complete <a href="./pitch_lsp.html#robo144">pitch</a> list from the interval structure of a
+                   given list of notes.  Given the <a href="./time-sig_lsp.html#robo434">scale</a>, it's a synch to
+                   generate note sequences based on note offset patterns
+                   e.g.
+                   (let ((s (<a href="#robo351">make-sc-scale</a> 'c0 '(d e gs as d ef g a bf 
+                                           cs d ef gf)))
+                         (pat '(-1 2 4  3 6 -2 -1 2 6  7 3 6 2)))
+                     (loop for p in pat collect
+                          (data (<a href="#robo353">sc-scale-note</a> s p 4))))
+                   -&gt; (A3 EF4 F4 E4 BF4 F3 A3 EF4 BF4 D5 E4 BF4 EF4)
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    August 3rd 2010 Edinburgh
+
+ $$ Last modified: 18:57:32 Fri Dec  9 2011 ICT
+
+
+ SVN ID: $Id: <a href="#robo_top_of_doc">sc-scale.lsp</a> 501 2011-12-13 21:48:56Z reed@seanreed.ie $
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/sc-scale.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Fri Mar 02 2012 19:28:57
+</p>
+</div> <!-- footer -->
+</body>
+</html>

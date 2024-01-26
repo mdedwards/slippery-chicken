@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<script src="./robodoc.js"></script>
+<title>afu.lsp</title>
+<!-- Source: ./../../src/afu.lsp -->
+<!-- Generated with ROBODoc Version 4.99.44 (Oct 31 2021) -->
+</head>
+<script type=text/javascript src=../head-foot.js></script>
+<body>
+<div id="content">
+<script type="text/javascript">header("../");</script>
+
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./roboindex.html#top">Index</a>
+<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
+<a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
+<a class="menuitem" href="./robo_classes.html#top">Classes</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+</div> <!-- navigation -->
+
+
+<a name="afu2fbinlist2dto2dproportions"></a>
+<a name="robo27"></a><h2 class=robodoc>afu/binlist-to-proportions [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">afu</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> May 23rd 2019, Heidhausen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> From a list of an arbitrary number of 1s and 0s, create a list of
+ corresponding proportions: Each occurrence of 1 starts a new item, with each
+ subsequent occurence of 0 incrementing the proportion we'll collect.
+
+ NB all 0s at the beginning of the list will be ignored until we see the
+ first 1.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> a simple list of 1s and 0s
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> a list of integers
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(<strong>binlist-to-proportions</strong> '(1 0 0 1 0 1 0 1 0 0 0))
+--&gt; (3 2 2 4)
+
+;;; the final 1 has no following 0s so its 'length' is 1
+(<strong>binlist-to-proportions</strong> '(1 0 0 1 0 1 0 1 0 0 0 1))
+--&gt; (3 2 2 4 1)
+
+;;; all leading zeros ignored
+(<strong>binlist-to-proportions</strong> '(0 0 0 1 0 0 1 0 1 0 1 0 0 0 1))
+--&gt; (3 2 2 4 1)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>binlist-to-proportions</strong> (binlist)
+</pre>
+
+
+<a name="afu2finflate2dproportionally"></a>
+<a name="robo28"></a><h2 class=robodoc>afu/inflate-proportionally [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">afu</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> May 23rd 2019, Heidhausen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Take a list of proportions (generally integers but floating-point works too)
+ and create a longer list, using the proportions scaled proportionally. In
+ other words a list like '(1 2 3) will become '((1 2 3) (2 4 6) (3 6 9))
+ i.e. internally always in proportion like the original but leading of course
+ then to other proportions when used with <a href="./permutations_lsp.html#robo15">permutations</a> (see inline comments).
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> a simple list of proportions
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> keyword arguments:
+ - :<a href="./pitch-seq_lsp.html#robo324">invert</a>. Whether to <a href="./pitch-seq_lsp.html#robo324">invert</a> proportions (e.g. 3 becomes 1/3)  . Default =
+   T.
+ - :<a href="./utilities_lsp.html#robo966">rescale</a>. Whether to <a href="./popcorn_lsp.html#robo383">scale</a> the results to be within new
+   minima/maxima. This should be a two-element list (min. max.). Default =
+   '(0 1).
+ - :<a href="./chord_lsp.html#robo88">highest</a>. The <a href="./chord_lsp.html#robo88">highest</a> number to use from the original list when scaling.
+   This <a href="./set-palette_lsp.html#robo647">limit</a> is offered so that we don't end up with most of our numbers
+   down at the very bottom end of our <a href="./popcorn_lsp.html#robo383">scale</a>. Default = 4.
+ - :<a href="./event_lsp.html#robo197">lowest</a>. Similar to :<a href="./chord_lsp.html#robo88">highest</a> but the minimum scaler we'll use.
+   Default = 1.
+ - :reverse. Whether to alternate the original order with the reverse thereof
+   when looping through the list and applying proportional scalers. Default =
+   T.
+ - :expt. An exponent to raise our results to before the rescaling process
+   (if used). Of course this completely changes proportions but there are
+   times when results are far too skewed to the bottom of the range so using
+   an exponent such as 0.3 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>inflate-proportionally</strong> (l &amp;key (<a href="./pitch-seq_lsp.html#robo324">invert</a> t) (<a href="./utilities_lsp.html#robo966">rescale</a> '(0 1))
+                                   (<a href="./event_lsp.html#robo197">lowest</a> 1) (<a href="./chord_lsp.html#robo88">highest</a> 4)
+                                   (reverse t) (expt nil))
+</pre>
+
+
+<a name="afu2fmake2dafu"></a>
+<a name="robo29"></a><h2 class=robodoc>afu/make-afu [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">afu</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> May 23rd 2019, Heidhausen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Make an <a href="#robo110">afu</a> object. See <a href="https://michael-edwards.org/wp/?p=1227">https://michael-edwards.org/wp/?p=1227</a> for examples.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> Any keyword arguments that make-instance would accept i.e. slots such as
+ start-at, level, minimum...
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> An <a href="#robo110">afu</a> object
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(<strong>make-afu</strong> :level 3 :minimum -3 :maximum 3 :exponent .3)
+
+AFU: start-at: 0, level: 3, period: 113 
+     minimum: -3, maximum: 3, num-unique: 32 
+     unique: (-3.0 -2.908942 -2.8265874 -2.7273216 -2.6483202 -2.5553133
+              -2.4432077 -2.3418174 -2.2489507 -2.2196069 -2.1223445 -1.8698215
+              -1.7599787 -1.7449956 -1.6306628 -1.5945365 -1.4747927 -1.3338206
+              -1.1639004 -1.0286679 -0.86946154 -0.824985 -0.6775627 -0.5040059
+              -0.29480958 -0.12831879 0.3039422 0.7751665 0.98014116 1.5123172
+              2.3448153 3.0)
+     binlist: (1 0 0 0 1 0 1 0 0 0 0 0 0 1 0 1 1 0 0 0 0 0 1 0 0 0 1 1 0 0 1 0
+               0 0 1 0 1 0 0 0 0 0 0 1 0 1 1 0 0 0 0 0 1 0 0 0 1 1 0 0 1 0 0 0
+               1 0 1 0 0 0 0 0 0 1 0 1 1 0 0 0 0 0 1 0 0 0 1 1 0 0 1 0 0 0 1 0
+               1 0 0 0 0 0 0 1 0 1 1 0 0 0 0 0 1)
+CIRCULAR-SCLIST: current 0
+SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 408, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (-2.1223445 -1.4747927 -2.5553133 -1.4747927 -0.6775627 -2.4432077
+       -2.1223445 -0.6775627 -1.8698215 -2.1223445 -1.4747927 -2.5553133
+       -1.4747927 -0.6775627 -2.4432077 -2.1223445 -0.6775627 -1.8698215
+       -2.1223445 -1.4747927 -2.5553133 -1.4747927 -0.6775627 -2.4432077
+       -2.1223445 -0.6775627 -1.8698215 -2.1223445 -1.4747927 -2.5553133
+       -1.4747927 -0.6775627 -2.4432077 -0.6775627 -1.1639004 -2.7273216
+       -1.1639004 -1.8698215 -2.8265874 -1.8698215 -2.4432077 -2.2196069
+...    
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defun <strong>make-afu</strong> (&amp;rest keyargs &amp;key &amp;allow-other-keys)
+</pre>
+
+
+<a name="afu2fscale"></a>
+<a name="robo30"></a><h2 class=robodoc>afu/scale [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo110">afu</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">DATE</p>
+<pre> May 23rd 2019, Heidhausen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> Scale the existing data list to be within new bounds. NB this does not check
+ the existing data list for its maximum and minimum values, rather it uses
+ the existing minimum and maximum slot values (which should be correct,
+ unless something went wrong).
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - the <a href="#robo110">afu</a> object
+ - the new desired minimum (number). Default = NIL = use the current minimum
+   slot.
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - the new desired maximum (number). Default = NIL = use the current maximum
+   slot 
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> the new data list
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>scale</strong> ((a <a href="#robo110">afu</a>) new-min &amp;optional new-max ignore1 ignore2)
+</pre>
+
+
+<a name="circular2dsclist2fafu"></a>
+<a name="robo110"></a><h2 class=robodoc>circular-sclist/afu [ Classes ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p class="item_name">NAME</p>
+<pre> <strong>afu</strong>
+
+ File:             <a href="#robo_top_of_doc">afu.lsp</a>
+
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <strong>afu</strong>
+
+ Version:          1.0.12
+
+ Project:          slippery chicken (algorithmic composition)
+
+ Purpose:          AFU = Alternativ fuer Unentschiedener (a little play on
+                   the rather silly German political party).  This translates
+                   to Alternative for the Undecided. Building on the
+                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> and <a href="./activity-levels_lsp.html#robo293">activity-levels</a> class, it's meant as a
+                   deterministic alternative to randomness.
+
+ Author:           Michael Edwards: m@michael-edwards.org
+
+ Creation date:    May 18th 2019
+
+ $$ Last modified:  12:57:13 Sat Nov 20 2021 CET
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./../../src/afu.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+</div> <!-- footer -->
+</body>
+</html>

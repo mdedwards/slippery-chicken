@@ -1,0 +1,481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - permutations</title>  
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="../sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+  
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("../");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+      <!-- **************************************************************** -->
+      
+      <h2>Permutations</h2>   
+      
+      <h3 id="files"><a href="#files" id="files-div-show"
+                        onclick="showHide('files-div');return false;">+</a>
+        Associated files</h3>
+      <div id="files-div" class="more">
+        <ul>
+          <li><a href="../examples/permutation-examples.lsp">permutation-examples.lsp</a></li>  
+        </ul>
+        <p class="close"><a href="#files" id="files-div-hide" class="hideLink"
+                            onclick="showHide('files-div');return
+                            false;">close</a></p>
+      </div>
+
+      <p class="nb">NB: An exercise relating to the material covered
+	in this tutorial can be found on
+	the <a href="./exercises.html#perms">Exercises</a> page.</p>
+
+      <p><em>slippery chicken</em> comes with a number of predefined
+	algorithmic functions that are designed to help the user generate new
+	lists from existing ones by making variations of the original lists or
+	their elements. These functions all fall under the general category
+	of <em>permutations</em>, and can be found in
+	the <code>permutations.lsp</code> source file. This page will provide
+	a brief introduction to the most frequently used of these
+	functions.</p> 
+
+      <h3>General attributes of the permutation functions</h3>
+      <p>All of the permutation functions in <em>slippery chicken</em> use a
+	<code>random</code> algorithm that defaults to a fixed-seed
+	state. This means that random operations return the same results each
+	time they are started (providing they are run on the same Lisp). Most
+	of the functions have optional arguments that allow the user to reset
+	the random seed, as well as to disable it.</p>
+
+      <h3>The individual permutation functions</h3>
+      <h4 id="perms"><a href="#perms" id="perms-div-show"
+			onclick="showHide('perms-div');return false;">+</a>
+        <tt>permutations</tt></h4>
+      <div id="perms-div" class="more">
+	<p>The <code>permutations</code> function systematically generates a
+	  list of all possible permutations of a set of consecutive integers
+	  beginning with zero. It takes as its only argument an integer that
+	  indicates the number of consecutive numbers
+	  (including <code>0</code>) to use. In other words, calling the
+	  function with <code>4</code> will produce permutations of the
+	  numbers <code>0, 1, 2,</code> and <code>3</code>. </p>
+
+	<p>The order of the resulting list of permutations will be the same
+	  each time the function is called.</p>
+
+	<pre class="source">
+(permutations 4)
+
+=>
+((0 1 2 3) (1 0 2 3) (0 2 1 3) (2 0 1 3) (1 2 0 3) (2 1 0 3) (0 1 3 2)
+ (1 0 3 2) (0 3 1 2) (3 0 1 2) (1 3 0 2) (3 1 0 2) (0 2 3 1) (2 0 3 1)
+ (0 3 2 1) (3 0 2 1) (2 3 0 1) (3 2 0 1) (1 2 3 0) (2 1 3 0) (1 3 2 0)
+ (3 1 2 0) (2 3 1 0) (3 2 1 0))</pre>
+
+	<p class="close"><a href="#perms" id="perms-div-hide" class="hideLink"
+                            onclick="showHide('perms-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="ineff-perms"><a href="#ineff-perms" id="ineff-perms-div-show"
+			       onclick="showHide('ineff-perms-div');return
+			       false;">+</a>
+        <tt>inefficient-permutations</tt></h4>
+      <div id="ineff-perms-div" class="more">
+	<p>The <code>inefficient-permutations</code> function returns a
+	  randomly shuffled, non-systematic list of all possible permutations
+	  of a set of consecutive integers starting with zero. It's only
+	  required argument is an integer, which, like
+	  the <code>permutations</code> function, indicates the number of
+	  consecutive numbers (starting from <code>0</code>) to use. </p>
+
+	<p>This function also has the three optional keyword
+	  arguments <code>:max</code>, <code>:skip</code>,
+	  and <code>:fix</code>.  </p>
+
+	<p>The <code>:max</code> argument takes an integer that indicates the
+	  maximum number of permutations to return.</p>
+
+	<p>The <code>:skip</code> argument takes an integer that indicates the
+	  number of permutations of those returned that should be skipped. This
+	  number always applies to consecutive permutations from the beginning
+	  of the list.</p>
+
+	<p>The <code>:fix</code> argument takes <code>T</code>
+	  or <code>NIL</code> to indicate whether the random shuffling of the
+	  list of permutations returned should be performed with the same
+	  (fixed) random seed each time or not. <code>T</code> indicates that a
+	  fixed seed should be used.</p>
+      
+	<pre class="source">
+(inefficient-permutations 4 :max 7 :skip 2 :fix t)
+
+=> ((2 0 3 1) (1 0 2 3) (1 2 3 0) (0 2 3 1) (2 1 0 3))</pre>
+
+	<p class="close"><a href="#ineff-perms" id="ineff-perms-div-hide"
+                            class="hideLink"
+                            onclick="showHide('ineff-perms-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="permu"><a href="#permu" id="permu-div-show"
+			       onclick="showHide('permu-div');return
+			       false;">+</a>
+        <tt>permutate</tt></h4>
+      <div id="permu-div" class="more">
+	<p>The <code>permutate</code> function produces a list of all possible
+	  permutations of an original list of specified elements of any
+	  type.</p>
+
+	<p class="nb">NB: These lists get very long very fast! A list of 5
+	  elements, for example, returns a new list of 120 elements; an
+	  original list of 6 elements produces a new list of 720. Original
+	  lists that have more than 8 elements cause the function to write the
+	  results to a file rather than to the print buffer.</p>
+
+	<pre class="source">
+(permutate '(a b c d))
+
+=> ((A B C D) (B A C D) (A C B D) (C A B D) (B C A D) (C B A D) (A B D C)
+    (B A D C) (A D B C) (D A B C) (B D A C) (D B A C) (A C D B) (C A D B)
+    (A D C B) (D A C B) (C D A B) (D C A B) (B C D A) (C B D A) (B D C A)
+    (D B C A) (C D B A) (D C B A))</pre>
+
+	<p class="close"><a href="#permu" id="permu-div-hide" class="hideLink"
+                            onclick="showHide('permu-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="ineff-permu"><a href="#ineff-permu" id="ineff-permu-div-show"
+			       onclick="showHide('ineff-permu-div');return
+			       false;">+</a>
+        <tt>inefficiently-permutate</tt></h4>
+      <div id="ineff-permu-div" class="more">
+	<p>The <code>inefficiently-permutate</code> function returns a randomly
+	  shuffled, non-systematic list of all possible permutations of an
+	  original list of elements of any type. The new list is returned as a
+	  flat list by default.</p>
+
+	<p class="nb">NB: These lists get very long very fast! Original lists
+	  of 8 or more elements result in the function's output being written
+	  to a file.</p>
+ 
+	<p>In addition to the one required argument of the list to be
+	  permutated, this function has the four optional keyword
+	  arguments <code>:max</code>, <code>:skip</code>, <code>:fix</code>,
+	  and <code>:sublists</code>.</p>
+
+	<p>The <code>:max</code> argument takes an integer that indicates the
+	  maximum number of permutations to return.</p>
+
+	<p>The <code>:skip</code> argument takes an integer that indicates the
+	  number of permutations of those returned that should be skipped. This
+	  number always applies to consecutive permutations from the beginning
+	  of the list.</p>
+
+	<p>The <code>:fix</code> argument takes <code>T</code>
+	  or <code>NIL</code> to indicate whether the random shuffling of the
+	  list of permutations returned should be performed with the same
+	  (fixed) random seed each time or not. <code>T</code> indicates that a
+	  fixed seed should be used.</p>
+
+	<p>The <code>:sublists</code> argument takes <code>.T</code>
+	  or <code>NIL</code> to indicate whether the permutations are to be
+	  returned as a list of sublists (<code>T</code>) or as a flat
+	  list.</p>
+
+	<pre class="source">
+(inefficiently-permutate '(a b c d) :max 7 :skip 2 :fix t)
+
+=> (C A D B B A C D B C D A A C D B C B A D)
+
+(inefficiently-permutate '(a b c d) :max 7 :skip 2 :fix t :sublists t)
+
+=> ((C A D B) (B A C D) (B C D A) (A C D B) (C B A D))</pre>
+
+	<p class="close"><a href="#ineff-permu" id="ineff-permu-div-hide"
+                            class="hideLink"
+                            onclick="showHide('ineff-permu-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="shuffle"><a href="#shuffle" id="shuffle-div-show"
+			       onclick="showHide('shuffle-div');return
+			       false;">+</a>
+        <tt>shuffle</tt></h4>
+      <div id="shuffle-div" class="more">
+	<p>The <code>shuffle</code> function creates a random ordering of a
+	  given list or segment of a given list. In addition to its required
+	  argument of the list to shuffle, it also has the five optional
+	  keyword
+	  arguments <code>:start</code>, <code>:end</code>, <code>:copy</code>,
+	<code>:fix</code> and <code>:reset</code>.</p>
+
+	<p>The <code>:start</code> argument takes a 0-based integer to indicate
+	  the index of the first element of the list to be shuffled.</p>
+
+	<p>The <code>:end</code> argument takes a 0-based integer to indicate
+	  the index of the last element of the list to be shuffled.</p>
+
+	<p>The <code>:copy</code> argument takes a <code>T</code>
+	  or <code>NIL</code> to indicate whether the process is to be applied
+	  to a copy of the list (<code>T</code>) or to the original instance of
+	  the list (destructive).</p>
+
+	<p>The <code>:fix</code> argument takes a <code>T</code>
+	  or <code>NIL</code> to indicate whether the operation is to be
+	  performed with the same (fixed) random seed (<code>T</code>) or
+	  not. </p>
+
+	<p>The <code>:reset</code> argument takes a <code>T</code>
+	  or <code>NIL</code> to indicate whether the Lisp's random state is to
+	  be reset (<code>T</code>) or not before applying the operation.</p>
+
+	<pre class="source">
+(shuffle '(1 2 3 4 5 6 7) :start 1 :end 5 :fix t :reset t)
+
+=> (1 5 4 3 2 6 7)</pre>
+
+	<p class="close"><a href="#shuffle" id="shuffle-div-hide"
+                            class="hideLink"
+                            onclick="showHide('shuffle-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="mshuffle"><a href="#mshuffle" id="mshuffle-div-show"
+			       onclick="showHide('mshuffle-div');return
+			       false;">+</a>
+        <tt>multi-shuffle</tt></h4>
+      <div id="mshuffle-div" class="more">
+	<p>The <code>multi-shuffle</code> function repeatedly applies
+	  the <code>shuffle</code> function a specified number of times to a
+	  specified list. In addition to its two required arguments of the list
+	  to shuffle and the number of times to shuffle it, it also has the
+	  five optional keyword
+	  arguments <code>:start</code>, <code>:end</code>, <code>:copy</code>,
+	  <code>:fix</code> and <code>:reset</code>.  </p>
+
+	<p>The <code>:start</code> argument takes a 0-based integer to indicate
+	  the index of the first element of the list to be shuffled.</p>
+
+	<p>The <code>:end</code> argument takes a 0-based integer to indicate
+	  the index of the last element of the list to be shuffled.</p>
+
+	<p>The <code>:copy</code> argument takes a <code>T</code>
+	  or <code>NIL</code> to indicate whether the process is to be applied
+	  to a copy of the list (<code>T</code>) or to the original instance of
+	  the list (destructive).</p>
+
+	<p>The <code>:fix</code> argument takes a <code>T</code>
+	  or <code>NIL</code> to indicate whether the operation is to be
+	  performed with the same (fixed) random seed (<code>T</code>) or
+	  not. </p>
+
+	<p>The <code>:reset</code> argument takes a <code>T</code>
+	  or <code>NIL</code> to indicate whether the Lisp's random state is to
+	  be reset (<code>T</code>) or not before applying the operation.</p>
+
+	<pre class="source">
+(multi-shuffle '(1 2 3 4 5 6 7) 11 :start 1 :end 5 :fix t :reset t)
+
+=> (1 5 3 4 2 6 7)</pre>
+
+	<p class="close"><a href="#mshuffle" id="mshuffle-div-hide"
+                            class="hideLink"
+                            onclick="showHide('mshuffle-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="mshufflewp"><a href="#mshufflewp" id="mshufflewp-div-show"
+			     onclick="showHide('mshufflewp-div');return
+				      false;">+</a>
+        <tt>multi-shuffle-with-perms</tt></h4>
+      <div id="mshufflewp-div" class="more">
+	<p>The <code>multi-shuffle-with-perms</code> function returns one
+	  permutation of a shuffled version of the specified list. It takes as
+	  its two arguments the list to shuffle and an integer that indicates
+	  the number of consecutive shuffles to be collected in the list from
+	  which the resulting permutation is selected. This function always
+	  uses a fixed random seed.</p>
+
+	<pre class="source">
+(multi-shuffle-with-perms '(0 1 2 3 4) 7)
+
+=> (3 1 4 2 0)</pre>
+
+	<p class="close"><a href="#mshufflewp" id="mshufflewp-div-hide"
+                            class="hideLink"
+                            onclick="showHide('mshufflewp-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h4 id="move-reps"><a href="#move-reps" id="move-reps-div-show"
+			     onclick="showHide('move-reps-div');return
+			     false;">+</a>
+        <tt>move-repeats</tt></h4>
+      <div id="move-reps-div" class="more">
+	<p>The <code>move-repeats</code> function does not create permutations
+	  <em>per se</em>, but can be used to remove any consecutive
+	  repetitions of elements in existing lists, such as those created by
+	  the other permutation functions listed above. </p>
+
+	<p>This function moves, <em>when possible</em>, one of any two elements
+	  of a list that are repeated consecutively to the first point in the
+	  list where no consecutive repetition is created. It only moves
+	  elements to the <em>right</em>. If no non-repeating place can be
+	  found in the remainder of the list, the element is moved to the end
+	  of the list.</p>
+
+	<p>This function can be applied to both simple lists and lists of
+	  sublists. If it is used with sublists, the last element of each
+	  sublist is checked for repetition with the first element of the
+	  next. </p>
+
+      <pre class="source">
+(move-repeats '(1 2 3 3 4 5 6 7 8 8 9 10))
+
+=> (1 2 3 4 3 5 6 7 8 9 8 10)
+
+(move-repeats '((a b c) (c a b) (c a b) (d e f) (a b c) (g h i)))
+
+=> ((A B C) (D E F) (C A B) (C A B) (A B C) (G H I))</pre>
+
+	<p class="close"><a href="#move-reps" id="move-reps-div-hide"
+                            class="hideLink"
+                            onclick="showHide('move-reps-div');return
+                            false;">close</a></p>
+      </div>
+      
+      <h4 id="rand-rep"><a href="#rand-rep" id="rand-rep-div-show"
+			     onclick="showHide('rand-rep-div');return
+			     false;">+</a>
+        <tt>random-rep</tt></h4>
+      <div id="rand-rep-div" class="more">
+	<p>Like the <code>move-repeats</code> function,
+	  the <code>random-rep</code> function does not create
+	  permutations <em>per se</em>. It is mentioned here, however, since
+	  its function is related to the manner by which many of the
+	  permutation functions operate.</p>
+
+	<p>Like Lisp's own <code>random</code> function, this function returns
+	  a pseudo-random, non-negative number that is less than the value
+	  specified as its first (required)
+	  argument. The <code>random-rep</code> function then has an
+	  additional, optional argument (<code>T</code> or <code>NIL</code>)
+	  that allows for the random state to be reset, allowing for the same
+	  list of pseudo-random numbers to be produced at each call.</p>
+
+	<pre class="source">
+(loop repeat 10 collect (random-rep 5))
+
+=> (2 4 0 4 4 2 1 3 2 4)
+
+(loop repeat 10 collect (random-rep 5 t))
+
+=> (3 3 3 3 3 3 3 3 3 3)</pre>
+
+	<p class="close"><a href="#rand-rep" id="rand-rep-div-hide"
+                            class="hideLink"
+                            onclick="showHide('rand-rep-div');return
+                            false;">close</a></p>
+      </div>
+
+      <h3 id="using"><a href="#using" id="using-div-show"
+			     onclick="showHide('using-div');return
+			     false;">+</a>
+	Using the permutation functions in a piece</h3>
+      <div id="using-div" class="more">
+	<p>Any of the permutation functions can be used, of course, to
+	  generate self-referential lists of any kind of element, and can
+	  therefore be implemented to algorithmically generate any kind
+	  of <em>slippery chicken</em> data.</p> 
+
+	<p>The following example code uses
+	  the <code>inefficiently-permutate</code> function to algorithmically
+	  generate the rhythm sequences of the <code>rthm-seq-palette</code>
+	  for the piece </p>
+
+	<pre class="source">
+(let* ((perms (inefficiently-permutate '(e (e) s (e.) q s s (e)) 
+                                       :max 91 
+                                       :sublists t))
+       (mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((fl (flute :midi-channel 1))
+                      (ob (oboe :midi-channel 2))
+                      (bn (bassoon :midi-channel 3))))
+         :tempo-map '((1 (q 84)))
+         :set-palette '((0 ((fs2 b2 d4 a4 d5 e5 a5 d6)))
+                        (1 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6)))
+                        (2 ((cs3 fs3 e4 a4 e5 a5 e6)))
+                        (3 ((fs2 cs3 e4 a4 b4 e5 a5 b5 e5)))
+                        (4 ((d2 a2 e4 fs4 gs4 b4 e5 b5)))
+                        (5 ((a2 e3 e4 fs4 gs4 b4 cs5 e5 b5)))
+                        (6 ((cs3 fs3 fs4 gs4 a4 cs5 a5 cs6)))
+                        (7 ((fs2 cs3 fs4 gs4 a4 b4 cs5 fs5)))
+                        (8 ((e2 a2 cs4 fs4 gs4 a4 b4 e5 gs5 b5 e6)))
+                        (9 ((d2 a2 fs4 gs4 a4 e5 a5 e6)))
+                        (10 ((a2 d2 e4 fs4 a4 e5 a5))))
+         :set-limits-high '((ob (0 a5 100 a5))
+                            (bn (0 g3 100 g3)))
+         :set-limits-low '((fl (0 d5 100 d5)))
+         :set-map `((1 ,(loop for sn from 0 below (length perms)
+                           collect (mod sn 11)))) ; mod 11 = 11 sets 
+         :rthm-seq-palette (loop for p in perms
+                              for rs-id from 0
+                              collect `(,rs-id
+                                        ((((4 4) ,@(nth rs-id perms)))
+                                         :pitch-seq-palette ((1 3 2 5 6)))))
+         :rthm-seq-map `((1 ((fl
+                              ,(loop for rs from 0 below (length perms)
+                                  collect rs))
+                             (ob
+                              ,(loop for rs from 0 below (length perms)
+                                  collect 
+                                    (mod (1+ rs) (length perms))))
+                             (bn
+                              ,(loop for rs from 0 below (length perms)
+                                  collect 
+                                    (mod (+ rs 2) (length perms))))))))))
+  (auto-beam mini t nil)
+  (map-over-bars mini 1 nil nil #'consolidate-rests-max)
+  (auto-slur mini '(fl ob bn))
+  (midi-play mini)
+  (cmn-display mini)
+  (write-lp-data-for-all mini))</pre>
+
+      <br />
+      <table class="image">
+        <tr><td><img class="fragment"
+                     src="./resources/permutations-piece.png"
+                     alt="permutations-piece.png"
+		     width="800"></td></tr>
+	  <caption>First 15 measures of the resulting piece as typeset by
+	    LilyPond</caption>
+	</table>
+
+        <p class="close"><a href="#using" id="using-div-hide" class="hideLink"
+                            onclick="showHide('using-div');return
+                            false;">close</a></p>
+      </div>
+
+    <!-- **************************************************************** --> 
+    <!-- This spacer <br> is necessary as a buffer between the content and
+         the footer. It cannot be added as padding to #push, since #push has to
+         be the same size as #footer in order for the dynamic placement to work
+         properly --> 
+    <br /><br />
+    <div id="push"></div>
+    </div>
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>slippery chicken documentation - frequently asked questions</title>
+    <!-- change the following two file paths to be ../ if in a subdirectory -->
+    <link href="./sc-stylesheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./head-foot.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="./show-hide.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  </head>
+
+  <body onload="showHide(window.location.hash.substring(1)+'-div')" >
+    <div id="content">
+      <!-- files in the doc directory will call header with argument "./" but
+           those in subdirectories will need "../" -->
+      <script type="text/javascript">header("./");</script>
+      <noscript>Your browser does not support JavaScript!</noscript>
+
+      <!-- **************************************************************** --> 
+
+      <h2>FAQ</h2> 
+      <p>
+      <ol>
+
+        <li><b>Where's the graphical user interface (GUI)?</b><br /> There
+        isn't any. To use <em>slippery chicken</em> you have to programme in
+        Common Lisp.  See the <a href="installation.html">installation</a> page
+        for where to get a Common Lisp environment and <a
+         href="workshops.html#getting-ready"><em>Getting ready for the
+        workshops</em></a> for some Lisp programming links.</li>
+
+       <li><b>Do I have to be a programmer to use <em>slippery
+        chicken</em>?</b><br /> No, but it helps. You do have to programme
+        <em>slippery chicken</em> in Lisp but you don't have to be an expert
+        programmer to get started and make music with it.  You can start by
+        modifying the <a href="manual/index.html">demo compositions</a>.
+        See <a
+         href="workshops.html#getting-ready"><em>Getting ready for the
+        workshops</em></a> for some Lisp programming links.</li>
+
+        <li><b>What's the simplest call to slippery-chicken?</b></li> Some of
+        the simplest calls are found in the workshop examples and exercises,
+        e.g. the <a href="manual/exercises.html#core">core usage example</a>.
+        There's also a <a href="examples/template.lsp">template</a> file to
+        help you get started on simple new slippery-chicken pieces.
+
+        <li><b>My piece compiles fine, and I can generate CMN and MIDI files
+        OK, but I'm getting Lilypond errors like <em>error: unknown escaped
+        string: `\pno' { << \global #(set-accidental-style 'modern) \pno1rh >>
+        };</em> what gives?</b></li>
+        Lilypond can't handle number characters in players names. If you change
+        e.g piano1 to piano-one, all should be fine. See <a
+        href="http://michael-edwards.org/sc/manual/coreUsage.html#ensemble">core
+        usage</a> for more details.
+        <li><b>Where can I see the version history (i.e. all the changes that
+        have been made to the software between different releases)?</b></li>
+        <a href="version-history.txt">version-history.txt</a>
+
+      </ol>
+      </p>
+
+      <!-- **************************************************************** --> 
+
+      <!-- This spacer <br> is necessary as a buffer between the content and
+        the footer. It cannot be added as padding to #push, since #push has to
+        be the same size as #footer in order for the dynamic placement to work
+        properly --> 
+      <br />
+
+      <div id="push"></div>
+      
+    </div>
+
+    <script type="text/javascript">footer();</script>
+    <noscript>Your browser does not support JavaScript!</noscript>
+  </body>
+</html>

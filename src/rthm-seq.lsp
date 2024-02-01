@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  19:58:52 Wed Aug 23 2023 CEST
+;;; $$ Last modified:  10:08:16 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -163,8 +163,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Jan 26 21:01:59 2018 
 (defmethod update-rsp-ids ((rs rthm-seq))
+  ;; (print '---------------------) (print (this rs))
   (loop for bar in (bars rs) do
-       (setf (rsp-id bar) (if (this rs) (this rs) (id rs)))))
+           ;; (print (this rs)) (print (rsp-id bar))
+           (setf (rsp-id bar) (if (this rs) (this rs) (id rs)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2640,16 +2642,18 @@ data: S
 ;;; SYNOPSIS
 (defmethod split-into-single-bars ((rs rthm-seq) &optional (clone t))
 ;;; ****
+  ;; (print (pitch-seq-palette rs))
   (loop with pspi = 0
-     for b in (bars rs) 
-     for bn from 1 
-     for rsnew = (make-rthm-seq (list bn (if clone (clone b) b)))
-       do
-       (setf (pitch-seq-palette rsnew)
-             (psp-subseq (pitch-seq-palette rs) pspi (+ pspi (notes-needed b))))
-       (incf pspi (notes-needed b))
-       (clear-ties-beg-end rsnew)
-     collect rsnew))
+        for b in (bars rs) 
+        for bn from 1 
+        for rsnew = (make-rthm-seq (list bn (if clone (clone b) b)))
+        do
+           (setf (pitch-seq-palette rsnew)
+                 (psp-subseq (pitch-seq-palette rs) pspi
+                             (+ pspi (notes-needed b))))
+           (incf pspi (notes-needed b))
+           (clear-ties-beg-end rsnew)
+        collect rsnew))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq/rs-subseq

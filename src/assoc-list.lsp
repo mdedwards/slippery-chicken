@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  14:06:22 Thu Dec  7 2023 CET
+;;; $$ Last modified:  18:16:28 Wed Jan 31 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -109,19 +109,22 @@
                ;; assoc-list!
                (when (and (not (pitch-seq-palette-p al)) (not (id pair)))
                  (error "~a~%assoc-list::verify-and-store: ~
-                         assoc list with id ~a: ~%~
-                         all objects in an assoc-list need an ID (NIL)."
+                          assoc list with id ~a: ~%~
+                          all objects in an assoc-list need an ID (NIL)."
                         pair (id al)))
+               ;; so nothing is done in the T clause above, if we've got a
+               ;; named-object  
                (progn
+                 ;; (print (first pair))
                  (unless (and (listp pair) (= 2 (length pair)))
                    (error "~a~%assoc-list::verify-and-store: ~
-                        assoc list with id ~a: ~%~
-                        The data slot of assoc-list must be a list containing ~
-                        2-element sublists." pair (id al)))
+                         assoc list with id ~a: ~%~
+                         The data slot of assoc-list must be a list containing ~
+                         2-element sublists." pair (id al)))
                  (unless (assoc-list-id-p (first pair))
                    (error "assoc-list::verify-and-store: ~
-                        assoc-list ids may only be symbols, strings,~%or ~
-                        numbers: ~a"
+                           assoc-list ids may only be symbols, strings,~%or ~
+                           numbers: ~a"
                           (first pair)))
                  (setf (nth i data) (make-instance 'named-object 
                                                    :id (first pair)
@@ -349,7 +352,14 @@ data BEAM
      unless (named-object-p i) do
        (error "~a~&assoc-list::get-position: element ~a is not a named-object."
               al j)
-     when (id-eq key i) do (return j)))
+        when (id-eq key i) do (return j)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jan 27 16:13:17 2024, Heidhausen -- this wasn't part of assoc-list
+;;; until today but using the cscl method causes some errors. This is
+;;; essentially the sclist method (grandparent instead of parent)
+(defmethod get-last ((al assoc-list))
+  (first (last (data al))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -563,11 +573,15 @@ data: MARK
   ;; again, as basic as it is: we should be calling (setf (data al) ... so that
   ;; setf methods of all dependent classes are called, but at the moment the
   ;; tests don't pass when doing that. Might take a while to figure out.
-  (setf (slot-value al 'data) (if front
-  ;; (setf (data al) (if front
-                                  (cons named-object (data al))
-                                  (econs (data al) named-object)))
-  (incf (sclist-length al))
+  ;; (setf (slot-value al 'data) (if front
+  ;; MDE Fri Jan 26 18:23:16 2024, Heidhausen -- fixed. The issues was in
+  ;; ral-to-set-palette where one tricky case wasn't being handled properly  
+  (setf (data al) (if front
+                      (cons named-object (data al))
+                      (econs (data al) named-object)))
+  ;; MDE Wed Jan 31 18:15:27 2024, Heidhausen -- no need to do this here anymore
+  ;; as the verify-and-store method recalculates the length 
+  ;; (incf (sclist-length al))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

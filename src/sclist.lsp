@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  14:24:15 Sat Feb  5 2022 CET
+;;; $$ Last modified:  17:52:24 Wed Jan 31 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -102,6 +102,7 @@
 ;;; with the data slot when extending this method.
 
 (defmethod verify-and-store ((i sclist))
+  ;; (print 'sclist)
   (let ((data (data i)))
     (unless (listp data)
       (error "sclist::verify-and-store: ~

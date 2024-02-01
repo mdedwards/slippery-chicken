@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  18:35:48 Tue Mar 23 2021 CET
+;;; $$ Last modified:  18:13:03 Fri Jan 26 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -329,7 +329,7 @@
     (list treble-clef bass-clef quad-treble-clef quad-bass-clef)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu May  3 10:52:54 2012 
+;;; MDE Thu May  3 10:52:54 2012 
 (defmethod rm-octaves ((cs complete-set))
   (setf (slot-value cs 'data) (remove-octaves (data cs)))
   (verify-and-store cs))
@@ -484,7 +484,8 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
                                  ;; don't forget other slots! Hence the &rest
                                  ;; keys above
                                  keys)))
-           (t
+           (t ; 
+            ;; (print set)
             (apply #'make-instance (append (list 'complete-set :data set)
                                            keys))))))
     ;; MDE Fri Aug 24 14:56:56 2018 -- from the chord method
@@ -585,7 +586,10 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
                                ;; added t for enharmonics-are-equal! 
                                #'(lambda (p1 p2) (pitch= p1 p2 t)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun complete-set-p (thing)
+  (typep thing 'complete-set))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF complete-set.lsp
 

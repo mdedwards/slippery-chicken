@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:52:29 Fri May 12 2023 CEST
+;;; $$ Last modified:  12:20:43 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 2976 2012-07-24 10:06:19Z sreed23 $
 ;;;
@@ -160,7 +160,7 @@
                                starting-clef microtones largest-fast-leap
                                chords chord-function midi-program) 
                  collect  (funcall i pno))
-              '(PIANO "piano" "pno" (DOUBLE-BASS DOUBLE-TREBLE BASS TREBLE) 
+              '(PIANO "piano" "pno" (treble bass double-treble double-bass)
                 TREBLE NIL 9 T PIANO-CHORD-FUN 1))
       (pitch-p (highest-written pno))
       (pitch-p (lowest-written pno))
@@ -3197,7 +3197,7 @@
                     "slippery-chicken-piece-vc.ly"
                     "slippery-chicken-piece-vn-part.ly"
                     "slippery-chicken-piece-vn.ly"))
-         (o-files-sizes '(190 #+cmn 39000 710 900 200 271 200 270 200 310))
+         (o-files-sizes '(190 #+cmn 3900 710 900 200 271 200 270 200 310))
          (slippery-chicken       
           (make-slippery-chicken
            '+sc-object+
@@ -5392,50 +5392,43 @@
                     "slippery-chicken-piece-vc.ly"))
          (o-files-sizes '(190 #+cmn 12000 260 670 200 280))
          (slippery-chicken
-          (make-slippery-chicken
-           '+sc-object+
-           :ensemble '(((vc (cello :midi-channel 1))))
-           :tempo-map '((1 (q 72)))
-           :set-palette '((1 ((g3 a3 b3 c4 d4 e4 f4 g4))))
-           :set-map '((1 (1 1 1)))
-           :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -))
-                                   :pitch-seq-palette (1 2 3 4 5 6 7 8))))
-           :avoid-melodic-octaves nil
-           :rthm-seq-map '((1 ((vc (1 1 1))))))))
+           (make-slippery-chicken
+            '+sc-object+
+            :ensemble '(((vc (cello :midi-channel 1))))
+            :tempo-map '((1 (q 72)))
+            :set-palette '((1 ((g3 a3 b3 c4 d4 e4 f4 g4))))
+            :set-map '((1 (1 1 1)))
+            :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -))
+                                    :pitch-seq-palette (1 2 3 4 5 6 7 8))))
+            :avoid-melodic-octaves nil
+            :rthm-seq-map '((1 ((vc (1 1 1))))))))
     (probe-delete-multi "/tmp/" o-files)
     (sc-test-check
       (not (next-event slippery-chicken 'vc nil 1))
       (every #'not
              (loop for ne = (next-event slippery-chicken 'vc)
-                while ne
-                collect (marks-before ne)
-                collect (marks ne)))
+                   while ne
+                   collect (marks-before ne)
+                   collect (marks ne)))
       (auto-clefs +sc-object+)
       (not (next-event slippery-chicken 'vc nil 1))
-      (equalp
-       (loop for ne = (next-event slippery-chicken 'vc)
-          while ne
-          collect (marks-before ne)
-          collect (marks ne))
-       '(NIL NIL NIL NIL NIL NIL NIL NIL ((CLEF TENOR)) NIL NIL NIL NIL NIL NIL 
-         NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
-         NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL))
+      (notevery #'null
+                (loop for ne = (next-event slippery-chicken 'vc)
+                      while ne
+                      collect (marks-before ne)
+                      collect (marks ne)))
       (not (delete-clefs +sc-object+ 'vc 1 5))
       (add-clef +sc-object+ 'vc 2 2 'tenor)
       (add-clef +sc-object+ 'vc 3 3 'treble)
       (not (next-event slippery-chicken 'vc nil 1))
-      (equalp
-       (loop for ne = (next-event slippery-chicken 'vc)
-          while ne
-          collect (marks-before ne)
-          collect (marks ne))
-       '(NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
-         ((CLEF TENOR)) NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
-         NIL NIL NIL ((CLEF TREBLE)) NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
-         NIL))
+      (notevery #'null
+                (loop for ne = (next-event slippery-chicken 'vc)
+                      while ne
+                      collect (marks-before ne)
+                      collect (marks ne)))
       (midi-play +sc-object+)
       #+cmn (cmn-display +sc-object+ :file "/tmp/slippery-chicken.eps"
-                         :auto-clefs nil)
+                                     :auto-clefs nil)
       (write-lp-data-for-all +sc-object+ :base-path "/tmp/" :auto-clefs nil) 
       (file-write-ok-multi "/tmp/" o-files o-files-sizes))))
 
@@ -5672,7 +5665,7 @@
                     "slippery-chicken-piece-vln-part.ly"
                     "slippery-chicken-piece-vln.ly"))
          (o-files-sizes '(190 #+cmn 10000 200 270 3300 200 270 200 250 200  
-                          280 200 330 200 310 200 260 200 300 200 310))
+                          280 200 250 200 290 200 260 200 300 200 310))
          (slippery-chicken
           (make-slippery-chicken
            '+slippery-chicken+
@@ -5727,7 +5720,7 @@
                     "slippery-chicken-piece-tpt-part.ly"
                     "slippery-chicken-piece-tpt.ly"))
          (o-files-sizes '(190 #+cmn 43000 1900 1700 200 250 200 280
-                          200 330 200 310))
+                          200 250 200 300))
          (slippery-chicken
           (make-slippery-chicken
            '+slippery-chicken+
@@ -5767,7 +5760,7 @@
       #+cmn (cmn-display slippery-chicken :file "/tmp/slippery-chicken.eps" 
                          :players '(hrn tpt tbn tba))
       (write-lp-data-for-all slippery-chicken :base-path "/tmp/" 
-                             :players '(hrn tpt tbn tba))
+                             :players '(hrn tpt tbn tba)) 
       (file-write-ok-multi "/tmp/" o-files o-files-sizes))))
 
 

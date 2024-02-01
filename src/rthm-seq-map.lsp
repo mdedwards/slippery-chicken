@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  14:17:07 Fri Jan 20 2023 CET
+;;; $$ Last modified:  11:42:38 Wed Jan 31 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -65,7 +65,10 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; The data slot should be a list of named objects whose ID is the section id
+;;; and data is a sub-rthm-seq-map whose data is the list of
+;;; linked-named-objects, one per player, with its data being the rthm-seq
+;;; references
 (defclass rthm-seq-map (sc-map)
   ((num-players :accessor num-players :initform nil)
    ;; 15.2.10 allow players to be specified rather than just auto-generated so
@@ -89,6 +92,7 @@
     ;; MDE Fri Jan 19 12:38:56 2018 -- to make sure the subsections are also
     ;; rsm's instead of just ral's
     (promote rsm 'rthm-seq-map))
+  ;; (print rsm)
   (setf (players rsm) (get-rsm-players rsm)
         (num-players rsm) (length (players rsm)))
   (check-num-sequences rsm))    
@@ -137,7 +141,6 @@
   (update-rsm rsm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* rthm-seq-map/get-map-refs
 ;;; DATE
 ;;; 29-Dec-2010
@@ -402,9 +405,6 @@ data: (RS2 RS3 RS2)
     seqs-added))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Jun 13 13:36:53 BST 2012: Added robodoc entry
-
 ;;; ****m* rthm-seq-map/add-repeats-simple
 ;;; DESCRIPTION
 ;;; Add repeats of a specified rthm-seq within the given rthm-seq-map object a
@@ -466,9 +466,6 @@ data: (RS2 RS3 RS2)
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Jun 13 13:21:50 BST 2012: Added robodoc entry
-
 ;;; ****m* rthm-seq-map/get-time-sig-ral
 ;;; DESCRIPTION
 ;;; Collate the IDs of all rthm-seq objects in a given rthm-seq-map into groups
@@ -713,12 +710,21 @@ data: (5 3 2)
         (progn 
           (setf refs (remove-if-not #'(lambda (ref)
                                         (eq top-player (first (last ref))))
-                                    refs))
+                                    refs))          
           (loop for ref in refs
-             for section = (get-data-data ref rsm)
-             sum (length section)))
-        ;; MDE Mon Jul  1 14:45:43 2019 -- so that we can query sub-sections
-        (length (data (first (data rsm)))))))
+                for section = (get-data-data ref rsm)
+                ;; MDE Tue Jan 30 10:25:02 2024, Heidhausen -- added this if
+                ;; to handle extreme cases where a 2-sequence map might be
+                ;; specified with :recurse-simple-data t (as in the tests)
+                sum (if (listp section) (length section) 0)))
+        ;; MDE Mon Jul 1 14:45:43 2019 -- so that we can query sub-sections
+        ;; MDE Tue Jan 30 10:43:23 2024, Heidhausen -- more extensive
+        ;; data-type querying for safety
+        (let* ((d (data rsm))
+               (f (when (listp d) (first d)))
+               (fd (when (named-object-p f) (data f))))
+          (if (listp fd) (length fd)) 0))))
+        ;; (length (data (first (data rsm)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -853,7 +859,6 @@ data: (
 ;;; themselves recursively with ral arguments that form part of the rsm.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; The result of a get-data call is a named-object with the id the given id
 ;;; for the section.  The data slot is a recursive-assoc-list (ral).  When
 ;;; there are no subsections, the data slot of this ral is a list of
@@ -875,18 +880,33 @@ data: (
 ;;;          'recursive-assoc-list) -> t
 
 (defun get-rsm-players (rsm)
-  (let ((players '()))
+  ;; MDE Tue Jan 30 10:48:57 2024, Heidhausen -- simpler approach
+  (labels ((get-em (ral)
+           (loop for thing in (data ral) append
+                    (if (is-ral (data thing))
+                        (get-em (data thing))
+                        (list (id thing))))))
+  (let ((players (get-em rsm)))
+#|    (print 'get-rsm-players)
+    (print rsm)
+    ;; (print (get-all-refs rsm))
     (loop for i below (sclist-length rsm) do
-         (let* ((section (get-next rsm))
-                (players-or-subsections (data (data section))))
-           ;; (print players-or-subsections)
-           (if (is-ral (data (first players-or-subsections)))
+         (let* ((section (print (get-next rsm)))
+                (players-or-subsections (data section))
+                (nop (named-object-p players-or-subsections)))
+           (when nop
+             (setq players-or-subsections (data players-or-subsections)))
+           (print players-or-subsections)
+           (if (and nop (is-ral (print (data (first players-or-subsections)))))
                (setf players
                      (append players (get-rsm-players (data section))))
                (loop for no in players-or-subsections do
-                    (push (id no) players)))))
+    (push (id no) players)))))
+    |#
+    ;; (print 'here)
+    ;; (print rsm)
     (reset rsm)
-    (sort-symbol-list (remove-duplicates (nreverse players)))))
+    (sort-symbol-list (remove-duplicates (nreverse players))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1007,12 +1027,6 @@ data: (
          and collect (list (id section) alist))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Apr 27 14:11:10 BST 2012: Added robodoc entry
-
-;;; MDE original comment (some taken directly into robodoc)
-;;; In an rsm, each instrument receives references into the rhythm-seq-palette.
-
 ;;; ****f* rthm-seq-map/check-num-sequences
 ;;; DESCRIPTION
 ;;; Check to ensure that each player in each section of the given rthm-seq-map
@@ -1078,23 +1092,58 @@ Each instrument must have the same number of sequences for any given section:
 |#
 ;;; SYNOPSIS
 (defun check-num-sequences (rsm)
-;;; **** 
+;;; ****  
+  ;; MDE Tue Jan 30 12:07:16 2024, Heidhausen -- rewrite given the new
+  ;; assoc-list add method (that uses setf data instead of slot-value) 
+  (let* ((all (get-all-refs rsm))
+         (players (remove-duplicates
+                   (mapcar #'(lambda (x) (first (last x)))
+                           all)))
+         (sections (remove-duplicates (mapcar #'butlast all) :test #'equal)))
+    ;; (print '---------) (print all) (print players) (print sections) 
+    (flet ((get-len (section player)
+             (let ((data (get-data (econs section player) rsm nil)))
+               (when data (length (data data))))))
+      (loop for section in sections
+            for len = (loop for p in players ; have to try all until we get one
+                            for l = (get-len section p)
+                            do (when l (return l)))
+            do
+               (loop for player in (rest players)
+                     for plen = (get-len section player)
+                     do
+                        ;; (print section) (print player)
+                        (when (and plen  (/= len plen))
+                          (error "blah"))))))
+  t)
+        
+#|
+  (print 'check-num-sequences)
+  (print (rsm-get-section-refs rsm))
+  ;; (print rsm)
   (loop for i below (sclist-length rsm) do
-       (let* ((section (get-next rsm))
-              (players-or-subsections (data (data section))))
-         (if (is-ral (data (first players-or-subsections)))
-             (check-num-sequences (data section))
-             (loop for num-sequences = 
-                  (length (data (first players-or-subsections)))
-                  for no in (rest players-or-subsections) do
-                  (unless (= num-sequences (length (data no)))
-                    (error "rthm-seq-map::check-num-sequences: ~
+           (let* ((section (get-next rsm))
+                  (players-or-subsections (data section))
+                  (dpors (data players-or-subsections)))
+             ;; MDE Tue Jan 30 11:52:38 2024, Heidhausen -- 
+             (when (named-object-p (data dpors))
+               (setq players-or-subsections (data players-or-subsections)))
+              ;; (print players-or-subsections)
+             (if (is-ral (data (first players-or-subsections)))
+                 (check-num-sequences (data section))
+                 (loop for num-sequences = 
+                          (length (data (print (first players-or-subsections))))
+                       for no in (rest players-or-subsections) do
+                          (unless (= num-sequences (length (data no)))
+                            (error "rthm-seq-map::check-num-sequences: ~
                             In rthm-seq-map ~a, instrument ~a: ~
                             ~%Each instrument must have the same number of ~
                             sequences for any given section: ~%~a"
-                           (id rsm) (id no) (data no)))))))
+                                   (id rsm) (id no) (data no)))))))
   t)
+|#
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun rthm-seq-map-p (thing)

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  16:07:07 Sat Nov 27 2021 CET
+;;; $$ Last modified:  15:30:40 Sat Jan 27 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -207,6 +207,7 @@
       (players e)
     (progn
       (link-named-objects e)
+      ;; (print e)
       (let* ((current (get-first e))
              (players (remove-duplicates
                        (loop while current 
@@ -216,9 +217,10 @@
         ;; if the number of players is not equal to the length of players after
         ;; duplicates are removed, then we must have some players with same
         ;; name, which is illegal
+        ;; (print (num-data e)) (print (length players))
         (unless (= (num-data e) (length players))
-          (error "ensemble::get-players: Found duplicate names for players in ~
-              ensemble with id ~a" (id e)))
+          (error "ensemble::get-players: Found duplicate names for players ~%~
+                  in ensemble with id ~a:~%~a" (id e) players))
         (setf (players e) players)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -872,26 +874,31 @@ NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun ral-to-ensemble (ral ins-palette)
-  (when (and ral (data ral))
+  ;; (print ral)
+  (when (and ral (data ral)
+             ;; MDE Sat Jan 27 15:29:33 2024, Heidhausen -- have we already done
+             ;; it? if we're calling add-player, then yes 
+             (not (every #'player-p (data ral))))
     (let ((num-players 0))
       (loop for i in (data ral) and j from 0 do
-           (let ((data (data i)))
-             (if (is-ral data)
-                 (multiple-value-bind
-                       (ensemble nplayers)
-                     (ral-to-ensemble data ins-palette)
-                   (incf num-players nplayers)
-                   (setf (data (nth j (data ral)))
-                         ensemble))
-                 (progn
-                   (incf num-players)
-                   (setf (nth j (data ral))
-                         (apply #'make-player (append
-                                               (list (id i) 
-                                                     ins-palette)
-                                               (if (listp data)
-                                                   data
-                                                   (list data)))))))))
+               (let ((data (data i)))
+                 (if (is-ral data)
+                     (multiple-value-bind
+                           (ensemble nplayers)
+                         (ral-to-ensemble data ins-palette)
+                       (incf num-players nplayers)
+                       (setf (data (nth j (data ral)))
+                             ensemble))
+                     (progn
+                       (incf num-players)
+                       (setf (nth j (data ral))
+                             (apply #'make-player (append
+                                                   (list (id i) 
+                                                         ins-palette)
+                                                   (if (listp data)
+                                                       data
+                                                       (list data)))))))))
+      (relink-named-objects ral)
       (values (sc-change-class ral 'ensemble)
               num-players))))
 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  16:02:38 Fri Apr 23 2021 CEST
+;;; $$ Last modified:  08:10:53 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -93,7 +93,7 @@
     palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; 
 (defmethod verify-and-store :after ((psp pitch-seq-palette))
   ;; this will be the case if we're cloning
   (unless (typep (first (data psp)) 'pitch-seq)
@@ -101,29 +101,31 @@
     ;; method.  If this data is recursive, the error will be picked up
     ;; elsewhere.
     (loop for i in (data psp) and j from 0
-       for ps = 
-       (progn
-         (when (and (listp i)
-                    (or (lisp-assoc-listp i) 
-                        (lisp-assoc-listp (second i))))
-           (error "pitch-seq-palette::verify-and-store: ~
+          for ps = 
+             (progn
+               (when (and (listp i)
+                          (or (lisp-assoc-listp i) 
+                              (lisp-assoc-listp (second i))))
+                 (error "pitch-seq-palette::verify-and-store: ~
                    Recursive pitch-seq-palettes are not allowed: ~a"
-                  i))
-         (make-pitch-seq i (format nil "~a-ps-~a" 
-                                   (id psp) (1+ j))))
-       unless (= (num-notes psp) (sclist-length ps))
-       do (error "pitch-seq-palette::verify-and-store: ~%~
+                        i))
+               (make-pitch-seq i (format nil "~a-ps-~a" 
+                                         (id psp) (1+ j))))
+          unless (= (num-notes psp) (sclist-length ps))
+          do (error "pitch-seq-palette::verify-and-store: ~%~
                      In pitch-seq ~a from palette ~a:~%~
                      Each pitch sequence must have ~a notes (you have ~a): ~%~a"
-                 (id ps) (id psp) (num-notes psp) (sclist-length ps)
-                 (data psp))
-       do (setf (nth j (data psp)) ps))
+                    (id ps) (id psp) (num-notes psp) (sclist-length ps)
+                    (data psp))
+          do (setf (nth j (data psp)) ps))
     ;; we call this now explicitly from the assoc-list-class because it was
     ;; avoided there. 
     (all-ids-unique psp))
   (setf (instruments psp) 
         (remove-duplicates
          (loop for ps in (data psp) appending (instruments ps))))
+  ;; (print 'here)
+  ;; (break)
   (setf (num-data psp) (r-count-elements psp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

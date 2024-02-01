@@ -96,7 +96,7 @@
 ;;;
 ;;; Creation date:    2nd April 2001
 ;;;
-;;; $$ Last modified:  17:34:14 Tue Jan 14 2020 CET
+;;; $$ Last modified:  10:39:42 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -139,7 +139,9 @@
   (declare (ignore initargs))
   (unless (typep cm 'simple-change-map)
     (setf (recurse-simple-data cm) nil)
-    (link-named-objects cm)
+    ;; MDE Thu Feb 1 10:39:40 2024, Heidhausen -- have to relink rather than
+    ;; just link
+    (relink-named-objects cm) 
     (update-change-data-previous cm)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  23:07:13 Tue Dec 19 2023 CET
+;;; $$ Last modified:  15:38:07 Sat Jan 27 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2432,7 +2432,9 @@ NIL
     ;; so rests are ignored as they don't have channel data, but midi-channels
     ;; slot is class allocation so data should still be available for the last
     ;; notes we saw
-    (when channel 
+    (when (and player channel) 
+      ;; MDE Sat Jan 27 15:37:38 2024, Heidhausen -- this used to be just
+      ;; (when channel
       (if (get-data player (midi-channels e) nil)
           (set-data player (list player channel) (midi-channels e))
           (add (list player channel) (midi-channels e))))))

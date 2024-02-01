@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  12:31:18 Tue Sep 27 2022 CEST
+;;; $$ Last modified:  08:26:30 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -296,6 +296,8 @@
 ;;; destructive methods should call this implicitly to set the num-snds slot so
 ;;; it shouldn't be necessary to call explicitly.
 (defmethod count-snds ((sfp sndfile-palette))
+  ;; (print sfp)
+  (relink-named-objects sfp)
   (loop with result = 0
      for ref in (get-all-refs sfp)
      do (incf result (length (get-data-data ref sfp)))

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  23:52:08 Wed Nov 29 2023 CET
+;;; $$ Last modified:  18:12:23 Fri Jan 26 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -853,6 +853,9 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
                                          :highest highest))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun tl-set-p (thing)
+  (typep thing 'tl-set))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* tl-set/harp-salzedo-to-tl-set

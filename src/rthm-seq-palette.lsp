@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  19:58:31 Wed Aug 23 2023 CEST
+;;; $$ Last modified:  10:09:56 Thu Feb  1 2024 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -64,11 +64,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store :after ((rsp rthm-seq-palette))
-  (ral-to-rsp rsp (psp-inversions rsp))
-  (link-named-objects rsp)
-  ;; MDE Fri Jan 26 21:04:58 2018 
+  ;; (print 'rsp-verify)
+  (unless (every #'rthm-seq-p (get-flat-data rsp))
+    (ral-to-rsp rsp (psp-inversions rsp)))
+  (relink-named-objects rsp)
+  ;; (print (get-first rsp))
+  ;; (print (data rsp))
+  ;; MDE Sat Jan 27 16:52:31 2024, Heidhausen
   (rmap rsp #'update-rsp-ids))
 
+#|  (when (every #'(lambda (x) (or (rthm-seq-p x) (rsp-p x)))
+               (data rsp))
+    (print 'here)
+    ;; MDE Fri Jan 26 21:04:58 2018
+    (rmap rsp #'update-rsp-ids)))
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone ((rsp rthm-seq-palette))
@@ -1005,6 +1015,7 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
   (when clone
     (setf rsp (clone rsp)))
   (let ((refs (get-all-refs rsp)))
+    ;; (print rsp) (print refs) 
     (loop for ref in refs for rs = (get-data ref rsp) do
          (set-data ref (make-rsp (id rs) (split-into-single-bars rs)) rsp)))
   rsp)
@@ -1157,23 +1168,30 @@ RTHM-SEQ: num-bars: 3
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun ral-to-rsp (ral psp-inversions)
+  ;; (print ral)
   (when (data ral)
     (loop for i in (data ral) and j from 0 do
-          (let ((data (data i)))
-            (if (is-ral data)
-                ;; 22/2/07: to be consistent this shouldn't simply be a ral but
-                ;; a named-object whose data is a ral
-                (let ((sub-ral (ral-to-rsp data psp-inversions)))
-                  ;; (setf (tag sub-ral) (id sub-ral))
-                  (setf (nth j (data ral)) ;; (data (nth j (data ral)))
-                    (make-named-object (id i) sub-ral)))
-              (setf (nth j (data ral)) 
-                (if (rthm-seq-p (data i))
-                    (progn
-                      (when psp-inversions
-                        (add-inversions (pitch-seq-palette (data i))))
-                      (data i))
-                  (make-rthm-seq i :psp-inversions psp-inversions))))))
+             (let ((data (data i)))
+               (if (is-ral data)
+                   ;; 22/2/07: to be consistent this shouldn't simply be a ral
+                   ;; but a named-object whose data is a ral
+                   (let ((sub-ral (ral-to-rsp data psp-inversions)))
+                     ;; (setf (tag sub-ral) (id sub-ral))
+                     (setf (nth j (data ral)) ;; (data (nth j (data ral)))
+                           (make-named-object (id i) sub-ral)))
+                   (setf (nth j (data ral)) 
+                         (if (rthm-seq-p (data i))
+                             (progn
+                               (when psp-inversions
+                                 (add-inversions (pitch-seq-palette (data i))))
+                               (data i))
+                             (make-rthm-seq i :psp-inversions
+                                            psp-inversions))))))
+    (relink-named-objects ral)
+    ;; MDE Wed Jan 31 17:29:09 2024, Heidhausen -- due to reorganisation of the
+    ;; assoc-list add method we have to update the rsp-ids to reflect perhaps
+    ;; recursive palettes once relink has been called.
+    ;; (rmap ral #'update-rsp-ids)
     (sc-change-class ral 'rthm-seq-palette)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

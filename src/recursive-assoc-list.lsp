@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  18:50:12 Fri Dec 16 2022 CET
+;;; $$ Last modified:  10:40:20 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -329,25 +329,25 @@ data: VELVET
 
 (defmethod verify-and-store :after ((ral recursive-assoc-list))
   (loop for i in (data ral) do
-       (when (and (typep i 'named-object) 
-                  (lisp-assoc-listp (data i)
-                                    (recurse-simple-data ral)))
-         (setf (data i) 
-               (make-ral (format nil "sub-ral-of-~a" (id ral))
-                         (data i)
-                         :full-ref (econs (full-ref ral) (id i))
-                         :recurse-simple-data (recurse-simple-data ral)
-                         :warn-not-found (warn-not-found ral)))))
+           (when (and (typep i 'named-object) 
+                      (lisp-assoc-listp (data i)
+                                        (recurse-simple-data ral)))
+             (setf (data i) 
+                   (make-ral (format nil "sub-ral-of-~a" (id ral))
+                             (data i)
+                             :full-ref (econs (full-ref ral) (id i))
+                             :recurse-simple-data (recurse-simple-data ral)
+                             :warn-not-found (warn-not-found ral)))))
   ;; psp's parse their data later so don't do this here.
   (unless (typep ral 'pitch-seq-palette)
-    (setf (num-data ral) (r-count-elements ral)))
+    (setf (num-data ral) (r-count-elements ral))
+    ;; MDE Thu Feb  1 06:50:39 2024, Heidhausen
+    ;; (print '-----------------)
+    (link-named-objects ral))
   ;; (print 'ral-vs) (print (num-data ral))
   ral)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Jan 26 20:50:19 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/relink-named-objects
 ;;; DESCRIPTION
 ;;; This method is essentially the same as the method link-named-objects, but
@@ -418,7 +418,6 @@ data: BEAM
   (relink-named-objects ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; MDE's original comment:
 ;;; From the named objects in the data slots of the rals, create
 ;;; linked-named-objects to hold pointers (actually keys) to the previous and
@@ -519,10 +518,10 @@ data: TURKEY
 (defmethod link-named-objects ((ral recursive-assoc-list) 
                                &optional previous higher-next)
 ;;; ****
-  ;; don't do it again!
   ;; (print previous)
   ;; (print higher-next)
-  (unless (linked ral)
+  ;; (print '++++++++++++++++++++++++++++++++++++++++++++) (print ral)
+  (unless (linked ral)   ; don't do it again!
     (let ((next nil)
           (next-in-list nil)
           (next-in-list-data nil)
@@ -531,47 +530,48 @@ data: TURKEY
           (this-ref nil)
           (ral-full-ref (full-ref ral)))
       (loop for this in data and i from 0 do
-           ;; (print ral-full-ref)
-           (setf this-ref (econs ral-full-ref (id this))
-                 next-in-list (nth (1+ i) data)
-                 next-in-list-data (when next-in-list (data next-in-list))
-                 next (cond ((and (is-ral next-in-list-data)
-                                  ;; MDE Sat Jan 28 18:20:14 2012 -- only if
-                                  ;; there's data in there!
-                                  (data next-in-list-data))
-                             (get-first-ref next-in-list-data))
-                            (next-in-list 
-                             (econs ral-full-ref (id next-in-list)))
-                            ;; when we're at the end of the data list, then
-                            ;; next as calculated above is nil, but it could
-                            ;; be that this ral is a nested one so the next is
-                            ;; the next in the ral one-level higher up,
-                            ;; i.e. the higher-next arg that the method was
-                            ;; recursively called with.
-                            ((null next-in-list) higher-next))
-                 this-data (data this))
-         ;; MDE Sat Jan 28 18:20:29 2012 -- only if the ral has data
-           (if (and (is-ral this-data) (data this-data))
-               (progn 
-                 ;; in case we're relinking
-                 (setf (linked this-data) nil)
-                 ;; MDE Wed May 16 20:21:11 2012 -- if we don't do this, we
-                 ;; lose references. Problem shows up e.g. with ral-econs
-                 (setf (full-ref this-data) this-ref)
-                 ;; (print 'recurse)
-                 (link-named-objects this-data previous next)
-                 ;; previous is the last ref in the this ral!
-                 (setf previous (get-last-ref this-data)))
-               (progn 
-                 (if (typep this 'linked-named-object)
-                     (setf (previous this) previous
-                           (this this) this-ref
-                           (next this) next)
-                     ;; Here's where we create the new linked-named-object and
-                     ;; replace the current named-object with it.
-                     (setf (nth i (data ral)) (no-to-lno this previous this-ref
-                                                         next)))
-                 (setf previous this-ref)))))
+               ;; (print ral-full-ref)
+               (setf this-ref (econs ral-full-ref (id this))
+                     next-in-list (nth (1+ i) data)
+                     next-in-list-data (when next-in-list (data next-in-list))
+                     next (cond ((and (is-ral next-in-list-data)
+                                      ;; MDE Sat Jan 28 18:20:14 2012 -- only if
+                                      ;; there's data in there!
+                                      (data next-in-list-data))
+                                 (get-first-ref next-in-list-data))
+                                (next-in-list 
+                                 (econs ral-full-ref (id next-in-list)))
+                                ;; when we're at the end of the data list,
+                                ;; then next as calculated above is nil, but
+                                ;; it could be that this ral is a nested one
+                                ;; so the next is the next in the ral
+                                ;; one-level higher up, i.e. the higher-next
+                                ;; arg that the method was recursively called
+                                ;; with.
+                                ((null next-in-list) higher-next))
+                     this-data (data this))
+               ;; MDE Sat Jan 28 18:20:29 2012 -- only if the ral has data
+               (if (and (is-ral this-data) (data this-data))
+                   (progn 
+                     ;; in case we're relinking
+                     (setf (linked this-data) nil)
+                     ;; MDE Wed May 16 20:21:11 2012 -- if we don't do this, we
+                     ;; lose references. Problem shows up e.g. with ral-econs
+                     (setf (full-ref this-data) this-ref)
+                     ;; (print 'recurse)
+                     (link-named-objects this-data previous next)
+                     ;; previous is the last ref in the this ral!
+                     (setf previous (get-last-ref this-data)))
+                   (progn 
+                     (if (typep this 'linked-named-object)
+                         (setf (previous this) previous
+                               (this this) this-ref
+                               (next this) next)
+                         ;; Here's where we create the new linked-named-object
+                         ;; and replace the current named-object with it.
+                         (setf (nth i (data ral)) (no-to-lno this previous
+                                                             this-ref next)))
+                     (setf previous this-ref)))))
     ;; remember that we did this!
     (setf (linked ral) t))
   ral)
@@ -611,12 +611,15 @@ data: TURKEY
 ;;; SYNOPSIS
 (defmethod r-count-elements ((ral recursive-assoc-list))
 ;;; ****
+  ;; (length (get-all-refs ral)))
   (let ((len (sclist-length ral)))
+    ;; (print '++++++++++++++++++++++++) (print len)
     (loop for thing in (data ral) do
-          (when (is-ral (data thing))
-            ;; we're only interested in the data, not how many ids there are.
-            (decf len)
-            (incf len (r-count-elements (data thing)))))
+             (when (is-ral (data thing))
+               ;; (print (id thing))
+               ;; we're only interested in the data, not how many ids there are.
+               (decf len)
+               (incf len (r-count-elements (data thing)))))
     len))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -943,23 +946,29 @@ assoc-list::add: named-object is NIL!
 ;;; SYNOPSIS
 (defmethod add (named-object (ral recursive-assoc-list) &optional ref)
 ;;; ****
+  ;; (print '=========================) (print named-object) (print ral)
   (let ((where (if ref 
                    (data (get-data ref ral))
                    ral)))
     (unless (is-ral where)
-      (error "recursive-assoc-list::add: can't add to reference ~a ~
+      (error "recursive-assoc-list::add: can't add to reference ~a ~%~
               because object with this reference is not a ~
-              recursive-assoc-list!"
-             ref))
+              recursive-assoc-list!: ~%~a"
+             ref where))
     (call-next-method named-object where)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Feb 1 09:00:47 2024, Heidhausen -- no longer necessary since the add
+;;; method (assoc-list) now uses setf data rather than slot-value and that
+;;; triggers verify-and-store which counts elements anyway (and sets the
+;;; num-data slot)
 
+#|
 (defmethod add :after (named-object (ral recursive-assoc-list)
                        &optional ignore)
   (declare (ignore ignore named-object))
   (incf (num-data ral)))
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Jun  2 15:22:27 BST 2012: Added robodoc entry
@@ -1128,8 +1137,10 @@ data: BEAM
 ;;; SYNOPSIS
 (defmethod parcel-data ((ral recursive-assoc-list) new-id)
 ;;; ****
-  (make-ral (id ral) (list (make-named-object new-id ral))
-            :tag (if (tag ral) (tag ral) 'from-parcel-data)))
+  (let ((ral (make-ral (id ral) (list (make-named-object new-id ral))
+                       :tag (if (tag ral) (tag ral) 'from-parcel-data))))
+    (relink-named-objects ral)
+    ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE comment:
@@ -1489,7 +1500,8 @@ data: RIBBON
 (defmethod get-last ((ral recursive-assoc-list))
 ;;; ****
   (let* ((last (call-next-method))
-         (last-data (data last)))
+         (last-data (when last (data last))))
+    ;; (print last)
     (if (is-ral last-data)
         (get-last last-data)
         last)))
@@ -1562,17 +1574,17 @@ data: RIBBON
   (when (data ral)
     (link-named-objects ral)
     (loop 
-        with ref = (get-first-ref ral)
-        while ref
-        for current = (get-data ref ral nil)
-        for this = (when current (this current))
-        do 
+      with ref = (get-first-ref ral)
+      while ref
+      for current = (get-data ref ral nil)
+      for this = (when current (this current))
+      do
          ;; (print ref)
          (when (and (not single-ref-as-list)
                     (= 1 (length this)))
            (setf this (first this)))
-        collect this
-       do (setf ref (when current (next current))))))
+      collect this
+      do (setf ref (when current (next current))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* recursive-assoc-list/get-this-refs
@@ -1950,8 +1962,7 @@ data: (
                          (or recurse-simple-data
                          
                              (and (not (symbolp (second x)))
-                                  (not (numberp (second x)))))
-                         )
+                                  (not (numberp (second x))))))
               (return nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

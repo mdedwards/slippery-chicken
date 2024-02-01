@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  15:46:37 Fri Jun  3 2022 CEST
+;;; $$ Last modified:  08:40:23 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -294,9 +294,6 @@
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan 14 22:26:30 GMT 2012: Added robodoc info
-
 ;;; ****f* permutations/permutations
 ;;; DESCRIPTION
 ;;; Systematically produce a list of all possible permutations of a set of

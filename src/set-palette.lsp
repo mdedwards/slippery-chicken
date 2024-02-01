@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  15:02:48 Fri Jan 20 2023 CET
+;;; $$ Last modified:  08:16:18 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -884,6 +884,9 @@ data: (C4 F4 A4 C5)
            (loads-a-perms (> num-sets 8))
            (deviations '())
            result-len next next-bass last-bass first-set)
+      ;; (print '---------------------------------------------) (print all-sets)
+      (when verbose (format t "num-sets: ~a, length all-sets: ~a"
+                            num-sets (length all-sets)))
       (when (eq permutate 'all)
         ;; (setq permutate (factorial num-sets))
         (when (and loads-a-perms (not silent))
@@ -991,7 +994,7 @@ data: (C4 F4 A4 C5)
                                   finally 
                                     (warn-repeating-bass)
                                     (return lowest)))))
-            ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; :permutate nil
+            ;; :permutate nil ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
             (loop for set-num below num-sets
                for denv-val = (when dissonance-env (interpolate set-num denv))
                for cenv-val = (when centroid-env (interpolate set-num cenv))
@@ -1013,6 +1016,7 @@ data: (C4 F4 A4 C5)
                               ;; the set with the least deviation from the ideal
                               ;; envelope values wins
                               (< (+ d-dev1 c-dev1) (+ d-dev2 c-dev2))))))
+                  (print (length all-sets))
                  (unless all-sets
                    (error "set-palette::auto-sequence: all-sets is NIL!"))
                  (setq first-set (first all-sets)
@@ -1536,7 +1540,9 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
     ;; hence it's called god.
     (unless god
       (setf god ral))
+    ;; (print '----------------------------)(print ral)
     (loop for i in (data ral) and j from 0 do
+             ;; (print i)
          (if (is-ral (data i))
              (setf (data (nth j (data ral)))
                    (ral-to-set-palette (data i) god))
@@ -1566,12 +1572,19 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
                                     ;; currently processing!
                                     (append (list set-object :id id)
                                             (rest data)))
-                             ;; this is a new set with a list of notes.
-                             (apply #'make-complete-set 
-                                    (append (list set :id id)
-                                            (rest data)))))))))
+                             ;; MDE Fri Jan 26 18:21:11 2024, Heidhausen -- we
+                             ;; might actually have a complete-set already at
+                             ;; this point. This final test seems to fix the
+                             ;; problem with assoc-list::add using (setf (data
+                             ;; instead of the cop-out version (setf (slot-value
+                             (if (complete-set-p i)
+                                 i
+                                 ;; this is a new set with a list of notes.
+                                 (apply #'make-complete-set 
+                                        (append (list set :id id) ;(print id))
+                                                (rest data))))))))))
     ;; MDE Sat Apr 23 13:56:52 2016
-    (link-named-objects ral)
+    (relink-named-objects ral)
     (sc-change-class ral 'set-palette)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1918,17 +1931,19 @@ data: (
                    ;; duplicates when making the set :/ 
                    set (remove-duplicates (append rm rm-bass))
                    ;; MDE Thu May 3 10:57:21 2012 -- as we removed octaves and
-                   ;; duplicates above when looking at freq, when these are resolved
-                   ;; to the nearest note, we still might have octaves/duplicates so
-                   ;; do this again at the set level, below
-                   set (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
-                                          ;; MDE Mon May 20 12:56:47 2013 -- don't
-                                          ;; warn about duplicate pitches but do
-                                          ;; remove them
-                                          :warn-dups nil :rm-dups t
-                                          :tag (combine-into-symbol 
-                                                (freq-to-note left) '-ringmod- 
-                                                (freq-to-note right))))
+                   ;; duplicates above when looking at freq, when these are
+                   ;; resolved to the nearest note, we still might have
+                   ;; octaves/duplicates so do this again at the set level,
+                   ;; below
+                   set
+                   (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
+                                      ;; MDE Mon May 20 12:56:47 2013 -- don't
+                                      ;; warn about duplicate pitches but do
+                                      ;; remove them
+                                      :warn-dups nil :rm-dups t
+                                      :tag (combine-into-symbol 
+                                            (freq-to-note left) '-ringmod- 
+                                            (freq-to-note right))))
              ;; MDE Thu May  3 10:59:13 2012 
              (rm-duplicates set t) ; comparing symbols, not pitch= (freqs etc.)
              (when remove-octaves
@@ -2530,6 +2545,7 @@ NIL
          (unless (or (<= (sclist-length set) min-pitches)
                      (and reject-fun (funcall reject-fun set)))
            (add set sp)))
+    (relink-named-objects sp)
     sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

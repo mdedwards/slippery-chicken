@@ -13,7 +13,7 @@
 ;;;
 ;;; Creation date:    1st October 2012
 ;;;
-;;; $$ Last modified: 16:37:15 Wed Jun 19 2013 BST
+;;; $$ Last modified:  11:35:39 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id: tonal-algo-example.lsp 4006 2013-06-19 15:53:34Z medward2 $
 ;;;
@@ -43,6 +43,9 @@
 
 (in-package :sc)
 (in-scale :chromatic)
+(defparameter +update-slots-handles-ties+
+  (get-sc-config 'update-slots-handles-ties))
+(set-sc-config 'update-slots-handles-ties nil)
 
 ;; The basis for the rthm-seqs is derived from the method classical
 ;; improvisation taught to the composer by Volkhardt Preuss at the Hochschule
@@ -646,6 +649,7 @@
               (get-data-data (first n) (ensemble tonal-example)))
              (third n)))
   (midi-play tonal-example :midi-file "/tmp/tonal.mid")
+  (respell-notes tonal-example)
   (cmn-display tonal-example :file "/tmp/tonal.eps" 
                :auto-bar-nums 5
                :respell-notes nil
@@ -654,6 +658,6 @@
                          :respell-notes nil
                          :auto-clefs nil))
 
-
+(set-sc-config 'update-slots-handles-ties +update-slots-handles-ties+)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF

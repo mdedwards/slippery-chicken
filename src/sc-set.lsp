@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  00:52:35 Wed Nov 29 2023 CET
+;;; $$ Last modified:  18:11:54 Fri Jan 26 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -102,6 +102,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store :after ((s sc-set))
+  ;; (print (data s))
   (let* ((pl (init-pitch-list (data s) (auto-sort s)))
          ;; MDE Mon May 20 12:52:55 2013 -- 
          (plrd (if (rm-dups s)
@@ -1836,8 +1837,6 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 (defun sc-set-p (thing)
   (typep thing 'sc-set))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-set/subset-from-harp-salzedo

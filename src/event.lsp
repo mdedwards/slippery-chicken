@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:55:51 Thu Jan 26 2023 CET
+;;; $$ Last modified:  15:38:07 Sat Jan 27 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2432,7 +2432,9 @@ NIL
     ;; so rests are ignored as they don't have channel data, but midi-channels
     ;; slot is class allocation so data should still be available for the last
     ;; notes we saw
-    (when channel 
+    (when (and player channel) 
+      ;; MDE Sat Jan 27 15:37:38 2024, Heidhausen -- this used to be just
+      ;; (when channel
       (if (get-data player (midi-channels e) nil)
           (set-data player (list player channel) (midi-channels e))
           (add (list player channel) (midi-channels e))))))
@@ -5280,6 +5282,45 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
                  #'(lambda (x y) (if (listp y)
                                      (eq x (first y))
                                      (eq x y)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/add-salzedo-pedal
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-12-19
+;;; 
+;;; DESCRIPTION
+;;; Adds a salzedo mark for harp pedalling to the given event object. The
+;;; pedalling must be given as a salzedo-list (cf. salzedo-p and
+;;; harp-salzedo-to-tl-set).
+;;; Not available for CMN (as of 2023-12-19). 
+;;;
+;;; ARGUMENTS
+;;; - An event object.
+;;; - A salzedo list (see above). 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether or not to print a warning when trying to 
+;;;   attach an arrow and accompanying marks to a rest. Default = NIL. 
+;;; 
+;;; RETURN VALUE
+;;; Returns T.
+;;;
+;;; SYNOPSIS
+(defmethod add-salzedo-pedal ((e event) salzedo &optional warn-rest)
+  ;;; ****
+  (unless (salzedo-p salzedo)
+    (error "event::add-salzedo-pedal: The salzedo pedalling must be a salzedo ~
+            list."))
+  (when (and warn-rest (is-rest e))
+    (warn "~a~%event::add-salzedo-pedal: add arrow to rest?" e))
+  (add-mark e (list 'salzedo salzedo)))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF event.lsp

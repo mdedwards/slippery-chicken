@@ -1,0 +1,54 @@
+# -*- eval: (flyspell-mode); eval: (ispell-change-dictionary "de") -*-
+#+title: sc-mode
+#+author: Ruben Philipp
+#+date: 2023-12-20
+
+* Description
+
+This is an Emacs minor mode for slippery chicken. It is made to assist working
+with slippery chicken data structures (e.g. rthm-seqs) in Emacs.
+
+N.B.: This mode currently just works with /SLIME/. 
+
+* Installation
+
+In order to use the ~sc-mode~ in Emacs, place the following lines in your
+~.emacs~ file:
+
+#+begin_src elisp
+(add-to-list 'load-path "/path/to/slippery-chicken/src/emacs/")
+(require 'sc-mode)
+#+end_src
+
+* Usage
+
+** Launching
+
+Starting the ~sc-mode~ is fairly easy. Just hit ~M-x sc-mode~. Make sure that
+slime has already been instantiated and that slippery-chicken has been loaded
+before (e.g. via ~.swank.lisp~ or ~.sbclrc~) before sing the mode.
+
+* Examples
+
+** Verifying rthm-seqs
+
+The ~sc-mode~ can be used to verify manually entered rthm-seqs. For doing that,
+just place the cursor in your Emacs frame after the last closing parenthesis of
+the rthm-seq to be tests and launch ~sc-validate-rthm-seq~ (or hit ~C-c v r~).
+
+E.g.:
+
+#+begin_src lisp
+((((3 4) q q q))
+ :pitch-seq-palette (1 2 3))<- CURSOR HERE (=> valid)
+#+end_src
+
+** further reading…
+
+For more examples on the usage of this mode, have a look at
+~sc-slippery-chicken.el~.
+
+* Author
+
+Ruben Philipp\\
+me@rubenphilipp.com

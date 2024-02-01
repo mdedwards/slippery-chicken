@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  17:53:05 Wed Dec 30 2020 CET
+;;; $$ Last modified:  17:46:39 Sat Jan 27 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -263,7 +263,7 @@
           (num-score-notes bh) 0)
     (loop for thing in (data bh) and i from 1 do ;; sequenzes are 1-based
          (when thing
-           (setf thing (get-bar-holder thing))
+           (setq thing (get-bar-holder thing))
            (update-slots thing tempo-map time time-qtrs bar current-section i
                          warn-ties) 
            (incf (num-notes bh) (num-notes thing))
@@ -271,7 +271,8 @@
            (incf (num-rests bh) (num-rests thing))
            ;; only sections, subsections and sequenzes should update bar and
            ;; start-time, the player-sections all have the same start-time and
-           ;; bar. 
+           ;; bar.
+           ;; (print '------------------------------------)(print thing)
            (when loop-update
              (setf bar (1+ (end-bar thing))
                    time-qtrs (end-time-qtrs thing)
@@ -279,6 +280,7 @@
   (let ((last (if (is-ral bh)
                   (get-last bh)
                   (first (last (data bh))))))
+    ;; (print '---------------------------------)(print (get-last bh)) (print bh)
     (setf (num-bars bh) (- (end-bar last) (1- start-bar))
           (end-bar bh) (end-bar last)
           (end-time bh) (end-time last)

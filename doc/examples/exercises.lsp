@@ -13,7 +13,7 @@
 ;;;
 ;;; Creation date:    23rd November 2012
 ;;;
-;;; $$ Last modified:  19:32:05 Tue Feb 26 2019 CET
+;;; $$ Last modified:  11:18:32 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id: exercises.lsp 5791 2016-05-24 16:20:03Z medward2 $
 ;;;
@@ -244,10 +244,10 @@
               (test-sndfile-6.aiff))))
            ,(list (concatenate
                    'string cl-user::+slippery-chicken-home-dir+ 
-                   "test-suite/test-sndfiles-dir-1/")
+                   "tests/test-sndfiles-dir-1/")
                   (concatenate
                    'string cl-user::+slippery-chicken-home-dir+ 
-                   "test-suite/test-sndfiles-dir-2/"))))))
+                   "tests/test-sndfiles-dir-2/"))))))
   (midi-play mini)
   (cmn-display mini)
   (write-lp-data-for-all mini)

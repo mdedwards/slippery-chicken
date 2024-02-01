@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  10:56:49 Wed Aug 23 2023 CEST
+;;; $$ Last modified:  16:33:41 Sun Dec 24 2023 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -132,6 +132,15 @@
      ;; sim for Lilypond
      (warn-no-lp-mark t)
      (warn-no-xml-mark t)
+     ;; output harp pedal (salzedo) marks in MusicXML as a text-mark (i.e. 
+     ;; <words>) or as MusicXML <harp-pedals> (cf. xml-salzedo). 
+     ;; RP  Sun Dec 24 15:42:46 2023
+     (xml-salzedo-as-text t)
+     ;; the font family used for special MusicXML marks which should
+     ;; be explicitly set with the engraving/music font (cf. xml-salzedo for
+     ;; an example)
+     ;; RP  Sun Dec 24 16:33:40 2023
+     (xml-engraving-font "Bravura, Opus, Maestro, Leland, music")
      ;; warn if a pitch goes above midi note 119?
      (warn-high-pitch t)
      ;; warn if a pitch goes below octave number -1

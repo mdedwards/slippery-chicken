@@ -200,10 +200,10 @@
               (test-sndfile-6.aiff))))
            ,(list (concatenate
                   'string cl-user::+slippery-chicken-home-dir+ 
-                  "test-suite/test-sndfiles-dir-1/")
+                  "tests/test-sndfiles-dir-1/")
                  (concatenate
                   'string cl-user::+slippery-chicken-home-dir+ 
-                  "test-suite/test-sndfiles-dir-2/"))))))
+                  "tests/test-sndfiles-dir-2/"))))))
   (midi-play mini)
   (cmn-display mini)
   (write-lp-data-for-all mini)

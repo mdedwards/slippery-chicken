@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  15:32:13 Fri Jan 20 2023 CET
+;;; $$ Last modified:  11:51:14 Wed Jan 31 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -102,8 +102,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; the rthm-seq-palette we generate to hold the 1-beat rthms as well as the
-;;; slower-rthms will be the palette slot of the map.  the map is the data
-;;; slot.  The transition from one group of rhythms to the next over the whole
+;;; slower-rthms will be the palette slot of the map. The map is the data
+;;; slot. The transition from one group of rhythms to the next over the whole
 ;;; output (i.e. not one unit to another within e.g. the 1-beat rhythms) is
 ;;; always done with the fibonacci method.
 
@@ -1147,7 +1147,8 @@
              for parent-tss = (get-data (get-time-sigs-tag parent-rthm-seq) 
                                         player-tsr)
              ;; collect (list parent-rthm-seq-ref (get-next parent-tss))))
-             collect (get-next parent-tss)))
+                collect (get-next parent-tss)))
+    ;; (print parent)
     (add (make-named-object new-player new-refs) 
          (get-data-data (butlast parent) rc))
     (push new-player (players rc))

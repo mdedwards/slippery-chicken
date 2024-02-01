@@ -40,7 +40,7 @@
 (let* ((sndfiles-dir
         (concatenate 'string 
                      cl-user::+slippery-chicken-home-dir+ 
-                     "test-suite/test-sndfiles-dir-2/"))
+                     "tests/test-sndfiles-dir-2/"))
        (mini
         (make-slippery-chicken
          '+mini+

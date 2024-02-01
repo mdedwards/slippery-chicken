@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:04:48 Thu Dec  7 2023 CET
+;;; $$ Last modified:  10:41:51 Thu Feb  1 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -130,14 +130,18 @@
                                      (four roses)
                                      (wild turkey))))) 
     (sc-test-check
+      (= 3 (sclist-length al))
       (add '(makers mark) al)
+      (= 4 (sclist-length al))
       (named-object-p (get-data 'makers al))
       (eq (id (get-data 'makers al)) 'makers)
       (eq (data (get-data 'makers al)) 'mark)
       (eq (get-position 'makers al) 3)
       (add '(knob creek) al)
+      (= 5 (sclist-length al))
       (eq 4 (get-position 'knob al))
       (add '(jack daniels) al t)
+      (= 6 (sclist-length al))
       (eq 0 (get-position 'jack al))
       (eq 5 (get-position 'knob al)))))
 
@@ -228,6 +232,7 @@
                                                 (fox hole))) ; rm
                                           (white ribbon))))))))) ; rm
     (sc-test-check
+     (print ral)
       (remove-data al 'daffy 1 2.3 "string")
       (= 2 (sclist-length al))
       (not (remove-data al))
@@ -448,7 +453,7 @@
       (eq (data (get-nth-attack 2 rsb)) 'E)
       (not (get-nth-attack 3 rsb nil)))))
 
-;;; MDE Fri Jul 24 11:39:49 2015 
+;;;  MDE Fri Jul 24 11:39:49 2015 
 (sc-deftest test-rsb-get-nth-attack-with-tied ()
   ;; can't just make an rsb as that won't have proper tied-from info (that's
   ;; handled at rthm-seq level) 
@@ -2371,7 +2376,7 @@
       ;; make sure midi writing works too
       (= 1 (cm::midi-amplitude (second (first (last (output-midi e)))))))))
 
-;;; MDE Mon Jan  8 16:09:59 2018 
+;;;  MDE Mon Jan  8 16:09:59 2018 
 (sc-deftest test-event-write-xml ()
   (let ((mini
          (make-slippery-chicken
@@ -2540,6 +2545,7 @@
       (not (member 'a (marks (third (rhythms (fourth (bars rs)))))))
       (member 'as (marks (third (rhythms (third (bars rs)))))))))
 
+;;; 
 (sc-deftest test-rthm-seq-add-bar ()
   ;;                          notes needed 8, 9 score-notes, 11 rhythms, 2 rests
   (let ((rs (make-rthm-seq '((((2 4) q+e s s)
@@ -3094,7 +3100,7 @@
       (zerop (num-notes rs3))
       (is-rest-seq rs3))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tempo tests
 
 ;;; MDE Mon Dec 12 09:45:06 2011 -- tempo stuff
@@ -4021,11 +4027,11 @@
     (= 6 (get-sc-config 'pitch-seq-lowest-equals-prefers-high))
     (set-sc-config 'pitch-seq-lowest-equals-prefers-high 5)))
 
-;;; MDE Mon Jan 28 19:55:45 2013 -- make sure that when we share a single psp
-;;; object between more than one rthm-seq, that it's not cloned, i.e. we cycle
-;;; through the pitch-seqs no matter which rthm-seq we call get-next for 
+;;;  MDE Mon Jan 28 19:55:45 2013 -- make sure that when we share a single
+;;; psp object between more than one rthm-seq, that it's not cloned, i.e. we
+;;; cycle through the pitch-seqs no matter which rthm-seq we call get-next for
 (sc-deftest test-psp-sharing ()
-  (let* ((4s '((0 3 2 6) (0 3 1 4) (0 3 4 6))) ;; a half turn to the right
+  (let* ((4s '((0 3 2 6) (0 3 1 4) (0 3 4 6))) 
          (psp4 (make-psp '4s 4 4s))
          (rsp
           (make-rsp
@@ -5455,11 +5461,13 @@
                                     (2 ((3 4) (5 6) (7 8)))
                                     (3 three))
                            :recurse-simple-data nil))
+        ;; (non-ral-ral (make-ral 'non-ral-ral '((
         (ral-three (make-ral 'ral-3 '((1 one)
                                       (2 ((3 4) (5 6) (7 8)))
                                       (3 three))
                              :tag 'test-tag
                              :full-ref '(7 bob uncle))))
+    ;; (print ral-three)
     (sc-test-check
       ;; ral-one
       (is-ral ral-one)
@@ -5477,6 +5485,11 @@
       (not (full-ref ral-two))
       (equalp (get-all-refs ral-two) '((1) (2) (3)))
       ;; ral-three
+      ;; bear in mind that although we've artificially given a full-ref here, we
+      ;; can only access data starting with refs 1 2 or 3. 
+      (equalp '(7 bob uncle 1)
+              (previous (get-data '(2 3) ral-three)))
+      ;; (print (get-data '(2 3) ral-three))
       (is-ral ral-three)
       (equalp (tag ral-three) 'test-tag)
       (equalp (full-ref ral-three) '(7 bob uncle)))))
@@ -5542,6 +5555,9 @@
                                                 (fox hole)))
                                           (white ribbon)))))))))
     (sc-test-check
+      ;; MDE Mon Jan 29 13:49:07 2024, Heidhausen -- ral's are automatically
+      ;; linked at init
+      #|
       ;; before
       (not (linked ral))
       (notany #'linked-named-object-p
@@ -5552,7 +5568,8 @@
       (notany #'linked-named-object-p
               (data (get-data-data 'red
                                    (get-data-data 'violets 
-                                                  (get-data-data 'four ral)))))
+      (get-data-data 'four ral)))))
+      |#
       ;; after
       (link-named-objects ral)
       (linked ral)
@@ -5581,6 +5598,10 @@
                                           (white ribbon)))))))))
     (sc-test-check
       ;; before
+      ;; MDE Wed Jan 31 12:55:22 2024, Heidhausen -- none of these are relevant
+      ;; since changing the assoc-list add method to use setf data instead of
+      ;; slot-value 
+      #|
       (not (linked ral))
       (notany #'linked-named-object-p
               (data (get-data-data 'four ral)))
@@ -5590,7 +5611,8 @@
       (notany #'linked-named-object-p
               (data (get-data-data 'red
                                    (get-data-data 'violets 
-                                                  (get-data-data 'four ral)))))
+      (get-data-data 'four ral)))))
+      |#
       ;; after
       (relink-named-objects ral)
       (linked ral)
@@ -5798,11 +5820,19 @@
                                                  (fox hole)))
                                            (white ribbon))))))))
          (pd-ral (parcel-data ral 'potpourri)))
+    ;; (relink-named-objects pd-ral)
+    ;; (print pd-ral) (print ral)
+    ;; (setq +ral+ pd-ral)
+    ;; (print '----) (print (get-all-refs (get-data-data 'potpourri pd-ral)))
     (sc-test-check
       (equalp (id (first (data pd-ral)))
               'potpourri)
-      (equalp (get-all-refs ral)
-              (get-all-refs (data (first (data pd-ral))))))))
+      (equalp (mapcar #'(lambda (x) (cons 'potpourri x))
+                             (get-all-refs ral))
+              ;; (print (get-all-refs (data (first (data pd-ral)))))))))
+              ;; (print (get-all-refs (print (get-data-data 'potpourri
+                 ;;                                        pd-ral))))))))
+              (get-all-refs pd-ral)))))
 
 ;;; SAR Mon Jan 30 12:37:22 GMT 2012: Amended
 ;;; SAR Fri Jan 27 17:30:38 GMT 2012
@@ -6015,7 +6045,7 @@
                  collect (data i))
               '((1 7 3 4 5 2 6) (7 1 5 4 3 6 2))))))
 
-;;; SAR Sat Jan 28 15:07:08 GMT 2012
+;;;  SAR Sat Jan 28 15:07:08 GMT 2012
 (sc-deftest test-rsp-create-psps ()
   (let* ((mrsp (make-rsp 'rsp-test 
                          '((seq1 ((((2 4) q +e. s)
@@ -6040,6 +6070,8 @@
          (bar2 (get-data '(seq3 2) split))
          (psp (pitch-seq-palette bar2))
          (cpsps-mrsp '()))
+    ;; (print mrsp)
+    (print psp)
     (sc-test-check
       ;; MDE Tue Sep  3 21:17:54 2013
       (= 1 (num-bars bar1))
@@ -6344,8 +6376,8 @@
                      (+w))))))))
             (top ((((4 4) q x 4)))))))
         bar)
-    ;; (print rsp)
-    ;; (print (get-data '(long 1 a) rsp))
+    (print rsp)
+    ;; (print (bars (get-data '(long 1 a) rsp)))
     (sc-test-check
      ;; MDE Fri Jul  5 15:40:56 2019
       ;; (not (get-this-refs rsp))
@@ -6353,6 +6385,7 @@
       (not (get-this-refs (get-data-data 'long rsp)))
       (equalp '((LONG 3 A) (LONG 3 B) (LONG 3 C) (LONG 3 D))
               (get-this-refs (get-data-data '(long 3) rsp)))
+      ;; 
       (equal '(long 1 a) (rsp-id (get-nth-bar 0 (get-data '(long 1 a) rsp))))
       (equal '(long 2 a) (rsp-id (get-nth-bar 4 (get-data '(long 2 a) rsp))))
       (equal '(long 3 d) (rsp-id (get-nth-bar 8 (get-data '(long 3 d) rsp))))
@@ -6364,7 +6397,7 @@
       (eq 'te (data (second (rhythms bar))))
       (is-rest (second (rhythms bar))))))
 
-;;; MDE Thu Dec 15 17:03:38 2022, Heidhausen
+;;;  MDE Thu Dec 15 17:03:38 2022, Heidhausen
 (sc-deftest test-make-rsp-from-fragments ()
   (let ((rsp (make-rsp-from-fragments
               '((1 (- s s - (e))) 
@@ -6379,8 +6412,12 @@
                 (((7 8) 7 8) (3 4 8) ((2 4) 3 4) (5 6) ((7 8) 5 6 8))
                 (((4 4) 1 2 1 2) ((5 4) 1 2 1 2 2) (3 4 5 7))
                 (((3 8) 8) ((2 4) 5 6) (7))))))
+    (print rsp)
+    ;; (print (get-all-refs rsp))
+    (print (length (data rsp)))
+    (print (r-count-elements rsp))
     (sc-test-check
-      (= 4 (num-data rsp))
+      (= 4 (print (num-data rsp)))
       (= 3 (num-bars (get-data 1 rsp)))
       (= 5 (num-bars (get-data 2 rsp)))
       (= 3 (num-bars (get-data 3 rsp)))
@@ -6449,7 +6486,7 @@
          (ss1 (psp-subseq mpsp 1 5))
          (ss2 (psp-subseq mpsp 0 3))
          (ss3 (psp-subseq mpsp 2 3)))
-    (print ss1) (print ss2) (print ss3)
+    ;; (print ss1) (print ss2) (print ss3)
     (flet ((check-it (psp list)
              (equalp (original-data (get-nth 0 psp)) list)))
       (sc-test-check
@@ -7524,7 +7561,7 @@
                  (loop for m in midi-events when (typep m 'cm::midi) collect
                       (cm::midi-channel m))))))))
 
-;; MDE Thu Jul 30 13:15:11 2015
+;;  MDE Thu Jul 30 13:15:11 2015
 (sc-deftest test-auto-sequence ()
   (let* ((sp (recursive-set-palette-from-ring-mod '(a4 b4) 'spfrm-test
                                                   :warn-no-bass nil))
@@ -7544,11 +7581,11 @@
       ;; (print num-sets)
       ;; (print sp)
       (sc-test-check
-        (good-refs (auto-sequence sp :verbose nil :silent t))
+        (good-refs (auto-sequence sp :verbose t :silent nil))
         ;; MDE Fri Jan 29 18:38:05 2016 -- try the permutate algorithm now too
         (good-refs (auto-sequence sp :verbose nil :permutate t :silent t
-                                  :dissonance-env '(0 1 80 .1 120 .9)
-                                  :repeating-bass t))
+                                     :dissonance-env '(0 1 80 .1 120 .9)
+                                     :repeating-bass t))
         (good-refs (auto-sequence sp :verbose nil :centroid-weight 2 :silent t
                                   :dissonance-env '(0 1 80 .1 120 .9)))
         ;; MDE Fri Jan 29 18:46:39 2016 -- again
@@ -8390,6 +8427,7 @@
       ;; MDE Sat Nov  3 09:46:01 2018 -- test cloning of existing objects
       (eq 'blah (id (make-ensemble 'blah ens)))
       (eq 'ens (id (make-ensemble nil ens)))
+      (print (players ens))
       (equalp (loop for p in (data ens) 
                  collect (id p)
                  when (assoc-list-p (data p))
@@ -12589,7 +12627,7 @@
                   (first (has-mark (get-last-event (get-bar mini 4 i))
                                    'pause)))))))
 
-;;; MDE Fri Jan 10 16:20:51 2020 -- using Dan's new code for generating new
+;;;  MDE Fri Jan 10 16:20:51 2020 -- using Dan's new code for generating new
 ;;; sections  
 (sc-deftest test-bars-to-sc-with-section-id ()
   (declare (special *auto*))
@@ -12601,8 +12639,8 @@
     (sc-test-check
       (fill-with-rhythms bar ev-list)
       (fill-with-rhythms bar2 ev-list2)
-      (bars-to-sc (loop repeat 4 collect bar))
-      (bars-to-sc (loop repeat 4 collect bar2) :sc *auto* :section-id 2)
+      (bars-to-sc (loop repeat 4 collect (clone bar)))
+      (bars-to-sc (loop repeat 4 collect (clone bar2)) :sc *auto* :section-id 2)
       (update-slots *auto*)
       ;; with just one section we should have 252 bytes, with both 460
       ;; MDE Thu Sep 24 19:03:16 2020, Heidhausen -- we've now attached tempo
@@ -12615,7 +12653,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-map tests
-;;; SAR Thu Apr 26 18:19:12 BST 2012
+;;;  SAR Thu Apr 26 18:19:12 BST 2012
 (sc-deftest test-rthm-seq-map-make-rthm-seq-map ()
   (let ((rsm1 (make-rthm-seq-map 
                'rsm-test-1
@@ -13662,7 +13700,7 @@
                     26 29 26 26 30 28 29 28 30 19 29 19 29 30 22 25 22 22 30 12
                     27 12 30 14 16 14 16 30 17)))))
 
-;;; MDE Sat Apr 28 10:52:41 2012 -- 
+;;;  MDE Sat Apr 28 10:52:41 2012 -- 
 (sc-deftest test-make-rthm-chain ()
   (let* ((rc (make-rthm-chain 
               'test 100 
@@ -14029,7 +14067,7 @@
          2 9 6 6 2 6 9 9 2 9 3 3 2 8 1 1 2 8 2 4 3 3 5 5 5 5 2 9 8 8 1 1 7 7 2
          7 10 10 2 7 2 8)))))
 
-;;; SAR Tue Jun 12 22:43:28 BST 2012: 
+;;;  SAR Tue Jun 12 22:43:28 BST 2012: 
 (sc-deftest test-rthm-chain-add-voice ()
   (let ((rch
          (make-rthm-chain
@@ -14060,8 +14098,13 @@
               (- e. s - (q) (s) - s e -)
               ({ 3 te+te te } (q) q)
               ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
-          :players '(fl cl))))
+          :players '(fl cl))))    
+    ;; (print '---------------------------------------------------)
+    ;; (print rch)
+    ;; (setq +ral+ rch)
     (add-voice rch '(1 cl) 'ob)
+    ;; (print '--------------------------------)
+    ;; (print rch)
     (create-psps (palette rch))
     (let ((mini
            (make-slippery-chicken
@@ -15516,6 +15559,8 @@
                      (6 b-flat-clarinet)))))  
             (2 ((fl ((2 piccolo) (4 flute)))
                 (cl ((2 bass-clarinet) (3 b-flat-clarinet)))))))))
+    ;; (relink-named-objects icm)
+    ;; (print '+++++++++++++++++) (print icm)
     (sc-test-check
       (instrument-change-map-p icm)
       (equalp (get-all-refs icm) '((1 FL) (1 CL) (2 FL) (2 CL)))
@@ -17836,6 +17881,61 @@ est)")))
       (eq 'fqs4 (get-pitch-symbol (get-event mini 7 1 'vn)))
       (eq 'f4 (get-pitch-symbol (get-event mini 10 1 'vn))))))
 
+;;;  MDE Tue Jan 30 12:22:22 2024, Heidhausen
+(sc-deftest test-make-sc-with-subsections ()
+  (let* ((rsm (make-rthm-seq-map
+               'test
+               '((1
+                  ((a ((vn (1 1 1))
+                       (vla (1 1 1))
+                       (vc (1 1 1))))
+                   (b ((vn (1 1 1))))))
+                 (2 ((vn (1 1 1 1))
+                     (vla (1 1 1 1))))
+                 (3
+                  ((a ((vn (1 1 1))))
+                   (b
+                    ((x ((vn (1 1 1))
+                         (vla (1 1 1))
+                         (vc (1 1 1))))
+                     (y ((vc (1 1 1))))))))
+                 (4
+                  ((a ((vn (1 1 1))))
+                   (b ((vn (1 1 1))))
+                   (c ((vn (1 1 1 1)))))))))
+         (mini
+           (make-slippery-chicken
+            '+mini+
+            :ensemble '(((vn (violin :midi-channel 1))
+                         (vla (viola :midi-channel 2))
+                         (vc (cello :midi-channel 3))))
+            :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+            :set-map '((1
+                        ((a (1 1 1))
+                         (b (1 1 1))))
+                       (2 (1 1 1 1))
+                       (3
+                        ((a (1 1 1))
+                         (b
+                          ((x (1 1 1))
+                           (y (1 1 1))))))
+                       (4
+                        ((a (1 1 1))
+                         (b (1 1 1))
+                         (c (1 1 1 1)))))
+            ;; :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)))))
+            ;; reaper: chords and transp methods
+            :rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
+                                    :pitch-seq-palette (((5) 1)))))
+            :rthm-seq-map rsm
+            :snd-output-dir "/tmp/"
+            :sndfile-palette
+            `(((grp-1
+                (test-sndfile-1.aiff test-sndfile-2.aiff test-sndfile-3.aiff)))
+              (,(file-from-sc-dir "tests/test-sndfiles-dir-1/"))))))
+    (sc-test-check
+      ;; not much to check other than that subsections work
+      (= 29 (num-bars mini)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Apr  2 09:48:29 2012 
@@ -18075,7 +18175,7 @@ est)")))
       (file-write-ok "/tmp/sine1mini-1-vn-vc-seq1-3.wav" 2000000)
       (file-write-ok "/tmp/sine2mini-2-vn-vc-seq1-3.wav" 2000000))))
 
-;;; MDE Sat Jun  2 12:52:38 2012 
+;;;   MDE Sat Jun  2 12:52:38 2012 
 #+clm
 (sc-deftest test-clm-play-with-subsections ()
   (let* ((rsm (make-rthm-seq-map
@@ -18094,32 +18194,33 @@ est)")))
                    (b ((vn (1 1 1))))
                    (c ((vn (1 1 1 1)))))))))
          (mini
-          (make-slippery-chicken
-           '+mini+
-           :ensemble '(((vn (violin :midi-channel 1))))
-           :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-           :set-map '((1
-                       ((a (1 1 1))
-                        (b (1 1 1))))
-                      (2 (1 1 1 1))
-                      (3
-                       ((a (1 1 1))
-                        (b
-                         ((x (1 1 1))
-                          (y (1 1 1))))))
-                      (4
-                       ((a (1 1 1))
-                        (b (1 1 1))
-                        (c (1 1 1 1)))))
-           ;; :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)))))
-           ;; reaper: chords and transp methods
-           :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)) :pitch-seq-palette (((5) 1)))))
-           :rthm-seq-map rsm
-           :snd-output-dir "/tmp/"
-           :sndfile-palette
-           `(((grp-1
-               (test-sndfile-1.aiff test-sndfile-2.aiff test-sndfile-3.aiff)))
-             (,(file-from-sc-dir "tests/test-sndfiles-dir-1/"))))))
+           (make-slippery-chicken
+            '+mini+
+            :ensemble '(((vn (violin :midi-channel 1))))
+            :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+            :set-map '((1
+                        ((a (1 1 1))
+                         (b (1 1 1))))
+                       (2 (1 1 1 1))
+                       (3
+                        ((a (1 1 1))
+                         (b
+                          ((x (1 1 1))
+                           (y (1 1 1))))))
+                       (4
+                        ((a (1 1 1))
+                         (b (1 1 1))
+                         (c (1 1 1 1)))))
+            ;; :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)))))
+            ;; reaper: chords and transp methods
+            :rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
+                                    :pitch-seq-palette (((5) 1)))))
+            :rthm-seq-map rsm
+            :snd-output-dir "/tmp/"
+            :sndfile-palette
+            `(((grp-1
+                (test-sndfile-1.aiff test-sndfile-2.aiff test-sndfile-3.aiff)))
+              (,(file-from-sc-dir "tests/test-sndfiles-dir-1/"))))))
     (sc-test-check
       (= 29 (num-sequences (set-map mini)) (num-sequences (rthm-seq-map mini)))
       (= 6 (num-seqs mini 1))
@@ -18130,14 +18231,14 @@ est)")))
       (= 58 (clm-play mini 1 nil 'grp-1 :check-overwrite nil :src-width 5))
       (= 46 (clm-play mini 2 nil 'grp-1 :check-overwrite nil :src-width 5))
       (= 12 (clm-play mini 3 nil 'grp-1 :num-sections 2 :check-overwrite nil
-                      :src-width 5))
+                                        :src-width 5))
       (= 20 (clm-play mini 4 nil 'grp-1 :check-overwrite nil :src-width 5))
       (= 6 (clm-play mini 2 nil 'grp-1 :num-sequences 3 :num-sections 1
                                        :src-width 5 :check-overwrite nil))
       ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
       ;; with this too
       (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :tracks-per-player 2
-                   :pitch-synchronous t)
+                                     :pitch-synchronous t)
       (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :tracks-per-player 2
                                      :pitch-synchronous t :do-src 'transposition
                                      :short-file-names t) 
@@ -18172,11 +18273,11 @@ est)")))
       (not (empty-bars? mini 3 7 'vn))
       (force-rest-bars mini 3 7 'vn)
       (empty-bars? mini 3 7 'vn)
-      (empty-bars? mini 3 7) ; both
-      (empty-bars? mini 4 6 '(trb vn)) ; both explicit
-      (not (empty-bars? mini 2 7)) ; both
+      (empty-bars? mini 3 7)            ; both
+      (empty-bars? mini 4 6 '(trb vn))  ; both explicit
+      (not (empty-bars? mini 2 7))      ; both
       (not (empty-bars? mini 3 8 'vn))
-      (empty-bars? mini 29 29 'trb) ; last bar
+      (empty-bars? mini 29 29 'trb)     ; last bar
       (eq 'trb (player (get-event mini 1 1 'trb)))
       ;; MDE Fri Nov 23 19:00:34 2018 -- test the new all-rests arg
       (add-marks (get-event mini 1 2 'vn) '(p cresc-beg))
@@ -20987,6 +21088,74 @@ est)")))
       (equal set-symbs
              '(D1 E1 AF1 AF2 BF2 D3 E3 AF3 BF3 D4 E4 AF4 BF4 D5 E5
                D6 E6 AF6 BF6 D7 E7)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Tue Dec 19 22:26:45 2023
+;;; test-salzedo-marks
+
+(sc-deftest test-salzedo-marks ()
+  (in-scale :chromatic)
+  (set-sc-config 'xml-salzedo-as-text t)
+  (let ((sc
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((hrp (harp))))
+           :tempo-map '((1 (q 120)))
+           :set-palette '((set1 ((c4 d4 e4 f4 g4 a4))))
+           :set-map '((1 (set1 set1)))
+           :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
+                                      :pitch-seq-palette ((1 2 3 4 5)
+                                                          (5 4 3 2 1)))))
+           :rthm-seq-map '((1 ((hrp (seq1 seq1)))))))
+        (bar (make-rthm-seq-bar '((4 4) (w)))))
+    (add-mark-to-note sc 1 1 'hrp
+                      '(salzedo (1 -1 1 0 1 -1 1)))
+    (add-salzedo-pedal (get-nth-event 2
+                                      (get-nth-bar 0
+                                                   (get-sequenz-from-bar-num
+                                                    (piece sc)
+                                                    1 'hrp)))
+                       '(1 0 0 1 0 -1 1))
+    (probe-delete "/tmp/salzedo-marks.xml")
+    (probe-delete "/tmp/salzedo-marks.eps")
+    (probe-delete "/tmp/salzedo-marks.pdf")
+    (write-xml sc :file "/tmp/salzedo-marks.xml")
+    (cmn-display sc :file "/tmp/salzedo-marks.eps")
+    (lp-display sc :base-path "/tmp/")
+    (sc-test-check
+     (file-write-ok "/tmp/salzedo-marks.xml")
+     (file-write-ok "/tmp/salzedo-marks.eps")))
+  (set-sc-config 'xml-salzedo-as-text nil)
+  (let ((sc
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((hrp (harp))))
+           :tempo-map '((1 (q 120)))
+           :set-palette '((set1 ((c4 d4 e4 f4 g4 a4))))
+           :set-map '((1 (set1 set1)))
+           :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
+                                      :pitch-seq-palette ((1 2 3 4 5)
+                                                          (5 4 3 2 1)))))
+           :rthm-seq-map '((1 ((hrp (seq1 seq1)))))))
+        (bar (make-rthm-seq-bar '((4 4) (w)))))
+    (add-mark-to-note sc 1 1 'hrp
+                      '(salzedo (1 -1 1 0 1 -1 1)))
+    (add-salzedo-pedal (get-nth-event 2
+                                      (get-nth-bar 0
+                                                   (get-sequenz-from-bar-num
+                                                    (piece sc)
+                                                    1 'hrp)))
+                       '(1 0 0 1 0 -1 1))
+    (probe-delete "/tmp/salzedo-marks.xml")
+    (probe-delete "/tmp/salzedo-marks.eps")
+    (probe-delete "/tmp/salzedo-marks.pdf")
+    (write-xml sc :file "/tmp/salzedo-marks.xml")
+    (cmn-display sc :file "/tmp/salzedo-marks.eps")
+    (lp-display sc :base-path "/tmp/")
+    (sc-test-check
+     (file-write-ok "/tmp/salzedo-marks.xml")
+     (file-write-ok "/tmp/salzedo-marks.eps")))
+  (set-sc-config 'xml-salzedo-as-text t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

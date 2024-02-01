@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  13:13:23 Tue May 17 2022 CEST
+;;; $$ Last modified:  22:04:42 Tue Dec 19 2023 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1166,6 +1166,182 @@
           (setf (highest-sounding i) high)
           (setf (highest-written i) high)))
     i))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/salzedo-p
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-11-30
+;;; 
+;;; DESCRIPTION
+;;; Determine whether a given input is a valid salzedo-list, which is a 7-number
+;;; list reflecting the pedal positions of a concert harp according to the
+;;; Salzedo-notation. The order of the pedals in the list is (D C B E F G A),
+;;; where -1 indicates lowering the respective note a half step, 0 means no
+;;; alteration, 1 means raising the note a half. Thus, '(0 1 0 0 0 -1 0)
+;;; implies the following alteration: D C# B E F Gb A, or (in a more common
+;;; order: C# D E F Gb A B.
+;;;
+;;; ARGUMENTS
+;;; The object to be tested.
+;;; 
+;;; RETURN VALUE
+;;; T if the tested object is a salzedo-list, otherwise NIL. 
+;;;
+;;; EXAMPLE
+#|
+(salzedo-p '(-1 1 0 1 0 1 1))
+=> T
+|#
+;;; SYNOPSIS
+(defun salzedo-p (object)
+  ;;; ****
+  (and (listp object)
+       (eq (length object) 7)
+       (every #'(lambda (item)
+                  (and (<= -1 item)
+                       (>= 1 item)))
+              object)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/salzedo-to-symbol
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-11-30
+;;; 
+;;; DESCRIPTION
+;;; This function converts a salzedo harp pedaling list (cf. 
+;;; harp-salzedo-to-tl-set) into a symbol which could be further used e.g. as an
+;;; id for subsets or sets.
+;;; During the processing, the values in the salzedo-list will be replaced
+;;; with the following characters:
+;;; -1 => F   (lower a semitone/flat)
+;;;  0 => N   (natural)
+;;;  1 => S   (raise a semitone/sharp)
+;;;
+;;; ARGUMENTS
+;;; The salzedo list (e.g. '(0 -1 1 1 0 -1 1)) to be parsed into a symbol.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword-arguments:
+;;; - :prefix. The prefix to be added to the generated symbol. Default = 'harp-.
+;;; - :suffix. The suffix to be added to the generated symbol. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A symbol generated from the given salzedo-list. 
+;;;
+;;; EXAMPLE
+#|
+(salzedo-to-symbol '(-1 1 0 1 1 -1 0) :prefix 'harp-)
+;; => 'HARP-FSNSSFN
+|#
+;;; SYNOPSIS
+(defun salzedo-to-symbol (salzedo &key
+                                    (prefix 'harp-)
+                                    suffix)
+  ;;; ****
+  ;;; sanity checks
+  (unless (salzedo-p salzedo)
+    (error "instruments::salzedo-to-symbol: The given list is not a valid ~
+            salzedo-list."))
+  (let ((translation (mapcar #'(lambda (ped)
+                                      (case ped
+                                        (-1 'f)  ;; flat
+                                        (0 'n)   ;; sharp
+                                        (1 's))) ;; natural
+                                  salzedo)))
+    ;;; add prefix
+    (when prefix
+      (setf translation (cons prefix translation)))
+    ;;; add suffix
+    (when suffix
+      (setf translation (append translation (list suffix))))
+    (intern (format nil "~{~a~}" translation))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/symbol-to-salzedo
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2023-11-30
+;;; 
+;;; DESCRIPTION
+;;; This method converts a salzedo symbol (e.g. created via salzedo-to-symbol)
+;;; back to a salzedo-list (cf. ibid). It removes the prefix and suffix (if
+;;; given) from the symbol and translates each of the seven (!) characters of
+;;; the remaining symbol as follows:
+;;; F => -1  (lower a semitone/flat)
+;;; N =>  0  (natural)
+;;; S =>  1  (raise a semitone/sharp)
+;;;
+;;; ARGUMENTS
+;;; A symbol. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword-arguments:
+;;; - :prefix. A symbol which will be removed from the start of the input
+;;;   symbol and be ignored while processing. Default = 'harp-.
+;;; - :suffix. A symbol which will be removed from the end of the input symbol
+;;;   and be ignored while processing. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A salzedo-list (cf. salzedo-to-symbol). 
+;;;
+;;; EXAMPLE
+#|
+(symbol-to-salzedo 'HARP-FSNSSFN-ONE :prefix 'harp- :suffix '-ONE)
+;; => (-1 1 0 1 1 -1 0)
+|#
+(defun symbol-to-salzedo (symbol &key
+                                   (prefix 'harp-)
+                                   suffix)
+  ;;; ****
+  ;;; sanity checks
+  (unless (symbolp symbol)
+    (error "instruments::symbol-to-salzedo: The symbol must be of type ~
+            SYMBOL."))
+  (unless (or (null prefix)
+              (symbolp prefix))
+    (error "instruments::symbol-to-salzedo: The prefix must be either of type ~
+            SYMBOL or NIL."))
+  (unless (or (null suffix)
+              (symbolp suffix))
+    (error "instruments::symbol-to-salzedo: The suffix must be either of type ~
+            SYMBOL or NIL."))
+  (let* ((symbol-string (format nil "~a" symbol))
+         (prefix-string (if prefix
+                            (format nil "~a" prefix)
+                            ""))
+         (suffix-string (if suffix
+                            (format nil "~a" suffix)
+                            ""))
+         (symbol-sans-prefix (subseq symbol-string (length prefix-string)))
+         (symbol-sans-suffix (subseq symbol-sans-prefix
+                                     0
+                                     (- (length symbol-sans-prefix)
+                                        (length suffix-string))))
+         (result 
+           (loop for ped across symbol-sans-suffix
+                 collect
+                 (case ped
+                   (#\F -1)
+                   (#\S 1)
+                   (#\N 0)
+                   (t (error "instruments::symbol-to-salzedo: The given symbol ~
+                              is not valid."))))))
+    (if (eq (length result) 7)
+        result
+        (error "instruments::symbol-to-salzedo: The symbol to convert does not ~
+                contain the required 7 pedals, but ~a." (length result)))))
     
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

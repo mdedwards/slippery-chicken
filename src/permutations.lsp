@@ -349,24 +349,23 @@
                '~a'." 
               (factorial level)
               file)
-        (permutations-aux level stream)
+        (permutations-aux (loop for i from 0 below level collect i) stream)
         (close stream))
       ;; <= 8
-      (permutations-aux level)))
+      (permutations-aux (loop for i from 0 below level collect i))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun permutations-aux (level &optional (stream nil) (result '())
+(defun permutations-aux (ls &optional (stream nil) (result '())
                          (current '()))
   ;;(format t "~&result: ~a current: ~a" result current)
-  (if (= (length current) level)
+  (if (null ls)
       (if stream 
           (print current stream)
           (push current result))
-      (loop for i below level do
-           (unless (member i current)
-             (setf result (permutations-aux level stream result 
-                                            (cons i current))))))
+      (loop for i in ls do
+	(setf result (permutations-aux (remove i ls :count 1) stream result 
+				       (cons i current)))))
   result)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

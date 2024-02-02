@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  23:17:54 Tue Dec 19 2023 CET
+;;; $$ Last modified:  11:24:11 Fri Feb  2 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -478,6 +478,7 @@
 |#
 ;;; SYNOPSIS
 (defun salzedo-to-ly-string (salzedo)
+;;; ****  
   ;;; sanity checks
   (unless (salzedo-p salzedo)
     (error "lilypond::salzedo-to-ly-string: The given list ~a is not a valid ~
@@ -498,7 +499,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* lp-salzedo-mark
+;;; ****f* lilypond/lp-salzedo-mark
 ;;; AUTHOR
 ;;; Ruben Philipp <me@rubenphilipp.com>
 ;;;
@@ -519,7 +520,7 @@
 |#
 ;;; SYNOPSIS
 (defun lp-salzedo-mark (salzedo)
-  ;;; ****
+;;; ****
   (unless (salzedo-p salzedo)
     (error "lilypond::lp-salzedo-mark: ~a is not of type salzedo list" salzedo))
   (let ((lp-salzedo (salzedo-to-ly-string salzedo)))

@@ -33,30 +33,30 @@
 
 
 <a name="sndfile2dext2fget2dnext"></a>
-<a name="robo837"></a><h2 class=robodoc>sndfile-ext/get-next [ Methods ]</h2>
+<a name="robo850"></a><h2 class=robodoc>sndfile-ext/get-next [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo859">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo872">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the next sound file from the &lt;followers&gt; slot.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo859">sndfile-ext</a> object.
+<pre> - A <a href="#robo872">sndfile-ext</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo859">sndfile-ext</a> object.
+<pre> A <a href="#robo872">sndfile-ext</a> object.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-next</strong> ((sfe <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext))
+<pre class="source">(defmethod <strong>get-next</strong> ((sfe <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext))
 </pre>
 
 
 <a name="sndfile2dext2fmake2dsndfile2dext"></a>
-<a name="robo838"></a><h2 class=robodoc>sndfile-ext/make-sndfile-ext [ Functions ]</h2>
+<a name="robo851"></a><h2 class=robodoc>sndfile-ext/make-sndfile-ext [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo859">sndfile-ext</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo872">sndfile-ext</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo859">sndfile-ext</a> (extension of <a href="./sndfile_lsp.html#robo289">sndfile</a>) object which holds the usual
- <a href="./sndfile_lsp.html#robo289">sndfile</a> data as well as a host of others to do with the characteristics of
+<pre> Make a <a href="#robo872">sndfile-ext</a> (extension of <a href="./sndfile_lsp.html#robo294">sndfile</a>) object which holds the usual
+ <a href="./sndfile_lsp.html#robo294">sndfile</a> data as well as a host of others to do with the characteristics of
  the sound file.  In addition, the followers slot specifies sound files
  which can follow the current one.  The bitrate, srate, num-frames, and
  bytes slots will be filled automatically if the path to an existing sound
@@ -66,12 +66,12 @@
 <pre> See defclass slot descriptions
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo859">sndfile-ext</a> object or NIL if path is NIL
+<pre> A <a href="#robo872">sndfile-ext</a> object or NIL if path is NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>make-sndfile-ext</strong> (path &amp;key id data duration end (start 0.0)
                                 (frequency nil) (amplitude 1.0) (cue-num -1)
-                                (use t) (<a href="./pitch_lsp.html#robo285">pitch</a> -1) (<a href="./pitch_lsp.html#robo285">pitch</a>-curve -1)
+                                (use t) (<a href="./pitch_lsp.html#robo290">pitch</a> -1) (<a href="./pitch_lsp.html#robo290">pitch</a>-curve -1)
                                 (bandwidth -1)
                                 (bandwidth-curve -1) (continuity -1)
                                 (continuity-curve -1) (weight -1)
@@ -85,15 +85,15 @@
 
 
 <a name="sndfile2dext2fmax2dcue"></a>
-<a name="robo839"></a><h2 class=robodoc>sndfile-ext/max-cue [ Methods ]</h2>
+<a name="robo852"></a><h2 class=robodoc>sndfile-ext/max-cue [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo859">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo872">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Generate the data necessary to preload the sound file in a MaxMSP sflist~
  object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo859">sndfile-ext</a> object.
+<pre> - The <a href="#robo872">sndfile-ext</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - Whether to issue an error if the cue-num slot has not been set to a value
@@ -103,48 +103,48 @@
 <pre> A list of data suitable to be passed via OSC to the sflist~ object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let* ((sf1 (<a href="#robo838">make-sndfile-ext</a> 
+<pre class="source">(let* ((sf1 (<a href="#robo851">make-sndfile-ext</a> 
              (concatenate 'string
                           cl-user::+slippery-chicken-home-dir+ 
-                          "test-suite/<a href="./sndfile_lsp.html#robo289">sndfile</a>-1.aiff")
+                          "test-suite/<a href="./sndfile_lsp.html#robo294">sndfile</a>-1.aiff")
              :cue-num 2 :start 0.3 :end 1.1 :frequency 653)))
   (<strong>max-cue</strong> sf1))
 
 =&gt;
-("preload" 2 "/Users/medward2/lisp/sc/test-suite/<a href="./sndfile_lsp.html#robo289">sndfile</a>-1.aiff" 300.0 1100.0)
+("preload" 2 "/Users/medward2/lisp/sc/test-suite/<a href="./sndfile_lsp.html#robo294">sndfile</a>-1.aiff" 300.0 1100.0)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>max-cue</strong> ((sfe <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext) &amp;optional (on-fail #'error))
+<pre class="source">(defmethod <strong>max-cue</strong> ((sfe <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext) &amp;optional (on-fail #'error))
 </pre>
 
 
 <a name="sndfile2dext2fmax2dplay"></a>
-<a name="robo840"></a><h2 class=robodoc>sndfile-ext/max-play [ Methods ]</h2>
+<a name="robo853"></a><h2 class=robodoc>sndfile-ext/max-play [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo859">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo872">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Generate the data necessary for MaxMSP to play the <a href="./sndfile_lsp.html#robo289">sndfile</a> using the
+<pre> Generate the data necessary for MaxMSP to play the <a href="./sndfile_lsp.html#robo294">sndfile</a> using the
  sflist~ and sfplay~.
  
  NB fade-dur could be 0 (= no fade)
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo859">sndfile-ext</a> object.
+<pre> - The <a href="#robo872">sndfile-ext</a> object.
  - The fade (in/out) duration in seconds.
  - The maximum loop duration in seconds.
  - The time to trigger the next file, as a percentage of the current
-   <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext's duration.
+   <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext's duration.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of values to be passed via OSC to <a href="./sndfilenet_lsp.html#robo304">sndfilenet</a>-aux.maxpat:
+<pre> A list of values to be passed via OSC to <a href="./sndfilenet_lsp.html#robo310">sndfilenet</a>-aux.maxpat:
  cue-number number-of-channels loop speed fade-dururation
  fade-out-start-time delay-to-next-snfile-start amplitude
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let* ((sf1 (<a href="#robo838">make-sndfile-ext</a> 
+<pre class="source">(let* ((sf1 (<a href="#robo851">make-sndfile-ext</a> 
              (concatenate 'string
                           cl-user::+slippery-chicken-home-dir+ 
-                          "test-suite/<a href="./sndfile_lsp.html#robo289">sndfile</a>-1.aiff")
+                          "test-suite/<a href="./sndfile_lsp.html#robo294">sndfile</a>-1.aiff")
              :start 0.3 :end 1.1 :frequency 653)))
   (<strong>max-play</strong> sf1 20))
 
@@ -152,20 +152,20 @@
 (-1 1 0 1.0 0.32000002 0.48)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>max-play</strong> ((sfe <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext) fade-dur max-loop start-next
+<pre class="source">(defmethod <strong>max-play</strong> ((sfe <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext) fade-dur max-loop start-next
                      &amp;optional print)
 </pre>
 
 
 <a name="sndfile2dext2fproximity"></a>
-<a name="robo841"></a><h2 class=robodoc>sndfile-ext/proximity [ Methods ]</h2>
+<a name="robo854"></a><h2 class=robodoc>sndfile-ext/proximity [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo859">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo872">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> In terms of the characteristics expressed in the various class slots,
- evaluate the <strong>proximity</strong> of one <a href="#robo859">sndfile-ext</a> object to another.  The closer
+ evaluate the <strong>proximity</strong> of one <a href="#robo872">sndfile-ext</a> object to another.  The closer
  they are in character, the closer to 0 the returned value will be.  The
- order of the two <a href="#robo859">sndfile-ext</a> objects passed to the method is unimportant as
+ order of the two <a href="#robo872">sndfile-ext</a> objects passed to the method is unimportant as
  the return value is always &gt;= 0.0.  The more slots match, the lower
  (closer) the result will be, i.e., slots are only compared if they have a
  value &gt;= 0 (they default to -1), so it could be that in one comparison 5/6
@@ -181,15 +181,15 @@
 <pre> A floating point number &gt;= 0.0 where 0.0 indicates an exact match.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((sf3 (<a href="#robo838">make-sndfile-ext</a> 
-            nil :<a href="./pitch_lsp.html#robo285">pitch</a> 3 :<a href="./pitch_lsp.html#robo285">pitch</a>-curve 4 :bandwidth 10 :energy 2
+<pre class="source">(let ((sf3 (<a href="#robo851">make-sndfile-ext</a> 
+            nil :<a href="./pitch_lsp.html#robo290">pitch</a> 3 :<a href="./pitch_lsp.html#robo290">pitch</a>-curve 4 :bandwidth 10 :energy 2
             :harmonicity-curve 0))
-      (sf4 (<a href="#robo838">make-sndfile-ext</a> 
-            nil :<a href="./pitch_lsp.html#robo285">pitch</a> 3 :<a href="./pitch_lsp.html#robo285">pitch</a>-curve 4 :bandwidth 10 :energy 2
+      (sf4 (<a href="#robo851">make-sndfile-ext</a> 
+            nil :<a href="./pitch_lsp.html#robo290">pitch</a> 3 :<a href="./pitch_lsp.html#robo290">pitch</a>-curve 4 :bandwidth 10 :energy 2
             :harmonicity-curve 1)))
   ;; harmonicity-curve is slightly different so we get a result &gt; 0
   (print (<strong>proximity</strong> sf3 sf4))
-  (<a href="#robo843">set-characteristic</a> sf4 'harmonicity-curve 0)
+  (<a href="#robo856">set-characteristic</a> sf4 'harmonicity-curve 0)
   ;; now they're the same so we get 0.0
   (<strong>proximity</strong> sf3 sf4))
 
@@ -198,45 +198,45 @@
 0.0
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>proximity</strong> ((sfe1 <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext) (sfe2 <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext))
+<pre class="source">(defmethod <strong>proximity</strong> ((sfe1 <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext) (sfe2 <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext))
 </pre>
 
 
 <a name="sndfile2dext2freset"></a>
-<a name="robo842"></a><h2 class=robodoc>sndfile-ext/reset [ Methods ]</h2>
+<a name="robo855"></a><h2 class=robodoc>sndfile-ext/reset [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo859">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo872">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Reset the &lt;followers&gt; circular list to the first or any other following
  sound file. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> A <a href="#robo859">sndfile-ext</a> object.
+<pre> A <a href="#robo872">sndfile-ext</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> The position (index) to <strong>reset</strong> to (will default to 0 i.e. the beginning of
  the list).  NB This position may be higher than the number of followers
- attached to any given <a href="#robo859">sndfile-ext</a> object as it will <a href="./set-palette_lsp.html#robo662">wrap</a> around.
+ attached to any given <a href="#robo872">sndfile-ext</a> object as it will <a href="./set-palette_lsp.html#robo673">wrap</a> around.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>reset</strong> ((sfe <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext) &amp;optional where (warn t))
+<pre class="source">(defmethod <strong>reset</strong> ((sfe <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext) &amp;optional where (warn t))
 </pre>
 
 
 <a name="sndfile2dext2fset2dcharacteristic"></a>
-<a name="robo843"></a><h2 class=robodoc>sndfile-ext/set-characteristic [ Methods ]</h2>
+<a name="robo856"></a><h2 class=robodoc>sndfile-ext/set-characteristic [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo859">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo872">sndfile-ext</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Set the chracteristic of a <a href="#robo859">sndfile-ext</a> object to a given value.  The value
+<pre> Set the chracteristic of a <a href="#robo872">sndfile-ext</a> object to a given value.  The value
  for the slot is first checked to correspond to an accepted range; if not an
  error (default) or warning (or nothing) will be issued.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo859">sndfile-ext</a> object.
+<pre> - a <a href="#robo872">sndfile-ext</a> object.
  - the characteristic, i.e. one of the class slot names, as a symbol.
  - the new value, as an accepted integer (see characteristics slot for
    accepted range).
@@ -250,8 +250,8 @@
 <pre> NIL on fail otherwise &lt;value&gt;
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((sf4 (<a href="#robo838">make-sndfile-ext</a> 
-            nil :<a href="./pitch_lsp.html#robo285">pitch</a> 3 :<a href="./pitch_lsp.html#robo285">pitch</a>-curve 4 :bandwidth 10 :energy 2
+<pre class="source">(let ((sf4 (<a href="#robo851">make-sndfile-ext</a> 
+            nil :<a href="./pitch_lsp.html#robo290">pitch</a> 3 :<a href="./pitch_lsp.html#robo290">pitch</a>-curve 4 :bandwidth 10 :energy 2
             :harmonicity-curve 1)))
   ;; out of range but no error/warning
   (print (<strong>set-characteristic</strong> sf4 'harmonicity-curve 15 nil))
@@ -263,36 +263,36 @@
 =&gt;
 NIL 
 WARNING:
-   <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext::set-characteristic: No such characteristic: HARMONICITY-CURVE -1
+   <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext::set-characteristic: No such characteristic: HARMONICITY-CURVE -1
 NIL 
 0
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>set-characteristic</strong> ((sfe <a href="./sndfile_lsp.html#robo289">sndfile</a>-ext) characteristic value 
+<pre class="source">(defmethod <strong>set-characteristic</strong> ((sfe <a href="./sndfile_lsp.html#robo294">sndfile</a>-ext) characteristic value 
                                &amp;optional (on-fail #'error))
 </pre>
 
 
 <a name="sndfile2fsndfile2dext"></a>
-<a name="robo859"></a><h2 class=robodoc>sndfile/sndfile-ext [ Classes ]</h2>
+<a name="robo872"></a><h2 class=robodoc>sndfile/sndfile-ext [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sndfile_lsp.html#robo289">sndfile</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sndfile_lsp.html#robo294">sndfile</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>sndfile-ext</strong>
 
  File:             <a href="#robo_top_of_doc">sndfile-ext.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sndfile_lsp.html#robo289">sndfile</a> -&gt;
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sndfile_lsp.html#robo294">sndfile</a> -&gt;
                    <strong>sndfile-ext</strong> 
 
  Version:          1.0.12
 
  Project:          slippery chicken (algorithmic composition)
 
- Purpose:          Extension of the <a href="./sndfile_lsp.html#robo289">sndfile</a> class to hold further properties
+ Purpose:          Extension of the <a href="./sndfile_lsp.html#robo294">sndfile</a> class to hold further properties
                    which quantify the character of the sound file, and
                    specifies sound files which can follow the current one.
-                   Specifically created to interface with the <a href="./sndfilenet_lsp.html#robo304">sndfilenet</a>
+                   Specifically created to interface with the <a href="./sndfilenet_lsp.html#robo310">sndfilenet</a>
                    project in MaxMSP via OSC (see osc.lsp and osc-sc.lsp).
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -306,7 +306,7 @@ NIL
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/sndfile-ext.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+<p>Generated from ./../../src/sndfile-ext.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
 </div> <!-- footer -->
 </body>
 </html>

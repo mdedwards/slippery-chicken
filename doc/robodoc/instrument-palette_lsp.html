@@ -33,39 +33,39 @@
 
 
 <a name="instrument2dpalette2fauto2dset2dsubset2did"></a>
-<a name="robo232"></a><h2 class=robodoc>instrument-palette/auto-set-subset-id [ Methods ]</h2>
+<a name="robo233"></a><h2 class=robodoc>instrument-palette/auto-set-subset-id [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">instrument-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo305">instrument-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> July 27th 2018, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Set the subset-id slot to be the same as the id slot for each <a href="./instrument_lsp.html#robo284">instrument</a> in
- the <a href="./palette_lsp.html#robo405">palette</a>.  
+<pre> Set the subset-id slot to be the same as the id slot for each <a href="./instrument_lsp.html#robo289">instrument</a> in
+ the <a href="./palette_lsp.html#robo415">palette</a>.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - an <a href="#robo299">instrument-palette</a> instance
+<pre> - an <a href="#robo305">instrument-palette</a> instance
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - the <a href="./instrument_lsp.html#robo284">instrument</a> instance
+<pre> - the <a href="./instrument_lsp.html#robo289">instrument</a> instance
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>auto-set-subset-id</strong> ((ip <a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>))
+<pre class="source">(defmethod <strong>auto-set-subset-id</strong> ((ip <a href="./instrument_lsp.html#robo289">instrument</a>-<a href="./palette_lsp.html#robo415">palette</a>))
 </pre>
 
 
 <a name="instrument2dpalette2fmake2dinstrument2dpalette"></a>
-<a name="robo233"></a><h2 class=robodoc>instrument-palette/make-instrument-palette [ Functions ]</h2>
+<a name="robo234"></a><h2 class=robodoc>instrument-palette/make-instrument-palette [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">instrument-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo305">instrument-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create an <a href="#robo299">instrument-palette</a> object from a list of <a href="./instrument_lsp.html#robo284">instrument</a> descriptions
- based on the keyword arguments of <a href="./instrument_lsp.html#robo240">make-instrument</a>.
+<pre> Create an <a href="#robo305">instrument-palette</a> object from a list of <a href="./instrument_lsp.html#robo289">instrument</a> descriptions
+ based on the keyword arguments of <a href="./instrument_lsp.html#robo241">make-instrument</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A symbol that will serve as the ID for the <a href="#robo299">instrument-palette</a> object. 
- - A list of <a href="./instrument_lsp.html#robo284">instrument</a> descriptions based on the keyword arguments of
-   <a href="./instrument_lsp.html#robo240">make-instrument</a>. 
+<pre> - A symbol that will serve as the ID for the <a href="#robo305">instrument-palette</a> object. 
+ - A list of <a href="./instrument_lsp.html#robo289">instrument</a> descriptions based on the keyword arguments of
+   <a href="./instrument_lsp.html#robo241">make-instrument</a>. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -73,21 +73,21 @@
    an index which doesn't exist is used for look-up. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An <a href="./instrument_lsp.html#robo284">instrument</a> <a href="./palette_lsp.html#robo405">palette</a>.
+<pre> An <a href="./instrument_lsp.html#robo289">instrument</a> <a href="./palette_lsp.html#robo415">palette</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Returns an <a href="#robo299">instrument-palette</a> object
+<pre class="source">;; Returns an <a href="#robo305">instrument-palette</a> object
 (<strong>make-instrument-palette</strong> 'inst-pal 
-                         '((piccolo (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> 12
-                                     :<a href="./event_lsp.html#robo197">lowest</a>-written d4 :<a href="./chord_lsp.html#robo88">highest</a>-written c6))  
-                           (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -2
-                                         :<a href="./event_lsp.html#robo197">lowest</a>-written e3 
-                                         :<a href="./chord_lsp.html#robo88">highest</a>-written c6)) 
-                           (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -7 
-                                  :<a href="./event_lsp.html#robo197">lowest</a>-written f2 :<a href="./chord_lsp.html#robo88">highest</a>-written c5)) 
-                           (violin (:<a href="./event_lsp.html#robo197">lowest</a>-written g3 :<a href="./chord_lsp.html#robo88">highest</a>-written c7
+                         '((piccolo (:transposition-<a href="./utilities_lsp.html#robo993">semitones</a> 12
+                                     :<a href="./chord_lsp.html#robo90">lowest</a>-written d4 :<a href="./event_lsp.html#robo193">highest</a>-written c6))  
+                           (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo993">semitones</a> -2
+                                         :<a href="./chord_lsp.html#robo90">lowest</a>-written e3 
+                                         :<a href="./event_lsp.html#robo193">highest</a>-written c6)) 
+                           (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo993">semitones</a> -7 
+                                  :<a href="./chord_lsp.html#robo90">lowest</a>-written f2 :<a href="./event_lsp.html#robo193">highest</a>-written c5)) 
+                           (violin (:<a href="./chord_lsp.html#robo90">lowest</a>-written g3 :<a href="./event_lsp.html#robo193">highest</a>-written c7
                                     :chords t)) 
-                           (viola (:<a href="./event_lsp.html#robo197">lowest</a>-written c3 :<a href="./chord_lsp.html#robo88">highest</a>-written f6
+                           (viola (:<a href="./chord_lsp.html#robo90">lowest</a>-written c3 :<a href="./event_lsp.html#robo193">highest</a>-written f6
                                    :chords t))))
 
 =&gt;
@@ -99,7 +99,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 5, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 5, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: INST-PAL, tag: NIL, 
 data: (
@@ -111,134 +111,134 @@ data: (
 
 
 <a name="instrument2dpalette2fset2dprefers2dhigh"></a>
-<a name="robo234"></a><h2 class=robodoc>instrument-palette/set-prefers-high [ Methods ]</h2>
+<a name="robo235"></a><h2 class=robodoc>instrument-palette/set-prefers-high [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">instrument-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo305">instrument-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 05 Feb 2011
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Set the PREFERS-NOTES slot of a specified <a href="./instrument_lsp.html#robo284">instrument</a> object within a given
- <a href="#robo299">instrument-palette</a> object to 'HIGH. The <a href="./instrument_lsp.html#robo284">instrument</a> object is specified
- using the ID symbol assigned to it within the <a href="#robo299">instrument-palette</a> object
+<pre> Set the PREFERS-NOTES slot of a specified <a href="./instrument_lsp.html#robo289">instrument</a> object within a given
+ <a href="#robo305">instrument-palette</a> object to 'HIGH. The <a href="./instrument_lsp.html#robo289">instrument</a> object is specified
+ using the ID symbol assigned to it within the <a href="#robo305">instrument-palette</a> object
  definition. 
  
  NB: The optional argument is actually required, but is listed as optional
- because of the attributes of the <a href="./instrument_lsp.html#robo284">instrument</a> class method.
+ because of the attributes of the <a href="./instrument_lsp.html#robo289">instrument</a> class method.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo299">instrument-palette</a> object.
+<pre> - An <a href="#robo305">instrument-palette</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A symbol that is the ID of the <a href="./instrument_lsp.html#robo284">instrument</a> object within the
-   <a href="#robo299">instrument-palette</a> object definition.
+<pre> - A symbol that is the ID of the <a href="./instrument_lsp.html#robo289">instrument</a> object within the
+   <a href="#robo305">instrument-palette</a> object definition.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns the symbol 'HIGH.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Define an <a href="#robo299">instrument-palette</a> object, then set the PREFERS-NOTES slot of the
-;; <a href="./instrument_lsp.html#robo284">instrument</a> object 'piccolo within that <a href="#robo299">instrument-palette</a> object to 'HIGH 
-(let ((ip (<a href="#robo233">make-instrument-palette</a> 'inst-pal 
-                                   '((piccolo (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> 12
-                                               :<a href="./event_lsp.html#robo197">lowest</a>-written d4
-                                               :<a href="./chord_lsp.html#robo88">highest</a>-written c6))   
-                                     (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -2 
-                                                   :<a href="./event_lsp.html#robo197">lowest</a>-written e3 
-                                                   :<a href="./chord_lsp.html#robo88">highest</a>-written c6)) 
+<pre class="source">;; Define an <a href="#robo305">instrument-palette</a> object, then set the PREFERS-NOTES slot of the
+;; <a href="./instrument_lsp.html#robo289">instrument</a> object 'piccolo within that <a href="#robo305">instrument-palette</a> object to 'HIGH 
+(let ((ip (<a href="#robo234">make-instrument-palette</a> 'inst-pal 
+                                   '((piccolo (:transposition-<a href="./utilities_lsp.html#robo993">semitones</a> 12
+                                               :<a href="./chord_lsp.html#robo90">lowest</a>-written d4
+                                               :<a href="./event_lsp.html#robo193">highest</a>-written c6))   
+                                     (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo993">semitones</a> -2 
+                                                   :<a href="./chord_lsp.html#robo90">lowest</a>-written e3 
+                                                   :<a href="./event_lsp.html#robo193">highest</a>-written c6)) 
                                      (horn (:transposition f
-                                            :transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -7  
-                                            :<a href="./event_lsp.html#robo197">lowest</a>-written f2 
-                                            :<a href="./chord_lsp.html#robo88">highest</a>-written c5))   
-                                     (violin (:<a href="./event_lsp.html#robo197">lowest</a>-written g3
-                                              :<a href="./chord_lsp.html#robo88">highest</a>-written c7 
+                                            :transposition-<a href="./utilities_lsp.html#robo993">semitones</a> -7  
+                                            :<a href="./chord_lsp.html#robo90">lowest</a>-written f2 
+                                            :<a href="./event_lsp.html#robo193">highest</a>-written c5))   
+                                     (violin (:<a href="./chord_lsp.html#robo90">lowest</a>-written g3
+                                              :<a href="./event_lsp.html#robo193">highest</a>-written c7 
                                               :chords t)) 
-                                     (viola (:<a href="./event_lsp.html#robo197">lowest</a>-written c3
-                                             :<a href="./chord_lsp.html#robo88">highest</a>-written f6 
+                                     (viola (:<a href="./chord_lsp.html#robo90">lowest</a>-written c3
+                                             :<a href="./event_lsp.html#robo193">highest</a>-written f6 
                                              :chords t))))))
   (<strong>set-prefers-high</strong> ip 'piccolo))
 
 =&gt; HIGH
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>set-prefers-high</strong> ((ip <a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>) &amp;optional <a href="./instrument_lsp.html#robo284">instrument</a>)
+<pre class="source">(defmethod <strong>set-prefers-high</strong> ((ip <a href="./instrument_lsp.html#robo289">instrument</a>-<a href="./palette_lsp.html#robo415">palette</a>) &amp;optional <a href="./instrument_lsp.html#robo289">instrument</a>)
 </pre>
 
 
 <a name="instrument2dpalette2fset2dprefers2dlow"></a>
-<a name="robo235"></a><h2 class=robodoc>instrument-palette/set-prefers-low [ Methods ]</h2>
+<a name="robo236"></a><h2 class=robodoc>instrument-palette/set-prefers-low [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">instrument-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo305">instrument-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 05 Feb 2011
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Set the PREFERS-NOTES slot of a specified <a href="./instrument_lsp.html#robo284">instrument</a> object within a given
- <a href="#robo299">instrument-palette</a> object to 'LOW. The <a href="./instrument_lsp.html#robo284">instrument</a> object is specified
- using the ID symbol assigned to it within the <a href="#robo299">instrument-palette</a> object
+<pre> Set the PREFERS-NOTES slot of a specified <a href="./instrument_lsp.html#robo289">instrument</a> object within a given
+ <a href="#robo305">instrument-palette</a> object to 'LOW. The <a href="./instrument_lsp.html#robo289">instrument</a> object is specified
+ using the ID symbol assigned to it within the <a href="#robo305">instrument-palette</a> object
  definition. 
  
  NB: The optional argument is actually required, but is listed as optional
-     because of the attributes of the <a href="./instrument_lsp.html#robo284">instrument</a> class method.
+     because of the attributes of the <a href="./instrument_lsp.html#robo289">instrument</a> class method.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo299">instrument-palette</a> object.
+<pre> - An <a href="#robo305">instrument-palette</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A symbol that is the ID of the <a href="./instrument_lsp.html#robo284">instrument</a> object within the
-   <a href="#robo299">instrument-palette</a> object definition.
+<pre> - A symbol that is the ID of the <a href="./instrument_lsp.html#robo289">instrument</a> object within the
+   <a href="#robo305">instrument-palette</a> object definition.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns the symbol 'LOW.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Define an <a href="#robo299">instrument-palette</a> object, then set the PREFERS-NOTES slot of the
-;; <a href="./instrument_lsp.html#robo284">instrument</a> object 'piccolo within that <a href="#robo299">instrument-palette</a> object to 'LOW
-(let ((ip (<a href="#robo233">make-instrument-palette</a> 'inst-pal 
-                                   '((piccolo (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> 12
-                                               :<a href="./event_lsp.html#robo197">lowest</a>-written d4
-                                               :<a href="./chord_lsp.html#robo88">highest</a>-written c6))   
-                                     (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -2 
-                                                   :<a href="./event_lsp.html#robo197">lowest</a>-written e3 
-                                                   :<a href="./chord_lsp.html#robo88">highest</a>-written c6)) 
+<pre class="source">;; Define an <a href="#robo305">instrument-palette</a> object, then set the PREFERS-NOTES slot of the
+;; <a href="./instrument_lsp.html#robo289">instrument</a> object 'piccolo within that <a href="#robo305">instrument-palette</a> object to 'LOW
+(let ((ip (<a href="#robo234">make-instrument-palette</a> 'inst-pal 
+                                   '((piccolo (:transposition-<a href="./utilities_lsp.html#robo993">semitones</a> 12
+                                               :<a href="./chord_lsp.html#robo90">lowest</a>-written d4
+                                               :<a href="./event_lsp.html#robo193">highest</a>-written c6))   
+                                     (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo993">semitones</a> -2 
+                                                   :<a href="./chord_lsp.html#robo90">lowest</a>-written e3 
+                                                   :<a href="./event_lsp.html#robo193">highest</a>-written c6)) 
                                      (horn (:transposition f
-                                            :transposition-<a href="./utilities_lsp.html#robo970">semitones</a> -7  
-                                            :<a href="./event_lsp.html#robo197">lowest</a>-written f2 
-                                            :<a href="./chord_lsp.html#robo88">highest</a>-written c5))   
-                                     (violin (:<a href="./event_lsp.html#robo197">lowest</a>-written g3
-                                              :<a href="./chord_lsp.html#robo88">highest</a>-written c7 
+                                            :transposition-<a href="./utilities_lsp.html#robo993">semitones</a> -7  
+                                            :<a href="./chord_lsp.html#robo90">lowest</a>-written f2 
+                                            :<a href="./event_lsp.html#robo193">highest</a>-written c5))   
+                                     (violin (:<a href="./chord_lsp.html#robo90">lowest</a>-written g3
+                                              :<a href="./event_lsp.html#robo193">highest</a>-written c7 
                                               :chords t)) 
-                                     (viola (:<a href="./event_lsp.html#robo197">lowest</a>-written c3
-                                             :<a href="./chord_lsp.html#robo88">highest</a>-written f6 
+                                     (viola (:<a href="./chord_lsp.html#robo90">lowest</a>-written c3
+                                             :<a href="./event_lsp.html#robo193">highest</a>-written f6 
                                              :chords t))))))
   (<strong>set-prefers-low</strong> ip 'piccolo))
 
 =&gt; LOW
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>set-prefers-low</strong> ((ip <a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>) &amp;optional <a href="./instrument_lsp.html#robo284">instrument</a>)
+<pre class="source">(defmethod <strong>set-prefers-low</strong> ((ip <a href="./instrument_lsp.html#robo289">instrument</a>-<a href="./palette_lsp.html#robo415">palette</a>) &amp;optional <a href="./instrument_lsp.html#robo289">instrument</a>)
 </pre>
 
 
 <a name="palette2finstrument2dpalette"></a>
-<a name="robo299"></a><h2 class=robodoc>palette/instrument-palette [ Classes ]</h2>
+<a name="robo305"></a><h2 class=robodoc>palette/instrument-palette [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo405">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo415">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>instrument-palette</strong>
 
  File:             <a href="#robo_top_of_doc">instrument-palette.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
-                   <a href="./palette_lsp.html#robo405">palette</a> -&gt; <strong>instrument-palette</strong> 
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo620">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
+                   <a href="./palette_lsp.html#robo415">palette</a> -&gt; <strong>instrument-palette</strong> 
 
  Version:          1.0.12
 
  Project:          slippery chicken (algorithmic composition)
 
  Purpose:          Implementation of the <strong>instrument-palette</strong> class which
-                   intantiates <a href="./instruments_lsp.html#robo11">instruments</a> to be used in an <a href="./ensemble_lsp.html#robo393">ensemble</a>
+                   intantiates <a href="./instruments_lsp.html#robo11">instruments</a> to be used in an <a href="./ensemble_lsp.html#robo403">ensemble</a>
                    instance.  
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -252,7 +252,7 @@ data: (
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/instrument-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+<p>Generated from ./../../src/instrument-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
 </div> <!-- footer -->
 </body>
 </html>

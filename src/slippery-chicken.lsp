@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:52:55 Tue Dec 19 2023 CET
+;;; $$ Last modified:  11:19:49 Fri Feb  2 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -11085,7 +11085,7 @@ data: (11 15)
            (setf (slot-value e 'amplitude) (interpolate i env))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken-edit/map-over-events-aux
+;;; ****f* slippery-chicken-edit/map-over-events-aux
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 

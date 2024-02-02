@@ -35,13 +35,13 @@
 <a name="circular2dsclist2fat2dstart"></a>
 <a name="robo112"></a><h2 class=robodoc>circular-sclist/at-start [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo609">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determines whether the pointer for the given <a href="#robo609">circular-sclist</a> object is at
+<pre> Determines whether the pointer for the given <a href="#robo620">circular-sclist</a> object is at
  the head of its list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo609">circular-sclist</a> object.
+<pre> - A <a href="#robo620">circular-sclist</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <p class="item_name">EXAMPLE</p>
@@ -58,19 +58,19 @@
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>at-start</strong> ((cscl circular-<a href="./sclist_lsp.html#robo288">sclist</a>))
+<pre class="source">(defmethod <strong>at-start</strong> ((cscl circular-<a href="./sclist_lsp.html#robo293">sclist</a>))
 </pre>
 
 
 <a name="circular2dsclist2fget2dcurrent"></a>
 <a name="robo114"></a><h2 class=robodoc>circular-sclist/get-current [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo609">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Return the current list element without incrementing the current slot.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo609">circular-sclist</a> object
+<pre> - The <a href="#robo620">circular-sclist</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> The current list element, which can be of any type.
@@ -86,22 +86,22 @@
 (0 0 1 1 2 2 3 3 4 4)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-current</strong> ((cscl circular-<a href="./sclist_lsp.html#robo288">sclist</a>))
+<pre class="source">(defmethod <strong>get-current</strong> ((cscl circular-<a href="./sclist_lsp.html#robo293">sclist</a>))
 </pre>
 
 
 <a name="circular2dsclist2fget2dlast"></a>
 <a name="robo115"></a><h2 class=robodoc>circular-sclist/get-last [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo609">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the the most recent item retrieved in a <a href="#robo609">circular-sclist</a> object.
+<pre> Return the the most recent item retrieved in a <a href="#robo620">circular-sclist</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo609">circular-sclist</a> object.
+<pre> - A <a href="#robo620">circular-sclist</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An item from the given <a href="#robo609">circular-sclist</a> object.
+<pre> An item from the given <a href="#robo620">circular-sclist</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Retrieves the final item in the list at creation
@@ -117,29 +117,29 @@
 =&gt; 1
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-last</strong> ((cscl circular-<a href="./sclist_lsp.html#robo288">sclist</a>))
+<pre class="source">(defmethod <strong>get-last</strong> ((cscl circular-<a href="./sclist_lsp.html#robo293">sclist</a>))
 </pre>
 
 
 <a name="circular2dsclist2fget2dnext"></a>
 <a name="robo116"></a><h2 class=robodoc>circular-sclist/get-next [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo609">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the next item in a given <a href="#robo609">circular-sclist</a> object. The class
+<pre> Get the next item in a given <a href="#robo620">circular-sclist</a> object. The class
  automatically keeps track of the last item retrieved. If the final item of
- the given <a href="#robo609">circular-sclist</a> object was the last item retrieved, the method
+ the given <a href="#robo620">circular-sclist</a> object was the last item retrieved, the method
  begins again at the beginning of the list.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo609">circular-sclist</a> object.
+<pre> - A <a href="#robo620">circular-sclist</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An item from the given <a href="#robo609">circular-sclist</a> object.
+<pre> An item from the given <a href="#robo620">circular-sclist</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Repeatedly calling <strong>get-next</strong> retrieves each subsequent item from the
-;; given <a href="#robo609">circular-sclist</a> object. When the list has been exhausted, retrieval
+;; given <a href="#robo620">circular-sclist</a> object. When the list has been exhausted, retrieval
 ;; begins again from the head of the list.
 (let ((cscl (<a href="#robo117">make-cscl</a> '(0 1 2 3 4))))
   (loop repeat 10 collect (<strong>get-next</strong> cscl)))
@@ -147,16 +147,16 @@
 (0 1 2 3 4 0 1 2 3 4)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-next</strong> ((cscl circular-<a href="./sclist_lsp.html#robo288">sclist</a>))
+<pre class="source">(defmethod <strong>get-next</strong> ((cscl circular-<a href="./sclist_lsp.html#robo293">sclist</a>))
 </pre>
 
 
 <a name="circular2dsclist2fmake2dcscl"></a>
 <a name="robo117"></a><h2 class=robodoc>circular-sclist/make-cscl [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo609">circular-sclist</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">circular-sclist</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo609">circular-sclist</a> object from a specified list of items. The items
+<pre> Create a <a href="#robo620">circular-sclist</a> object from a specified list of items. The items
  themselves may also be lists. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -164,27 +164,27 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :id. A symbol that will be used as the ID for the created <a href="#robo609">circular-sclist</a>
+ - :id. A symbol that will be used as the ID for the created <a href="#robo620">circular-sclist</a>
    object. Default = NIL.
  - :bounds-alert. T or NIL to indicate whether or not to print a warning if
    when an attempt is made to access the object using an out-of-bounds index
    number (i.e., not enough elements in the list).  T = print a
    warning. Default = T.
  - :copy. T or NIL to indicate whether the given data list should be copied
-   (any <a href="./slippery-chicken_lsp.html#robo606">slippery-chicken</a> class instances will be cloned), with subsequent
+   (any <a href="./slippery-chicken_lsp.html#robo617">slippery-chicken</a> class instances will be cloned), with subsequent
    modifications being applied to the copy. T = copy. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo609">circular-sclist</a> object.
+<pre> A <a href="#robo620">circular-sclist</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Returns a <a href="#robo609">circular-sclist</a> object with ID of NIL, bounds-alert=T and copy=T
+<pre class="source">;; Returns a <a href="#robo620">circular-sclist</a> object with ID of NIL, bounds-alert=T and copy=T
 ;; by default
 (<strong>make-cscl</strong> '(1 2 3 4))
 
 =&gt; 
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 4, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 4, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (1 2 3 4)
@@ -202,7 +202,7 @@ data: (1 2 3 4)
 
 =&gt; 
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 4, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 4, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: TEST-CSCL, tag: NIL, 
 data: (1 2 3 4)
@@ -210,16 +210,16 @@ data: (1 2 3 4)
 ;; By default, attempts to access the object with an out-of-bounds index result 
 ;; in a warning being printed
 (let ((cscl (<strong>make-cscl</strong> '(1 2 3 4))))
-  (<a href="./sclist_lsp.html#robo612">get-nth</a> 11 cscl))
+  (<a href="./sclist_lsp.html#robo623">get-nth</a> 11 cscl))
 
 =&gt;
 NIL
-WARNING: <a href="./sclist_lsp.html#robo288">sclist</a>::<a href="./sclist_lsp.html#robo288">sclist</a>-check-bounds: Illegal list reference: 11 
-(length = 4) (<a href="./sclist_lsp.html#robo288">sclist</a> id = NIL)
+WARNING: <a href="./sclist_lsp.html#robo293">sclist</a>::<a href="./sclist_lsp.html#robo293">sclist</a>-check-bounds: Illegal list reference: 11 
+(length = 4) (<a href="./sclist_lsp.html#robo293">sclist</a> id = NIL)
 
 ;; This can be suppressed by creating the object with :bounds-alert set to NIL 
 (let ((cscl (<strong>make-cscl</strong> '(1 2 3 4) :bounds-alert nil)))
-  (<a href="./sclist_lsp.html#robo612">get-nth</a> 11 cscl))
+  (<a href="./sclist_lsp.html#robo623">get-nth</a> 11 cscl))
 
 =&gt; NIL
 </pre>
@@ -231,22 +231,22 @@ WARNING: <a href="./sclist_lsp.html#robo288">sclist</a>::<a href="./sclist_lsp.h
 <a name="circular2dsclist2freset"></a>
 <a name="robo120"></a><h2 class=robodoc>circular-sclist/reset [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo609">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo620">circular-sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Reset the pointer of a given <a href="#robo609">circular-sclist</a> object. The pointer is <strong>reset</strong>
+<pre> Reset the pointer of a given <a href="#robo620">circular-sclist</a> object. The pointer is <strong>reset</strong>
  to 0 by default, but the desired index may be specified using the optional
  argument. 
 
  NB: An immediately subsequent <a href="#robo116">get-next</a> call will retrieve the item at the
      index to which the pointer is <strong>reset</strong>. An immediately subsequent
-     <a href="./recursive-assoc-list_lsp.html#robo398">get-last</a> call will retrieve the item at the index one-less
+     <a href="./recursive-assoc-list_lsp.html#robo408">get-last</a> call will retrieve the item at the index one-less
      than the value to which the pointer is set.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo609">circular-sclist</a> object.
+<pre> - A <a href="#robo620">circular-sclist</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - An index integer to which the pointer for the given <a href="#robo609">circular-sclist</a>
+<pre> - An index integer to which the pointer for the given <a href="#robo620">circular-sclist</a>
    object should be <strong>reset</strong>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -268,29 +268,29 @@ WARNING: <a href="./sclist_lsp.html#robo288">sclist</a>::<a href="./sclist_lsp.h
   (<a href="#robo116">get-next</a> cscl))
 =&gt; 3
 
-;; By default, <a href="./recursive-assoc-list_lsp.html#robo398">get-last</a> will then retrieve the item at index one less than the
+;; By default, <a href="./recursive-assoc-list_lsp.html#robo408">get-last</a> will then retrieve the item at index one less than the
 ;; <strong>reset</strong> value
 (let ((cscl (<a href="#robo117">make-cscl</a> '(0 1 2 3 4))))
   (loop repeat 8 do (print (<a href="#robo116">get-next</a> cscl)))
   (<strong>reset</strong> cscl 3)
-  (<a href="./recursive-assoc-list_lsp.html#robo398">get-last</a> cscl))
+  (<a href="./recursive-assoc-list_lsp.html#robo408">get-last</a> cscl))
 =&gt; 2
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>reset</strong> ((cscl circular-<a href="./sclist_lsp.html#robo288">sclist</a>) &amp;optional where (warn t))
+<pre class="source">(defmethod <strong>reset</strong> ((cscl circular-<a href="./sclist_lsp.html#robo293">sclist</a>) &amp;optional where (warn t))
 </pre>
 
 
 <a name="sclist2fcircular2dsclist"></a>
-<a name="robo609"></a><h2 class=robodoc>sclist/circular-sclist [ Classes ]</h2>
+<a name="robo620"></a><h2 class=robodoc>sclist/circular-sclist [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo288">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo293">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>circular-sclist</strong>
 
  File:             <a href="#robo_top_of_doc">circular-sclist.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt; 
                    <strong>circular-sclist</strong>
 
  Version:          1.0.12
@@ -299,7 +299,7 @@ WARNING: <a href="./sclist_lsp.html#robo288">sclist</a>::<a href="./sclist_lsp.h
 
  Purpose:          Implementation of the <strong>circular-sclist</strong> class which offers
                    the use of a function to cycle through the values in the
-                   <a href="./sclist_lsp.html#robo288">sclist</a>, starting at the beginning again once we've
+                   <a href="./sclist_lsp.html#robo293">sclist</a>, starting at the beginning again once we've
                    reached the end.
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -313,7 +313,7 @@ WARNING: <a href="./sclist_lsp.html#robo288">sclist</a>::<a href="./sclist_lsp.h
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/circular-sclist.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+<p>Generated from ./../../src/circular-sclist.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
 </div> <!-- footer -->
 </body>
 </html>

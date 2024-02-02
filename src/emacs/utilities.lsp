@@ -15,13 +15,13 @@
 ;;; CREATED
 ;;; 2023-12-19
 ;;;
-;;; $$ Last modified:  23:55:40 Tue Dec 19 2023 CET
+;;; $$ Last modified:  11:23:45 Fri Feb  2 2024 CET
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* validate-rthm-seq
+;;; ****f* emacs-utilities/validate-rthm-seq
 ;;; AUTHOR
 ;;; Ruben Philipp <me@rubenphilipp.com>
 ;;;
@@ -62,12 +62,9 @@
 ;;                  Each pitch sequence must have ~a notes (you have ~a):
 ;;                  ~%~a" {7009EB3043}>
 |#
-;;; 
 ;;; SYNOPSIS
-(defun validate-rthm-seq (rs
-                          &key
-                            (auto-convert t))
-  ;;; ****
+(defun validate-rthm-seq (rs &key (auto-convert t))
+;;; ****
   ;;; convert from string to list
   (let ((rs (if (and
                  (stringp rs)

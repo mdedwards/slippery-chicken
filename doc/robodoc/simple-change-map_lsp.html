@@ -35,15 +35,15 @@
 <a name="change2dmap2fsimple2dchange2dmap"></a>
 <a name="robo66"></a><h2 class=robodoc>change-map/simple-change-map [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./change-map_lsp.html#robo564">change-map</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./change-map_lsp.html#robo574">change-map</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>simple-change-map</strong>
 
  File:             <a href="#robo_top_of_doc">simple-change-map.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
-                   <a href="./sc-map_lsp.html#robo414">sc-map</a> -&gt; <a href="./change-map_lsp.html#robo564">change-map</a> -&gt; <strong>simple-change-map</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo620">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
+                   <a href="./sc-map_lsp.html#robo424">sc-map</a> -&gt; <a href="./change-map_lsp.html#robo574">change-map</a> -&gt; <strong>simple-change-map</strong>
 
  Version:          1.0.12
 
@@ -65,7 +65,7 @@
 
 
 <a name="simple2dchange2dmap2fmake2dsimple2dchange2dmap"></a>
-<a name="robo663"></a><h2 class=robodoc>simple-change-map/make-simple-change-map [ Functions ]</h2>
+<a name="robo674"></a><h2 class=robodoc>simple-change-map/make-simple-change-map [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo66">simple-change-map</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -87,14 +87,14 @@
 =&gt; 
 SIMPLE-CHANGE-MAP: 
 CHANGE-MAP: last-ref-required: NIL
-SC-MAP: <a href="./palette_lsp.html#robo405">palette</a> id: NIL
+SC-MAP: <a href="./palette_lsp.html#robo415">palette</a> id: NIL
 RECURSIVE-ASSOC-LIST: recurse-simple-data: NIL
                       num-data: 3
                       linked: NIL
                       full-ref: NIL
 ASSOC-LIST: warn-not-found NIL
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: BAR-MAP, tag: NIL, 
 data: (
@@ -120,7 +120,7 @@ data: 4
 
 
 <a name="simple2dchange2dmap2fscm2dget2ddata"></a>
-<a name="robo664"></a><h2 class=robodoc>simple-change-map/scm-get-data [ Methods ]</h2>
+<a name="robo675"></a><h2 class=robodoc>simple-change-map/scm-get-data [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo66">simple-change-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -136,7 +136,7 @@ data: 4
 <pre> The data associated with the specified key ID, as a named object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((scm (<a href="#robo663">make-simple-change-map</a> 'bar-map '((1 3) (34 3) (38 4)))))
+<pre class="source">(let ((scm (<a href="#robo674">make-simple-change-map</a> 'bar-map '((1 3) (34 3) (38 4)))))
   (<strong>scm-get-data</strong> 34 scm))
 
 =&gt; 
@@ -149,7 +149,7 @@ data: 3
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/simple-change-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+<p>Generated from ./../../src/simple-change-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
 </div> <!-- footer -->
 </body>
 </html>

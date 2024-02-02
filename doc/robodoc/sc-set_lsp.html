@@ -33,27 +33,27 @@
 
 
 <a name="sc2dset2fadd"></a>
-<a name="robo578"></a><h2 class=robodoc>sc-set/add [ Methods ]</h2>
+<a name="robo588"></a><h2 class=robodoc>sc-set/add [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a new <a href="#robo625">sc-set</a> object from the data of two other specified <a href="#robo625">sc-set</a>
+<pre> Create a new <a href="#robo636">sc-set</a> object from the data of two other specified <a href="#robo636">sc-set</a>
  objects.
  
- NB: Any subsets contained in the original <a href="#robo625">sc-set</a> objects are lost in the
+ NB: Any subsets contained in the original <a href="#robo636">sc-set</a> objects are lost in the
      process. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo625">sc-set</a> object.
- - A second <a href="#robo625">sc-set</a> object.
+<pre> - A first <a href="#robo636">sc-set</a> object.
+ - A second <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> (- optional argument &lt;ignore&gt; is internal only)
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mscs1 (<a href="#robo594">make-sc-set</a> '(d2 a2 e3 b3 gf4 df5 af5)))
-      (mscs2 (<a href="#robo594">make-sc-set</a> '(f2 c3 g3 d4 bf4 f5 c6))))
+<pre class="source">(let ((mscs1 (<a href="#robo604">make-sc-set</a> '(d2 a2 e3 b3 gf4 df5 af5)))
+      (mscs2 (<a href="#robo604">make-sc-set</a> '(f2 c3 g3 d4 bf4 f5 c6))))
   (<strong>add</strong> mscs1 mscs2))
 
 =&gt;
@@ -64,17 +64,17 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 0, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 0, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
 data: NIL
 
 **** N.B. All pitches printed as symbols only, internally they are all 
-<a href="./pitch_lsp.html#robo285">pitch</a>-objects.
+<a href="./pitch_lsp.html#robo290">pitch</a>-objects.
 
     subsets: 
     related-sets: 
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 14, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 14, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
@@ -85,39 +85,39 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 
 <a name="sc2dset2fadd2dharmonics"></a>
-<a name="robo579"></a><h2 class=robodoc>sc-set/add-harmonics [ Methods ]</h2>
+<a name="robo589"></a><h2 class=robodoc>sc-set/add-harmonics [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Adds pitches to the set which are harmonically related to the existing
- pitches.  The keywords are the same as for the <a href="./utilities_lsp.html#robo919">get-harmonics</a> function.  NB
+ pitches.  The keywords are the same as for the <a href="./utilities_lsp.html#robo937">get-harmonics</a> function.  NB
  This will automatically sort all pitches from high to low (irrespective of
  the auto-sort slot).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - an <a href="#robo625">sc-set</a> object
+<pre> - an <a href="#robo636">sc-set</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
-  see <a href="./utilities_lsp.html#robo919">get-harmonics</a> function
+  see <a href="./utilities_lsp.html#robo937">get-harmonics</a> function
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> the same set object as the first argument but with new pitches added.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; treat the existing pitches as fundamentals. Note that the existence of E6
-;;; twice in the result is not a mistake: though E6 is the <a href="./utilities_lsp.html#robo936">nearest</a> <a href="./pitch_lsp.html#robo285">pitch</a>, the
+;;; twice in the result is not a mistake: though E6 is the <a href="./utilities_lsp.html#robo956">nearest</a> <a href="./pitch_lsp.html#robo290">pitch</a>, the
 ;;; frequencies are different.
-(let ((s (<a href="#robo594">make-sc-set</a> '(c4 e4) :id 'test)))
+(let ((s (<a href="#robo604">make-sc-set</a> '(c4 e4) :id 'test)))
   (<strong>add-harmonics</strong> s :start-partial 3 :max-results 3))
 =&gt;
 SC-SET: auto-sort: T, rm-dups: T, warn-dups: T used-notes: 
 [...]
 data: (C4 E4 G5 B5 C6 E6 E6 AF6)
 
-;;; treat the existing pitches as partials and <a href="#robo578">add</a> the fundamentals and
+;;; treat the existing pitches as partials and <a href="./rhythm_lsp.html#robo429">add</a> the fundamentals and
 ;;; harmonics
-(let ((s (<a href="#robo594">make-sc-set</a> '(c4 e4) :id 'test)))
+(let ((s (<a href="#robo604">make-sc-set</a> '(c4 e4) :id 'test)))
   (<strong>add-harmonics</strong> s :start-freq-is-partial 3 :max-results 3))
 SC-SET: auto-sort: T, rm-dups: T, warn-dups: T used-notes: 
 [...]
@@ -129,30 +129,30 @@ data: (F2 A2 F3 A3 C4 E4)
 
 
 <a name="sc2dset2faverage2dpitch"></a>
-<a name="robo580"></a><h2 class=robodoc>sc-set/average-pitch [ Methods ]</h2>
+<a name="robo590"></a><h2 class=robodoc>sc-set/average-pitch [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> July 24th 2015, Glenferness
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Calculate the <a href="./utilities_lsp.html#robo895">average</a> frequency of all the pitches in the <a href="./chord_lsp.html#robo608">chord</a> and return
- this as a new <a href="./pitch_lsp.html#robo285">pitch</a>-object. 
+<pre> Calculate the <a href="./utilities_lsp.html#robo909">average</a> frequency of all the pitches in the <a href="./chord_lsp.html#robo619">chord</a> and return
+ this as a new <a href="./pitch_lsp.html#robo290">pitch</a>-object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo625">sc-set</a> object
+<pre> - the <a href="#robo636">sc-set</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="./pitch_lsp.html#robo285">pitch</a>-object
+<pre> a <a href="./pitch_lsp.html#robo290">pitch</a>-object
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>average-pitch</strong> (<a href="./complete-set_lsp.html#robo147">make-complete-set</a> '(c4 cs4  d4 e4 ef4 g4 b4)))
 =&gt;
 PITCH: frequency: 337.015, midi-note: 64, midi-channel: 0 
-       <a href="./pitch_lsp.html#robo285">pitch</a>-bend: 0.38 
+       <a href="./pitch_lsp.html#robo290">pitch</a>-bend: 0.38 
        degree: 64, data-consistent: T, white-note: E4
-       <a href="./utilities_lsp.html#robo936">nearest</a>-chromatic: E4
-       src: 1.2881585030063512d0, src-ref-<a href="./pitch_lsp.html#robo285">pitch</a>: C4, score-note: E4 
+       <a href="./utilities_lsp.html#robo956">nearest</a>-chromatic: E4
+       src: 1.2881585030063512d0, src-ref-<a href="./pitch_lsp.html#robo290">pitch</a>: C4, score-note: E4 
        qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
        micro-tone: T, 
        sharp: NIL, flat: NIL, natural: T, 
@@ -171,31 +171,31 @@ data: E4
 
 
 <a name="sc2dset2fcreate2dchord"></a>
-<a name="robo581"></a><h2 class=robodoc>sc-set/create-chord [ Methods ]</h2>
+<a name="robo591"></a><h2 class=robodoc>sc-set/create-chord [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="./chord_lsp.html#robo608">chord</a> object from the pitches of the given <a href="#robo625">sc-set</a> object. As of
- 1.0.6 <a href="#robo625">sc-set</a> is a subset of <a href="./chord_lsp.html#robo608">chord</a> instead of sc-list so this shouldn't be
+<pre> Create a <a href="./chord_lsp.html#robo619">chord</a> object from the pitches of the given <a href="#robo636">sc-set</a> object. As of
+ 1.0.6 <a href="#robo636">sc-set</a> is a subset of <a href="./chord_lsp.html#robo619">chord</a> instead of sc-list so this shouldn't be
  necessary, but it's still here for legacy code purposes.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - either a subsets-id or related-sets-id in order to use the respective
    notes instead of all the notes of the set.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./chord_lsp.html#robo608">chord</a> object.
+<pre> A <a href="./chord_lsp.html#robo619">chord</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 c3 d4 df5 c6))))
+<pre class="source">(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 c3 d4 df5 c6))))
   (<strong>create-chord</strong> mscs))
 
 =&gt; 
 CHORD: auto-sort: T, marks: NIL, micro-tone: NIL
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 5, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 5, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (
@@ -209,48 +209,48 @@ PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0
 
 
 <a name="sc2dset2fcreate2devent"></a>
-<a name="robo582"></a><h2 class=robodoc>sc-set/create-event [ Methods ]</h2>
+<a name="robo592"></a><h2 class=robodoc>sc-set/create-event [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create an <a href="./event_lsp.html#robo428">event</a> object (that is a <a href="./chord_lsp.html#robo608">chord</a>) from a given <a href="#robo625">sc-set</a> object,
+<pre> Create an <a href="./event_lsp.html#robo438">event</a> object (that is a <a href="./chord_lsp.html#robo619">chord</a>) from a given <a href="#robo636">sc-set</a> object,
  specifying a rhythmic value and a start-time (in seconds).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
  - A rhythmic unit, either as a numerical value (32, 16 etc) or a symbol
    that is an alphabetic shorthand ('e, 's etc).
  - A number that is the start time in seconds. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - A number that is the start-time in quarter-notes rather than seconds (see
-   <a href="./event_lsp.html#robo428">event</a> class documentation for more details)
+   <a href="./event_lsp.html#robo438">event</a> class documentation for more details)
  - subsets-id, related-sets-id: pass an ID to use just the notes of the
    sub/related set, rather than all the notes of the set.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An <a href="./event_lsp.html#robo428">event</a> object.
+<pre> An <a href="./event_lsp.html#robo438">event</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create an <a href="./event_lsp.html#robo428">event</a> from the specified <a href="#robo625">sc-set</a> object that is a quarter-note
-;; <a href="./chord_lsp.html#robo608">chord</a> starting at 0.0 seconds
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 c3 d4 df5 c6))))
+<pre class="source">;; Create an <a href="./event_lsp.html#robo438">event</a> from the specified <a href="#robo636">sc-set</a> object that is a quarter-note
+;; <a href="./chord_lsp.html#robo619">chord</a> starting at 0.0 seconds
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 c3 d4 df5 c6))))
   (<strong>create-event</strong> mscs 'q 0.0))
 
 =&gt;
 EVENT: start-time: 0.000, end-time: NIL, 
-       duration-in-<a href="./tempo_lsp.html#robo290">tempo</a>: 0.000, 
-       compound-duration-in-<a href="./tempo_lsp.html#robo290">tempo</a>: 0.000, 
+       duration-in-<a href="./tempo_lsp.html#robo295">tempo</a>: 0.000, 
+       compound-duration-in-<a href="./tempo_lsp.html#robo295">tempo</a>: 0.000, 
        amplitude: 0.700 
        bar-num: -1, marks-before: NIL, 
-       <a href="./tempo_lsp.html#robo290">tempo</a>-change: NIL 
-       <a href="./instrument_lsp.html#robo284">instrument</a>-change: NIL 
-       display-<a href="./tempo_lsp.html#robo290">tempo</a>: NIL, start-time-qtrs: 0.000, 
+       <a href="./tempo_lsp.html#robo295">tempo</a>-change: NIL 
+       <a href="./instrument_lsp.html#robo289">instrument</a>-change: NIL 
+       display-<a href="./tempo_lsp.html#robo295">tempo</a>: NIL, start-time-qtrs: 0.000, 
        midi-time-sig: NIL, midi-program-changes: NIL, 
        8va: 0
-       <a href="./pitch_lsp.html#robo285">pitch</a>-or-<a href="./chord_lsp.html#robo608">chord</a>: 
+       <a href="./pitch_lsp.html#robo290">pitch</a>-or-<a href="./chord_lsp.html#robo619">chord</a>: 
 CHORD: auto-sort: T, marks: NIL, micro-tone: NIL
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 5, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 5, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (
@@ -267,41 +267,41 @@ NAMED-OBJECT: id: Q, tag: NIL,
 data: Q
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>create-event</strong> ((s sc-set) <a href="./rhythm_lsp.html#robo287">rhythm</a> start-time
+<pre class="source">(defmethod <strong>create-event</strong> ((s sc-set) <a href="./rhythm_lsp.html#robo292">rhythm</a> start-time
                          &amp;optional start-time-qtrs subsets-id related-sets-id)
 </pre>
 
 
 <a name="sc2dset2fforce2dmicro2dtone"></a>
-<a name="robo583"></a><h2 class=robodoc>sc-set/force-micro-tone [ Methods ]</h2>
+<a name="robo593"></a><h2 class=robodoc>sc-set/force-micro-tone [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Change the value of the MICRO-TONE slot of all <a href="./pitch_lsp.html#robo285">pitch</a> objects in a given
- <a href="#robo625">sc-set</a> object to the specified &lt;value&gt;.
+<pre> Change the value of the MICRO-TONE slot of all <a href="./pitch_lsp.html#robo290">pitch</a> objects in a given
+ <a href="#robo636">sc-set</a> object to the specified &lt;value&gt;.
  
- NB If the pitches are <a href="./event_lsp.html#robo204">microtonal</a> and thus have associated <a href="./pitch_lsp.html#robo285">pitch</a>-bends and
- <a href="./event_lsp.html#robo204">microtonal</a> frequencies, these will not be changed, i.e. only the micro-tone
+ NB If the pitches are <a href="./event_lsp.html#robo205">microtonal</a> and thus have associated <a href="./pitch_lsp.html#robo290">pitch</a>-bends and
+ <a href="./event_lsp.html#robo205">microtonal</a> frequencies, these will not be changed, i.e. only the micro-tone
  slot is changed.
 
  NB: Although the MICRO-TONE slot is generally used as a boolean, this
      method allows the user to force-set it to any value. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - An item of any type that is to be the new value of the MICRO-TONE slot of
-   all <a href="./pitch_lsp.html#robo285">pitch</a> objects in the given <a href="#robo625">sc-set</a> object (generally T or
+   all <a href="./pitch_lsp.html#robo290">pitch</a> objects in the given <a href="#robo636">sc-set</a> object (generally T or
    NIL). Default = NIL. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always returns NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create an <a href="#robo625">sc-set</a> object that contains micro-tones and print the MICRO-TONE
-;; slot of all of the contained <a href="./pitch_lsp.html#robo285">pitch</a> objects to see their values:
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
+<pre class="source">;; Create an <a href="#robo636">sc-set</a> object that contains micro-tones and print the MICRO-TONE
+;; slot of all of the contained <a href="./pitch_lsp.html#robo290">pitch</a> objects to see their values:
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
   (loop for p in (data mscs) do (print (micro-tone p))))
 
 =&gt;
@@ -317,7 +317,7 @@ NIL
 ;; Now apply the <strong>force-micro-tone</strong> method to the same set using the default
 ;; value of NIL and print the results
 
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
   (<strong>force-micro-tone</strong> mscs)
     (loop for p in (data mscs) do (print (micro-tone p))))
 
@@ -331,8 +331,8 @@ NIL
 NIL 
 NIL
 
-;; Using the same <a href="#robo625">sc-set</a>, force all the values to T
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
+;; Using the same <a href="#robo636">sc-set</a>, force all the values to T
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
   (<strong>force-micro-tone</strong> mscs 't)
     (loop for p in (data mscs) do (print (micro-tone p))))
 
@@ -352,19 +352,19 @@ T
 
 
 <a name="sc2dset2fget2dchromatic"></a>
-<a name="robo584"></a><h2 class=robodoc>sc-set/get-chromatic [ Methods ]</h2>
+<a name="robo594"></a><h2 class=robodoc>sc-set/get-chromatic [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return those notes of a given <a href="#robo625">sc-set</a> object that are normal chromatic notes
+<pre> Return those notes of a given <a href="#robo636">sc-set</a> object that are normal chromatic notes
  (i.e. no microtones). 
 
- If a number is given for the &lt;octave&gt; argument, the method will <a href="./chord_lsp.html#robo108">transpose</a>
+ If a number is given for the &lt;octave&gt; argument, the method will <a href="./tl-set_lsp.html#robo901">transpose</a>
  all returned pitches into the specified octave, in which case any duplicate
  pitches are removed.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -375,30 +375,30 @@ T
    within an octave that are created by use of the :octave keyword argument
    are to be removed. T = remove duplicates. Default = NIL.
  - :as-symbols. T or NIL to indicate whether to return the results of the
-   method as a list of note-name symbols rather than a list of <a href="./pitch_lsp.html#robo285">pitch</a>
+   method as a list of note-name symbols rather than a list of <a href="./pitch_lsp.html#robo290">pitch</a>
    objects. T = return as note-name symbols. Default = NIL.
  - :<a href="./package_lsp.html#robo14">package</a>. The <a href="./package_lsp.html#robo14">package</a> in which the pitches are to be handled. 
    Default = :sc.
- - :<a href="./pitch-seq_lsp.html#robo324">invert</a>. Get the micro-tone pitches instead.
+ - :<a href="./rthm-seq-bar_lsp.html#robo500">invert</a>. Get the micro-tone pitches instead.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects by default.
+<pre> Returns a list of <a href="./pitch_lsp.html#robo290">pitch</a> objects by default.
 
  When the :as-symbols argument is set to T, a list of note-name symbols is
  returned instead.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Returns a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects by default
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+<pre class="source">;;; Returns a list of <a href="./pitch_lsp.html#robo290">pitch</a> objects by default
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (<strong>get-chromatic</strong> mscs))
 
 =&gt;
 (
 PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0 
-       <a href="./pitch_lsp.html#robo285">pitch</a>-bend: 0.0 
+       <a href="./pitch_lsp.html#robo290">pitch</a>-bend: 0.0 
        degree: 76, data-consistent: T, white-note: D2
-       <a href="./utilities_lsp.html#robo936">nearest</a>-chromatic: D2
-       src: 0.28061550855636597, src-ref-<a href="./pitch_lsp.html#robo285">pitch</a>: C4, score-note: D2 
+       <a href="./utilities_lsp.html#robo956">nearest</a>-chromatic: D2
+       src: 0.28061550855636597, src-ref-<a href="./pitch_lsp.html#robo290">pitch</a>: C4, score-note: D2 
        qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
        micro-tone: NIL, 
        sharp: NIL, flat: NIL, natural: T, 
@@ -416,7 +416,7 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 
 ;; Setting the :as-symbols argument to T returns a list of note-name symbols
 ;; instead
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (<strong>get-chromatic</strong> mscs
                  :as-symbols t))
 
@@ -424,19 +424,19 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 
 ;; Giving an integer as the :octave argument transposes all returned  pitches
 ;; to the specified octave, removing any duplicates by default.
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (<strong>get-chromatic</strong> mscs
                  :as-symbols t
                  :octave 4))
 
 =&gt; (FS4 CS4 E4 C4 AF4 D4)
 
-;; Setting the :<a href="./pitch-seq_lsp.html#robo324">invert</a> argument to T returns the non-chromatic elements of the
-;; given <a href="#robo625">sc-set</a> object instead
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+;; Setting the :<a href="./rthm-seq-bar_lsp.html#robo500">invert</a> argument to T returns the non-chromatic elements of the
+;; given <a href="#robo636">sc-set</a> object instead
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (<strong>get-chromatic</strong> mscs
                  :as-symbols t
-                 :<a href="./pitch-seq_lsp.html#robo324">invert</a> t))
+                 :<a href="./rthm-seq-bar_lsp.html#robo500">invert</a> t))
 
 =&gt; (CQS3 GQF3 FQS4 BQF5)
 </pre>
@@ -447,26 +447,26 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
                           (remove-duplicates t) ;; only if octave!
                           (as-symbols nil)
                           (<a href="./package_lsp.html#robo14">package</a> :sc)
-                          (<a href="./pitch-seq_lsp.html#robo324">invert</a> nil))
+                          (<a href="./rthm-seq-bar_lsp.html#robo500">invert</a> nil))
 </pre>
 
 
 <a name="sc2dset2fget2ddegrees"></a>
-<a name="robo585"></a><h2 class=robodoc>sc-set/get-degrees [ Methods ]</h2>
+<a name="robo595"></a><h2 class=robodoc>sc-set/get-degrees [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the pitches contained in the given <a href="#robo625">sc-set</a> object as a list of
+<pre> Return the pitches contained in the given <a href="#robo636">sc-set</a> object as a list of
  DEGREES (which default to quarter-tones in slippery chicken).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of integers.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+<pre class="source">(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
   (<strong>get-degrees</strong> mscs))
 
 =&gt; (76 82 90 96 104 110 118 124 132 140 146 154 160 168)
@@ -477,20 +477,20 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 
 
 <a name="sc2dset2fget2dfreqs"></a>
-<a name="robo586"></a><h2 class=robodoc>sc-set/get-freqs [ Methods ]</h2>
+<a name="robo596"></a><h2 class=robodoc>sc-set/get-freqs [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the pitches of a given <a href="#robo625">sc-set</a> object as a list of Hz frequencies
+<pre> Return the pitches of a given <a href="#robo636">sc-set</a> object as a list of Hz frequencies
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of numbers
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+<pre class="source">(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
   (<strong>get-freqs</strong> mscs))
 
 =&gt; (73.41618871368837 87.30705289160142 109.99999810639679 130.8127784729004
@@ -504,21 +504,21 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 
 
 <a name="sc2dset2fget2dmidi"></a>
-<a name="robo587"></a><h2 class=robodoc>sc-set/get-midi [ Methods ]</h2>
+<a name="robo597"></a><h2 class=robodoc>sc-set/get-midi [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the pitches of a given <a href="#robo625">sc-set</a> object as a list of their equivalent
+<pre> Return the pitches of a given <a href="#robo636">sc-set</a> object as a list of their equivalent
  MIDI note numbers.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of numbers
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+<pre class="source">(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
   (<strong>get-midi</strong> mscs))
 
 =&gt; (38 41 45 48 52 55 59 62 66 70 73 77 80 84)
@@ -529,19 +529,19 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 
 
 <a name="sc2dset2fget2dnon2dchromatic"></a>
-<a name="robo588"></a><h2 class=robodoc>sc-set/get-non-chromatic [ Methods ]</h2>
+<a name="robo598"></a><h2 class=robodoc>sc-set/get-non-chromatic [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return those notes of a given <a href="#robo625">sc-set</a> object that are microtones (i.e. no
+<pre> Return those notes of a given <a href="#robo636">sc-set</a> object that are microtones (i.e. no
  "normal" chromatic notes).
  
- If a number is given for the &lt;octave&gt; argument, the method will <a href="./chord_lsp.html#robo108">transpose</a>
+ If a number is given for the &lt;octave&gt; argument, the method will <a href="./tl-set_lsp.html#robo901">transpose</a>
  all returned pitches into the specified octave, in which case any duplicate
  pitches are removed.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -549,29 +549,29 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
    resulting pitches are to be transposed (i.e. the "4" in "C4" etc.)
    Default = NIL.
   :as-symbols. T or NIL to indicate whether to return the results of the
-   method as a list of note-name symbols rather than a list of <a href="./pitch_lsp.html#robo285">pitch</a>
+   method as a list of note-name symbols rather than a list of <a href="./pitch_lsp.html#robo290">pitch</a>
    objects. T = return as note-name symbols. Default = NIL.
  - :<a href="./package_lsp.html#robo14">package</a>. The <a href="./package_lsp.html#robo14">package</a> in which the pitches are to be handled. 
    Default = :sc.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects by default.
+<pre> Returns a list of <a href="./pitch_lsp.html#robo290">pitch</a> objects by default.
 
  When the :as-symbols argument is set to T, a list of note-name symbols is
  returned instead.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Returns a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects by default
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+<pre class="source">;; Returns a list of <a href="./pitch_lsp.html#robo290">pitch</a> objects by default
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (<strong>get-non-chromatic</strong> mscs))
 
 =&gt;
 =&gt; (
 PITCH: frequency: 134.646, midi-note: 48, midi-channel: 0 
-       <a href="./pitch_lsp.html#robo285">pitch</a>-bend: 0.5 
+       <a href="./pitch_lsp.html#robo290">pitch</a>-bend: 0.5 
        degree: 97, data-consistent: T, white-note: C3
-       <a href="./utilities_lsp.html#robo936">nearest</a>-chromatic: C3
-       src: 0.5146511197090149, src-ref-<a href="./pitch_lsp.html#robo285">pitch</a>: C4, score-note: CS3 
+       <a href="./utilities_lsp.html#robo956">nearest</a>-chromatic: C3
+       src: 0.5146511197090149, src-ref-<a href="./pitch_lsp.html#robo290">pitch</a>: C4, score-note: CS3 
        qtr-sharp: 1, qtr-flat: NIL, qtr-tone: 1,  
        micro-tone: T, 
        sharp: NIL, flat: NIL, natural: NIL, 
@@ -588,7 +588,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 )
 
 ;; Setting :as-symbols to T returns a list of note-names instead
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (<strong>get-non-chromatic</strong> mscs
                      :as-symbols t))
 
@@ -596,7 +596,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 
 ;; Giving an integer as the :octave argument transposes all returned  pitches
 ;; to the specified octave, removing any duplicates
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 cqs6 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 cqs6 d6))))
   (<strong>get-non-chromatic</strong> mscs
                      :as-symbols t
                      :octave 4))
@@ -613,86 +613,86 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 
 
 <a name="sc2dset2fget2dsemitones"></a>
-<a name="robo589"></a><h2 class=robodoc>sc-set/get-semitones [ Methods ]</h2>
+<a name="robo599"></a><h2 class=robodoc>sc-set/get-semitones [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the distances in <a href="./utilities_lsp.html#robo970">semitones</a> of each <a href="./pitch_lsp.html#robo285">pitch</a> in a given <a href="#robo625">sc-set</a>
- object to a static reference <a href="./pitch_lsp.html#robo285">pitch</a>. 
+<pre> Get the distances in <a href="./utilities_lsp.html#robo993">semitones</a> of each <a href="./pitch_lsp.html#robo290">pitch</a> in a given <a href="#robo636">sc-set</a>
+ object to a static reference <a href="./pitch_lsp.html#robo290">pitch</a>. 
 
  Though this method can be used in other contexts, it was devised
  as an aid for transposing audio samples (sound files), and the
- reference <a href="./pitch_lsp.html#robo285">pitch</a> is therefore generally the perceived fundamental
- <a href="./pitch_lsp.html#robo285">pitch</a> of the audio sample to be transposed.
+ reference <a href="./pitch_lsp.html#robo290">pitch</a> is therefore generally the perceived fundamental
+ <a href="./pitch_lsp.html#robo290">pitch</a> of the audio sample to be transposed.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - An optional note-name symbol sets the value of the &lt;reference-<a href="./pitch_lsp.html#robo356">pitch&gt;</a>,
-   which is the basis <a href="./pitch_lsp.html#robo285">pitch</a> to which the resulting number of <a href="./utilities_lsp.html#robo970">semitones</a>
-   refer. This will generally be the perceived fundamental <a href="./pitch_lsp.html#robo285">pitch</a> of the
+<pre> - An optional note-name symbol sets the value of the &lt;reference-<a href="./pitch_lsp.html#robo362">pitch&gt;</a>,
+   which is the basis <a href="./pitch_lsp.html#robo290">pitch</a> to which the resulting number of <a href="./utilities_lsp.html#robo993">semitones</a>
+   refer. This will generally be the perceived fundamental <a href="./pitch_lsp.html#robo290">pitch</a> of the
    sample (sound file) being modified ("transposed").
  - The optional &lt;offset&gt; argument takes a number that is the number of
-   <a href="./utilities_lsp.html#robo970">semitones</a> to <a href="#robo578">add</a> to the <a href="./pitch_lsp.html#robo285">pitch</a> of the given set prior to determining its
-   distance in <a href="./utilities_lsp.html#robo970">semitones</a> from the reference <a href="./pitch_lsp.html#robo285">pitch</a>.
+   <a href="./utilities_lsp.html#robo993">semitones</a> to <a href="./rhythm_lsp.html#robo429">add</a> to the <a href="./pitch_lsp.html#robo290">pitch</a> of the given set prior to determining its
+   distance in <a href="./utilities_lsp.html#robo993">semitones</a> from the reference <a href="./pitch_lsp.html#robo290">pitch</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of positive and negative numbers.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Chromatic example
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 fs3 cs4 c5 af5 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 fs3 cs4 c5 af5 d6))))
   (<strong>get-semitones</strong> mscs))
 
 =&gt; (-22.0 -6.0 1.0 12.0 20.0 26.0)
 
 ;; Quarter-tone example; results can be decimal fractions of semitone
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 fqs4 c5 af5 bqf5 cqs6 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 cqs3 fs3 gqf3 cs4 fqs4 c5 af5 bqf5 cqs6 d6))))
   (<strong>get-semitones</strong> mscs))
 
 =&gt; (-22.0 -11.5 -6.0 -5.5 1.0 5.5 12.0 20.0 22.5 24.5 26.0)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-semitones</strong> ((s sc-set) &amp;optional 
-                          (reference-<a href="./pitch_lsp.html#robo285">pitch</a> 'c4)
+                          (reference-<a href="./pitch_lsp.html#robo290">pitch</a> 'c4)
                           (offset 0))
 </pre>
 
 
 <a name="sc2dset2fget2dsemitones2dfrom2dmiddle2dnote"></a>
-<a name="robo590"></a><h2 class=robodoc>sc-set/get-semitones-from-middle-note [ Methods ]</h2>
+<a name="robo600"></a><h2 class=robodoc>sc-set/get-semitones-from-middle-note [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return a list of numbers that are the distances in <a href="./utilities_lsp.html#robo970">semitones</a> of each <a href="./pitch_lsp.html#robo285">pitch</a>
- in a given <a href="#robo625">sc-set</a> object from the <a href="./utilities_lsp.html#robo931">middle</a> note of that object. 
+<pre> Return a list of numbers that are the distances in <a href="./utilities_lsp.html#robo993">semitones</a> of each <a href="./pitch_lsp.html#robo290">pitch</a>
+ in a given <a href="#robo636">sc-set</a> object from the <a href="./utilities_lsp.html#robo951">middle</a> note of that object. 
 
- NB: If the given sc-object contains an even number of <a href="./pitch_lsp.html#robo285">pitch</a> objects, the
-     <a href="./utilities_lsp.html#robo931">middle</a> note is determined to be the first note of the second half of
+ NB: If the given sc-object contains an even number of <a href="./pitch_lsp.html#robo290">pitch</a> objects, the
+     <a href="./utilities_lsp.html#robo951">middle</a> note is determined to be the first note of the second half of
      the set.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - A symbol that is the key of one of the key/data pairs contained in the
-   SUBSETS slot of the given <a href="#robo625">sc-set</a> object.
+   SUBSETS slot of the given <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of positive and negative numbers.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; With an odd number of items in the <a href="#robo625">sc-set</a> object, the method returns the
+<pre class="source">;; With an odd number of items in the <a href="#robo636">sc-set</a> object, the method returns the
 ;; same number of positive and negative numbers (non-zero)
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5))))
   (<strong>get-semitones-from-middle-note</strong> mscs))
 
 =&gt; (-21.0 -18.0 -14.0 -11.0 -7.0 -4.0 0.0 3.0 7.0 11.0 14.0 18.0 21.0)
 
-;; With an even number of items in the <a href="#robo625">sc-set</a> object, the <a href="./utilities_lsp.html#robo931">middle</a> note is
+;; With an even number of items in the <a href="#robo636">sc-set</a> object, the <a href="./utilities_lsp.html#robo951">middle</a> note is
 ;; considered to be the first note of the second half of the set
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
   (<strong>get-semitones-from-middle-note</strong> mscs))
 
 =&gt; (-24.0 -21.0 -17.0 -14.0 -10.0 -7.0 -3.0 0.0 4.0 8.0 11.0 15.0 18.0 22.0)
@@ -700,7 +700,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;; Setting the optional &lt;subset&gt; argument to a symbol that is the key of a
 ;; given key/data pair in the sc-object's SUBSETS slot applies the method to
 ;; that subset only
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :subsets '((fl (df5 f5 af5 c6))
                                     (va (c3 e3 g3 b3 d4 gf4))))))
   (<strong>get-semitones-from-middle-note</strong> mscs 'fl))
@@ -713,50 +713,50 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 
 
 <a name="sc2dset2fget2dsrts"></a>
-<a name="robo591"></a><h2 class=robodoc>sc-set/get-srts [ Methods ]</h2>
+<a name="robo601"></a><h2 class=robodoc>sc-set/get-srts [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the sampling-rate conversion factors for the given <a href="#robo625">sc-set</a> object,
+<pre> Get the sampling-rate conversion factors for the given <a href="#robo636">sc-set</a> object,
  whereby 1.0 = unison, 2.0 = one octave higher and 0.5 = one octave lower
  etc.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - An optional note-name symbol sets the value of the &lt;reference-<a href="./pitch_lsp.html#robo356">pitch&gt;</a>,
-   which is the basis <a href="./pitch_lsp.html#robo285">pitch</a> to which the resulting factors refer. This will
-   generally be the perceived fundamental <a href="./pitch_lsp.html#robo285">pitch</a> of the sample (sound file)
+<pre> - An optional note-name symbol sets the value of the &lt;reference-<a href="./pitch_lsp.html#robo362">pitch&gt;</a>,
+   which is the basis <a href="./pitch_lsp.html#robo290">pitch</a> to which the resulting factors refer. This will
+   generally be the perceived fundamental <a href="./pitch_lsp.html#robo290">pitch</a> of the sample (sound file)
    being modified ("transposed").
  - The optional &lt;offset&gt; argument takes a number that is the number of
-   <a href="./utilities_lsp.html#robo970">semitones</a> to <a href="#robo578">add</a> to the <a href="./pitch_lsp.html#robo285">pitch</a> of the given set prior to determining the
+   <a href="./utilities_lsp.html#robo993">semitones</a> to <a href="./rhythm_lsp.html#robo429">add</a> to the <a href="./pitch_lsp.html#robo290">pitch</a> of the given set prior to determining the
    sampling-rate conversion factors. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns a list of numbers.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Returns a list of factors that are the sampling-rate conversion <a href="./utilities_lsp.html#robo913">factor</a>
+<pre class="source">;; Returns a list of factors that are the sampling-rate conversion <a href="./utilities_lsp.html#robo931">factor</a>
 ;; compared to a 'C4 by default:
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 fs3 cs4 c5 af5 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 fs3 cs4 c5 af5 d6))))
   (<strong>get-srts</strong> mscs))
 
 =&gt; (0.28061550855636597 0.7071067690849304 1.0594631433486938 2.0
     3.17480206489563 4.4898481369018555)
 
-;; Comparing the same set against a higher reference-<a href="./pitch_lsp.html#robo285">pitch</a> will return lower
+;; Comparing the same set against a higher reference-<a href="./pitch_lsp.html#robo290">pitch</a> will return lower
 ;; values
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 fs3 cs4 c5 af5 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 fs3 cs4 c5 af5 d6))))
   (<strong>get-srts</strong> mscs 'd4))
 
 =&gt; (0.25 0.6299605220704482 0.9438743681693953 1.781797458637491
     2.8284271254540463 4.0)
 
-;; Conversely, comparing the same set against the default reference-<a href="./pitch_lsp.html#robo285">pitch</a> but
+;; Conversely, comparing the same set against the default reference-<a href="./pitch_lsp.html#robo290">pitch</a> but
 ;; with a positive offset will return higher values
 
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 fs3 cs4 c5 af5 d6))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 fs3 cs4 c5 af5 d6))))
   (<strong>get-srts</strong> mscs 'c4 2))
 
 =&gt; (0.3149802585215549 0.7937005124004939 1.1892071699914617 2.244924096618746
@@ -764,15 +764,15 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-srts</strong> ((s sc-set) &amp;optional 
-                                (reference-<a href="./pitch_lsp.html#robo285">pitch</a> 'c4)
+                                (reference-<a href="./pitch_lsp.html#robo290">pitch</a> 'c4)
                                 (offset 0))
 </pre>
 
 
 <a name="sc2dset2fhas2dpitches2din2drange"></a>
-<a name="robo592"></a><h2 class=robodoc>sc-set/has-pitches-in-range [ Methods ]</h2>
+<a name="robo602"></a><h2 class=robodoc>sc-set/has-pitches-in-range [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> June 28th 2017, Edinburgh
 </pre>
@@ -780,9 +780,9 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 <pre> Tests whether a set has pitches within a certain range.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo625">sc-set</a> object
- - the lower <a href="./pitch_lsp.html#robo285">pitch</a> of the range (<a href="./pitch_lsp.html#robo285">pitch</a> object or symbol)
- - the upper <a href="./pitch_lsp.html#robo285">pitch</a> of the range (<a href="./pitch_lsp.html#robo285">pitch</a> object or symbol)
+<pre> - the <a href="#robo636">sc-set</a> object
+ - the lower <a href="./pitch_lsp.html#robo290">pitch</a> of the range (<a href="./pitch_lsp.html#robo290">pitch</a> object or symbol)
+ - the upper <a href="./pitch_lsp.html#robo290">pitch</a> of the range (<a href="./pitch_lsp.html#robo290">pitch</a> object or symbol)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate that only chromatic pitches count, i.e. not
@@ -797,24 +797,24 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 
 
 <a name="sc2dset2fleast2dused2doctave"></a>
-<a name="robo593"></a><h2 class=robodoc>sc-set/least-used-octave [ Methods ]</h2>
+<a name="robo603"></a><h2 class=robodoc>sc-set/least-used-octave [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 18th August 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the octave with the least notes in it. This includes octaves <a href="./utilities_lsp.html#robo896">between</a>
- the <a href="./event_lsp.html#robo197">lowest</a> and <a href="./chord_lsp.html#robo88">highest</a> notes inclusive, and may include an octave within
+<pre> Return the octave with the least notes in it. This includes octaves <a href="./utilities_lsp.html#robo910">between</a>
+ the <a href="./chord_lsp.html#robo90">lowest</a> and <a href="./event_lsp.html#robo193">highest</a> notes inclusive, and may include an octave within
  those ranges with no notes at all. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo625">sc-set</a> object
+<pre> - the <a href="#robo636">sc-set</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :<a href="./chord_lsp.html#robo88">highest</a>-wins. If two octaves share the least number of notes, return the
-    <a href="./chord_lsp.html#robo88">highest</a> when T. Default = T.
+ - :<a href="./event_lsp.html#robo193">highest</a>-wins. If two octaves share the least number of notes, return the
+    <a href="./event_lsp.html#robo193">highest</a> when T. Default = T.
  - :avoiding. An integer or list of integers. Don't return any octave in
     this list or don't return this single integer argument. Default = NIL.
 </pre>
@@ -822,52 +822,52 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 <pre> An integer representing the octave with the least notes.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>least-used-octave</strong> (<a href="#robo594">make-sc-set</a> '(cs2 d4 e4 g5)))
+<pre class="source">(<strong>least-used-octave</strong> (<a href="#robo604">make-sc-set</a> '(cs2 d4 e4 g5)))
 --&gt; 3
-(<strong>least-used-octave</strong> (<a href="#robo594">make-sc-set</a> '(cs2 d3 ds4 e4 g5)) :<a href="./chord_lsp.html#robo88">highest</a>-wins nil)
+(<strong>least-used-octave</strong> (<a href="#robo604">make-sc-set</a> '(cs2 d3 ds4 e4 g5)) :<a href="./event_lsp.html#robo193">highest</a>-wins nil)
 --&gt; 2
-(<strong>least-used-octave</strong> (<a href="#robo594">make-sc-set</a> '(cs2 d3 ds4 e4 g5)))
+(<strong>least-used-octave</strong> (<a href="#robo604">make-sc-set</a> '(cs2 d3 ds4 e4 g5)))
 --&gt; 5
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>least-used-octave</strong> ((s sc-set) &amp;key (<a href="./chord_lsp.html#robo88">highest</a>-wins t) avoiding)
+<pre class="source">(defmethod <strong>least-used-octave</strong> ((s sc-set) &amp;key (<a href="./event_lsp.html#robo193">highest</a>-wins t) avoiding)
 </pre>
 
 
 <a name="sc2dset2fmake2dsc2dset"></a>
-<a name="robo594"></a><h2 class=robodoc>sc-set/make-sc-set [ Functions ]</h2>
+<a name="robo604"></a><h2 class=robodoc>sc-set/make-sc-set [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create an <a href="#robo625">sc-set</a> object, which holds <a href="./pitch_lsp.html#robo285">pitch</a>-set information for harmonic and
- <a href="./pitch_lsp.html#robo285">pitch</a> manipulation.
+<pre> Create an <a href="#robo636">sc-set</a> object, which holds <a href="./pitch_lsp.html#robo290">pitch</a>-set information for harmonic and
+ <a href="./pitch_lsp.html#robo290">pitch</a> manipulation.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A list of note-name symbols or frequencies that is to be the set
-   (<a href="./pitch_lsp.html#robo285">pitch</a>-set) for the given <a href="#robo625">sc-set</a> object.
+   (<a href="./pitch_lsp.html#robo290">pitch</a>-set) for the given <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :id. A symbol that is to be the ID of the given <a href="#robo625">sc-set</a> object.
+ - :id. A symbol that is to be the ID of the given <a href="#robo636">sc-set</a> object.
  - :subsets. An <a href="./assoc-list_lsp.html#robo111">assoc-list</a> of key/data pairs, in which the data is a list of
    note-name symbols that are a subset of the main set. One use for this
    keyword argument might be to create subsets that particular <a href="./instruments_lsp.html#robo11">instruments</a>
-   can play; these could for instance be selected in the <a href="./chord_lsp.html#robo608">chord</a>-function
-   passed to the <a href="./instrument_lsp.html#robo284">instrument</a> object.  In any case, if the <a href="./instrument_lsp.html#robo284">instrument</a> has a
+   can play; these could for instance be selected in the <a href="./chord_lsp.html#robo619">chord</a>-function
+   passed to the <a href="./instrument_lsp.html#robo289">instrument</a> object.  In any case, if the <a href="./instrument_lsp.html#robo289">instrument</a> has a
    subset-id slot, and the current set contains a subset with that ID, the
-   pitches the <a href="./instrument_lsp.html#robo284">instrument</a> may play are limited to that subset.
+   pitches the <a href="./instrument_lsp.html#robo289">instrument</a> may play are limited to that subset.
  - :related-sets. An <a href="./assoc-list_lsp.html#robo111">assoc-list</a> of key/data pairs, similar to :subsets, only
    that the pitches given here do not have to be part of the main set. This
    can be used, for example, for pitches missing from the main set.
  - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
-   symbols) are to be automatically sorted from <a href="./event_lsp.html#robo197">lowest</a> to <a href="./chord_lsp.html#robo88">highest</a>. 
+   symbols) are to be automatically sorted from <a href="./chord_lsp.html#robo90">lowest</a> to <a href="./event_lsp.html#robo193">highest</a>. 
    T = sort. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An <a href="#robo625">sc-set</a> object.
+<pre> An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Simplest usage, with no keyword arguments; returns an <a href="#robo625">sc-set</a> object
+<pre class="source">;; Simplest usage, with no keyword arguments; returns an <a href="#robo636">sc-set</a> object
 (<strong>make-sc-set</strong> '(d2 cs3 fs3 cs4 e4 c5 af5 ef6))
 
 =&gt; 
@@ -878,17 +878,17 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 0, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 0, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
 data: NIL
 
 N.B. All pitches printed as symbols only, internally they are all 
-<a href="./pitch_lsp.html#robo285">pitch</a>-objects.
+<a href="./pitch_lsp.html#robo290">pitch</a>-objects.
 
     subsets: 
     related-sets: 
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 8, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 8, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
@@ -908,62 +908,62 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 0, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 0, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
 data: NIL
 
 N.B. All pitches printed as symbols only, internally they are all 
-<a href="./pitch_lsp.html#robo285">pitch</a>-objects.
+<a href="./pitch_lsp.html#robo290">pitch</a>-objects.
 
     subsets: 
 VIOLIN: (E4 C5 AF5 EF6)
 VIOLA: (CS4 E4)
     related-sets: 
 MISSING: (DS2 E2 B3 CS6 D6)
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 8, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 8, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: SCS1, tag: NIL, 
 data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>make-sc-set</strong> (<a href="#robo625">sc-set</a> &amp;key id subsets related-sets (auto-sort t) tag
+<pre class="source">(defun <strong>make-sc-set</strong> (<a href="#robo636">sc-set</a> &amp;key id subsets related-sets (auto-sort t) tag
                              (warn-dups t) (rm-dups t))
 </pre>
 
 
 <a name="sc2dset2fmost2dused2doctave"></a>
-<a name="robo595"></a><h2 class=robodoc>sc-set/most-used-octave [ Methods ]</h2>
+<a name="robo605"></a><h2 class=robodoc>sc-set/most-used-octave [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 18th August 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the octave with the least notes in it. See <a href="#robo593">least-used-octave</a> for
+<pre> Return the octave with the least notes in it. See <a href="#robo603">least-used-octave</a> for
  more details and argument descriptions.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>most-used-octave</strong> ((s sc-set) &amp;key (<a href="./chord_lsp.html#robo88">highest</a>-wins t) avoiding)
+<pre class="source">(defmethod <strong>most-used-octave</strong> ((s sc-set) &amp;key (<a href="./event_lsp.html#robo193">highest</a>-wins t) avoiding)
 </pre>
 
 
 <a name="sc2dset2fpitch2dsymbols"></a>
-<a name="robo596"></a><h2 class=robodoc>sc-set/pitch-symbols [ Methods ]</h2>
+<a name="robo606"></a><h2 class=robodoc>sc-set/pitch-symbols [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the pitches of a given <a href="#robo625">sc-set</a> object as a list of note-name
+<pre> Return the pitches of a given <a href="#robo636">sc-set</a> object as a list of note-name
  symbols. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of note-name symbols.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 c3 d4 df5 c6))))
+<pre class="source">(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 c3 d4 df5 c6))))
   (<strong>pitch-symbols</strong> mscs))
 
 =&gt; (D2 C3 D4 DF5 C6)
@@ -974,15 +974,15 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 
 <a name="sc2dset2fround2dinflections"></a>
-<a name="robo597"></a><h2 class=robodoc>sc-set/round-inflections [ Methods ]</h2>
+<a name="robo607"></a><h2 class=robodoc>sc-set/round-inflections [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the microtones of a given <a href="#robo625">sc-set</a> object, rounded to the <a href="./utilities_lsp.html#robo936">nearest</a>
+<pre> Get the microtones of a given <a href="#robo636">sc-set</a> object, rounded to the <a href="./utilities_lsp.html#robo956">nearest</a>
  chromatic note. 
 
  This method returns only the rounded microtones, and not any of the pitches
- of the original <a href="#robo625">sc-set</a> that are already chromatic.
+ of the original <a href="#robo636">sc-set</a> that are already chromatic.
 
  By default, this method only gets those microtones that are less than a
  quarter-tone. This behavior can be changed by setting the :qtr-tones-also
@@ -992,12 +992,12 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
  octave, in which case any duplicate pitches are removed.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :qtr-tones-also. T or NIL to indicate whether quarter-tones are also to
-   be rounded to the <a href="./utilities_lsp.html#robo936">nearest</a> chromatic <a href="./pitch_lsp.html#robo285">pitch</a> and returned. T = round and
+   be rounded to the <a href="./utilities_lsp.html#robo956">nearest</a> chromatic <a href="./pitch_lsp.html#robo290">pitch</a> and returned. T = round and
    return. Default = NIL.
  - :octave. NIL or an integer that is the octave designator to which all
    resulting pitches are to be transposed (i.e. the "4" in "C4" etc.)
@@ -1006,23 +1006,23 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
    within an octave that are created by use of the :octave keyword argument
    are to be removed. T = remove duplicates. Default = NIL.
  - :as-symbols. T or NIL to indicate whether to return the results of the
-   method as a list of note-name symbols rather than a list of <a href="./pitch_lsp.html#robo285">pitch</a>
+   method as a list of note-name symbols rather than a list of <a href="./pitch_lsp.html#robo290">pitch</a>
    objects. T = return as note-name symbols. Default = NIL.
  - :<a href="./package_lsp.html#robo14">package</a>. The <a href="./package_lsp.html#robo14">package</a> in which the pitches are to be handled. 
    Default = :sc.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of <a href="./pitch_lsp.html#robo285">pitch</a> objects.
+<pre> A list of <a href="./pitch_lsp.html#robo290">pitch</a> objects.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; First set the *<a href="./popcorn_lsp.html#robo383">scale</a>* environment of CM (which is used by slippery chicken)
+<pre class="source">;; First set the *<a href="./rthm-seq-bar_lsp.html#robo509">scale</a>* environment of CM (which is used by slippery chicken)
 ;; to twelfth-tones
-(setf <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./popcorn_lsp.html#robo383">scale</a>* (<a href="./cm_lsp.html#robo4">cm</a>::find-object 'twelfth-tone))
+(setf <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-bar_lsp.html#robo509">scale</a>* (<a href="./cm_lsp.html#robo4">cm</a>::find-object 'twelfth-tone))
 
 =&gt; #&lt;tuning "twelfth-tone"&gt;
 
-;; By default the method returns a list of <a href="./pitch_lsp.html#robo285">pitch</a> objects.
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))
+;; By default the method returns a list of <a href="./pitch_lsp.html#robo290">pitch</a> objects.
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))
   (<strong>round-inflections</strong> mscs))
 
 =&gt;
@@ -1045,14 +1045,14 @@ data: CS4
 
 ;; Setting the :as-symbols argument to T returns a list of note-name symbols
 ;; instead 
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))
   (<strong>round-inflections</strong> mscs :as-symbols t))
 
 =&gt; (C4 C4 CS4 CS4)
 
 ;; Setting the :qtr-tones-also argument to T returns causes quarter-tones to be
 ;; rounded and returned as well.
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))  
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))  
   (<strong>round-inflections</strong> mscs 
                      :qtr-tones-also T
                      :as-symbols t))
@@ -1061,7 +1061,7 @@ data: CS4
 
 ;; Specifying an octave transposes all returned pitches to that octave,
 ;; removing any duplicates by default
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(c2 cts3 css4 cqs5 cssf6 cstf7 cs8))))  
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(c2 cts3 css4 cqs5 cssf6 cstf7 cs8))))  
   (<strong>round-inflections</strong> mscs 
                      :qtr-tones-also T
                      :octave 4
@@ -1071,7 +1071,7 @@ data: CS4
 
 ;; The removal of the duplicates can be turned off by setting the
 ;; :remove-duplicates argument to NIL 
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(c2 cts3 css4 cqs5 cssf6 cstf7 cs8))))  
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(c2 cts3 css4 cqs5 cssf6 cstf7 cs8))))  
   (<strong>round-inflections</strong> mscs 
                      :qtr-tones-also T
                      :octave 4
@@ -1092,66 +1092,66 @@ data: CS4
 
 
 <a name="sc2dset2fround2dto2dnearest"></a>
-<a name="robo598"></a><h2 class=robodoc>sc-set/round-to-nearest [ Methods ]</h2>
+<a name="robo608"></a><h2 class=robodoc>sc-set/round-to-nearest [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> January 30th 2017
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Round the (potentially very <a href="./event_lsp.html#robo204">microtonal</a>) pitches in the set to the <a href="./utilities_lsp.html#robo936">nearest</a>
- <a href="./pitch_lsp.html#robo285">pitch</a> of the current or given <a href="./popcorn_lsp.html#robo383">scale</a>. Note that this is a destructive
+<pre> Round the (potentially very <a href="./event_lsp.html#robo205">microtonal</a>) pitches in the set to the <a href="./utilities_lsp.html#robo956">nearest</a>
+ <a href="./pitch_lsp.html#robo290">pitch</a> of the current or given <a href="./rthm-seq-bar_lsp.html#robo509">scale</a>. Note that this is a destructive
  operation.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo625">sc-set</a> object
+<pre> - the <a href="#robo636">sc-set</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword argument:
- :<a href="./popcorn_lsp.html#robo383">scale</a>. The <a href="./popcorn_lsp.html#robo383">scale</a> to use when rounding. (Common Music tuning object or
- symbol). If a symbol, then 'chromatic-<a href="./popcorn_lsp.html#robo383">scale</a>, 'twelfth-tone, or 'quarter-tone
- only at present. Default is the current <a href="./popcorn_lsp.html#robo383">scale</a> as set by (<a href="./cm_lsp.html#robo134">in-scale</a> :...).
+ :<a href="./rthm-seq-bar_lsp.html#robo509">scale</a>. The <a href="./rthm-seq-bar_lsp.html#robo509">scale</a> to use when rounding. (Common Music tuning object or
+ symbol). If a symbol, then 'chromatic-<a href="./rthm-seq-bar_lsp.html#robo509">scale</a>, 'twelfth-tone, or 'quarter-tone
+ only at present. Default is the current <a href="./rthm-seq-bar_lsp.html#robo509">scale</a> as set by (<a href="./cm_lsp.html#robo134">in-scale</a> :...).
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the modified <a href="#robo625">sc-set</a> object
+<pre> the modified <a href="#robo636">sc-set</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>round-to-nearest</strong> ((s sc-set) &amp;key (<a href="./popcorn_lsp.html#robo383">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./popcorn_lsp.html#robo383">scale</a>*))
+<pre class="source">(defmethod <strong>round-to-nearest</strong> ((s sc-set) &amp;key (<a href="./rthm-seq-bar_lsp.html#robo509">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-bar_lsp.html#robo509">scale</a>*))
 </pre>
 
 
 <a name="sc2dset2fset2dposition"></a>
-<a name="robo599"></a><h2 class=robodoc>sc-set/set-position [ Methods ]</h2>
+<a name="robo609"></a><h2 class=robodoc>sc-set/set-position [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the position (zero-index) of a specified <a href="./pitch_lsp.html#robo285">pitch</a> object within a given
- <a href="#robo625">sc-set</a> object. 
+<pre> Get the position (zero-index) of a specified <a href="./pitch_lsp.html#robo290">pitch</a> object within a given
+ <a href="#robo636">sc-set</a> object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./pitch_lsp.html#robo285">pitch</a> object.
- - An <a href="#robo625">sc-set</a> object.
+<pre> - A <a href="./pitch_lsp.html#robo290">pitch</a> object.
+ - An <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> An integer.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
-  (<strong>set-position</strong> (<a href="./pitch_lsp.html#robo336">make-pitch</a> 'e3) mscs))
+<pre class="source">(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (<strong>set-position</strong> (<a href="./pitch_lsp.html#robo342">make-pitch</a> 'e3) mscs))
 
 =&gt; 4
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>set-position</strong> ((p <a href="./pitch_lsp.html#robo285">pitch</a>) (s sc-set))
+<pre class="source">(defmethod <strong>set-position</strong> ((p <a href="./pitch_lsp.html#robo290">pitch</a>) (s sc-set))
 </pre>
 
 
 <a name="sc2dset2fstack"></a>
-<a name="robo600"></a><h2 class=robodoc>sc-set/stack [ Methods ]</h2>
+<a name="robo610"></a><h2 class=robodoc>sc-set/stack [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Extend the <a href="./pitch_lsp.html#robo285">pitch</a> content of a given <a href="#robo625">sc-set</a> object by adding new <a href="./pitch_lsp.html#robo285">pitch</a>
+<pre> Extend the <a href="./pitch_lsp.html#robo290">pitch</a> content of a given <a href="#robo636">sc-set</a> object by adding new <a href="./pitch_lsp.html#robo290">pitch</a>
  objects which have the same interval structure as the original set. 
 
  The method analyzes the interval structure of the original set from the
@@ -1161,45 +1161,45 @@ data: CS4
 
  The second argument indicates how times this procedure is carried out.
 
- NB: The method assumes that the <a href="./pitch_lsp.html#robo285">pitch</a> content of the original <a href="#robo625">sc-set</a> object
+ NB: The method assumes that the <a href="./pitch_lsp.html#robo290">pitch</a> content of the original <a href="#robo636">sc-set</a> object
      is sorted from low to high. 
 
- See also: the <a href="./complete-set_lsp.html#robo148">make-stack</a> method in the <a href="./complete-set_lsp.html#robo881">complete-set</a> class to make a <strong>stack</strong>
+ See also: the <a href="./complete-set_lsp.html#robo148">make-stack</a> method in the <a href="./complete-set_lsp.html#robo894">complete-set</a> class to make a <strong>stack</strong>
            from a simple list of note-name symbols.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
  - An integer that is the number of new sets to be added to each end of the
    original set.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :id. A symbol that will be the ID of the new <a href="#robo625">sc-set</a> object. Default NIL.
+ - :id. A symbol that will be the ID of the new <a href="#robo636">sc-set</a> object. Default NIL.
  - :by-freq. If T then use frequencies when calculating the interval
-    structure instead of degrees (<a href="./utilities_lsp.html#robo970">semitones</a> if default <a href="./popcorn_lsp.html#robo383">scale</a> is chromatic).
+    structure instead of degrees (<a href="./utilities_lsp.html#robo993">semitones</a> if default <a href="./rthm-seq-bar_lsp.html#robo509">scale</a> is chromatic).
     In this case the frequencies of pitches will be retained but their
-    symbolic value will be rounded to the <a href="./utilities_lsp.html#robo936">nearest</a> note in the current <a href="./popcorn_lsp.html#robo383">scale</a>
-    (and <a href="./pitch_lsp.html#robo285">pitch</a> bends will be set accordingly). Default NIL. 
- - :up. Apply the process upwards in <a href="./pitch_lsp.html#robo285">pitch</a> space. Default = T.
- - :down. Apply the process downwards in <a href="./pitch_lsp.html#robo285">pitch</a> space. Default = T.
+    symbolic value will be rounded to the <a href="./utilities_lsp.html#robo956">nearest</a> note in the current <a href="./rthm-seq-bar_lsp.html#robo509">scale</a>
+    (and <a href="./pitch_lsp.html#robo290">pitch</a> bends will be set accordingly). Default NIL. 
+ - :up. Apply the process upwards in <a href="./pitch_lsp.html#robo290">pitch</a> space. Default = T.
+ - :down. Apply the process downwards in <a href="./pitch_lsp.html#robo290">pitch</a> space. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A new <a href="#robo625">sc-set</a> object. This will have the same tag and id (unless given as a
- keyword argument here) slots as the original <a href="#robo625">sc-set</a> but not subsets,
+<pre> A new <a href="#robo636">sc-set</a> object. This will have the same tag and id (unless given as a
+ keyword argument here) slots as the original <a href="#robo636">sc-set</a> but not subsets,
  related-sets, used-notes, etc.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Extends the original set with new sets that have the identical interval
 ;; structure upwards and inverted interval structure downwards. 
-(let ((set (<a href="#robo594">make-sc-set</a> '(c4 e4 g4))))
+(let ((set (<a href="#robo604">make-sc-set</a> '(c4 e4 g4))))
   (<strong>stack</strong> set 3))
 =&gt;
 SC-SET: auto-sort: T, used-notes: 
 [...]
 data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 
-;;; or by calling the <a href="./complete-set_lsp.html#robo148">make-stack</a> function, which returns a <a href="./complete-set_lsp.html#robo881">complete-set</a> object
-;;; (subclass of <a href="./tl-set_lsp.html#robo604">tl-set</a> and sc-set).  Called with (<a href="./cm_lsp.html#robo134">in-scale</a> :chromatic):
+;;; or by calling the <a href="./complete-set_lsp.html#robo148">make-stack</a> function, which returns a <a href="./complete-set_lsp.html#robo894">complete-set</a> object
+;;; (subclass of <a href="./tl-set_lsp.html#robo615">tl-set</a> and sc-set).  Called with (<a href="./cm_lsp.html#robo134">in-scale</a> :chromatic):
 (<a href="./complete-set_lsp.html#robo148">make-stack</a> 'test '(430 441 889 270) 1 :by-freq t)
 =&gt;
 COMPLETE-SET: complete: NIL
@@ -1208,9 +1208,9 @@ data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
 
 Note the difference of doing :by-freq and by interval:
 
-(let ((set (<a href="#robo594">make-sc-set</a> '(c4 e4 g4))))
-        (print (<a href="./intervals-mapper_lsp.html#robo262">get-pitch-symbols</a> (<strong>stack</strong> set 1 :by-freq t)))
-        (<a href="./intervals-mapper_lsp.html#robo262">get-pitch-symbols</a> (<strong>stack</strong> set 1 :by-freq nil)))
+(let ((set (<a href="#robo604">make-sc-set</a> '(c4 e4 g4))))
+        (print (<a href="./chord_lsp.html#robo86">get-pitch-symbols</a> (<strong>stack</strong> set 1 :by-freq t)))
+        (<a href="./chord_lsp.html#robo86">get-pitch-symbols</a> (<strong>stack</strong> set 1 :by-freq nil)))
 --&gt;
 (C3 G3 C4 E4 G4 BF4 C5) 
 (F3 AF3 C4 E4 G4 B4 D5)
@@ -1220,33 +1220,98 @@ Note the difference of doing :by-freq and by interval:
 </pre>
 
 
-<a name="sc2dset2fsubset2dget2dsrts"></a>
-<a name="robo601"></a><h2 class=robodoc>sc-set/subset-get-srts [ Methods ]</h2>
+<a name="sc2dset2fsubset2dfrom2dharp2dsalzedo"></a>
+<a name="robo611"></a><h2 class=robodoc>sc-set/subset-from-harp-salzedo [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">AUTHOR</p>
+<pre> Ruben Philipp &lt;me@rubenphilipp.com&gt;
+
+ CREATED
+ 2023-11-28, Essen
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre> This method creates a subset from a given <a href="#robo636">sc-set</a> according to a specific
+ harp-pedaling indicated by a salzedo-list (cf. harp-salzedo-to-tl-set) and
+ returns either a new <a href="#robo636">sc-set</a> or a list of symbols (when :as-symbols = T)
+ in order to be further used as either an independent/new <a href="#robo636">sc-set</a> or a
+ <a href="./pitch_lsp.html#robo290">pitch</a>-list to be used in the subset-slot of e.g. a <a href="#robo636">sc-set</a>.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre> - A <a href="#robo636">sc-set</a> object which is the actual set to derive the subset from.
+ - A list, which is a salzedo list with the harp pedalling
+   (cf. salzedo-to-set).
+</pre>
+<p class="item_name">OPTIONAL ARGUMENTS</p>
+<pre> - :id. The id of the subset to be generated. When :as-symbols = T, this
+   argument will be ignored. 
+ - :<a href="./chord_lsp.html#robo90">lowest</a>. The <a href="./chord_lsp.html#robo90">lowest</a> <a href="./pitch_lsp.html#robo290">pitch</a> to be included in the subset. Default: 'b0
+ - :<a href="./event_lsp.html#robo193">highest</a>. The <a href="./event_lsp.html#robo193">highest</a> <a href="./pitch_lsp.html#robo290">pitch</a> to be included in the subset. Default: 'gs7
+ - :as-symbols. A boolean indicating whether a new sc-list object
+   should (NIL) or a list of <a href="./pitch_lsp.html#robo290">pitch</a> symbols (NIL) should be returned.
+   Default = NIL.
+ - :subsets. Inherited from <a href="#robo604">make-sc-set</a>. This will be ignored when
+   :as-symbols = T.
+ - :related-sets. Inherited from <a href="#robo604">make-sc-set</a>. This will be ignored when
+   :as-symbols = T.
+ - :auto-sort. Inherited from <a href="#robo604">make-sc-set</a>. This will be ignored when
+   :as-symbols = T. Default = T.
+</pre>
+<p class="item_name">RETURN VALUE</p>
+<pre> Either a <a href="#robo636">sc-set</a> or a list of <a href="./pitch_lsp.html#robo290">pitch</a> symbols.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre class="source">(<strong>subset-from-harp-salzedo</strong> (<a href="#robo604">make-sc-set</a> '(C1 D1 E1 F1 GS1 AF1 AF2 BF2 C3 D3
+                                         E3 F3 GS3
+                                         AF3 BF3 C4 D4 E4 F4 GS4 AF4 BF4 C5
+                                         D5 E5 F5
+                                         C6 D6 E6 F6 GS6 AF6 BF6 C7 D7 E7))
+                          '(0 1 -1 0 1 0 -1)
+                          :as-symbols t)
+
+=&gt;
+(D1 E1 AF1 AF2 BF2 D3 E3 AF3 BF3 D4 E4 AF4 BF4 D5 E5 D6 E6 AF6 BF6 D7 E7)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre class="source">(defmethod <strong>subset-from-harp-salzedo</strong> ((s sc-set) salzedo
+                                     &amp;key
+                                       id
+                                       (<a href="./chord_lsp.html#robo90">lowest</a> 'b0)
+                                       (<a href="./event_lsp.html#robo193">highest</a> 'gs7)
+                                       as-symbols
+                                       subsets
+                                       related-sets
+                                       (auto-sort t))
+</pre>
+
+
+<a name="sc2dset2fsubset2dget2dsrts"></a>
+<a name="robo612"></a><h2 class=robodoc>sc-set/subset-get-srts [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the sampling-rate conversion factors for the specified subset of a
- given <a href="#robo625">sc-set</a> object, whereby 1.0 = unison, 2.0 = one octave higher and 0.5
+ given <a href="#robo636">sc-set</a> object, whereby 1.0 = unison, 2.0 = one octave higher and 0.5
  = one octave lower etc.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo625">sc-set</a> object.
+<pre> - An <a href="#robo636">sc-set</a> object.
  - A symbol that is the key of one of the key/data pairs stored in the
-   SUBSETS slot of the given <a href="#robo625">sc-set</a> object.
+   SUBSETS slot of the given <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - The optional &lt;reference-<a href="./pitch_lsp.html#robo356">pitch&gt;</a> is the basis <a href="./pitch_lsp.html#robo285">pitch</a> to which the resulting
-   factors refer. This will generally be the perceived fundamental <a href="./pitch_lsp.html#robo285">pitch</a> of
+<pre> - The optional &lt;reference-<a href="./pitch_lsp.html#robo362">pitch&gt;</a> is the basis <a href="./pitch_lsp.html#robo290">pitch</a> to which the resulting
+   factors refer. This will generally be the perceived fundamental <a href="./pitch_lsp.html#robo290">pitch</a> of
    the sample (sound file) being modified ("transposed").
- - The optional &lt;offset&gt; argument is the number of <a href="./utilities_lsp.html#robo970">semitones</a> to <a href="#robo578">add</a> to the
-   <a href="./pitch_lsp.html#robo285">pitch</a> of the given set prior to determining the sampling-rate conversion
+ - The optional &lt;offset&gt; argument is the number of <a href="./utilities_lsp.html#robo993">semitones</a> to <a href="./rhythm_lsp.html#robo429">add</a> to the
+   <a href="./pitch_lsp.html#robo290">pitch</a> of the given set prior to determining the sampling-rate conversion
    factors. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Create an <a href="#robo625">sc-set</a> object with two subsets named 'FL and 'VA, then get the
+<pre class="source">;;; Create an <a href="#robo636">sc-set</a> object with two subsets named 'FL and 'VA, then get the
 ;;; sampling-rate conversion factors for the 'FL subset
-(let ((mscs (<a href="#robo594">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+(let ((mscs (<a href="#robo604">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
                          :subsets '((fl (df5 f5 af5 c6))
                                     (va (c3 e3 g3 b3 d4 gf4))))))
   (<strong>subset-get-srts</strong> mscs 'fl))
@@ -1255,27 +1320,27 @@ Note the difference of doing :by-freq and by interval:
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>subset-get-srts</strong>  ((s sc-set) subset &amp;optional 
-                             (reference-<a href="./pitch_lsp.html#robo285">pitch</a> 'c4)
+                             (reference-<a href="./pitch_lsp.html#robo290">pitch</a> 'c4)
                              (offset 0))
 </pre>
 
 
 <a name="sc2dset2fsubsets2dremove"></a>
-<a name="robo602"></a><h2 class=robodoc>sc-set/subsets-remove [ Methods ]</h2>
+<a name="robo613"></a><h2 class=robodoc>sc-set/subsets-remove [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> June 2nd 2017, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Remove pitches from all subsets of an <a href="#robo625">sc-set</a> object
+<pre> Remove pitches from all subsets of an <a href="#robo636">sc-set</a> object
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo625">sc-set</a> object
- - &amp;rest the pitches to remove, as <a href="./pitch_lsp.html#robo285">pitch</a> objects or symbols
+<pre> - the <a href="#robo636">sc-set</a> object
+ - &amp;rest the pitches to remove, as <a href="./pitch_lsp.html#robo290">pitch</a> objects or symbols
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the <a href="#robo625">sc-set</a>
+<pre> the <a href="#robo636">sc-set</a>
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>subsets-remove</strong> ((s sc-set) &amp;rest pitches)
@@ -1283,23 +1348,23 @@ Note the difference of doing :by-freq and by interval:
 
 
 <a name="sc2dset2fthin"></a>
-<a name="robo603"></a><h2 class=robodoc>sc-set/thin [ Methods ]</h2>
+<a name="robo614"></a><h2 class=robodoc>sc-set/thin [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo625">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo636">sc-set</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> June 1st 2017, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Remove pitches from a set using a deterministic algorithm. From bottom to
  top (or vice-versa) pitches will be selected or rejected using the
- <a href="./activity-levels_lsp.html#robo293">activity-levels</a> class, to which the strength (1-10) is passed. The pitches
+ <a href="./activity-levels_lsp.html#robo299">activity-levels</a> class, to which the strength (1-10) is passed. The pitches
  removed are also removed from any subsets.
 
  By default the set will be reduced by 1/3 of its pitches but it is expected
  that either the :remove or :target keyword will be used (see below).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - an <a href="#robo625">sc-set</a> object
+<pre> - an <a href="#robo636">sc-set</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -1308,49 +1373,49 @@ Note the difference of doing :by-freq and by interval:
  - :remove. An integer indicating how many pitches to remove. Default = NIL
  - :target. An integer indicating how many pitches the set should be left
    with. Default = NIL
- - :<a href="./pitch-seq_lsp.html#robo324">invert</a>. T or NIL to remove pitches starting at the top or bottom. T =
+ - :<a href="./rthm-seq-bar_lsp.html#robo500">invert</a>. T or NIL to remove pitches starting at the top or bottom. T =
    from top, NIL = from bottom. Default = NIL 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The (thinned) <a href="#robo625">sc-set</a> object.
+<pre> The (thinned) <a href="#robo636">sc-set</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>thin</strong> ((s sc-set) &amp;key (strength 5) remove target <a href="./pitch-seq_lsp.html#robo324">invert</a>)
+<pre class="source">(defmethod <strong>thin</strong> ((s sc-set) &amp;key (strength 5) remove target <a href="./rthm-seq-bar_lsp.html#robo500">invert</a>)
 </pre>
 
 
 <a name="sclist2fsc2dset"></a>
-<a name="robo625"></a><h2 class=robodoc>sclist/sc-set [ Classes ]</h2>
+<a name="robo636"></a><h2 class=robodoc>sclist/sc-set [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo288">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo293">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
-<pre> <a href="./player_lsp.html#robo286">player</a>
+<pre> <a href="./player_lsp.html#robo291">player</a>
 
  File:             <a href="#robo_top_of_doc">sc-set.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; <a href="./chord_lsp.html#robo608">chord</a> -&gt;
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt; <a href="./chord_lsp.html#robo619">chord</a> -&gt;
                    <strong>sc-set</strong>
 
  Version:          1.0.12
 
  Project:          slippery chicken (algorithmic composition)
 
- Purpose:          Implementation of the <strong>sc-set</strong> class which holds <a href="./pitch_lsp.html#robo285">pitch</a> set
-                   information for harmonic and <a href="./pitch_lsp.html#robo285">pitch</a> manipulation. 
+ Purpose:          Implementation of the <strong>sc-set</strong> class which holds <a href="./pitch_lsp.html#robo290">pitch</a> set
+                   information for harmonic and <a href="./pitch_lsp.html#robo290">pitch</a> manipulation. 
 
  Author:           Michael Edwards: m@michael-edwards.org
 
  Creation date:    August 10th 2001
 
- $$ Last modified:  12:36:02 Wed Jul  6 2022 CEST
+ $$ Last modified:  18:11:54 Fri Jan 26 2024 CET
 
  SVN ID: $Id$
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/sc-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+<p>Generated from ./../../src/sc-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
 </div> <!-- footer -->
 </body>
 </html>

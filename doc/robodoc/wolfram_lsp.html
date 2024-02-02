@@ -37,12 +37,12 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./assoc-list_lsp.html#robo111">assoc-list</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
-<pre> <a href="./rhythm_lsp.html#robo287">rhythm</a>
+<pre> <a href="./rhythm_lsp.html#robo292">rhythm</a>
 
  File:             <a href="#robo_top_of_doc">wolfram.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt;
-                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <strong>wolfram</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt;
+                   <a href="./circular-sclist_lsp.html#robo620">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <strong>wolfram</strong>
 
  Version:          1.0.12
 
@@ -66,7 +66,7 @@
 
 
 <a name="wolfram2fdefwolfram"></a>
-<a name="robo987"></a><h2 class=robodoc>wolfram/defwolfram [ Methods ]</h2>
+<a name="robo1010"></a><h2 class=robodoc>wolfram/defwolfram [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
@@ -97,7 +97,7 @@
 
 
 <a name="wolfram2fgenerate"></a>
-<a name="robo988"></a><h2 class=robodoc>wolfram/generate [ Methods ]</h2>
+<a name="robo1011"></a><h2 class=robodoc>wolfram/generate [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
@@ -113,8 +113,8 @@
  - the number of generations (rows) to <strong>generate</strong>
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> &lt;start&gt; is the value of the <a href="./utilities_lsp.html#robo931">middle</a> cell of the first row (or just to the
- left of <a href="./utilities_lsp.html#robo931">middle</a>, if width is an even number). All cells to the left and
+<pre> &lt;start&gt; is the value of the <a href="./utilities_lsp.html#robo951">middle</a> cell of the first row (or just to the
+ left of <a href="./utilities_lsp.html#robo951">middle</a>, if width is an even number). All cells to the left and
  right of it will be in &lt;initial-state&gt;. This should be 0 or 1 only.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -128,7 +128,7 @@
 
 
 <a name="wolfram2fmake2dwolfram2dr110"></a>
-<a name="robo989"></a><h2 class=robodoc>wolfram/make-wolfram-r110 [ Functions ]</h2>
+<a name="robo1012"></a><h2 class=robodoc>wolfram/make-wolfram-r110 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -230,14 +230,14 @@ but called with width of 60:
 .  .      ....... . ..... .....                             
 . ..     ..     .....   ...   .                             
 |#
-(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r110</strong>
+(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r110</strong>
     '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 1) ((1 0 0) 0) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr126"></a>
-<a name="robo990"></a><h2 class=robodoc>wolfram/make-wolfram-r126 [ Functions ]</h2>
+<a name="robo1013"></a><h2 class=robodoc>wolfram/make-wolfram-r126 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -291,14 +291,14 @@ using 1, the following repeats but not forever
 .  ..  ..  .
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r126</strong> 
+<pre class="source">(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r126</strong> 
     '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr150"></a>
-<a name="robo991"></a><h2 class=robodoc>wolfram/make-wolfram-r150 [ Functions ]</h2>
+<a name="robo1014"></a><h2 class=robodoc>wolfram/make-wolfram-r150 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -371,14 +371,14 @@ non-repeating  but lovely patterns
  ... ... ...
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r150</strong> 
+<pre class="source">(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r150</strong> 
     '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr151"></a>
-<a name="robo992"></a><h2 class=robodoc>wolfram/make-wolfram-r151 [ Functions ]</h2>
+<a name="robo1015"></a><h2 class=robodoc>wolfram/make-wolfram-r151 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -413,14 +413,14 @@ non-repeating  but lovely patterns
 .  ......  .
 then the last 7 lines repeat
 |#
-(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r151</strong>
+(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r151</strong>
     '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 1)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr159"></a>
-<a name="robo993"></a><h2 class=robodoc>wolfram/make-wolfram-r159 [ Functions ]</h2>
+<a name="robo1016"></a><h2 class=robodoc>wolfram/make-wolfram-r159 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -456,14 +456,14 @@ then the last 7 lines repeat
 .  ..  ..  .
 then the last 4 lines repeat
 |#
-(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r159</strong>
+(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r159</strong>
     '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 1)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr190"></a>
-<a name="robo994"></a><h2 class=robodoc>wolfram/make-wolfram-r190 [ Functions ]</h2>
+<a name="robo1017"></a><h2 class=robodoc>wolfram/make-wolfram-r190 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -505,14 +505,14 @@ then the last 4 lines repeat
 then last three rows repeat
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r190</strong> 
+<pre class="source">(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r190</strong> 
     '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr25"></a>
-<a name="robo995"></a><h2 class=robodoc>wolfram/make-wolfram-r25 [ Functions ]</h2>
+<a name="robo1018"></a><h2 class=robodoc>wolfram/make-wolfram-r25 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -565,7 +565,7 @@ then last three rows repeat
 then last four rows repeat
 
 also very nice starting with 0 instead of 1 (no obvious repeats):
-(<a href="#robo988">generate</a> w 100 0)
+(<a href="#robo1011">generate</a> w 100 0)
 ............
 .           
  ...........
@@ -604,14 +604,14 @@ also very nice starting with 0 instead of 1 (no obvious repeats):
 .. .   ...  
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r25</strong>
+<pre class="source">(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r25</strong>
     '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1)
       ((0 1 1) 1) ((0 1 0) 0) ((0 0 1) 0) ((0 0 0) 1)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr30"></a>
-<a name="robo996"></a><h2 class=robodoc>wolfram/make-wolfram-r30 [ Functions ]</h2>
+<a name="robo1019"></a><h2 class=robodoc>wolfram/make-wolfram-r30 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -634,9 +634,9 @@ also very nice starting with 0 instead of 1 (no obvious repeats):
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; so width: 12, initial-state: 0
 (let ((w (<strong>make-wolfram-r30</strong> 12 0)))
-  (<a href="#robo988">generate</a> w 100)
-  (<a href="#robo1001">print-matrix</a> w :row-number nil :off "." :on 'X)
-  (<a href="#robo1001">print-matrix</a> w :row-number nil))
+  (<a href="#robo1011">generate</a> w 100)
+  (<a href="#robo1024">print-matrix</a> w :row-number nil :off "." :on 'X)
+  (<a href="#robo1024">print-matrix</a> w :row-number nil))
       .     
      ...    
     ..  .   
@@ -672,14 +672,14 @@ also very nice starting with 0 instead of 1 (no obvious repeats):
 then last two rows repeat
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r30</strong> 
+<pre class="source">(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r30</strong> 
     '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr62"></a>
-<a name="robo997"></a><h2 class=robodoc>wolfram/make-wolfram-r62 [ Functions ]</h2>
+<a name="robo1020"></a><h2 class=robodoc>wolfram/make-wolfram-r62 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -718,14 +718,14 @@ then last two rows repeat
 .  .. .... 
 then the last 6 lines repeat
 |#
-(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r62</strong>
+(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r62</strong>
     '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr73"></a>
-<a name="robo998"></a><h2 class=robodoc>wolfram/make-wolfram-r73 [ Functions ]</h2>
+<a name="robo1021"></a><h2 class=robodoc>wolfram/make-wolfram-r73 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -762,14 +762,14 @@ then the last 6 lines repeat
   .   . .. .
 then the last 2 lines repeat
 |#
-(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r73</strong>
+(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r73</strong>
     '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 0) ((0 1 1) 1)
       ((0 1 0) 0) ((0 0 1) 0) ((0 0 0) 1)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr82"></a>
-<a name="robo999"></a><h2 class=robodoc>wolfram/make-wolfram-r82 [ Functions ]</h2>
+<a name="robo1022"></a><h2 class=robodoc>wolfram/make-wolfram-r82 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -829,14 +829,14 @@ non-repeating  but lovely patterns
 . .         
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r82</strong> 
+<pre class="source">(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r82</strong> 
     '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
       ((0 1 0) 0) ((0 0 1) 1) ((0 0 0) 0)))
 </pre>
 
 
 <a name="wolfram2fmake2dwolfram2dr93"></a>
-<a name="robo1000"></a><h2 class=robodoc>wolfram/make-wolfram-r93 [ Functions ]</h2>
+<a name="robo1023"></a><h2 class=robodoc>wolfram/make-wolfram-r93 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -893,14 +893,14 @@ non-repeating  but lovely patterns
 .    ..... .
 then the last 5 lines repeat
 |#
-(<a href="#robo987">defwolfram</a> <strong>make-wolfram-r93</strong>
+(<a href="#robo1010">defwolfram</a> <strong>make-wolfram-r93</strong>
     '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 0) ((0 0 0) 1)))
 </pre>
 
 
 <a name="wolfram2fprint2dmatrix"></a>
-<a name="robo1001"></a><h2 class=robodoc>wolfram/print-matrix [ Methods ]</h2>
+<a name="robo1024"></a><h2 class=robodoc>wolfram/print-matrix [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
@@ -909,7 +909,7 @@ then the last 5 lines repeat
 <p class="item_name">DESCRIPTION</p>
 <pre> Print the state of the cells to the terminal. On and off could
  theoretically be any object but of course single characters are
- clearest. See the <a href="#robo987">defwolfram</a> definitions below for examples.
+ clearest. See the <a href="#robo1010">defwolfram</a> definitions below for examples.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the <a href="#robo52">wolfram</a> object
@@ -932,16 +932,16 @@ then the last 5 lines repeat
 
 
 <a name="wolfram2ftry2dall"></a>
-<a name="robo1002"></a><h2 class=robodoc>wolfram/try-all [ Functions ]</h2>
+<a name="robo1025"></a><h2 class=robodoc>wolfram/try-all [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo52">wolfram</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> June 10th 2017, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Try all of the Wolfram rules defined via <a href="#robo987">defwolfram</a>. An instance of each
+<pre> Try all of the Wolfram rules defined via <a href="#robo1010">defwolfram</a>. An instance of each
  rule set defined will be created, the rows will be generated, and
- <a href="#robo1001">print-matrix</a> will be called. This allows you to see and compare the results
+ <a href="#robo1024">print-matrix</a> will be called. This allows you to see and compare the results
  of each rule set using the same parameters.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -953,11 +953,11 @@ then the last 5 lines repeat
  positive ingeger. Default = 100.
  :initial-state. The initial-state (i.e. default) slot for the Wolfram
  objects. 0 or 1. Default = 0.
- :start. The value of the <a href="./utilities_lsp.html#robo931">middle</a> cell of the first row. See <a href="#robo988">generate</a> method
+ :start. The value of the <a href="./utilities_lsp.html#robo951">middle</a> cell of the first row. See <a href="#robo1011">generate</a> method
  for more details. 0 or 1. Default = 1.
- :generations. The number of rows to <a href="#robo988">generate</a>. Any positive integer. Default
+ :generations. The number of rows to <a href="#robo1011">generate</a>. Any positive integer. Default
  = 30.
- :stream, :on, :off, :row-number: see <a href="#robo1001">print-matrix</a> method.
+ :stream, :on, :off, :row-number: see <a href="#robo1024">print-matrix</a> method.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T
@@ -969,7 +969,7 @@ then the last 5 lines repeat
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/wolfram.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+<p>Generated from ./../../src/wolfram.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
 </div> <!-- footer -->
 </body>
 </html>

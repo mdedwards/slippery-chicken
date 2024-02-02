@@ -41,8 +41,8 @@
 
  File:             <a href="#robo_top_of_doc">recursive-assoc-list.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo605">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo288">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo609">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <strong>recursive-assoc-list</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo620">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <strong>recursive-assoc-list</strong>
 
  Version:          1.0.12
 
@@ -71,14 +71,14 @@
 
  Creation date:    March 18th 2001
 
- $$ Last modified:  18:50:12 Fri Dec 16 2022 CET
+ $$ Last modified:  10:40:20 Thu Feb  1 2024 CET
 
  SVN ID: $Id$
 </pre>
 
 
 <a name="recursive2dassoc2dlist2fadd"></a>
-<a name="robo390"></a><h2 class=robodoc>recursive-assoc-list/add [ Methods ]</h2>
+<a name="robo400"></a><h2 class=robodoc>recursive-assoc-list/add [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -103,18 +103,18 @@
    nested level where the new element is to be placed. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns T if the specified <a href="./named-object_lsp.html#robo605">named-object</a> is successfully added to the given
+<pre> Returns T if the specified <a href="./named-object_lsp.html#robo616">named-object</a> is successfully added to the given
  <a href="#robo45">recursive-assoc-list</a>. 
 
  Returns an error if an attempt is made to <strong>add</strong> NIL to the given
- <a href="#robo45">recursive-assoc-list</a> or if the given <a href="./named-object_lsp.html#robo605">named-object</a> is already present at the
+ <a href="#robo45">recursive-assoc-list</a> or if the given <a href="./named-object_lsp.html#robo616">named-object</a> is already present at the
  same level within the given <a href="#robo45">recursive-assoc-list</a>. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Adding an element while specifying no optional argument results in the new
 ;; element being placed at the end of the top level by default (evident here by
 ;; the fact that the ref for (MAKERS) is a single-item list) 
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -124,7 +124,7 @@
                                               (fox hole)))
                                         (white ribbon)))))))))
   (<strong>add</strong> '(makers mark) ral)
-  (<a href="#robo394">get-all-refs</a> ral))
+  (<a href="#robo404">get-all-refs</a> ral))
 
 =&gt; ((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
     (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE)
@@ -133,7 +133,7 @@
 ;; A list that is a path of keys (FULL-REF) to the desired recursive level must
 ;; be given as the optional argument in order to place the specified element
 ;; deeper in the given <a href="#robo45">recursive-assoc-list</a> object
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -143,7 +143,7 @@
                                               (fox hole)))
                                         (white ribbon)))))))))
   (<strong>add</strong> '(yellow sky) ral '(four violets))
-  (<a href="#robo394">get-all-refs</a> ral))
+  (<a href="#robo404">get-all-refs</a> ral))
 
 =&gt; ((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
     (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE)
@@ -151,7 +151,7 @@
 
 ;; Attempting to <strong>add</strong> an element that is already present at the given level of
 ;; the given <a href="#robo45">recursive-assoc-list</a> object results in an error
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -169,7 +169,7 @@ assoc-list::<strong>add</strong>: Can't <strong>add</strong> MAKERS to <a href="
    [Condition of type SIMPLE-ERROR]
 
 ;; Attempting to <strong>add</strong> NIL also results in an error
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -181,16 +181,16 @@ assoc-list::<strong>add</strong>: Can't <strong>add</strong> MAKERS to <a href="
   (<strong>add</strong> '() ral))
 
 =&gt;
-assoc-list::<strong>add</strong>: <a href="./named-object_lsp.html#robo605">named-object</a> is NIL!
+assoc-list::<strong>add</strong>: <a href="./named-object_lsp.html#robo616">named-object</a> is NIL!
    [Condition of type SIMPLE-ERROR]
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>add</strong> (<a href="./named-object_lsp.html#robo605">named-object</a> (ral recursive-assoc-list) &amp;optional ref)
+<pre class="source">(defmethod <strong>add</strong> (<a href="./named-object_lsp.html#robo616">named-object</a> (ral recursive-assoc-list) &amp;optional ref)
 </pre>
 
 
 <a name="recursive2dassoc2dlist2fadd2dempty2dparcel"></a>
-<a name="robo391"></a><h2 class=robodoc>recursive-assoc-list/add-empty-parcel [ Methods ]</h2>
+<a name="robo401"></a><h2 class=robodoc>recursive-assoc-list/add-empty-parcel [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -199,7 +199,7 @@ assoc-list::<strong>add</strong>: <a href="./named-object_lsp.html#robo605">name
  object. 
 
  NB: Adding an empty parcel to a given <a href="#robo45">recursive-assoc-list</a> object will
-     cause the method <a href="#robo394">get-all-refs</a> to fail on that <a href="#robo45">recursive-assoc-list</a>
+     cause the method <a href="#robo404">get-all-refs</a> to fail on that <a href="#robo45">recursive-assoc-list</a>
      object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -216,8 +216,8 @@ assoc-list::<strong>add</strong>: <a href="./named-object_lsp.html#robo605">name
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Add two new empty parcels (the first a <a href="#robo45">recursive-assoc-list</a>, by default, the
-;; second a rthm-seq-<a href="./palette_lsp.html#robo405">palette</a>) and return the new list of REFS:
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+;; second a rthm-seq-<a href="./palette_lsp.html#robo415">palette</a>) and return the new list of REFS:
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -227,8 +227,8 @@ assoc-list::<strong>add</strong>: <a href="./named-object_lsp.html#robo605">name
                                               (fox hole)))
                                         (white ribbon)))))))))
   (<strong>add-empty-parcel</strong> ral 'bricolage)
-  (<strong>add-empty-parcel</strong> ral 'rsp 'rthm-seq-<a href="./palette_lsp.html#robo405">palette</a>)
-  (<a href="#robo394">get-all-refs</a> ral))
+  (<strong>add-empty-parcel</strong> ral 'rsp 'rthm-seq-<a href="./palette_lsp.html#robo415">palette</a>)
+  (<a href="#robo404">get-all-refs</a> ral))
 
 Mark set
 =&gt; 
@@ -243,7 +243,7 @@ Mark set
 
 
 <a name="recursive2dassoc2dlist2fassoc2dlist2did2dlist"></a>
-<a name="robo392"></a><h2 class=robodoc>recursive-assoc-list/assoc-list-id-list [ Functions ]</h2>
+<a name="robo402"></a><h2 class=robodoc>recursive-assoc-list/assoc-list-id-list [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -279,7 +279,7 @@ Mark set
 
 
 <a name="recursive2dassoc2dlist2fget2dall2drefs"></a>
-<a name="robo394"></a><h2 class=robodoc>recursive-assoc-list/get-all-refs [ Methods ]</h2>
+<a name="robo404"></a><h2 class=robodoc>recursive-assoc-list/get-all-refs [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -293,7 +293,7 @@ Mark set
 
  NB This will only work on the top-level object due to the creation of
     references when linking. If you're interested in the full refs of a
-    sub-ral, try ths <a href="#robo401">get-this-refs</a> method. 
+    sub-ral, try ths <a href="#robo411">get-this-refs</a> method. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo45">recursive-assoc-list</a> object.
@@ -307,7 +307,7 @@ Mark set
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; By default all keys are returned as lists, even single (non-nested) keys
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -323,7 +323,7 @@ Mark set
 
 ;; Setting the optional argument to NIL returns non-nested keys as symbols
 ;; rather than lists  
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -345,19 +345,19 @@ Mark set
 
 
 <a name="recursive2dassoc2dlist2fget2ddata"></a>
-<a name="robo395"></a><h2 class=robodoc>recursive-assoc-list/get-data [ Methods ]</h2>
+<a name="robo405"></a><h2 class=robodoc>recursive-assoc-list/get-data [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the <a href="./named-object_lsp.html#robo605">named-object</a> (or linked-named-object) that is identified by a
+<pre> Return the <a href="./named-object_lsp.html#robo616">named-object</a> (or linked-named-object) that is identified by a
  specified key within a given <a href="#robo45">recursive-assoc-list</a> object.
 
  NB: This method returns the named object itself, not just the data
      associated with the key (use assoc-list::<a href="./assoc-list_lsp.html#robo36">get-data-data</a> for that). 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A symbol that is the key (id) of the <a href="./named-object_lsp.html#robo605">named-object</a> sought, or a list of
-   symbols that are the path to the desired <a href="./named-object_lsp.html#robo605">named-object</a> within the given
+<pre> - A symbol that is the key (id) of the <a href="./named-object_lsp.html#robo616">named-object</a> sought, or a list of
+   symbols that are the path to the desired <a href="./named-object_lsp.html#robo616">named-object</a> within the given
    <a href="#robo45">recursive-assoc-list</a>.
  - The <a href="#robo45">recursive-assoc-list</a> object in which it is sought.
 </pre>
@@ -366,7 +366,7 @@ Mark set
    cannot be found within the given <a href="./assoc-list_lsp.html#robo111">assoc-list</a>. T = print. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./named-object_lsp.html#robo605">named-object</a> is returned if the specified key is found within the given
+<pre> A <a href="./named-object_lsp.html#robo616">named-object</a> is returned if the specified key is found within the given
  <a href="#robo45">recursive-assoc-list</a> object. 
 
  NIL is returned and a warning is printed if the specified key is not found
@@ -375,8 +375,8 @@ Mark set
  key (see example).
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Get a <a href="./named-object_lsp.html#robo605">named-object</a> from the top-level of the <a href="#robo45">recursive-assoc-list</a> object
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+<pre class="source">;; Get a <a href="./named-object_lsp.html#robo616">named-object</a> from the top-level of the <a href="#robo45">recursive-assoc-list</a> object
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -393,7 +393,7 @@ data: TURKEY
 
 ;; A list including all keys that are the path to the specified key is required
 ;; to get nested named-objects
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -410,7 +410,7 @@ data: RIBBON
 
 ;; Searching for a key that is not present in the given <a href="#robo45">recursive-assoc-list</a>
 ;; object returns NIL and a warning
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -428,7 +428,7 @@ WARNING:
 
 ;; Searching for a nested key without specifying the path to that key within a
 ;; list also returns a NIL and a warning
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -451,22 +451,22 @@ WARNING:
 
 
 <a name="recursive2dassoc2dlist2fget2dfirst"></a>
-<a name="robo396"></a><h2 class=robodoc>recursive-assoc-list/get-first [ Methods ]</h2>
+<a name="robo406"></a><h2 class=robodoc>recursive-assoc-list/get-first [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Returns the first <a href="./named-object_lsp.html#robo605">named-object</a> in the DATA slot of the given
+<pre> Returns the first <a href="./named-object_lsp.html#robo616">named-object</a> in the DATA slot of the given
  <a href="#robo45">recursive-assoc-list</a> object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo45">recursive-assoc-list</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./named-object_lsp.html#robo605">named-object</a> that is the first object in the DATA slot of the given
+<pre> A <a href="./named-object_lsp.html#robo616">named-object</a> that is the first object in the DATA slot of the given
  <a href="#robo45">recursive-assoc-list</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+<pre class="source">(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -487,12 +487,12 @@ data: BEAM
 
 
 <a name="recursive2dassoc2dlist2fget2dfirst2dref"></a>
-<a name="robo397"></a><h2 class=robodoc>recursive-assoc-list/get-first-ref [ Methods ]</h2>
+<a name="robo407"></a><h2 class=robodoc>recursive-assoc-list/get-first-ref [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the full reference into the given <a href="#robo45">recursive-assoc-list</a> object of the
- first <a href="./named-object_lsp.html#robo605">named-object</a> in the given <a href="#robo45">recursive-assoc-list</a> object. 
+ first <a href="./named-object_lsp.html#robo616">named-object</a> in the given <a href="#robo45">recursive-assoc-list</a> object. 
 
  NB: If the &lt;ral&gt; argument happens to be a <a href="#robo45">recursive-assoc-list</a> object that
      is contained within another <a href="#robo45">recursive-assoc-list</a> object (i.e. is a
@@ -504,8 +504,8 @@ data: BEAM
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; A simple call returns the first top-level <a href="./named-object_lsp.html#robo605">named-object</a>
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+<pre class="source">;; A simple call returns the first top-level <a href="./named-object_lsp.html#robo616">named-object</a>
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -519,7 +519,7 @@ data: BEAM
 =&gt; (JIM)
 
 ;; Return the first ref of a nested <a href="#robo45">recursive-assoc-list</a> object
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -538,11 +538,11 @@ data: BEAM
 
 
 <a name="recursive2dassoc2dlist2fget2dlast"></a>
-<a name="robo398"></a><h2 class=robodoc>recursive-assoc-list/get-last [ Methods ]</h2>
+<a name="robo408"></a><h2 class=robodoc>recursive-assoc-list/get-last [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the last <a href="./named-object_lsp.html#robo605">named-object</a> in a given <a href="#robo45">recursive-assoc-list</a> object. 
+<pre> Get the last <a href="./named-object_lsp.html#robo616">named-object</a> in a given <a href="#robo45">recursive-assoc-list</a> object. 
 
  NB: This method functions linearly, not hierarchically. The last named
      object is therefore not necessarily the deepest of a nest, but the last
@@ -552,11 +552,11 @@ data: BEAM
 <pre> - A <a href="#robo45">recursive-assoc-list</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./named-object_lsp.html#robo605">named-object</a> (or linked-named-object).
+<pre> A <a href="./named-object_lsp.html#robo616">named-object</a> (or linked-named-object).
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; This returns '(white ribbon), not '(fox hole)
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -577,7 +577,7 @@ data: RIBBON
 
 
 <a name="recursive2dassoc2dlist2fget2dlast2dref"></a>
-<a name="robo399"></a><h2 class=robodoc>recursive-assoc-list/get-last-ref [ Methods ]</h2>
+<a name="robo409"></a><h2 class=robodoc>recursive-assoc-list/get-last-ref [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -596,7 +596,7 @@ data: RIBBON
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Typical usage with nesting
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -611,7 +611,7 @@ data: RIBBON
 
 ;; Returns the last-ref as a list even if the given <a href="#robo45">recursive-assoc-list</a> object
 ;; contains no nesting
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four roses)))))
@@ -625,17 +625,17 @@ data: RIBBON
 
 
 <a name="recursive2dassoc2dlist2fget2dprevious"></a>
-<a name="robo400"></a><h2 class=robodoc>recursive-assoc-list/get-previous [ Methods ]</h2>
+<a name="robo410"></a><h2 class=robodoc>recursive-assoc-list/get-previous [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the previous <a href="./named-object_lsp.html#robo605">named-object</a> in the given <a href="#robo45">recursive-assoc-list</a> object by
- specifying the ID of a <a href="./named-object_lsp.html#robo605">named-object</a> contained within that given
+<pre> Get the previous <a href="./named-object_lsp.html#robo616">named-object</a> in the given <a href="#robo45">recursive-assoc-list</a> object by
+ specifying the ID of a <a href="./named-object_lsp.html#robo616">named-object</a> contained within that given
  <a href="#robo45">recursive-assoc-list</a> object.  
 
- An optional argument allows for the retrieval of a previous <a href="./named-object_lsp.html#robo605">named-object</a>
+ An optional argument allows for the retrieval of a previous <a href="./named-object_lsp.html#robo616">named-object</a>
  that is more than one step back in the given <a href="#robo45">recursive-assoc-list</a> object
- (i.e., not the <a href="./named-object_lsp.html#robo605">named-object</a> that immediately precedes the specified key).
+ (i.e., not the <a href="./named-object_lsp.html#robo616">named-object</a> that immediately precedes the specified key).
 
  If the number given for the optional &lt;how-many&gt; argument is greater than
  the number of items in the given <a href="#robo45">recursive-assoc-list</a> object, the value
@@ -643,7 +643,7 @@ data: RIBBON
 
  The method proceeds linearly, not hierarchically, when getting previous
  named-objects from further down into nested assoc-lists. In other words,
- the <a href="./named-object_lsp.html#robo605">named-object</a> immediately previous to (white ribbon) in this nested list 
+ the <a href="./named-object_lsp.html#robo616">named-object</a> immediately previous to (white ribbon) in this nested list 
  is (fox hole), which is at a deeper level, not (red ...) or (blue velvet),
  which are at the same level: 
  ((blue velvet) 
@@ -669,17 +669,17 @@ data: RIBBON
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - An integer indicating how many steps back in the given
-   <a href="#robo45">recursive-assoc-list</a> from the specified <a href="./named-object_lsp.html#robo605">named-object</a> to look when
+   <a href="#robo45">recursive-assoc-list</a> from the specified <a href="./named-object_lsp.html#robo616">named-object</a> to look when
    retrieving the desired object (e.g. 1 = immediately previous object, 2 =
    the one before that etc.)
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./linked-named-object_lsp.html#robo297">linked-named-object</a>.
+<pre> A <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Get the object immediately previous to that with the key WILD returns the
 ;; object with key JIM and data BEAM
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -698,7 +698,7 @@ data: BEAM
 ;; Attempting to get the previous object from the key FOUR, which contains a
 ;; nested list, returns an error unless the first key in the nested list is
 ;; also included
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -716,7 +716,7 @@ when called with arguments
   (
 NAMED-OBJECT: id: FOUR, tag: NIL, 
 
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -734,7 +734,7 @@ data: TURKEY
 
 ;; The method defines the previous object linearly, not hierarchically; i.e.,
 ;; the previous object to (white ribbon) here is (fox hole) and not (red ...)
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -754,7 +754,7 @@ data: HOLE
 
 ;; Use the &lt;how-many&gt; argument to retrieve previous objects further back than
 ;; the immediate predecessor
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -774,7 +774,7 @@ data: VELVET
 
 ;; Using a &lt;how-many&gt; value greater than the number of items in the given
 ;; <a href="#robo45">recursive-assoc-list</a> object returns a negative number
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -794,17 +794,17 @@ data: VELVET
 
 
 <a name="recursive2dassoc2dlist2fget2dthis2drefs"></a>
-<a name="robo401"></a><h2 class=robodoc>recursive-assoc-list/get-this-refs [ Methods ]</h2>
+<a name="robo411"></a><h2 class=robodoc>recursive-assoc-list/get-this-refs [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 5th July 2019, Essen Werden
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the &lt;this&gt; slots of each <a href="./named-object_lsp.html#robo605">named-object</a> (or subclass) in a
+<pre> Get the &lt;this&gt; slots of each <a href="./named-object_lsp.html#robo616">named-object</a> (or subclass) in a
  <a href="#robo45">recursive-assoc-list</a> (ral). This should work on top-level rals and sub-rals
  alike, though rals with only sub-rals probably won't return anything. Unlike
- <a href="#robo394">get-all-refs</a>, this doesn't traverse recursive objects.
+ <a href="#robo404">get-all-refs</a>, this doesn't traverse recursive objects.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the <a href="#robo45">recursive-assoc-list</a> object
@@ -818,7 +818,7 @@ data: VELVET
 
 
 <a name="recursive2dassoc2dlist2flink2dnamed2dobjects"></a>
-<a name="robo402"></a><h2 class=robodoc>recursive-assoc-list/link-named-objects [ Methods ]</h2>
+<a name="robo412"></a><h2 class=robodoc>recursive-assoc-list/link-named-objects [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -840,7 +840,7 @@ data: VELVET
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; The <a href="#robo45">recursive-assoc-list</a> may not be linked on creation, evident here
 ;;; through the value of the LINKED slot
-(<a href="#robo404">make-ral</a> 'mixed-bag 
+(<a href="#robo414">make-ral</a> 'mixed-bag 
                  '((jim beam)
                    (wild turkey)
                    (four ((roses red)
@@ -857,7 +857,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
 data: (
@@ -870,7 +870,7 @@ data: TURKEY
 
 ;; The <a href="#robo45">recursive-assoc-list</a> object and the named-objects it contains are linked
 ;; after applying the <strong>link-named-objects</strong> method
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -888,7 +888,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
 data: (
@@ -910,7 +910,7 @@ data: TURKEY
 
 
 <a name="recursive2dassoc2dlist2flisp2dassoc2dlistp"></a>
-<a name="robo403"></a><h2 class=robodoc>recursive-assoc-list/lisp-assoc-listp [ Functions ]</h2>
+<a name="robo413"></a><h2 class=robodoc>recursive-assoc-list/lisp-assoc-listp [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -961,7 +961,7 @@ data: TURKEY
 
 
 <a name="recursive2dassoc2dlist2fmake2dral"></a>
-<a name="robo404"></a><h2 class=robodoc>recursive-assoc-list/make-ral [ Functions ]</h2>
+<a name="robo414"></a><h2 class=robodoc>recursive-assoc-list/make-ral [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1014,20 +1014,20 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
 data: (
 [...]
 
-;; Use the class's <a href="#robo394">get-all-refs</a> method to show that by default, simple data is
+;; Use the class's <a href="#robo404">get-all-refs</a> method to show that by default, simple data is
 ;; recursed. The sublists in the second list in this example are processed as
 ;; nested lists
 (let ((ral (<strong>make-ral</strong> 'ral-test
                      '((1 one)
                        (2 ((3 4) (5 6)))
                        (3 three)))))
-  (<a href="#robo394">get-all-refs</a> ral))
+  (<a href="#robo404">get-all-refs</a> ral))
 
 =&gt; ((1) (2 3) (2 5) (3))
 
@@ -1039,7 +1039,7 @@ data: (
                        (2 ((3 4) (5 6)))
                        (3 three))
                      :recurse-simple-data nil)))
-  (<a href="#robo394">get-all-refs</a> ral))
+  (<a href="#robo404">get-all-refs</a> ral))
 
 =&gt; ((1) (2) (3))
 </pre>
@@ -1050,14 +1050,14 @@ data: (
 
 
 <a name="recursive2dassoc2dlist2fparcel2dand2dcombine2dall"></a>
-<a name="robo406"></a><h2 class=robodoc>recursive-assoc-list/parcel-and-combine-all [ Functions ]</h2>
+<a name="robo416"></a><h2 class=robodoc>recursive-assoc-list/parcel-and-combine-all [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> December 16th 2022
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> - <a href="./rthm-seq_lsp.html#robo536">combine</a> a list of recursive-assoc-lists (ral) into a new ral but adding
+<pre> - <a href="./sclist_lsp.html#robo621">combine</a> a list of recursive-assoc-lists (ral) into a new ral but adding
  each ral itself into a new ral with a given ID (parcelling). This allows
  each of the rals in the list to have common ids but by parcelling them up we
  can achieve this at the expense of a further level of recursion.
@@ -1074,7 +1074,7 @@ data: (
 <pre class="source">;;; this is a bit convoluted but was the original motivation to write this
 ;;; routine: say you have a bunch of rthm-seq-palettes made from fragments and
 ;;; organised according to the length in quarter notes of the sequences. You can
-;;; parcel them all up into recursive palettes and then into a single <a href="./palette_lsp.html#robo405">palette</a> 
+;;; parcel them all up into recursive palettes and then into a single <a href="./palette_lsp.html#robo415">palette</a> 
 ;;; thus:
 (let* ((fragments '((1 (q. q.))
                     (1a (+q. q.))
@@ -1086,7 +1086,7 @@ data: (
                     (7 ({ 3 tq tq tq }))
                     (8 ((e.) s - e e -))))
        (rsps (mapcar #'(lambda (refs)
-                         (<a href="./rthm-seq-palette_lsp.html#robo525">make-rsp-from-fragments</a> fragments refs))
+                         (<a href="./rthm-seq-palette_lsp.html#robo535">make-rsp-from-fragments</a> fragments refs))
                      ;; each of these lists will become an rsp, the duration of
                      ;; which is the same length (not checked)
                      '(((((3 4) 1))     ; 3/4
@@ -1098,23 +1098,23 @@ data: (
                        ((((2 4) 7) (7) (7)) ; 6/4
                         (((2 4) 7) (7) (8)))
                        ((((4 4) 4) ((3 4) 1a)))))) ; 7/4
-       ;; get the duration of the first <a href="./rthm-seq_lsp.html#robo622">rthm-seq</a> in each <a href="./palette_lsp.html#robo405">palette</a> and use that as
-       ;; an id for the main <a href="./palette_lsp.html#robo405">palette</a> below
+       ;; get the duration of the first <a href="./rthm-seq_lsp.html#robo633">rthm-seq</a> in each <a href="./palette_lsp.html#robo415">palette</a> and use that as
+       ;; an id for the main <a href="./palette_lsp.html#robo415">palette</a> below
        (durs (loop for rsp in rsps collect
-                      (round (duration (<a href="./assoc-list_lsp.html#robo37">get-first</a> rsp)))))
-       (rsp (<strong>parcel-and-combine-all</strong> rsps durs 'rthm-seq-<a href="./palette_lsp.html#robo405">palette</a>)))
+                      (round (duration (<a href="#robo406">get-first</a> rsp)))))
+       (rsp (<strong>parcel-and-combine-all</strong> rsps durs 'rthm-seq-<a href="./palette_lsp.html#robo415">palette</a>)))
   (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(6 2) rsp))
 -&gt;  ((((2 4) { 3 TQ TQ TQ }) ({ 3 TQ TQ TQ }) ((E.) S - E E -)))
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>parcel-and-combine-all</strong> (rals ids &amp;optional new-class)
   (unless (= (length rals) (length ids))
-    (error "recursive-assoc-list::parcel-and-<a href="./rthm-seq_lsp.html#robo536">combine</a>-all: there should be the ~
+    (error "recursive-assoc-list::parcel-and-<a href="./sclist_lsp.html#robo621">combine</a>-all: there should be the ~
             same number of rals as ids."))
-  (let ((result (<a href="#robo407">parcel-data</a> (<a href="./slippery-chicken_lsp.html#robo769">clone</a> (first rals)) (pop ids))))
+  (let ((result (<a href="#robo417">parcel-data</a> (<a href="./slippery-chicken_lsp.html#robo780">clone</a> (first rals)) (pop ids))))
     (when new-class (setq result (sc-change-class result new-class)))
     (loop for ral in (cdr rals) do
-             (setf result (<a href="./rthm-seq_lsp.html#robo536">combine</a> result (<a href="#robo407">parcel-data</a> ral (pop ids)))))
+             (setf result (<a href="./sclist_lsp.html#robo621">combine</a> result (<a href="#robo417">parcel-data</a> ral (pop ids)))))
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1123,7 +1123,7 @@ data: (
 
 
 <a name="recursive2dassoc2dlist2fparcel2ddata"></a>
-<a name="robo407"></a><h2 class=robodoc>recursive-assoc-list/parcel-data [ Methods ]</h2>
+<a name="robo417"></a><h2 class=robodoc>recursive-assoc-list/parcel-data [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
@@ -1131,7 +1131,7 @@ data: (
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Put all the data of a given <a href="#robo45">recursive-assoc-list</a> object into a new
- <a href="./named-object_lsp.html#robo605">named-object</a> at the top level of that <a href="#robo45">recursive-assoc-list</a> object; i.e. <a href="./sc-set_lsp.html#robo578">add</a>
+ <a href="./named-object_lsp.html#robo616">named-object</a> at the top level of that <a href="#robo45">recursive-assoc-list</a> object; i.e. <a href="./rhythm_lsp.html#robo429">add</a>
  a level of recursion.  This is a means of making a collection of data
  before perhaps adding more with potentially conflicting ids. 
 </pre>
@@ -1144,8 +1144,8 @@ data: (
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Collect all the data contained within the object 'mixed-bag and store it at
-;; the top-level of 'mixed-bag within a new <a href="./named-object_lsp.html#robo605">named-object</a> with the id 'potpourri 
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+;; the top-level of 'mixed-bag within a new <a href="./named-object_lsp.html#robo616">named-object</a> with the id 'potpourri 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -1163,7 +1163,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 1, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 1, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: MIXED-BAG, tag: FROM-PARCEL-DATA, 
 data: (
@@ -1175,7 +1175,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
 data: (
@@ -1189,7 +1189,7 @@ data: BEAM
 
 
 <a name="recursive2dassoc2dlist2fr2dcount2delements"></a>
-<a name="robo408"></a><h2 class=robodoc>recursive-assoc-list/r-count-elements [ Methods ]</h2>
+<a name="robo418"></a><h2 class=robodoc>recursive-assoc-list/r-count-elements [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1203,7 +1203,7 @@ data: BEAM
 <pre> An integer.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+<pre class="source">(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -1222,7 +1222,7 @@ data: BEAM
 
 
 <a name="recursive2dassoc2dlist2fral2decons"></a>
-<a name="robo409"></a><h2 class=robodoc>recursive-assoc-list/ral-econs [ Methods ]</h2>
+<a name="robo419"></a><h2 class=robodoc>recursive-assoc-list/ral-econs [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1242,14 +1242,14 @@ data: BEAM
 <pre> The new data added.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Make an empty <a href="#robo45">recursive-assoc-list</a> object and <a href="./sc-set_lsp.html#robo578">add</a> key/data pairs to the top
+<pre class="source">;;; Make an empty <a href="#robo45">recursive-assoc-list</a> object and <a href="./rhythm_lsp.html#robo429">add</a> key/data pairs to the top
 ;;; level. 
-(let ((ral (<a href="#robo404">make-ral</a> nil nil)))
-  (print (<a href="#robo394">get-all-refs</a> ral))
+(let ((ral (<a href="#robo414">make-ral</a> nil nil)))
+  (print (<a href="#robo404">get-all-refs</a> ral))
   (<strong>ral-econs</strong> 'beam 'jim ral)
   (<strong>ral-econs</strong> 'turkey 'wild ral)
   (<strong>ral-econs</strong> 'roses 'four ral)
-  (print (<a href="#robo394">get-all-refs</a> ral))
+  (print (<a href="#robo404">get-all-refs</a> ral))
   (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> 'wild ral)))
 
 =&gt;
@@ -1260,7 +1260,7 @@ NIL
 ;;; Add data to existing keys within a given <a href="#robo45">recursive-assoc-list</a> object
 ;;; Note that the data VELVET must be a list for this to succeed
 
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -1269,7 +1269,7 @@ NIL
                                               (viper nest)
                                               (fox hole)))
                                         (white ribbon)))))))))
-  (print (<a href="#robo394">get-all-refs</a> ral))
+  (print (<a href="#robo404">get-all-refs</a> ral))
   (<strong>ral-econs</strong> 'underground '(four violets blue) ral)
   (print (<a href="./assoc-list_lsp.html#robo36">get-data-data</a> '(four violets blue) ral)))
 
@@ -1284,7 +1284,7 @@ NIL
 
 
 <a name="recursive2dassoc2dlist2frecursivep"></a>
-<a name="robo410"></a><h2 class=robodoc>recursive-assoc-list/recursivep [ Methods ]</h2>
+<a name="robo420"></a><h2 class=robodoc>recursive-assoc-list/recursivep [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -1301,7 +1301,7 @@ NIL
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; The data in this <a href="#robo45">recursive-assoc-list</a> object is really recursive, and
 ;; the method therefore returns T
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -1316,7 +1316,7 @@ NIL
 
 ;; The data in this <a href="#robo45">recursive-assoc-list</a> object is not actually recursive, and
 ;; the method therefore returns NIL
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four roses)))))
@@ -1330,12 +1330,12 @@ NIL
 
 
 <a name="recursive2dassoc2dlist2frelink2dnamed2dobjects"></a>
-<a name="robo411"></a><h2 class=robodoc>recursive-assoc-list/relink-named-objects [ Methods ]</h2>
+<a name="robo421"></a><h2 class=robodoc>recursive-assoc-list/relink-named-objects [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> This method is essentially the same as the method <a href="#robo402">link-named-objects</a>, but
- resets the LINKED slot to NIL and forces the <a href="#robo402">link-named-objects</a> method to
+<pre> This method is essentially the same as the method <a href="#robo412">link-named-objects</a>, but
+ resets the LINKED slot to NIL and forces the <a href="#robo412">link-named-objects</a> method to
  be applied again.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -1345,9 +1345,9 @@ NIL
 <pre> A recursive-alloc-list object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Usage as presented here; see the documentation for method <a href="#robo402">link-named-objects</a>
+<pre class="source">;; Usage as presented here; see the documentation for method <a href="#robo412">link-named-objects</a>
 ;; for more detail
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -1365,7 +1365,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo288">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
 data: (
@@ -1380,7 +1380,7 @@ data: BEAM
 
 
 <a name="recursive2dassoc2dlist2fremove2ddata"></a>
-<a name="robo412"></a><h2 class=robodoc>recursive-assoc-list/remove-data [ Methods ]</h2>
+<a name="robo422"></a><h2 class=robodoc>recursive-assoc-list/remove-data [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
@@ -1404,14 +1404,14 @@ data: BEAM
 
 
 <a name="recursive2dassoc2dlist2frmap"></a>
-<a name="robo413"></a><h2 class=robodoc>recursive-assoc-list/rmap [ Methods ]</h2>
+<a name="robo423"></a><h2 class=robodoc>recursive-assoc-list/rmap [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Recurse over the objects in a <a href="#robo45">recursive-assoc-list</a> and call the given
- function for each each <a href="./named-object_lsp.html#robo605">named-object</a>. See also assoc-list's <a href="./assoc-list_lsp.html#robo43">map-data</a> method
+ function for each each <a href="./named-object_lsp.html#robo616">named-object</a>. See also assoc-list's <a href="./assoc-list_lsp.html#robo43">map-data</a> method
  which does pretty much the same but acting on each named-object's data
- rather than the <a href="./named-object_lsp.html#robo605">named-object</a> itself.
+ rather than the <a href="./named-object_lsp.html#robo616">named-object</a> itself.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the <a href="#robo45">recursive-assoc-list</a> object
@@ -1419,13 +1419,13 @@ data: BEAM
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - &amp;rest further arguments to be passed to the function after the
-   <a href="./named-object_lsp.html#robo605">named-object</a> from the <a href="#robo45">recursive-assoc-list</a>.
+   <a href="./named-object_lsp.html#robo616">named-object</a> from the <a href="#robo45">recursive-assoc-list</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> The <a href="#robo45">recursive-assoc-list</a> object
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+<pre class="source">(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                       '((jim beam)
                         (wild turkey)
                         (four ((roses red)
@@ -1468,32 +1468,32 @@ T
 
 
 <a name="recursive2dassoc2dlist2fset2ddata"></a>
-<a name="robo415"></a><h2 class=robodoc>recursive-assoc-list/set-data [ Methods ]</h2>
+<a name="robo425"></a><h2 class=robodoc>recursive-assoc-list/set-data [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Replace the <a href="./named-object_lsp.html#robo605">named-object</a> associated with a specified key within a given
- <a href="#robo45">recursive-assoc-list</a> object. This method replaces the whole <a href="./named-object_lsp.html#robo605">named-object</a>,
+<pre> Replace the <a href="./named-object_lsp.html#robo616">named-object</a> associated with a specified key within a given
+ <a href="#robo45">recursive-assoc-list</a> object. This method replaces the whole <a href="./named-object_lsp.html#robo616">named-object</a>,
  not just the data of that object. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A key present within the given <a href="#robo45">recursive-assoc-list</a> object. This must be
    a list that is the FULL-REF (path of keys) if replacing a nested
-   <a href="./named-object_lsp.html#robo605">named-object</a>. If replacing a <a href="./named-object_lsp.html#robo605">named-object</a> at the top level, the
+   <a href="./named-object_lsp.html#robo616">named-object</a>. If replacing a <a href="./named-object_lsp.html#robo616">named-object</a> at the top level, the
    key can be given either as a single-item list or an individual symbol. 
  - A key/data pair as a list.
  - The <a href="#robo45">recursive-assoc-list</a> object in which to find and replace the
-   <a href="./named-object_lsp.html#robo605">named-object</a> associated with the specified key.
+   <a href="./named-object_lsp.html#robo616">named-object</a> associated with the specified key.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the new <a href="./named-object_lsp.html#robo605">named-object</a>.
+<pre> Returns the new <a href="./named-object_lsp.html#robo616">named-object</a>.
  
  Returns NIL when the specified key is not found within the given
  <a href="#robo45">recursive-assoc-list</a> object. 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Replace a <a href="./named-object_lsp.html#robo605">named-object</a> at the top level using a single symbol
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+<pre class="source">;;; Replace a <a href="./named-object_lsp.html#robo616">named-object</a> at the top level using a single symbol
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -1509,8 +1509,8 @@ NAMED-OBJECT: id: MAKERS, tag: NIL,
 data: MARK
 
 ;; The same can be done stating the top-level key as a single-item list. Apply
-;; the <a href="#robo394">get-all-refs</a> method in this example to see the change
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+;; the <a href="#robo404">get-all-refs</a> method in this example to see the change
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -1520,15 +1520,15 @@ data: MARK
                                               (fox hole)))
                                         (white ribbon)))))))))
   (<strong>set-data</strong> '(wild) '(makers mark) ral)
-  (<a href="#robo394">get-all-refs</a> ral))
+  (<a href="#robo404">get-all-refs</a> ral))
 
 =&gt; ((JIM) (MAKERS) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
     (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE))
 
-;; Replace a nested <a href="./named-object_lsp.html#robo605">named-object</a> using a list that is the FULL-REF to that
+;; Replace a nested <a href="./named-object_lsp.html#robo616">named-object</a> using a list that is the FULL-REF to that
 ;; object. Print the application of the method as well as the results from
-;; applying the <a href="#robo394">get-all-refs</a> method in this example to see the effects
-(let ((ral (<a href="#robo404">make-ral</a> 'mixed-bag 
+;; applying the <a href="#robo404">get-all-refs</a> method in this example to see the effects
+(let ((ral (<a href="#robo414">make-ral</a> 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
                        (four ((roses red)
@@ -1538,7 +1538,7 @@ data: MARK
                                               (fox hole)))
                                         (white ribbon)))))))))
   (print (<strong>set-data</strong> '(four violets red fox) '(bee hive) ral))
-  (print (<a href="#robo394">get-all-refs</a> ral)))
+  (print (<a href="#robo404">get-all-refs</a> ral)))
 
 =&gt;
 NAMED-OBJECT: id: BEE, tag: NIL, 
@@ -1554,18 +1554,18 @@ data: HIVE
 
 
 <a name="recursive2dassoc2dlist2fset2dslot"></a>
-<a name="robo416"></a><h2 class=robodoc>recursive-assoc-list/set-slot [ Methods ]</h2>
+<a name="robo426"></a><h2 class=robodoc>recursive-assoc-list/set-slot [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Set the specified slot of an object with a <a href="#robo45">recursive-assoc-list</a> structure
  to the specified value. This is particularly useful for changing the
- parameters of <a href="./instrument_lsp.html#robo284">instrument</a> objects within an <a href="./instrument_lsp.html#robo284">instrument</a> <a href="./palette_lsp.html#robo405">palette</a>, for example.
+ parameters of <a href="./instrument_lsp.html#robo289">instrument</a> objects within an <a href="./instrument_lsp.html#robo289">instrument</a> <a href="./palette_lsp.html#robo415">palette</a>, for example.
 
- NB Setting, for instance, the high-sounding slot of an <a href="./instrument_lsp.html#robo284">instrument</a> will do
- nothing to the <a href="./chord_lsp.html#robo88">highest</a>-written slot so do take care to set all the slots
- you need to in order to effect <a href="./pitch_lsp.html#robo285">pitch</a> selection etc. Or better still use the
- <a href="./instruments_lsp.html#robo258">set-standard-range</a> function.
+ NB Setting, for instance, the high-sounding slot of an <a href="./instrument_lsp.html#robo289">instrument</a> will do
+ nothing to the <a href="./event_lsp.html#robo193">highest</a>-written slot so do take care to set all the slots
+ you need to in order to effect <a href="./pitch_lsp.html#robo290">pitch</a> selection etc. Or better still use the
+ <a href="./instruments_lsp.html#robo261">set-standard-range</a> function.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - The name of the slot whose value is to be set.
@@ -1579,7 +1579,7 @@ data: HIVE
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>set-slot</strong> 'largest-fast-leap 10 'oboe
-          +slippery-chicken-standard-<a href="./instrument_lsp.html#robo284">instrument</a>-<a href="./palette_lsp.html#robo405">palette</a>+)
+          +slippery-chicken-standard-<a href="./instrument_lsp.html#robo289">instrument</a>-<a href="./palette_lsp.html#robo415">palette</a>+)
 
 =&gt; 10
 </pre>
@@ -1589,18 +1589,18 @@ data: HIVE
 
 
 <a name="recursive2dassoc2dlist2fset2dstandard2dinstrument2dslot"></a>
-<a name="robo417"></a><h2 class=robodoc>recursive-assoc-list/set-standard-instrument-slot [ Methods ]</h2>
+<a name="robo427"></a><h2 class=robodoc>recursive-assoc-list/set-standard-instrument-slot [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo45">recursive-assoc-list</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> A convenience method to set slots of <a href="./instruments_lsp.html#robo11">instruments</a> in the
- <a href="./instruments_lsp.html#robo247">+slippery-chicken-standard-instrument-palette+</a>.
+ <a href="./instruments_lsp.html#robo248">+slippery-chicken-standard-instrument-palette+</a>.
 </pre>
 <p class="item_name">DATE</p>
 <pre> July 20th 2015
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>set-standard-instrument-slot</strong> '<a href="./chord_lsp.html#robo88">highest</a>-written 'f4 '<a href="./sc-map_lsp.html#robo567">double</a>-bass)
+<pre class="source">(<strong>set-standard-instrument-slot</strong> '<a href="./event_lsp.html#robo193">highest</a>-written 'f4 '<a href="./sc-map_lsp.html#robo577">double</a>-bass)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>set-standard-instrument-slot</strong> (slot value id)
@@ -1608,7 +1608,7 @@ data: HIVE
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/recursive-assoc-list.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2023-11-04 11:21:58</p>
+<p>Generated from ./../../src/recursive-assoc-list.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
 </div> <!-- footer -->
 </body>
 </html>

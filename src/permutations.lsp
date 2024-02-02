@@ -346,13 +346,19 @@
                '~a'." 
               (factorial level)
               file)
+	;; LF 2024-02-02 11:42:20
+	;; -- permutations-aux needs a list from 0 to level now
         (permutations-aux (loop for i from 0 below level collect i) stream)
         (close stream))
       ;; <= 8
+      ;; LF 2024-02-02 11:42:20
+      ;; -- permutations-aux needs a list from 0 to level now
       (permutations-aux (loop for i from 0 below level collect i))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; LF 2024-02-02 11:43:30 -- rewrote permutations-aux to not check for values
+;; that are already in the list.
 (defun permutations-aux (ls &optional (stream nil) (result '())
                          (current '()))
   ;;(format t "~&result: ~a current: ~a" result current)

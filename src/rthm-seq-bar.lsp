@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:59:02 Wed Aug 23 2023 CEST
+;;; $$ Last modified:  19:49:34 Tue Feb  6 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -305,7 +305,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod player ((rsb rthm-seq-bar))
-  (let ((r (get-nth-event 0 rsb)))
+  ;; MDE Tue Feb  6 15:11:13 2024, Heidhausen -- don't signal an error if there
+  ;; are no objects in the rhythms slot as it could be an empty/rest bar 
+  (let ((r (get-nth-event 0 rsb nil)))
     ;; MDE Sat Jun 6 12:48:46 2020, Heidhausen -- only get the player slot if
     ;; it's an event (rhythm's don't have it)
     (when (event-p r) (player r))))
@@ -810,7 +812,7 @@ data: E.
          (count 1)
          (last-rhythm nil)
          ;; MDE Sat Jun 28 14:36:29 2014 
-         (e1 (get-nth-event 0 rsb))
+         (e1 (get-nth-event 0 rsb nil))
          (player (when (event-p e1) (player e1)))
          ;; MDE Tue Mar 13 11:22:18 2012 
          (first-rhythm nil)
@@ -3706,7 +3708,10 @@ data: (2 4)
 
 (defmethod print-simple ((rsb rthm-seq-bar) &optional written (stream t))
   (format stream "~&~a: bar ~a: ~a: "
-          (player rsb) (bar-num rsb) (get-time-sig-as-list rsb))
+          ;; MDE Tue Feb  6 15:12:18 2024, Heidhausen -- print something useful
+          ;; if this is e.g. from an rsp (with no player yet)
+          (if (player rsb) (player rsb) "no player")
+          (bar-num rsb) (get-time-sig-as-list rsb))
   (loop for r in (rhythms rsb) do
        (print-simple r written stream))
   ;; MDE Fri Nov  9 16:16:56 2018 -- return rsb instead of T

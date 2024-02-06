@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  10:40:20 Thu Feb  1 2024 CET
+;;; $$ Last modified:  19:28:13 Tue Feb  6 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1082,7 +1082,12 @@ NIL
 ;;; Put all the data of a given recursive-assoc-list object into a new
 ;;; named-object at the top level of that recursive-assoc-list object; i.e. add
 ;;; a level of recursion.  This is a means of making a collection of data
-;;; before perhaps adding more with potentially conflicting ids. 
+;;; before perhaps adding more with potentially conflicting ids.
+;;;
+;;; Note that if you want to parcel some palette because of potentially
+;;; conflicting IDs with another (main) palette then combine is the method to
+;;; use rather than add, e.g.
+;;; (combine orig-palette (parcel-data derived-palette 'filtered))
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A recursive-assoc-list object.
@@ -2019,7 +2024,7 @@ data: (
 ;;; December 16th 2022
 ;;; 
 ;;; DESCRIPTION
-;;; - combine a list of recursive-assoc-lists (ral) into a new ral but adding
+;;; combine a list of recursive-assoc-lists (ral) into a new ral but adding
 ;;; each ral itself into a new ral with a given ID (parcelling). This allows
 ;;; each of the rals in the list to have common ids but by parcelling them up we
 ;;; can achieve this at the expense of a further level of recursion.

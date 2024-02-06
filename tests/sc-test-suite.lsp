@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:41:51 Thu Feb  1 2024 CET
+;;; $$ Last modified:  19:24:48 Tue Feb  6 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -5820,18 +5820,11 @@
                                                  (fox hole)))
                                            (white ribbon))))))))
          (pd-ral (parcel-data ral 'potpourri)))
-    ;; (relink-named-objects pd-ral)
-    ;; (print pd-ral) (print ral)
-    ;; (setq +ral+ pd-ral)
-    ;; (print '----) (print (get-all-refs (get-data-data 'potpourri pd-ral)))
     (sc-test-check
       (equalp (id (first (data pd-ral)))
               'potpourri)
       (equalp (mapcar #'(lambda (x) (cons 'potpourri x))
                              (get-all-refs ral))
-              ;; (print (get-all-refs (data (first (data pd-ral)))))))))
-              ;; (print (get-all-refs (print (get-data-data 'potpourri
-                 ;;                                        pd-ral))))))))
               (get-all-refs pd-ral)))))
 
 ;;; SAR Mon Jan 30 12:37:22 GMT 2012: Amended

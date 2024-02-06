@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  10:08:16 Thu Feb  1 2024 CET
+;;; $$ Last modified:  20:24:16 Tue Feb  6 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -215,6 +215,7 @@
 (defmethod init-psp ((rs rthm-seq))
   (let ((psp (pitch-seq-palette rs)))
     ;; make a one-note psp when none was given
+    ;; (print (num-notes rs))
     (unless psp
       ;; 30/3/06: defaults to 3 so we get the middle note out of the harmony.
       (setf psp (make-list (num-notes rs) :initial-element 3)))
@@ -2826,6 +2827,25 @@ data: S
                       (integerp (first first)) (integerp (second first)))
              (setq bar (rest bar)))
         append bar))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod invert ((rs rthm-seq) &optional auto-beam ignore)
+  (declare (ignore ignore))
+  (setf (bars rs)
+        (mapcar #'invert (bars rs)))
+    (gen-stats rs)
+  (setf (pitch-seq-palette rs) nil)
+  (init-psp rs)
+  (when auto-beam (auto-beam rs))
+  rs)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod consolidate-rests ((rs rthm-seq)
+                              &key beat min warn auto-tuplets)
+  (loop for bar in (bars rs) do
+           (consolidate-rests bar :beat beat :min min :warn warn
+                                  :auto-tuplets auto-tuplets)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

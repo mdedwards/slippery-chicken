@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  10:09:56 Thu Feb  1 2024 CET
+;;; $$ Last modified:  20:27:12 Tue Feb  6 2024 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1079,6 +1079,21 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
                (return))
              (setq dur rsdur)))
     dur))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod invert ((rsp rthm-seq-palette) &optional auto-beam ignore)
+  (declare (ignore ignore))
+  (rmap rsp #'invert auto-beam)
+  (when auto-beam (auto-beam rsp))
+  rsp)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod consolidate-rests ((rsp rthm-seq-palette)
+                              &key beat min warn auto-tuplets)
+  (rmap rsp #'(lambda (seq)
+              (consolidate-rests seq :beat beat :min min :warn warn
+                                     :auto-tuplets auto-tuplets))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

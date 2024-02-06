@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  17:16:57 Mon Feb 10 2020 CET
+;;; $$ Last modified:  15:00:38 Mon Feb  5 2024 CET
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -143,9 +143,9 @@
 ;;; June 6th 2017, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-;;; Print the state of the cells to the terminal. On and off could
-;;; theoretically be any object but of course single characters are
-;;; clearest. See the defwolfram definitions below for examples.
+;;; Print the state of the cells to the terminal or another open stream . On
+;;; and off could theoretically be any object but of course single characters
+;;; are clearest. See the defwolfram definitions below for examples.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the wolfram object
@@ -163,14 +163,14 @@
 ;;; 
 ;;; SYNOPSIS
 (defmethod print-matrix ((w wolfram) &key (stream t) (on #\.) (off #\ )
-                                       (row-number nil))
+                                          (row-number nil))
 ;;; ****
   (loop for row in (data w) do
-       (if row-number
-           (format stream "~&~3,'0d: " (id row))
-           (terpri stream))
-       (loop for cell in (data row) do (princ (if (zerop cell) off on)
-                                              stream)))
+           (if row-number
+               (format stream "~&~3,'0d: " (id row))
+               (terpri stream))
+           (loop for cell in (data row) do (princ (if (zerop cell) off on)
+                                                  stream)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

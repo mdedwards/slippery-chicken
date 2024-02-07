@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  18:13:03 Fri Jan 26 2024 CET
+;;; $$ Last modified:  17:38:48 Wed Feb  7 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -510,15 +510,17 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 ;;;   of the interval structure. Default = NIL.  
 ;;; - :up. Apply the process upwards in pitch space. Default = T.
 ;;; - :down. Apply the process downwards in pitch space. Default = T.
+;;; - :respell. Respell the chord after the stacking process to (hopefully get
+;;;   better spellings. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; a complete-set object
 ;;;
 ;;; SYNOPSIS
-(defun make-stack (id notes num-stacks &key by-freq (up t) (down t))
+(defun make-stack (id notes num-stacks &key by-freq (up t) (down t) (respell t))
 ;;; ****
   (let ((set (make-complete-set notes :id id)))
-    (stack set num-stacks :by-freq by-freq :up up :down down)))
+    (stack set num-stacks :by-freq by-freq :up up :down down :respell respell)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The missing-chromatic and -non-chromatic are lists of simple note names

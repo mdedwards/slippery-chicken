@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  18:11:54 Fri Jan 26 2024 CET
+;;; $$ Last modified:  17:38:41 Wed Feb  7 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -886,8 +886,6 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
                 reference-pitch offset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Wed Feb  8 10:12:39 GMT 2012: Edited robodoc entry
-
 ;;; ****m* sc-set/stack
 ;;; DESCRIPTION
 ;;; Extend the pitch content of a given sc-set object by adding new pitch
@@ -898,7 +896,8 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; original set symmetrically; i.e., with the identical interval structure
 ;;; above the original set and inverted interval structure below.
 ;;;
-;;; The second argument indicates how times this procedure is carried out.
+;;; The second argument indicates how many times this procedure is carried
+;;; out.
 ;;;
 ;;; NB: The method assumes that the pitch content of the original sc-set object
 ;;;     is sorted from low to high. 
@@ -921,6 +920,8 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;;    (and pitch bends will be set accordingly). Default NIL. 
 ;;; - :up. Apply the process upwards in pitch space. Default = T.
 ;;; - :down. Apply the process downwards in pitch space. Default = T.
+;;; - :respell. Respell the chord after the stacking process to (hopefully get
+;;;   better spellings. Default = T
 ;;; 
 ;;; RETURN VALUE
 ;;; A new sc-set object. This will have the same tag and id (unless given as a
@@ -957,22 +958,23 @@ Note the difference of doing :by-freq and by interval:
 
 |#
 ;;; SYNOPSIS
-(defmethod stack ((s sc-set) num-stacks &key id by-freq (up t) (down t))
+(defmethod stack ((s sc-set) num-stacks &key id by-freq (up t) (down t)
+                                             (respell t))
 ;;; ****
   (let* ((distances (get-interval-structure s (when by-freq 'frequencies)))
          (notes (if by-freq (get-freqs s) (get-degrees s)))
          (result notes)
          chord)
     (loop repeat num-stacks do
-         (setf result (stack-aux result distances by-freq up down)))
+             (setq result (stack-aux result distances by-freq up down)))
     (unless by-freq
-      (setf result (degrees-to-notes result))
+      (setq result (degrees-to-notes result))
       ;; MDE Sat Jan 14 10:25:25 2012 -- try and get better spellings
       (setf chord (make-chord result :midi-channel 1
-                              :microtones-midi-channel 2))
+                                     :microtones-midi-channel 2))
       ;; if by-freq we want to retain the original freqs, whereas respelling
       ;; would replace these with the freqs of the tempered notes 
-      (respell-chord chord))
+      (when respell (respell-chord chord)))
     ;; return a new set, using the given id or if not given, the same id as the
     ;; original set 
     (make-sc-set (if by-freq result (data chord)) :tag (tag s)

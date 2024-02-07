@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  20:24:16 Tue Feb  6 2024 CET
+;;; $$ Last modified:  19:59:38 Wed Feb  7 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2829,8 +2829,26 @@ data: S
         append bar))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; ****m* rthm-seq/invert
+;;; DATE
+;;; February 6th 2024
+;;; 
+;;; DESCRIPTION
+;;; Turn all the rests in each rthm-seq-bar into notes and all the notes/chords
+;;; into rests. NB this method is destructive. 
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to call auto-beam on the result. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; The modified rthm-seq object
+;;; 
+;;; SYNOPSIS
 (defmethod invert ((rs rthm-seq) &optional auto-beam ignore)
+;;; ****
   (declare (ignore ignore))
   (setf (bars rs)
         (mapcar #'invert (bars rs)))
@@ -2846,6 +2864,61 @@ data: S
   (loop for bar in (bars rs) do
            (consolidate-rests bar :beat beat :min min :warn warn
                                   :auto-tuplets auto-tuplets)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq/filter
+;;; DATE
+;;; February 6th 2024
+;;; 
+;;; DESCRIPTION
+;;; filter a rthm-seq for rhythm objects that have certain characteristics,
+;;; turning those which don't into rests. E.g. only accented notes could be
+;;; retained.
+;;;
+;;; NB The marks slot as given when the rthm-seq was initialised will be out of
+;;; sync with the remaining notes and rests. Also the pitch-seq-palette will be
+;;; deleted and re-initialised to contain a list of only 3s. Call create-psps
+;;; perhaps on the rthm-seq-palette containing the rthm-seq to re-initialise to
+;;; something useful.
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq object
+;;; - a function which takes a rhythm object and returns T if it should be
+;;; retained, otherwise it will be turned into a rest.
+;;; 
+;;; RETURN VALUE
+;;; The modified rthm-seq.
+;;; 
+;;; EXAMPLE
+#|
+(let ((mrs (make-rthm-seq '(seq1 ((((4 4) q e (s) s - s x 4 - - e s s -))
+                                  :marks (ff 1 a 1 3 6 8 10 pizz 1 ppp
+                                          2 s 2))))))
+  (filter mrs #'(lambda (r) (has-mark r 'a)))
+  (print (= 5 (num-notes mrs)))
+  (print (= 5 (num-rests mrs)))
+  (print-simple mrs nil))
+
+T 
+T 
+rthm-seq SEQ1
+no player: bar -1: (4 4): note Q, rest E, rest S, note S, rest E, note S, rest|#
+#|S, note E, rest S, note S,
+
+|#
+;;; SYNOPSIS
+(defmethod filter ((rs rthm-seq) test)
+;;; ****
+  (loop for bar in (bars rs) do
+           (loop for rthm in (rhythms bar) do
+                    (unless (funcall test rthm)
+                      ;;(print 'here)
+                      (force-rest rthm)))
+           (consolidate-rests bar))
+  (gen-stats rs)
+  (setf (pitch-seq-palette rs) nil)
+  (init-psp rs)
+  rs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

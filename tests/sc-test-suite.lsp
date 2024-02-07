@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:24:48 Tue Feb  6 2024 CET
+;;; $$ Last modified:  19:51:24 Wed Feb  7 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -453,7 +453,7 @@
       (eq (data (get-nth-attack 2 rsb)) 'E)
       (not (get-nth-attack 3 rsb nil)))))
 
-;;;  MDE Fri Jul 24 11:39:49 2015 
+;;; MDE Fri Jul 24 11:39:49 2015 
 (sc-deftest test-rsb-get-nth-attack-with-tied ()
   ;; can't just make an rsb as that won't have proper tied-from info (that's
   ;; handled at rthm-seq level) 
@@ -2376,7 +2376,7 @@
       ;; make sure midi writing works too
       (= 1 (cm::midi-amplitude (second (first (last (output-midi e)))))))))
 
-;;;  MDE Mon Jan  8 16:09:59 2018 
+;;; MDE Mon Jan  8 16:09:59 2018 
 (sc-deftest test-event-write-xml ()
   (let ((mini
          (make-slippery-chicken
@@ -2545,7 +2545,6 @@
       (not (member 'a (marks (third (rhythms (fourth (bars rs)))))))
       (member 'as (marks (third (rhythms (third (bars rs)))))))))
 
-;;; 
 (sc-deftest test-rthm-seq-add-bar ()
   ;;                          notes needed 8, 9 score-notes, 11 rhythms, 2 rests
   (let ((rs (make-rthm-seq '((((2 4) q+e s s)
@@ -3099,6 +3098,16 @@
       (= 1 (num-rests rs3))
       (zerop (num-notes rs3))
       (is-rest-seq rs3))))
+
+(sc-deftest test-filter ()
+  (let ((mrs (make-rthm-seq '(seq1 ((((4 4) q e (s) s - s x 4 - - e s s -))
+                                    :marks (ff 1 a 1 3 6 8 10 pizz 1 ppp
+                                            2 s 2))))))
+    (sc-test-check
+      (rthm-seq-p (filter mrs #'(lambda (r) (has-mark r 'a))))
+      (= 5 (num-notes mrs))
+      (= 5 (num-rests mrs))
+      (print-simple mrs nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tempo tests
@@ -4027,7 +4036,7 @@
     (= 6 (get-sc-config 'pitch-seq-lowest-equals-prefers-high))
     (set-sc-config 'pitch-seq-lowest-equals-prefers-high 5)))
 
-;;;  MDE Mon Jan 28 19:55:45 2013 -- make sure that when we share a single
+;;; MDE Mon Jan 28 19:55:45 2013 -- make sure that when we share a single
 ;;; psp object between more than one rthm-seq, that it's not cloned, i.e. we
 ;;; cycle through the pitch-seqs no matter which rthm-seq we call get-next for
 (sc-deftest test-psp-sharing ()
@@ -6038,7 +6047,7 @@
                  collect (data i))
               '((1 7 3 4 5 2 6) (7 1 5 4 3 6 2))))))
 
-;;;  SAR Sat Jan 28 15:07:08 GMT 2012
+;;; SAR Sat Jan 28 15:07:08 GMT 2012
 (sc-deftest test-rsp-create-psps ()
   (let* ((mrsp (make-rsp 'rsp-test 
                          '((seq1 ((((2 4) q +e. s)
@@ -6378,7 +6387,6 @@
       (not (get-this-refs (get-data-data 'long rsp)))
       (equalp '((LONG 3 A) (LONG 3 B) (LONG 3 C) (LONG 3 D))
               (get-this-refs (get-data-data '(long 3) rsp)))
-      ;; 
       (equal '(long 1 a) (rsp-id (get-nth-bar 0 (get-data '(long 1 a) rsp))))
       (equal '(long 2 a) (rsp-id (get-nth-bar 4 (get-data '(long 2 a) rsp))))
       (equal '(long 3 d) (rsp-id (get-nth-bar 8 (get-data '(long 3 d) rsp))))
@@ -6390,7 +6398,7 @@
       (eq 'te (data (second (rhythms bar))))
       (is-rest (second (rhythms bar))))))
 
-;;;  MDE Thu Dec 15 17:03:38 2022, Heidhausen
+;;; MDE Thu Dec 15 17:03:38 2022, Heidhausen
 (sc-deftest test-make-rsp-from-fragments ()
   (let ((rsp (make-rsp-from-fragments
               '((1 (- s s - (e))) 
@@ -7554,7 +7562,7 @@
                  (loop for m in midi-events when (typep m 'cm::midi) collect
                       (cm::midi-channel m))))))))
 
-;;  MDE Thu Jul 30 13:15:11 2015
+;; MDE Thu Jul 30 13:15:11 2015
 (sc-deftest test-auto-sequence ()
   (let* ((sp (recursive-set-palette-from-ring-mod '(a4 b4) 'spfrm-test
                                                   :warn-no-bass nil))
@@ -12620,7 +12628,7 @@
                   (first (has-mark (get-last-event (get-bar mini 4 i))
                                    'pause)))))))
 
-;;;  MDE Fri Jan 10 16:20:51 2020 -- using Dan's new code for generating new
+;;; MDE Fri Jan 10 16:20:51 2020 -- using Dan's new code for generating new
 ;;; sections  
 (sc-deftest test-bars-to-sc-with-section-id ()
   (declare (special *auto*))
@@ -12646,7 +12654,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-map tests
-;;;  SAR Thu Apr 26 18:19:12 BST 2012
+;;; SAR Thu Apr 26 18:19:12 BST 2012
 (sc-deftest test-rthm-seq-map-make-rthm-seq-map ()
   (let ((rsm1 (make-rthm-seq-map 
                'rsm-test-1
@@ -13693,7 +13701,7 @@
                     26 29 26 26 30 28 29 28 30 19 29 19 29 30 22 25 22 22 30 12
                     27 12 30 14 16 14 16 30 17)))))
 
-;;;  MDE Sat Apr 28 10:52:41 2012 -- 
+;;; MDE Sat Apr 28 10:52:41 2012 -- 
 (sc-deftest test-make-rthm-chain ()
   (let* ((rc (make-rthm-chain 
               'test 100 
@@ -14060,7 +14068,7 @@
          2 9 6 6 2 6 9 9 2 9 3 3 2 8 1 1 2 8 2 4 3 3 5 5 5 5 2 9 8 8 1 1 7 7 2
          7 10 10 2 7 2 8)))))
 
-;;;  SAR Tue Jun 12 22:43:28 BST 2012: 
+;;; SAR Tue Jun 12 22:43:28 BST 2012: 
 (sc-deftest test-rthm-chain-add-voice ()
   (let ((rch
          (make-rthm-chain
@@ -17874,7 +17882,7 @@ est)")))
       (eq 'fqs4 (get-pitch-symbol (get-event mini 7 1 'vn)))
       (eq 'f4 (get-pitch-symbol (get-event mini 10 1 'vn))))))
 
-;;;  MDE Tue Jan 30 12:22:22 2024, Heidhausen
+;;; MDE Tue Jan 30 12:22:22 2024, Heidhausen
 (sc-deftest test-make-sc-with-subsections ()
   (let* ((rsm (make-rthm-seq-map
                'test
@@ -18168,7 +18176,7 @@ est)")))
       (file-write-ok "/tmp/sine1mini-1-vn-vc-seq1-3.wav" 2000000)
       (file-write-ok "/tmp/sine2mini-2-vn-vc-seq1-3.wav" 2000000))))
 
-;;;   MDE Sat Jun  2 12:52:38 2012 
+;;;  MDE Sat Jun  2 12:52:38 2012 
 #+clm
 (sc-deftest test-clm-play-with-subsections ()
   (let* ((rsm (make-rthm-seq-map

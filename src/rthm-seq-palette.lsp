@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  20:27:12 Tue Feb  6 2024 CET
+;;; $$ Last modified:  20:01:31 Wed Feb  7 2024 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1081,8 +1081,26 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
     dur))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; ****m* rthm-seq/invert
+;;; DATE
+;;; February 6th 2024
+;;; 
+;;; DESCRIPTION
+;;; Turn all the rests in each rthm-seq into notes and all the notes/chords
+;;; into rests. NB this method is destructive. 
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to call auto-beam on the result. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; The modified rthm-seq-palette object
+;;; 
+;;; SYNOPSIS
 (defmethod invert ((rsp rthm-seq-palette) &optional auto-beam ignore)
+;;; ****  
   (declare (ignore ignore))
   (rmap rsp #'invert auto-beam)
   (when auto-beam (auto-beam rsp))

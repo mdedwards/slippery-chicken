@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  12:51:23 Fri Dec  1 2023 CET
+;;; $$ Last modified:  20:36:53 Wed Feb  7 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1755,19 +1755,19 @@
                                  (x-min most-negative-double-float)
                                  (y-min most-negative-double-float)
                                  (x-max most-positive-double-float)
-				 (y-max most-positive-double-float))
+                                 (y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
      collect (cond ((or first-x last-x)
-		    (let* ((old-first (first env))
-			   (old-last (lastx env)))
-		      (min x-max
-			   (max x-min
-				(rescale x old-first old-last
-					 (or first-x old-first)
-					 (or last-x old-last))))))
-		   (x-scaler (min x-max (max x-min (* x x-scaler))))
-		   (t x))
+                    (let* ((old-first (first env))
+                           (old-last (lastx env)))
+                      (min x-max
+                           (max x-min
+                                (rescale x old-first old-last
+                                         (or first-x old-first)
+                                         (or last-x old-last))))))
+                   (x-scaler (min x-max (max x-min (* x x-scaler))))
+                   (t x))
      collect (min y-max (max y-min (* y y-scaler)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3637,8 +3637,8 @@ WARNING:
   `(let* ((,var (read-file-as-string ,file)))
      (setf ,@(loop for i in `,body collect `,var collect i))
      (with-open-file 
-	      (out ,file :direction :output :if-exists :rename-and-delete)
-	    (princ ,var out))
+              (out ,file :direction :output :if-exists :rename-and-delete)
+            (princ ,var out))
      (format t "~&succesfully edited ~a" ,file)
      ,var))
 
@@ -4275,12 +4275,12 @@ WARNING:
   (unless (<= -180 elevation 180) (error "elevation ~a out of bounds" elevation))
   (unless (>= distance 0) (error "distance ~a out of bounds" distance))
   (let* ((sina (sin (degree-to-radian angle)))
-	 (sine (sin (degree-to-radian elevation)))
-	 (cosa (cos (degree-to-radian angle)))
-	 (cose (cos (degree-to-radian elevation)))
-	 (x (* distance sina cose))
-	 (y (* distance cosa cose))
-	 (z (* distance sine)))
+         (sine (sin (degree-to-radian elevation)))
+         (cosa (cos (degree-to-radian angle)))
+         (cose (cos (degree-to-radian elevation)))
+         (x (* distance sina cose))
+         (y (* distance cosa cose))
+         (z (* distance sine)))
     `(,x ,y ,z)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4316,10 +4316,10 @@ WARNING:
   (unless (<= -1 y 1) (error "y ~a out of bounds" y))
   (unless (<= -1 z 1) (error "z ~a out of bounds" z))
   (let* ((distance
-	  (/ (round (* (sqrt (+ (expt x 2) (expt y 2) (expt z 2))) 1000)) 1000))
-	 (elevation
-	  (/ (round (* (radian-to-degree (asin (/ z distance)))  1000)) 1000))
-	 (angle (/ (round (* (radian-to-degree (atan y x)) 1000)) 1000)))
+          (/ (round (* (sqrt (+ (expt x 2) (expt y 2) (expt z 2))) 1000)) 1000))
+         (elevation
+          (/ (round (* (radian-to-degree (asin (/ z distance)))  1000)) 1000))
+         (angle (/ (round (* (radian-to-degree (atan y x)) 1000)) 1000)))
     `(,angle ,elevation ,distance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4361,30 +4361,30 @@ WARNING:
 |#
 ;;; SYNOPSIS
 (defun convert-polar-envelopes (angle-env elevation-env
-				&key (distance-env '(0 1 1 1))
-				  minimum-samples)
+                                &key (distance-env '(0 1 1 1))
+                                  minimum-samples)
 ;;; ****
   ;; stretch the envelopes so they align:
   (setf angle-env (scale-env angle-env 1 :first-x 0 :last-x 100)
-	elevation-env (scale-env elevation-env 1 :first-x 0 :last-x 100)
-	distance-env (scale-env distance-env 1 :first-x 0 :last-x 100))
+        elevation-env (scale-env elevation-env 1 :first-x 0 :last-x 100)
+        distance-env (scale-env distance-env 1 :first-x 0 :last-x 100))
   (let* ((angle-all-x (loop for x in angle-env by #'cddr collect x))
-	 (elevation-all-x (loop for x in elevation-env by #'cddr collect x))
-	 (distance-all-x (loop for x in distance-env by #'cddr collect x))
-	 (all-x angle-all-x))
+         (elevation-all-x (loop for x in elevation-env by #'cddr collect x))
+         (distance-all-x (loop for x in distance-env by #'cddr collect x))
+         (all-x angle-all-x))
     (loop for i in elevation-all-x
        unless (member i all-x :test #'=) do (push i all-x))
     (loop for i in distance-all-x
        unless (member i all-x :test #'=) do (push i all-x))
     (when minimum-samples
       (loop for i from 0 to 100 by (/ 100 (1- minimum-samples))
-	 unless (member i all-x :test #'=) do (push i all-x)))
+         unless (member i all-x :test #'=) do (push i all-x)))
     (setf all-x (sort all-x #'<))
     (loop for i in all-x
        for new = (polar-to-cartesian
-		  (interpolate i angle-env)
-		  (interpolate i elevation-env)
-		  (interpolate i distance-env))
+                  (interpolate i angle-env)
+                  (interpolate i elevation-env)
+                  (interpolate i distance-env))
        collect i into x-env collect (first new) into x-env
        collect i into y-env collect (second new) into y-env
        collect i into z-env collect (third new) into z-env
@@ -5845,7 +5845,7 @@ RETURNS:
 |#
 ;;; SYNOPSIS
 (defun rescale (val min max new-min new-max &optional (out-of-range #'error)
-					      (type-of-result #'float))
+                                              (type-of-result #'float))
 ;;; ****
   (flet ((oor () ; in case we need to call it on more than one occasion...
            (when (functionp out-of-range)
@@ -6492,15 +6492,15 @@ yes_foo, 1 2 3 4;
 (defun decider (selector weights)
 ;;; ****  
   (labels ((helper (selector ls1 index sum)
-	     (cond ((null ls1) (1- (length weights)))
-		   ((< selector sum) index)
-		   (t (helper selector
-			      (cdr ls1)
-			      (+ index 1)
-			      (+ sum (rationalize (car ls1))))))))
+             (cond ((null ls1) (1- (length weights)))
+                   ((< selector sum) index)
+                   (t (helper selector
+                              (cdr ls1)
+                              (+ index 1)
+                              (+ sum (rationalize (car ls1))))))))
     (helper (rescale (rationalize selector) 0 1 0 (loop for i in weights sum
-						       (rationalize i)))
-	    (cdr weights) 0 (rationalize (car weights)))))
+                                                       (rationalize i)))
+            (cdr weights) 0 (rationalize (car weights)))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/visualize
 ;;; AUTHOR
@@ -6640,11 +6640,11 @@ yes_foo, 1 2 3 4;
   #+linux(unless mkdir (setf mkdir "/usr/bin/mkdir"))
   ;; set the directory:
   (let* ((dir (or (get-sc-config 'path-to-ppcre)
-		  (make-pathname
-		   :directory
-		   (pathname-directory
-			     cl-user::+slippery-chicken-src-path+))))
-	 (target-dir (format nil "~appcre/" dir)))
+                  (make-pathname
+                   :directory
+                   (pathname-directory
+                             cl-user::+slippery-chicken-src-path+))))
+         (target-dir (format nil "~appcre/" dir)))
     ;; check if the git command is found:
     (unless (and mkdir (probe-file mkdir))
       (warn "utilities::import-ppcre: Cannot find the mkdir command at: ~a. ~
@@ -6655,20 +6655,20 @@ yes_foo, 1 2 3 4;
     (when (and mkdir git (probe-file git) (probe-file mkdir))
       #+(and (or ccl sbcl) unix)
       (progn
-	(if (probe-file (concatenate 'string target-dir "cl-ppcre.asd"))
-	    (if update (progn (format t "~&updating ~a~&" target-dir)
-			      (shell git "-C" target-dir "pull"))
-		(print "PPCRE seems to be installed, if you want to update it, ~
+        (if (probe-file (concatenate 'string target-dir "cl-ppcre.asd"))
+            (if update (progn (format t "~&updating ~a~&" target-dir)
+                              (shell git "-C" target-dir "pull"))
+                (print "PPCRE seems to be installed, if you want to update it, ~
                    evaluate (import-ppcre :update t)"))
-	    (progn
-	      (shell mkdir target-dir)
-	      (shell git
-		     "clone"
-		     "https://github.com/edicl/cl-ppcre.git"
-		     target-dir)))
-	(asdf:load-asd
-	 (merge-pathnames "cl-ppcre.asd" target-dir))
-	(asdf:load-system :cl-ppcre))
+            (progn
+              (shell mkdir target-dir)
+              (shell git
+                     "clone"
+                     "https://github.com/edicl/cl-ppcre.git"
+                     target-dir)))
+        (asdf:load-asd
+         (merge-pathnames "cl-ppcre.asd" target-dir))
+        (asdf:load-system :cl-ppcre))
       #-(and (or ccl sbcl) unix)
       (warn "utilities::import-ppcre: Sorry but this currently only runs ~
            with SBCL or CCL on a unix system. Please install the ppcre-library ~

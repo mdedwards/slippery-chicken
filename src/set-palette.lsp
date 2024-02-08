@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  08:16:18 Thu Feb  1 2024 CET
+;;; $$ Last modified:  19:43:21 Thu Feb  8 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1016,7 +1016,7 @@ data: (C4 F4 A4 C5)
                               ;; the set with the least deviation from the ideal
                               ;; envelope values wins
                               (< (+ d-dev1 c-dev1) (+ d-dev2 c-dev2))))))
-                  (print (length all-sets))
+                 ;; (print (length all-sets))
                  (unless all-sets
                    (error "set-palette::auto-sequence: all-sets is NIL!"))
                  (setq first-set (first all-sets)

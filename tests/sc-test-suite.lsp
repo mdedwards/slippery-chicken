@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:51:24 Wed Feb  7 2024 CET
+;;; $$ Last modified:  19:48:11 Thu Feb  8 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7583,6 +7583,9 @@
       ;; (print sp)
       (sc-test-check
         (good-refs (auto-sequence sp :verbose t :silent nil))
+        (set-map-p (make-set-map 'test
+                                 (auto-sequence sp :permutate nil :verbose t
+                                                   :map-section 3 :silent nil)))
         ;; MDE Fri Jan 29 18:38:05 2016 -- try the permutate algorithm now too
         (good-refs (auto-sequence sp :verbose nil :permutate t :silent t
                                      :dissonance-env '(0 1 80 .1 120 .9)

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified:  15:12:08 Sat Mar 20 2021 CET
+;;; $$ Last modified:  19:47:46 Thu Feb  8 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -203,6 +203,10 @@
   (clone-with-new-class
    (make-sc-map id map :replacements replacements :recurse-simple-data nil)
    'set-map))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun set-map-p (thing)
+  (typep thing 'set-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sc-map.lsp

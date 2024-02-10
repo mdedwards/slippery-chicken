@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  15:00:38 Mon Feb  5 2024 CET
+;;; $$ Last modified:  12:31:43 Sat Feb 10 2024 CET
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -54,8 +54,8 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; the data slot holds the indexed generations
 (defclass wolfram (assoc-list)
-  ;; the data slot holds the indexed generations
   ;; the rules for the next state, given the current and left and right
   ;; neighbours. Our default rules are Wolfram's Rule 30 (remember the rule
   ;; number is the binary number indicated by the new cells, in this case 
@@ -94,8 +94,39 @@
 ;;; DESCRIPTION
 ;;; Generate the cellular automata rows using the given rules. N.B. Each time
 ;;; this method is called, the results (data slot) of the previous calls are
-;;; deleted. 
+;;; deleted.
+;;;
+;;; At the beginning, we hava a row. This is a list of length <width>, with all
+;;; elements being <initial-state>. However, we set the middle element to the
+;;; <start> argument given to this method. We then loop through the elements of
+;;; the list and make a triplet out of the element to the left of the current
+;;; element (or <initial-state> when we begin the loop), the current element,
+;;; and the element to the right of current (or, again, <initial-state> if we're
+;;; at the last element of the row). The we loop through the <rules> and when
+;;; the current triplet matches the rule we return the 0 or 1 associated with
+;;; the triplet in the rule (i.e. the second element of the matching rule).
 ;;; 
+;;; so e.g. we start with:
+;;; (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+;;; 
+;;; set the middle element to default of 1 (first generation)
+;;; (0 0 0 0 0 0 0 1 0 0 0 0 0 0 0)
+;;;
+;;; then proceed with the loop. Using e.g. the r30 rules:
+;;; (((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
+;;;              ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0))
+;;; 
+;;; all those triplet 0s return 0 (because of the last rule) but when we get to
+;;; the 1 we first of all have (0 0 1) which returns 1, then (0 1 0) which also
+;;; returns 1, and finally--before we only have 0 triplets again--(1 0 0), also
+;;; returning 1. So we end up with this as the second generation:
+;;; 
+;; (0 0 0 0 0 0 1 1 1 0 0 0 0 0 0)
+;;;
+;;;then this is the third generation, etc.:
+;; (0 0 0 0 0 1 1 0 0 1 0 0 0 0 0)
+;;;
+;;;
 ;;; ARGUMENTS
 ;;; - the wolfram object
 ;;; - the number of generations (rows) to generate
@@ -125,7 +156,7 @@
                     (r (if (>= n 1-w) (initial-state w) (nth (1+ n) row)))
                     (triplet (list l c r)))
                (loop for r in (rules w) do
-                    (when (equal (first r) triplet)
+                        (when (equal (first r) triplet)
                       (return (second r)))
                   finally (error "wolfram::generate: ~a not in rules (~a)"
                                  triplet (rules w))))))

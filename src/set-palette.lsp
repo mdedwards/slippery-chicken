@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  19:43:21 Thu Feb  8 2024 CET
+;;; $$ Last modified:  19:58:45 Thu Feb  8 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -851,7 +851,7 @@ data: (C4 F4 A4 C5)
                             (centroid-weight 1.0)
                             map-section permutate verbose repeating-bass silent)
 ;;; ****
-  (link-named-objects sp)
+  (relink-named-objects sp)
   (multiple-value-bind (dmin dmax cmin cmax)
       (quality-extremes sp)
     (let* ((num-sets (r-count-elements sp))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  20:36:53 Wed Feb  7 2024 CET
+;;; $$ Last modified:  19:52:11 Thu Feb  8 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4600,7 +4600,7 @@ WARNING:
   ;; command
   (when (and (equal (pathname-type file) "eps")
              (get-sc-config 'autoconvert-eps-to-pdf))
-    (format t "~&Converting to Pdf....")
+    (format t "~&Converting to pdf....")
     #+linux
     (shell "/usr/bin/epstopdf" file)
     #+darwin

@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    February 19th 2024
 ;;;
-;;; $$ Last modified:  11:38:33 Mon Feb 19 2024 CET
+;;; $$ Last modified:  11:49:10 Mon Feb 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -90,7 +90,7 @@
                            do-it (< (random-rep 100.0 (zerop event-count))
                                     chance))
                      (when do-it
-                       ;; but bear in mind that no checks are made here that the
+                       ;; bear in mind that no checks are made here that the
                        ;; instrument we're dealing with can actually play the
                        ;; main player's note! If we wanted to be more
                        ;; sophisticated, then we could use the in-range method

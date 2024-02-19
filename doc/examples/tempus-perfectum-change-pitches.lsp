@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    February 19th 2024
 ;;;
-;;; $$ Last modified:  11:49:10 Mon Feb 19 2024 CET
+;;; $$ Last modified:  11:50:11 Mon Feb 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -98,9 +98,8 @@
                        (setf (pitch-or-chord event) main-player-note)
                        (incf changed-count))))
                (incf event-count)))
-    ;; bear in mind that we've only changed attacked notes' pitches, so any
-    ;; tied-to notes will be wrong! Helpfully the check-ties method takes care
-    ;; of fixing these :-)
+    ;; we've only changed attacked notes' pitches, so any tied-to notes will be
+    ;; wrong! Helpfully the check-ties method takes care of fixing these :-)
     (check-ties sc t)
     ;; these two for statistics' sake really
     (update-slots sc)

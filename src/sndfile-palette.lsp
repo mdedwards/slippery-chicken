@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  08:26:30 Thu Feb  1 2024 CET
+;;; $$ Last modified:  15:19:25 Sun Feb 18 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -908,15 +908,19 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 ...
 |#
 (defun make-sfp-from-folder (folder &key skip auto-freq insist resist
-                                      (default-group 'default-group))
+                                         (default-group 'default-group))
 ;;; ****
   (let* ((sfs (get-sndfiles folder skip insist resist))
          (groups (get-groups-from-paths sfs folder))
          (pdl (length (trailing-slash folder)))
          sfgroup pos group)
     ;; MDE Fri Sep 25 15:02:22 2015 -- if we've got sndfiles in the folder
-    ;; (i.e. not subfolders) then we have to create a default group 
-    (unless groups (setq groups (list default-group)))
+    ;; (i.e. not subfolders) then we have to create a default group
+    ;; MDE Sun Feb 18 15:19:00 2024, Heidhausen -- in addition, use
+    ;; default-group if it's specified and not 'default-group 
+    (when (or (not (eq default-group 'default-group))
+              (not groups))
+      (setq groups (list default-group)))
     (if sfs
         (progn
           (loop for sf in sfs do

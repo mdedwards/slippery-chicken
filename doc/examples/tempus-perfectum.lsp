@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    3rd August 2012
 ;;;
-;;; $$ Last modified: 17:10:18 Fri Jul 20 2012 CEST
+;;; $$ Last modified:  11:06:50 Mon Feb 19 2024 CET
 ;;;
 ;;; SVN ID: $Id: tempus-perfectum.lsp 3406 2013-01-28 15:13:21Z medward2 $
 ;;;
@@ -259,10 +259,7 @@
                      :file "/tmp/tempus-perfectum.eps"
                      :size 11 
                      :players '(ob cl bn hn tp tb pr pl vn va vc)
-                     :in-c t)
-  (write-lp-data-for-all tempus-perfectum
-                         :players '(ob cl bn hn tp tb pr pl vn va vc)
-                         :in-c t))
+                     :in-c t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF tempus-perfectum.lsp

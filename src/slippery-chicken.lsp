@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:19:49 Fri Feb  2 2024 CET
+;;; $$ Last modified:  10:49:29 Mon Feb 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -609,6 +609,9 @@
           (slot-value no 'tempo-curve) (my-copy-list (tempo-curve sc))
           (slot-value no 'instruments-write-bar-nums) 
           (copy-list (instruments-write-bar-nums sc))
+          ;; MDE Mon Feb 19 10:42:46 2024, Heidhausen 
+          (slot-value no 'instruments-hierarchy) 
+          (copy-list (instruments-hierarchy sc))
           (slot-value no 'snd-output-dir) (snd-output-dir sc)
           (slot-value no 'sndfile-palette) (clone (sndfile-palette sc))
           (slot-value no 'bars-per-system-map) (clone (bars-per-system-map sc))
@@ -635,9 +638,6 @@
     no))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 13:08:03 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken/num-notes
 ;;; DESCRIPTION
 ;;; Returns the number of attacked notes in a given slippery-chicken object;
@@ -1240,14 +1240,14 @@
 ;;; SYNOPSIS
 (defmethod update-slots ((sc slippery-chicken) 
                          &optional
-                           (tempo-map nil)
-                           (start-time 0.0)
-                           (start-time-qtrs 0.0)
-                           (start-bar 1)
-                           (current-section nil)
-                           (nth nil)
-                           (warn-ties t)
-                           (update-write-bar-nums nil))
+                         (tempo-map nil)
+                         (start-time 0.0)
+                         (start-time-qtrs 0.0)
+                         (start-bar 1)
+                         (current-section nil)
+                         (nth nil)
+                         (warn-ties t)
+                         (update-write-bar-nums nil))
 ;;; ****
   (prog1
       (update-slots (piece sc) 
@@ -8782,9 +8782,9 @@ FS4 G4)
         (sort
          events
          #'(lambda (e1 e2)
-             ;; MDE Mon May  5 16:49:01 2014 -- if we've got two events
-             ;; that start at the same time, place the event from the
-             ;; player higher in the hierarchy/ensemble first
+             ;; MDE Mon May 5 16:49:01 2014 -- if we've got two events that
+             ;; start at the same time, place the event from the player higher
+             ;; in the hierarchy/ensemble first
              (unless (and (start-time e1) (start-time e2))
                (error "slippery-chicken::get-events-sorted-by-time: ~
                        event's start-time is NIL. ~%Perhaps you need to call ~
@@ -8797,8 +8797,10 @@ FS4 G4)
                                        (instruments-hierarchy sc))))
                    (unless (and pos1 pos2)
                      (error "slippery-chicken::get-events-sorted-by-time: ~
-                             event must be lacking a player slot or it's not ~
-                             in the instruments-hierarchy slot of sc."))
+                             event must be lacking a player slot~%or it's not ~
+                             in the instruments-hierarchy slot of sc.~%~
+                             player1: ~a, player2: ~a, pos1: ~a, pos2: ~a"
+                            (player e1) (player e2) pos1 pos2))
                    (< pos1 pos2))
                  (< (start-time e1) (start-time e2))))))
      appending events))

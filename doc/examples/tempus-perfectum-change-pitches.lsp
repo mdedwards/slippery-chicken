@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    February 19th 2024
 ;;;
-;;; $$ Last modified:  11:50:11 Mon Feb 19 2024 CET
+;;; $$ Last modified:  11:52:18 Mon Feb 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -54,7 +54,7 @@
                             ;; x values can range over whatever you like but y
                             ;; values are expressed as a percentage where 0 = no
                             ;; pitch change and 100 = definite pitch
-                            ;; change. change 'em all by default, just to prove
+                            ;; change. Change 'em all by default, just to prove
                             ;; it works.
                             (change-chance-env '(0 100 100 100)))
   (let* ((all-events (get-events-sorted-by-time sc))
@@ -65,7 +65,7 @@
          (changed-count 0))
     ;; we've used an x-axis from 0-100 (or whatever), but need to stretch this
     ;; over all the notes in the whole piece (including, for simplicity's sake
-    ;; the main-player
+    ;; the main-player)
     (setq change-chance-env (new-lastx change-chance-env (num-notes sc)))
     (loop for event in all-events do
              (when (needs-new-note event) ; only process attacked notes

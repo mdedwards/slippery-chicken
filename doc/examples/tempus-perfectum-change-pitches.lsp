@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    February 19th 2024
 ;;;
-;;; $$ Last modified:  11:15:15 Mon Feb 19 2024 CET
+;;; $$ Last modified:  11:37:27 Mon Feb 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -41,9 +41,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :sc)
 
-;;; or comment out and load tempus-perfectum.lsp by hand if working in another
-;;; directory
+;;; First let's generate an existing piece that we can clone and then act
+;;; upon. Comment out and load tempus-perfectum.lsp by hand if working in
+;;; another directory.
 (load-from-same-dir "tempus-perfectum.lsp")
+;;; To avoid warnings about globals in the code below.
 (proclaim '(special +tempus-perfectum+))
 
 (defmethod tendency-unison ((sc slippery-chicken)

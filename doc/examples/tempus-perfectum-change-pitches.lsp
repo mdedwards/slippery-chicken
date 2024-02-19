@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    February 19th 2024
 ;;;
-;;; $$ Last modified:  11:52:18 Mon Feb 19 2024 CET
+;;; $$ Last modified:  13:49:52 Mon Feb 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -66,7 +66,7 @@
     ;; we've used an x-axis from 0-100 (or whatever), but need to stretch this
     ;; over all the notes in the whole piece (including, for simplicity's sake
     ;; the main-player)
-    (setq change-chance-env (new-lastx change-chance-env (num-notes sc)))
+    (setq change-chance-env (new-lastx change-chance-env (1- (num-notes sc))))
     (loop for event in all-events do
              (when (needs-new-note event) ; only process attacked notes
                (if (eq main-player (player event))

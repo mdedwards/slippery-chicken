@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    February 19th 2024
 ;;;
-;;; $$ Last modified:  11:37:27 Mon Feb 19 2024 CET
+;;; $$ Last modified:  11:38:33 Mon Feb 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -110,8 +110,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; now actually do it, cloning the original so as not to have to reload, and/or
-;;; to enable easier comparisons
-
+;;; to enable easier comparisons.
 (let ((sc (tendency-unison (clone +tempus-perfectum+))))
   (cmn-display sc :size 10
                   :in-c t))

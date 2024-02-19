@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    February 19th 2024
 ;;;
-;;; $$ Last modified:  13:49:52 Mon Feb 19 2024 CET
+;;; $$ Last modified:  13:51:27 Mon Feb 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -57,12 +57,12 @@
                             ;; change. Change 'em all by default, just to prove
                             ;; it works.
                             (change-chance-env '(0 100 100 100)))
-  (let* ((all-events (get-events-sorted-by-time sc))
-         (chance 0.0)
-         (do-it nil)
-         (main-player-note nil)
-         (event-count 0)
-         (changed-count 0))
+  (let ((all-events (get-events-sorted-by-time sc))
+        (chance 0.0)
+        (do-it nil)
+        (main-player-note nil)
+        (event-count 0)
+        (changed-count 0))
     ;; we've used an x-axis from 0-100 (or whatever), but need to stretch this
     ;; over all the notes in the whole piece (including, for simplicity's sake
     ;; the main-player)

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:29:16 Tue Feb 20 2024 CET
+;;; $$ Last modified:  15:25:58 Tue Feb 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5360,7 +5360,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   for convenience, :min-channels and :max-channels can set the tracks'
 ;;;   channel count, it is up to the user to take care of routing and,
 ;;;   eventuallay, panning depending on the number of sound file and track
-;;;   channels used in the mix. Default = NIL (i.e. use the list given above).
+;;;   channels used in the mix. Default = NIL (i.e. use '(5 85)).
 ;;; - :pan-fun. If you want to take charge of selecting pan positions yourself,
 ;;;   pass a function via this keyword. The function must take one argument: the
 ;;;   current event, though of course, it can ignore it completely if
@@ -5471,8 +5471,8 @@ seq-num 5, VN, replacing G3 with B6
                         (tracks-per-player 1)
                         ;; MDE Sat Oct  3 18:45:28 2015 -- for Cameron!
                         pan-fun
-                        ;; MDE Thu Oct  1 21:03:59 2015 
-                        (pan-min-max nil) ; actually '(15 75) by default below
+                        ;; MDE Thu Oct  1 21:03:59 2015
+                        (pan-min-max '(5 85))
                         ;; MDE Thu Oct  1 19:13:49 2015
                         snd-selector
                         (min-channels 2) (max-channels 4)
@@ -5619,7 +5619,7 @@ seq-num 5, VN, replacing G3 with B6
                   (format nil
                           "~a~a~{-~a~}~{-~a~}~{-~a~}~{-to-~a~}-seq~a-~a~a.rpp"
                           output-name-uniquifier
-                          ;;  MDE Tue Feb 20 10:26:55 2024, Heidhausen -- now
+                          ;; MDE Tue Feb 20 10:26:55 2024, Heidhausen -- now
                           ;; use the title, if it was explicitly given
                           (if (string= (title sc) "slippery chicken")
                               (string-trim "+" (id sc))
@@ -5748,7 +5748,7 @@ seq-num 5, VN, replacing G3 with B6
            (setq player-string (string-downcase (string player-name))
                  player-strings (make-cscl
                                  (loop for i from 1 to tracks-per-player
-                                       collect (format nil "~a~a"
+                                       collect (format nil "~a:~a"
                                                        player-string i)))
                  snd-trans (copy-list snd-trans)
                  event-count-player 0

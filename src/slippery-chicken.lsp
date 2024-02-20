@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:25:58 Tue Feb 20 2024 CET
+;;; $$ Last modified:  17:11:18 Tue Feb 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5205,6 +5205,7 @@ seq-num 5, VN, replacing G3 with B6
               (* 100.0 (/ total-skipped total-events))))
     total-events))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/reaper-play
 ;;; DESCRIPTION
 ;;; Using the sound files (samples) defined for the given reference (group ID)
@@ -5360,7 +5361,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   for convenience, :min-channels and :max-channels can set the tracks'
 ;;;   channel count, it is up to the user to take care of routing and,
 ;;;   eventuallay, panning depending on the number of sound file and track
-;;;   channels used in the mix. Default = NIL (i.e. use '(5 85)).
+;;;   channels used in the mix. Default = '(5 85).
 ;;; - :pan-fun. If you want to take charge of selecting pan positions yourself,
 ;;;   pass a function via this keyword. The function must take one argument: the
 ;;;   current event, though of course, it can ignore it completely if
@@ -5406,7 +5407,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   rounded.
 ;;; - :file. reaper file name, if you don't want this to be auto-generated.
 ;;;   Automatically generated file names will be placed in the default-dir as
-;;;   defined in the sc-config. A full path is expected.
+;;;   defined in the sc-config. A full path is expected. Default = NIL =
+;;;   automatic. 
 ;;; - :fade-in :fade-out. The fade times expressed as a percentage of the
 ;;;   duration of any given event/item. Default = 10%
 ;;; - :tracks-per-player. How many reaper tracks to use per player. If > 1
@@ -5596,55 +5598,49 @@ seq-num 5, VN, replacing G3 with B6
             (cond
               (file file)
               (short-file-names
-               (default-dir-file
-                (format nil "~{~a-~}~a~{~a-~}~{~a.~}~a-~a~a~a.rpp"
-                        (if (listp sound-file-palette-ref) 
-                            sound-file-palette-ref
-                            (list sound-file-palette-ref))
-                        (if sound-file-palette-ref2
-                            "to-"
-                            "")
-                        (when sound-file-palette-ref2
-                          (if (listp sound-file-palette-ref2) 
-                              sound-file-palette-ref2
-                              (list sound-file-palette-ref2)))
-                        (if (listp section) 
-                            section 
-                            (list section))
-                        from-sequence 
-                        (+ -1 from-sequence section1-num-seqs)
-                        output-name-uniquifier
-                        (if pitch-synchronous "-psync" ""))))
-              (t (default-dir-file
-                  (format nil
-                          "~a~a~{-~a~}~{-~a~}~{-~a~}~{-to-~a~}-seq~a-~a~a.rpp"
-                          output-name-uniquifier
-                          ;; MDE Tue Feb 20 10:26:55 2024, Heidhausen -- now
-                          ;; use the title, if it was explicitly given
-                          (if (string= (title sc) "slippery chicken")
-                              (string-trim "+" (id sc))
-                              (filename-from-title (title sc)))
-                          (if (listp section) section (list section))
-                          players
-                          (if (listp sound-file-palette-ref) 
-                              sound-file-palette-ref
-                              (list sound-file-palette-ref))
-                          (when sound-file-palette-ref2
-                            (if (listp sound-file-palette-ref2) 
-                                sound-file-palette-ref2
-                                (list sound-file-palette-ref2)))
-                          from-sequence 
-                          (+ -1 from-sequence section1-num-seqs)
-                          (if pitch-synchronous "-psync" "")))))))
+               (format nil "~{~a-~}~a~{~a-~}~{~a.~}~a-~a~a~a.rpp"
+                       (if (listp sound-file-palette-ref) 
+                           sound-file-palette-ref
+                           (list sound-file-palette-ref))
+                       (if sound-file-palette-ref2
+                           "to-"
+                           "")
+                       (when sound-file-palette-ref2
+                         (if (listp sound-file-palette-ref2) 
+                             sound-file-palette-ref2
+                             (list sound-file-palette-ref2)))
+                       (if (listp section) 
+                           section 
+                           (list section))
+                       from-sequence 
+                       (+ -1 from-sequence section1-num-seqs)
+                       output-name-uniquifier
+                       (if pitch-synchronous "-psync" "")))
+              (t (format nil
+                         "~a~a~{-~a~}~{-~a~}~{-~a~}~{-to-~a~}-seq~a-~a~a.rpp"
+                         output-name-uniquifier
+                         ;; MDE Tue Feb 20 10:26:55 2024, Heidhausen -- now
+                         ;; use the title, if it was explicitly given
+                         (if (string= (title sc) "slippery chicken")
+                             (string-trim "+" (id sc))
+                             (filename-from-title (title sc)))
+                         (if (listp section) section (list section))
+                         players
+                         (if (listp sound-file-palette-ref) 
+                             sound-file-palette-ref
+                             (list sound-file-palette-ref))
+                         (when sound-file-palette-ref2
+                           (if (listp sound-file-palette-ref2) 
+                               sound-file-palette-ref2
+                               (list sound-file-palette-ref2)))
+                         from-sequence 
+                         (+ -1 from-sequence section1-num-seqs)
+                         (if pitch-synchronous "-psync" ""))))))
          (output 
            (unless file
              ;; first convert spaces to -'s in output file name
              (setq file-name (substitute #\- #\Space file-name))
-             (format nil "~a~a"
-                     (if (snd-output-dir sc)
-                         (snd-output-dir sc)
-                         "")
-                     file-name)))
+             (default-dir-file file-name)))
          ;; keep going (set to nil when max-start-time is exceeded)
          (happy t)
          (amp 1.0)

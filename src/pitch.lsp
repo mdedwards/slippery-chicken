@@ -2404,7 +2404,7 @@ data: D7
   (format stream "~&        <pitch>~
                   ~&          <step>~a</step>" (no-8ve-no-acc p))
   (when (and (accidental p)
-             (not (eq 'n (accidental p))))
+             (not (eq 'n (intern (string (accidental p)) :sc))))
     (format stream "~&          <alter>~a</alter>"
             (case  (accidental p)
               (f -1) (s 1) (qs 0.5) (qf -0.5) (tqs 1.5) (tqf -1.5)

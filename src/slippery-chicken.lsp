@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:11:18 Tue Feb 20 2024 CET
+;;; $$ Last modified:  17:20:31 Tue Feb 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6014,7 +6014,7 @@ seq-num 5, VN, replacing G3 with B6
                                          :sample-rate srate)
                        :min-channels min-channels
                        :max-channels max-channels
-                       :file file-name)
+                       :file output)
     (unless (zerop total-events)
       (format t "~%~%~d/~d events skipped (~f%)"
               total-skipped total-events 

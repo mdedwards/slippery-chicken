@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:49:29 Mon Feb 19 2024 CET
+;;; $$ Last modified:  10:29:16 Tue Feb 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5619,7 +5619,11 @@ seq-num 5, VN, replacing G3 with B6
                   (format nil
                           "~a~a~{-~a~}~{-~a~}~{-~a~}~{-to-~a~}-seq~a-~a~a.rpp"
                           output-name-uniquifier
-                          (string-trim "+" (id sc))
+                          ;;  MDE Tue Feb 20 10:26:55 2024, Heidhausen -- now
+                          ;; use the title, if it was explicitly given
+                          (if (string= (title sc) "slippery chicken")
+                              (string-trim "+" (id sc))
+                              (filename-from-title (title sc)))
                           (if (listp section) section (list section))
                           players
                           (if (listp sound-file-palette-ref) 
@@ -6568,7 +6572,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
   (check-slurs-aux sc "phrases" #'begin-phrase-p #'end-phrase-p fix warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Fri Dec 3 10:39:31 2021, Heidhausen -- also check for slurs over
+;;; MDE Fri Dec 3 10:39:31 2021, Heidhausen -- also check for slurs over
 ;;; rests and try to fix, if desired
 (defmethod check-slurs-aux ((sc slippery-chicken) name test-beg test-end
                             &optional fix (warn t))

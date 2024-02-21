@@ -726,15 +726,17 @@
 
 (defmethod tie ((bh bar-holder) bar-num note-num player &optional curvature)
   (let* ((start-note (get-note bh bar-num note-num player))
-         (bar (get-bar bh bar-num player))
-         ;; bar-num could have been a reference, so get the real bar-num now.
-         (real-bar-num (bar-num bar))
-         (notes (num-score-notes bar))
-         (end-note (if (= note-num notes)
-                       (get-note bh (1+ real-bar-num) 1 player)
-                     (get-note bh bar-num (1+ note-num) player))))
-    (setf (is-tied-from start-note) (if curvature curvature t)
-          (is-tied-to end-note) t)))
+         (bar (get-bar bh bar-num player)))
+    (unless (and start-note bar)
+      (error "there is no such note for this player: ~a" player))
+    ;; bar-num could have been a reference, so get the real bar-num now.
+    (let* ((real-bar-num (bar-num bar))
+	   (notes (num-score-notes bar))
+	   (end-note (if (= note-num notes)
+			 (get-note bh (1+ real-bar-num) 1 player)
+			 (get-note bh bar-num (1+ note-num) player))))
+      (setf (is-tied-from start-note) (if curvature curvature t)
+	    (is-tied-to end-note) t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

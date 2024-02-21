@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:20:31 Tue Feb 20 2024 CET
+;;; $$ Last modified:  13:43:59 Wed Feb 21 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5415,6 +5415,10 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   then the tracks will be used one after the other, in rotation, for each
 ;;;   event. Particularly useful if there are lots of overlapping events due to
 ;;;   e.g. :duration-scaler, or chords, of course. Default = 1.
+;;; - :items-processor. A function to call to process the list of reaper-item
+;;;   objects just before writing the reaper file. This should take one
+;;;   argument, the list of reaper-items, and return a list of reaper-items that
+;;;   will be written to the file. Default = NIL = no processing.
 ;;; 
 ;;; RETURN VALUE
 ;;; Total events generated (integer).
@@ -5475,14 +5479,11 @@ seq-num 5, VN, replacing G3 with B6
                         pan-fun
                         ;; MDE Thu Oct  1 21:03:59 2015
                         (pan-min-max '(5 85))
+                        ;; MDE Wed Feb 21 13:21:00 2024, Heidhausen
+                        items-processor
                         ;; MDE Thu Oct  1 19:13:49 2015
                         snd-selector
                         (min-channels 2) (max-channels 4)
-                        ;; DJR Mon 16 Sep 2019 01:26:11 BST We can now set
-                        ;; snd-transitions with a custom envelope, e.g. '(0 0
-                        ;; 100 1). x-values are arbitrary, y-values are from 0
-                        ;; (for sound-file-palette-ref) and 1 (for
-                        ;; sound-file-palette-ref2).
                         snd-transitions)
 ;;; ****                               
   (when (and (numberp num-sequences)
@@ -6010,7 +6011,12 @@ seq-num 5, VN, replacing G3 with B6
                              reaper-items)))
                      (incf event-count-player)
                      (incf event-count)))))
-    (write-reaper-file (make-reaper-file (id sc) (nreverse reaper-items)
+    ;; MDE Wed Feb 21 13:18:49 2024, Heidhausen -- process the reaper-items, if
+    ;; desired, before writing the file
+    (setq reaper-items (reverse reaper-items))
+    (when items-processor
+      (setq reaper-items (funcall items-processor reaper-items)))
+    (write-reaper-file (make-reaper-file (id sc) reaper-items
                                          :sample-rate srate)
                        :min-channels min-channels
                        :max-channels max-channels

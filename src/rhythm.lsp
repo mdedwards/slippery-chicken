@@ -1538,7 +1538,11 @@ NIL
         (format stream "~&        <type>eighth</type>~
                         ~&        <stem default-y=\"3\">up</stem>")
         (progn
-          (setq xml-rthm (xml-simple-rhythm (letter-value r)))
+	  ;; LF 2024-02-21 17:48:01 -- this is a makeshift solution to a bigger
+	  ;; problem: If no letter-value was found, just make it a quarter
+	  ;; rather than failing:
+          (setq xml-rthm (if (= -1 (letter-value r)) "quarter"
+			     (xml-simple-rhythm (letter-value r))))
           (when (is-rest r)
             (format stream "~&        <rest />"))
           (format stream "~&        <duration>~a</duration>"

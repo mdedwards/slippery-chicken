@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  13:38:43 Wed Feb 21 2024 CET
+;;; $$ Last modified:  16:34:24 Thu Feb 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -91,6 +91,7 @@
    ;; this is the volume defined with the slider in media item properties
    (slider-vol :accessor slider-vol :type number :initarg :slider-vol
                :initform 1.0)
+   ;; and this is the volume on the item's draggable handle 
    (item-vol :accessor item-vol :type number :initarg :item-vol :initform 1.0)
    (pan :accessor pan :type number :initarg :pan :initform 0.0)))
 
@@ -98,9 +99,10 @@
 ;;; LF <2023-05-02 Tu>
 (defclass reaper-envelope (sclist)
   ((env-type :accessor env-type :initform 'volume :initarg :env-type)
-   (start-time :accessor start-time :initform nil :initarg :start-time
-               :type number)
-   (end-time :accessor end-time :initform nil :initarg :end-time :type number)
+   ;; MDE Thu Feb 22 16:29:31 2024, Heidhausen -- removing :type number as the
+   ;; default is NIL.
+   (start-time :accessor start-time :initform nil :initarg :start-time)
+   (end-time :accessor end-time :initform nil :initarg :end-time)
    (parameter-slot :accessor parameter-slot :type integer
                    :initarg :parameter-slot :initform 0)
    (parameter-min :accessor parameter-min :initarg :parameter-min :type number
@@ -158,8 +160,7 @@
    (zoom :accessor zoom :type number :initarg :zoom :initform 20)
    ;; number of channels every track has. If nil, this number is automatically
    ;; decided for each track
-   (n-channels :accessor n-channels :initarg :n-channels :initform nil
-               :type integer)
+   (n-channels :accessor n-channels :initarg :n-channels :initform nil)
    (master-volume :accessor master-volume :initarg :master-volume :initform .5
                   :type number)
    ;; where to place the cursor (e.g. at the end of a sequence of items,
@@ -306,7 +307,15 @@
     (error "reaper-item::write-item: the path slot is required."))
   ;; start: SOFFS, duration: LENGTH
   (format stream (istring ri) (start-time ri) (duration ri) (fade-in ri)
-          (fade-out ri) (name ri) (item-vol ri) (pan ri) (slider-vol ri)
+          (fade-out ri) (name ri) (item-vol ri) (pan ri)
+          ;; MDE Thu Feb 22 16:18:41 2024, Heidhausen -- leave item-vol (the
+          ;; handle on the item) as is but make the media properties slider
+          ;; volume a multiple of the given slider-vol for the reaper-item and
+          ;; the amplitude in the sndfile object---probably only one will have
+          ;; been set, but just in case they haven't, use them both here. NB
+          ;; they're both linear amplitude values, not in DB, even if they're
+          ;; expressed in DB within reaper.
+          (* (slider-vol ri) (amplitude ri))
           (start ri) (play-rate  ri) (preserve-pitch ri) (transposition ri)
           (os-format-path (path ri) 
                           (if (get-sc-config 'reaper-files-for-windows)
@@ -523,9 +532,12 @@
 ;;; ****
   ;; make sure channels is multiple of 2
   (when (n-channels rf)
-    (setf (n-channels rf) (if (evenp (n-channels rf))
-                              (n-channels rf)
-                            (1+ (n-channels rf)))))
+    (if (integerp (n-channels rf))
+        (setf (n-channels rf) (if (evenp (n-channels rf))
+                                  (n-channels rf)
+                                  (1+ (n-channels rf))))
+        (error "write-reaper-file: n-channels slot should be an integer: ~a"
+               (n-channels rf))))
   (let ((outfile (if file
                      file
                    (default-dir-file (format nil "~a.rpp"

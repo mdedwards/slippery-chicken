@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  16:34:24 Thu Feb 22 2024 CET
+;;; $$ Last modified:  20:01:37 Thu Feb 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -161,7 +161,9 @@
    ;; number of channels every track has. If nil, this number is automatically
    ;; decided for each track
    (n-channels :accessor n-channels :initarg :n-channels :initform nil)
-   (master-volume :accessor master-volume :initarg :master-volume :initform .5
+   ;; MDE Thu Feb 22 20:01:16 2024, Heidhausen -- changing master-volume form
+   ;; 0.5 to 1, as we don't need -6db master fader by default
+   (master-volume :accessor master-volume :initarg :master-volume :initform 1.0
                   :type number)
    ;; where to place the cursor (e.g. at the end of a sequence of items,
    ;; including rests)

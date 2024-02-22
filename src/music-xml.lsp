@@ -462,6 +462,10 @@
 ;;; MDE Sat Nov 27 10:16:35 2021, Heidhausen -- added &optional so we can probe
 ;;; further if e.g. tempi for xml aren't simple undotted values
 (defun xml-simple-rhythm (num &optional (error t))
+  (unless (>= num 0)
+    ;; LF 2024-02-21 17:50:28 -- added this to prevent some head scratching.
+    (when error (error "rhythm::xml-simple-rhythm: argument must be 
+                        positive: ~a" num)))
   (let ((pos (+ 3 (log num 2))))
     (unless (float-int-p pos)
       (when error

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:43:59 Wed Feb 21 2024 CET
+;;; $$ Last modified:  11:44:57 Thu Feb 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -2759,9 +2759,6 @@ data: NIL
   (transposition-semitones (get-instrument-for-player-at-bar player bar sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 22:06:16 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/num-seqs
 ;;; DESCRIPTION
 ;;; Return the number of sequences (which may contain multiple bars) in a
@@ -5206,6 +5203,37 @@ seq-num 5, VN, replacing G3 with B6
     total-events))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Feb 22 11:01:56 2024, Heidhausen
+(defmethod get-reaper-markers ((sc slippery-chicken) &optional
+                                                     (seqs t) (tempi t))
+  (let ((player1 (first (players sc)))
+        (seq-markers '())
+        (tempo-markers '())
+        (count 0))
+    (flet ((marker (time label &optional (colour 'white)) ; white yellow blue red
+             (list (incf count) time label colour)))
+      (when seqs
+        (loop for sec-ref in (get-section-refs sc 1 99999999)
+              for section = (get-section sc sec-ref) do
+                 (loop for i from 1 to (num-sequenzes section)
+                       for seq = (get-sequenz section player1 i) do
+                          (push (marker (start-time seq) (format nil "seq ~a" i))
+                                seq-markers))))
+      (when tempi 
+        (map-over-bars sc 1 nil player1
+                       #'(lambda (bar)
+                           (let* ((first (first (rhythms bar)))
+                                  (tempo (tempo-change first)))
+                             (when tempo
+                               (push (marker (start-time first)
+                                             (format nil "tempo: ~a=~a"
+                                                     (beat tempo) (bpm tempo))
+                                             'yellow)
+                                     tempo-markers))))))
+      (append (nreverse seq-markers) (nreverse tempo-markers)))))
+                 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/reaper-play
 ;;; DESCRIPTION
 ;;; Using the sound files (samples) defined for the given reference (group ID)
@@ -5419,6 +5447,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   objects just before writing the reaper file. This should take one
 ;;;   argument, the list of reaper-items, and return a list of reaper-items that
 ;;;   will be written to the file. Default = NIL = no processing.
+;;; - :markers. Whether to write markers at sequenz and tempo changes. This
+;;;   should be a list of two booleans: whether to write sequenz and/or
+;;;   tempi. Default = '(t t)
 ;;; 
 ;;; RETURN VALUE
 ;;; Total events generated (integer).
@@ -5481,6 +5512,8 @@ seq-num 5, VN, replacing G3 with B6
                         (pan-min-max '(5 85))
                         ;; MDE Wed Feb 21 13:21:00 2024, Heidhausen
                         items-processor
+                        ;; MDE Thu Feb 22 11:40:43 2024, Heidhausen
+                        (markers '(t t))
                         ;; MDE Thu Oct  1 19:13:49 2015
                         snd-selector
                         (min-channels 2) (max-channels 4)
@@ -6019,6 +6052,7 @@ seq-num 5, VN, replacing G3 with B6
     (write-reaper-file (make-reaper-file (id sc) reaper-items
                                          :sample-rate srate)
                        :min-channels min-channels
+                       :markers (apply #'get-reaper-markers (cons sc markers))
                        :max-channels max-channels
                        :file output)
     (unless (zerop total-events)
@@ -8325,11 +8359,6 @@ do
 t)
 |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 10 18:53:13 BST 2012: Added robodoc entry
-
-;;; MDE Tue Apr 17 19:56:03 2012 -- 
-
 ;;; DATE 
 ;;; 17-Apr-2012
 ;;;
@@ -8347,21 +8376,20 @@ t)
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax (alto-sax :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))
-(2 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(get-section mini 2))
-
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((sax (alto-sax :midi-channel 1))
+                      (db (double-bass :midi-channel 2))))
+         :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+         :set-map '((1 (1 1 1 1 1))
+                    (2 (1 1 1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                 :pitch-seq-palette ((1 2 3 4 5)))))
+         :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                             (db (1 1 1 1 1))))
+                         (2 ((sax (1 1 1 1 1))
+                             (db (1 1 1 1 1))))))))
+  (get-section mini 2))
 => 
 SECTION: 
 RECURSIVE-ASSOC-LIST: recurse-simple-data: NIL

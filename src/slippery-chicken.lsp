@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:04:19 Thu Feb 22 2024 CET
+;;; $$ Last modified:  17:31:31 Thu Feb 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5204,20 +5204,21 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Feb 22 11:01:56 2024, Heidhausen
-(defmethod get-reaper-markers ((sc slippery-chicken) &optional
-                                                     (seqs t) (tempi t))
+(defmethod get-reaper-markers ((sc slippery-chicken)
+                               &optional (time-scaler 1) (seqs t) (tempi t))
   (let ((player1 (first (players sc)))
         (seq-markers '())
         (tempo-markers '())
         (count 0))
-    (flet ((marker (time label &optional (colour 'white)) ; white yellow blue red
-             (list (incf count) time label colour)))
+    (flet ((marker (time label &optional (colour 'white));white yellow blue red
+             (list (incf count) (* time-scaler time) label colour)))
       (when seqs
         (loop for sec-ref in (get-section-refs sc 1 99999999)
               for section = (get-section sc sec-ref) do
                  (loop for i from 1 to (num-sequenzes section)
                        for seq = (get-sequenz section player1 i) do
-                          (push (marker (start-time seq) (format nil "seq ~a" i))
+                          (push (marker (start-time seq)
+                                        (format nil "seq ~a" i))
                                 seq-markers))))
       (when tempi 
         (map-over-bars sc 1 nil player1
@@ -5449,7 +5450,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   will be written to the file. Default = NIL = no processing.
 ;;; - :markers. Whether to write markers at sequenz and tempo changes. This
 ;;;   should be a list of two booleans: whether to write sequenz and/or
-;;;   tempi. Default = '(t t)
+;;;   tempi. NB This only works (for now) if you're generating the whole
+;;;   piece. Default = '(t t) 
 ;;; 
 ;;; RETURN VALUE
 ;;; Total events generated (integer).
@@ -5872,24 +5874,13 @@ seq-num 5, VN, replacing G3 with B6
                                        (compound-duration-in-tempo
                                         event))
                            skip-this-event 
-                           ;; MDE Sat Nov 9 15:20:11 2013 -- only
-                           ;; when we've got events to output
                            (unless (zerop events-before-max-start)
                              (> (random-rep 100.0)
                                 (interpolate event-count-player 
                                              this-play-chance-env
                                              :exp
                                              play-chance-env-exp)))
-                           ;; MDE Tue Apr 10 13:10:37 2012 -- see
-                           ;; note to do-src keyword above.
                            srts (if do-src
-                                    ;; MDE Tue Apr 17 12:52:40 2012 -- update:
-                                    ;; we now have the pitch-synchronous
-                                    ;; option so need to handle chords so
-                                    ;; we'll not call the pitch method here
-                                    ;; but the event. This will return a list,
-                                    ;; even for a single pitch, so we'll have
-                                    ;; to loop through them.
                                     (src-for-sample-freq  ; returns a list
                                      (if srt-freq
                                          srt-freq
@@ -5898,9 +5889,6 @@ seq-num 5, VN, replacing G3 with B6
                                                (not
                                                 (every #'not sndl)))
                                           sndl 261.626))
-                                     ;; MDE Tue Apr 17 12:54:06 2012 -- see
-                                     ;; comment above. this used to be
-                                     ;; (pitch-or-chord event)
                                      event)
                                     '(1.0)))
                      (loop
@@ -5926,9 +5914,8 @@ seq-num 5, VN, replacing G3 with B6
                           ;; sound can make?
                           (setq available-dur 
                                 (if snd
-                                    ;; todo: handle transpostion vs. play-rate
-                                    ;; here
-                                    (if  pitch-adjust
+                                    ;; handle transpostion vs. play-rate here
+                                    (if pitch-adjust
                                          (duration snd)
                                          (/ (duration snd) srt))
                                     most-positive-short-float)
@@ -5942,7 +5929,7 @@ seq-num 5, VN, replacing G3 with B6
                               (error "~%slippery-chicken:: reaper-play: ~
                                       can't do inc-start with no ~
                                       sndfile-palette."))
-                            ;; todo: handle transpostion vs. play-rate here
+                            ;; handle transpostion vs. play-rate here
                             (setf latest-possible-start
                                   (- (end snd) (if  pitch-adjust
                                                     duration
@@ -6052,7 +6039,8 @@ seq-num 5, VN, replacing G3 with B6
     (write-reaper-file (make-reaper-file (id sc) reaper-items
                                          :sample-rate srate)
                        :min-channels min-channels
-                       :markers (apply #'get-reaper-markers (cons sc markers))
+                       :markers (apply #'get-reaper-markers
+                                       (cons sc (cons time-scaler markers)))
                        :max-channels max-channels
                        :file output)
     (unless (zerop total-events)

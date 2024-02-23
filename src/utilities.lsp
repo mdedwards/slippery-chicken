@@ -5986,20 +5986,30 @@ RETURNS:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 15 13:50:12 2019
+;;; LF 2024-02-23 14:13:19 more flexible version:
 (defun auto-set-default-dir (&optional subdir)
-  (set-sc-config 'default-dir
-                 (trailing-slash
-                  (concatenate 'string
-                               (directory-namestring (truename *load-pathname*))
-                               (if subdir subdir "")))))
+  (let ((load-name (or *load-truename* *compile-file-truename*
+		       *default-pathname-defaults*)))
+    (set-sc-config
+     'default-dir
+     (trailing-slash
+      (format nil "~a~a"
+	      (namestring
+	       (make-pathname :directory (pathname-directory load-name)
+			      :device (pathname-device load-name)))
+	      (if subdir subdir ""))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan 21 14:08:55 2021, Heidhausen
+;;; LF 2024-02-23 14:12:54 more flexible version:
 (defun path-from-same-dir (file)
-  (concatenate 'string
-               (trailing-slash
-                (directory-namestring (truename *load-pathname*)))
-               file))
+  (let ((load-name (or *load-truename* *compile-file-truename*
+		       *default-pathname-defaults*)))
+    (format nil "~a~a"
+	    (namestring
+	     (make-pathname :directory (pathname-directory load-name)
+			    :device (pathname-device load-name)))
+	    file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 15 13:50:21 2019

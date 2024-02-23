@@ -6595,9 +6595,14 @@ yes_foo, 1 2 3 4;
 ;;; Converts device-names ("/E/", "E:/") according to type
 ;;; Windows:  "E:"
 ;;; Unix:     "/E/"
+;;; If type is nil it will be set to the system this function was called on.
 ;;; 
 ;;; ARGUMENTS
 ;;; - a string representing a path
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - a string or symbol which could be unix, linux or windows. If nil the type
+;;; of the current system will automatically be chosen.
 ;;; 
 ;;; RETURN VALUE
 ;;; - a string representing a path
@@ -6614,7 +6619,7 @@ yes_foo, 1 2 3 4;
 => "E:/samples/kicks/kick.wav"
 |#
 ;;; SYNOPSIS
-(defun os-format-path (path &optional (type 'unix))
+(defun os-format-path (path &optional type)
 ;;; ****  
   (let* ((new-path (substitute #\/ #\: path))
          (device (if (char= #\/ (elt path 0))
@@ -6628,13 +6633,17 @@ yes_foo, 1 2 3 4;
                                       (setf break t))
                                     this)))))
          (helper (subseq new-path (1+ (position #\/ new-path :start 1))))
-         (rest (if (char= #\/ (elt helper 0))
+         (rest (if (and (> (length helper) 0) (char= #\/ (elt helper 0)))
                    helper
                    (format nil "/~a" helper))))
+    (unless type
+      (setf type
+	    #+(or win32 win64) 'windows
+	    #-(or win32 win64) 'unix))
     ;; intering the symbol is nicer when calling this from other packages
     (case (intern (string type) :sc)
       ((unix linux) (format nil "/~a~a" device rest))
-      ((or windows test1) (format nil "~a:~a" device rest))
+      ((or windows) (format nil "~a:~a" device rest))
       ;; if type is unknown, no error but unix type path:
       (t (format nil "/~a~a" device rest)))))
 

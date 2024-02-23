@@ -6002,14 +6002,14 @@ RETURNS:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan 21 14:08:55 2021, Heidhausen
 ;;; LF 2024-02-23 14:12:54 more flexible version:
-(defun path-from-same-dir (file)
+(defun path-from-same-dir (&optional file)
   (let ((load-name (or *load-truename* *compile-file-truename*
 		       *default-pathname-defaults*)))
     (format nil "~a~a"
 	    (namestring
 	     (make-pathname :directory (pathname-directory load-name)
 			    :device (pathname-device load-name)))
-	    file)))
+	    (if file file ""))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 15 13:50:21 2019

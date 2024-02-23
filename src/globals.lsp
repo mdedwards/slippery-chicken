@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  15:57:26 Wed Feb 21 2024 CET
+;;; $$ Last modified:  17:27:15 Fri Feb 23 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -112,7 +112,7 @@
      ;; Lilypond files. Don't forget the trailing slash (i.e. "/tmp/" not
      ;; "/tmp").  Bear in mind that on OSX the /tmp directory is emptied upon
      ;; reboot so you shouldn't store any files you'd like to keep in there.
-     (default-dir "/tmp/")
+     (default-dir #+(or win32 win64) "c:/tmp/" #-(or win32 win64) "/tmp/")
      ;; The full path to the lilypond command.  We need to set this if we'll
      ;; call lp-display, i.e. if we want to automatically call Lilypond and
      ;; open the resultant PDF directly from Lisp.  The default should work if

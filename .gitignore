@@ -10,4 +10,5 @@ videos-resources/
 workshops/
 .DS_Store
 sc.asd
-/src/ppcre/grep-find.txt
+/src/ppcre/
+grep-find.txt

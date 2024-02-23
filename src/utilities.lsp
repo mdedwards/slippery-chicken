@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:52:11 Thu Feb  8 2024 CET
+;;; $$ Last modified:  14:27:30 Fri Feb 23 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5986,30 +5986,30 @@ RETURNS:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 15 13:50:12 2019
-;;; LF 2024-02-23 14:13:19 more flexible version:
+;;; LF 2024-02-23 14:13:19 more flexible version (should also work on windoze):
 (defun auto-set-default-dir (&optional subdir)
   (let ((load-name (or *load-truename* *compile-file-truename*
-		       *default-pathname-defaults*)))
+                       *default-pathname-defaults*)))
     (set-sc-config
      'default-dir
      (trailing-slash
       (format nil "~a~a"
-	      (namestring
-	       (make-pathname :directory (pathname-directory load-name)
-			      :device (pathname-device load-name)))
-	      (if subdir subdir ""))))))
+              (namestring
+               (make-pathname :directory (pathname-directory load-name)
+                              :device (pathname-device load-name)))
+              (if subdir subdir ""))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan 21 14:08:55 2021, Heidhausen
-;;; LF 2024-02-23 14:12:54 more flexible version:
+;;; LF 2024-02-23 14:12:54 more flexible version (should also work on windoze):
 (defun path-from-same-dir (&optional file)
   (let ((load-name (or *load-truename* *compile-file-truename*
-		       *default-pathname-defaults*)))
+                       *default-pathname-defaults*)))
     (format nil "~a~a"
-	    (namestring
-	     (make-pathname :directory (pathname-directory load-name)
-			    :device (pathname-device load-name)))
-	    (if file file ""))))
+            (namestring
+             (make-pathname :directory (pathname-directory load-name)
+                            :device (pathname-device load-name)))
+            (if file file ""))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 15 13:50:21 2019

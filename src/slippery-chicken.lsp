@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:31:31 Thu Feb 22 2024 CET
+;;; $$ Last modified:  09:41:21 Fri Feb 23 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -7905,36 +7905,32 @@ data: NIL
   (with-open-file 
       (xml file :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)
-    (format xml "~&<?xml version=\"1.0\" encoding=\"UTF-8\" ~
-                 standalone=\"no\"?>")
+    (format xml "~&<?xml version=\"1.0\" encoding=\"UTF-8\"")
+    (format xml "standalone=\"no\"?>")
     (format xml "~&<!DOCTYPE score-partwise PUBLIC ~
                 \"-//Recordare//DTD MusicXML 3.0 Partwise//EN\" ~
                 \"http://www.musicxml.org/dtds/partwise.dtd\">")
     (format xml "~&<score-partwise version=\"3.0\">")
     (when (title sc)
-      (format xml "~&  <work>~
-                   ~&    <work-title>~
-                   ~&      ~a" (title sc)))
+      (format xml "~&  <work>~&    <work-title> ~&      ~a" (title sc)))
     (when (subtitle sc)
       (format xml "~&      (~a)" (subtitle sc)))
-    (format xml "~&    </work-title>~
-                 ~&  </work>")
+    (format xml "~&    </work-title>~&  </work>")
     (format xml "~&  <identification>")
     (when (composer sc)
       (format xml "~&    <creator type=\"composer\">~a ~a</creator>"
               (composer sc) (if (year sc) (year sc) "")))
     (format xml "~&    <encoding>")
-    (format xml "~&      <software>~
-                 ~&        slippery chicken ~a~
-                 ~&      </software>"
-            +slippery-chicken-version+)
+    (format xml "~&      <software>~&        slippery chicken ~a"
+             +slippery-chicken-version+)
+    (format xml "~&      </software>")
     ;; just date, no time allowed; must be in yyyy-mm-dd format
     (format xml "~&      <encoding-date>~a</encoding-date>"
             (get-date-string nil))
-    (format xml "~&      <supports attribute=\"new-system\" element=\"print\" ~
-                       type=\"yes\" value=\"yes\"/>")
-    (format xml "~&      <supports attribute=\"new-page\" element=\"print\" ~
-                       type=\"yes\" value=\"yes\"/>")
+    (format xml "~&      <supports attribute=\"new-system\" element=\"print\"")
+    (format xml " type=\"yes\" value=\"yes\"/>")
+    (format xml "~&      <supports attribute=\"new-page\" element=\"print\" ")
+    (format xml "type=\"yes\" value=\"yes\"/>")
     (format xml "~&      <supports element=\"accidental\" type=\"yes\"/>")
     (format xml "~&      <supports element=\"beam\" type=\"yes\"/>")
     (format xml "~&      <supports element=\"stem\" type=\"yes\"/>")
@@ -7976,29 +7972,23 @@ data: NIL
     (format xml "~&    </page-layout>")
     (format xml "~&  </defaults>")
     (when (composer sc)
-      (format xml "~&  <credit page=\"1\">~
-                   ~&    <credit-type>composer</credit-type>~
-                   ~&    <credit-words justify=\"right\" ~
-                          valign=\"top\">~
-                   ~&     ~a~
-                   ~&    </credit-words>~
-                   ~&  </credit>" (composer sc) ))
+      (format xml "~&  <credit page=\"1\">")
+      (format xml "~&    <credit-type>composer</credit-type>")
+      (format xml "~&    <credit-words justify=\"right\" valign=\"top\">")
+      (format xml "~&     ~a~&    </credit-words>~&  </credit>" (composer sc)))
     (when (title sc)
-      (format xml "~&  <credit page=\"1\">~
-                   ~&    <credit-type>title</credit-type>~
-                   ~&    <credit-words font-size=\"20\" justify=\"center\" ~
-                          valign=\"top\">~
-                   ~&     ~a~
-                   ~&    </credit-words>~
-                   ~&  </credit>" (title sc)))
+      (format xml "~&  <credit page=\"1\">")
+      (format xml "~&    <credit-type>title</credit-type>")
+    (format xml "~&    <credit-words font-size=\"20\" justify=\"center\" ")
+    (format xml "valign=\"top\">~&     ~a~&    </credit-words>~&  </credit>"
+            (title sc)))
     (when (subtitle sc)
-      (format xml "~&  <credit page=\"1\">~
-                   ~&    <credit-type>subtitle</credit-type>~
-                   ~&      <credit-words font-size=\"20\" justify=\"center\" ~
-                            valign=\"top\">~
-                   ~&       ~a~
-                   ~&      </credit-words>~
-                   ~&  </credit>" (subtitle sc)))
+      (format xml "~&  <credit page=\"1\">")
+      (format xml "~&    <credit-type>subtitle</credit-type>")
+      (format xml "~&      <credit-words font-size=\"20\" justify=\"center\" ")
+      (format xml "valign=\"top\">~&       ~a~&      </credit-words>"
+              (subtitle sc))
+      (format xml "~&  </credit>"))
     (format xml "~&  <part-list>")
     (let ((the-players (if players (force-list players) (players sc))))
       ;; MDE Tue Mar  2 16:38:50 2021, Heidhausen 

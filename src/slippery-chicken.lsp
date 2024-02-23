@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:41:21 Fri Feb 23 2024 CET
+;;; $$ Last modified:  13:40:57 Fri Feb 23 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -7907,9 +7907,9 @@ data: NIL
            :if-exists :rename-and-delete)
     (format xml "~&<?xml version=\"1.0\" encoding=\"UTF-8\"")
     (format xml "standalone=\"no\"?>")
-    (format xml "~&<!DOCTYPE score-partwise PUBLIC ~
-                \"-//Recordare//DTD MusicXML 3.0 Partwise//EN\" ~
-                \"http://www.musicxml.org/dtds/partwise.dtd\">")
+    (format xml "~&<!DOCTYPE score-partwise PUBLIC ")
+    (format xml "\"-//Recordare//DTD MusicXML 3.0 Partwise//EN\" ")
+    (format xml  "\"http://www.musicxml.org/dtds/partwise.dtd\">")
     (format xml "~&<score-partwise version=\"3.0\">")
     (when (title sc)
       (format xml "~&  <work>~&    <work-title> ~&      ~a" (title sc)))

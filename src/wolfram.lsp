@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  12:31:43 Sat Feb 10 2024 CET
+;;; $$ Last modified:  16:51:39 Sat Feb 24 2024 CET
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -85,7 +85,22 @@
     (error "wolfram::verify-and-store: the width slot should be an integer ~
             greater than ~%zero, not ~a" (width w)))
   (state-check (initial-state w)))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod clone ((w wolfram))
+;;; ****
+  (clone-with-new-class w 'wolfram))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod clone-with-new-class :around ((w wolfram) new-class)
+  (declare (ignore new-class))
+  (let ((al (call-next-method)))
+    (setf (slot-value al 'rules) (my-copy-list (rules w))
+          (slot-value al 'width) (width w)
+          (slot-value al 'initial-state) (initial-state w))
+    al))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* wolfram/generate
 ;;; DATE

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:53:05 Fri Feb 23 2024 CET
+;;; $$ Last modified:  17:15:46 Sat Feb 24 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -217,7 +217,7 @@
 ;;; of slippery-chicken) where you'd like to defer initialization and call this
 ;;; method explicitly instead. In that case set :defer to t when making the
 ;;; slippery-chicken object. This can also be called with using :defer, to
-;;;regenerated the piece after e.g. calling set-limits-by-section. 
+;;; regenerate the piece after e.g. calling set-limits-by-section. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
@@ -250,7 +250,6 @@
 ;;; SYNOPSIS
 (defmethod sc-init ((sc slippery-chicken) &key (regenerate-pitch-seq-map t))
 ;;; ****
-  ;; (print 'scinit)
   (let ((given-tempo-map (tempo-map sc)))
     (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))
       (setf (instrument-palette sc)

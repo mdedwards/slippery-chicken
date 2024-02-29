@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  16:21:09 Fri Mar  3 2023 CET
+;;; $$ Last modified:  09:49:00 Thu Feb 29 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -71,11 +71,11 @@
    ;; optional spatialisation data:
    ;; can be a breakpoint-list (env) or a list of envs.
    (angle-env :accessor angle-env :type list :initarg :angle-env
-	      :initform '(0 0  100 0))
+              :initform '(0 0  100 0))
    (elevation-env :accessor elevation-env :type list :initarg :elevation-env
-		  :initform '(0 0  100 0))
+                  :initform '(0 0  100 0))
    (distance-env :accessor distance-env :type list :initarg :distance-env
-		 :initform '(0 1  100 1))
+                 :initform '(0 1  100 1))
    ;; some sounds have a prominent fundamental which can be used for
    ;; transposing to specific pitches.  Give this here either in the form of a
    ;; real freq or a note, which will then be converted.
@@ -346,8 +346,8 @@ T
           (error "sndfile::update: start < 0???: ~a" sf))
         (when (and end (<= end st))
           (error "sndfile::update: end <= start???: ~a" sf))
-        ;; MDE Thu Jan 28 16:55:48 2021, Heidhausen -- signal a warning only and
-        ;; adjust  
+        ;;  MDE Thu Jan 28 16:55:48 2021, Heidhausen -- signal a warning only
+        ;; and adjust
         (when (and (snd-duration sf) (> end (snd-duration sf)))
           (warn "sndfile::update: ~
                  Given end point (or duration: ~a) ~%  is > sound duration: ~
@@ -368,12 +368,19 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Wed Feb 28 20:27:14 2024, Heidhausen -- updated for reaper-play
 (defmethod set-end ((sf sndfile))
-  (let ((dur (duration sf))
-        (start (start sf)))
+  (unless (snd-duration sf)
+    (error "sndfile::set-end: can't set end without the duration slot: ~%~a"
+           sf))
+  (let* ((dur (duration sf))
+         (start (start sf)))
     (when (and start dur)
-      ;; MDE Sun Dec 16 15:00:27 2012 -- use slot-value
-      (setf (slot-value sf 'end) (+ start dur)))))
+      (setq dps (+ start dur)))
+    ;; MDE Sun Dec 16 15:00:27 2012 -- use slot-value
+    (setf (slot-value sf 'end) (if (< dps (snd-duration sf))
+                                 dps
+                                 (snd-duration sf)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Sep 29 21:43:50 2015 -- for writing sndfile-palette data for
@@ -557,10 +564,10 @@ data: /path/to/sndfile-1.aiff
 ;;; SYNOPSIS
 (defun make-sndfile (path &key id data duration end (start 0.0)
                      (frequency nil)
-	             (amplitude 1.0)
-	             (angle-env '(0 0  100 0))
-		     (elevation-env '(0 0  100 0))
-		     (distance-env '(0 1  100 1)))
+                     (amplitude 1.0)
+                     (angle-env '(0 0  100 0))
+                     (elevation-env '(0 0  100 0))
+                     (distance-env '(0 1  100 1)))
 ;;; **** 
   (if (and path (listp path))
       (progn
@@ -591,8 +598,8 @@ data: /path/to/sndfile-1.aiff
       (make-instance 'sndfile :id id :data data :path path :duration duration
                      :frequency frequency :end end :start start
                      :amplitude amplitude
-		     :angle-env angle-env :elevation-env elevation-env
-		     :distance-env distance-env)))
+                     :angle-env angle-env :elevation-env elevation-env
+                     :distance-env distance-env)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

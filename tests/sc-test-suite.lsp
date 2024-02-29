@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:48:11 Thu Feb  8 2024 CET
+;;; $$ Last modified:  20:50:48 Wed Feb 28 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20398,7 +20398,11 @@ est)")))
           (make-reaper-items2 (append sndfiles sndfiles sndfiles)
                               '(w (w) q h.+h+e (h)) ; 3 attacks
                               63
-                              :input-start .9
+                              ;; MDE Wed Feb 28 20:44:09 2024, Heidhausen --
+                              ;; there was a bug here: this was 0.9 but that was
+                              ;; longer than the durations of test sndfile 5 and
+                              ;; 4
+                              :input-start .09
                               :play-rate 1.04 :transposition 2.5
                               :preserve-pitch t)
         (let* ((rf1 (make-reaper-file 'otest1 items1 :cursor end-time1))

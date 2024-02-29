@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  20:01:37 Thu Feb 22 2024 CET
+;;; $$ Last modified:  09:46:03 Thu Feb 29 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -223,9 +223,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((ri reaper-item) stream)
-  (format stream "~%REAPER-ITEM: fade-in: ~a, fade-out: ~a, play-rate: ~a, ~
-                  ~%preserve-pitch: ~a, start-time: ~a, name: ~a, track: ~a ~
-                  ~%slider-vol: ~a, item-vol: ~a, pan: ~a, transposition: ~a"
+  (format stream
+          "~%REAPER-ITEM: fade-in: ~,3f, fade-out: ~,3f, play-rate: ~,3f, ~
+           ~%preserve-pitch: ~a, start-time: ~a, name: ~a,~%track: ~a ~
+           ~%slider-vol: ~a, item-vol: ~a, pan: ~a, transposition: ~a"
           (fade-in ri) (fade-out ri) (play-rate ri) (preserve-pitch ri)
           (start-time ri) (name ri) (track ri) (slider-vol ri) (item-vol ri)
           (pan ri) (transposition ri)))
@@ -1961,7 +1962,8 @@ Here's where I pasted the data into the .RPP Reaper file:
                    (scale-env
                     (nth (mod k (length elevation-envs)) elevation-envs)
                     180)
-                   :distance-env (nth (mod k (length distance-envs)) distance-envs)
+                   :distance-env (nth (mod k (length distance-envs))
+                                      distance-envs)
                    :minimum-samples (* (- end start) env-conversion-srate))
                 ;; atm, the envelopes go from -1 to 1 but we should scale them
                 ;; to fit between 0 and 1:

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:15:46 Sat Feb 24 2024 CET
+;;; $$ Last modified:  09:48:12 Thu Feb 29 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5929,22 +5929,28 @@ seq-num 5, VN, replacing G3 with B6
                                       can't do inc-start with no ~
                                       sndfile-palette."))
                             ;; handle transpostion vs. play-rate here
-                            (setf latest-possible-start
-                                  (- (end snd) (if  pitch-adjust
-                                                    duration
-                                                    (* srt duration))))
-                            (unless
-                                (and (< latest-possible-start
-                                        (start snd))
-                                     (not (zerop
-                                           (will-be-used snd))))
-                              (incf input-start 
+                            (setq latest-possible-start
+                                  (- (end snd) (if pitch-adjust
+                                                 duration
+                                                 (* srt duration))))
+                            (unless (and (< latest-possible-start
+                                            (start snd))
+                                         (not (zerop
+                                               (will-be-used snd))))
+                              (incf input-start
                                     (* (has-been-used snd)
                                        (/
                                         (- latest-possible-start
                                            (start snd))
                                         (will-be-used snd)))))
                             (incf (has-been-used snd)))
+                          ;; MDE Thu Feb 29 09:32:24 2024, Heidhausen -- to be
+                          ;; sure  
+                          (setq input-start (max 0.0 (min latest-possible-start
+                                                          input-start)))
+                          ;; (when (>= input-start (end snd))
+                          ;; (print latest-possible-start)
+                          ;; (break))
                           (when (> duration available-dur)
                             (setq wanted-duration duration
                                   wanted-duration-string 
@@ -5955,7 +5961,7 @@ seq-num 5, VN, replacing G3 with B6
                                       (format nil " (wanted ~,3f)"
                                               wanted-duration)))
                             (unless duration-run-over
-                              (setf duration available-dur)))
+                              (setq duration available-dur)))
                           (when (< duration 0)
                             (warn "slippery-chicken::reaper-play: ~
                                    Duration < 0  ?????~%"))
@@ -6035,6 +6041,7 @@ seq-num 5, VN, replacing G3 with B6
     (setq reaper-items (reverse reaper-items))
     (when items-processor
       (setq reaper-items (funcall items-processor reaper-items)))
+    (print (first reaper-items))
     (write-reaper-file (make-reaper-file (id sc) reaper-items
                                          :sample-rate srate)
                        :min-channels min-channels

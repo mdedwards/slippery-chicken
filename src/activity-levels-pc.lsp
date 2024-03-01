@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    1st March 2024
 ;;;
-;;; $$ Last modified:  13:05:04 Fri Mar  1 2024 CET
+;;; $$ Last modified:  13:07:44 Fri Mar  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -107,7 +107,9 @@
 ;;; SYNOPSIS
 (defmethod active ((alpc activity-levels-pc) &optional level)
 ;;; ****
-  (unless level (setq level 50))        ; 50/50, although what's the point here?
+  ;; for completeness: 50/50, like activities-levels, although this doesn't
+  ;; really make sense in this class as an al object would suffice..-ho hum...
+  (unless level (setq level 50)) 
   (unless (and (numberp level) (<= 0 level 100))
     (error "activity-levels-pc::active: 2nd argument should be a number ~
             between 0 and 100,~%not ~a" level))

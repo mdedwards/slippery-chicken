@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    1st March 2024
 ;;;
-;;; $$ Last modified:  12:47:52 Fri Mar  1 2024 CET
+;;; $$ Last modified:  13:05:04 Fri Mar  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -92,8 +92,8 @@
 ;;; occurrence of the result T; comparable to a percentage chance but
 ;;; deterministic and pattern-oriented (see the data slot state lists in
 ;;; activity-levels.lsp). Although this is an optional argument (because of
-;;; related classes' methods) this method only really makes if it is
-;;; passed. Default = 50
+;;; related classes' methods) this method only really makes sense if it is
+;;; passed. Default = 50.
 ;;; 
 ;;; RETURN VALUE
 ;;; T or NIL

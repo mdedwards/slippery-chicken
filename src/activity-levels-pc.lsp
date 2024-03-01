@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    1st March 2024
 ;;;
-;;; $$ Last modified:  14:12:07 Fri Mar  1 2024 CET
+;;; $$ Last modified:  17:09:50 Fri Mar  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -93,7 +93,7 @@
 ;;; deterministic and pattern-oriented (see the data slot state lists in
 ;;; activity-levels.lsp). Although this is an optional argument (because of
 ;;; related classes' methods) this method only really makes sense if it is
-;;; passed. Default = 50.
+;;; passed. Float arguments will be rounded. Default = 50.
 ;;; 
 ;;; RETURN VALUE
 ;;; T or NIL

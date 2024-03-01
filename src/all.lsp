@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  10:42:04 Sun May 29 2022 CEST
+;;; $$ Last modified:  12:42:50 Fri Mar  1 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -223,6 +223,7 @@
 (sc-compile-and-load "recursive-assoc-list.lsp")
 (sc-compile-and-load "activity-levels.lsp")
 (sc-compile-and-load "activity-levels-env.lsp")
+(sc-compile-and-load "activity-levels-pc.lsp")
 (sc-compile-and-load "palette.lsp")
 (sc-compile-and-load "pitch-seq-palette.lsp")
 (sc-compile-and-load "globals.lsp")

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  18:01:00 Tue Jan 19 2021 CET
+;;; $$ Last modified:  10:55:22 Fri Mar  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -117,7 +117,6 @@
   (format stream "~%ACTIVITY-LEVELS: "))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* activity-levels/reset
 ;;; DESCRIPTION
 ;;; Reset the activity-levels object to restart at the first element of the 1st
@@ -142,8 +141,9 @@
     (error "activity-levels::reset: <start-at> should be between 0 and 2: ~a"
            start-at))
   (loop for l in (data al) do 
-       (loop for 10-list in (data l) do (reset 10-list))
-       (reset l start-at))
+    (loop for 10-list in (data l) do (reset 10-list))
+    ;; this is where we set which of the 3 lists of 10 to use
+    (reset l start-at))
   t)
 
 

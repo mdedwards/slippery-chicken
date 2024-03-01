@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  20:50:48 Wed Feb 28 2024 CET
+;;; $$ Last modified:  13:00:01 Fri Mar  1 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19802,6 +19802,33 @@ est)")))
                 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011 1011
                 1011 1011 1011 1011 1011 1011 1011 1011 1011)))))
  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Mar  1 12:29:21 2024, Heidhausen
+(sc-deftest test-activity-levels-pc ()
+  (let ((alpc (make-alpc)))
+    (labels ((do-it (pc)
+               (print pc)
+               (print (count t (loop repeat 1000 collect (active alpc pc)))))
+             (do-em ()
+               (loop for i from 0 to 100
+                     for rand = (random 1.0)
+                     for test = (case i
+                                  (0 0)
+                                  (100 100)
+                                  (t (+ rand i)))
+                     always
+                     (= (* 10 (round test))
+                        (do-it test)))))
+      (sc-test-check
+        (do-em)
+        (reset alpc 1)
+        (do-em)
+        (reset alpc 2)
+        (do-em)
+        (reset alpc 0)
+        (do-em)
+        (setq alpc (clone alpc))
+        (do-em)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jan 18 12:11:49 2016 -- no need for sc-test-check here as problems

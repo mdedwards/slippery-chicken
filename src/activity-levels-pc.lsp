@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    1st March 2024
 ;;;
-;;; $$ Last modified:  13:08:05 Fri Mar  1 2024 CET
+;;; $$ Last modified:  14:12:07 Fri Mar  1 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -124,6 +124,7 @@
              (active (al2 alpc) (if (active (al1 alpc) ones)
                                   (1+ tens)
                                   tens))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod reset ((alpc activity-levels-pc) &optional (start-at 0) ignore)
   (declare (ignore ignore))  

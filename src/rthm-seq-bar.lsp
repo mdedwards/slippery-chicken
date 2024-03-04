@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  13:21:55 Mon Mar  4 2024 CET
+;;; $$ Last modified:  14:08:56 Mon Mar  4 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -927,7 +927,8 @@ data: E.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq-bar/force-rest-bar
 ;;; DESCRIPTION
-;;; Force all rhythms of a rthm-seq-bar object to be replaced by rest.
+;;; Force all rhythms of a rthm-seq-bar object to be replaced by a whole-bar
+;;; rest. 
 ;;; 
 ;;; NB: This method changes the value of the RHYTHMS slot of the rthm-seq-bar
 ;;;     but not the value of the rthm-seq-bar DATA slot.
@@ -969,44 +970,48 @@ data: ((2 4) Q E S S)
 (defmethod force-rest-bar ((rsb rthm-seq-bar))
 ;;; ****
   ;; (print (marks (first (rhythms rsb))))
-  (let ((new (get-whole-bar-rest (get-time-sig rsb)))
-        (first (first (rhythms rsb)))
-        ;; MDE Mon Mar  4 13:18:15 2024, Heidhausen -- attempt to grab marks
-        ;; from existing rhythms and put them all on the whole-bar-rest (or at
-        ;; least those which only make sense for notes (see below)
-        (marks (flatten (mapcar #'marks (rhythms rsb)))))
-    (marks new) (remove-if #'mark-for-note-only marks) ; (marks first))
-    ;; 2.2.11 copy over some useful slots of the event class
-    (when (event-p first)
-      (setf (start-time new) (start-time first)
-            (start-time-qtrs new) (start-time-qtrs first)
-            ;; 20.6.11: some marks can only be attached to a note so don't copy
-            ;; these over
-            ;; MDE Mon Mar  4 13:21:43 2024, Heidhausen -- improvement suggested
-            ;; by Leon Focker (nice!)
-            (marks new) (remove-if #'mark-for-note-only marks) ;(marks first))
-            (marks-in-part new) (marks-in-part first)
-            (midi-time-sig new) (midi-time-sig first)
-            (midi-program-changes new) (midi-program-changes first)
-            ;; can't setf nil...
-            (slot-value new 'tempo-change) (tempo-change first)
-            (display-tempo new) (display-tempo first)
-            (bar-num new) (bar-num first)
-            (marks-before new) (marks-before first)
-            ;; MDE Mon May  5 18:20:19 2014
-            (player new) (player first)
-            ;; MDE Mon Jul 23 13:13:11 2012 
-            (instrument-change new) (instrument-change first)))
-    ;; 26.7.11 (Pula): don't copy over 8ve marks: could screw things up but
-    ;; then the caller should be aware of this when deleting bars etc.
-    (rm-marks new '(beg-8va beg-8vb end-8va end-8vb) nil)
-    ;; now this bar
-    (setf (rhythms rsb) (list new)
-          (show-rest rsb) t
-          ;; (score-tuplets rsb) nil
-          (tuplets rsb) nil
-          (beams rsb) nil)
-    (gen-stats rsb)))
+  ;; MDE Mon Mar  4 14:08:17 2024, Heidhausen -- unless you always want multiple
+  ;; rests in an empty bar, e.g. so we don't lose marks or MIDI data
+  (unless (get-sc-config 'ignore-force-rest-bar)
+    (let ((new (get-whole-bar-rest (get-time-sig rsb)))
+          (first (first (rhythms rsb)))
+          ;; MDE Mon Mar  4 13:18:15 2024, Heidhausen -- attempt to grab marks
+          ;; from existing rhythms and put them all on the whole-bar-rest (or at
+          ;; least those which only make sense for notes (see below)
+          (marks (flatten (mapcar #'marks (rhythms rsb)))))
+      (marks new) (remove-if #'mark-for-note-only marks) ; (marks first))
+      ;; 2.2.11 copy over some useful slots of the event class
+      (when (event-p first)
+        (setf (start-time new) (start-time first)
+              (start-time-qtrs new) (start-time-qtrs first)
+              ;; 20.6.11: some marks can only be attached to a note so don't
+              ;; copy these over
+              ;; 
+              ;; MDE Mon Mar 4 13:21:43 2024, Heidhausen -- improvement
+              ;; suggested by Leon Focker (nice!)
+              (marks new) (remove-if #'mark-for-note-only marks) ;(marks first))
+              (marks-in-part new) (marks-in-part first)
+              (midi-time-sig new) (midi-time-sig first)
+              (midi-program-changes new) (midi-program-changes first)
+              ;; can't setf nil...
+              (slot-value new 'tempo-change) (tempo-change first)
+              (display-tempo new) (display-tempo first)
+              (bar-num new) (bar-num first)
+              (marks-before new) (marks-before first)
+              ;; MDE Mon May  5 18:20:19 2014
+              (player new) (player first)
+              ;; MDE Mon Jul 23 13:13:11 2012 
+              (instrument-change new) (instrument-change first)))
+      ;; 26.7.11 (Pula): don't copy over 8ve marks: could screw things up but
+      ;; then the caller should be aware of this when deleting bars etc.
+      (rm-marks new '(beg-8va beg-8vb end-8va end-8vb) nil)
+      ;; now this bar
+      (setf (rhythms rsb) (list new)
+            (show-rest rsb) t
+            ;; (score-tuplets rsb) nil
+            (tuplets rsb) nil
+            (beams rsb) nil)
+      (gen-stats rsb))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Nov  7 16:45:50 2018

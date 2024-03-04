@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  17:27:15 Fri Feb 23 2024 CET
+;;; $$ Last modified:  14:07:19 Mon Mar  4 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -208,6 +208,7 @@
      ;; write-csound-score.
      (csound-command
       "/usr/local/bin/csound")
+     (ignore-force-rest-bar nil)
      (path-to-ppcre nil))))
 ;;; ****
 

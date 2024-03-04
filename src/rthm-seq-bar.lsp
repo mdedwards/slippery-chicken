@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:49:34 Tue Feb  6 2024 CET
+;;; $$ Last modified:  13:21:55 Mon Mar  4 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -968,15 +968,23 @@ data: ((2 4) Q E S S)
 ;;; SYNOPSIS
 (defmethod force-rest-bar ((rsb rthm-seq-bar))
 ;;; ****
+  ;; (print (marks (first (rhythms rsb))))
   (let ((new (get-whole-bar-rest (get-time-sig rsb)))
-        (first (first (rhythms rsb))))
+        (first (first (rhythms rsb)))
+        ;; MDE Mon Mar  4 13:18:15 2024, Heidhausen -- attempt to grab marks
+        ;; from existing rhythms and put them all on the whole-bar-rest (or at
+        ;; least those which only make sense for notes (see below)
+        (marks (flatten (mapcar #'marks (rhythms rsb)))))
+    (marks new) (remove-if #'mark-for-note-only marks) ; (marks first))
     ;; 2.2.11 copy over some useful slots of the event class
     (when (event-p first)
       (setf (start-time new) (start-time first)
             (start-time-qtrs new) (start-time-qtrs first)
             ;; 20.6.11: some marks can only be attached to a note so don't copy
-            ;; these over 
-            (marks new) (remove-if #'mark-for-note-only (marks first))
+            ;; these over
+            ;; MDE Mon Mar  4 13:21:43 2024, Heidhausen -- improvement suggested
+            ;; by Leon Focker (nice!)
+            (marks new) (remove-if #'mark-for-note-only marks) ;(marks first))
             (marks-in-part new) (marks-in-part first)
             (midi-time-sig new) (midi-time-sig first)
             (midi-program-changes new) (midi-program-changes first)
@@ -5641,7 +5649,7 @@ collect (midi-channel (pitch-or-chord p))))
          (lv r ct)
          ;; (print r)
          (unless (power-of-2 (letter-value r))
-           ;;  dots--esp. those added automatically--might screw things up,
+           ;; dots--esp. those added automatically--might screw things up,
            ;; e.g. rhythms like 70/3 might result in a letter-value of 24 which
            ;; is not representable in Lilypond. In that case we probably have
            ;; added a dot somewhere so remove it.

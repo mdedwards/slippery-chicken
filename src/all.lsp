@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  12:42:50 Fri Mar  1 2024 CET
+;;; $$ Last modified:  11:47:53 Fri Mar 15 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -197,8 +197,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+(or cm-essentials windows win32 win64 ecl) (sc-load-cm-essentials)
-#-(or cm-essentials windows win32 win64 ecl) (sc-load-cm-all)
+;; #+(or cm-essentials windows win32 win64 ecl) (sc-load-cm-essentials)
+;; #-(or cm-essentials windows win32 win64 ecl) (sc-load-cm-all)
 ;;; It seems CM doesn't put itself on the features list but sc needs it.
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)

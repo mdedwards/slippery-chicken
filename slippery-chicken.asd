@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  22:25:01 Fri Mar 15 2024 CET
+;;; $$ Last modified:  23:31:52 Fri Mar 15 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -188,6 +188,9 @@
                                      (load (component-pathname c))))
                (:file "afu")
                (:file "reaper")
+               ;; NB: export-symbols should always be included at the end
+               ;;     of this definition
+               ;; RP  Fri Mar 15 23:31:51 2024
                (:file "export-symbols")))
 
 #|

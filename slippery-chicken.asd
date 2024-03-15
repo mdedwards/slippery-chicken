@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  23:31:52 Fri Mar 15 2024 CET
+;;; $$ Last modified:  23:43:47 Fri Mar 15 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -86,7 +86,6 @@
   :depends-on ("cm"
                "cl-ppcre")
   :default-component-class cl-source-file.lsp
-  :in-order-to ((test-op (symbol-call :slippery-chicken :test-system)))
   :pathname "src/"
   ;;; TODO: the RTs need to be included 
   ;;; RP  Fri Mar 15 15:38:33 2024

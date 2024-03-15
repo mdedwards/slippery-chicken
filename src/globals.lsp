@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  21:49:02 Fri Mar 15 2024 CET
+;;; $$ Last modified:  22:52:17 Fri Mar 15 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -247,14 +247,6 @@
    (make-pathname
     :directory
     (butlast (pathname-directory cl-user::+slippery-chicken-src-path+)))))
-
-;;; the system-version is imported from the asdf specification
-;;; (cf. slippery-chicken.asd)
-;;; RP  Fri Mar 15 17:11:54 2024
-;; (defparameter +slippery-chicken-version+
-;;   (let ((system (asdf:find-system :slippery-chicken nil)))
-;;     (when (and system (slot-boundp system 'asdf:version))
-;;       (asdf:component-version system))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

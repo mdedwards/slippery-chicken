@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    May 18th 2019
 ;;;
-;;; $$ Last modified:  12:57:13 Sat Nov 20 2021 CET
+;;; $$ Last modified:  15:11:59 Sat Mar 16 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -158,7 +158,7 @@
           (slot-value cscl 'period) (period a)
           (slot-value cscl 'binlist) (copy-list (binlist a))
           (slot-value cscl 'minimum) (minimum a)
-          (slot-value cscl 'maximum) (maxumum a))
+          (slot-value cscl 'maximum) (maximum a))
     cscl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

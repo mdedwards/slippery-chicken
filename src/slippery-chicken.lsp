@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:35:11 Sat Mar 16 2024 CET
+;;; $$ Last modified:  15:42:20 Sat Mar 16 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4100,7 +4100,7 @@ seq-num 5, VN, replacing G3 with B6
     (error "slippery-chicken::midi-play: please use either voices or players, ~
             not both."))
   (when players (setq voices players))
-  (setf voices
+  (setq voices
         (cond ((and voices (listp voices)) voices)
               ((and voices (atom voices)) (list voices))
               ((not voices) (get-players (ensemble sc)))
@@ -11593,7 +11593,10 @@ data: (11 15)
                 (composer sc)
                 (year sc)
                 (multiple-value-bind
-                      (second minute hour day month year weekday dst-p tz)
+                      ;; MDE Sat Mar 16 15:40:15 2024, Heidhausen -- compiler
+                      ;; warnings about unused vars: don't need to bind all
+                      ;; values if they're not going to be used
+                      (second minute hour day month year) ; weekday dst-p tz)
                     (get-decoded-time)
                   (format nil "~4,'0d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d"
                           year month day hour minute second))))
@@ -12111,7 +12114,10 @@ data: (11 15)
       (when comments
         (format stream ";; GENERATION DATE: ~a~%"
                 (multiple-value-bind
-                      (second minute hour day month year weekday dst-p tz)
+                      ;; MDE Sat Mar 16 15:40:15 2024, Heidhausen -- compiler
+                      ;; warnings about unused vars: don't need to bind all
+                      ;; values if they're not going to be used
+                      (second minute hour day month year) ; weekday dst-p tz)
                     (get-decoded-time)
                   (format nil "~4,'0d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d"
                           year month day hour minute second))))

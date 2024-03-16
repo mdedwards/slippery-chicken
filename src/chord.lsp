@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  17:00:06 Tue Feb  7 2023 CET
+;;; $$ Last modified:  16:10:52 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -278,7 +278,7 @@ NIL
 ;;; 
 ;;; DESCRIPTION
 ;;; Convenience method, test to see if the pitch-or-chord slots of two event
-;;; objects are the same.
+;;; objects are the same. See other related methods in event.lsp
 ;;; 
 ;;; ARGUMENTS
 ;;; - a pitch or chord object
@@ -931,7 +931,7 @@ data: (
                         ;; MDE Tue Aug 21 19:49:47 2018
                         lowest highest
                         ;; MDE Thu Mar  4 11:48:29 2021, Heidhausen
-                        (complete-error t))
+                        (complete-error nil))
 ;;; ****
   ;; (lowest (make-pitch 'c-1)) (highest (make-pitch 'b8)))
   ;; :destructively handled first by the :around method below, :do-related sets
@@ -946,6 +946,10 @@ data: (
   ;; 8.2.11: got to do this here too now
   ;; MDE Sun Aug  6 11:26:39 2017 -- no, added to verify-and-store instead
   ;; (set-micro-tone result)
+  ;; MDE Sat Mar 16 15:20:22 2024, Heidhausen -- 
+  (when (and complete-error (complete-set-p c))
+    (unless (complete c)
+      (error "chord::transpose: not complete: ~&~a" c)))
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -953,12 +957,7 @@ data: (
                               &key (destructively t) do-related-sets
                                 lowest highest
                                 ;; MDE Thu Mar  4 11:48:29 2021, Heidhausen
-                                (complete-error t))
-
-  (declare (ignore ignore))
-  ;; (print 'around)
-  ;; (print 'transpose)
-  ;; (print destructively)
+                                (complete-error nil))
   ;; we're interested in the tl-set :before method here
   (call-next-method (if destructively c (clone c)) semitones
                     :lowest lowest :highest highest
@@ -2647,17 +2646,18 @@ data: (
            (min7 (chord) (econs chord 10))
            (all-inversions (intervals)
              (loop with ints = intervals
-                for inv = (trad-invert ints)
-                until (equalp inv intervals)
-                collect inv)))
+                   for inv = (trad-invert ints)
+                   until (equalp inv intervals)
+                   collect inv)))
       (when 7ths-too
         (setq all (append all
                           (list (maj7 major) (maj7 minor) (maj7 aug)
-                                (min7 major) (min7 minor) (min7 half-dim))))))
-    (setq all (loop for ints in all collect ints append (all-inversions ints)))
-    (loop for diatonic in all do
-         (when (has-interval-structure c diatonic)
-           (return t)))))
+                                (min7 major) (min7 minor) (min7 half-dim)))))
+      (setq all (loop for ints in all collect ints append (all-inversions ints)
+                      ))
+      (loop for diatonic in all do
+        (when (has-interval-structure c diatonic)
+          (return t))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; intervals in semitones should be within an octave. the chord will be
@@ -2699,9 +2699,9 @@ data: (
 ;;; SYNOPSIS
 (defmethod single-pitch-chord-to-pitch ((c chord))
 ;;; ****
-        (when (= (length (data c)) 1)
-          (setf c (first (data c))))
-        c)
+  (when (= (length (data c)) 1)
+    (setf c (first (data c))))
+  c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

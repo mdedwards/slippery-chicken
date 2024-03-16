@@ -413,10 +413,6 @@ not only event objects but rhythms too lose their marks
             (econs (rhythms rsb) event))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 12.12.11 SAR: Added ROBODoc info
-;;; SAR Sun Apr 29 16:30:23 BST 2012: Expanded robodoc info
-
 ;;; ****m* rthm-seq-bar/fill-with-rhythms
 ;;; DESCRIPTION
 ;;; Any rhythms (or event objects) in the existing rthm-seq-bar object will be

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified:  19:42:58 Fri Mar 15 2024 CET
+;;; $$ Last modified:  15:30:26 Sat Mar 16 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -178,7 +178,6 @@
 ;;; data array, otherwise it's an actual time in seconds, which assumes that
 ;;; our duration is long enough to accommodate it.
 (defmethod get-data (where (cw control-wave) &optional (seconds t))
-  (declare (ignore ignore))
   (let ((y (aref (data cw) (if seconds
                                (floor (* where (rate cw)))
                                where))))

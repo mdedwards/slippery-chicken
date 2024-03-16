@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:38:07 Sat Jan 27 2024 CET
+;;; $$ Last modified:  16:01:59 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -547,7 +547,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 5.4.11: remove existing dynamics if we're about to add one
 (defmethod add-mark :before ((e event) mark &optional (update-amplitude t)
-                                              warn-again)
+                                            warn-again)
   (declare (ignore warn-again update-amplitude))
   ;; we ignore update-amplitude in the before method because if we're really
   ;; adding a dynamic then we really need to delete existing dynamics beforehand
@@ -558,6 +558,7 @@
 ;;; MDE Thu Jul 11 19:19:32 2019 -- this used to be in add-mark :after but we
 ;;; need it in sc-make-sequenz bzw. sequenz::pedals-to-controllers too
 (defmethod pedals-to-controllers ((e event) &optional (update-amplitude t))
+  (declare (ignore update-amplitude))
   ;; MDE Tue Apr 26 15:29:55 2016 -- (channel controller-number value) with
   ;; piano pedalling we don't have to worry about the microtones-midi-channel as
   ;; there are no microtones on the piano. so we just output on the channel of
@@ -4268,8 +4269,24 @@ NIL
                             &optional enharmonics-are-equal
                               (frequency-tolerance 0.01))
 ;;; ****
-  (pitch-or-chord=-aux (pitch-or-chord e1) (pitch-or-chord e2)
-                       enharmonics-are-equal frequency-tolerance))
+  (when (and (pitch-or-chord e1) (pitch-or-chord e2))
+    (pitch-or-chord=-aux (pitch-or-chord e1) (pitch-or-chord e2)
+                         enharmonics-are-equal frequency-tolerance)))
+
+;;; MDE Sat Mar 16 15:07:17 2024, Heidhausen 
+(defmethod pitch-or-chord= ((e event) thing
+                            &optional enharmonics-are-equal
+                            (frequency-tolerance 0.01))
+  (when (and thing (pitch-or-chord e))
+    (pitch-or-chord= (pitch-or-chord e) thing enharmonics-are-equal
+                     frequency-tolerance)))
+
+(defmethod pitch-or-chord= (thing (e event)
+                            &optional enharmonics-are-equal
+                            (frequency-tolerance 0.01))
+  (when (and thing (pitch-or-chord e))
+    (pitch-or-chord= (pitch-or-chord e) thing enharmonics-are-equal
+                     frequency-tolerance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/single-pitch-chord-to-pitch
@@ -4329,12 +4346,9 @@ NIL
 ;;; 
 ;;; RETURN VALUE
 ;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
+(proclaim '(special +slippery-chicken-standard-instrument-palette+))
+
 (defmethod add-midi-program-changes
     ((e event) chan pc
      &optional (ins-palette +slippery-chicken-standard-instrument-palette+))

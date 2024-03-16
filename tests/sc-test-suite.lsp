@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:59:25 Sat Mar 16 2024 CET
+;;; $$ Last modified:  15:07:07 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20237,6 +20237,11 @@ est)")))
       (null (pitch-or-chord= c1 c3))
       (null (pitch-or-chord= c1 c3))
       (pitch-or-chord= p3 c4)
+      ;; MDE Sat Mar 16 14:53:31 2024, Heidhausen -- rests! thanks Ruben
+      (not (pitch-or-chord= (make-event 'b5 'e) (make-rest 16)))
+      (not (pitch-or-chord= p1 (make-rest 16)))
+      (not (pitch-or-chord= e1 nil))
+      (not (pitch-or-chord= nil e4))
       ;; DJR Mon 10 Feb 2020 16:28:07 GMT
       ;; test eharmonics again
       (pitch-or-chord= e3 e4 t))))

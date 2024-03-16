@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:57:33 Wed Aug 23 2023 CEST
+;;; $$ Last modified:  15:35:18 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8124,19 +8124,19 @@ data: Q
 
 ;;; SYNOPSIS
 (defmethod get-nearest-note ((sc slippery-chicken) bar-num event-num player)
-  ;;; ****
+;;; ****
   (let (nearest-note)
-    (multiple-value-bind (ev-a num-a) ; find nearest note after
+    (multiple-value-bind (ev-a num-a)   ; find nearest note after
         (get-nearest-note-after sc bar-num event-num player)
       (multiple-value-bind (ev-b num-b) ; find nearest note after
           (get-nearest-note-before sc bar-num event-num player)
         (if (>= num-a (abs num-b))
-            (setf nearest-note (list ev-b num-b))
-            (setf nearest-note (list ev-a num-a)))))
-    (if nearest-note
-        (values-list nearest-note)
-        (error "~%get-nearest-note:: no nearest note for ~a at bar ~a ev ~a"
-               player bar-num event-num))))
+          (setq nearest-note (list ev-b num-b))
+          (setq nearest-note (list ev-a num-a)))
+        (if nearest-note
+          (values-list nearest-note)
+          (error "~%get-nearest-note:: no nearest note for ~a at bar ~a ev ~a"
+                 player bar-num event-num))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tue 11 Aug 2020 17:56:59 BST

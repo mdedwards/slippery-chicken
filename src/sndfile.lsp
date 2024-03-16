@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  09:49:00 Thu Feb 29 2024 CET
+;;; $$ Last modified:  15:45:43 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -240,7 +240,6 @@ T
 ;;; DJR Mon 30 Sep 2019 14:56:33 BST
 ;;; Not usre why this was never here
 (defmethod (setf description) :after (value (sf sndfile))
-  (declare (ignore value))
   (setf (slot-value sf 'description) value)
   (update sf))
 
@@ -367,14 +366,14 @@ T
       (setf (slot-value sf 'duration) (- end start)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; MDE Wed Feb 28 20:27:14 2024, Heidhausen -- updated for reaper-play
 (defmethod set-end ((sf sndfile))
   (unless (snd-duration sf)
     (error "sndfile::set-end: can't set end without the duration slot: ~%~a"
            sf))
   (let* ((dur (duration sf))
-         (start (start sf)))
+         (start (start sf))
+         (dps most-positive-double-float))
     (when (and start dur)
       (setq dps (+ start dur)))
     ;; MDE Sun Dec 16 15:00:27 2012 -- use slot-value

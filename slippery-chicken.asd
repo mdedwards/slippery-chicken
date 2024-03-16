@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  23:43:47 Fri Mar 15 2024 CET
+;;; $$ Last modified:  15:15:35 Sat Mar 16 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -250,6 +250,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sc (&optional (logo t))
+  (declare (special +slippery-chicken-src-path+))
   (setf *package* (find-package :sc))
   (let* ((title (format nil "slippery chicken ~a"
                         +slippery-chicken-version+))

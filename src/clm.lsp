@@ -510,7 +510,7 @@
 |#
 ;;; SYNOPSIS
 #+clm
-(defun clm-loops-all (sndfile entry-points-list 
+(defun clm-loops-all (sndfile entry-points-list 
                       &key 
                       (max-perms 1000)
                       (fibonacci-transitions '(34 21 13 8))

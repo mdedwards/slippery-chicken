@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  15:15:35 Sat Mar 16 2024 CET
+;;; $$ Last modified:  23:12:37 Sat Mar 16 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -87,7 +87,7 @@
                "cl-ppcre")
   :default-component-class cl-source-file.lsp
   :pathname "src/"
-  ;;; TODO: the RTs need to be included 
+  ;;; TODO: the RTs need to be included
   ;;; RP  Fri Mar 15 15:38:33 2024
   ;;:in-order-to ((test-op (test-op "slippery-chicken/tests")))
   :components ((:file "package")
@@ -267,110 +267,6 @@
                   title)))
     #+sbcl t
     #-sbcl (values)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; this is just a copy of the original loading sequence (from all.lsp)
-;;; can be deleted later/after development & testing
-;;; RP  Fri Mar 15 16:55:45 2024
-
-;; (defsystem "slippery-chicken"
-;;   :version "1.1.0"
-;;   :license "GPL Version 3.0 or later"
-;;   :author "Michael Edwards <m@michael-edwards.org>"
-;;   :description "Algorithmic composition software in Common Lisp and CLOS"
-;;   :serial t
-;;   :depends-on ("cm"
-;;                "cl-ppcre")
-;;   :default-component-class cl-source-file.lsp
-;;   :pathname "src/"
-;;   ;;; TODO: the RTs need to be included
-;;   ;;; RP  Fri Mar 15 15:38:33 2024
-;;   ;;:in-order-to ((test-op (test-op "slippery-chicken/tests")))
-;;   :components ((:file "package")
-;;                (:file "cmn" :if-feature :cmn)
-;;                (:file "cmn-glyphs" :if-feature :cmn)
-;;                (:file "cm" :if-feature :cm)
-;;                (:file "cm-cm" :if-feature :cm)
-;;                (:file "cm-load") ;; here the "just-load"-attr is set
-;;                (:file "utilities")
-;;                ;;(:file "samp5" :if-feature :clm)
-;;                ;;(:file "sine" :if-feature :clm)
-;;                ;;(:file "autoc" :if-feature :clm)
-;;                (:file "named-object")
-;;                (:file "music-xml")
-;;                (:file "linked-named-object")
-;;                (:file "sclist")
-;;                (:file "circular-sclist")
-;;                (:file "assoc-list")
-;;                (:file "recursive-assoc-list")
-;;                (:file "activity-levels")
-;;                (:file "activity-levels-env")
-;;                (:file "activity-levels-pc")
-;;                (:file "palette")
-;;                (:file "pitch-seq-palette")
-;;                (:file "globals")
-;;                (:file "sc-map")
-;;                (:file "set-map")
-;;                (:file "tempo")
-;;                (:file "rhythm")
-;;                (:file "pitch")
-;;                (:file "chord")
-;;                (:file "event")
-;;                (:file "instrument")
-;;                (:file "time-sig")
-;;                (:file "rthm-seq-bar")
-;;                (:file "change-data")
-;;                (:file "change-map")
-;;                (:file "instrument-change-map")
-;;                (:file "simple-change-map")
-;;                (:file "tempo-map")
-;;                (:file "sc-set")
-;;                (:file "tl-set")
-;;                (:file "complete-set")
-;;                (:file "set-palette")
-;;                (:file "pitch-seq")
-;;                (:file "sndfile")
-;;                (:file "sndfile-ext")
-;;                (:file "sndfile-palette")
-;;                (:file "sndfilenet")
-;;                (:file "rthm-seq")
-;;                (:file "rthm-seq-palette")
-;;                (:file "rthm-seq-map")
-;;                (:file "instrument-palette")
-;;                (:file "instruments")
-;;                (:file "player")
-;;                (:file "bar-holder")
-;;                (:file "sequenz")
-;;                (:file "ensemble")
-;;                (:file "l-for-lookup")
-;;                (:file "player-section")
-;;                (:file "section")
-;;                (:file "slippery-chicken")
-;;                (:file "piece")
-;;                (:file "slippery-chicken-edit")
-;;                ;;(:file "clm-defaults" :if-feature :clm)
-;;                ;;(:file "clm" :if-feature :clm)
-;;                (:file "permutations")
-;;                (:file "rthm-chain")
-;;                (:file "rthm-chain-slow")
-;;                (:file "cycle-repeats")
-;;                (:file "recurring-event")
-;;                (:file "intervals-mapper")
-;;                (:file "lilypond")
-;;                (:file "popcorn")
-;;                #+(and (or linux darwin) sbcl) (:file "osc")
-;;                #+(and (or linux darwin) sbcl) (:file "osc-sc")
-;;                #+(and (or linux darwin) sbcl) (:file "osc-sc-bsd")
-;;                ;;(:file "get-spectrum" :if-feature :clm)
-;;                (:file "spectra")
-;;                ;;(:file "control-wave" :if-feature :clm)
-;;                ;;(:file "control-wave-ins" :if-feature :clm)
-;;                (:file "wolfram") ;; here the "just-load"-attr is set
-;;                (:file "afu")
-;;                (:file "reaper")
-;;                (:file "export-symbols")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.asd

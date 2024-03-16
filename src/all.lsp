@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  11:47:53 Fri Mar 15 2024 CET
+;;; $$ Last modified:  12:08:07 Fri Mar 15 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -48,7 +48,7 @@
 #+sbcl (unlock-package "COMMON-LISP")
 (require :asdf)
 
-(defparameter +slippery-chicken-version+ "1.0.12")
+(defparameter +slippery-chicken-version+ "1.1.0")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

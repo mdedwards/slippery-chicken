@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:48:12 Thu Feb 29 2024 CET
+;;; $$ Last modified:  13:35:11 Sat Mar 16 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4310,7 +4310,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   Default = clm::*clm-data-format*.
 ;;; - :sndfile-extension. NIL or a string that will be the extension of the
 ;;;   output sound file (e.g. ".wav", ".aif"). If NIL, the method will
-;;;   determine the extension automatically based on the header-type. NB: The
+;;;   determine the extension auto matically based on the header-type. NB: The
 ;;;   extension does not determine the output sound file format; that is
 ;;;   determined by :header-type. Default = NIL.
 ;;; - :channels. An integer that is the number of channels in the output sound

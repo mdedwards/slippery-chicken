@@ -243,10 +243,11 @@
   (namestring (asdf::system-relative-pathname "slippery-chicken" "src/")))
 
 (defparameter cl-user::+slippery-chicken-home-dir+
-  (directory-namestring
+  (namestring
    (make-pathname
     :directory
-    (butlast (pathname-directory cl-user::+slippery-chicken-src-path+)))))
+    (butlast (pathname-directory cl-user::+slippery-chicken-src-path+))
+    :device (pathname-device cl-user::+slippery-chicken-src-path+))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

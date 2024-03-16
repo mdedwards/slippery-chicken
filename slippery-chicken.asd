@@ -272,7 +272,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; this is just a copy of the original loading sequence (from all.lsp)
-;;; can be deleted later/after development & testing 
+;;; can be deleted later/after development & testing
 ;;; RP  Fri Mar 15 16:55:45 2024
 
 ;; (defsystem "slippery-chicken"
@@ -293,7 +293,7 @@
 ;;                (:file "cmn-glyphs" :if-feature :cmn)
 ;;                (:file "cm" :if-feature :cm)
 ;;                (:file "cm-cm" :if-feature :cm)
-;;                (:file "cm-load") ;;  here the "just-load"-attr is set
+;;                (:file "cm-load") ;; here the "just-load"-attr is set
 ;;                (:file "utilities")
 ;;                ;;(:file "samp5" :if-feature :clm)
 ;;                ;;(:file "sine" :if-feature :clm)
@@ -367,7 +367,7 @@
 ;;                (:file "spectra")
 ;;                ;;(:file "control-wave" :if-feature :clm)
 ;;                ;;(:file "control-wave-ins" :if-feature :clm)
-;;                (:file "wolfram") ;;  here the "just-load"-attr is set
+;;                (:file "wolfram") ;; here the "just-load"-attr is set
 ;;                (:file "afu")
 ;;                (:file "reaper")
 ;;                (:file "export-symbols")))

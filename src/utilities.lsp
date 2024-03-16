@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:27:30 Fri Feb 23 2024 CET
+;;; $$ Last modified:  16:36:05 Sat Mar 16 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4569,6 +4569,16 @@ WARNING:
       (subseq seq start end))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+sbcl
+(defun shell-to-string (command &rest arguments)
+  (let ((stream (make-string-output-stream)))
+    (cl-user::run-program command arguments :output stream
+                                            :wait t :input nil)
+     (get-output-stream-string stream)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; MDE Wed May 29 14:40:43 2013 -- 
 (defun shell (command &rest arguments)
   ;; (print command) (print arguments)
@@ -6638,8 +6648,8 @@ yes_foo, 1 2 3 4;
                    (format nil "/~a" helper))))
     (unless type
       (setf type
-	    #+(or win32 win64) 'windows
-	    #-(or win32 win64) 'unix))
+            #+(or win32 win64) 'windows
+            #-(or win32 win64) 'unix))
     ;; intering the symbol is nicer when calling this from other packages
     (case (intern (string type) :sc)
       ((unix linux) (format nil "/~a~a" device rest))

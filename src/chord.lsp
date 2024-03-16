@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  16:10:52 Sat Mar 16 2024 CET
+;;; $$ Last modified:  16:20:27 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2643,18 +2643,13 @@ data: (
          (aug '(4 8))
          (all (list major minor half-dim dim aug)))
     (flet ((maj7 (chord) (econs chord 11))
-           (min7 (chord) (econs chord 10))
-           (all-inversions (intervals)
-             (loop with ints = intervals
-                   for inv = (trad-invert ints)
-                   until (equalp inv intervals)
-                   collect inv)))
+           (min7 (chord) (econs chord 10)))
       (when 7ths-too
         (setq all (append all
                           (list (maj7 major) (maj7 minor) (maj7 aug)
                                 (min7 major) (min7 minor) (min7 half-dim)))))
-      (setq all (loop for ints in all collect ints append (all-inversions ints)
-                      ))
+      (setq all (loop for ints in all collect ints
+                      append (all-inversions ints)))
       (loop for diatonic in all do
         (when (has-interval-structure c diatonic)
           (return t))))))

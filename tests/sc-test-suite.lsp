@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:07:07 Sat Mar 16 2024 CET
+;;; $$ Last modified:  16:15:33 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8295,9 +8295,7 @@
     (not (diatonic-p (make-chord '(e4 gs c5 ef)))) ; aug M7
     (diatonic-p (make-chord '(e4 gs c5 ef)) t) ; aug M7
     (diatonic-p (make-chord '(gs c5 ds e)) t) ; aug M7, inverted
-    (not (diatonic-p (make-chord '(fs4 as cs d))))
-  ))
-         
+    (not (diatonic-p (make-chord '(fs4 as cs d))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; sndfile tests

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:00:01 Fri Mar  1 2024 CET
+;;; $$ Last modified:  13:11:49 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -21086,10 +21086,10 @@ est)")))
     (probe-delete "/tmp/insert-grace-notes.xml")
     (probe-delete "/tmp/insert-grace-notes.eps")
     (write-xml sc :file "/tmp/insert-grace-notes.xml")
-    (cmn-display sc :file "/tmp/insert-grace-notes.eps")
+    #+cmn (cmn-display sc :file "/tmp/insert-grace-notes.eps")
     (sc-test-check
       (file-write-ok "/tmp/insert-grace-notes.xml")
-      (file-write-ok "/tmp/insert-grace-notes.eps"))))
+      #+cmn (file-write-ok "/tmp/insert-grace-notes.eps"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RP  Tue Nov 28 23:39:22 2023
@@ -21155,11 +21155,11 @@ est)")))
     (probe-delete "/tmp/salzedo-marks.eps")
     (probe-delete "/tmp/salzedo-marks.pdf")
     (write-xml sc :file "/tmp/salzedo-marks.xml")
-    (cmn-display sc :file "/tmp/salzedo-marks.eps")
+    #+cmn (cmn-display sc :file "/tmp/salzedo-marks.eps")
     (lp-display sc :base-path "/tmp/")
     (sc-test-check
      (file-write-ok "/tmp/salzedo-marks.xml")
-     (file-write-ok "/tmp/salzedo-marks.eps")))
+     #+cmn (file-write-ok "/tmp/salzedo-marks.eps")))
   (set-sc-config 'xml-salzedo-as-text nil)
   (let ((sc
           (make-slippery-chicken
@@ -21185,11 +21185,11 @@ est)")))
     (probe-delete "/tmp/salzedo-marks.eps")
     (probe-delete "/tmp/salzedo-marks.pdf")
     (write-xml sc :file "/tmp/salzedo-marks.xml")
-    (cmn-display sc :file "/tmp/salzedo-marks.eps")
+    #+cmn (cmn-display sc :file "/tmp/salzedo-marks.eps")
     (lp-display sc :base-path "/tmp/")
     (sc-test-check
      (file-write-ok "/tmp/salzedo-marks.xml")
-     (file-write-ok "/tmp/salzedo-marks.eps")))
+      #+cmn (file-write-ok "/tmp/salzedo-marks.eps")))
   (set-sc-config 'xml-salzedo-as-text t))
 
 

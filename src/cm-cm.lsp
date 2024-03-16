@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    26th March 2020 (abstracted out of cm.lsp)
 ;;;
-;;; $$ Last modified:  14:01:47 Sat Mar 16 2024 CET
+;;; $$ Last modified:  14:36:00 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -150,7 +150,9 @@
                                         appending
                                           (sc::output-midi event time-offset 
                                                            force-velocity)))))))
-   midi-file :tempo (sc::qtr-bpm start-tempo)))
+   ;; MDE Sat Mar 16 14:35:39 2024, Heidhausen -- explicit :play nil as in CM
+   ;; 2.12 this was opening the midi file by default 
+   midi-file :play nil :tempo (sc::qtr-bpm start-tempo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun event-list-to-midi-file (event-list midi-file start-tempo time-offset
@@ -163,7 +165,7 @@
            ;; just like process-voices does above when called from midi-play  
              (sc::flatten (sc::output-midi event time-offset 
                                            force-velocity))))
-   midi-file :tempo start-tempo))
+   midi-file :play nil :tempo start-tempo))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -348,7 +350,7 @@
                         (push n new)))
                     midi-stream :type 'midi)
     (if new
-        (events (nreverse new) new-file)
+        (events (nreverse new) new-file :play nil)
         (warn "cm::midi-file-one-note::No events matched/written."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  12:08:07 Fri Mar 15 2024 CET
+;;; $$ Last modified:  07:47:03 Sun Mar 17 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -41,6 +41,11 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; !!!!!!!!!!!!!!!!!!  MDE Sun Mar 17 07:46:37 2024, Heidhausen !!!!!!!!!!!!!!
+;;; NB Since slippery-chicken 1.1.0 (March 2024) we recommend using the
+;;; slippery-chicken.asdf file to load and use this systems. all.lsp will remain
+;;; for a while but its use is deprecated and at some point it will disapper
+;;; from the current working repo on github.
 
 (in-package :cl-user)
 #+sbcl (require :sb-bsd-sockets)

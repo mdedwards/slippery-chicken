@@ -8306,6 +8306,15 @@
                cl-user::+slippery-chicken-home-dir+ 
                sf))
 
+;;; LF 2024-03-17 19:40:58
+(sc-deftest test-sndfile-get-sound-info ()
+  (sc-test-check
+    (let ((info (get-sound-info (get-test-sf-path "tests/pink5s.wav"))))
+      ;; because bitdepth seems to be inaccurate with clm, lets not test it...
+      (= 48000 (first info))
+      (= 1 (second info))
+      (equal-within-tolerance 5.00 (fourth info) .001))))
+
 ;;; SAR Mon Apr 16 17:52:23 BST 2012
 #+clm
 (sc-deftest test-sndfile-make-sndfile ()

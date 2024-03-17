@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> sndfile-palette
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

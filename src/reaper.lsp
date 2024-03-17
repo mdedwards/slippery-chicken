@@ -12,7 +12,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist ->
 ;;;                   reaper-file
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

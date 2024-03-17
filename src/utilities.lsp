@@ -188,7 +188,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/prime
+;;; ****f* utilities/agnostic-directory-pathname
 ;;; AUTHOR
 ;;; Leon Focker: leon@leonfocker.de
 ;;;

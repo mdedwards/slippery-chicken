@@ -2404,9 +2404,9 @@ data: D7
   (format stream "~&        <pitch>~
                   ~&          <step>~a</step>" (no-8ve-no-acc p))
   (when (and (accidental p)
-             (not (eq 'n (intern (string (accidental p)) :sc))))
+             (not (eq 'n (rm-package (accidental p) :sc))))
     (format stream "~&          <alter>~a</alter>"
-            (case  (accidental p)
+            (case (rm-package (accidental p))
               (f -1) (s 1) (qs 0.5) (qf -0.5) (tqs 1.5) (tqf -1.5)
               (t (error "pitch::write-xml: only 1/4 tone accidentals ~
                          implemented up to now: ~a" p)))))
@@ -2425,7 +2425,7 @@ data: D7
       (setq accidental
             (format nil "~&        <accidental~a>~a</accidental>"
                     (if (accidental-in-parentheses p) " parentheses=\"yes\"" "")
-                    (case (accidental p)
+                    (case (rm-package (accidental p))
                       (f "flat") (s "sharp") (n "natural") (qs "quarter-sharp")
                       (tqs "three-quarters-sharp") (tqf "three-quarters-flat")
                       (qf "quarter-flat")))))

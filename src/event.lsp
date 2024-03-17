@@ -575,7 +575,7 @@
              (push (list channel controller val)
                    (midi-control-changes e)))))
     (loop for mark in (marks e) do
-         (case mark
+         (case (rm-package mark)
            (ped (pedal 127))
            (ped-up (pedal 0))
            ;; up then down but we're pushing so reversed
@@ -2783,7 +2783,7 @@ NIL
             (loop for thing in (marks-before e) do
                ;; handle clefs here rather than in lp-get-mark
                  (if (listp thing)
-                     (case (first thing)
+                     (case (rm-package (first thing))
                        (clef (push (get-lp-clef (second thing)) result))
                        ;; MDE Thu Dec 10 16:11:12 2020, Heidhausen -- we have to
                        ;; differentiate between rgb marks for individual notes
@@ -5263,7 +5263,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
       (format nil "~a~%" (lp-percussion-clef))
       (format nil "~%\\clef ~a "
               (string-downcase 
-               (case clef
+               (case (rm-package clef)
                  (treble 'treble)
                  (bass 'bass)
                  (alto 'alto)

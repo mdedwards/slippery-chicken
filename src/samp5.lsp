@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  01:44:06 Sun Mar 17 2024 CET
+;;; $$ Last modified:  08:04:47 Sun Mar 17 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -95,22 +95,6 @@
                   (sc::equal-within-tolerance x 1.0))
               (loop for y in (cdr srt-env) by #'cddr collect
                        (+ srt (* srt-scaler y))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Sun Jul 17 10:11:23 2016 -- write .c .o .so etc. files in the bin
-;;; directory. definstrument can handle a :c-file keyword only when a direct
-;;; path is given, i.e. nothing with format or any other function call. Hence
-;;; this macro.
-;;; RP  Sun Mar 17 01:43:28 2024 -- deprecated, as we now use asdf's compilation
-;;; facilities which store the fasl and .c et al. in the cache
-
-(defmacro defscins (name (&rest args) &body body) ; &environment env)
-  (let ((sccfile
-          (format nil "~abin/~a.c"
-                  (sc::escape-spaces cl-user::+slippery-chicken-home-dir+)
-                  name)))
-    `(definstrument (,name :c-file ,sccfile)
-         ,args ,@body)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (definstrument samp5

@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  23:12:37 Sat Mar 16 2024 CET
+;;; $$ Last modified:  07:54:33 Sun Mar 17 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -114,9 +114,6 @@
                 :perform (compile-op :before (o c)
                                      (cl-user::compile-clm-ins o c)))
                (:file "sine" :if-feature :clm
-                :perform (compile-op :before (o c)
-                                     (cl-user::compile-clm-ins o c)))
-               (:file "autoc" :if-feature :clm
                 :perform (compile-op :before (o c)
                                      (cl-user::compile-clm-ins o c)))
                (:file "sc-map")

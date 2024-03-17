@@ -15893,6 +15893,13 @@
     (equal-within-tolerance 7440.00002 (mins-secs-to-secs "124:0.00002"))
     ))
 
+;;; LF 2024-03-17 16:16:28
+(sc-deftest test-utilities-agnostic-directory-pathname ()
+  (sc-test-check
+   (equal (agnostic-directory-pathname "/E/code/test.lsp") #P"/E/code/")
+   (equal (agnostic-directory-pathname "e:/code/test.lsp") #P"e:/code/")
+   (equal (agnostic-directory-pathname "e:/code/") #P"e:/code/")))
+
 ;;; SAR Sat May  5 12:17:59 BST 2012
 (sc-deftest test-utilities-string-replace ()
   (sc-test-check

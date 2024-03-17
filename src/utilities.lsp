@@ -186,6 +186,31 @@
          (secs (read-from-string (subseq string (1+ pos)))))
     (+ (* 60.0 mins) secs)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/prime
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; March 17th 2024.
+;;;
+;;; DESCRIPTION
+;;; A replacement for directory-namestring, as that function does not return
+;;; device names when used on windows.
+;;;
+;;; ARGUMENTS
+;;; a string representing a pathname.
+;;;
+;;; RETURN VALUE
+;;; a pathname - to a directory without filename and type
+;;;
+;;; SYNOPSIS
+(defun agnostic-directory-pathname (namestring)
+;;; ****
+  (make-pathname :directory  (pathname-directory namestring)
+                 :device (pathname-device namestring)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB check whether a floating point number is very close to an integer. NB
 ;;; returns T also with an integer.
@@ -2316,7 +2341,7 @@
   (with-open-file 
       (mrk (format nil "~a:~a~a.mrk" 
                    (pathname-device sndfile)
-                   (directory-namestring sndfile)
+                   (agnostic-directory-pathname sndfile)
                    (pathname-name sndfile))
            :direction :input :if-does-not-exist :error)
     (with-open-file
@@ -2378,7 +2403,7 @@
       (mrk file :direction :input :if-does-not-exist :error)
     (with-open-file
         (txt (format nil "~a~a.txt" 
-                     (directory-namestring file)
+                     (agnostic-directory-pathname file)
                      (pathname-name file))
              :direction :output :if-exists :error)
       (loop 
@@ -2553,7 +2578,7 @@ WARNING:
       (in file :direction :input :if-does-not-exist :error)
     (with-open-file
         (out (format nil "~a~a-sorted.~a" 
-                     (directory-namestring file)
+                     (agnostic-directory-pathname file)
                      (pathname-name file)
                      (pathname-type file))
          :direction :output :if-exists :error)
@@ -3040,7 +3065,7 @@ WARNING:
       (in file :direction :input :if-does-not-exist :error)
     (with-open-file
         (out (format nil "~a~a-mid-phrase.~a" 
-                     (directory-namestring file)
+                     (agnostic-directory-pathname file)
                      (pathname-name file)
                      (pathname-type file))
              :direction :output :if-exists :error)
@@ -3076,7 +3101,7 @@ WARNING:
       (in file :direction :input :if-does-not-exist :error)
     (with-open-file
         (out (format nil "~a~a-min.~a" 
-                     (directory-namestring file)
+                     (agnostic-directory-pathname file)
                      (pathname-name file)
                      (pathname-type file))
              :direction :output :if-exists :error)
@@ -3874,7 +3899,7 @@ WARNING:
            (if (pathname-device path)
                (format nil "~a:" (pathname-device path))
                "")
-           (directory-namestring path)
+           (agnostic-directory-pathname path)
            (pathname-name path))
    (pathname-type path)))
 

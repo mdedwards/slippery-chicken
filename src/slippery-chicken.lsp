@@ -10380,7 +10380,7 @@ data: (11 15)
 
 (defun add-ps-to-file (file page-code-pairs)
   (let ((tmp-file (format nil "~aadd-ps-to-file.tmp" 
-                          (directory-namestring file))))
+                          (agnostic-directory-pathname file))))
     (with-open-file
         (out tmp-file :direction :output :if-does-not-exist :create
          :if-exists :error)

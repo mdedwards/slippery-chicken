@@ -117,9 +117,15 @@
      ;; call lp-display, i.e. if we want to automatically call Lilypond and
      ;; open the resultant PDF directly from Lisp.  The default should work if
      ;; you have the Lilypond app in your Applications folder on OSX.
+     ;; "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
      (lilypond-command
       "/usr/local/bin/lilypond")
-     ;; "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
+     ;; The full path to the ffprobe cmomand.  We need to set this if we'll
+     ;; call ffprobe (in get-sound-info, when clm is not used).
+     ;; The default for Windows works when ffprobe is installed with the
+     ;; choco package manager.
+     (ffprobe-command #-(or win32 win64) "/usr/bin/ffprobe"
+      #+(or win32 win64) "C:/ProgramData/chocolatey/bin/ffprobe.exe")
      ;; The default amplitude for all events that don't have amplitude/dynamic
      ;; set via some means such as marks.
      (default-amplitude 0.7)

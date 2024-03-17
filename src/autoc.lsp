@@ -419,7 +419,7 @@
 ;;; -------------------------------------------
 
 
-(defscins autoc
+(definstrument autoc
     (file
      &key
      (beg 0.0) 

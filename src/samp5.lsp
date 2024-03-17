@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  13:10:28 Mon Aug 14 2023 CEST
+;;; $$ Last modified:  01:44:06 Sun Mar 17 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,6 +101,8 @@
 ;;; directory. definstrument can handle a :c-file keyword only when a direct
 ;;; path is given, i.e. nothing with format or any other function call. Hence
 ;;; this macro.
+;;; RP  Sun Mar 17 01:43:28 2024 -- deprecated, as we now use asdf's compilation
+;;; facilities which store the fasl and .c et al. in the cache
 
 (defmacro defscins (name (&rest args) &body body) ; &environment env)
   (let ((sccfile
@@ -111,7 +113,7 @@
          ,args ,@body)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defscins samp5
+(definstrument samp5
     (file time &key
           (duration 0)
           (start 0)

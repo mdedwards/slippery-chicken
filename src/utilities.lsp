@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:36:05 Sat Mar 16 2024 CET
+;;; $$ Last modified:  08:16:15 Sun Mar 17 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6656,52 +6656,6 @@ yes_foo, 1 2 3 4;
       ((or windows) (format nil "~a:~a" device rest))
       ;; if type is unknown, no error but unix type path:
       (t (format nil "/~a~a" device rest)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LF <2023-05-21 So>
-;;; import the ppcre library
-;;; you could (set-sc-config 'path-to-ppcre "...") to install into another
-;;; directory.
-;;#+(not cl-ppcre)
-(defun import-ppcre (&key update mkdir (git "/usr/bin/git"))
-;;; ****
-  #+darwin(unless mkdir (setf mkdir "/bin/mkdir"))
-  #+linux(unless mkdir (setf mkdir "/usr/bin/mkdir"))
-  ;; set the directory:
-  (let* ((dir (or (get-sc-config 'path-to-ppcre)
-                  (make-pathname
-                   :directory
-                   (pathname-directory
-                             cl-user::+slippery-chicken-src-path+))))
-         (target-dir (format nil "~appcre/" dir)))
-    ;; check if the git command is found:
-    (unless (and mkdir (probe-file mkdir))
-      (warn "utilities::import-ppcre: Cannot find the mkdir command at: ~a. ~
-          ppcre can not be installed automatically" mkdir))
-    (unless (and git (probe-file git))
-      (warn "utilities::import-ppcre: Cannot find the git command at: ~a. ~
-          ppcre can not be installed automatically" git))
-    (when (and mkdir git (probe-file git) (probe-file mkdir))
-      #+(and (or ccl sbcl) unix)
-      (progn
-        (if (probe-file (concatenate 'string target-dir "cl-ppcre.asd"))
-            (if update (progn (format t "~&updating ~a~&" target-dir)
-                              (shell git "-C" target-dir "pull"))
-                (print "PPCRE seems to be installed, if you want to update it, ~
-                   evaluate (import-ppcre :update t)"))
-            (progn
-              (shell mkdir target-dir)
-              (shell git
-                     "clone"
-                     "https://github.com/edicl/cl-ppcre.git"
-                     target-dir)))
-        (asdf:load-asd
-         (merge-pathnames "cl-ppcre.asd" target-dir))
-        (asdf:load-system :cl-ppcre))
-      #-(and (or ccl sbcl) unix)
-      (warn "utilities::import-ppcre: Sorry but this currently only runs ~
-           with SBCL or CCL on a unix system. Please install the ppcre-library ~
-           by hand and load it before loading SC"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

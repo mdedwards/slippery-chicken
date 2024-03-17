@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  08:04:01 Sun Mar 17 2024 CET
+;;; $$ Last modified:  22:13:39 Sun Mar 17 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -21167,8 +21167,7 @@ est)")))
            :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
                                       :pitch-seq-palette ((1 2 3 4 5)
                                                           (5 4 3 2 1)))))
-           :rthm-seq-map '((1 ((hrp (seq1 seq1)))))))
-        (bar (make-rthm-seq-bar '((4 4) (w)))))
+           :rthm-seq-map '((1 ((hrp (seq1 seq1))))))))
     (add-mark-to-note sc 1 1 'hrp
                       '(salzedo (1 -1 1 0 1 -1 1)))
     (add-salzedo-pedal (get-nth-event 2

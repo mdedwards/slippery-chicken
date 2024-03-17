@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  15:51:26 Sat Mar 16 2024 CET
+;;; $$ Last modified:  22:10:40 Sun Mar 17 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1903,7 +1903,10 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 ;;; ****
   (let* ((salzedo-set (harp-salzedo-to-tl-set salzedo
                                               :highest highest
-                                              :lowest lowest))
+                                              :lowest lowest
+                                              :subsets subsets
+                                              :related-sets related-sets
+                                              :auto-sort auto-sort))
          (salzedo-set-pitches (data salzedo-set))
          (set-pitches (data s))
          (subset (pitch-intersection set-pitches salzedo-set-pitches)))

@@ -612,13 +612,21 @@ data: /path/to/sndfile-1.aiff
 ;;;
 ;;; DESCRIPTION
 ;;; Get duration, srate, number of channels and bits per sample for a
-;;; sound (or video) file.
+;;; sound (or video) file. This function uses clm, if installed, or ffprobe
+;;; as an alternative and fallback method, when clm is not available.
+;;; Use (set-sc-config 'ffprobe-command "new/path") to change the default path
+;;; for ffprobe.
 ;;;
 ;;; NB: CLM seems to get the bitdepth wrong in an awful lot of cases...
 ;;; is there an alternative?
 ;;;
 ;;; ARGUMENTS
-;;; filename (path) to the sound or video file.
+;;; - filename. The path to the sound or video file.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - ffprobe. Default=nil. When nil, use clm if possible, else ffprobe.
+;;;   When t, use ffprobe with the default path to ffprobe. When a string,
+;;;   interpret that string as path to the ffprobe executable.
 ;;;
 ;;; RETURN VALUE
 ;;; a list containing duration, srate, number of channels and bits per sample as
@@ -627,22 +635,25 @@ data: /path/to/sndfile-1.aiff
 ;;; SYNOPSIS
 (defun get-sound-info (filename &optional ffprobe)
 ;;; ****
-  (declare (special ffprobe))
   (when (and filename (probe-file filename))
-    ;; this order is important because ffprobe returns the results in this order
-    #+clm(list (clm::sound-srate filename)
-	       (clm::sound-chans filename)
-	       (clm::mus-sound-bits-per-sample filename)
-	       (clm::sound-duration filename))
-    #-clm(string-to-list
-	  (shell-to-string (or ffprobe (get-sc-config 'ffprobe-command))
-			   "-v" "error" "-select_streams" "a:0"
-			   "-show_entries" "format=duration"
-			   "-show_entries" "stream=sample_rate"
-			   "-show_entries" "stream=channels"
-			   "-show_entries" "stream=bits_per_sample"
-			   "-of" "default=noprint_wrappers=1:nokey=1"
-			   filename))))
+    (let ((clm #+clm t #-clm nil))
+      (if (and clm (not ffprobe))
+	  ;; this order is important because ffprobe returns results like this
+	  (list #+clm(clm::sound-srate filename)
+		#+clm(clm::sound-chans filename)
+		#+clm(clm::mus-sound-bits-per-sample filename)
+		#+clm(clm::sound-duration filename))
+	  (string-to-list
+	   (shell-to-string (if (stringp ffprobe)
+				ffprobe
+				(get-sc-config 'ffprobe-command))
+			    "-v" "error" "-select_streams" "a:0"
+			    "-show_entries" "format=duration"
+			    "-show_entries" "stream=sample_rate"
+			    "-show_entries" "stream=channels"
+			    "-show_entries" "stream=bits_per_sample"
+			    "-of" "default=noprint_wrappers=1:nokey=1"
+			    filename))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

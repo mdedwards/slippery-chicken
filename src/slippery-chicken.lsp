@@ -7617,7 +7617,7 @@ data: NIL
       ;; write the definitions file
       (with-open-file 
           (out def-file-path :direction :output :if-does-not-exist :create
-               :if-exists :rename-and-delete)
+               :if-exists :rename-and-delete :external-format :utf-8)
         (when (equal cm::*scale* (cm::find-object 'twelfth-tone-ekm))
           ;; including 72 edo ekmelily file
           (format out "~&\\include \"ekmel.ily\"")

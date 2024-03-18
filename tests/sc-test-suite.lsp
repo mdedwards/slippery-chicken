@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  22:13:39 Sun Mar 17 2024 CET
+;;; $$ Last modified:  09:53:48 Mon Mar 18 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19897,7 +19897,8 @@ est)")))
     (add-mark-to-note mini 1 5 'vn 'flag-head)
     (add-mark-to-note mini 1 6 'vn '(rgb (0 0 1)))
     ;; (write-xml mini)))
-    (lp-display mini)))
+    #+sc-auto-open (lp-display mini)
+    #-sc-auto-open (write-lp-data-for-all mini)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 13 14:43:21 2016 -- handles hairpins and updating amps
@@ -21181,10 +21182,11 @@ est)")))
     (probe-delete "/tmp/salzedo-marks.pdf")
     (write-xml sc :file "/tmp/salzedo-marks.xml")
     #+cmn (cmn-display sc :file "/tmp/salzedo-marks.eps")
-    (lp-display sc :base-path "/tmp/")
+    #+sc-auto-open (lp-display sc :base-path "/tmp/")
+    #-sc-auto-open (write-lp-data-for-all sc :base-path "/tmp/")
     (sc-test-check
-     (file-write-ok "/tmp/salzedo-marks.xml")
-     #+cmn (file-write-ok "/tmp/salzedo-marks.eps")))
+      (file-write-ok "/tmp/salzedo-marks.xml")
+      #+cmn (file-write-ok "/tmp/salzedo-marks.eps")))
   (set-sc-config 'xml-salzedo-as-text nil)
   (let ((sc
           (make-slippery-chicken
@@ -21211,9 +21213,10 @@ est)")))
     (probe-delete "/tmp/salzedo-marks.pdf")
     (write-xml sc :file "/tmp/salzedo-marks.xml")
     #+cmn (cmn-display sc :file "/tmp/salzedo-marks.eps")
-    (lp-display sc :base-path "/tmp/")
+    #+sc-auto-open (lp-display sc :base-path "/tmp/")
+    #-sc-auto-open (write-lp-data-for-all sc :base-path "/tmp/")
     (sc-test-check
-     (file-write-ok "/tmp/salzedo-marks.xml")
+      (file-write-ok "/tmp/salzedo-marks.xml")
       #+cmn (file-write-ok "/tmp/salzedo-marks.eps")))
   (set-sc-config 'xml-salzedo-as-text t))
 

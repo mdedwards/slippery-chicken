@@ -639,21 +639,26 @@ data: /path/to/sndfile-1.aiff
     (let ((clm #+clm t #-clm nil))
       (if (and clm (not ffprobe))
 	  ;; this order is important because ffprobe returns results like this
-	  (list #+clm(clm::sound-srate filename)
-		#+clm(clm::sound-chans filename)
-		#+clm(clm::mus-sound-bits-per-sample filename)
-		#+clm(clm::sound-duration filename))
-	  (string-to-list
-	   (shell-to-string (if (stringp ffprobe)
-				ffprobe
-				(get-sc-config 'ffprobe-command))
-			    "-v" "error" "-select_streams" "a:0"
-			    "-show_entries" "format=duration"
-			    "-show_entries" "stream=sample_rate"
-			    "-show_entries" "stream=channels"
-			    "-show_entries" "stream=bits_per_sample"
-			    "-of" "default=noprint_wrappers=1:nokey=1"
-			    filename))))))
+	  #+clm(list (clm::sound-srate filename)
+		     (clm::sound-chans filename)
+		     (* (clm::mus-sound-datum-size filename) 8)
+		     (clm::sound-duration filename)
+		     (clm::sound-length filename)
+		     (clm::sound-framples filename))
+	  (let ((result (string-to-list
+			 (shell-to-string
+			  (if (stringp ffprobe)
+			      ffprobe
+			      (get-sc-config 'ffprobe-command))
+			  "-v" "error" "-select_streams" "a:0"
+			  "-show_entries" "format=duration"
+			  "-show_entries" "format=size"
+			  "-show_entries" "stream=sample_rate"
+			  "-show_entries" "stream=channels"
+			  "-show_entries" "stream=bits_per_sample"
+			  "-of" "default=noprint_wrappers=1:nokey=1"
+			  filename))))
+	    (append result `(,(round (* (nth 0 result) (nth 3 result))))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -8309,9 +8309,11 @@
 ;;; LF 2024-03-17 19:40:58
 (sc-deftest test-sndfile-get-sound-info ()
   (sc-test-check
-    (let ((info (get-sound-info (get-test-sf-path "tests/pink5s.wav"))))
+    (let ((info1 (get-sound-info (get-test-sf-path "tests/pink5s.wav")))
+	  (info2 (get-sound-info (get-test-sf-path "tests/pink5s.wav") t)))
       ;; because bitdepth seems to be inaccurate with clm, lets not test it...
-      (equal info '(48000 1 16 5.000021 484098 240001)))))
+      (equal info1 '(48000 1 16 5.000021 484098 240001))
+      (equal info2 '(48000 1 16 5.000021 484098 240001)))))
 
 ;;; SAR Mon Apr 16 17:52:23 BST 2012
 #+clm

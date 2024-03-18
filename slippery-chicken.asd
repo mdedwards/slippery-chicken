@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  07:54:33 Sun Mar 17 2024 CET
+;;; $$ Last modified:  19:33:24 Sun Mar 17 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -87,9 +87,8 @@
                "cl-ppcre")
   :default-component-class cl-source-file.lsp
   :pathname "src/"
-  ;;; TODO: the RTs need to be included
-  ;;; RP  Fri Mar 15 15:38:33 2024
-  ;;:in-order-to ((test-op (test-op "slippery-chicken/tests")))
+  ;;; RP  Sun Mar 17 19:32:01 2024
+  :in-order-to ((test-op (test-op "slippery-chicken/tests")))
   :components ((:file "package")
                (:file "cmn" :if-feature :cmn)
                (:file "cmn-glyphs" :if-feature :cmn)
@@ -189,17 +188,18 @@
                ;; RP  Fri Mar 15 23:31:51 2024
                (:file "export-symbols")))
 
-#|
-;;; regression tests
+
+;;; This system does not load any modules but defines a test-op for the
+;;; slippery-chicken system. The test suite itself is located in the tests/
+;;; directory.
+;;; RP  Sun Mar 17 19:33:23 2024
 (defsystem "slippery-chicken/tests"
   :description "Test suite for slippery-chicken."
   :author "Michael Edwards <m@michael-edwards.org>"
   :license "GPL Version 3.0 or later"
   :depends-on ("slippery-chicken")
-  ;;:pathname "tests/"
   :perform (test-op (o c) (symbol-call :slippery-chicken :run-tests)))
-  ;;:components ((:file "tests")))
-|#
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

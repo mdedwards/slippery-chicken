@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  08:04:01 Sun Mar 17 2024 CET
+;;; $$ Last modified:  22:13:39 Sun Mar 17 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8306,6 +8306,15 @@
                cl-user::+slippery-chicken-home-dir+ 
                sf))
 
+;;; LF 2024-03-17 19:40:58
+(sc-deftest test-sndfile-get-sound-info ()
+  (sc-test-check
+    (let ((info (get-sound-info (get-test-sf-path "tests/pink5s.wav"))))
+      ;; because bitdepth seems to be inaccurate with clm, lets not test it...
+      (= 48000 (first info))
+      (= 1 (second info))
+      (equal-within-tolerance 5.00 (fourth info) .001))))
+
 ;;; SAR Mon Apr 16 17:52:23 BST 2012
 #+clm
 (sc-deftest test-sndfile-make-sndfile ()
@@ -15893,6 +15902,13 @@
     (equal-within-tolerance 7440.00002 (mins-secs-to-secs "124:0.00002"))
     ))
 
+;;; LF 2024-03-17 16:16:28
+(sc-deftest test-utilities-agnostic-directory-pathname ()
+  (sc-test-check
+   (equal (agnostic-directory-pathname "/E/code/test.lsp") #P"/E/code/")
+   (equal (agnostic-directory-pathname "e:/code/test.lsp") #P"e:/code/")
+   (equal (agnostic-directory-pathname "e:/code/") #P"e:/code/")))
+
 ;;; SAR Sat May  5 12:17:59 BST 2012
 (sc-deftest test-utilities-string-replace ()
   (sc-test-check
@@ -21151,8 +21167,7 @@ est)")))
            :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
                                       :pitch-seq-palette ((1 2 3 4 5)
                                                           (5 4 3 2 1)))))
-           :rthm-seq-map '((1 ((hrp (seq1 seq1)))))))
-        (bar (make-rthm-seq-bar '((4 4) (w)))))
+           :rthm-seq-map '((1 ((hrp (seq1 seq1))))))))
     (add-mark-to-note sc 1 1 'hrp
                       '(salzedo (1 -1 1 0 1 -1 1)))
     (add-salzedo-pedal (get-nth-event 2

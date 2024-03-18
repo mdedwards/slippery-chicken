@@ -1066,7 +1066,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
   ;; MDE Wed Apr 15 11:14:59 2020 -- handle pathnames if we've used
   ;; e.g. merge-pathnames  
   (when (typep folder 'pathname)
-    (setq folder (directory-namestring folder)))
+    (setq folder (agnostic-directory-pathname folder)))
   (setq insist (force-list insist)
         resist (force-list resist))
   (loop for file in (get-all-files folder skip nil force-quotes)

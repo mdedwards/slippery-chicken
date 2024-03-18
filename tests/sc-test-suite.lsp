@@ -20401,10 +20401,13 @@ est)")))
   (let* ((str1 "/E/samples/kick.wav")
          (str2 "E:/samples/kick.wav"))
     (sc-test-check
-     (equal str1 (os-format-path "/E/samples/kick.wav"))
-     (equal str1 (os-format-path "E:/samples/kick.wav"))
-     (equal str2 (os-format-path "/E/samples/kick.wav" 'windows))
-     (equal str2 (os-format-path "E:/samples/kick.wav" 'windows)))))
+      #-(or win32 win64)(equal str1 (os-format-path "/E/samples/kick.wav"))
+      #-(or win32 win64)(equal str1 (os-format-path "E:/samples/kick.wav"))
+      #+(or win32 win64)(equal str2 (os-format-path "/E/samples/kick.wav"))
+      #+(or win32 win64)(equal str2 (os-format-path "E:/samples/kick.wav"))
+      (equal str2 (os-format-path "/E/samples/kick.wav" 'windows))
+      (equal str2 (os-format-path "E:/samples/kick.wav" 'windows))
+      (equal str1 (os-format-path "E:/samples/kick.wav" 'unix)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; test write-list-to-coll

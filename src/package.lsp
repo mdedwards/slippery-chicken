@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified:  21:50:15 Fri Mar 15 2024 CET
+;;; $$ Last modified:  16:16:27 Mon Mar 18 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,13 +67,17 @@
 (in-package :cm)
 (shadow '(transpose shuffle lowest between invert and add scale))
 
-(in-package :clm)
-(shadow '(add-mark srt statistics scale interpolate))
+#+clm
+(progn 
+  (in-package :clm)
+  (shadow '(add-mark srt statistics scale interpolate)))
 
-(in-package :cmn)
-(shadow '(add-bar beat-duration transpose end-arrow flatten add-clef stack
-          double cmn-display get-rest tie count-notes scale trill lowest
-          highest))
+#+cmn
+(progn
+  (in-package :cmn)
+  (shadow '(add-bar beat-duration transpose end-arrow flatten add-clef stack
+            double cmn-display get-rest tie count-notes scale trill lowest
+            highest)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF package.lsp

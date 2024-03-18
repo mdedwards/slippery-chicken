@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  22:52:17 Fri Mar 15 2024 CET
+;;; $$ Last modified:  13:27:04 Mon Mar 18 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -124,7 +124,7 @@
      ;; call ffprobe (in get-sound-info, when clm is not used).
      ;; The default for Windows works when ffprobe is installed with the
      ;; choco package manager.
-     (ffprobe-command #-(or win32 win64) "/usr/bin/ffprobe"
+     (ffprobe-command #-(or win32 win64) "/usr/local/bin/ffprobe"
       #+(or win32 win64) "C:/ProgramData/chocolatey/bin/ffprobe.exe")
      ;; The default amplitude for all events that don't have amplitude/dynamic
      ;; set via some means such as marks.

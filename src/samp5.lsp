@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  08:04:47 Sun Mar 17 2024 CET
+;;; $$ Last modified:  23:42:41 Mon Mar 18 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,7 +97,32 @@
                        (+ srt (* srt-scaler y))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(definstrument samp5
+;;; MDE Sun Jul 17 10:11:23 2016 -- write .c .o .so etc. files in the bin
+;;; directory. definstrument can handle a :c-file keyword only when a direct
+;;; path is given, i.e. nothing with format or any other function call. Hence
+;;; this macro.
+
+(defmacro defscins (name (&rest args) &body body) ; &environment env)
+  (let ((sccfile
+          ;;#+asdf(format nil "/tmp/~a.c" name)
+          #+asdf(namestring
+                 (asdf:apply-output-translations
+                  (concatenate 'string
+                               (namestring
+                                (asdf:system-relative-pathname
+                                 "slippery-chicken"
+                                 (concatenate 'string
+                                              "src/"
+                                              (write-to-string name))))
+                               ".c")))
+          #-asdf(format nil "~abin/~a.c"
+                  (sc::escape-spaces cl-user::+slippery-chicken-home-dir+)
+                  name)))
+    `(definstrument (,name :c-file ,sccfile)
+         ,args ,@body)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defscins samp5
     (file time &key
           (duration 0)
           (start 0)

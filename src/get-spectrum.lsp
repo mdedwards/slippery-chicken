@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified:  01:47:12 Sun Mar 17 2024 CET
+;;; $$ Last modified:  23:43:44 Mon Mar 18 2024 CET
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -276,7 +276,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;; Hacked code from Bill's san.ins 
-(definstrument spec-an
+(defscins spec-an
     (file &key (fftsize 4096) (max-peaks 200)
           (printing nil) (start-analysis 0.0) (highest-bin (/ fftsize 2)))
   (let* ((fil (open-input* file))

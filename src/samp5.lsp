@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  23:42:41 Mon Mar 18 2024 CET
+;;; $$ Last modified:  23:58:39 Mon Mar 18 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -104,7 +104,6 @@
 
 (defmacro defscins (name (&rest args) &body body) ; &environment env)
   (let ((sccfile
-          ;;#+asdf(format nil "/tmp/~a.c" name)
           #+asdf(namestring
                  (asdf:apply-output-translations
                   (concatenate 'string

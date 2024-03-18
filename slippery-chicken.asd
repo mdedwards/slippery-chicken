@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  23:33:54 Mon Mar 18 2024 CET
+;;; $$ Last modified:  00:52:59 Tue Mar 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -46,19 +46,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defparameter +slippery-chicken-version+ "1.1.0")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; This function is necessary as ASDF's standard compilation routine does
-;;; not work with clm instruments.
-;;; When evaluated during the compile-op :before hook of a system component,
-;;; this preempts ASDF's default compilation procedure
-;;; (i.e. asdf::perform-lisp-compilation).
-;;; RP  Fri Mar 15 18:58:21 2024
-(defun compile-clm-ins (o c)
-  (let ((output (first (asdf::output-files o c))))
-    (compile-file (asdf::component-pathname c)
-                  :output-file output)
-    (load output)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -109,12 +96,8 @@
                (:file "palette")
                (:file "pitch-seq-palette")
                (:file "globals")
-               (:file "samp5" :if-feature :clm
-                :perform (compile-op :before (o c)
-                                     (cl-user::compile-clm-ins o c)))
-               (:file "sine" :if-feature :clm
-                :perform (compile-op :before (o c)
-                                     (cl-user::compile-clm-ins o c)))
+               (:file "samp5" :if-feature :clm)
+               (:file "sine" :if-feature :clm)
                (:file "sc-map")
                (:file "set-map")
                (:file "tempo")
@@ -167,13 +150,9 @@
                #+(and (or linux darwin) sbcl) (:file "osc")
                #+(and (or linux darwin) sbcl) (:file "osc-sc")
                #+(and (or linux darwin) sbcl) (:file "osc-sc-bsd")
-               (:file "get-spectrum" :if-feature :clm
-                :perform (compile-op :before (o c)
-                                     (cl-user::compile-clm-ins o c)))
+               (:file "get-spectrum" :if-feature :clm)
                (:file "spectra")
-               (:file "control-wave-ins" :if-feature :clm
-                :perform (compile-op :before (o c)
-                                     (cl-user::compile-clm-ins o c)))
+               (:file "control-wave-ins" :if-feature :clm)
                (:file "control-wave" :if-feature :clm)
                (:file "wolfram"
                 :perform (compile-op :before (o c)

@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  19:33:24 Sun Mar 17 2024 CET
+;;; $$ Last modified:  18:03:15 Mon Mar 18 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -204,38 +204,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :cl-user)
-
-
-;;; this is a slightly modified version of the function originally placed in
-;;; all.lsp
-;;; RP  Fri Mar 15 21:01:36 2024
-#-allegro-cl-lite
-(defun sc-compile-and-load (file &optional (just-load nil) (dir nil))
-  (declare (special +slippery-chicken-src-path+))
-  (unless dir
-    (setq dir (directory-namestring +slippery-chicken-src-path+)))
-  ;; (print dir)
-  #+allegro
-  (progn
-    (cl-user::chdir +slippery-chicken-src-path+)
-    (setf *default-pathname-defaults* +slippery-chicken-src-path+))
-  (let* ((in (concatenate 'string +slippery-chicken-src-path+ file))
-         (in-sans-ext (concatenate 'string
-                                   (directory-namestring in)
-                                   (pathname-name in)))
-         (out (asdf::apply-output-translations in-sans-ext)))
-    (if just-load
-        (load in)
-        (progn
-          (unless (and (probe-file out)
-                       (> (file-write-date out)
-                          (file-write-date (print in))))
-            (compile-file in :output-file out))
-          (load out)))))
-
-#+allegro-cl-lite
-(defun sc-compile-and-load (file)
-  (load file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; from all.lsp

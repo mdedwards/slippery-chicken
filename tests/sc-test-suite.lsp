@@ -8311,9 +8311,7 @@
   (sc-test-check
     (let ((info (get-sound-info (get-test-sf-path "tests/pink5s.wav"))))
       ;; because bitdepth seems to be inaccurate with clm, lets not test it...
-      (= 48000 (first info))
-      (= 1 (second info))
-      (equal-within-tolerance 5.00 (fourth info) .001))))
+      (equal info '(48000 1 16 5.000021 484098 240001)))))
 
 ;;; SAR Mon Apr 16 17:52:23 BST 2012
 #+clm

@@ -228,13 +228,13 @@
   (declare (ignore ignore))
   ;; just to call the setf method and update to a cscl
   (setf (followers sfe) (followers sfe))
-  #+clm 
   (when (path sfe)
-    (setf (bitrate sfe) (* 8 (clm::sound-datum-size (path sfe)))
-          (srate sfe) (clm::sound-srate (path sfe))
-          ;; (num-frames sfe) (clm::sound-frames (path sfe))
-          (num-frames sfe) (clm::sound-framples (path sfe))
-          (bytes sfe) (clm::sound-length (path sfe)))))
+    (let ((sf-info (get-sound-info (path sfe))))
+      (setf (bitrate sfe) (third sf-info)
+            (srate sfe) (first sf-info)
+	    ;; (num-frames sfe) (clm::sound-frames (path sfe))
+            (num-frames sfe) (sixth sf-info)
+            (bytes sfe) (fifth sf-info)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

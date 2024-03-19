@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  15:19:25 Sun Feb 18 2024 CET
+;;; $$ Last modified:  17:38:52 Mon Mar 18 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -103,7 +103,6 @@
 ;;; NB Although this class is a palette and therefore a subclass of
 ;;; recursive-assoc-list, the sound lists in this case cannot be nested!
 
-#+clm
 (defmethod verify-and-store :after ((sfp sndfile-palette))
   (setf (paths sfp) (loop for path in (paths sfp) 
                        collect (trailing-slash path))

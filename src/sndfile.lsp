@@ -629,31 +629,36 @@ data: /path/to/sndfile-1.aiff
 ;;;   interpret that string as path to the ffprobe executable.
 ;;;
 ;;; RETURN VALUE
-;;; a list containing duration, srate, number of channels and bits per sample as
-;;; numbers
+;;; a list containing duration, srate, number of channels, bits per sample,
+;;; the file size in byte and the number of framples as numbers.
 ;;;
 ;;; SYNOPSIS
 (defun get-sound-info (filename &optional ffprobe)
 ;;; ****
   (when (and filename (probe-file filename))
-    (let ((clm #+clm t #-clm nil))
+    (let ((clm (find :clm *features*)))
       (if (and clm (not ffprobe))
 	  ;; this order is important because ffprobe returns results like this
 	  (list #+clm(clm::sound-srate filename)
 		#+clm(clm::sound-chans filename)
-		#+clm(clm::mus-sound-bits-per-sample filename)
-		#+clm(clm::sound-duration filename))
-	  (string-to-list
-	   (shell-to-string (if (stringp ffprobe)
-				ffprobe
-				(get-sc-config 'ffprobe-command))
-			    "-v" "error" "-select_streams" "a:0"
-			    "-show_entries" "format=duration"
-			    "-show_entries" "stream=sample_rate"
-			    "-show_entries" "stream=channels"
-			    "-show_entries" "stream=bits_per_sample"
-			    "-of" "default=noprint_wrappers=1:nokey=1"
-			    filename))))))
+		#+clm(* (clm::mus-sound-datum-size filename) 8)
+		#+clm(clm::sound-duration filename)
+		#+clm(clm::sound-length filename)
+		#+clm(clm::sound-framples filename))
+	  (let ((result (string-to-list
+			 (shell-to-string
+			  (if (stringp ffprobe)
+			      ffprobe
+			      (get-sc-config 'ffprobe-command))
+			  "-v" "error" "-select_streams" "a:0"
+			  "-show_entries" "format=duration"
+			  "-show_entries" "format=size"
+			  "-show_entries" "stream=sample_rate"
+			  "-show_entries" "stream=channels"
+			  "-show_entries" "stream=bits_per_sample"
+			  "-of" "default=noprint_wrappers=1:nokey=1"
+			  filename))))
+	    (append result `(,(round (* (nth 0 result) (nth 3 result))))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

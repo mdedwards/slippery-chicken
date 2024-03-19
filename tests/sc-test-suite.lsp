@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:40:57 Tue Mar 19 2024 CET
+;;; $$ Last modified:  17:28:59 Tue Mar 19 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19474,9 +19474,9 @@ est)")))
       (= 1.1 (end sf1))
       (= 653 (frequency sf1))
       (= 1 (channels sf1))
-      (= 24 (bitrate sf1))
+      (= 24 (bit-depth sf1))
       (= 44100 (srate sf1))
-      (= 16 (bitrate sf2))
+      (= 16 (bit-depth sf2))
       (= 190518 (bytes sf2))
       (= 95232 (num-frames sf2))
       (string= "curve: 3: rising then falling"

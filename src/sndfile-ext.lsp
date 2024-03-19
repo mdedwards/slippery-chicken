@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  18:46:41 Sat Mar 16 2024 CET
+;;; $$ Last modified:  17:29:57 Tue Mar 19 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,8 +60,10 @@
   ((use :accessor use :type boolean :initarg :use :initform t)
    (cue-num :accessor cue-num :type int :initarg :cue-num :initform -1)
    (loop-it :accessor loop-it :type boolean :initarg :loop-it :initform nil)
-   ;; the bit rate of the sound (16, 24...)
-   (bitrate :accessor bitrate :type integer :initarg :bitrate :initform -1)
+   ;; the bit rate of the sound (16, 24...). This doesn't capture whether the
+   ;; data type is integer or floating-point as yet 
+   (bit-depth :accessor bit-depth :type integer :initarg :bit-depth
+              :initform -1)
    ;; the sampling rate of the sound file (44100, 48000...)
    (srate :accessor srate :type integer :initarg :srate :initform -1)
    ;; the number of sample frames (one 16 bit sample if mono, two
@@ -230,9 +232,9 @@
   (setf (followers sfe) (followers sfe))
   (when (path sfe)
     (let ((sf-info (get-sound-info (path sfe))))
-      (setf (bitrate sfe) (third sf-info)
+      (setf (bit-depth sfe) (third sf-info)
             (srate sfe) (first sf-info)
-	    ;; (num-frames sfe) (clm::sound-frames (path sfe))
+            ;; (num-frames sfe) (clm::sound-frames (path sfe))
             (num-frames sfe) (sixth sf-info)
             (bytes sfe) (fifth sf-info)))))
 
@@ -264,7 +266,7 @@
           (slot-value sf 'volume) (volume sfe)
           (slot-value sf 'volume-curve) (volume-curve sfe)
           (slot-value sf 'loop-it) (loop-it sfe)
-          (slot-value sf 'bitrate) (bitrate sfe)
+          (slot-value sf 'bit-depth) (bit-depth sfe)
           (slot-value sf 'srate) (srate sfe)
           (slot-value sf 'num-frames) (num-frames sfe)
           (slot-value sf 'bytes) (bytes sfe)
@@ -284,14 +286,14 @@
                     ~%             harmonicity: ~a, harmonicity-curve: ~a, ~
                     volume: ~a, ~
                     ~%             volume-curve: ~a, loop-it: ~a, ~
-                    bitrate: ~a, srate: ~a, ~
+                    bit-depth: ~a, srate: ~a, ~
                     ~%             num-frames: ~a, bytes: ~a, group-id: ~a~
                     ~%             followers (ids): ~a"
           (use sfe) (cue-num sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
           (bandwidth-curve sfe) (continuity sfe) (continuity-curve sfe)
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
           (harmonicity sfe) (harmonicity-curve sfe) (volume sfe)
-          (volume-curve sfe) (loop-it sfe) (bitrate sfe) (srate sfe)
+          (volume-curve sfe) (loop-it sfe) (bit-depth sfe) (srate sfe)
           (num-frames sfe) (bytes sfe) (group-id sfe)
           (when (followers sfe)
             (loop for sf in (data (followers sfe)) collect 
@@ -603,7 +605,7 @@ NIL
            :energy-curve (energy-curve sfe) :harmonicity (harmonicity sfe)
            :harmonicity-curve (harmonicity-curve sfe) :volume (volume sfe)
            :volume-curve (volume-curve sfe) :loop-it (loop-it sfe)
-           :bitrate (bitrate sfe) :srate (srate sfe)
+           :bit-depth (bit-depth sfe) :srate (srate sfe)
            :num-frames (num-frames sfe) :bytes (bytes sfe)
            :followers (followers sfe) :group-id (group-id sfe)))))
 
@@ -617,7 +619,7 @@ NIL
 ;;; Make a sndfile-ext (extension of sndfile) object which holds the usual
 ;;; sndfile data as well as a host of others to do with the characteristics of
 ;;; the sound file.  In addition, the followers slot specifies sound files
-;;; which can follow the current one.  The bitrate, srate, num-frames, and
+;;; which can follow the current one.  The bit-depth, srate, num-frames, and
 ;;; bytes slots will be filled automatically if the path to an existing sound
 ;;; file is given.
 ;;; 
@@ -637,7 +639,7 @@ NIL
                                 (weight-curve -1)
                                 (energy -1) (energy-curve -1) (harmonicity -1)
                                 (harmonicity-curve -1) (volume -1)
-                                (volume-curve -1) (loop-it nil) (bitrate -1)
+                                (volume-curve -1) (loop-it nil) (bit-depth -1)
                                 (srate -1) (num-frames -1)
                                 (bytes -1) followers group-id)
 ;;; ****
@@ -673,7 +675,7 @@ NIL
                   (loop-it sf) loop-it
                   ;; bear in mind that these data will be changed by the update
                   ;; method  
-                  (bitrate sf) bitrate
+                  (bit-depth sf) bit-depth
                   (srate sf) srate
                   (num-frames sf) num-frames
                   (bytes sf) bytes

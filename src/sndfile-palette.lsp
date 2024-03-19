@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  17:38:52 Mon Mar 18 2024 CET
+;;; $$ Last modified:  17:26:57 Tue Mar 19 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -895,7 +895,7 @@ SNDFILE-EXT: use: T, cue-num: 2, pitch: -1, pitch-curve: -1, bandwidth: -1,
              bandwidth-curve: -1, continuity: -1, continuity-curve: -1, 
              weight: -1, weight-curve: -1, energy: -1, energy-curve: -1, 
              harmonicity: -1, harmonicity-curve: -1, volume: -1, 
-             volume-curve: -1, loop-it: NIL, bitrate: 24, srate: 96000, 
+             volume-curve: -1, loop-it: NIL, bit-depth: 24, srate: 96000, 
              num-frames: 1719753, bytes: 5159314, group-id: (1)
              followers: NIL
 

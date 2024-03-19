@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  10:46:40 Tue Mar 19 2024 CET
+;;; $$ Last modified:  15:36:09 Tue Mar 19 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -121,6 +121,7 @@
     `(definstrument (,name :c-file ,sccfile)
          ,args ,@body)))
 
+;; (setf *clm-c-directory* "/tmp/")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defscins samp5
     (file time &key

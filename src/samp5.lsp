@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  23:58:39 Mon Mar 18 2024 CET
+;;; $$ Last modified:  10:46:40 Tue Mar 19 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -103,8 +103,8 @@
 ;;; this macro.
 
 (defmacro defscins (name (&rest args) &body body) ; &environment env)
-  (let ((sccfile
-          #+asdf(namestring
+  (let ((sccfile (format nil "~a~a.c" (sc::get-sc-config 'tmp-dir) name)))
+          #|#+asdf(namestring
                  (asdf:apply-output-translations
                   (concatenate 'string
                                (namestring
@@ -116,7 +116,8 @@
                                ".c")))
           #-asdf(format nil "~abin/~a.c"
                   (sc::escape-spaces cl-user::+slippery-chicken-home-dir+)
-                  name)))
+          name)))
+          |#
     `(definstrument (,name :c-file ,sccfile)
          ,args ,@body)))
 

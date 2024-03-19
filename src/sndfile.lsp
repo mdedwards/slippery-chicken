@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  15:45:43 Sat Mar 16 2024 CET
+;;; $$ Last modified:  11:00:31 Tue Mar 19 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -300,7 +300,7 @@ T
         ;; (setf (frequency sf) freq))))
         (setf (slot-value sf 'frequency) freq))))
   (let* ((path (path sf))
-	 (sf-info (get-sound-info path)))
+         (sf-info (get-sound-info path)))
     (when path
       (unless (and path (probe-file path))
         (error "sndfile::update: ~
@@ -313,8 +313,8 @@ T
         (setf (slot-value sf 'data) path))
       ;; LF 2024-03-17 19:24:43 updated this for #'get-sound-info
       (when sf-info
-	(setf (snd-duration sf) (fourth sf-info)
-	      (channels sf) (second sf-info)))
+        (setf (snd-duration sf) (fourth sf-info)
+              (channels sf) (second sf-info)))
       (cond ((and (not (end sf)) (duration sf))
              (set-end sf))
             ((and (not (duration sf)) (end sf)) 
@@ -638,27 +638,27 @@ data: /path/to/sndfile-1.aiff
   (when (and filename (probe-file filename))
     (let ((clm (find :clm *features*)))
       (if (and clm (not ffprobe))
-	  ;; this order is important because ffprobe returns results like this
-	  (list #+clm(clm::sound-srate filename)
-		#+clm(clm::sound-chans filename)
-		#+clm(* (clm::mus-sound-datum-size filename) 8)
-		#+clm(clm::sound-duration filename)
-		#+clm(clm::sound-length filename)
-		#+clm(clm::sound-framples filename))
-	  (let ((result (string-to-list
-			 (shell-to-string
-			  (if (stringp ffprobe)
-			      ffprobe
-			      (get-sc-config 'ffprobe-command))
-			  "-v" "error" "-select_streams" "a:0"
-			  "-show_entries" "format=duration"
-			  "-show_entries" "format=size"
-			  "-show_entries" "stream=sample_rate"
-			  "-show_entries" "stream=channels"
-			  "-show_entries" "stream=bits_per_sample"
-			  "-of" "default=noprint_wrappers=1:nokey=1"
-			  filename))))
-	    (append result `(,(round (* (nth 0 result) (nth 3 result))))))))))
+          ;; this order is important because ffprobe returns results like this
+          (list #+clm(clm::sound-srate filename)
+                #+clm(clm::sound-chans filename)
+                #+clm(* (clm::mus-sound-datum-size filename) 8)
+                #+clm(clm::sound-duration filename)
+                #+clm(clm::sound-length filename)
+                #+clm(clm::sound-framples filename))
+          (let ((result (string-to-list
+                         (shell-to-string
+                          (if (stringp ffprobe)
+                              ffprobe
+                              (get-sc-config 'ffprobe-command))
+                          "-v" "error" "-select_streams" "a:0"
+                          "-show_entries" "format=duration"
+                          "-show_entries" "format=size"
+                          "-show_entries" "stream=sample_rate"
+                          "-show_entries" "stream=channels"
+                          "-show_entries" "stream=bits_per_sample"
+                          "-of" "default=noprint_wrappers=1:nokey=1"
+                          filename))))
+            (econs result (round (* (nth 0 result) (nth 3 result)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

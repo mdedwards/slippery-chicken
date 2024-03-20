@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  16:59:47 Wed Mar 20 2024 CET
+;;; $$ Last modified:  18:14:32 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -241,7 +241,7 @@
   (declare (ignore ignore))
   ;; (print sfe)
   ;; (when (path sfe)
-  (let ((sf-info (get-sound-info (path sfe))))
+  (let ((sf-info (get-sound-info (path sfe) (force-ffprobe sfe))))
     ;; (print sf-info)
     (call-next-method sfe :sinfo sf-info)
     (setf (bit-depth sfe) (third sf-info)
@@ -646,6 +646,7 @@ NIL
                               (frequency nil) (amplitude 1.0) (cue-num -1)
                               (use t) (pitch -1) (pitch-curve -1)
                               (bandwidth -1)
+                              (force-ffprobe nil)
                               (bandwidth-curve -1) (continuity -1)
                               (continuity-curve -1) (weight -1)
                               (weight-curve -1)
@@ -670,6 +671,7 @@ NIL
        :use use 
        :cue-num cue-num
        :pitch pitch
+       :force-ffprobe force-ffprobe
        :pitch-curve pitch-curve
        :bandwidth bandwidth
        :bandwidth-curve bandwidth-curve

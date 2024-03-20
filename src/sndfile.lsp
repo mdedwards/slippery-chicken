@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  17:07:09 Wed Mar 20 2024 CET
+;;; $$ Last modified:  18:15:41 Wed Mar 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -89,6 +89,9 @@
    ;; tells us whether this was done and so avoids endless back-and-forths when
    ;; calling the setf methods.
    (data-consistent :accessor data-consistent :initform nil)
+   ;; MDE Wed Mar 20 18:05:50 2024, Heidhausen
+   (force-ffprobe :accessor force-ffprobe :type boolean
+                  :initarg :force-ffprobe :initform nil)
    ;; for some purposes (like incrementing start-time) it's useful to know how
    ;; many times a sound will be used and has been used.
    (will-be-used :accessor will-be-used :initform 0)
@@ -113,6 +116,7 @@
           (slot-value named-object 'amplitude ) (amplitude sf)         
           (slot-value named-object 'frequency )
           (basic-copy-object (frequency sf))
+          (slot-value named-object 'force-ffprobe) (force-ffprobe sf)
           (slot-value named-object 'data-consistent ) (data-consistent sf)     
           (slot-value named-object 'will-be-used ) (will-be-used sf)
           (slot-value named-object 'has-been-used ) (has-been-used sf)
@@ -147,15 +151,14 @@
                     ~%         snd-duration: ~a, channels: ~a, frequency: ~a~
                     ~%         start: ~a, end: ~a, amplitude: ~a, duration: ~a~
                     ~%         will-be-used: ~a, has-been-used: ~a~
-                    ~%         data-consistent: ~a, description: ~a"
+                    ~%         data-consistent: ~a, description: ~a~
+                    ~%         force-ffprobe: ~a" 
           (path sf) (snd-duration sf) (channels sf) (frequency sf) (start sf)
           (end sf) (amplitude sf) (duration sf) (will-be-used sf)
-          (has-been-used sf) (data-consistent sf) (description sf)))
+          (has-been-used sf) (data-consistent sf) (description sf)
+          (force-ffprobe sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Apr 16 18:29:55 BST 2012: Added robodoc entry
-
 ;;; ****m* sndfile/stereo
 ;;; DESCRIPTION
 ;;; Test whether the CHANNELS slot of a given sndfile object is set to 2.
@@ -307,7 +310,7 @@ T
         (setf (slot-value sf 'frequency) freq))))
   ;; (print sinfo)
   (let* ((path (path sf))
-         (sf-info (if sinfo sinfo (get-sound-info path))))
+         (sf-info (if sinfo sinfo (get-sound-info path (force-ffprobe sf)))))
     (when path
       (unless (and path (probe-file path))
         (error "sndfile::update: ~
@@ -568,6 +571,7 @@ data: /path/to/sndfile-1.aiff
 |#
 ;;; SYNOPSIS
 (defun make-sndfile (path &key id data duration end (start 0.0)
+                          (force-ffprobe nil)
                           (frequency nil)
                           (amplitude 1.0)
                           (angle-env '(0 0  100 0))
@@ -670,6 +674,7 @@ data: /path/to/sndfile-1.aiff
                           "-show_entries" "stream=bits_per_sample"
                           "-of" "default=noprint_wrappers=1:nokey=1"
                           filename))))
+            ;; (print result)
             (econs result (round (* (nth 0 result) (nth 3 result)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

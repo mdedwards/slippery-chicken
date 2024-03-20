@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:48:19 Wed Mar 20 2024 CET
+;;; $$ Last modified:  18:19:52 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19436,7 +19436,21 @@ est)")))
     ;; (print sf1)
     (max-cue sf1)))
 
-
+;;; MDE Wed Mar 20 18:12:26 2024, Heidhausen 
+(sc-deftest test-sndfile-ext-force-ffprobe ()
+  (let ((sf1 (make-sndfile-ext 
+              (concatenate 'string
+                           cl-user::+slippery-chicken-home-dir+ 
+                           "tests/sndfile-1.aiff")
+              :force-ffprobe t :start 0.3 :end 1.1 :frequency 653)))
+    (sc-test-check
+      (= 0.3 (start sf1))
+      (= 1.1 (end sf1))
+      (= 653 (frequency sf1))
+      (= 1 (channels sf1))
+      (= 24 (bit-depth sf1))
+      (= 44100 (srate sf1)))))
+  
 ;;; MDE Sun Dec 16 13:37:20 2012, Koh Mak, Thailand :)
 #+clm
 (sc-deftest test-sndfile-ext ()
@@ -21224,6 +21238,24 @@ est)")))
       #+cmn (file-write-ok "/tmp/salzedo-marks.eps")))
   (set-sc-config 'xml-salzedo-as-text t))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Mar 20 17:52:34 2024, Heidhausen
+(sc-deftest test-vidfile ()
+  (let* ((v1 (make-vidfile (file-from-sc-dir
+                            "tests/test-videos/SampleVideo_720x480_1mb.mp4")))
+         (v2 (make-vidfile (file-from-sc-dir
+                            "tests/test-videos/sample-file-sd.mov"))))
+    (sc-test-check
+      (vidfile-p v1) ;(print v1))
+      (vidfile-p v2) ;(print v2))
+      (equal-within-tolerance (snd-duration v1) 5.802 .001)
+      (equal-within-tolerance (snd-duration v2) 60.48 .001)
+      (= 6 (channels v1))
+      (= 2 (channels v2))
+      (= 48000 (srate v1))
+      (= 48000 (srate v2))
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

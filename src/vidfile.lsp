@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    19th March 2024, Heidhausen, Germany
 ;;;
-;;; $$ Last modified:  09:48:38 Wed Mar 20 2024 CET
+;;; $$ Last modified:  18:10:26 Wed Mar 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -67,6 +67,8 @@
                  :initform -1)
    (dimensions-y :accessor dimensions-y :type integer :initarg :dimensions-y
                  :initform -1)
+   ;; from sndfile class, where it's nil
+   (force-ffprobe :initform t)
    ;; we'd prefer via codec_type data from ffprobe but failing that we can guess
    ;; via the file's extension
    (extensions :accessor extensions :type list :initarg :extensions
@@ -127,7 +129,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; whether a file is a video, not an object (that's below)
 (defun video-file-p (path &optional warn)
-  (when (and path (probe-file filename))
+  (when (and path (probe-file oath))
     (or (video-file-codec-p path)
         (progn
           (when warn

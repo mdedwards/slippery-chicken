@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  18:06:55 Tue Mar 19 2024 CET
+;;; $$ Last modified:  18:33:24 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -54,6 +54,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; a single item/clip/sound object on a track
+;;; todo: make this a subclass of vidfile
+;;;       change reaper-item.txt to use ~a instead of WAVE and have the item
+;;;       write WAVE or VIDEO
 (defclass reaper-item (sndfile)
   ((istring :accessor istring :type string :allocation :class
             ;; read in the text for an item

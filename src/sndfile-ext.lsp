@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  17:29:57 Tue Mar 19 2024 CET
+;;; $$ Last modified:  18:01:38 Tue Mar 19 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,6 +64,8 @@
    ;; data type is integer or floating-point as yet 
    (bit-depth :accessor bit-depth :type integer :initarg :bit-depth
               :initform -1)
+   ;; MDE Tue Mar 19 17:34:05 2024, Heidhausen -- kilibytes per second (bitrate)
+   (kbs :accessor kbs :type integer :initarg :kbs :initform -1)
    ;; the sampling rate of the sound file (44100, 48000...)
    (srate :accessor srate :type integer :initarg :srate :initform -1)
    ;; the number of sample frames (one 16 bit sample if mono, two
@@ -267,6 +269,7 @@
           (slot-value sf 'volume-curve) (volume-curve sfe)
           (slot-value sf 'loop-it) (loop-it sfe)
           (slot-value sf 'bit-depth) (bit-depth sfe)
+          (slot-value sf 'kbs) (kbs sfe)
           (slot-value sf 'srate) (srate sfe)
           (slot-value sf 'num-frames) (num-frames sfe)
           (slot-value sf 'bytes) (bytes sfe)
@@ -284,7 +287,7 @@
                     ~%             weight: ~a, weight-curve: ~a, energy: ~a, ~
                     energy-curve: ~a, ~
                     ~%             harmonicity: ~a, harmonicity-curve: ~a, ~
-                    volume: ~a, ~
+                    volume: ~a, kbs: ~a ~
                     ~%             volume-curve: ~a, loop-it: ~a, ~
                     bit-depth: ~a, srate: ~a, ~
                     ~%             num-frames: ~a, bytes: ~a, group-id: ~a~
@@ -292,7 +295,7 @@
           (use sfe) (cue-num sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
           (bandwidth-curve sfe) (continuity sfe) (continuity-curve sfe)
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
-          (harmonicity sfe) (harmonicity-curve sfe) (volume sfe)
+          (harmonicity sfe) (harmonicity-curve sfe) (volume sfe) (kbs sfe)
           (volume-curve sfe) (loop-it sfe) (bit-depth sfe) (srate sfe)
           (num-frames sfe) (bytes sfe) (group-id sfe)
           (when (followers sfe)
@@ -302,7 +305,6 @@
                    sf)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/get-next
 ;;; DESCRIPTION
 ;;; Get the next sound file from the <followers> slot.
@@ -344,7 +346,6 @@
     (reset (followers sfe) where warn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/proximity
 ;;; DESCRIPTION
 ;;; In terms of the characteristics expressed in the various class slots,
@@ -411,7 +412,6 @@
            (/ prox slots-compared)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/set-characteristic
 ;;; DESCRIPTION
 ;;; Set the chracteristic of a sndfile-ext object to a given value.  The value
@@ -532,7 +532,6 @@ NIL
                 (* 1000.0 fd) (* 1000.0 fade-out) sn (amplitude sfe)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/max-cue
 ;;; DESCRIPTION
 ;;; Generate the data necessary to preload the sound file in a MaxMSP sflist~
@@ -684,6 +683,10 @@ NIL
       ;; have to call this here because clone init'ed with all slots NIL
       (when sf (update sf))
       sf)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun sndfile-ext-p (candidate)
+  (typep candidate 'sndfile-ext))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sndfile-ext.lsp

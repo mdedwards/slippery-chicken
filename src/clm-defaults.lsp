@@ -11,11 +11,18 @@
       ;;clm-header-type mus-aiff
       *clm-data-format* mus-lfloat
       ;; we might want to delete this automatically at logout...
-      *clm-file-name* (concatenate 'string
-                                   (slippery-chicken::get-sc-config 'default-dir)
-                                   "clm-"
-                                   (slippery-chicken::now-string)
-                                   ".wav")
+      *clm-file-name*
+      (concatenate 'string
+                   (slippery-chicken::get-sc-config 'default-dir)
+                   "clm-"
+                   (slippery-chicken::now-string)
+                   ".wav")
+      ;; MDE Wed Mar 20 09:43:40 2024, Heidhausen --  this is the new variable I
+      ;; suggested to Bill so that we can define in which directory .c. and .o
+      ;; files should be written. This way we can avoid having to use decscins
+      ;; and /or :c-file strategies in instruments that may not even belong to
+      ;; us 
+      *clm-c-directory* (sc::get-sc-config 'tmp-dir)
       ;; constant power panning
       *clm-locsig-type* mus-interp-sinusoidal
       *clm-reverb-channels* 2

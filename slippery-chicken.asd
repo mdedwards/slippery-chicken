@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  00:52:59 Tue Mar 19 2024 CET
+;;; $$ Last modified:  09:45:11 Wed Mar 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -96,6 +96,8 @@
                (:file "palette")
                (:file "pitch-seq-palette")
                (:file "globals")
+               (:file "clm-defaults" :if-feature :clm)
+               (:file "clm" :if-feature :clm)
                (:file "samp5" :if-feature :clm)
                (:file "sine" :if-feature :clm)
                (:file "sc-map")
@@ -120,6 +122,7 @@
                (:file "pitch-seq")
                (:file "sndfile")
                (:file "sndfile-ext")
+               (:file "vidfile")
                (:file "sndfile-palette")
                (:file "sndfilenet")
                (:file "rthm-seq")
@@ -137,8 +140,6 @@
                (:file "slippery-chicken")
                (:file "piece")
                (:file "slippery-chicken-edit")
-               (:file "clm-defaults" :if-feature :clm)
-               (:file "clm" :if-feature :clm)
                (:file "permutations")
                (:file "rthm-chain")
                (:file "rthm-chain-slow")

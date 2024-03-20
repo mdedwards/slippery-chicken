@@ -19,9 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  11:00:31 Tue Mar 19 2024 CET
-;;;
-;;; SVN ID: $Id$
+;;; $$ Last modified:  10:45:36 Wed Mar 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -422,31 +420,28 @@ T
 (defmethod centroid ((sf sndfile))
 ;;; ****
   (with-slots ((cd centroid)) sf
-    (flet ((warnsc ()
-             (warn "sndfile::centroid: the CLM instrument ~
-                    scentroid.ins needs to be loaded in order for this ~
-                    function to work. Returning 0 as default")
-             0))
-      ;; if it's already been calculated, just return it
-      (if cd
-          cd
-          #+clm
-          (if (fboundp 'clm::scentroid)
-              (setf cd
-                    (let* ((centroids (clm::scentroid (path sf)
-                                                      :beg (start sf)
-                                                      :dur (duration sf)))
-                           (just-ys (remove-if
-                                     ;; don't use spectral frames with rms
-                                     ;; values lower than the threshold
-                                     ;; (centroid = 0) in the averaging
-                                     #'(lambda (x)
-                                         (equal-within-tolerance x 0.0))
-                                     (loop for y in (rest centroids)
-                                           by #'cddr collect y))))
-                      (average just-ys)))
-              (warnsc))
-      #-clm (warnsc)))))
+    ;; if it's already been calculated, just return it
+    (if cd
+      cd
+      #+clm
+      (progn 
+        (get-clm-ins 'clm::scentroid "scentroid.ins")
+        (setf cd
+              (let* ((centroids (clm::scentroid (path sf)
+                                                :beg (start sf)
+                                                :dur (duration sf)))
+                     (just-ys (remove-if
+                               ;; don't use spectral frames with rms
+                               ;; values lower than the threshold
+                               ;; (centroid = 0) in the averaging
+                               #'(lambda (x)
+                                   (equal-within-tolerance x 0.0))
+                               (loop for y in (rest centroids)
+                                     by #'cddr collect y))))
+                (average just-ys))))
+      #-clm                             ; return 0
+      (progn (no-clm 'centroid)
+             0))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -639,12 +634,12 @@ data: /path/to/sndfile-1.aiff
     (let ((clm (find :clm *features*)))
       (if (and clm (not ffprobe))
           ;; this order is important because ffprobe returns results like this
-          (list #+clm(clm::sound-srate filename)
-                #+clm(clm::sound-chans filename)
-                #+clm(* (clm::mus-sound-datum-size filename) 8)
-                #+clm(clm::sound-duration filename)
-                #+clm(clm::sound-length filename)
-                #+clm(clm::sound-framples filename))
+          (list (clm::sound-srate filename)
+                (clm::sound-chans filename)
+                (* (clm::mus-sound-datum-size filename) 8)
+                (clm::sound-duration filename)
+                (clm::sound-length filename)
+                (clm::sound-framples filename))
           (let ((result (string-to-list
                          (shell-to-string
                           (if (stringp ffprobe)
@@ -661,28 +656,45 @@ data: /path/to/sndfile-1.aiff
             (econs result (round (* (nth 0 result) (nth 3 result)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun autoc-get-fundamental (file start duration)
-  (flet ((warnac ()
-           (warn "sndfile::autoc-get-fundamental: the CLM instrument ~
-                  autoc.ins needs to be loaded in order for this function ~
-                  to work. Returning 'C4 as default")
-           (note-to-freq 'c4)))
-    #+clm
-    (if (fboundp 'clm::autoc)
-        (let* ((penv (clm::autoc file :beg start :post-process t :min-freq 30
-                                 :dur duration :db-floor -60))
-               (y (loop for y in (cdr penv) by #'cddr collect y))
-               (avg (/ (apply #'+ y) (length y))))
-          ;; (format t "~%average pitch: ~F~%" avg)
-          avg)
-        (warnac))
-    #-clm (warnac)))
+  #+clm
+  (progn 
+    ;; MDE Wed Mar 20 09:56:51 2024, Heidhausen -- we can auto-load from the
+    ;; clm directory using clm's *clm-source-directory*
+    (get-clm-ins 'clm::autoc "autoc.ins")
+    (let* ((penv (clm::autoc file :beg start :post-process t :min-freq 30
+                                  :dur duration :db-floor -60))
+           (y (loop for y in (cdr penv) by #'cddr collect y))
+           (avg (/ (apply #'+ y) (length y))))
+      ;; (format t "~%average pitch: ~F~%" avg)
+      avg))
+  #-clm (progn (no-clm 'autoc-get-fundamental)
+               'c4)) ; return 'c4 for all if we can't do the DSP
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sndfile-p (candidate)
   (typep candidate 'sndfile))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Mar 19 18:33:40 2024, Heidhausen -- search for a string match of
+;;; e.g. "video" "audio" (noting that "audio" will also be in video files so be
+;;; specific if necesssary
+(defun codec-type-p (path type)
+  (when (and path (probe-file path))
+    (let* ((ffprobe (get-sc-config 'ffprobe-command)))
+      (if (probe-file ffprobe)
+        (let ((ffps (shell-to-string
+                     ffprobe "-loglevel" "error" "-show_entries"
+                     "stream=codec_type" "-of" "default=nw=1" path)))
+          (numberp (search (format nil "codec_type=~a" type) ffps)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; note that unlike vidfile we don't test by extension here (but unlike vidfile
+;;; this is not used at present, it's just there for future use, if anyone needs
+;;; it).
+(defun sound-file-p (path)
+  (codec-type-p path "audio"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sndfile.lsp

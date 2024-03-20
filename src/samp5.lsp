@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  15:54:33 Tue Mar 19 2024 CET
+;;; $$ Last modified:  09:51:04 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,33 +97,7 @@
                        (+ srt (* srt-scaler y))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Sun Jul 17 10:11:23 2016 -- write .c .o .so etc. files in the bin
-;;; directory. definstrument can handle a :c-file keyword only when a direct
-;;; path is given, i.e. nothing with format or any other function call. Hence
-;;; this macro.
-
-(defmacro defscins (name (&rest args) &body body) ; &environment env)
-  (let ((sccfile (format nil "~a~a.c" (sc::get-sc-config 'tmp-dir) name)))
-          #|#+asdf(namestring
-                 (asdf:apply-output-translations
-                  (concatenate 'string
-                               (namestring
-                                (asdf:system-relative-pathname
-                                 "slippery-chicken"
-                                 (concatenate 'string
-                                              "src/"
-                                              (write-to-string name))))
-                               ".c")))
-          #-asdf(format nil "~abin/~a.c"
-                  (sc::escape-spaces cl-user::+slippery-chicken-home-dir+)
-          name)))
-          |#
-    `(definstrument (,name :c-file ,sccfile)
-         ,args ,@body)))
-
-;; (setf *clm-c-directory* (sc::get-sc-config 'tmp-dir))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defscins samp5
+(definstrument samp5
     (file time &key
           (duration 0)
           (start 0)

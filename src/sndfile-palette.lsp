@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  17:26:57 Tue Mar 19 2024 CET
+;;; $$ Last modified:  16:58:25 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,14 +105,14 @@
 
 (defmethod verify-and-store :after ((sfp sndfile-palette))
   (setf (paths sfp) (loop for path in (paths sfp) 
-                       collect (trailing-slash path))
+                          collect (trailing-slash path))
         ;; MDE Wed Jun 12 13:49:33 2013 -- to avoid duplicate path errors
         (paths sfp) (remove-duplicates (paths sfp) :test #'string=))
   ;; (print (data sfp))
   (loop with sfe
-     for sflist in (data sfp)
-     for i from 0 do
-       (loop for snd in (data sflist) and j from 0 do 
+        for sflist in (data sfp)
+        for i from 0 do
+          (loop for snd in (data sflist) and j from 0 do 
             (setf sfe
                   ;; MDE Fri Oct  5 13:57:51 2012 -- if it's already a sndfile
                   ;; (as when combining palettes) then don't try to re-parse it 
@@ -124,12 +124,19 @@
                     ;; need to find the sound though, hence the funny list arg
                     ;; passed to make-sndfile.
                     (list
-                     ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
-                     (make-sndfile-ext (list (find-sndfile sfp (first snd))
-                                             snd)))
+                       ;; (print 'sfp-vns-list)
+                       ;; (print snd)
+                       ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
+                       (make-sndfile-ext
+                        (cons (find-sndfile sfp (first snd))
+                              ;; MDE Wed Mar 20 16:47:17 2024, Heidhausen --
+                              ;; this would be the case if e.g. we were reading
+                              ;; in an sfp that was written with print-for-init
+                              (append (unless (member :id snd)
+                                        (list :id (first snd)))
+                                      (rest snd)))))
                     ;; if it wasn't a list, just find the sound and pass this
-                    ;; and the given name which also acts as the id per
-                    ;; default. 
+                    ;; and the given name which also acts as the id per default.
                     ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
                     (t (make-sndfile-ext
                         (find-sndfile sfp snd) :id snd
@@ -143,7 +150,7 @@
               (setf (nth j (data (nth i (data sfp)))) sfe))))
   ;; MDE Fri Dec 21 17:59:02 2018 -- if we couldn't find a sndfile, remove it
   (loop for sflist in (data sfp) do
-       (setf (data sflist) (remove-if-not #'sndfile-p (data sflist))))
+    (setf (data sflist) (remove-if-not #'sndfile-p (data sflist))))
   ;; MDE Fri Jan  4 10:10:22 2013 
   (setf (num-snds sfp) (count-snds sfp))
   sfp)
@@ -166,8 +173,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Thu May  3 12:51:13 BST 2012: Added/edited robodoc entry
-
 ;;; MDE's original comment:
 ;;; find a sound file in any of the directories given in the paths slot, not
 ;;; necessarily including those in the palette itself!!!  

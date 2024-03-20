@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:28:59 Tue Mar 19 2024 CET
+;;; $$ Last modified:  16:48:19 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -14601,7 +14601,7 @@
                '((sndfile-group-1
                   (test-sndfile-1))
                  (sndfile-group-2
-                  (test-sndfile-2 test-sndfile-3 no-file
+                  (test-sndfile-2 test-sndfile-3 no-file ; <-- test warning
                    (test-sndfile-4 :frequency 261.61)))
                  (sndfile-group-3
                   ((test-sndfile-5 :start 0.006 :end 0.182) 
@@ -14933,6 +14933,7 @@
       ;; nil so won't be issued a cue num
       (equalp 'test-sndfile-6 (id (get-snd-with-cue-num sfn 5)))
       (not (use sf5))
+      ;; (print sf5)
       (= 1 (sclist-length (followers sf5)))
       (equalp 'test-sndfile-6 (id (get-next sf5)))
       (setf (followers sf5) '((sndfile-group-1 test-sndfile-1)

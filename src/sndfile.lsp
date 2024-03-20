@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  10:45:36 Wed Mar 20 2024 CET
+;;; $$ Last modified:  16:59:19 Wed Mar 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -129,10 +129,15 @@
   (setf (slot-value sf 'start) (mins-secs-to-secs (start sf))
         (slot-value sf 'end) (mins-secs-to-secs (end sf))
         (slot-value sf 'duration) (mins-secs-to-secs (duration sf)))
-  (when (and (duration sf) (end sf))
-    (error "sndfile::initialize-instance: ~
-            The Duration and End slots cannot both be specified! ~%~a" 
-           sf))
+  ;; MDE Wed Mar 20 16:11:21 2024, Heidhausen -- special case: when reading in
+  ;; an sfp that was written to a file via print-for-init, both duration and end
+  ;; will be present so we can no longer reliably do this test :/ We'll have to
+  ;; hope for the user taking care instead
+  (when (and nil (duration sf) (end sf))
+    (error "sndfile::initialize-instance: The duration (~a) and end (~a) ~
+            ~%slots can't both be specified! ~%~a"
+           (duration sf) (end sf) sf))
+  ;; (print '------------------) (print sf)
   (update sf))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -278,9 +283,12 @@ T
   (update sf))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod update ((sf sndfile) &key ignore)
-  (declare (ignore ignore))
+;;; MDE Wed Mar 20 11:34:44 2024, Heidhausen -- bit ugly this but if we don't
+;;; have CLM then we'll use ffprobe and thus have the overhead of using a shell
+;;; call. Because the sndfile-ext slots need such info as well as this class,
+;;; we'll use a before method in the child, call the fun and pass it here so we
+;;; don't have to call shell again
+(defmethod update ((sf sndfile) &key sinfo)
   ;; an id will generally only be given when two instances of the same file are
   ;; in the same list in a sndfile-palette, so in the usual case where it's not
   ;; specified set id to simply the given sound file name.
@@ -297,8 +305,9 @@ T
         ;; called again  
         ;; (setf (frequency sf) freq))))
         (setf (slot-value sf 'frequency) freq))))
+  ;; (print sinfo)
   (let* ((path (path sf))
-         (sf-info (get-sound-info path)))
+         (sf-info (if sinfo sinfo (get-sound-info path))))
     (when path
       (unless (and path (probe-file path))
         (error "sndfile::update: ~
@@ -506,8 +515,8 @@ T
 ;;;   Default = 1.0
 ;;; - :angle-env. used for spatialization, fore example with
 ;;;   #'write-reaper-ambisonics-file. Can be an env (list of breakpoints) or
-;;;   a list of envs. A list of envs can be used to spatialize different channels
-;;;   of the soundfile differently. See the examples in
+;;;   a list of envs. A list of envs can be used to spatialize different
+;;;   channels of the soundfile differently. See the examples in
 ;;;   write-reaper-ambisonics-file. This then represents the azimuth angle in a
 ;;;   polar coordinate system. 0 and 1 represend 0° and 360° and are assumed to 
 ;;;   be in the front. 0.5 would thus be 180° and located behind the listener.
@@ -559,43 +568,50 @@ data: /path/to/sndfile-1.aiff
 |#
 ;;; SYNOPSIS
 (defun make-sndfile (path &key id data duration end (start 0.0)
-                     (frequency nil)
-                     (amplitude 1.0)
-                     (angle-env '(0 0  100 0))
-                     (elevation-env '(0 0  100 0))
-                     (distance-env '(0 1  100 1)))
+                          (frequency nil)
+                          (amplitude 1.0)
+                          (angle-env '(0 0  100 0))
+                          (elevation-env '(0 0  100 0))
+                          (distance-env '(0 1  100 1)))
 ;;; **** 
   (if (and path (listp path))
-      (progn
-        (let ((sf (make-instance (first path)
-                                 ;; MDE Wed Dec 26 11:16:53 2012 -- :class must
-                                 ;; come first
-                                 ;; :path (first path)
-                                 :path (second path)
-                                 ;; :id (first (second path))))
-                                 :id (first (third path))))
-              (slots (rest (third path))))
-          (loop for slot in slots by #'cddr 
-             and value in (cdr slots) by #'cddr do
-             ;; we have to do this here because (setf (slot-value ... ))
-             ;; doesn't call the setf methods...
-             (case slot
-               (:duration (setf (duration sf) value))
-               (:end (setf (end sf) value))
-               (:frequency (setf (frequency sf) value))
-               (:start (setf (start sf) value))
-               ;; MDE Wed Dec 26 10:47:45 2012 -- only try and set a slot value
-               ;; here if it exists in this class (as opposed to the sndfile-ext
-               ;; class) 
-               (t (let ((s (rm-package slot)))
-                    (when (slot-exists-p sf s)
-                      (setf (slot-value sf s) value))))))
-          sf))
-      (make-instance 'sndfile :id id :data data :path path :duration duration
-                     :frequency frequency :end end :start start
-                     :amplitude amplitude
-                     :angle-env angle-env :elevation-env elevation-env
-                     :distance-env distance-env)))
+    (progn
+      ;; (print 'make-sndfile-path)
+      (let ((sf (make-instance (first path)
+                               ;; MDE Wed Dec 26 11:16:53 2012 -- :class must
+                               ;; come first
+                               ;; :path (first path)
+                               :path (second path)
+                               ;; :id (first (second path))))
+                               :id (first (third path))))
+            (slots (rest (third path))))
+        (loop for slot in slots by #'cddr 
+              and value in (cdr slots) by #'cddr do
+                ;; we have to do this here because (setf (slot-value ... ))
+                ;; doesn't call the setf methods...
+                (case slot
+                  (:duration (setf (duration sf) value))
+                  (:end (setf (end sf) value))
+                  (:frequency (setf (frequency sf) value))
+                  (:start (setf (start sf) value))
+                  ;; MDE Wed Mar 20 13:10:42 2024, Heidhausen -- to avoid
+                  ;; calling update for a 2nd time down the line
+                  (:followers (if (sndfile-ext-p sf)
+                                (setf (followers sf) value)
+                                (error "sndfile::make-sndfile: :followers ~
+                                        slot only available in sndfile-ext")))
+                  ;; MDE Wed Dec 26 10:47:45 2012 -- only try and set a slot
+                  ;; value here if it exists in this class (as opposed to the
+                  ;; sndfile-ext class)
+                  (t (let ((s (rm-package slot)))
+                       (when (slot-exists-p sf s)
+                         (setf (slot-value sf s) value))))))
+        sf))
+    (make-instance 'sndfile :id id :data data :path path :duration duration
+                            :frequency frequency :end end :start start
+                            :amplitude amplitude
+                            :angle-env angle-env :elevation-env elevation-env
+                            :distance-env distance-env)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* sndfile/get-sound-info
@@ -630,6 +646,7 @@ data: /path/to/sndfile-1.aiff
 ;;; SYNOPSIS
 (defun get-sound-info (filename &optional ffprobe)
 ;;; ****
+  ;; (print 'get-sound-info)
   (when (and filename (probe-file filename))
     (let ((clm (find :clm *features*)))
       (if (and clm (not ffprobe))

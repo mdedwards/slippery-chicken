@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  18:01:38 Tue Mar 19 2024 CET
+;;; $$ Last modified:  16:59:47 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -219,6 +219,7 @@
 
 (defmethod (setf followers) :after (value (sfe sndfile-ext))
   (declare (ignore value))
+  ;; (print 'setf-followers)
   (when (and (followers sfe) (listp (followers sfe)))
     (setf (slot-value sfe 'followers) 
           (make-cscl (followers sfe)
@@ -227,18 +228,27 @@
                      :copy nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod update :after ((sfe sndfile-ext) &key ignore)
-  (declare (ignore ignore))
+;;; MDE Wed Mar 20 12:52:37 2024, Heidhausen -- moveing setf followers from
+;;; update to here
+(defmethod initialize-instance :after ((sfe sndfile-ext) &rest initargs)
+  (declare (ignore initargs))
   ;; just to call the setf method and update to a cscl
-  (setf (followers sfe) (followers sfe))
-  (when (path sfe)
-    (let ((sf-info (get-sound-info (path sfe))))
-      (setf (bit-depth sfe) (third sf-info)
-            (srate sfe) (first sf-info)
-            ;; (num-frames sfe) (clm::sound-frames (path sfe))
-            (num-frames sfe) (sixth sf-info)
-            (bytes sfe) (fifth sf-info)))))
+  (setf (followers sfe) (followers sfe)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod update :around ((sfe sndfile-ext) &key ignore)
+  (declare (ignore ignore))
+  ;; (print sfe)
+  ;; (when (path sfe)
+  (let ((sf-info (get-sound-info (path sfe))))
+    ;; (print sf-info)
+    (call-next-method sfe :sinfo sf-info)
+    (setf (bit-depth sfe) (third sf-info)
+          (srate sfe) (first sf-info)
+          ;; (num-frames sfe) (clm::sound-frames (path sfe))
+          (num-frames sfe) (sixth sf-info)
+          (bytes sfe) (fifth sf-info))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -273,7 +283,7 @@
           (slot-value sf 'srate) (srate sfe)
           (slot-value sf 'num-frames) (num-frames sfe)
           (slot-value sf 'bytes) (bytes sfe)
-          (slot-value sf 'followers) (followers sfe))
+          (slot-value sf 'followers) (basic-copy-object (followers sfe)))
     ;; (print 'sndfile-ext-clone-wnc) (print (data sf))
     sf))
 
@@ -299,6 +309,9 @@
           (volume-curve sfe) (loop-it sfe) (bit-depth sfe) (srate sfe)
           (num-frames sfe) (bytes sfe) (group-id sfe)
           (when (followers sfe)
+            (unless (cscl-p (followers sfe))
+              (error "sndfile-ext::print-object: followers have not been ~
+                      initialised: ~%~a" (followers sfe)))
             (loop for sf in (data (followers sfe)) collect 
                (if (named-object-p sf)
                    (id sf)
@@ -630,59 +643,55 @@ NIL
 ;;; 
 ;;; SYNOPSIS
 (defun make-sndfile-ext (path &key id data duration end (start 0.0)
-                                (frequency nil) (amplitude 1.0) (cue-num -1)
-                                (use t) (pitch -1) (pitch-curve -1)
-                                (bandwidth -1)
-                                (bandwidth-curve -1) (continuity -1)
-                                (continuity-curve -1) (weight -1)
-                                (weight-curve -1)
-                                (energy -1) (energy-curve -1) (harmonicity -1)
-                                (harmonicity-curve -1) (volume -1)
-                                (volume-curve -1) (loop-it nil) (bit-depth -1)
-                                (srate -1) (num-frames -1)
-                                (bytes -1) followers group-id)
+                              (frequency nil) (amplitude 1.0) (cue-num -1)
+                              (use t) (pitch -1) (pitch-curve -1)
+                              (bandwidth -1)
+                              (bandwidth-curve -1) (continuity -1)
+                              (continuity-curve -1) (weight -1)
+                              (weight-curve -1)
+                              (energy -1) (energy-curve -1) (harmonicity -1)
+                              (harmonicity-curve -1) (volume -1)
+                              (volume-curve -1) (loop-it nil) (bit-depth -1)
+                              (srate -1) (num-frames -1)
+                              (bytes -1) followers group-id)
 ;;; ****
   (when path
-    (let (sf)
-      (if (and path (listp path))     ; all slots will be in the list
-          (when (first path)          ; will be NIL if we couldn't find the file
-            (setf sf (make-sndfile (cons 'sndfile-ext path))))
-          (progn 
-            (setf sf (make-sndfile path :id id :data data :duration duration
-                                   :end end :start start :frequency frequency
-                                   :amplitude amplitude))
-            ;; remember that this goes back to named-object which calls
-            ;; make-instance 'sndfile-ext with all slots NIL, so we'll have to
-            ;; call update below.
-            (setf sf (clone-with-new-class sf 'sndfile-ext))
-            (setf (use sf) use 
-                  (cue-num sf) cue-num
-                  (pitch sf) pitch
-                  (pitch-curve sf) pitch-curve
-                  (bandwidth sf) bandwidth
-                  (bandwidth-curve sf) bandwidth-curve
-                  (continuity sf) continuity
-                  (continuity-curve sf) continuity-curve
-                  (weight sf) weight
-                  (weight-curve sf) weight-curve
-                  (energy sf) energy
-                  (energy-curve sf) energy-curve
-                  (harmonicity sf) harmonicity 
-                  (harmonicity-curve sf) harmonicity-curve
-                  (volume sf) volume
-                  (volume-curve sf) volume-curve
-                  (loop-it sf) loop-it
-                  ;; bear in mind that these data will be changed by the update
-                  ;; method  
-                  (bit-depth sf) bit-depth
-                  (srate sf) srate
-                  (num-frames sf) num-frames
-                  (bytes sf) bytes
-                  (group-id sf) group-id
-                  (followers sf) followers)))
-      ;; have to call this here because clone init'ed with all slots NIL
-      (when sf (update sf))
-      sf)))
+    (if (and path (listp path))       ; all slots will be in the list
+      (when (first path)              ; will be NIL if we couldn't find the file
+        ;; (print '******) ;(print path)
+        ;; (setf sf (make-sndfile (cons 'sndfile-ext path))))
+        (apply #'make-instance (append (list 'sndfile-ext :path)
+                                       path)))
+      (make-instance
+       'sndfile-ext
+       :path path :id id :data data :duration duration
+       :end end :start start :frequency frequency
+       :amplitude amplitude
+       :use use 
+       :cue-num cue-num
+       :pitch pitch
+       :pitch-curve pitch-curve
+       :bandwidth bandwidth
+       :bandwidth-curve bandwidth-curve
+       :continuity continuity
+       :continuity-curve continuity-curve
+       :weight weight
+       :weight-curve weight-curve
+       :energy energy
+       :energy-curve energy-curve
+       :harmonicity harmonicity 
+       :harmonicity-curve harmonicity-curve
+       :volume volume
+       :volume-curve volume-curve
+       :loop-it loop-it
+       ;; bear in mind that these data will be changed by the
+       ;; update method
+       :bit-depth bit-depth
+       :srate srate
+       :num-frames num-frames
+       :bytes bytes
+       :group-id group-id
+       :followers followers))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sndfile-ext-p (candidate)

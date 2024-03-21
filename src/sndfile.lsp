@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  16:09:51 Thu Mar 21 2024 CET
+;;; $$ Last modified:  16:20:39 Thu Mar 21 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -662,7 +662,7 @@ data: /path/to/sndfile-1.aiff
                 (clm::sound-length filename)
                 (clm::sound-framples filename))
           (let ((result (string-to-list
-                         (shell-to-string
+                         (print (shell-to-string
                           (if (stringp ffprobe)
                               ffprobe
                               (get-sc-config 'ffprobe-command))
@@ -673,7 +673,7 @@ data: /path/to/sndfile-1.aiff
                           "-show_entries" "stream=channels"
                           "-show_entries" "stream=bits_per_sample"
                           "-of" "default=noprint_wrappers=1:nokey=1"
-                          filename))))
+                          filename)))))
             ;; (print result)
             (econs result (round (* (nth 0 result) (nth 3 result)))))))))
 

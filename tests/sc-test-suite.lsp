@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:19:52 Wed Mar 20 2024 CET
+;;; $$ Last modified:  10:33:55 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -21255,6 +21255,8 @@ est)")))
       (= 2 (channels v2))
       (= 48000 (srate v1))
       (= 48000 (srate v2))
+      (has-video-codec v1)
+      (has-video-codec v2)
       )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

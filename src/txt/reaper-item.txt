@@ -14,7 +14,7 @@
       SOFFS ~a
       PLAYRATE ~a ~a ~a -1 0 0.0025
       CHANMODE 0
-      <SOURCE WAVE
+      <SOURCE ~a
         FILE \"~a\"
       >
     >

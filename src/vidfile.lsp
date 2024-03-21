@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    19th March 2024, Heidhausen, Germany
 ;;;
-;;; $$ Last modified:  18:10:26 Wed Mar 20 2024 CET
+;;; $$ Last modified:  10:42:28 Thu Mar 21 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -67,6 +67,12 @@
                  :initform -1)
    (dimensions-y :accessor dimensions-y :type integer :initarg :dimensions-y
                  :initform -1)
+   ;; cannot be set at init rather it's read from the file. This is mainly used
+   ;; in reaper to distinguish between <SOURCE WAVE and <SOURCE VIDEO but there
+   ;; could also be a video file (i.e. the extension checks and the container
+   ;; can hold video streams, but there's not actually a video in there, rather
+   ;; just audio or something else). 
+   (has-video-codec :accessor has-video-codec :type boolean :initform nil)
    ;; from sndfile class, where it's nil
    (force-ffprobe :initform t)
    ;; we'd prefer via codec_type data from ffprobe but failing that we can guess
@@ -81,15 +87,20 @@
 ;;; placeholder for now but in the future we should read the data from the file
 ;;; (via ffprobe or sim.) and store in the respective slots.
 (defmethod initialize-instance :after ((vf vidfile) &rest initargs)
-  (declare (ignore initargs))
-  )
+  (declare (ignore initargs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod update :after ((vf vidfile) &key ignore)
+  (declare (ignore ignore))
+  (setf (has-video-codec vf) (video-file-p (path vf) nil nil)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((vf vidfile) stream)
-  (format stream "~%~%VIDFILE: fps: ~a, dimensions-x: ~a ~
+  (format stream "~%~%VIDFILE: fps: ~a, has-video-codec: ~a, dimensions-x: ~a ~
                   dimensions-y: ~a~%date: ~a~%encoder: ~a~%comment: ~a~
                   ~%extensions: ~a"
-          (fps vf) (dimensions-x vf) (dimensions-y vf) (data vf)
-          (encoder vf) (comment vf) (extensions vf)))
+          (fps vf) (has-video-codec vf) (dimensions-x vf) (dimensions-y vf)
+          (data vf) (encoder vf) (comment vf) (extensions vf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone ((vf vidfile))
@@ -104,9 +115,11 @@
           (slot-value sfe 'date) (basic-copy-object (date vf))
           (slot-value sfe 'encoder) (basic-copy-object (encoder vf))
           (slot-value sfe 'fps) (basic-copy-object (fps vf))
+          (slot-value sfe 'has-video-codec) (has-video-codec vf)
           (slot-value sfe 'dimensions-x) (basic-copy-object (dimensions-x vf))
           (slot-value sfe 'dimensions-y) (basic-copy-object
-                                          (dimensions-y vf)))))
+                                          (dimensions-y vf)))
+    sfe))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -128,14 +141,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; whether a file is a video, not an object (that's below)
-(defun video-file-p (path &optional warn)
-  (when (and path (probe-file oath))
+(defun video-file-p (path &optional (allow-just-extension t) (warn t))
+  (when (and path (probe-file path))
     (or (video-file-codec-p path)
         (progn
           (when warn
             (warn "vidfile::video-file-p: ffprobe command not available or ~
                    failed; ~%trying via file name extension only (~a)." path))
-          (video-file-extension-p path)))))
+          (when allow-just-extension
+            (video-file-extension-p path))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  18:33:24 Wed Mar 20 2024 CET
+;;; $$ Last modified:  10:38:31 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -57,7 +57,7 @@
 ;;; todo: make this a subclass of vidfile
 ;;;       change reaper-item.txt to use ~a instead of WAVE and have the item
 ;;;       write WAVE or VIDEO
-(defclass reaper-item (sndfile)
+(defclass reaper-item (vidfile)
   ((istring :accessor istring :type string :allocation :class
             ;; read in the text for an item
             :initform (read-from-file
@@ -241,17 +241,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone-with-new-class :around ((ri reaper-item) new-class)
   (declare (ignore new-class))
-  (let ((sndfile (call-next-method)))
-    (setf (slot-value sndfile 'fade-in) (fade-in ri)
-          (slot-value sndfile 'fade-out) (fade-out ri)
-          (slot-value sndfile 'preserve-pitch) (preserve-pitch ri)
-          (slot-value sndfile 'start-time) (start-time ri)
-          (slot-value sndfile 'name) (name ri)
-          (slot-value sndfile 'track) (track ri)
-          (slot-value sndfile 'transposition) (transposition ri)
-          (slot-value sndfile 'play-rate) (play-rate ri)
-          (slot-value sndfile 'pan) (pan ri))
-    sndfile))
+  (let ((vidfile (call-next-method)))
+    (setf (slot-value vidfile 'fade-in) (fade-in ri)
+          (slot-value vidfile 'fade-out) (fade-out ri)
+          (slot-value vidfile 'preserve-pitch) (preserve-pitch ri)
+          (slot-value vidfile 'start-time) (start-time ri)
+          (slot-value vidfile 'name) (name ri)
+          (slot-value vidfile 'track) (track ri)
+          (slot-value vidfile 'transposition) (transposition ri)
+          (slot-value vidfile 'play-rate) (play-rate ri)
+          (slot-value vidfile 'pan) (pan ri))
+    vidfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((rt reaper-track) stream)
@@ -323,6 +323,10 @@
           ;; expressed in DB within reaper.
           (* (slider-vol ri) (amplitude ri))
           (start ri) (play-rate  ri) (preserve-pitch ri) (transposition ri)
+          ;; MDE Thu Mar 21 10:15:49 2024, Heidhausen -- the only cursory
+          ;; difference I see between audio and video is that the former has
+          ;; <SOURCE WAVE whereas the latter has <SOURCE VIDEO
+          (if (has-video-codec ri) "VIDEO" "WAVE")
           (os-format-path (path ri) 
                           (if (get-sc-config 'reaper-files-for-windows)
                               'windows

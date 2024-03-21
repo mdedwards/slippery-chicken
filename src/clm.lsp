@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  10:38:45 Wed Mar 20 2024 CET
+;;; $$ Last modified:  15:30:08 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -45,12 +45,12 @@
 
 ;;; MDE Wed Mar 20 10:00:36 2024, Heidhausen -- no need to have the user load
 ;;; clm instruments in advance as we can do it using
-;;; clm::*clm-source-directory*
-(defun get-clm-ins (function-symbol ins-src)
+;;; clm::*clm-source-directory* or whatever optional arg we pass
+(defun get-clm-ins (function-symbol ins-src
+                    &optional (dir clm::*clm-source-directory*))
   (unless (fboundp function-symbol)
     (let ((*package* (find-package :clm))) ; compile within the clm package
-      (load (compile-file (format nil "~a~a"
-                                  clm::*clm-source-directory* ins-src))))
+      (load (compile-file (format nil "~a~a" dir ins-src))))
     (unless (fboundp function-symbol)
       (error "clm::get-clm-ins: the CLM instrument ~
               ~a (defined in ~a) needs to be loaded in order for a dependent ~
@@ -63,7 +63,7 @@
   (funcall fun "CLM is needed by ~a. Please install the package via ~%~
                 https://ccrma.stanford.edu/software/clm/"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Use this function to randomly generate the <entry-points> to clm-loops
 

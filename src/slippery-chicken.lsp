@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:42:20 Sat Mar 16 2024 CET
+;;; $$ Last modified:  15:28:49 Thu Mar 21 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4650,7 +4650,7 @@ seq-num 5, VN, replacing G3 with B6
                        snd-selector 
                        ;; MDE Mon Nov  4 10:10:35 2013 -- the following were 
                        ;; added so we could use instruments other than samp5
-                       (clm-ins #'clm::samp5)
+                       (clm-ins nil) ;#'clm::samp5)
                        ;; either a list or a function (see above)
                        clm-ins-args
                        ;; DJR Thu 22 Aug 2019 15:08:39 BST
@@ -4663,8 +4663,11 @@ seq-num 5, VN, replacing G3 with B6
                        ;; are from 0 (for sound-file-palette-ref) and 1 (for
                        ;; sound-file-palette-ref2).
                        snd-transitions)
-;;; ****                               
-  ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
+;;; ****
+  (get-clm-ins 'clm::samp5 "samp5.lsp" cl-user::+slippery-chicken-src-path+)
+  (get-clm-ins 'clm::sine "sine.lsp" cl-user::+slippery-chicken-src-path+)
+  (unless clm-ins (setq clm-ins #'clm::samp5))
+  ;; Mde Tue Apr 17 13:28:16 2012 -- guess the extension if none given
   (unless sndfile-extension
     (setf sndfile-extension
           (cond                         ; can't use case with clm globals
@@ -11583,7 +11586,7 @@ data: (11 15)
                             :direction :output
                             :if-does-not-exist :create
                             :if-exists :supersede
-			    :external-format :utf-8)
+                            :external-format :utf-8)
       ;; initial comments
       (when comments
         (format stream ";; TITLE: ~a~%~
@@ -12111,7 +12114,7 @@ data: (11 15)
                             :direction :output
                             :if-does-not-exist :create
                             :if-exists :supersede
-			    :external-format :utf-8)
+                            :external-format :utf-8)
       ;; initial comments
       (when comments
         (format stream ";; GENERATION DATE: ~a~%"

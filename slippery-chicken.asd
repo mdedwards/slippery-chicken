@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  09:45:11 Wed Mar 20 2024 CET
+;;; $$ Last modified:  15:06:08 Thu Mar 21 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -98,8 +98,8 @@
                (:file "globals")
                (:file "clm-defaults" :if-feature :clm)
                (:file "clm" :if-feature :clm)
-               (:file "samp5" :if-feature :clm)
-               (:file "sine" :if-feature :clm)
+               ;; (:file "samp5" :if-feature :clm)
+               ;; (:file "sine" :if-feature :clm)
                (:file "sc-map")
                (:file "set-map")
                (:file "tempo")

@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  15:30:08 Thu Mar 21 2024 CET
+;;; $$ Last modified:  16:50:35 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -50,7 +50,10 @@
                     &optional (dir clm::*clm-source-directory*))
   (unless (fboundp function-symbol)
     (let ((*package* (find-package :clm))) ; compile within the clm package
-      (load (compile-file (format nil "~a~a" dir ins-src))))
+      (load (compile-file (format nil "~a~a" dir ins-src)
+                          :output-file (format nil "~a/~a"
+                                               (get-sc-config 'tmp-dir)
+                                               (pathname-name ins-src)))))
     (unless (fboundp function-symbol)
       (error "clm::get-clm-ins: the CLM instrument ~
               ~a (defined in ~a) needs to be loaded in order for a dependent ~

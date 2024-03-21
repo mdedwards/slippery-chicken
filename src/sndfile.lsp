@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  16:20:39 Thu Mar 21 2024 CET
+;;; $$ Last modified:  16:38:24 Thu Mar 21 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -654,28 +654,28 @@ data: /path/to/sndfile-1.aiff
   (when (and filename (probe-file filename))
     (let ((clm (find :clm *features*)))
       (if (and clm (not ffprobe))
-          ;; this order is important because ffprobe returns results like this
-          (list (clm::sound-srate filename)
-                (clm::sound-chans filename)
-                (* (clm::mus-sound-datum-size filename) 8)
-                (clm::sound-duration filename)
-                (clm::sound-length filename)
-                (clm::sound-framples filename))
-          (let ((result (string-to-list
-                         (print (shell-to-string
-                          (if (stringp ffprobe)
-                              ffprobe
-                              (get-sc-config 'ffprobe-command))
-                          "-v" "error" "-select_streams" "a:0"
-                          "-show_entries" "format=duration"
-                          "-show_entries" "format=size"
-                          "-show_entries" "stream=sample_rate"
-                          "-show_entries" "stream=channels"
-                          "-show_entries" "stream=bits_per_sample"
-                          "-of" "default=noprint_wrappers=1:nokey=1"
-                          filename)))))
-            ;; (print result)
-            (econs result (round (* (nth 0 result) (nth 3 result)))))))))
+        ;; this order is important because ffprobe returns results like this
+        (list (clm::sound-srate filename)
+              (clm::sound-chans filename)
+              (* (clm::mus-sound-datum-size filename) 8)
+              (clm::sound-duration filename)
+              (clm::sound-length filename)
+              (clm::sound-framples filename))
+        (let ((result (string-to-list
+                       (shell-to-string
+                        (if (stringp ffprobe)
+                          ffprobe
+                          (get-sc-config 'ffprobe-command))
+                        "-v" "error" "-select_streams" "a:0"
+                        "-show_entries" "format=duration"
+                        "-show_entries" "format=size"
+                        "-show_entries" "stream=sample_rate"
+                        "-show_entries" "stream=channels"
+                        "-show_entries" "stream=bits_per_sample"
+                        "-of" "default=noprint_wrappers=1:nokey=1"
+                        filename))))
+          ;; (print result)
+          (econs result (round (* (nth 0 result) (nth 3 result)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun autoc-get-fundamental (file start duration)

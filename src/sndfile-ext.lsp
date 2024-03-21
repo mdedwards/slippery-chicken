@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  18:14:32 Wed Mar 20 2024 CET
+;;; $$ Last modified:  12:16:44 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -657,7 +657,7 @@ NIL
                               (bytes -1) followers group-id)
 ;;; ****
   (when path
-    (if (and path (listp path))       ; all slots will be in the list
+    (if (listp path)       ; all slots will be in the list
       (when (first path)              ; will be NIL if we couldn't find the file
         ;; (print '******) ;(print path)
         ;; (setf sf (make-sndfile (cons 'sndfile-ext path))))

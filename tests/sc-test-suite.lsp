@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:33:55 Thu Mar 21 2024 CET
+;;; $$ Last modified:  12:32:55 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20554,7 +20554,7 @@ est)")))
 ;;; was causing problems for handle-ties
 
 (sc-deftest test-simons-remote ()
-  (let ((+remote-control+
+  (let ((rc
          (make-slippery-chicken  
           '+remote-control+ 
           :title "Remote Control" 
@@ -20582,10 +20582,10 @@ est)")))
                          (D2 ((b2 fs3 b3 ds4 a5))) 
                          (D3 ((ef2 af2 c3 ef4)))
                          (D4 ((d2 fs2 a2 c3 a5))))
-          :set-map '((A (A1 A1 A2 A1 A2 A2 A1 A2 A))
-                     (B (B1 B1 B2 B1 B2 B2 B1 B2 B))
-                     (C (C1 C1 C2 C1 C2 C2 C1 C2 C))
-                     (D (D4 D2 D1 D3 D2 D4 D3 D1 D)))
+          :set-map '((1 (A1 A1 A2 A1 A2 A2 A1 A2 A))
+                     (2 (B1 B1 B2 B1 B2 B2 B1 B2 B))
+                     (3 (C1 C1 C2 C1 C2 C2 C1 C2 C))
+                     (4 (D4 D2 D1 D3 D2 D4 D3 D1 D)))
           :avoid-melodic-octaves nil
           :rthm-seq-palette
           '(;; 4x Intro/Outro
@@ -20756,18 +20756,44 @@ est)")))
              ((((12 4) q q q q q q q q q q q q))
               :pitch-seq-palette (12 11 10 9 8 7 6 5 4 3 2 1))))
           :rthm-seq-map
-          '((A ((rh (IO1 M1 M2 M3 M4 M5 M6 IO2 zapp-down)) 
+          '((1 ((rh (IO1 M1 M2 M3 M4 M5 M6 IO2 zapp-down)) 
                 (lh (IO2 M1 M2 M3 M4 M5 M6 IO1 zapp-down))))
-            (B ((rh (IO2 M2 M3 M4 M6 M5 M7 IO3 zapp-up))
+            (2 ((rh (IO2 M2 M3 M4 M6 M5 M7 IO3 zapp-up))
                 (lh (IO3 M2 M3 M4 M6 M5 M7 IO2 zapp-up))))
-            (C ((rh (IO3 M3 M6 M4 M5 M7 M8 IO4 zapp-up))
+            (3 ((rh (IO3 M3 M6 M4 M5 M7 M8 IO4 zapp-up))
                 (lh (IO4 M3 M6 M4 M5 M7 M8 IO3 zapp-up))))
-            (D ((rh (IO4 M5 M4 M6 M8 M7 M9 IO1 zapp-down))
-                (lh (IO1 M5 M4 M6 M8 M7 M9 IO4 zapp-down))))))))
-    (write-xml +remote-control+ :respell-notes nil)
+            (4 ((rh (IO4 M5 M4 M6 M8 M7 M9 IO1 zapp-down))
+                (lh (IO1 M5 M4 M6 M8 M7 M9 IO4 zapp-down)))))
+          ;; MDE Thu Mar 21 11:36:57 2024, Heidhausen -- even though Simon is no
+          ;; longer with (though he's in Cologne, not dead!) it seems fitting to
+          ;; use his piece to check whether generating reaper files with videos
+          ;; works
+          :sndfile-palette
+          `(((sndfile-group-1
+                  ;; this is just a copy of the similarly named but has lower
+                  ;; and upper case so we have to type a string. Spaces will
+                  ;; still not work here.
+                  (test-sndfile-1 "SampleVideo_720x480_1mb"))
+                 (sndfile-group-2
+                  (test-sndfile-2 test-sndfile-3
+                                  sample-file-sd.mov ; with extension
+                                  (test-sndfile-4 :frequency 261.61)))
+                 (sndfile-group-3
+                  ((test-sndfile-5 :start 0.006 :end 0.182)
+                   (sample-video_720x480_1mb ; without extension
+                                                 :start 3 :end 5 :frequency 100)
+                   test-sndfile-6)))
+            (,(concatenate 'string cl-user::+slippery-chicken-home-dir+ 
+                           "tests/test-sndfiles-dir-1/")
+             ,(concatenate 'string cl-user::+slippery-chicken-home-dir+ 
+                           "tests/test-videos/")
+             ,(concatenate 'string cl-user::+slippery-chicken-home-dir+ 
+                           "tests/test-sndfiles-dir-2/"))))))
     (sc-test-check
-     (file-write-ok "/tmp/remote-control.xml" 1040000))))
-
+      (reaper-play rc 2 nil 'sndfile-group-2 :check-overwrite nil
+                   :num-sections 1 :sound-file-palette-ref2 'sndfile-group-3)
+      (write-xml rc :respell-notes nil)
+      (file-write-ok "/tmp/remote-control.xml" 1040000))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RP  Tue Feb 28 16:39:07 2023

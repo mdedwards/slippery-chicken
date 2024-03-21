@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    19th March 2024, Heidhausen, Germany
 ;;;
-;;; $$ Last modified:  10:42:28 Thu Mar 21 2024 CET
+;;; $$ Last modified:  12:20:44 Thu Mar 21 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -127,8 +127,13 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun make-vidfile (path &rest keyargs &key &allow-other-keys)
-  (apply #'make-instance (append (list 'vidfile :path path)
-                                 keyargs)))
+  (when path
+    (if (listp path)
+      (when (first path)              ; will be NIL if we couldn't find the file
+        (apply #'make-instance (append (list 'vidfile :path)
+                                       path)))
+      (apply #'make-instance (append (list 'vidfile :path path)
+                                     keyargs)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun video-file-extension-p (path)

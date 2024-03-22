@@ -72,6 +72,8 @@ We could listen to the piece with instrument approximations using Dorico or some
 like the MIDI file render made with [pianoteq 7's](https://www.modartt.com/pianoteq_overview)
 elektric piano *MKII Flower Power*: 
 
+[listen](https://github.com/mdedwards/slippery-chicken/raw/quicklisp/doc/media/sc-noodles.mp3)
+
 [![listen](doc/media/sc-logo.png)](https://github.com/mdedwards/slippery-chicken/raw/quicklisp/doc/media/sc-noodles.mp3)
 
 <a href="example.com" target="_blank">New Tab</a>

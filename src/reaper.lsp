@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  11:24:45 Fri Mar 22 2024 CET
+;;; $$ Last modified:  11:45:02 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -661,7 +661,8 @@
       when (< x last-x)
       do (warn "env-mod encountered am envelope with decreasing x-value")
       unless (= fy1 fy2) collect (env-mod-aux last-x last-y x y)
-      collect x collect (mod y 1);(rescale (mod y 1) 0 1 min max #'error #'rationalize)
+        collect x collect (mod y 1)
+         ;;(rescale (mod y 1) 0 1 min max #'error #'rationalize)
       do (setf last-x x last-y y))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

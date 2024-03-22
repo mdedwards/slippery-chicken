@@ -15,11 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-<<<<<<< HEAD
-;;; $$ Last modified:  14:57:54 Fri Mar 22 2024 CET
-=======
-;;; $$ Last modified:  15:01:18 Fri Mar 22 2024 CET
->>>>>>> 590bef531ac20359aff7ac10b45ae77d271649a5
+;;; $$ Last modified:  15:02:24 Fri Mar 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:21:56 Fri Mar 22 2024 CET
+;;; $$ Last modified:  12:27:30 Fri Mar 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6014,12 +6014,12 @@ seq-num 5, VN, replacing G3 with B6
                                       (zerop duration))
                             (push 
                              (make-reaper-item-fast
-                              `(path ,(path snd)
-                                     fade-in ,(* duration fade-in)
-                                     fade-out ,(* duration fade-out)
-                                     duration duration
-                                     start input-start
-                                     ;; in this method, by default, we simulate
+                              (list 'path (path snd)
+                                     'fade-in (* duration fade-in)
+                                     'fade-out (* duration fade-out)
+                                     'duration duration
+                                     'start input-start
+                                     ;; in this method by default we simulate
                                      ;; the sampling-rate conversion method of
                                      ;; CLM where a change of 'speed' is
                                      ;; accompanied by a change in pitch. But we
@@ -6029,18 +6029,18 @@ seq-num 5, VN, replacing G3 with B6
                                      ;; in the .rpp file and setting this to the
                                      ;; transposition given to the reaper-item
                                      ;; class
-                                     play-rate ,(if pitch-adjust
+                                     'play-rate (if pitch-adjust
                                                   1.0
                                                   srt)
-                                     transposition ,(if pitch-adjust
+                                     'transposition (if pitch-adjust
                                                       (srt srt)
                                                       0.0)
-                                     preserve-pitch nil
-                                     channels ,(channels snd)
-                                     start-time output-start
-                                     item-vol amp
-                                     track ,(get-next player-strings)
-                                     pan ,(if pan-fun
+                                     'preserve-pitch nil
+                                     'channels (channels snd)
+                                     'start-time output-start
+                                     'item-vol amp
+                                     'track (get-next player-strings)
+                                     'pan (if pan-fun
                                             (rescale
                                              (funcall pan-fun event)
                                              0 90 -1.0 1.0)

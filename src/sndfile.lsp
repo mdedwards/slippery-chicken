@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  16:38:24 Thu Mar 21 2024 CET
+;;; $$ Last modified:  11:28:24 Fri Mar 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -74,6 +74,11 @@
                   :initform '(0 0  100 0))
    (distance-env :accessor distance-env :type list :initarg :distance-env
                  :initform '(0 1  100 1))
+   ;; MDE Fri Mar 22 09:58:25 2024, Heidhausen -- calling update is expensive so
+   ;; some init routines like make-sndfile  might want to put this off when
+   ;; make-instance is called so that they can explicitly call update later
+   (init-update :accessor init-update :type boolean :initarg :init-update
+                :initform t)
    ;; some sounds have a prominent fundamental which can be used for
    ;; transposing to specific pitches.  Give this here either in the form of a
    ;; real freq or a note, which will then be converted.
@@ -108,19 +113,20 @@
   (declare (ignore new-class))
   (let ((named-object (call-next-method)))
     (setf (slot-value named-object 'path) (basic-copy-object (path sf))
-          (slot-value named-object 'snd-duration ) (snd-duration sf)
-          (slot-value named-object 'duration ) (duration sf)
-          (slot-value named-object 'end ) (end sf)
-          (slot-value named-object 'channels ) (channels sf)   
-          (slot-value named-object 'start ) (start sf)         
-          (slot-value named-object 'amplitude ) (amplitude sf)         
-          (slot-value named-object 'frequency )
+          (slot-value named-object 'snd-duration) (snd-duration sf)
+          (slot-value named-object 'duration) (duration sf)
+          (slot-value named-object 'end) (end sf)
+          (slot-value named-object 'channels) (channels sf)   
+          (slot-value named-object 'start) (start sf)
+          (slot-value named-object 'init-update) (init-update sf)         
+          (slot-value named-object 'amplitude) (amplitude sf)         
+          (slot-value named-object 'frequency)
           (basic-copy-object (frequency sf))
           (slot-value named-object 'force-ffprobe) (force-ffprobe sf)
-          (slot-value named-object 'data-consistent ) (data-consistent sf)     
-          (slot-value named-object 'will-be-used ) (will-be-used sf)
-          (slot-value named-object 'has-been-used ) (has-been-used sf)
-          (slot-value named-object 'description ) (description sf))
+          (slot-value named-object 'data-consistent) (data-consistent sf)     
+          (slot-value named-object 'will-be-used) (will-be-used sf)
+          (slot-value named-object 'has-been-used) (has-been-used sf)
+          (slot-value named-object 'description) (description sf))
     ;; (print 'sndfile-clone-wnc) (print (data sf))
     named-object))
 
@@ -142,7 +148,7 @@
             ~%slots can't both be specified! ~%~a"
            (duration sf) (end sf) sf))
   ;; (print '------------------) (print sf)
-  (update sf))
+  (when (init-update sf) (update sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -152,11 +158,11 @@
                     ~%         start: ~a, end: ~a, amplitude: ~a, duration: ~a~
                     ~%         will-be-used: ~a, has-been-used: ~a~
                     ~%         data-consistent: ~a, description: ~a~
-                    ~%         force-ffprobe: ~a" 
+                    ~%         force-ffprobe: ~a, init-update: ~a" 
           (path sf) (snd-duration sf) (channels sf) (frequency sf) (start sf)
           (end sf) (amplitude sf) (duration sf) (will-be-used sf)
           (has-been-used sf) (data-consistent sf) (description sf)
-          (force-ffprobe sf)))
+          (force-ffprobe sf) (init-update sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sndfile/stereo
@@ -577,7 +583,7 @@ data: /path/to/sndfile-1.aiff
                           (angle-env '(0 0  100 0))
                           (elevation-env '(0 0  100 0))
                           (distance-env '(0 1  100 1)))
-;;; **** 
+;;; ****
   (if (and path (listp path))
     (progn
       ;; (print 'make-sndfile-path)
@@ -586,6 +592,7 @@ data: /path/to/sndfile-1.aiff
                                ;; come first
                                ;; :path (first path)
                                :path (second path)
+                               :init-update nil
                                ;; :id (first (second path))))
                                :id (first (third path))))
             (slots (rest (third path))))
@@ -594,10 +601,10 @@ data: /path/to/sndfile-1.aiff
                 ;; we have to do this here because (setf (slot-value ... ))
                 ;; doesn't call the setf methods...
                 (case slot
-                  (:duration (setf (duration sf) value))
-                  (:end (setf (end sf) value))
-                  (:frequency (setf (frequency sf) value))
-                  (:start (setf (start sf) value))
+                  (:duration (setf (slot-value sf 'duration) value))
+                  (:end (setf (slot-value sf 'end) value))
+                  (:frequency (setf (slot-value sf 'frequency) value))
+                  (:start (setf (slot-value sf 'start) value))
                   ;; MDE Wed Mar 20 13:10:42 2024, Heidhausen -- to avoid
                   ;; calling update for a 2nd time down the line
                   (:followers (if (sndfile-ext-p sf)
@@ -610,10 +617,11 @@ data: /path/to/sndfile-1.aiff
                   (t (let ((s (rm-package slot)))
                        (when (slot-exists-p sf s)
                          (setf (slot-value sf s) value))))))
+        (update sf)
         sf))
     (make-instance 'sndfile :id id :data data :path path :duration duration
                             :frequency frequency :end end :start start
-                            :amplitude amplitude
+                            :amplitude amplitude :force-ffprobe force-ffprobe
                             :angle-env angle-env :elevation-env elevation-env
                             :distance-env distance-env)))
 

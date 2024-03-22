@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:11:31 Thu Mar 21 2024 CET
+;;; $$ Last modified:  11:27:13 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8315,7 +8315,7 @@
       (equal info1 '(48000 1 16 5.000021 484098 240001))
       (equal info2 '(48000 1 16 5.000021 484098 240001)))))
 
-;;; SAR Mon Apr 16 17:52:23 BST 2012
+;;;  SAR Mon Apr 16 17:52:23 BST 2012
 #+clm
 (sc-deftest test-sndfile-make-sndfile ()
   (let ((sf-1 (make-sndfile 
@@ -8334,6 +8334,9 @@
       (= 653 (frequency sf-1))
       (= 0.7 (start sf-2))
       (= 1.3 (end sf-2))
+      (equal-within-less-tolerance 3.011 (snd-duration sf-1))
+      (equal-within-less-tolerance 0.6 (duration sf-2))
+      (incf (has-been-used sf-1))
       (equal-within-tolerance 261.63 (frequency sf-2) 0.01))))
 
 ;;; SAR Mon Apr 16 18:35:37 BST 2012
@@ -20477,7 +20480,10 @@ est)")))
                               :input-start .09
                               :play-rate 1.04 :transposition 2.5
                               :preserve-pitch t)
+        ;; (print 'here)
         (let* ((rf1 (make-reaper-file 'otest1 items1 :cursor end-time1))
+               ;; )
+               ;; rf1)))))
                (rf2  (make-reaper-file 'otest2 items2 :cursor end-time2))
                (items3 (make-reaper-items3 (append sndfiles sndfiles) .1))
                (rf3  (make-reaper-file 'otest3 items3 :cursor end-time2)))
@@ -21083,7 +21089,7 @@ est)")))
                             (3 ((pno (1 2 1 2 1 2 1))
                                 (vln (1 2 1 2 1 2 1))))))))
     (sc-test-check
-      ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
+      ;;  MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
       ;; with this too
       (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :min-channels 4
                                      :tracks-per-player 5)

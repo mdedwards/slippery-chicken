@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:44:54 Thu Mar 21 2024 CET
+;;; $$ Last modified:  11:21:56 Fri Mar 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6013,41 +6013,38 @@ seq-num 5, VN, replacing G3 with B6
                           (unless (or skip-this-event (not happy)
                                       (zerop duration))
                             (push 
-                             (make-reaper-item (path snd)
-                                               :fade-in (* duration fade-in)
-                                               :fade-out (* duration fade-out)
-                                               :duration duration
-                                               :start input-start
-                                               ;; in this method, by default, we
-                                               ;; simulate the sampling-rate
-                                               ;; conversion method of CLM where
-                                               ;; a change of 'speed' is
-                                               ;; accompanied by a change in
-                                               ;; pitch. But we also allow a
-                                               ;; change of pitch without a
-                                               ;; change in speed. This
-                                               ;; necessitates the 3rd arg
-                                               ;; (semitones) to the PLAYRATE
-                                               ;; line in the .rpp file and
-                                               ;; setting this to the
-                                               ;; transposition given to the
-                                               ;; reaper-item class
-                                               :play-rate (if pitch-adjust
-                                                              1.0
-                                                              srt)
-                                               :transposition (if pitch-adjust
-                                                                  (srt srt)
-                                                                  0.0)
-                                               :preserve-pitch nil
-                                               :start-time output-start
-                                               :item-vol amp
-                                               :track (get-next player-strings)
-                                               :pan
-                                               (if pan-fun
-                                                   (rescale
-                                                    (funcall pan-fun event)
-                                                    0 90 -1.0 1.0)
-                                                   (nth (random 7) pan-vals)))
+                             (make-reaper-item-fast
+                              `(path ,(path snd)
+                                     fade-in ,(* duration fade-in)
+                                     fade-out ,(* duration fade-out)
+                                     duration duration
+                                     start input-start
+                                     ;; in this method, by default, we simulate
+                                     ;; the sampling-rate conversion method of
+                                     ;; CLM where a change of 'speed' is
+                                     ;; accompanied by a change in pitch. But we
+                                     ;; also allow a change of pitch without a
+                                     ;; change in speed. This necessitates the
+                                     ;; 3rd arg (semitones) to the PLAYRATE line
+                                     ;; in the .rpp file and setting this to the
+                                     ;; transposition given to the reaper-item
+                                     ;; class
+                                     play-rate ,(if pitch-adjust
+                                                  1.0
+                                                  srt)
+                                     transposition ,(if pitch-adjust
+                                                      (srt srt)
+                                                      0.0)
+                                     preserve-pitch nil
+                                     channels ,(channels snd)
+                                     start-time output-start
+                                     item-vol amp
+                                     track ,(get-next player-strings)
+                                     pan ,(if pan-fun
+                                            (rescale
+                                             (funcall pan-fun event)
+                                             0 90 -1.0 1.0)
+                                            (nth (random 7) pan-vals))))
                              reaper-items)))
                      (incf event-count-player)
                      (incf event-count)))))
@@ -6056,7 +6053,7 @@ seq-num 5, VN, replacing G3 with B6
     (setq reaper-items (reverse reaper-items))
     (when items-processor
       (setq reaper-items (funcall items-processor reaper-items)))
-    (print (first reaper-items))
+    ;; (print (first reaper-items))
     (write-reaper-file (make-reaper-file (id sc) reaper-items
                                          :sample-rate srate)
                        :min-channels min-channels

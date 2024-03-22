@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  10:38:31 Thu Mar 21 2024 CET
+;;; $$ Last modified:  11:24:45 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -394,7 +394,8 @@
 ;;; todo: meaningful tracknames?
 (defmethod create-tracks ((rf reaper-file)
                           &key (min-channels 2) (max-channels 4)
-                            channels track-volumes (sort-track-names t))
+                          channels track-volumes (sort-track-names t))
+  ;; (print 'create-tracks)
   ;; make sure channels is multiple of 2
   (when channels (setf channels (if (evenp (round channels))
                                     (round channels)
@@ -471,6 +472,7 @@
                                 :track-volume (nth (mod i (length
                                                            track-volumes))
                                                    track-volumes)
+                                :copy nil
                                 :min-channels min-channels
                                 :max-channels max-channels)))
       ;; (print al)
@@ -543,40 +545,40 @@
   ;; make sure channels is multiple of 2
   (when (n-channels rf)
     (if (integerp (n-channels rf))
-        (setf (n-channels rf) (if (evenp (n-channels rf))
-                                  (n-channels rf)
-                                  (1+ (n-channels rf))))
-        (error "write-reaper-file: n-channels slot should be an integer: ~a"
-               (n-channels rf))))
+      (setf (n-channels rf) (if (evenp (n-channels rf))
+                              (n-channels rf)
+                              (1+ (n-channels rf))))
+      (error "write-reaper-file: n-channels slot should be an integer: ~a"
+             (n-channels rf))))
   (let ((outfile (if file
-                     file
+                   file
                    (default-dir-file (format nil "~a.rpp"
                                              (string-downcase (id rf)))))))
     ;; sort the items into tracks unless this has already been done
     (unless (tracks rf) 
       (create-tracks rf :min-channels min-channels :max-channels max-channels
-                     :channels (n-channels rf)))
+                        :channels (n-channels rf)))
     (with-open-file 
-     (out outfile
-          :direction :output :if-does-not-exist :create
-          :if-exists :rename-and-delete)
-     (write-header rf out (or (n-channels rf) (max min-channels max-channels)))
-     ;; MDE Sun Sep 25 17:56:30 2022, Heidhausen -- reaper v6.64 at least
-     ;; writes markers before <PROJBAY> (the last entry in our header file) but
-     ;; doesn't complain when they come afterwards
-     (when markers
-       (loop for m in markers and i from 1 do
-             (if (numberp m)
-                 (write-reaper-marker i m "" out)
-               (let* ((len (length m))
-                      (args (if (> len 3)
-                                (append (subseq m 0 3) (list out)
-                                        (last m))
-                              (econs m out))))
-                 (apply #'write-reaper-marker args)))))
-     ;; loop through the tracks and write them
-     (loop for track in (data (tracks rf)) do (write-track track out))
-     (write-footer rf out))
+        (out outfile
+             :direction :output :if-does-not-exist :create
+             :if-exists :rename-and-delete)
+      (write-header rf out (or (n-channels rf) (max min-channels max-channels)))
+      ;; MDE Sun Sep 25 17:56:30 2022, Heidhausen -- reaper v6.64 at least
+      ;; writes markers before <PROJBAY> (the last entry in our header file) but
+      ;; doesn't complain when they come afterwards
+      (when markers
+        (loop for m in markers and i from 1 do
+          (if (numberp m)
+            (write-reaper-marker i m "" out)
+            (let* ((len (length m))
+                   (args (if (> len 3)
+                           (append (subseq m 0 3) (list out)
+                                   (last m))
+                           (econs m out))))
+              (apply #'write-reaper-marker args)))))
+      ;; loop through the tracks and write them
+      (loop for track in (data (tracks rf)) do (write-track track out))
+      (write-footer rf out))
     outfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -586,13 +588,31 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun make-reaper-file (id reaper-items &rest keyargs &key &allow-other-keys)
   ;; (print reaper-items)
-  (apply #'make-instance (append (list 'reaper-file :id id :data reaper-items)
+  ;; MDE Fri Mar 22 11:07:15 2024, Heidhausen -- don't copy reaper-items as
+   ;; this will call update in the sndfile class and that's costly
+  (apply #'make-instance (append (list 'reaper-file :id id :copy nil
+                                                    :data reaper-items)
                                  keyargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun make-reaper-item (path &rest keyargs &key &allow-other-keys)
   (apply #'make-instance (append (list 'reaper-item :path path)
                                  keyargs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Mar 22 10:31:19 2024, Heidhausen -- it's great that reaper-item
+;;; inherits its data and functionality from sndfile but the update method in
+;;; that class is costly, especially when ffprobe is used (because that calls a
+;;; shell to get its info). So here were just make a quick instance bypassing
+;;; all that yummy sndfile stuff, primarly so that make-reaper-item can be
+;;; replaced with this method for on-the-fly creation of objects that just need
+;;; to be written.
+(defun make-reaper-item-fast (slots-list)
+  (let ((ri (make-instance 'reaper-item :init-update nil)))
+    (loop for slot in slots-list by #'cddr
+          and value in (rest slots-list) by #'cddr do
+            (setf (slot-value ri slot) value))
+    ri))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-02 Tu>

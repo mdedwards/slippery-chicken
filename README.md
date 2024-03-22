@@ -40,7 +40,6 @@ for another approach)
           :composer "ME"
           :title "hello slippery chicken noodles"
           :year "2024"
-          :title "16ths-a-go-go"
           :tempo-map '((1 (q 144 "fast")))
           ;; just three instruments on different MIDI channels. Symbols such as
           ;; vln name the players who will play the instruments (they could play

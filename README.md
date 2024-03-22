@@ -70,7 +70,9 @@ see the [wiki page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-in
 Via Lilypond this produces a [lovely score](doc/media/_hello-slippery-chicken-noodles-score.pdf).
 We could listen to the piece with instrument approximations using Dorico or something but I quite
 like the MIDI file render made with [pianoteq 7's](https://www.modartt.com/pianoteq_overview)
-elektric piano *MKII Flower Power*: [listen](doc/media/sc-noodles.mp3)
+elektric piano *MKII Flower Power*: 
+
+[![listen](doc/media/sc-logo.png)](doc/media/sc-noodles.mp3)
 
 <a href="example.com" target="_blank">New Tab</a>
 

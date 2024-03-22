@@ -23,7 +23,7 @@ see this [wiki page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-i
 
 Here's a small example of how to work with slippery chicken. It's a demo rather than a fully-nuanced piece of music. 
 It keeps code length short but illustrates some of the power of the algorithmic approach. Think of slippery chicken
-as a big, (non-artificially) intelligent compiler, but bear in mind that the `make-slippery-chicken` approach
+as a big (non-artificially) intelligent sequencer or music compiler, but bear in mind that the `make-slippery-chicken` approach
 is not the only way of cooking something up (e.g. see [this wiki page](https://github.com/mdedwards/slippery-chicken/wiki/How-can-I-'roll-my-own'-slippery-chicken%3F)
 for another approach)
 

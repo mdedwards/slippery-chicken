@@ -27,7 +27,7 @@ as a big (non-artificially) intelligent sequencer or music compiler, but bear in
 is not the only way of cooking something up (e.g. see [this wiki page](https://github.com/mdedwards/slippery-chicken/wiki/How-can-I-'roll-my-own'-slippery-chicken%3F)
 for another approach)
 
-```
+```lisp
 (in-package :sc)
 
 (let* ((num-seqs 55) ; change this number for a longer/shorter piece

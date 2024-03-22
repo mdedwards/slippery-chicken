@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  10:50:22 Tue Mar 19 2024 CET
+;;; $$ Last modified:  12:22:03 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -239,6 +239,8 @@
   ;; reloading our tunings  
   (when (eq key 'diapason)
     (set-diapason value))
+  ;; just for the warning, if there's been a spelling mistake
+  (get-data key +slippery-chicken-config-data+ #'error)
   (data (replace-data key value +slippery-chicken-config-data+)))
 
 (defun default-dir-file (name)

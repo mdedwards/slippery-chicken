@@ -5,17 +5,17 @@ algorithmic composition.
 
 slippery chicken outputs sound files, [reaper](https://reaper.fm) files, MIDI files, and score 
 files in PDF, Lilypond, and MusicXML formats. It also outputs
-scores in [antescofo~](https://repmus.ircam.fr/antescofo) format for use with Arshia Cont's score
+scores in [antescofo~](https://antescofo-doc.ircam.fr) format for use with Arshia Cont's score
 following external for Max/MSP.
 
 The source code is available here in github. For more details 
-about installation, 
+about installation see the [install page](install.md).
 
-Extensive documentation can be found at http://www.michael-edwards.org/sc
+Extensive documentation can be found at https://www.michael-edwards.org/sc
 
-Since March 2024 slippery-chicken can be installed via Common Lisps ASDF mechanism. See the [install page](install.md)
+Since March 2024 slippery-chicken can be installed via Common Lisp's ASDF mechanism. See the [install page](install.md)
 for details. For the old method of installing via script or from source, 
-see the [wiki page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand')
+see this [wiki page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand')
 
 ## hello slippery world
 
@@ -74,7 +74,5 @@ elektric piano *MKII Flower Power*:
 
 [listen](https://github.com/mdedwards/slippery-chicken/raw/quicklisp/doc/media/sc-noodles.mp3)
 
-
-<a href="example.com" target="_blank">New Tab</a>
-
-Michael Edwards (m@michael-edwards.org)
+Happy lisping, 
+  Michael Edwards (m@michael-edwards.org)

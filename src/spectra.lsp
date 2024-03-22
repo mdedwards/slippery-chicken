@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    July 27th 2015
 ;;;
-;;; $$ Last modified:  16:33:53 Tue Apr  5 2022 CEST
+;;; $$ Last modified:  14:24:27 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: spectra.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -145,8 +145,12 @@ data: ((0.9889743194880222d0 2.0263850081954717d0 2.9990610385449314d0
                          ;; millisec times of fft analysis
                          (analysis-points '(300 400 500)))
 ;;; ****
-  (unless (fboundp 'clm::spec-an)
-    (load (compile-file (src-file-path "get-spectrum.lsp"))))
+  ;; use get-clm-ins now
+  ;; RP  Fri Mar 22 14:24:26 2024
+  (get-clm-ins 'clm::spec-an "get-spectrum.lsp"
+               cl-user::+slippery-chicken-src-path+)
+  ;; (unless (fboundp 'clm::spec-an)
+  ;;   (load (compile-file (src-file-path "get-spectrum.lsp"))))
   (make-assoc-list
    id
    (sort 

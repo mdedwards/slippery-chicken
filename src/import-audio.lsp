@@ -77,6 +77,10 @@ EXAMPLE
                                perform-new-analysis?
                                (printing t)
                                (normalise t))
+  ;; load clm instrument
+  ;; RP  Fri Mar 22 14:32:06 2024
+  #+clm(get-clm-ins 'clm::spec-an "get-spectrum.lsp"
+                    cl-user::+slippery-chicken-src-path+)
   (let* ((stop (or end (clm::sound-duration sndfile)))
          (hs (make-hash-table))
          (times (if (listp interval)

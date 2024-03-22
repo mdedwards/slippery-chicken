@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    July 27th 2015
 ;;;
-;;; $$ Last modified:  16:33:53 Tue Apr  5 2022 CEST
+;;; $$ Last modified:  14:57:11 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: spectra.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;

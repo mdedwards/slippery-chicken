@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified:  15:30:26 Sat Mar 16 2024 CET
+;;; $$ Last modified:  14:18:44 Fri Mar 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -130,6 +130,10 @@
   (when (and (period cw) (not (integerp (period cw))))
     (error "control-wave::init: the period must be of type integer, not: ~a."
            (type-of (period cw))))
+  ;; load clm instrument
+  ;; RP  Fri Mar 22 14:18:13 2024
+  (get-clm-ins 'clm::ctlwav "control-wave-ins.lsp"
+               cl-user::+slippery-chicken-src-path+)
   ;; don't go above the nyquist
   (let ((nyq (/ (rate cw) 2)))
     (when (and (frequency cw)

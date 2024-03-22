@@ -15,7 +15,11 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
+<<<<<<< HEAD
 ;;; $$ Last modified:  14:57:54 Fri Mar 22 2024 CET
+=======
+;;; $$ Last modified:  15:01:18 Fri Mar 22 2024 CET
+>>>>>>> 590bef531ac20359aff7ac10b45ae77d271649a5
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -151,7 +155,7 @@
                #+(and (or linux darwin) sbcl) (:file "osc")
                #+(and (or linux darwin) sbcl) (:file "osc-sc")
                #+(and (or linux darwin) sbcl) (:file "osc-sc-bsd")
-               (:file "get-spectrum" :if-feature :clm)
+               ;;(:file "get-spectrum" :if-feature :clm)
                (:file "spectra")
                ;; (:file "control-wave-ins" :if-feature :clm)
                (:file "control-wave" :if-feature :clm)

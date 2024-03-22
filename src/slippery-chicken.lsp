@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:27:30 Fri Mar 22 2024 CET
+;;; $$ Last modified:  13:41:32 Fri Mar 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -8021,6 +8021,7 @@ data: NIL
       (loop for p in the-players do
            (write-xml-for-player sc p start-bar end-bar xml)))
     (format xml "~&</score-partwise>~%<!-- EOF -->~%")
+    (format t "~&Wrote ~a" file)
     file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

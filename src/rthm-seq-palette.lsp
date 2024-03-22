@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  20:01:31 Wed Feb  7 2024 CET
+;;; $$ Last modified:  13:15:16 Fri Mar 22 2024 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -73,12 +73,6 @@
   ;; MDE Sat Jan 27 16:52:31 2024, Heidhausen
   (rmap rsp #'update-rsp-ids))
 
-#|  (when (every #'(lambda (x) (or (rthm-seq-p x) (rsp-p x)))
-               (data rsp))
-    (print 'here)
-    ;; MDE Fri Jan 26 21:04:58 2018
-    (rmap rsp #'update-rsp-ids)))
-|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone ((rsp rthm-seq-palette))

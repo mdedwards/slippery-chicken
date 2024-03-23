@@ -34,7 +34,11 @@ power of the algorithmic approach. Think of slippery chicken as a big
 that the `make-slippery-chicken` approach is not the only way of cooking
 something up (e.g. see [this wiki
 page](https://github.com/mdedwards/slippery-chicken/wiki/How-can-I-'roll-my-own'-slippery-chicken%3F)
-for another approach)
+for another approach).
+
+**NB Copy/pasting from a webpage into a Lisp interpreter often causes problems
+  because the characters are not standard ANSI. The code below can be found in
+  [this repo](doc/examples/hello-slippery.lsp).**
 
 ```lisp
 (in-package :sc)

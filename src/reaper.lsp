@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  11:45:02 Fri Mar 22 2024 CET
+;;; $$ Last modified:  18:09:30 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -603,10 +603,10 @@
 ;;; MDE Fri Mar 22 10:31:19 2024, Heidhausen -- it's great that reaper-item
 ;;; inherits its data and functionality from sndfile but the update method in
 ;;; that class is costly, especially when ffprobe is used (because that calls a
-;;; shell to get its info). So here were just make a quick instance bypassing
+;;; shell to get its info). So here we just make a quick instance bypassing
 ;;; all that yummy sndfile stuff, primarly so that make-reaper-item can be
 ;;; replaced with this method for on-the-fly creation of objects that just need
-;;; to be written.
+;;; to be written in above all reaper-play.
 (defun make-reaper-item-fast (slots-list)
   (let ((ri (make-instance 'reaper-item :init-update nil)))
     (loop for slot in slots-list by #'cddr

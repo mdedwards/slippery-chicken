@@ -33,13 +33,13 @@ power of the algorithmic approach. Think of slippery chicken as a big
 (non-artificially) intelligent sequencer or music compiler, but bear in mind
 that the `make-slippery-chicken` approach is not the only way of cooking
 something up (e.g. see [this wiki
-page](https://github.com/mdedwards/slippery-chicken/wiki/How-can-I-'roll-my-own'-slippery-chicken%3F)
+page](https://raw.githubusercontent.com/mdedwards/slippery-chicken/quicklisp/doc/examples/hello-slippery.lsp)
 for another approach).
 
 > [!WARNING]
 > Copy/pasting from a webpage into a Lisp interpreter often causes problems
 > because the characters are not standard ANSI. The code below can be found in
-> [this repo](doc/examples/hello-slippery.lsp).**
+> [this repo](doc/examples/hello-slippery.lsp).
 
 ```lisp
 (in-package :sc)

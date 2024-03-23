@@ -126,10 +126,14 @@ for another approach)
   (midi-play hello))
 ```
 
-Via Lilypond this produces a [lovely score](doc/media/_hello-slippery-chicken-noodles-score.pdf).
-We could listen to the piece with instrument approximations using Dorico or something but I quite
-like the MIDI file render made with [pianoteq 7's](https://www.modartt.com/pianoteq_overview)
-elektric piano *MKII Flower Power*: [listen](https://github.com/mdedwards/slippery-chicken/raw/quicklisp/doc/media/sc-noodles.mp3)
+Via Lilypond [(or CMN)](https://ccrma.stanford.edu/software/cmn/) we can
+directly produce a
+[score](doc/media/_hello-slippery-chicken-noodles-score.pdf). We could listen
+to the piece with instrument approximations using Dorico or something but I
+quite like the funky MIDI file render made with [pianoteq
+7's](https://www.modartt.com/pianoteq_overview) elektric piano *MKII Flower
+Power*:
+[listen](https://github.com/mdedwards/slippery-chicken/raw/quicklisp/doc/media/sc-noodles.mp3)
 
 Happy lisping,   
   Michael Edwards (m@michael-edwards.org)

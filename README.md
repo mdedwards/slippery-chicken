@@ -138,3 +138,7 @@ Power*:
 Happy lisping,   
   Michael Edwards (m@michael-edwards.org)
 
+## related Common Lisp packages
+[Common Lisp Music](https://ccrma.stanford.edu/software/clm/)  
+[Common Music Notation](https://ccrma.stanford.edu/software/cmn/)  
+[Common Music](https://github.com/ormf/cm)

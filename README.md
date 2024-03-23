@@ -37,7 +37,6 @@ page](https://github.com/mdedwards/slippery-chicken/wiki/How-can-I-'roll-my-own'
 for another approach).
 
 > [!WARNING]
-
 > Copy/pasting from a webpage into a Lisp interpreter often causes problems
 > because the characters are not all standard ANSI. The code below can be found
 > in [this repo](doc/examples/hello-slippery.lsp)--hit the *Download raw* button

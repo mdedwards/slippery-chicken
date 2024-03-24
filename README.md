@@ -138,7 +138,7 @@ directly produce a
 [score](doc/media/_hello-slippery-chicken-noodles-score.pdf). We could listen
 to the piece with instrument approximations using Dorico or something but I
 quite like the funky MIDI file render made with [pianoteq
-7's](https://www.modartt.com/pianoteq_overview) elektric piano *MKII Flower
+7's](https://www.modartt.com/pianoteq_overview) electric piano *MKII Flower
 Power*:
 [listen](https://github.com/mdedwards/slippery-chicken/raw/quicklisp/doc/media/hello-slippery-chicken-noodles.mp3)
 

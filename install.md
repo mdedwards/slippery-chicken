@@ -5,6 +5,21 @@ This document describes the installation process of slippery chicken using the
 -- the recommended method for this process. Other installation methods are
 documented on this [wiki page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand'). 
 
+
+- [Prerequisites and Preparations](Prerequisites and Preparations)
+  - [ASDF](#asdf)
+  - [Quicklisp](#quicklisp-optional)
+- [Dependencies](#dependencies)
+  - [Common Music (required)](#common-music-required)
+  - [Common Music Notation](#common-music-notation)
+  - [Common Lisp Music](#common-lisp-music)
+    - [C Compiler](#c-compiler)
+  - [ffprobe](#ffprobe)
+  - [LilyPond](#lilypond)
+- [Install and Use](#install-and-use)
+- [Customise Global Options](#customise-global-options)
+
+
 ## Prerequisites and Preparations
 
 Although slippery chicken's dependency overhead is rather low and installing the
@@ -186,7 +201,7 @@ SBCL (`.sbclrc`) might provide some insight:
 Now, you should be able to work with slippery chicken.
 
 
-## Customize Global Options
+## Customise Global Options
 
 slippery chicken contains some global variables which could and should be
 modified to the user's desired. For a detailed insight, have a look at

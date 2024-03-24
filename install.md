@@ -231,4 +231,4 @@ initfile (e.g. `.sbcl`) appended to the aforementioned.
     [https://git-scm.com/docs/git-clone](https://git-scm.com/docs/git-clone)
 
 [^4]:
-    Cf. [file:///Users/rubenphilipp/lisp/slippery-chicken/doc/manual/output.html#cmn](file:///Users/rubenphilipp/lisp/slippery-chicken/doc/manual/output.html#cmn)
+    Cf. [https://michael-edwards.org/sc/manual/output.html#cmn](https://michael-edwards.org/sc/manual/output.html#cmn)

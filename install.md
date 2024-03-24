@@ -6,7 +6,7 @@ This document describes the installation process of slippery chicken using the
 documented on this [wiki page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand'). 
 
 
-- [Prerequisites and Preparations](Prerequisites and Preparations)
+- [Prerequisites and Preparations](#prerequisites-and-preparations)
   - [ASDF](#asdf)
   - [Quicklisp](#quicklisp-optional)
 - [Dependencies](#dependencies)

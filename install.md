@@ -1,7 +1,7 @@
 # Install slippery chicken[^5]
 
 This document describes the installation process of slippery chicken using the
-[ASDF](https://asdf.common-lisp.dev] build system, which is -- as of March 2024
+[ASDF](https://asdf.common-lisp.dev) build system, which is -- as of March 2024
 -- the recommended method for this process. Other installation methods are
 documented on this [wiki page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand'). 
 

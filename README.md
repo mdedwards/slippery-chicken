@@ -20,7 +20,7 @@ years ago.
 Since March 2024 slippery-chicken can be installed via Common Lisp's ASDF
 mechanism. See the [install page](install.md) for details. For the old method of
 installing via script or from source, see this [wiki
-page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand')
+page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand').
 
 ## hello (slippery) world
 

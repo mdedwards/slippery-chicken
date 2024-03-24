@@ -1,9 +1,10 @@
 # Install slippery chicken
 
-This document describes the installation process of slippery chicken using the
-[ASDF](https://asdf.common-lisp.dev) build system, which is -- as of March 2024
--- the recommended method for this process. Other installation methods are
-documented on this [wiki page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand').[^5]
+This document[^5] describes the installation process of slippery chicken using
+the [ASDF](https://asdf.common-lisp.dev) build system, which is -- as of March
+2024 -- the recommended method for this process. Other installation methods are
+documented on this [wiki
+page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand').
 
 
 - [Prerequisites and Preparations](#prerequisites-and-preparations)
@@ -233,4 +234,4 @@ initfile (e.g. `.sbcl`) appended to the aforementioned.
     Cf. [file:///Users/rubenphilipp/lisp/slippery-chicken/doc/manual/output.html#cmn](file:///Users/rubenphilipp/lisp/slippery-chicken/doc/manual/output.html#cmn)
 
 
-[^5]: Written by Ruben Philipp (<me@rubenphilipp.com>).
+[^5]: Originally written by Ruben Philipp (<me@rubenphilipp.com>).

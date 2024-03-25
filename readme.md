@@ -6,7 +6,8 @@ composition.
 slippery chicken outputs sound files, [reaper](https://reaper.fm) files, MIDI
 files, and score files in PDF, Lilypond, and MusicXML formats. It also outputs
 scores in [antescofo~](https://antescofo-doc.ircam.fr) format for use with
-Arshia Cont's score following external for Max/MSP.
+Arshia Cont's score following external for Max/MSP, as well as scores for 
+[Csound](https://csound.com).
 
 The source code is available here in github. For more details about installation
 see the [install page](install.md).
@@ -19,7 +20,7 @@ years ago.
 Since March 2024 slippery-chicken can be installed via Common Lisp's ASDF
 mechanism. See the [install page](install.md) for details. For the old method of
 installing via script or from source, see this [wiki
-page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand')
+page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand').
 
 ## hello (slippery) world
 
@@ -137,7 +138,7 @@ directly produce a
 [score](doc/media/_hello-slippery-chicken-noodles-score.pdf). We could listen
 to the piece with instrument approximations using Dorico or something but I
 quite like the funky MIDI file render made with [pianoteq
-7's](https://www.modartt.com/pianoteq_overview) elektric piano *MKII Flower
+7's](https://www.modartt.com/pianoteq_overview) electric piano *MKII Flower
 Power*:
 [listen](https://github.com/mdedwards/slippery-chicken/raw/quicklisp/doc/media/hello-slippery-chicken-noodles.mp3)
 

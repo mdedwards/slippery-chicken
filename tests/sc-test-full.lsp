@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11th December 2011 (Bangkok)
 ;;;
-;;; $$ Last modified:  18:46:11 Sat Mar 16 2024 CET
+;;; $$ Last modified:  13:17:34 Mon Mar 25 2024 CET
 ;;;
 ;;; SVN ID: $Id: bar-holder.lsp 431 2011-12-08 14:44:30Z medward2 $
 ;;;
@@ -373,23 +373,25 @@
 ;;; MDE Fri May 17 19:50:00 2013 -- test other pieces in the examples dir
 ;;; (simply by loading).  
 (sc-deftest test-other-pieces ()
-  (loop for i in '(#+clm "sc-and-clm-examples.lsp" #+clm "second-law-clm.lsp" 
-                   "cavatina.lsp" "chop-examples.lsp" "chords-examples.lsp"
-                   "coming-piano-chords.lsp" "enharmonics-examples.lsp"
-                   "ensemble-examples.lsp" "exercises.lsp"
-                   "fibonacci-examples.lsp" "instruments-examples.lsp" 
-                   "l-systems-examples.lsp" "marks-examples.lsp"
-                   "notenames-scales-examples.lsp" "o-haupt-voll-blut.lsp" 
-                   "objects-slots-examples.lsp" "output-examples.lsp" 
-                   "permutation-examples.lsp" "pitches-examples.lsp"
-                   "post-gen-editing-examples.lsp" 
-                   "reeling-trains.lsp" "rhythms-examples.lsp"
-                   "rsp-rsm-examples.lsp"
-                   "scores-examples.lsp"
-                   "tempo-examples.lsp" "tonal-algo-example.lsp"
-                   "rhythm-chains-examples.lsp")
-     do (load-from-examples-dir i))
-  t)
+            (loop for i in '("hello-slippery.lsp" #+clm "sc-and-clm-examples.lsp"
+                             #+clm "second-law-clm.lsp" "cavatina.lsp"
+                             "chop-examples.lsp" "chords-examples.lsp"
+                             "coming-piano-chords.lsp" "enharmonics-examples.lsp"
+                             "ensemble-examples.lsp" "exercises.lsp"
+                             "fibonacci-examples.lsp" "instruments-examples.lsp" 
+                             "l-systems-examples.lsp" "marks-examples.lsp"
+                             "notenames-scales-examples.lsp"
+                             "o-haupt-voll-blut.lsp" 
+                             "objects-slots-examples.lsp" "output-examples.lsp" 
+                             "permutation-examples.lsp" "pitches-examples.lsp"
+                             "post-gen-editing-examples.lsp" 
+                             "reeling-trains.lsp" "rhythms-examples.lsp"
+                             "rsp-rsm-examples.lsp"
+                             "scores-examples.lsp"
+                             "tempo-examples.lsp" "tonal-algo-example.lsp"
+                             "rhythm-chains-examples.lsp")
+                  do (load-from-examples-dir i))
+            t)
 
 
 (load-from-test-suite-dir "workshop-exercises.lsp")

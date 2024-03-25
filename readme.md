@@ -3,11 +3,13 @@
 This is slippery-chicken, a Common Lisp and CLOS package for algorithmic
 composition.
 
-slippery chicken outputs sound files, [reaper](https://reaper.fm) files, MIDI
-files, and score files in PDF, Lilypond, and MusicXML formats. It also outputs
-scores in [antescofo~](https://antescofo-doc.ircam.fr) format for use with
-Arshia Cont's score following external for Max/MSP, as well as scores for 
-[Csound](https://csound.com).
+slippery chicken outputs sound files via [*Common Lisp
+Music*](https://ccrma.stanford.edu/software/clm/), [*reaper*](https://reaper.fm)
+files, MIDI files, and score files in PDF, *Lilypond*, and *MusicXML*
+formats. It also outputs scores in
+[*antescofo~*](https://antescofo-doc.ircam.fr) format for use with Arshia Cont's
+score following external for *Max/MSP*, as well as scores for
+[*Csound*](https://csound.com).
 
 The source code is available here in github. For more details about installation
 see the [install page](install.md).

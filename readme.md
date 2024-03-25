@@ -157,9 +157,9 @@ computer music way back in the early 90s. Slippery chicken takes all of its MIDI
 file reading and writing routines from CM as well as pitch and tuning notation.
   - and of course thanks to Orm Finnendahl for making the last Common Lisp
   version of CM available on GitHub.
-- Thanks to Sean Reed who did a lot of the original documentation---in the form
+- Thanks to Sean Reed who did a lot of the original documentation--in the form
 of [the website](https://michael-edwards.org/sc) and the [inline code
-documentation](https://michael-edwards.org/sc/robodoc/toc_index.html), as well
+documentation](https://michael-edwards.org/sc/robodoc/toc_index.html)--as well
 as the original test suite, all back in 2011/12
 - Thanks to the many students who have used, tested, and given me productive
 feedback over the years, most recently and in particular Leon Focker, Ruben

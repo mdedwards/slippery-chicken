@@ -38,10 +38,12 @@ page](https://github.com/mdedwards/slippery-chicken/wiki/How-can-I-'roll-my-own'
 for another approach).
 
 > [!WARNING]
+
 > Copy/pasting from a webpage into a Lisp interpreter often causes problems
-> because the characters are not all standard ANSI. The code below can be found
-> in [this repo](doc/examples/hello-slippery.lsp)--hit the *Download raw* button
-> to grab it.
+> because the characters are not always standard ANSI. Generally GitHub code
+> displayed online will work but if not, then the code below can be found in
+> [this repo](doc/examples/hello-slippery.lsp)--hit the *Download raw* button to
+> grab it.
 
 ```lisp
 (in-package :sc)
@@ -67,9 +69,10 @@ for another approach).
           ;; our rhythm sequences (aka phrases). We reference these in the
           ;; rthm-seq-map below to sequence the piece. Rhythms are notated as
           ;; simple symbols like s for 16th, e for eighth, q. for dotted quarter
-          ;; etc. Nested tuplets (complex rhythms) and RQQ notation also
-          ;; possible. Rhythms can be repeated with e.g. s x 4 (four
-          ;; 16ths). Melodic curves are indicated by the :pitch-seq-palette. See
+          ;; etc. Symbols in () are rests. Nested tuplets (complex rhythms) and
+          ;; RQQ notation also possible. Rhythms can be repeated with e.g. s x 4
+          ;; (four 16ths). Melodic curves are indicated by the
+          ;; :pitch-seq-palette. See
           ;; https://michael-edwards.org/sc/manual/pitches.html#curves
           :rthm-seq-palette '((1 ((((5 8) - s x 4 -  - s e s - (e)))
                                   :pitch-seq-palette ((1 2 5 4 1 3 6)
@@ -116,6 +119,10 @@ for another approach).
   ;; and violin but much harder on the bassoon so let's change repeated notes in
   ;; that part to neighbouring tones in the current set.
   (rm-repeated-pitches hello 'bsn)
+  ;; and related to that, let's automatically add slurs to the bassoon
+  ;; part--this would make a good starting point but would need some hand
+  ;; editing to avoid e.g. large downward leaps
+  (auto-slur hello 'bsn)
   ;; marks can be part of rthm-sequence-palettes or added post-generation. They
   ;; can be symbols like 'a' for accent or any arbitrary text, as here.
   (add-mark-to-note hello 1 1 'vln "hello")
@@ -141,6 +148,20 @@ quite like the funky MIDI file render made with [pianoteq
 7's](https://www.modartt.com/pianoteq_overview) electric piano *MKII Flower
 Power*:
 [listen](https://github.com/mdedwards/slippery-chicken/raw/quicklisp/doc/media/hello-slippery-chicken-noodles.mp3)
+
+## Thanks
+
+- Thanks first of all to Rick Taube, the author of *Common Music* (CM), which
+was the first algorithmic composition system I used when I was starting out in
+computer music way back in the early 90s. Slippery chicken takes all of its MIDI
+file reading and writing routines from CM as well as pitch and tuning notation.
+- Thanks to Sean Reed who did a lot of the original documentation---in the form
+of [the website](https://michael-edwards.org/sc) and the [inline code
+documentation](https://michael-edwards.org/sc/robodoc/toc_index.html), as well
+as the original test suite, all back in 2011/12
+- Thanks to the many students who have used, tested, and given me productive
+feedback over the years, most recently and in particular Leon Focker, Ruben
+Philipp, and Dan Ross.
 
 Happy lisping,   
   Michael Edwards (m@michael-edwards.org)

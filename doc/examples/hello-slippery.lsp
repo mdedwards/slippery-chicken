@@ -21,9 +21,10 @@
           ;; our rhythm sequences (aka phrases). We reference these in the
           ;; rthm-seq-map below to sequence the piece. Rhythms are notated as
           ;; simple symbols like s for 16th, e for eighth, q. for dotted quarter
-          ;; etc. Nested tuplets (complex rhythms) and RQQ notation also
-          ;; possible. Rhythms can be repeated with e.g. s x 4 (four
-          ;; 16ths). Melodic curves are indicated by the :pitch-seq-palette. See
+          ;; etc. Symbols in () are rests. Nested tuplets (complex rhythms) and
+          ;; RQQ notation also possible. Rhythms can be repeated with e.g. s x 4
+          ;; (four 16ths). Melodic curves are indicated by the
+          ;; :pitch-seq-palette. See
           ;; https://michael-edwards.org/sc/manual/pitches.html#curves
           :rthm-seq-palette '((1 ((((5 8) - s x 4 -  - s e s - (e)))
                                   :pitch-seq-palette ((1 2 5 4 1 3 6)
@@ -70,6 +71,10 @@
   ;; and violin but much harder on the bassoon so let's change repeated notes in
   ;; that part to neighbouring tones in the current set.
   (rm-repeated-pitches hello 'bsn)
+  ;; and related to that, let's automatically add slurs to the bassoon
+  ;; part--this would make a good starting point but would need some hand
+  ;; editing to avoid e.g. large downward leaps
+  (auto-slur hello 'bsn)
   ;; marks can be part of rthm-sequence-palettes or added post-generation. They
   ;; can be symbols like 'a' for accent or any arbitrary text, as here.
   (add-mark-to-note hello 1 1 'vln "hello")

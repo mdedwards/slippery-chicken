@@ -8314,7 +8314,7 @@
       ;; LF 2024-03-26 15:49:55 only test first 6 values for clm
       (equal (subseq info1 0 6) '(48000 1 16 5.000021 484098 240001))
       ;; LF 2024-03-26 15:33:42 ffprobe also returns fps, width, height:
-      (equal info2 '(48000 1 16 5.000021 484098 240001 0 nil nil)))))
+      (equal info2 '(48000 1 16 5.000021 484098 240001 0 nil nil PCM_S16LE)))))
 
 ;;; SAR Mon Apr 16 17:52:23 BST 2012
 #+clm

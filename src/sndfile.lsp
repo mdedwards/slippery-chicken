@@ -363,7 +363,7 @@ T
           (error "sndfile::update: start < 0???: ~a" sf))
         (when (and end (<= end st))
           (error "sndfile::update: end <= start???: ~a" sf))
-        ;;  MDE Thu Jan 28 16:55:48 2021, Heidhausen -- signal a warning only
+        ;; MDE Thu Jan 28 16:55:48 2021, Heidhausen -- signal a warning only
         ;; and adjust
         (when (and (snd-duration sf) (> end (snd-duration sf)))
           (warn "sndfile::update: ~
@@ -635,7 +635,8 @@ data: /path/to/sndfile-1.aiff
 	 (fps-scan (ppcre:create-scanner "r_frame_rate=\\d+"))
 	 (width-scan (ppcre:create-scanner "width=\\d+"))
 	 (heigth-scan (ppcre:create-scanner "height=\\d+"))
-	 duration channels srate bitdepth size framples fps width height)
+	 (codec-scan (ppcre:create-scanner "codec_name=.+"))
+	 duration channels srate bitdepth size framples fps width height codec)
     ;; do the regex:
     (setf srate (ppcre:scan-to-strings srate-scan string)
 	  channels (ppcre:scan-to-strings chan-scan string)
@@ -644,12 +645,13 @@ data: /path/to/sndfile-1.aiff
 	  size (ppcre:scan-to-strings size-scan string)
 	  fps (ppcre:scan-to-strings fps-scan string)
 	  width (ppcre:scan-to-strings width-scan string)
-	  height (ppcre:scan-to-strings heigth-scan string))
+	  height (ppcre:scan-to-strings heigth-scan string)
+	  codec (ppcre:scan-to-strings codec-scan string))
     (when (and duration srate)
       (setf duration (read-from-string (subseq duration 9))
 	    srate (read-from-string (subseq srate 12))
 	    framples (round (* duration srate))))
-      ;; get the values:
+    ;; get the values:
     (list srate
 	  (when channels (read-from-string (subseq channels 9)))
 	  (when bitdepth (read-from-string (subseq bitdepth 16)))
@@ -658,7 +660,8 @@ data: /path/to/sndfile-1.aiff
 	  framples
 	  (when fps (read-from-string (subseq fps 13)))
 	  (when width (read-from-string (subseq width 6)))
-	  (when height (read-from-string (subseq height 7))))))
+	  (when height (read-from-string (subseq height 7)))
+	  (when codec (read-from-string (subseq codec 11))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* sndfile/get-sound-info
@@ -712,7 +715,7 @@ data: /path/to/sndfile-1.aiff
 	    "-show_entries" "format=duration,size"
 	    "-show_entries"
 	    "stream=sample_rate,channels,r_frame_rate,width,height"
-	    "-show_entries" "stream=bits_per_sample"
+	    "-show_entries" "stream=bits_per_sample,codec_name"
 	    "-of" "default=noprint_wrappers=1:nokey=0"
             filename))))))
 

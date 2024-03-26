@@ -8308,10 +8308,11 @@
 
 ;;; LF 2024-03-17 19:40:58
 (sc-deftest test-sndfile-get-sound-info ()
-  (sc-test-check
-    (let ((info1 (get-sound-info (get-test-sf-path "tests/pink5s.wav")))
-          (info2 (get-sound-info (get-test-sf-path "tests/pink5s.wav") t)))
-      (equal info1 '(48000 1 16 5.000021 484098 240001))
+  (let ((info1 (get-sound-info (get-test-sf-path "tests/pink5s.wav")))
+	(info2 (get-sound-info (get-test-sf-path "tests/pink5s.wav") t)))
+    (sc-test-check
+      ;; LF 2024-03-26 15:49:55 only test first 6 values for clm
+      (equal (subseq info1 0 6) '(48000 1 16 5.000021 484098 240001))
       ;; LF 2024-03-26 15:33:42 ffprobe also returns fps, width, height:
       (equal info2 '(48000 1 16 5.000021 484098 240001 0 nil nil)))))
 

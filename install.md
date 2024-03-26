@@ -1,4 +1,4 @@
-# Install slippery chicken
+# Installation Instructions
 
 This document describes the installation process of slippery chicken using
 the [ASDF](https://asdf.common-lisp.dev) build system, which is -- as of March

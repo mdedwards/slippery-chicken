@@ -625,6 +625,41 @@ data: /path/to/sndfile-1.aiff
                             :angle-env angle-env :elevation-env elevation-env
                             :distance-env distance-env)))
 
+;; LF 2024-03-26 15:23:48
+(defun parse-ffprobe-string (string)
+  (let* ((dur-scan (ppcre:create-scanner "duration=\\d+.\\d+"))
+	 (chan-scan (ppcre:create-scanner "channels=\\d+"))
+	 (srate-scan (ppcre:create-scanner "sample_rate=\\d+"))
+	 (bit-scan (ppcre:create-scanner "bits_per_sample=\\d+"))
+	 (size-scan (ppcre:create-scanner "size=\\d+"))
+	 (fps-scan (ppcre:create-scanner "r_frame_rate=\\d+"))
+	 (width-scan (ppcre:create-scanner "width=\\d+"))
+	 (heigth-scan (ppcre:create-scanner "height=\\d+"))
+	 duration channels srate bitdepth size framples fps width height)
+    ;; do the regex:
+    (setf srate (ppcre:scan-to-strings srate-scan string)
+	  channels (ppcre:scan-to-strings chan-scan string)
+	  bitdepth (ppcre:scan-to-strings bit-scan string)
+	  duration (ppcre:scan-to-strings dur-scan string)
+	  size (ppcre:scan-to-strings size-scan string)
+	  fps (ppcre:scan-to-strings fps-scan string)
+	  width (ppcre:scan-to-strings width-scan string)
+	  height (ppcre:scan-to-strings heigth-scan string))
+    (when (and duration srate)
+      (setf duration (read-from-string (subseq duration 9))
+	    srate (read-from-string (subseq srate 12))
+	    framples (round (* duration srate))))
+      ;; get the values:
+    (list srate
+	  (when channels (read-from-string (subseq channels 9)))
+	  (when bitdepth (read-from-string (subseq bitdepth 16)))
+	  duration
+	  (when size (read-from-string (subseq size 5)))
+	  framples
+	  (when fps (read-from-string (subseq fps 13)))
+	  (when width (read-from-string (subseq width 6)))
+	  (when height (read-from-string (subseq height 7))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* sndfile/get-sound-info
 ;;; AUTHOR
@@ -640,8 +675,7 @@ data: /path/to/sndfile-1.aiff
 ;;; Use (set-sc-config 'ffprobe-command "new/path") to change the default path
 ;;; for ffprobe.
 ;;;
-;;; NB: CLM seems to get the bitdepth wrong in an awful lot of cases...
-;;; is there an alternative?
+;;; NB: CLM is not recommended for use with video files.
 ;;;
 ;;; ARGUMENTS
 ;;; - filename. The path to the sound or video file.
@@ -652,38 +686,35 @@ data: /path/to/sndfile-1.aiff
 ;;;   interpret that string as path to the ffprobe executable.
 ;;;
 ;;; RETURN VALUE
-;;; a list containing duration, srate, number of channels, bits per sample,
-;;; the file size in byte and the number of framples as numbers.
+;;; a list containing srate, number of channels, bits per sample, duration, 
+;;; the file size in byte, the number of framples, the video fps, width and
+;;; heigth as numbers.
 ;;;
 ;;; SYNOPSIS
 (defun get-sound-info (filename &optional ffprobe)
 ;;; ****
-  ;; (print 'get-sound-info)
   (when (and filename (probe-file filename))
     (let ((clm (find :clm *features*)))
       (if (and clm (not ffprobe))
-        ;; this order is important because ffprobe returns results like this
-        (list (clm::sound-srate filename)
-              (clm::sound-chans filename)
-              (* (clm::mus-sound-datum-size filename) 8)
-              (clm::sound-duration filename)
-              (clm::sound-length filename)
-              (clm::sound-framples filename))
-        (let ((result (string-to-list
-                       (shell-to-string
-                        (if (stringp ffprobe)
-                          ffprobe
-                          (get-sc-config 'ffprobe-command))
-                        "-v" "error" "-select_streams" "a:0"
-                        "-show_entries" "format=duration"
-                        "-show_entries" "format=size"
-                        "-show_entries" "stream=sample_rate"
-                        "-show_entries" "stream=channels"
-                        "-show_entries" "stream=bits_per_sample"
-                        "-of" "default=noprint_wrappers=1:nokey=1"
-                        filename))))
-          ;; (print result)
-          (econs result (round (* (nth 0 result) (nth 3 result)))))))))
+	  ;; this order should be the same as in parse-ffprobe-string
+          (list (clm::sound-srate filename)
+		(clm::sound-chans filename)
+		(* (clm::mus-sound-datum-size filename) 8)
+		(clm::sound-duration filename)
+		(clm::sound-length filename)
+		(clm::sound-framples filename))
+          (parse-ffprobe-string
+	   (shell-to-string
+            (if (stringp ffprobe)
+		ffprobe
+		(get-sc-config 'ffprobe-command))
+	    "-v" "quiet"
+	    "-show_entries" "format=duration,size"
+	    "-show_entries"
+	    "stream=sample_rate,channels,r_frame_rate,width,height"
+	    "-show_entries" "stream=bits_per_sample"
+	    "-of" "default=noprint_wrappers=1:nokey=0"
+            filename))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun autoc-get-fundamental (file start duration)

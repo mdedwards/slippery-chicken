@@ -19,15 +19,15 @@ instructions.
   - [Prerequisites and Preparations](#prerequisites-and-preparations)
     - [ASDF](#asdf)
     - [Quicklisp (recommended)](#quicklisp-recommended)
-  - [Install Dependencies](#install-dependencies)
+  - [Install Dependencies](#install-dependencies-1)
     - [Common Music (required)](#common-music-required)
     - [Common Music Notation (optional)](#common-music-notation-optional)
     - [Common Lisp Music (optional)](#common-lisp-music-optional)
       - [C Compiler](#c-compiler)
     - [ffprobe (optional)](#ffprobe-optional)
     - [LilyPond (optional)](#lilypond-optional)
-  - [Install slippery-chicken](#install-slippery-chicken)
-  - [Configure slippery-chicken](#configure-slippery-chicken)
+  - [Install slippery-chicken](#install-slippery-chicken-1)
+  - [Configure slippery-chicken](#configure-slippery-chicken-1)
   - [Customise Global Options](#customise-global-options)
 
 ## Short

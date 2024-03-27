@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  15:02:24 Fri Mar 22 2024 CET
+;;; $$ Last modified:  17:49:28 Wed Mar 27 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -45,10 +45,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defparameter +slippery-chicken-version+ "1.1.0")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 #+sbcl (require :sb-bsd-sockets)
 #+sbcl (require :sb-posix)
 #+sbcl (unlock-package "COMMON-LISP")
@@ -65,7 +61,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defsystem "slippery-chicken"
-  :version cl-user::+slippery-chicken-version+
+  :version "1.1.0"
   :license "GPL Version 3.0 or later"
   :author "Michael Edwards <m@michael-edwards.org>"
   :description "Algorithmic composition software in Common Lisp and CLOS"
@@ -184,6 +180,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :cl-user)
+
+;; set the slippery-chicken-version using the version specified in the
+;; asd-system
+;; RP  Wed Mar 27 17:49:18 2024
+(defparameter +slippery-chicken-version+
+  (asdf:component-version (asdf:find-system :slippery-chicken)))
+                                          
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; from all.lsp

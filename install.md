@@ -196,7 +196,7 @@ Add the following line to the init file:
 If you are not using Quicklisp, replace the `ql:quickload` with
 `asdf:load-system`. Please note that you might then need to manually install and
 load additional packages which are required by slippery-chicken as well as to
-manually load slippery chicken's dependencies before loading slippery-chicken
+load slippery chicken's dependencies before loading slippery-chicken
 itself. [See below](#configure-slippery-chicken-1) for details.
 
 Finally, you might want to customise some of slippery chicken's global
@@ -211,8 +211,7 @@ your system, by appending the respective lines to your CL init file:
 (set-sc-config 'csound-command "/opt/homebrew/bin/csound")
 ```
 
-That's it. Now you should be able to use the slippery-chicken package in your
-Lisp.
+You should be able to use the slippery-chicken package in your Common Lisp REPL.
 
 
 ## Long
@@ -221,35 +220,35 @@ Lisp.
 
 Although slippery chicken's dependency overhead is rather low and installing the
 software via ASDF is quite straightforward, a few remarks on its prerequisites
-are worth to be made. Generally, this document assumes that you have a working
-Common Lisp implementation running on your system as well as that you have a
-basic understanding of the Common Lisp language.
+are worth being be made. Generally, this document assumes that you have a
+working Common Lisp implementation running on your system as well as that you
+have a basic understanding of the Common Lisp language.
 
 #### ASDF
 
 Most current Common Lisp implementations already include the ASDF-package by
-default,[^1] thus it is very likely that you don't need to take care of setting
-ASDF up before going ahead. You can find out whether ASDF is available on your
-system by evaluating this form in your CL-REPL...
+default,[^1] thus it is very likely that you don't need to set up ASDF up before
+going ahead. You can find out whether ASDF is available on your system by
+evaluating this form in your Lisp interpreter:
 
 ```lisp
 (find :asdf *features*)
 ```
 
-...which should return `:ASDF`.
+This should return `:ASDF`.
 
 In ASDF-parlance, modules or programs (e.g. slippery-chicken) are termed
 *systems*. Each system contains a system definition file (the `.asd` file) which
-provides information about dependencies, system components etc. In case you 
+provides information about dependencies, system components, etc. In case you 
 encounter ASDF-related errors, inspecting the `.asd` file of the respective 
 system is always a good strategy. 
 
 > [!IMPORTANT] 
 > If you are not familiar with ASDF, it is worth mentioning that all systems
 > need to be present in the ASDF-search-path/registry. A simple and
-> straightforward way to do this is to place the respective files to ASDF's
+> straightforward way to do this is to place the respective files in ASDF's
 > standard location (`~/common-lisp/` or
-> `~/.local/share/common-lisp/source/`). You could also use symlinks, of
+> `~/.local/share/common-lisp/source/`). You could also use symbolic links, of
 > course. For more detail
 > cf. [https://asdf.common-lisp.dev/asdf.html#Configuring-ASDF-to-find-your-systems](https://asdf.common-lisp.dev/asdf.html#Configuring-ASDF-to-find-your-systems).
 
@@ -257,15 +256,15 @@ system is always a good strategy.
 #### Quicklisp (recommended)
 
 As some modules (i.e. dependencies) of slippery chicken themselves depend on
-modules probably not present on your system and ASDF does not take care about
-downloading them,[^2] you might want to use Quicklisp, a Common Lisp library
-manager built upon ASDF, to dynamically (down-)load the respective
+modules probably not present on your system and ASDF itself does not take care
+to download them,[^2] you might want to use Quicklisp, a Common Lisp
+library manager built upon ASDF to dynamically (down-)load the respective
 components. In order to do so, head over to
 [https://www.quicklisp.org/](https://www.quicklisp.org/) and follow the
 instructions given there.
 
 We recommend using Quicklisp as it facilitates handling nested dependencies and
-thus minimises the effort to install and load slippery chicken.
+thus minimises the effort needed to install and load slippery chicken.
 
 > [!IMPORTANT]
 > When using Quicklisp, the default search-path (cf. [ASDF](#asdf)) for local
@@ -309,11 +308,11 @@ git clone https://github.com/ormf/cm.git
 
 #### Common Music Notation (optional)
 
-Rick Taube's Common Music Notation (CMN) is capable of generating musical scores
-from CL and required for example by slippery-chicken's `cmn-display`[^3]
-method. 
+Bill Schottstaedt's Common Music Notation (CMN) is capable of quickly generating
+musical scores from CL and is required, for example, by slippery-chicken's
+`cmn-display`[^3] method.
 
-If you want to use it, download the tarball archive from
+If you want to use CMN, download the tarball archive from
 [https://ccrma.stanford.edu/software/cmn/](https://ccrma.stanford.edu/software/cmn/)
 and unpack(-tar) it to your ASDF-/quicklisp directory. Alternatively, you can
 also use the terminal:
@@ -329,7 +328,7 @@ tar xf cmn.tar.gz
 Bill Schottstaedt's Common Lisp Music (CLM) is used in slippery chicken to write
 and (quickly) analyse soundfiles. 
 
-In order to use it, download the tarball archive from
+In order to use CLM, download the tarball archive from
 [https://ccrma.stanford.edu/software/clm/](https://ccrma.stanford.edu/software/clm/)
 and unpack(-tar) it to your ASDF-/quicklisp directory. Alternatively, you can
 also use the terminal:
@@ -360,9 +359,9 @@ Configured with: --prefix=/Library/Developer/CommandLineTools/usr --with-gxx-inc
 If you don't have a C compiler, installation methods vary from OS to OS:
 
 - macOS
-  - cf. this [wiki entry](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand'#c-compiler)
+  - run `xcode-select --install` in the terminal or cf. this [wiki entry](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand'#c-compiler) 
 - Linux
-  - Should have a C compiler installed; if not, friendly ask your preferred
+  - Should have a C compiler installed; if not, ask your preferred
     search engine.
 - Windows
   - CLM was not designed to run on Windows though Michael Edwards had success a
@@ -371,10 +370,9 @@ If you don't have a C compiler, installation methods vary from OS to OS:
 
 #### ffprobe (optional)
 
-ffprobe (from the ffmpeg package) is used by slippery chicken to retrieve data
-from media files (e.g. video and audio files). When CLM is not installed,
-slippery chicken uses ffprobe's (slightly slower, compared to CLM) capabilities
-for analysing soundfiles.
+ffprobe (from the ffmpeg package) is used by slippery chicken to retrieve some
+metadata from media files (e.g. video and, when not available via CLM, audio
+files). Note that using ffprobe is significantly slower at this than CLM.
 
 In order to install ffprobe, you can use `apt` on Linux, `brew` on
 MacOS or `choco` on Windows. If none of these options are viable for you, head
@@ -388,10 +386,9 @@ to this site and install ffprobe according to the directions given there:
 
 #### LilyPond (optional)
 
-If you want to take advantage of rendering beautiful
-[LilyPond](https://lilypond.org) scores (e.g. via slippery-chicken's
-`lp-display`), you might be interested in installing this software to your
-system. 
+If you want to directly render beautiful scores via
+[LilyPond](https://lilypond.org) (e.g. via slippery-chicken's `lp-display`), you
+might be interested in installing this software on your system.
 
 In order to install LilyPond, you can use `apt` on Linux, `brew` on
 MacOS or `choco` on Windows. If none of these options are viable for you, head
@@ -406,7 +403,7 @@ to this site and install LilyPond according to the directions given there:
 ### Install slippery-chicken
 
 Installing slippery chicken, after fulfilling the prerequisites and (required)
-dependencies, is really easy. You can either download the sources from
+dependencies, is usually very easy. You can either download the sources from
 [http://github.com/mdedwards/slippery-chicken](http://github.com/mdedwards/slippery-chicken) and put them in your ASDF/Quicklisp directory, or use the terminal:
 
 ```shell
@@ -414,12 +411,11 @@ dependencies, is really easy. You can either download the sources from
 git clone https://github.com/mdedwards/slippery-chicken.git
 ```
 
-
 ### Configure slippery-chicken
 
-Now that you have all components you would like to use installed, you need to
-take care of loading the modules before starting to work with slippery chicken.
-It is recommended to do this via the init file of your Common Lisp
+Now that you have installed all the components that you would like to use, you
+need to take care of loading the modules before starting to work with slippery
+chicken. It is recommended to do this via the init file of your Common Lisp
 implementation which will be loaded and evaluated when you start your Common
 Lisp interpreter. The name and location of your init file depends on the
 implementation. On SBCL, for example, it is `~/.sbclrc` by default, whereas
@@ -433,9 +429,8 @@ to your init file:
 
 If you are not using Quicklisp, replace the `ql:quickload` with
 `asdf:load-system`. Please note that you then need to manually load various
-dependencies before loading slippery-chicken. Without giving further detail, the
-following could serve as an example to load a full slippery chicken installation
-without Quicklisp:
+dependencies before loading slippery-chicken. The following could serve as an
+starting point to load a full slippery chicken installation without Quicklisp:
 
 ```lisp
 (asdf:load-system :cmn)
@@ -449,17 +444,17 @@ without Quicklisp:
 
 #### Customise Global Options
 
-slippery chicken contains some global variables which could and should be
-modified to the user's desire. For a detailed insight, have a look at
+slippery chicken contains some global variables which could/should be
+modified to suit the user's requirements. For a detailed insight, take a look at
 `src/globals.lsp`.[^4]
 
 If you want to use slippery chicken with external programs like LilyPond,
 ffprobe, or Csound, you might need to tell slippery chicken where it can find
-the binaries to execute. This might be necessary since, even though there are
-commonly standard locations for such files, the actual location might differ
-from operating system to operating system and also depends on the installation
-method of the programs. Below you will find an example that sets the variables
-for the aforementioned programs to the binary location when these have been
+the binaries to execute. This is because although there are standard locations
+for such files, the actual location might differ from operating system to
+operating system or machine to machine; locations also depend on the
+installation method. Below you will find an example that sets the variables for
+the aforementioned programs to the binary location where they were
 installed via Homebrew on a Mac. These lines could also be appended to the
 Common Lisp init file, but must be added after the commands which load
 slippery-chicken and its dependencies (see above).
@@ -470,7 +465,10 @@ slippery-chicken and its dependencies (see above).
 (set-sc-config 'csound-command "/opt/homebrew/bin/csound")
 ```
 
-That's it. Now you should be able to start working with slippery-chicken. 
+To find out where a particular program is, you can call e.g. `which ffprobe`
+in most terminals.
+
+That's it. You should now be able to start working with slippery-chicken. 
 
 ---
 

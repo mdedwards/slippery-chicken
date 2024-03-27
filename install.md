@@ -2,8 +2,8 @@
 
 ## Ultrashort: for the quicklisp afficionado (TL;DR)
 
-For a minimum installation of sc, open your terminal, `cd` to your Quicklisp
-local-projects directory, then:
+For a minimum installation of slippery chicken, open your terminal, `cd` to your
+Quicklisp local-projects directory, then:
 
 ```shell
 # in your Quicklisp standard directory
@@ -23,8 +23,8 @@ such as CLM, then keep reading.)
 ---
 
 This document describes the installation process of slippery chicken using
-the [ASDF](https://asdf.common-lisp.dev) build system, which is -- as of March
-2024 -- the recommended method for this process. Other installation methods are
+the [ASDF](https://asdf.common-lisp.dev) build system, which is – as of March
+2024 – the recommended method for this process. Other installation methods are
 documented on this [wiki
 page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand').
 
@@ -63,7 +63,7 @@ We recommend to use [https://www.quicklisp.org/](https://www.quicklisp.org/).
 
 ### Install Dependencies
 
-First, install slippery chickens dependencies. These are:
+First, install slippery chicken's dependencies. These are:
 
 - Common Music/CM (required)
 - Common Music Notation/CMN (optional)
@@ -180,8 +180,9 @@ git clone https://github.com/mdedwards/slippery-chicken.git
 
 The last step is modifying the init file of your Common Lisp implementation to
 load slippery chicken and its dependencies. The name and location of your init
-file depends on the implementation. On SBCL, for example, it is `~/.sbclrc` by
-default, whereas Clozure CL uses `~/ccl-init.lisp` or `~/.ccl-init.lisp`. 
+file depends on the implementation you are using. On SBCL, for example, it is
+`~/.sbclrc` by default, whereas Clozure CL uses `~/ccl-init.lisp` or
+`~/.ccl-init.lisp`.
 
 Put the following line to it:
 
@@ -190,12 +191,13 @@ Put the following line to it:
 ```
 
 If you are not using Quicklisp, replace the `ql:quickload` with
-`asdf:load-system`. Please note that you might then manually install and load
-additional packages which are required by slippery-chicken and its dependencies,
-as well as manually loading the dependencies before loading slippery-chicken. 
+`asdf:load-system`. Please note that you might then need to manually install and
+load additional packages which are required by slippery-chicken as well as to
+manually load slippery chicken's dependencies before loading slippery-chicken
+itself.
 
-Finally, you might want to customise some global configuration variables[^4] of
-slippery chicken itself. In case you use one of the optional dependencies,
+Finally, you might want to customise some of slippery chicken's global
+configuration variables[^4]. In case you use one of the optional dependencies,
 ensure the following paths are set to the actual locations of the binaries on
 your system, by appending the respective lines to your CL init file:
 
@@ -243,7 +245,8 @@ system is always a good strategy.
 > If you are not familiar with ASDF, it is worth mentioning that all systems
 > need to be present in the ASDF-search-path/registry. A simple and
 > straightforward way to do this is to place the respective files to ASDF's
-> standard location (`~/common-lisp/`). You could also use symlinks, of
+> standard location (`~/common-lisp/` or
+> `~/.local/share/common-lisp/source/`). You could also use symlinks, of
 > course. For more detail
 > cf. [https://asdf.common-lisp.dev/asdf.html#Configuring-ASDF-to-find-your-systems](https://asdf.common-lisp.dev/asdf.html#Configuring-ASDF-to-find-your-systems).
 
@@ -259,7 +262,7 @@ components. In order to do so, head over to
 instructions given there.
 
 We recommend using Quicklisp as it facilitates handling nested dependencies and
-thus minimises the effort to install slippery chicken.
+thus minimises the effort to install and load slippery chicken.
 
 > [!IMPORTANT]
 > When using Quicklisp, the default search-path (cf. [ASDF](#asdf)) for local
@@ -309,7 +312,7 @@ method.
 
 If you want to use it, download the tarball archive from
 [https://ccrma.stanford.edu/software/cmn/](https://ccrma.stanford.edu/software/cmn/)
-and unpack(-tar) it to your ASDF-/quicklisp-directory. Alternatively, you can
+and unpack(-tar) it to your ASDF-/quicklisp directory. Alternatively, you can
 also use the terminal:
 
 ```shell
@@ -325,7 +328,7 @@ and (quickly) analyse soundfiles.
 
 In order to use it, download the tarball archive from
 [https://ccrma.stanford.edu/software/clm/](https://ccrma.stanford.edu/software/clm/)
-and unpack(-tar) it to your ASDF-/quicklisp-directory. Alternatively, you can
+and unpack(-tar) it to your ASDF-/quicklisp directory. Alternatively, you can
 also use the terminal:
 
 ```shell
@@ -337,8 +340,9 @@ tar xf clm.tar.gz
 ##### C Compiler
 
 CLM requires a C compiler to be present on your system. On most UNIX systems
-(including Apple's OSX) you'll already have the GNU C compiler. You can check
-whether yours is ready to go by typing the following command in your terminal:
+(including Apple's macOS/OSX) you'll already have the GNU C compiler. You can
+check whether yours is ready to go by typing the following command in your
+terminal:
 
 ```
 gcc -v
@@ -364,10 +368,10 @@ If you don't have a C compiler, installation methods vary from OS to OS:
 
 #### ffprobe (optional)
 
-ffprobe is used by slippery chicken to retrieve data from media files
-(e.g. video and audio files). When CLM is not installed, slippery chicken uses
-ffprobe's (slightly slower, compared to CLM) capabilities for analysing
-sndfiles. 
+ffprobe (from the ffmpeg package) is used by slippery chicken to retrieve data
+from media files (e.g. video and audio files). When CLM is not installed,
+slippery chicken uses ffprobe's (slightly slower, compared to CLM) capabilities
+for analysing soundfiles.
 
 In order to install ffprobe, you can use `apt` on Linux, `brew` on
 MacOS or `choco` on Windows. If none of these options are viable for you, head
@@ -416,8 +420,8 @@ It is recommended to do this via the init file of your Common Lisp
 implementation which will be loaded and evaluated when you start your Common
 Lisp interpreter. The name and location of your init file depends on the
 implementation. On SBCL, for example, it is `~/.sbclrc` by default, whereas
-Clozure CL uses `~/ccl-init.lisp` or `~/.ccl-init.lisp`. Add the following lines
-to your init file (omit the components you did not install). 
+Clozure CL uses `~/ccl-init.lisp` or `~/.ccl-init.lisp`. Add the following line
+to your init file:
 
 
 ```lisp
@@ -426,9 +430,9 @@ to your init file (omit the components you did not install).
 
 If you are not using Quicklisp, replace the `ql:quickload` with
 `asdf:load-system`. Please note that you then need to manually load various
-dependencies before loading slippery-chicken. Without much further detail, the
-following is an example to load a full slippery chicken installation without
-Quicklisp:
+dependencies before loading slippery-chicken. Without giving further detail, the
+following could serve as an example to load a full slippery chicken installation
+without Quicklisp:
 
 ```lisp
 (asdf:load-system :cmn)
@@ -451,10 +455,11 @@ ffprobe, or Csound, you might need to tell slippery chicken where it can find
 the binaries to execute. This might be necessary since, even though there are
 commonly standard locations for such files, the actual location might differ
 from operating system to operating system and also depends on the installation
-method. Below is an example to set the aforementioned programs to the locations
-of a Homebrew installation on MacOS. These lines are located in the Common Lisp
-init file and must be added after the commands which load slippery-chicken and
-its dependencies (see above). 
+method of the programs. Below you will find an example that sets the variables
+for the aforementioned programs to the binary location when these have been
+installed via Homebrew on a Mac. These lines could also be appended to the
+Common Lisp init file, but must be added after the commands which load
+slippery-chicken and its dependencies (see above).
 
 ```lisp
 (set-sc-config 'lilypond-command "/opt/homebrew/bin/lilypond")

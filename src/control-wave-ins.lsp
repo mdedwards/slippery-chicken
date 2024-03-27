@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  no classes defined
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -22,7 +22,7 @@
 ;;; Creation date:    March 26th 2020, Heidhausen, Germany
 ;;;                   (taken out of control-wav.lsp)
 ;;;
-;;; $$ Last modified:  09:12:54 Thu Mar 26 2020 CET
+;;; $$ Last modified:  09:52:01 Wed Mar 20 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -50,7 +50,7 @@
 
 (in-package :clm)
 
-(defscins ctlwav
+(definstrument ctlwav
     ;; frequency can also be an envelope
     (frequency duration &key
                ;; (make-fun #'make-oscil)

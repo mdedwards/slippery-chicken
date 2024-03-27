@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined.
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  08:40:23 Thu Feb  1 2024 CET
+;;; $$ Last modified:  15:32:50 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -346,8 +346,8 @@
                '~a'." 
               (factorial level)
               file)
-	;; LF 2024-02-02 11:42:20
-	;; -- permutations-aux needs a list from 0 to level now
+        ;; LF 2024-02-02 11:42:20
+        ;; -- permutations-aux needs a list from 0 to level now
         (permutations-aux (loop for i from 0 below level collect i) stream)
         (close stream))
       ;; <= 8
@@ -367,8 +367,8 @@
           (print current stream)
           (push current result))
       (loop for i in ls do
-	(setf result (permutations-aux (remove i ls :count 1) stream result 
-				       (cons i current)))))
+        (setf result (permutations-aux (remove i ls :count 1) stream result 
+                                       (cons i current)))))
   result)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> set-palette
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  19:58:45 Thu Feb  8 2024 CET
+;;; $$ Last modified:  14:31:39 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2521,6 +2521,10 @@ NIL
                                                :freq-min 20
                                                :freq-max ,(note-to-freq 'b8))))
 ;;; ****
+  ;; load clm instrument
+  ;; RP  Fri Mar 22 14:31:38 2024
+  (get-clm-ins 'clm::spec-an "get-spectrum.lsp"
+               cl-user::+slippery-chicken-src-path+)
   (unless stop
     (setq stop (- (clm::sound-duration sndfile) .001))) ; last millisec
   (let* ((spectra

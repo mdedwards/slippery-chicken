@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> chord ->
 ;;;                   sc-set
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  17:38:41 Wed Feb  7 2024 CET
+;;; $$ Last modified:  22:10:40 Sun Mar 17 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -171,7 +171,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf related-sets) :after (value (s sc-set))
-  (declare (ignore value))
   (when value
     (setf (slot-value s 'related-sets)
           (make-ral (format nil "sc-set-~a-related-sets" (id s))
@@ -1894,24 +1893,27 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 ;;; SYNOPSIS
 (defmethod subset-from-harp-salzedo ((s sc-set) salzedo
                                      &key
-                                       id
-                                       (lowest 'b0)
-                                       (highest 'gs7)
-                                       as-symbols
-                                       subsets
-                                       related-sets
-                                       (auto-sort t))
+                                     id
+                                     (lowest 'b0)
+                                     (highest 'gs7)
+                                     as-symbols
+                                     subsets
+                                     related-sets
+                                     (auto-sort t))
 ;;; ****
   (let* ((salzedo-set (harp-salzedo-to-tl-set salzedo
                                               :highest highest
-                                              :lowest lowest))
+                                              :lowest lowest
+                                              :subsets subsets
+                                              :related-sets related-sets
+                                              :auto-sort auto-sort))
          (salzedo-set-pitches (data salzedo-set))
          (set-pitches (data s))
          (subset (pitch-intersection set-pitches salzedo-set-pitches)))
     (if as-symbols
-        (mapcar #'data subset)
-        (make-sc-set subset
-                     :id id))))
+      (mapcar #'data subset)
+      (make-sc-set subset
+                   :id id))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

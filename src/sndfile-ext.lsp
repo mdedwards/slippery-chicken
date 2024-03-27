@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sndfile ->
 ;;;                   sndfile-ext 
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  15:51:50 Sat Jan 30 2021 CET
+;;; $$ Last modified:  12:16:44 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,8 +60,12 @@
   ((use :accessor use :type boolean :initarg :use :initform t)
    (cue-num :accessor cue-num :type int :initarg :cue-num :initform -1)
    (loop-it :accessor loop-it :type boolean :initarg :loop-it :initform nil)
-   ;; the bit rate of the sound (16, 24...)
-   (bitrate :accessor bitrate :type integer :initarg :bitrate :initform -1)
+   ;; the bit rate of the sound (16, 24...). This doesn't capture whether the
+   ;; data type is integer or floating-point as yet 
+   (bit-depth :accessor bit-depth :type integer :initarg :bit-depth
+              :initform -1)
+   ;; MDE Tue Mar 19 17:34:05 2024, Heidhausen -- kilibytes per second (bitrate)
+   (kbs :accessor kbs :type integer :initarg :kbs :initform -1)
    ;; the sampling rate of the sound file (44100, 48000...)
    (srate :accessor srate :type integer :initarg :srate :initform -1)
    ;; the number of sample frames (one 16 bit sample if mono, two
@@ -215,6 +219,7 @@
 
 (defmethod (setf followers) :after (value (sfe sndfile-ext))
   (declare (ignore value))
+  ;; (print 'setf-followers)
   (when (and (followers sfe) (listp (followers sfe)))
     (setf (slot-value sfe 'followers) 
           (make-cscl (followers sfe)
@@ -223,18 +228,27 @@
                      :copy nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod update :after ((sfe sndfile-ext) &key ignore)
-  (declare (ignore ignore))
+;;; MDE Wed Mar 20 12:52:37 2024, Heidhausen -- moveing setf followers from
+;;; update to here
+(defmethod initialize-instance :after ((sfe sndfile-ext) &rest initargs)
+  (declare (ignore initargs))
   ;; just to call the setf method and update to a cscl
-  (setf (followers sfe) (followers sfe))
-  #+clm 
-  (when (path sfe)
-    (setf (bitrate sfe) (* 8 (clm::sound-datum-size (path sfe)))
-          (srate sfe) (clm::sound-srate (path sfe))
+  (setf (followers sfe) (followers sfe)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod update :around ((sfe sndfile-ext) &key ignore)
+  (declare (ignore ignore))
+  ;; (print sfe)
+  ;; (when (path sfe)
+  (let ((sf-info (get-sound-info (path sfe) (force-ffprobe sfe))))
+    ;; (print sf-info)
+    (call-next-method sfe :sinfo sf-info)
+    (setf (bit-depth sfe) (third sf-info)
+          (srate sfe) (first sf-info)
           ;; (num-frames sfe) (clm::sound-frames (path sfe))
-          (num-frames sfe) (clm::sound-framples (path sfe))
-          (bytes sfe) (clm::sound-length (path sfe)))))
+          (num-frames sfe) (sixth sf-info)
+          (bytes sfe) (fifth sf-info))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -264,11 +278,12 @@
           (slot-value sf 'volume) (volume sfe)
           (slot-value sf 'volume-curve) (volume-curve sfe)
           (slot-value sf 'loop-it) (loop-it sfe)
-          (slot-value sf 'bitrate) (bitrate sfe)
+          (slot-value sf 'bit-depth) (bit-depth sfe)
+          (slot-value sf 'kbs) (kbs sfe)
           (slot-value sf 'srate) (srate sfe)
           (slot-value sf 'num-frames) (num-frames sfe)
           (slot-value sf 'bytes) (bytes sfe)
-          (slot-value sf 'followers) (followers sfe))
+          (slot-value sf 'followers) (basic-copy-object (followers sfe)))
     ;; (print 'sndfile-ext-clone-wnc) (print (data sf))
     sf))
 
@@ -282,25 +297,27 @@
                     ~%             weight: ~a, weight-curve: ~a, energy: ~a, ~
                     energy-curve: ~a, ~
                     ~%             harmonicity: ~a, harmonicity-curve: ~a, ~
-                    volume: ~a, ~
+                    volume: ~a, kbs: ~a ~
                     ~%             volume-curve: ~a, loop-it: ~a, ~
-                    bitrate: ~a, srate: ~a, ~
+                    bit-depth: ~a, srate: ~a, ~
                     ~%             num-frames: ~a, bytes: ~a, group-id: ~a~
                     ~%             followers (ids): ~a"
           (use sfe) (cue-num sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
           (bandwidth-curve sfe) (continuity sfe) (continuity-curve sfe)
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
-          (harmonicity sfe) (harmonicity-curve sfe) (volume sfe)
-          (volume-curve sfe) (loop-it sfe) (bitrate sfe) (srate sfe)
+          (harmonicity sfe) (harmonicity-curve sfe) (volume sfe) (kbs sfe)
+          (volume-curve sfe) (loop-it sfe) (bit-depth sfe) (srate sfe)
           (num-frames sfe) (bytes sfe) (group-id sfe)
           (when (followers sfe)
+            (unless (cscl-p (followers sfe))
+              (error "sndfile-ext::print-object: followers have not been ~
+                      initialised: ~%~a" (followers sfe)))
             (loop for sf in (data (followers sfe)) collect 
                (if (named-object-p sf)
                    (id sf)
                    sf)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/get-next
 ;;; DESCRIPTION
 ;;; Get the next sound file from the <followers> slot.
@@ -342,7 +359,6 @@
     (reset (followers sfe) where warn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/proximity
 ;;; DESCRIPTION
 ;;; In terms of the characteristics expressed in the various class slots,
@@ -409,7 +425,6 @@
            (/ prox slots-compared)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/set-characteristic
 ;;; DESCRIPTION
 ;;; Set the chracteristic of a sndfile-ext object to a given value.  The value
@@ -530,7 +545,6 @@ NIL
                 (* 1000.0 fd) (* 1000.0 fade-out) sn (amplitude sfe)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/max-cue
 ;;; DESCRIPTION
 ;;; Generate the data necessary to preload the sound file in a MaxMSP sflist~
@@ -603,7 +617,7 @@ NIL
            :energy-curve (energy-curve sfe) :harmonicity (harmonicity sfe)
            :harmonicity-curve (harmonicity-curve sfe) :volume (volume sfe)
            :volume-curve (volume-curve sfe) :loop-it (loop-it sfe)
-           :bitrate (bitrate sfe) :srate (srate sfe)
+           :bit-depth (bit-depth sfe) :srate (srate sfe)
            :num-frames (num-frames sfe) :bytes (bytes sfe)
            :followers (followers sfe) :group-id (group-id sfe)))))
 
@@ -617,7 +631,7 @@ NIL
 ;;; Make a sndfile-ext (extension of sndfile) object which holds the usual
 ;;; sndfile data as well as a host of others to do with the characteristics of
 ;;; the sound file.  In addition, the followers slot specifies sound files
-;;; which can follow the current one.  The bitrate, srate, num-frames, and
+;;; which can follow the current one.  The bit-depth, srate, num-frames, and
 ;;; bytes slots will be filled automatically if the path to an existing sound
 ;;; file is given.
 ;;; 
@@ -629,59 +643,61 @@ NIL
 ;;; 
 ;;; SYNOPSIS
 (defun make-sndfile-ext (path &key id data duration end (start 0.0)
-                                (frequency nil) (amplitude 1.0) (cue-num -1)
-                                (use t) (pitch -1) (pitch-curve -1)
-                                (bandwidth -1)
-                                (bandwidth-curve -1) (continuity -1)
-                                (continuity-curve -1) (weight -1)
-                                (weight-curve -1)
-                                (energy -1) (energy-curve -1) (harmonicity -1)
-                                (harmonicity-curve -1) (volume -1)
-                                (volume-curve -1) (loop-it nil) (bitrate -1)
-                                (srate -1) (num-frames -1)
-                                (bytes -1) followers group-id)
+                              (frequency nil) (amplitude 1.0) (cue-num -1)
+                              (use t) (pitch -1) (pitch-curve -1)
+                              (bandwidth -1)
+                              (force-ffprobe nil)
+                              (bandwidth-curve -1) (continuity -1)
+                              (continuity-curve -1) (weight -1)
+                              (weight-curve -1)
+                              (energy -1) (energy-curve -1) (harmonicity -1)
+                              (harmonicity-curve -1) (volume -1)
+                              (volume-curve -1) (loop-it nil) (bit-depth -1)
+                              (srate -1) (num-frames -1)
+                              (bytes -1) followers group-id)
 ;;; ****
   (when path
-    (let (sf)
-      (if (and path (listp path))     ; all slots will be in the list
-          (when (first path)          ; will be NIL if we couldn't find the file
-            (setf sf (make-sndfile (cons 'sndfile-ext path))))
-          (progn 
-            (setf sf (make-sndfile path :id id :data data :duration duration
-                                   :end end :start start :frequency frequency
-                                   :amplitude amplitude))
-            ;; remember that this goes back to named-object which calls
-            ;; make-instance 'sndfile-ext with all slots NIL, so we'll have to
-            ;; call update below.
-            (setf sf (clone-with-new-class sf 'sndfile-ext))
-            (setf (use sf) use 
-                  (cue-num sf) cue-num
-                  (pitch sf) pitch
-                  (pitch-curve sf) pitch-curve
-                  (bandwidth sf) bandwidth
-                  (bandwidth-curve sf) bandwidth-curve
-                  (continuity sf) continuity
-                  (continuity-curve sf) continuity-curve
-                  (weight sf) weight
-                  (weight-curve sf) weight-curve
-                  (energy sf) energy
-                  (energy-curve sf) energy-curve
-                  (harmonicity sf) harmonicity 
-                  (harmonicity-curve sf) harmonicity-curve
-                  (volume sf) volume
-                  (volume-curve sf) volume-curve
-                  (loop-it sf) loop-it
-                  ;; bear in mind that these data will be changed by the update
-                  ;; method  
-                  (bitrate sf) bitrate
-                  (srate sf) srate
-                  (num-frames sf) num-frames
-                  (bytes sf) bytes
-                  (group-id sf) group-id
-                  (followers sf) followers)))
-      ;; have to call this here because clone init'ed with all slots NIL
-      (when sf (update sf))
-      sf)))
+    (if (listp path)       ; all slots will be in the list
+      (when (first path)              ; will be NIL if we couldn't find the file
+        ;; (print '******) ;(print path)
+        ;; (setf sf (make-sndfile (cons 'sndfile-ext path))))
+        (apply #'make-instance (append (list 'sndfile-ext :path)
+                                       path)))
+      (make-instance
+       'sndfile-ext
+       :path path :id id :data data :duration duration
+       :end end :start start :frequency frequency
+       :amplitude amplitude
+       :use use 
+       :cue-num cue-num
+       :pitch pitch
+       :force-ffprobe force-ffprobe
+       :pitch-curve pitch-curve
+       :bandwidth bandwidth
+       :bandwidth-curve bandwidth-curve
+       :continuity continuity
+       :continuity-curve continuity-curve
+       :weight weight
+       :weight-curve weight-curve
+       :energy energy
+       :energy-curve energy-curve
+       :harmonicity harmonicity 
+       :harmonicity-curve harmonicity-curve
+       :volume volume
+       :volume-curve volume-curve
+       :loop-it loop-it
+       ;; bear in mind that these data will be changed by the
+       ;; update method
+       :bit-depth bit-depth
+       :srate srate
+       :num-frames num-frames
+       :bytes bytes
+       :group-id group-id
+       :followers followers))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun sndfile-ext-p (candidate)
+  (typep candidate 'sndfile-ext))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sndfile-ext.lsp

@@ -5,7 +5,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  11:24:11 Fri Feb  2 2024 CET
+;;; $$ Last modified:  15:11:39 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -286,7 +286,7 @@
            (3 "-3 ")
            (4 "-4 ")
            (5 "-5 ")
-           (t (warning "lilypond::lp-get-mark: adding fingering ~a, hope your ~
+           (t (warn "lilypond::lp-get-mark: adding fingering ~a, hope your ~
                         ~%musicians have more than 4 fingers and a thumb!."
                        mark)
               (format nil "^\\markup{\\finger ~a}" mark))))

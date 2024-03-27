@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> instrument
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  11:46:41 Tue Mar 29 2022 CEST
+;;; $$ Last modified:  15:54:44 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -288,7 +288,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod update-lowest-highest-played ((ins instrument) low high)
   (when (and low high)
-    (update-lowest-highest-played (make-pitch low) (make-pitch high))))
+    (update-lowest-highest-played ins (make-pitch low) (make-pitch high))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Jan  8 16:53:14 2019
@@ -1155,7 +1155,6 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 ;;; MDE Fri Oct 19 16:22:11 2018
 (defmethod force-in-range ((ins instrument) (e event)
                            &rest keyargs &key &allow-other-keys)
-  (declare (ignore ignore))
   (unless (is-rest e)
     (setf (pitch-or-chord e) (apply #'force-in-range
                                     (cons ins (cons (pitch-or-chord e)

@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  13:10:28 Mon Aug 14 2023 CEST
+;;; $$ Last modified:  09:51:04 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,21 +97,7 @@
                        (+ srt (* srt-scaler y))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Sun Jul 17 10:11:23 2016 -- write .c .o .so etc. files in the bin
-;;; directory. definstrument can handle a :c-file keyword only when a direct
-;;; path is given, i.e. nothing with format or any other function call. Hence
-;;; this macro.
-
-(defmacro defscins (name (&rest args) &body body) ; &environment env)
-  (let ((sccfile
-          (format nil "~abin/~a.c"
-                  (sc::escape-spaces cl-user::+slippery-chicken-home-dir+)
-                  name)))
-    `(definstrument (,name :c-file ,sccfile)
-         ,args ,@body)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defscins samp5
+(definstrument samp5
     (file time &key
           (duration 0)
           (start 0)

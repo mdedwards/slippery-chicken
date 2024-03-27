@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> control-wave
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified:  17:24:27 Wed Dec  8 2021 CET
+;;; $$ Last modified:  14:18:44 Fri Mar 22 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -63,7 +63,7 @@
 (defclass control-wave (named-object)
   ;; over how many points/samples should a waveform period be mapped. use
   ;; either this or frequency but not both.
-  ((period :accessor period :type integer :initarg :period :initform nil)
+  ((period :accessor period :initarg :period :initform nil)
    ;; either a single Hertz (number) or an envelope of hertz values
    (frequency :accessor frequency :initarg :frequency :initform nil)
    ;; path to the sndfile we'll write of the wave; this is envisaged as being
@@ -127,6 +127,13 @@
     (error "control-wave::init: define period or frequency but not both."))
   (unless (or (frequency cw) (period cw))
     (error "control-wave::init: a period or frequency value must be given."))
+  (when (and (period cw) (not (integerp (period cw))))
+    (error "control-wave::init: the period must be of type integer, not: ~a."
+           (type-of (period cw))))
+  ;; load clm instrument
+  ;; RP  Fri Mar 22 14:18:13 2024
+  (get-clm-ins 'clm::ctlwav "control-wave-ins.lsp"
+               cl-user::+slippery-chicken-src-path+)
   ;; don't go above the nyquist
   (let ((nyq (/ (rate cw) 2)))
     (when (and (frequency cw)
@@ -175,7 +182,6 @@
 ;;; data array, otherwise it's an actual time in seconds, which assumes that
 ;;; our duration is long enough to accommodate it.
 (defmethod get-data (where (cw control-wave) &optional (seconds t))
-  (declare (ignore ignore))
   (let ((y (aref (data cw) (if seconds
                                (floor (* where (rate cw)))
                                where))))

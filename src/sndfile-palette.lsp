@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> sndfile-palette
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  15:19:25 Sun Feb 18 2024 CET
+;;; $$ Last modified:  12:25:25 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -100,51 +100,62 @@
           (paths sfp) (extensions sfp) (num-snds sfp) (auto-freq sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Mar 21 10:52:10 2024, Heidhausen -- verify-and-store used to use
+;;; make-sndfile-ext but we need to use videos now hence this helper fun
+(defmethod get-media-file ((sfp sndfile-palette) media-data)
+  (if (sndfile-p media-data)
+    media-data
+    (let ((list? (listp media-data))
+          make-fun)
+      (multiple-value-bind
+            (path video?)
+          (find-sndfile sfp (if list? (first media-data) media-data))
+        (setq make-fun (if video? #'make-vidfile #'make-sndfile-ext))
+        ;; if a list was given then the first in the list is the sound file
+        ;; (name only or full path) plus any other slots which need to be
+        ;; initialised for this sound.  We still need to find the sound though,
+        ;; hence the funny list arg passed to make-sndfile.
+        (if list?
+          (funcall make-fun
+                   (cons path
+                         ;; MDE Wed Mar 20 16:47:17 2024, Heidhausen -- this
+                         ;; would be the case if e.g. we were reading in an sfp
+                         ;; that was written with print-for-init
+                         (append (unless (member :id media-data)
+                                   (list :id (first media-data)))
+                                 (rest media-data))))
+          ;; if it wasn't a list, just find the sound and pass this and the
+          ;; given name which also acts as the id per default.  MDE Sun Dec 16
+          ;; 20:19:30 2012 -- was make-sndfile
+          (apply make-fun
+                 (list path :id media-data
+                       ;; MDE Fri Sep 25 13:49:09 2015 
+                            :frequency (cond
+                                         ((functionp (auto-freq sfp))
+                                          (auto-freq sfp))
+                                         ((auto-freq sfp) 'detect)
+                                         (t 'c4)))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB Although this class is a palette and therefore a subclass of
 ;;; recursive-assoc-list, the sound lists in this case cannot be nested!
 
-#+clm
 (defmethod verify-and-store :after ((sfp sndfile-palette))
   (setf (paths sfp) (loop for path in (paths sfp) 
-                       collect (trailing-slash path))
+                          collect (trailing-slash path))
         ;; MDE Wed Jun 12 13:49:33 2013 -- to avoid duplicate path errors
         (paths sfp) (remove-duplicates (paths sfp) :test #'string=))
   ;; (print (data sfp))
   (loop with sfe
-     for sflist in (data sfp)
-     for i from 0 do
-       (loop for snd in (data sflist) and j from 0 do 
-            (setf sfe
-                  ;; MDE Fri Oct  5 13:57:51 2012 -- if it's already a sndfile
-                  ;; (as when combining palettes) then don't try to re-parse it 
-                  (typecase snd
-                    (sndfile snd)
-                    ;; if a list was given then the first in the list is the
-                    ;; sound file (name only or full path) plus any other slots
-                    ;; which need to be initialised for this sound.  We still
-                    ;; need to find the sound though, hence the funny list arg
-                    ;; passed to make-sndfile.
-                    (list
-                     ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
-                     (make-sndfile-ext (list (find-sndfile sfp (first snd))
-                                             snd)))
-                    ;; if it wasn't a list, just find the sound and pass this
-                    ;; and the given name which also acts as the id per
-                    ;; default. 
-                    ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
-                    (t (make-sndfile-ext
-                        (find-sndfile sfp snd) :id snd
-                        ;; MDE Fri Sep 25 13:49:09 2015 
-                        :frequency (cond
-                                     ((functionp (auto-freq sfp))
-                                      (auto-freq sfp))
-                                     ((auto-freq sfp) 'detect)
-                                     (t 'c4))))))
+        for sflist in (data sfp)
+        for i from 0 do
+          (loop for snd in (data sflist) and j from 0 do 
+            (setq sfe (get-media-file sfp snd))
             (when sfe
               (setf (nth j (data (nth i (data sfp)))) sfe))))
   ;; MDE Fri Dec 21 17:59:02 2018 -- if we couldn't find a sndfile, remove it
   (loop for sflist in (data sfp) do
-       (setf (data sflist) (remove-if-not #'sndfile-p (data sflist))))
+    (setf (data sflist) (remove-if-not #'sndfile-p (data sflist))))
   ;; MDE Fri Jan  4 10:10:22 2013 
   (setf (num-snds sfp) (count-snds sfp))
   sfp)
@@ -167,8 +178,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Thu May  3 12:51:13 BST 2012: Added/edited robodoc entry
-
 ;;; MDE's original comment:
 ;;; find a sound file in any of the directories given in the paths slot, not
 ;;; necessarily including those in the palette itself!!!  
@@ -211,42 +220,54 @@
 ;;; SYNOPSIS
 (defmethod find-sndfile ((sfp sndfile-palette) sndfile)
 ;;; ****
-  (let ((files '())
-        (full-path "")
-        (string (if (stringp sndfile)
-                    sndfile
-                    (string-downcase (string sndfile)))))
+  (let* ((files '())
+         ;; MDE Thu Mar 21 11:11:19 2024, Heidhausen -- 
+         (video-extensions (extensions (make-instance 'vidfile)))
+         (all-extensions (append (extensions sfp) video-extensions))
+         (full-path "")
+         (string (if (stringp sndfile)
+                   sndfile
+                   (string-downcase (string sndfile))))
+         result)
+    ;; (print all-extensions)
     (if (search "/" string)
-        (when (probe-file string)
-          (push string files))
-        (loop for path in (paths sfp)
-           for extension = (pathname-type string)
-           do
-             ;; MDE Wed Jan  6 12:06:09 2021, Heidhausen -- can't just assume
-             ;; that if there's a dot in the filename that it's the extension 
-             (if (and extension (member extension (extensions sfp)
-                                        :test #'string=))
+      (when (probe-file string)
+        (push string files))
+      (loop for path in (paths sfp)
+            for extension = (pathname-type string)
+            do
+               ;; MDE Wed Jan  6 12:06:09 2021, Heidhausen -- can't just assume
+               ;; that if there's a dot in the filename that it's the extension 
+               (if (and extension (member extension all-extensions
+                                          :test #'string=))
                  (progn
-                   (setf full-path (format nil "~a~a"
+                   (setq full-path (format nil "~a~a"
                                            path string))
                    (when (probe-file full-path)
                      (push full-path files)))
-                 (loop for extension in (extensions sfp) do
-                      (setf full-path (format nil "~a~a.~a"
-                                              path string extension))
-                      (when (probe-file full-path)
-                        (push full-path files))))))
-    (case (length files)
-      ;; MDE Mon Apr 9 12:29:26 2012 -- changing from warn to error as this
-      ;; is a show-stopper if we call clm-play.
-      (0 (warn "sndfile-palette::find-sndfile: ~
+                 ;; extension not recognised or not given
+                 (loop for extension in all-extensions do
+                   (setf full-path (format nil "~a~a.~a"
+                                           path string extension))
+                   (when (probe-file full-path)
+                     (push full-path files))))))
+    (setq result
+          (case (length files)
+            ;; MDE Mon Apr 9 12:29:26 2012 -- changing from warn to error as
+            ;; this is a show-stopper if we call clm-play.
+            (0 (warn "sndfile-palette::find-sndfile: ~
                 Cannot find sound file so skipping:~%'~a'"
-                string))
-      (1 (first files))
-      (t (warn "sndfile-palette::find-sndfile: Sound file '~a' exists in ~
+                     string))
+            (1 (first files))
+            (t (warn "sndfile-palette::find-sndfile: Sound file '~a' exists in ~
                 ~%more than one folder or with more than one extension.  ~
                 ~%Please give the full path in your sndfile-palette: ~&~a" 
-               string files)))))
+                     string files))))
+    ;; MDE Thu Mar 21 11:22:43 2024, Heidhausen -- second value is whether we've
+    ;; got a video file or not. would be nice to capture this in the loop logic
+    ;; above but that wouldn't be so easy
+    (values result (when result (member (pathname-type result) video-extensions
+                                        :test #'string=)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Convenience function as we don't really ever want the named-object as we do
@@ -896,7 +917,7 @@ SNDFILE-EXT: use: T, cue-num: 2, pitch: -1, pitch-curve: -1, bandwidth: -1,
              bandwidth-curve: -1, continuity: -1, continuity-curve: -1, 
              weight: -1, weight-curve: -1, energy: -1, energy-curve: -1, 
              harmonicity: -1, harmonicity-curve: -1, volume: -1, 
-             volume-curve: -1, loop-it: NIL, bitrate: 24, srate: 96000, 
+             volume-curve: -1, loop-it: NIL, bit-depth: 24, srate: 96000, 
              num-frames: 1719753, bytes: 5159314, group-id: (1)
              followers: NIL
 
@@ -1066,7 +1087,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
   ;; MDE Wed Apr 15 11:14:59 2020 -- handle pathnames if we've used
   ;; e.g. merge-pathnames  
   (when (typep folder 'pathname)
-    (setq folder (directory-namestring folder)))
+    (setq folder (agnostic-directory-pathname folder)))
   (setq insist (force-list insist)
         resist (force-list resist))
   (loop for file in (get-all-files folder skip nil force-quotes)

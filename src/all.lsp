@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             all.lsp
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  12:42:50 Fri Mar  1 2024 CET
+;;; $$ Last modified:  08:16:26 Sun Mar 17 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -41,6 +41,11 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; !!!!!!!!!!!!!!!!!!  MDE Sun Mar 17 07:46:37 2024, Heidhausen !!!!!!!!!!!!!!
+;;; NB Since slippery-chicken 1.1.0 (March 2024) we recommend using the
+;;; slippery-chicken.asdf file to load and use this systems. all.lsp will remain
+;;; for a while but its use is deprecated and at some point it will disapper
+;;; from the current working repo on github.
 
 (in-package :cl-user)
 #+sbcl (require :sb-bsd-sockets)
@@ -48,7 +53,7 @@
 #+sbcl (unlock-package "COMMON-LISP")
 (require :asdf)
 
-(defparameter +slippery-chicken-version+ "1.0.12")
+(defparameter +slippery-chicken-version+ "1.1.0")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 
@@ -195,10 +200,56 @@
            do
            (load-cm-file f)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF <2023-05-21 So>
+;;; import the ppcre library
+;;; you could (set-sc-config 'path-to-ppcre "...") to install into another
+;;; directory.
+;;#+(not cl-ppcre)
+(defun import-ppcre (&key update mkdir (git "/usr/bin/git"))
+;;; ****
+  #+darwin(unless mkdir (setf mkdir "/bin/mkdir"))
+  #+linux(unless mkdir (setf mkdir "/usr/bin/mkdir"))
+  ;; set the directory:
+  (let* ((dir (or (get-sc-config 'path-to-ppcre)
+                  (make-pathname
+                   :directory
+                   (pathname-directory
+                             cl-user::+slippery-chicken-src-path+))))
+         (target-dir (format nil "~appcre/" dir)))
+    ;; check if the git command is found:
+    (unless (and mkdir (probe-file mkdir))
+      (warn "utilities::import-ppcre: Cannot find the mkdir command at: ~a. ~
+          ppcre can not be installed automatically" mkdir))
+    (unless (and git (probe-file git))
+      (warn "utilities::import-ppcre: Cannot find the git command at: ~a. ~
+          ppcre can not be installed automatically" git))
+    (when (and mkdir git (probe-file git) (probe-file mkdir))
+      #+(and (or ccl sbcl) unix)
+      (progn
+        (if (probe-file (concatenate 'string target-dir "cl-ppcre.asd"))
+            (if update (progn (format t "~&updating ~a~&" target-dir)
+                              (shell git "-C" target-dir "pull"))
+                (print "PPCRE seems to be installed, if you want to update it, ~
+                   evaluate (import-ppcre :update t)"))
+            (progn
+              (shell mkdir target-dir)
+              (shell git
+                     "clone"
+                     "https://github.com/edicl/cl-ppcre.git"
+                     target-dir)))
+        (asdf:load-asd
+         (merge-pathnames "cl-ppcre.asd" target-dir))
+        (asdf:load-system :cl-ppcre))
+      #-(and (or ccl sbcl) unix)
+      (warn "utilities::import-ppcre: Sorry but this currently only runs ~
+           with SBCL or CCL on a unix system. Please install the ppcre-library ~
+           by hand and load it before loading SC"))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+(or cm-essentials windows win32 win64 ecl) (sc-load-cm-essentials)
-#-(or cm-essentials windows win32 win64 ecl) (sc-load-cm-all)
+;; #+(or cm-essentials windows win32 win64 ecl) (sc-load-cm-essentials)
+;; #-(or cm-essentials windows win32 win64 ecl) (sc-load-cm-all)
 ;;; It seems CM doesn't put itself on the features list but sc needs it.
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)

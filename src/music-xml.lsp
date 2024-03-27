@@ -5,7 +5,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -55,7 +55,7 @@
 (defun xml-placement (placement)
   (if placement
       (format nil " placement=\"~a\""   ; <-- note leading space
-              (case placement (a "above") (b "below")
+              (case (rm-package placement) (a "above") (b "below")
                     (t (error "xml-placement: placement ~
                                should be nil, 'a, or 'b: ~a"
                               placement))))
@@ -202,7 +202,7 @@
            (when mark
              (typecase mark
                (symbol
-                (case mark
+                (case (rm-package mark)
 ;;; SYNOPSIS
                   ;; if returns a string then xml-articulation will be called,
                   ;; otherwise (dir ...) (tech ...)
@@ -403,7 +403,7 @@
                   ;; one in xml 
                   `(tech "fingering" a ,mark)))
                (list 
-                (case (first mark)
+                (case (rm-package (first mark))
                   (clef (xml-clef (second mark) stream t))
                   (arrow (no-xml-mark 'arrow))
                   (gliss-map (no-xml-mark 'gliss-map))
@@ -446,7 +446,7 @@
                 (loop for s in xml-mark do
                      (xml-articulation stream s nil))
                 (apply 
-                 (case (first xml-mark)
+                 (case (rm-package (first xml-mark))
                    (art #'xml-articulation)
                    (orn #'xml-ornament)
                    (tech #'xml-technical)
@@ -504,15 +504,17 @@
   (when write-attributes
       (format stream "~&      <attributes>"))
   (format stream "~&        <clef><sign>~a</sign>"
-          (case clef (treble 'g) (bass 'f) (tenor 'c) (alto 'c) (treble-8vb 'g)
-                (double-treble 'g) (double-bass 'f) (percussion "percussion")))
+          (case (rm-package clef) (treble 'g) (bass 'f) (tenor 'c) (alto 'c)
+		(treble-8vb 'g) (double-treble 'g) (double-bass 'f)
+		(percussion "percussion")))
   (unless (eq clef 'percussion)
     (format stream "~&          <line>~a</line>"
-            (case clef (treble 2) (bass 4) (tenor 4) (alto 3) (treble-8vb 2)
-                  (double-treble 2) (double-bass 4))))
+            (case (rm-package clef) (treble 2) (bass 4) (tenor 4) (alto 3)
+		  (treble-8vb 2) (double-treble 2) (double-bass 4))))
   (when (member clef '(double-treble double-bass treble-8vb))
     (format stream "~&          <clef-octave-change>~a</clef-octave-change>"
-            (case clef (double-treble 8) (double-bass -1) (treble-8vb -1))))
+            (case (rm-package clef) (double-treble 8) (double-bass -1)
+		  (treble-8vb -1))))
   (format stream "~&        </clef>")
   (when write-attributes
     (format stream "~&      </attributes>")))

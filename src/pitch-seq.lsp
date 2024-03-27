@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   pitch-seq
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  10:44:14 Mon May  3 2021 CEST
+;;; $$ Last modified:  15:47:19 Sat Mar 16 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -425,7 +425,7 @@
              (cond ((get-sc-config 'pitch-seq-no-pitches-error) #'error)
                    ((get-sc-config 'pitch-seq-no-pitches-warning) #'warn)
                    ;; don't even warn...
-                   (t #'(lambda (&rest args))))
+                   (t #'(lambda (&rest args) (declare (ignore args)))))
              (list
               "~&pitch-seq::get-notes: For ~a at sequence number ~a: ~
                no pitches in set!  ~%Perhaps your ~

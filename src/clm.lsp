@@ -4,7 +4,7 @@
 ;;;
 ;;; Class Hierarchy:  none: no classes defined
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  15:59:19 Thu Aug 26 2021 CEST
+;;; $$ Last modified:  16:50:35 Thu Mar 21 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -41,12 +41,32 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package :slippery-chicken)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Mar 20 10:00:36 2024, Heidhausen -- no need to have the user load
+;;; clm instruments in advance as we can do it using
+;;; clm::*clm-source-directory* or whatever optional arg we pass
+(defun get-clm-ins (function-symbol ins-src
+                    &optional (dir clm::*clm-source-directory*))
+  (unless (fboundp function-symbol)
+    (let ((*package* (find-package :clm))) ; compile within the clm package
+      (load (compile-file (format nil "~a~a" dir ins-src)
+                          :output-file (format nil "~a/~a"
+                                               (get-sc-config 'tmp-dir)
+                                               (pathname-name ins-src)))))
+    (unless (fboundp function-symbol)
+      (error "clm::get-clm-ins: the CLM instrument ~
+              ~a (defined in ~a) needs to be loaded in order for a dependent ~
+              function to work. We tried to auto-load this and it failed."
+             function-symbol ins-src ))))
 
-;;; SAR Thu May 17 11:07:24 EDT 2012: Added robodoc entry
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fun should be #'warn (default) or #'error 
+(defun no-clm (caller &optional (fun #'warn))
+  (funcall fun "CLM is needed by ~a. Please install the package via ~%~
+                https://ccrma.stanford.edu/software/clm/"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Use this function to randomly generate the <entry-points> to clm-loops
 
@@ -512,64 +532,66 @@
 #+clm
 (defun clm-loops-all (sndfile entry-points-list 
                       &key 
-                        (max-perms 1000)
-                        (fibonacci-transitions '(34 21 13 8))
-                        (max-start-time 60.0)
-                        (output-dir (get-sc-config 'default-dir))
-                        (srate clm::*clm-srate*)
-                        (data-format clm::*clm-data-format*)
-                        ;; MDE Fri May 11 15:33:45 2012 
-                        (header-type clm::*clm-header-type*)
-                        ;; MDE Fri May 11 15:34:17 2012 -- 
-                        (sndfile-extension nil)
-                        (channels 1)
-                        (do-shuffles t) ;; see clm-loops
-                        ;; exclude all those loops who start before this
-                        ;; number of seconds. 
-                        (start-after -1.0)                      
-                        (stop-after 99999999.0)
-                        (suffix "")
-                        ;; semitones
-                        ;; 6/10/06: using just one list of transpositions passed
-                        ;; onto clm-loops created the same tone structure for
-                        ;; every file generated (boring).  This list will now be
-                        ;; shuffled and 10 versions collected which will then be
-                        ;; passed (circularly) one after the other to clm-loops.
-                        (transpositions '(0))
-                        ;; MDE Thu Aug 26 15:56:34 2021, Heidhausen -- added
-                        (pan t)
-                        ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
-                        (scaled-to .99)
-                        (transposition-offset 0.0)
-                        (src-width 5))
+                      (max-perms 1000)
+                      (fibonacci-transitions '(34 21 13 8))
+                      (max-start-time 60.0)
+                      (output-dir (get-sc-config 'default-dir))
+                      (srate clm::*clm-srate*)
+                      (data-format clm::*clm-data-format*)
+                      ;; MDE Fri May 11 15:33:45 2012 
+                      (header-type clm::*clm-header-type*)
+                      ;; MDE Fri May 11 15:34:17 2012 -- 
+                      (sndfile-extension nil)
+                      (channels 1)
+                      (do-shuffles t) ;; see clm-loops
+                      ;; exclude all those loops who start before this
+                      ;; number of seconds. 
+                      (start-after -1.0)                      
+                      (stop-after 99999999.0)
+                      (suffix "")
+                      ;; semitones
+                      ;; 6/10/06: using just one list of transpositions passed
+                      ;; onto clm-loops created the same tone structure for
+                      ;; every file generated (boring).  This list will now be
+                      ;; shuffled and 10 versions collected which will then be
+                      ;; passed (circularly) one after the other to clm-loops.
+                      (transpositions '(0))
+                      ;; MDE Thu Aug 26 15:56:34 2021, Heidhausen -- added
+                      (pan t)
+                      ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
+                      (scaled-to .99)
+                      (transposition-offset 0.0)
+                      (src-width 5))
 ;;; ****
   (let* ((transps-offset (loop for st in transpositions
-                            collect (+ transposition-offset st)))
+                               collect (+ transposition-offset st)))
          (transps-shuffled (make-cscl
                             (loop repeat 10 collect
-                                 (shuffle transps-offset :reset nil))))
+                                            (shuffle transps-offset
+                                                     :reset nil))))
          ;; MDE Fri Jul  2 09:27:54 2021, Heidhausen -- introduced this rather
          ;; than only having one output dur 
          (msts (make-cscl (force-list max-start-time))))
     (loop for epl in entry-points-list and i from 1 do
-         (when (and (> (first epl) start-after)
-                    (<= (first epl) stop-after))
-           (clm-loops sndfile epl :max-perms max-perms 
-                      :fibonacci-transitions fibonacci-transitions
-                      :num-shuffles (if do-shuffles
-                                        (mod i 7)
-                                        0)
-                      :max-start-time (get-next msts)
-                      :channels channels
-                      :srate srate
-                      :pan pan
-                      :suffix suffix
-                      :data-format data-format
-                      :header-type header-type
-                      :sndfile-extension sndfile-extension
-                      :output-dir output-dir
-                      :transpositions (get-next transps-shuffled)
-                      :src-width src-width)))))
+      (when (and (> (first epl) start-after)
+                 (<= (first epl) stop-after))
+        (clm-loops sndfile epl :max-perms max-perms 
+                               :fibonacci-transitions fibonacci-transitions
+                               :num-shuffles (if do-shuffles
+                                               (mod i 7)
+                                               0)
+                               :max-start-time (get-next msts)
+                               :channels channels
+                               :srate srate
+                               :pan pan
+                               :scaled-to scaled-to
+                               :suffix suffix
+                               :data-format data-format
+                               :header-type header-type
+                               :sndfile-extension sndfile-extension
+                               :output-dir output-dir
+                               :transpositions (get-next transps-shuffled)
+                               :src-width src-width)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF clm.lsp

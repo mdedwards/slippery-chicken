@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  17:19:15 Fri Jan  4 2019 CET
+;;; $$ Last modified:  09:52:33 Wed Mar 20 2024 CET
 ;;;
 ;;; SVN ID: $Id: sine.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -55,7 +55,7 @@
 ;;; If you get weird distortion effects, try dropping :amp-env-scaler to 0.05 or
 ;;; so, and maybe making a more gentle amp-env (though the :amp-env argument to
 ;;; clm-play rather than via :clm-ins-args)
-(defscins sine
+(definstrument sine
     (ignore time &key       
             (duration 5)
             (frequency 440)

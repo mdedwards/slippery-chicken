@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none (no classes defined)
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  10:19:05 Sat Jun 18 2022 CEST
+;;; $$ Last modified:  10:04:27 Mon Mar 18 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -155,7 +155,8 @@
           ;; tunings get deleted at init and replaced by the freq scaler for a
           ;; degree shift, I believe. So the easiest thing to do is change the
           ;; low A freq and reload the tuning file.
-          (cl-user::sc-compile-and-load "cm-load.lsp" t)
+          ;; (cl-user::sc-compile-and-load "cm-load.lsp" t)
+          (load (file-from-sc-dir "src/cm-load.lsp"))
           new-low-a))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

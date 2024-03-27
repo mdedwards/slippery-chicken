@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:00:01 Fri Mar  1 2024 CET
+;;; $$ Last modified:  11:27:13 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7555,7 +7555,11 @@
            (midi-file-to-events "/tmp/mini-template.mid")
            :midi-file "/tmp/mftoe.mid")
           (file-write-ok "/tmp/mftoe.mid" 700)
-          (= 911 num-midi-events)
+          ;; MDE Sat Mar 16 13:56:05 2024, Heidhausen -- using Orm's CM 2.12 we
+          ;; get loads more MIDI events after parse-midi-file but I've ear- and
+          ;; list-checked the results in reaper and it's fine
+          ;; (= 911 (print num-midi-events))
+          (< 1800 num-midi-events)
           ;; I'd like to test specific event channel writing but importing
           ;; events in CM doesn't result in the same list each time
           (every #'(lambda (x) (member x '(0 1 2 3 4)))
@@ -8291,9 +8295,7 @@
     (not (diatonic-p (make-chord '(e4 gs c5 ef)))) ; aug M7
     (diatonic-p (make-chord '(e4 gs c5 ef)) t) ; aug M7
     (diatonic-p (make-chord '(gs c5 ds e)) t) ; aug M7, inverted
-    (not (diatonic-p (make-chord '(fs4 as cs d))))
-  ))
-         
+    (not (diatonic-p (make-chord '(fs4 as cs d))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; sndfile tests
@@ -8303,6 +8305,16 @@
   (concatenate 'string
                cl-user::+slippery-chicken-home-dir+ 
                sf))
+
+;;; LF 2024-03-17 19:40:58
+(sc-deftest test-sndfile-get-sound-info ()
+  (let ((info1 (get-sound-info (get-test-sf-path "tests/pink5s.wav")))
+	(info2 (get-sound-info (get-test-sf-path "tests/pink5s.wav") t)))
+    (sc-test-check
+      ;; LF 2024-03-26 15:49:55 only test first 6 values for clm
+      (equal (subseq info1 0 6) '(48000 1 16 5.000021 484098 240001))
+      ;; LF 2024-03-26 15:33:42 ffprobe also returns fps, width, height:
+      (equal info2 '(48000 1 16 5.000021 484098 240001 0 nil nil PCM_S16LE)))))
 
 ;;; SAR Mon Apr 16 17:52:23 BST 2012
 #+clm
@@ -8323,6 +8335,9 @@
       (= 653 (frequency sf-1))
       (= 0.7 (start sf-2))
       (= 1.3 (end sf-2))
+      (equal-within-less-tolerance 3.011 (snd-duration sf-1))
+      (equal-within-less-tolerance 0.6 (duration sf-2))
+      (incf (has-been-used sf-1))
       (equal-within-tolerance 261.63 (frequency sf-2) 0.01))))
 
 ;;; SAR Mon Apr 16 18:35:37 BST 2012
@@ -14590,7 +14605,7 @@
                '((sndfile-group-1
                   (test-sndfile-1))
                  (sndfile-group-2
-                  (test-sndfile-2 test-sndfile-3 no-file
+                  (test-sndfile-2 test-sndfile-3 no-file ; <-- test warning
                    (test-sndfile-4 :frequency 261.61)))
                  (sndfile-group-3
                   ((test-sndfile-5 :start 0.006 :end 0.182) 
@@ -14922,6 +14937,7 @@
       ;; nil so won't be issued a cue num
       (equalp 'test-sndfile-6 (id (get-snd-with-cue-num sfn 5)))
       (not (use sf5))
+      ;; (print sf5)
       (= 1 (sclist-length (followers sf5)))
       (equalp 'test-sndfile-6 (id (get-next sf5)))
       (setf (followers sf5) '((sndfile-group-1 test-sndfile-1)
@@ -15811,7 +15827,10 @@
 ;;; SAR Fri Jun 15 12:32:51 BST 2012
 (sc-deftest test-cm-parse-midi-file ()
   (sc-test-check
-    (= 61 (length (cm::parse-midi-file "/tmp/msp-gmchs.mid")))))
+    ;; MDE Sat Mar 16 13:59:00 2024, Heidhausen -- see note to
+    ;; test-ring-mod-piece above
+    ;; (= 61 (print (length (cm::parse-midi-file "/tmp/msp-gmchs.mid"))))))
+    (< 100 (length (cm::parse-midi-file "/tmp/msp-gmchs.mid")))))
 
 ;;; MDE Thu Nov 10 10:40:05 2016 
 (sc-deftest test-midi-file-to-events ()
@@ -15887,6 +15906,13 @@
     (equal-within-tolerance 1619.8 (mins-secs-to-secs "26:59.8"))
     (equal-within-tolerance 7440.00002 (mins-secs-to-secs "124:0.00002"))
     ))
+
+;;; LF 2024-03-17 16:16:28
+(sc-deftest test-utilities-agnostic-directory-pathname ()
+  (sc-test-check
+   (equal (agnostic-directory-pathname "/E/code/test.lsp") #P"/E/code/")
+   (equal (agnostic-directory-pathname "e:/code/test.lsp") #P"e:/code/")
+   (equal (agnostic-directory-pathname "e:/code/") #P"e:/code/")))
 
 ;;; SAR Sat May  5 12:17:59 BST 2012
 (sc-deftest test-utilities-string-replace ()
@@ -19414,7 +19440,21 @@ est)")))
     ;; (print sf1)
     (max-cue sf1)))
 
-
+;;; MDE Wed Mar 20 18:12:26 2024, Heidhausen 
+(sc-deftest test-sndfile-ext-force-ffprobe ()
+  (let ((sf1 (make-sndfile-ext 
+              (concatenate 'string
+                           cl-user::+slippery-chicken-home-dir+ 
+                           "tests/sndfile-1.aiff")
+              :force-ffprobe t :start 0.3 :end 1.1 :frequency 653)))
+    (sc-test-check
+      (= 0.3 (start sf1))
+      (= 1.1 (end sf1))
+      (= 653 (frequency sf1))
+      (= 1 (channels sf1))
+      (= 24 (bit-depth sf1))
+      (= 44100 (srate sf1)))))
+  
 ;;; MDE Sun Dec 16 13:37:20 2012, Koh Mak, Thailand :)
 #+clm
 (sc-deftest test-sndfile-ext ()
@@ -19453,9 +19493,9 @@ est)")))
       (= 1.1 (end sf1))
       (= 653 (frequency sf1))
       (= 1 (channels sf1))
-      (= 24 (bitrate sf1))
+      (= 24 (bit-depth sf1))
       (= 44100 (srate sf1))
-      (= 16 (bitrate sf2))
+      (= 16 (bit-depth sf2))
       (= 190518 (bytes sf2))
       (= 95232 (num-frames sf2))
       (string= "curve: 3: rising then falling"
@@ -19876,7 +19916,8 @@ est)")))
     (add-mark-to-note mini 1 5 'vn 'flag-head)
     (add-mark-to-note mini 1 6 'vn '(rgb (0 0 1)))
     ;; (write-xml mini)))
-    (lp-display mini)))
+    #+sc-auto-open (lp-display mini)
+    #-sc-auto-open (write-lp-data-for-all mini)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 13 14:43:21 2016 -- handles hairpins and updating amps
@@ -20230,6 +20271,11 @@ est)")))
       (null (pitch-or-chord= c1 c3))
       (null (pitch-or-chord= c1 c3))
       (pitch-or-chord= p3 c4)
+      ;; MDE Sat Mar 16 14:53:31 2024, Heidhausen -- rests! thanks Ruben
+      (not (pitch-or-chord= (make-event 'b5 'e) (make-rest 16)))
+      (not (pitch-or-chord= p1 (make-rest 16)))
+      (not (pitch-or-chord= e1 nil))
+      (not (pitch-or-chord= nil e4))
       ;; DJR Mon 10 Feb 2020 16:28:07 GMT
       ;; test eharmonics again
       (pitch-or-chord= e3 e4 t))))
@@ -20374,10 +20420,13 @@ est)")))
   (let* ((str1 "/E/samples/kick.wav")
          (str2 "E:/samples/kick.wav"))
     (sc-test-check
-     (equal str1 (os-format-path "/E/samples/kick.wav"))
-     (equal str1 (os-format-path "E:/samples/kick.wav"))
-     (equal str2 (os-format-path "/E/samples/kick.wav" 'windows))
-     (equal str2 (os-format-path "E:/samples/kick.wav" 'windows)))))
+      #-(or win32 win64)(equal str1 (os-format-path "/E/samples/kick.wav"))
+      #-(or win32 win64)(equal str1 (os-format-path "E:/samples/kick.wav"))
+      #+(or win32 win64)(equal str2 (os-format-path "/E/samples/kick.wav"))
+      #+(or win32 win64)(equal str2 (os-format-path "E:/samples/kick.wav"))
+      (equal str2 (os-format-path "/E/samples/kick.wav" 'windows))
+      (equal str2 (os-format-path "E:/samples/kick.wav" 'windows))
+      (equal str1 (os-format-path "E:/samples/kick.wav" 'unix)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; test write-list-to-coll
@@ -20432,7 +20481,10 @@ est)")))
                               :input-start .09
                               :play-rate 1.04 :transposition 2.5
                               :preserve-pitch t)
+        ;; (print 'here)
         (let* ((rf1 (make-reaper-file 'otest1 items1 :cursor end-time1))
+               ;; )
+               ;; rf1)))))
                (rf2  (make-reaper-file 'otest2 items2 :cursor end-time2))
                (items3 (make-reaper-items3 (append sndfiles sndfiles) .1))
                (rf3  (make-reaper-file 'otest3 items3 :cursor end-time2)))
@@ -20509,7 +20561,7 @@ est)")))
 ;;; was causing problems for handle-ties
 
 (sc-deftest test-simons-remote ()
-  (let ((+remote-control+
+  (let ((rc
          (make-slippery-chicken  
           '+remote-control+ 
           :title "Remote Control" 
@@ -20537,10 +20589,10 @@ est)")))
                          (D2 ((b2 fs3 b3 ds4 a5))) 
                          (D3 ((ef2 af2 c3 ef4)))
                          (D4 ((d2 fs2 a2 c3 a5))))
-          :set-map '((A (A1 A1 A2 A1 A2 A2 A1 A2 A))
-                     (B (B1 B1 B2 B1 B2 B2 B1 B2 B))
-                     (C (C1 C1 C2 C1 C2 C2 C1 C2 C))
-                     (D (D4 D2 D1 D3 D2 D4 D3 D1 D)))
+          :set-map '((1 (A1 A1 A2 A1 A2 A2 A1 A2 A))
+                     (2 (B1 B1 B2 B1 B2 B2 B1 B2 B))
+                     (3 (C1 C1 C2 C1 C2 C2 C1 C2 C))
+                     (4 (D4 D2 D1 D3 D2 D4 D3 D1 D)))
           :avoid-melodic-octaves nil
           :rthm-seq-palette
           '(;; 4x Intro/Outro
@@ -20711,18 +20763,44 @@ est)")))
              ((((12 4) q q q q q q q q q q q q))
               :pitch-seq-palette (12 11 10 9 8 7 6 5 4 3 2 1))))
           :rthm-seq-map
-          '((A ((rh (IO1 M1 M2 M3 M4 M5 M6 IO2 zapp-down)) 
+          '((1 ((rh (IO1 M1 M2 M3 M4 M5 M6 IO2 zapp-down)) 
                 (lh (IO2 M1 M2 M3 M4 M5 M6 IO1 zapp-down))))
-            (B ((rh (IO2 M2 M3 M4 M6 M5 M7 IO3 zapp-up))
+            (2 ((rh (IO2 M2 M3 M4 M6 M5 M7 IO3 zapp-up))
                 (lh (IO3 M2 M3 M4 M6 M5 M7 IO2 zapp-up))))
-            (C ((rh (IO3 M3 M6 M4 M5 M7 M8 IO4 zapp-up))
+            (3 ((rh (IO3 M3 M6 M4 M5 M7 M8 IO4 zapp-up))
                 (lh (IO4 M3 M6 M4 M5 M7 M8 IO3 zapp-up))))
-            (D ((rh (IO4 M5 M4 M6 M8 M7 M9 IO1 zapp-down))
-                (lh (IO1 M5 M4 M6 M8 M7 M9 IO4 zapp-down))))))))
-    (write-xml +remote-control+ :respell-notes nil)
+            (4 ((rh (IO4 M5 M4 M6 M8 M7 M9 IO1 zapp-down))
+                (lh (IO1 M5 M4 M6 M8 M7 M9 IO4 zapp-down)))))
+          ;; MDE Thu Mar 21 11:36:57 2024, Heidhausen -- even though Simon is no
+          ;; longer with (though he's in Cologne, not dead!) it seems fitting to
+          ;; use his piece to check whether generating reaper files with videos
+          ;; works
+          :sndfile-palette
+          `(((sndfile-group-1
+                  ;; this is just a copy of the similarly named but has lower
+                  ;; and upper case so we have to type a string. Spaces will
+                  ;; still not work here.
+                  (test-sndfile-1 "SampleVideo_720x480_1mb"))
+                 (sndfile-group-2
+                  (test-sndfile-2 test-sndfile-3
+                                  sample-file-sd.mov ; with extension
+                                  (test-sndfile-4 :frequency 261.61)))
+                 (sndfile-group-3
+                  ((test-sndfile-5 :start 0.006 :end 0.182)
+                   (sample-video_720x480_1mb ; without extension
+                                                 :start 3 :end 5 :frequency 100)
+                   test-sndfile-6)))
+            (,(concatenate 'string cl-user::+slippery-chicken-home-dir+ 
+                           "tests/test-sndfiles-dir-1/")
+             ,(concatenate 'string cl-user::+slippery-chicken-home-dir+ 
+                           "tests/test-videos/")
+             ,(concatenate 'string cl-user::+slippery-chicken-home-dir+ 
+                           "tests/test-sndfiles-dir-2/"))))))
     (sc-test-check
-     (file-write-ok "/tmp/remote-control.xml" 1040000))))
-
+      (reaper-play rc 2 nil 'sndfile-group-2 :check-overwrite nil
+                   :num-sections 1 :sound-file-palette-ref2 'sndfile-group-3)
+      (write-xml rc :respell-notes nil)
+      (file-write-ok "/tmp/remote-control.xml" 1040000))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RP  Tue Feb 28 16:39:07 2023
@@ -21012,7 +21090,7 @@ est)")))
                             (3 ((pno (1 2 1 2 1 2 1))
                                 (vln (1 2 1 2 1 2 1))))))))
     (sc-test-check
-      ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
+      ;;  MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
       ;; with this too
       (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :min-channels 4
                                      :tracks-per-player 5)
@@ -21086,10 +21164,10 @@ est)")))
     (probe-delete "/tmp/insert-grace-notes.xml")
     (probe-delete "/tmp/insert-grace-notes.eps")
     (write-xml sc :file "/tmp/insert-grace-notes.xml")
-    (cmn-display sc :file "/tmp/insert-grace-notes.eps")
+    #+cmn (cmn-display sc :file "/tmp/insert-grace-notes.eps")
     (sc-test-check
       (file-write-ok "/tmp/insert-grace-notes.xml")
-      (file-write-ok "/tmp/insert-grace-notes.eps"))))
+      #+cmn (file-write-ok "/tmp/insert-grace-notes.eps"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RP  Tue Nov 28 23:39:22 2023
@@ -21141,8 +21219,7 @@ est)")))
            :rthm-seq-palette '((seq1 ((((4 4) q q - e e - q))
                                       :pitch-seq-palette ((1 2 3 4 5)
                                                           (5 4 3 2 1)))))
-           :rthm-seq-map '((1 ((hrp (seq1 seq1)))))))
-        (bar (make-rthm-seq-bar '((4 4) (w)))))
+           :rthm-seq-map '((1 ((hrp (seq1 seq1))))))))
     (add-mark-to-note sc 1 1 'hrp
                       '(salzedo (1 -1 1 0 1 -1 1)))
     (add-salzedo-pedal (get-nth-event 2
@@ -21155,11 +21232,12 @@ est)")))
     (probe-delete "/tmp/salzedo-marks.eps")
     (probe-delete "/tmp/salzedo-marks.pdf")
     (write-xml sc :file "/tmp/salzedo-marks.xml")
-    (cmn-display sc :file "/tmp/salzedo-marks.eps")
-    (lp-display sc :base-path "/tmp/")
+    #+cmn (cmn-display sc :file "/tmp/salzedo-marks.eps")
+    #+sc-auto-open (lp-display sc :base-path "/tmp/")
+    #-sc-auto-open (write-lp-data-for-all sc :base-path "/tmp/")
     (sc-test-check
-     (file-write-ok "/tmp/salzedo-marks.xml")
-     (file-write-ok "/tmp/salzedo-marks.eps")))
+      (file-write-ok "/tmp/salzedo-marks.xml")
+      #+cmn (file-write-ok "/tmp/salzedo-marks.eps")))
   (set-sc-config 'xml-salzedo-as-text nil)
   (let ((sc
           (make-slippery-chicken
@@ -21185,13 +21263,34 @@ est)")))
     (probe-delete "/tmp/salzedo-marks.eps")
     (probe-delete "/tmp/salzedo-marks.pdf")
     (write-xml sc :file "/tmp/salzedo-marks.xml")
-    (cmn-display sc :file "/tmp/salzedo-marks.eps")
-    (lp-display sc :base-path "/tmp/")
+    #+cmn (cmn-display sc :file "/tmp/salzedo-marks.eps")
+    #+sc-auto-open (lp-display sc :base-path "/tmp/")
+    #-sc-auto-open (write-lp-data-for-all sc :base-path "/tmp/")
     (sc-test-check
-     (file-write-ok "/tmp/salzedo-marks.xml")
-     (file-write-ok "/tmp/salzedo-marks.eps")))
+      (file-write-ok "/tmp/salzedo-marks.xml")
+      #+cmn (file-write-ok "/tmp/salzedo-marks.eps")))
   (set-sc-config 'xml-salzedo-as-text t))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Mar 20 17:52:34 2024, Heidhausen
+(sc-deftest test-vidfile ()
+  (let* ((v1 (make-vidfile (file-from-sc-dir
+                            "tests/test-videos/SampleVideo_720x480_1mb.mp4")))
+         (v2 (make-vidfile (file-from-sc-dir
+                            "tests/test-videos/sample-file-sd.mov"))))
+    (sc-test-check
+      (vidfile-p v1) ;(print v1))
+      (vidfile-p v2) ;(print v2))
+      (equal-within-tolerance (snd-duration v1) 5.802 .001)
+      (equal-within-tolerance (snd-duration v2) 60.48 .001)
+      (= 6 (channels v1))
+      (= 2 (channels v2))
+      (= 48000 (srate v1))
+      (= 48000 (srate v2))
+      (has-video-codec v1)
+      (has-video-codec v2)
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

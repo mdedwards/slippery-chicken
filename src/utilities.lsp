@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none: no classes defined
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:27:30 Fri Feb 23 2024 CET
+;;; $$ Last modified:  16:16:48 Thu Mar 21 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -185,6 +185,31 @@
          (mins (read-from-string (subseq string 0 pos)))
          (secs (read-from-string (subseq string (1+ pos)))))
     (+ (* 60.0 mins) secs)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/agnostic-directory-pathname
+;;; AUTHOR
+;;; Leon Focker: leon@leonfocker.de
+;;;
+;;; DATE
+;;; March 17th 2024.
+;;;
+;;; DESCRIPTION
+;;; A replacement for directory-namestring, as that function does not return
+;;; device names when used on windows.
+;;;
+;;; ARGUMENTS
+;;; a string representing a pathname.
+;;;
+;;; RETURN VALUE
+;;; a pathname - to a directory without filename and type
+;;;
+;;; SYNOPSIS
+(defun agnostic-directory-pathname (namestring)
+;;; ****
+  (make-pathname :directory  (pathname-directory namestring)
+                 :device (pathname-device namestring)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB check whether a floating point number is very close to an integer. NB
@@ -2316,7 +2341,7 @@
   (with-open-file 
       (mrk (format nil "~a:~a~a.mrk" 
                    (pathname-device sndfile)
-                   (directory-namestring sndfile)
+                   (agnostic-directory-pathname sndfile)
                    (pathname-name sndfile))
            :direction :input :if-does-not-exist :error)
     (with-open-file
@@ -2378,7 +2403,7 @@
       (mrk file :direction :input :if-does-not-exist :error)
     (with-open-file
         (txt (format nil "~a~a.txt" 
-                     (directory-namestring file)
+                     (agnostic-directory-pathname file)
                      (pathname-name file))
              :direction :output :if-exists :error)
       (loop 
@@ -2553,7 +2578,7 @@ WARNING:
       (in file :direction :input :if-does-not-exist :error)
     (with-open-file
         (out (format nil "~a~a-sorted.~a" 
-                     (directory-namestring file)
+                     (agnostic-directory-pathname file)
                      (pathname-name file)
                      (pathname-type file))
          :direction :output :if-exists :error)
@@ -3040,7 +3065,7 @@ WARNING:
       (in file :direction :input :if-does-not-exist :error)
     (with-open-file
         (out (format nil "~a~a-mid-phrase.~a" 
-                     (directory-namestring file)
+                     (agnostic-directory-pathname file)
                      (pathname-name file)
                      (pathname-type file))
              :direction :output :if-exists :error)
@@ -3076,7 +3101,7 @@ WARNING:
       (in file :direction :input :if-does-not-exist :error)
     (with-open-file
         (out (format nil "~a~a-min.~a" 
-                     (directory-namestring file)
+                     (agnostic-directory-pathname file)
                      (pathname-name file)
                      (pathname-type file))
              :direction :output :if-exists :error)
@@ -3874,7 +3899,7 @@ WARNING:
            (if (pathname-device path)
                (format nil "~a:" (pathname-device path))
                "")
-           (directory-namestring path)
+           (agnostic-directory-pathname path)
            (pathname-name path))
    (pathname-type path)))
 
@@ -4569,6 +4594,16 @@ WARNING:
       (subseq seq start end))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+sbcl
+(defun shell-to-string (command &rest arguments)
+  (let ((stream (make-string-output-stream)))
+    (cl-user::run-program command arguments :output stream
+                                            :wait t :input nil)
+     (get-output-stream-string stream)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; MDE Wed May 29 14:40:43 2013 -- 
 (defun shell (command &rest arguments)
   ;; (print command) (print arguments)
@@ -6638,60 +6673,14 @@ yes_foo, 1 2 3 4;
                    (format nil "/~a" helper))))
     (unless type
       (setf type
-	    #+(or win32 win64) 'windows
-	    #-(or win32 win64) 'unix))
+            #+(or win32 win64) 'windows
+            #-(or win32 win64) 'unix))
     ;; intering the symbol is nicer when calling this from other packages
     (case (intern (string type) :sc)
       ((unix linux) (format nil "/~a~a" device rest))
       ((or windows) (format nil "~a:~a" device rest))
       ;; if type is unknown, no error but unix type path:
       (t (format nil "/~a~a" device rest)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LF <2023-05-21 So>
-;;; import the ppcre library
-;;; you could (set-sc-config 'path-to-ppcre "...") to install into another
-;;; directory.
-;;#+(not cl-ppcre)
-(defun import-ppcre (&key update mkdir (git "/usr/bin/git"))
-;;; ****
-  #+darwin(unless mkdir (setf mkdir "/bin/mkdir"))
-  #+linux(unless mkdir (setf mkdir "/usr/bin/mkdir"))
-  ;; set the directory:
-  (let* ((dir (or (get-sc-config 'path-to-ppcre)
-                  (make-pathname
-                   :directory
-                   (pathname-directory
-                             cl-user::+slippery-chicken-src-path+))))
-         (target-dir (format nil "~appcre/" dir)))
-    ;; check if the git command is found:
-    (unless (and mkdir (probe-file mkdir))
-      (warn "utilities::import-ppcre: Cannot find the mkdir command at: ~a. ~
-          ppcre can not be installed automatically" mkdir))
-    (unless (and git (probe-file git))
-      (warn "utilities::import-ppcre: Cannot find the git command at: ~a. ~
-          ppcre can not be installed automatically" git))
-    (when (and mkdir git (probe-file git) (probe-file mkdir))
-      #+(and (or ccl sbcl) unix)
-      (progn
-        (if (probe-file (concatenate 'string target-dir "cl-ppcre.asd"))
-            (if update (progn (format t "~&updating ~a~&" target-dir)
-                              (shell git "-C" target-dir "pull"))
-                (print "PPCRE seems to be installed, if you want to update it, ~
-                   evaluate (import-ppcre :update t)"))
-            (progn
-              (shell mkdir target-dir)
-              (shell git
-                     "clone"
-                     "https://github.com/edicl/cl-ppcre.git"
-                     target-dir)))
-        (asdf:load-asd
-         (merge-pathnames "cl-ppcre.asd" target-dir))
-        (asdf:load-system :cl-ppcre))
-      #-(and (or ccl sbcl) unix)
-      (warn "utilities::import-ppcre: Sorry but this currently only runs ~
-           with SBCL or CCL on a unix system. Please install the ppcre-library ~
-           by hand and load it before loading SC"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

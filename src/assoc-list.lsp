@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist ->
 ;;;                   circular-sclist -> assoc-list 
 ;;;
-;;; Version:          1.0.12
+;;; Version:          1.1.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  18:16:28 Wed Jan 31 2024 CET
+;;; $$ Last modified:  12:21:40 Fri Mar 22 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -434,7 +434,8 @@ WARNING:
 ;;;   cannot be found within the given assoc-list. T = print. Default = T.  
 ;;;   Mostly we define whether we want to warn in the instance itself, but  
 ;;;   sometimes it would be good to warn or not on a call basis, hence the 
-;;;   optional argument. 
+;;;   optional argument. If a function is passed here that will be called
+;;;   instead of warn (e.g. #'error)
 ;;; 
 ;;; RETURN VALUE 
 ;;; A named-object is returned if the specified key is found within the given
@@ -489,8 +490,9 @@ WARNING:
         (get-nth pos al)
         (when (or warn 
                   (and warn (warn-not-found al)))
-          (warn "assoc-list::get-data: ~
-               Could not find data with key ~a ~%in assoc-list with id ~a"
+          (funcall (if (functionp warn) warn #'warn)
+                   "assoc-list::get-data: ~
+                    Could not find data with key ~a ~%in assoc-list with id ~a"
                 key (id al))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -197,7 +197,7 @@ If you are not using Quicklisp, replace the `ql:quickload` with
 `asdf:load-system`. Please note that you might then need to manually install and
 load additional packages which are required by slippery-chicken as well as to
 manually load slippery chicken's dependencies before loading slippery-chicken
-itself. [See below](#configure-slippery-chicken) for details.
+itself. [See below](#configure-slippery-chicken-1) for details.
 
 Finally, you might want to customise some of slippery chicken's global
 configuration variables[^4]. In case you use one of the optional dependencies,

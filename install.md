@@ -29,7 +29,7 @@ documented on this [wiki
 page](https://github.com/mdedwards/slippery-chicken/wiki/how-to-install-slippery-chicken-'by-hand').
 
 You will find two versions of this description: A [short](#short) one for those
-familiar with Common Lisp, ASDF and the like, and a [long](#long) version rather
+familiar with Common Lisp, ASDF and the like, and a [long](#long) version more
 aimed at those who are new to the Lisp world or prefer to follow more verbose
 instructions.
 
@@ -55,15 +55,17 @@ instructions.
 ## Short
 
 Before going ahead, make sure you have a running Common Lisp implementation on
-your system. Also make sure that [ASDF](https://asdf.common-lisp.dev) is
-installed.
+your system. We work with [SBCL](http://www.sbcl.org). Also make sure that 
+[ASDF](https://asdf.common-lisp.dev) is installed.
 
-We recommend to use [https://www.quicklisp.org/](https://www.quicklisp.org/). 
+We recommend working with [Quicklisp](https://www.quicklisp.org/) as it automatically
+downloads packages it finds on its servers and thus makes the installation process
+simpler.
 
 
 ### Install Dependencies
 
-First, install slippery chicken's dependencies. These are:
+First of all, install slippery chicken's dependencies. These are:
 
 - Common Music/CM (required)
 - Common Music Notation/CMN (optional)
@@ -71,25 +73,25 @@ First, install slippery chicken's dependencies. These are:
 - ffprobe (optional)
 - LilyPond (optional)
 
-Without the optional dependencies, you will just be able to use a reduced
-feature set.
+Without the optional dependencies, you will only be able to use a reduced
+feature set, such as writing MIDI or Music-XML files.
 
 > [!NOTE]
 > The Common Lisp dependencies (CM, CMN and CLM) need to be available to the
-> ASDF's/Quicklisp's search path. We suggest putting the code in the standard
+> ASDF's/Quicklisp's search path. We suggest putting the code in one of the standard
 > locations:
 >
 > **ASDF:** `~/common-lisp/` or `~/.local/share/common-lisp/source/`<br>
 > **Quicklisp:** `~/quicklisp/local-projects/`
 
-Let's start...
+Let's begin:
 
 
 #### Common Music (required)
 
 Download the CM-sources from
 [https://github.com/ormf/cm](https://github.com/ormf/cm) and put them in your
-ASDF/Quicklisp directory, or:
+ASDF/Quicklisp directory, or if you're comfortable working with a (UNIX) terminal:
 
 ```shell
 # in your ASDF/Quicklisp standard directory
@@ -141,7 +143,7 @@ brew install ffmpeg
 choco install ffmpeg
 ```
 
-If none of these options are viable for you, head to this site and install
+If none of these options are available to you, head to this site and install
 ffprobe according to the directions given there:
 [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html)
 
@@ -161,7 +163,7 @@ brew install lilypond
 choco install lilypond
 ```
 
-If none of these options are viable for you, head to this site and install
+If none of these options are available, head to this site and install
 LilyPond according to the directions given there:
 [LilyPond](https://lilypond.org)
 
@@ -169,7 +171,8 @@ LilyPond according to the directions given there:
 ### Install slippery-chicken
 
 Now you are ready to install slippery chicken. Download the sources from
-[https://github.com/mdedwards/slippery-chicken](https://github.com/mdedwards/slippery-chicken) and put them in your ASDF/Quicklisp directory, or:
+[https://github.com/mdedwards/slippery-chicken](https://github.com/mdedwards/slippery-chicken) 
+and put them in your ASDF/Quicklisp directory, or:
 
 ```shell
 # in your ASDF/Quicklisp standard directory
@@ -178,13 +181,13 @@ git clone https://github.com/mdedwards/slippery-chicken.git
 
 ### Configure slippery-chicken
 
-The last step is modifying the init file of your Common Lisp implementation to
+The last step is modifying the initialisation file of your Common Lisp implementation to
 load slippery chicken and its dependencies. The name and location of your init
-file depends on the implementation you are using. On SBCL, for example, it is
+file depends on the implementation you are using. With SBCL, for example, it is
 `~/.sbclrc` by default, whereas Clozure CL uses `~/ccl-init.lisp` or
 `~/.ccl-init.lisp`.
 
-Put the following line to it:
+Add the following line to the init file:
 
 ```lisp
 (ql:quickload :slippery-chicken)
@@ -194,7 +197,7 @@ If you are not using Quicklisp, replace the `ql:quickload` with
 `asdf:load-system`. Please note that you might then need to manually install and
 load additional packages which are required by slippery-chicken as well as to
 manually load slippery chicken's dependencies before loading slippery-chicken
-itself.
+itself. [See below](#configure-slippery-chicken) for details.
 
 Finally, you might want to customise some of slippery chicken's global
 configuration variables[^4]. In case you use one of the optional dependencies,

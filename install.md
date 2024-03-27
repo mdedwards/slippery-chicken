@@ -2,7 +2,8 @@
 
 **TL;DR**
 
-Open your terminal, `cd` to your Quicklisp standard directory, then:
+For a minimum installation of sc, open your terminal, `cd` to your Quicklisp
+standard directory, then:
 
 ```shell
 # in your Quicklisp standard directory

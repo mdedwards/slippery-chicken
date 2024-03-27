@@ -1,5 +1,23 @@
 # Installation Instructions
 
+**TL;DR**
+
+Open your terminal, ~cd~ to your Quicklisp standard directory, then:
+
+```shell
+# in your Quicklisp standard directory
+git clone https://github.com/ormf/cm.git
+git clone https://github.com/mdedwards/slippery-chicken.git
+```
+
+In your Lisp REPL or your Lisp initialisation file:
+
+```lisp
+(ql:quickload :slippery-chicken)
+```
+
+---
+
 This document describes the installation process of slippery chicken using
 the [ASDF](https://asdf.common-lisp.dev) build system, which is -- as of March
 2024 -- the recommended method for this process. Other installation methods are
@@ -161,18 +179,16 @@ load slippery chicken and its dependencies. The name and location of your init
 file depends on the implementation. On SBCL, for example, it is `~/.sbclrc` by
 default, whereas Clozure CL uses `~/ccl-init.lisp` or `~/.ccl-init.lisp`. 
 
-Put the following lines to it:
+Put the following line to it:
 
 ```lisp
-(ql:quickload :cmn)
-(ql:quickload :cm)
-(ql:quickload :clm)
 (ql:quickload :slippery-chicken)
 ```
 
 If you are not using Quicklisp, replace the `ql:quickload` with
 `asdf:load-system`. Please note that you might then manually install and load
-additional packages which are required by slippery-chicken and its dependencies.
+additional packages which are required by slippery-chicken and its dependencies,
+as well as manually loading the dependencies before loading slippery-chicken. 
 
 Finally, you might want to customise some global configuration variables[^4] of
 slippery chicken itself. In case you use one of the optional dependencies,
@@ -401,22 +417,30 @@ to your init file (omit the components you did not install).
 
 
 ```lisp
-(ql:quickload :cmn)
-(ql:quickload :cm)
-(ql:quickload :clm)
 (ql:quickload :slippery-chicken)
 ```
 
 If you are not using Quicklisp, replace the `ql:quickload` with
-`asdf:load-system`. Please note that you might then manually install and load
-additional packages which are required by slippery-chicken and its dependencies.
+`asdf:load-system`. Please note that you then need to manually load various
+dependencies before loading slippery-chicken. Without much further detail, the
+following is an example to load a full slippery chicken installation without
+Quicklisp:
+
+```lisp
+(asdf:load-system :cmn)
+(asdf:load-system :alexandria) ;; required by Common Music (cm)
+(asdf:load-system :cm)
+(asdf:load-system :clm)
+(asdf:load-system :cl-ppcre) ;; required by slippery-chicken
+(asdf:load-system :slippery-chicken)
+```
 
 
 #### Customise Global Options
 
 slippery chicken contains some global variables which could and should be
 modified to the user's desire. For a detailed insight, have a look at
-`src/globals.lsp`.[^4] 
+`src/globals.lsp`.[^4]
 
 If you want to use slippery chicken with external programs like LilyPond,
 ffprobe, or Csound, you might need to tell slippery chicken where it can find

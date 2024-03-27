@@ -1,9 +1,9 @@
 # Installation Instructions
 
-**TL;DR**
+## Ultrashort: for the quicklisp afficionado (TL;DR)
 
 For a minimum installation of sc, open your terminal, `cd` to your Quicklisp
-standard directory, then:
+local-projects directory, then:
 
 ```shell
 # in your Quicklisp standard directory
@@ -16,6 +16,9 @@ In your Lisp REPL or your Lisp initialisation file:
 ```lisp
 (ql:quickload :slippery-chicken)
 ```
+
+(If none of the above made any sense, or you want extra package functionality
+such as CLM, then keep reading.)
 
 ---
 

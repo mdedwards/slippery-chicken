@@ -84,7 +84,7 @@
   ;; shell, just write the lilypond formatted text files and render in lilypond
   ;; separately (for that use write-lp-data-for-all)
   (lp-display hello)
-  ;; write a music-xml file for import into Doric, Musescore, Sibelius etc.
+  ;; write a music-xml file for import into Dorico, Musescore, Sibelius etc.
   (write-xml hello)
   ;; write a midi file. All of these files can be specified with a path or, as
   ;; here, written to the default directory (by default /tmp but user-settable

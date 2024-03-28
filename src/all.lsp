@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  15:57:55 Thu Mar 28 2024 CET
+;;; $$ Last modified:  15:59:36 Thu Mar 28 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -45,7 +45,7 @@
 
 (error "Since slippery-chicken 1.1.0 (March 2024) we recommend using the ~%~
         slippery-chicken.asd file to load and use this system. See ~%~
-        readme.md for details")
+        install.md for details")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 EOF all.lsp

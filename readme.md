@@ -152,8 +152,9 @@ Power*:
 
 - Thanks first of all to Rick Taube, the author of *Common Music* (CM), which
 was the first algorithmic composition system I used when I was starting out in
-computer music way back in the early 90s. Slippery chicken takes all of its MIDI
-file reading and writing routines from CM as well as pitch and tuning notation.
+computer music way back in the early 90s. slippery chicken takes all of its MIDI
+file reading and writing routines from CM as well as some aspects of pitch and
+tuning notation.  
   - and of course thanks to Orm Finnendahl for making the last Common Lisp
   version of CM available on GitHub.
 - In a similar vein, thanks to Bill Schottstaedt, author of CLM and CMN, who has

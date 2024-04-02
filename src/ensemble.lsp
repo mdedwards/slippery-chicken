@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  15:30:40 Sat Jan 27 2024 CET
+;;; $$ Last modified:  12:31:15 Tue Apr  2 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -102,7 +102,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Dec 28 17:56:32 2017 -- called automatically at init
+;;; ****m* ensemble/auto-midi-channels
+;;; DATE
+;;; December 28th 2017
+;;; 
+;;; DESCRIPTION
+;;; This method is intended for initialisation but can also be called explicitly
+;;; (but before rendering any MIDI files, if it's to make sense). It will
+;;; automatically set the MIDI channels of all players in the ensemble to
+;;; ascending values, if all values are currently 1 or the optional second
+;;; argument is T. If using the :chromatic-scale, then the
+;;; microtones-midi-channel will be the same as the main channel, otherwise it
+;;; will be 1+ the main channel.
+;;; 
+;;; ARGUMENTS
+;;; the ensemble object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to force the channel setting.
+;;; 
+;;; RETURN VALUE
+;;; If the procedure actually runs then the last channel set (integer) otherwise
+;;; NIL.
+;;; 
+;;; SYNOPSIS
 (defmethod auto-midi-channels ((e ensemble) &optional force)
+;;; ****
   ;; only do this when channels haven't been explicitly set
   ;; (print 'here)
   (when (or force

@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  16:20:46 Fri Mar 15 2024 CET
+;;; $$ Last modified:  17:58:03 Tue Apr 16 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -55,7 +55,6 @@
                ;; exported but that's just as it should be 
                (eql (symbol-package symb) package))
       (export symb package))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF export-symbols.lsp

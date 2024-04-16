@@ -18,12 +18,15 @@
 ;;;
 ;;; Purpose:          Class and routine definition for the generation of partial
 ;;;                   and/or complete reaper files from rhythms, soundfiles.
+;;;                   NB Because this class can write reaper files that include
+;;;                   video as well as sound files (and we need to distinguish
+;;;                   between the two), the ffprobe command is needed here.
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  18:09:30 Fri Mar 22 2024 CET
+;;; $$ Last modified:  17:40:21 Tue Apr 16 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -608,6 +611,7 @@
 ;;; replaced with this method for on-the-fly creation of objects that just need
 ;;; to be written in above all reaper-play.
 (defun make-reaper-item-fast (slots-list)
+  ;; (print slots-list)
   (let ((ri (make-instance 'reaper-item :init-update nil)))
     (loop for slot in slots-list by #'cddr
           and value in (rest slots-list) by #'cddr do

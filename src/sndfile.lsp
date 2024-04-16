@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  11:28:24 Fri Mar 22 2024 CET
+;;; $$ Last modified:  18:03:29 Tue Apr 16 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -46,6 +46,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Apr 16 16:22:23 2024
+(eval-when (compile load eval) 
+  (when (probe-file (get-sc-config 'ffprobe-command))
+    (pushnew :ffprobe *features*)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; the name (defaults to the given name of the file) is stored in <id>, the
@@ -625,43 +631,44 @@ data: /path/to/sndfile-1.aiff
                             :angle-env angle-env :elevation-env elevation-env
                             :distance-env distance-env)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; LF 2024-03-26 15:23:48
 (defun parse-ffprobe-string (string)
   (let* ((dur-scan (ppcre:create-scanner "duration=\\d+.\\d+"))
-	 (chan-scan (ppcre:create-scanner "channels=\\d+"))
-	 (srate-scan (ppcre:create-scanner "sample_rate=\\d+"))
-	 (bit-scan (ppcre:create-scanner "bits_per_sample=\\d+"))
-	 (size-scan (ppcre:create-scanner "size=\\d+"))
-	 (fps-scan (ppcre:create-scanner "r_frame_rate=\\d+"))
-	 (width-scan (ppcre:create-scanner "width=\\d+"))
-	 (heigth-scan (ppcre:create-scanner "height=\\d+"))
-	 (codec-scan (ppcre:create-scanner "codec_name=.+"))
-	 duration channels srate bitdepth size framples fps width height codec)
+         (chan-scan (ppcre:create-scanner "channels=\\d+"))
+         (srate-scan (ppcre:create-scanner "sample_rate=\\d+"))
+         (bit-scan (ppcre:create-scanner "bits_per_sample=\\d+"))
+         (size-scan (ppcre:create-scanner "size=\\d+"))
+         (fps-scan (ppcre:create-scanner "r_frame_rate=\\d+"))
+         (width-scan (ppcre:create-scanner "width=\\d+"))
+         (heigth-scan (ppcre:create-scanner "height=\\d+"))
+         (codec-scan (ppcre:create-scanner "codec_name=.+"))
+         duration channels srate bitdepth size framples fps width height codec)
     ;; do the regex:
     (setf srate (ppcre:scan-to-strings srate-scan string)
-	  channels (ppcre:scan-to-strings chan-scan string)
-	  bitdepth (ppcre:scan-to-strings bit-scan string)
-	  duration (ppcre:scan-to-strings dur-scan string)
-	  size (ppcre:scan-to-strings size-scan string)
-	  fps (ppcre:scan-to-strings fps-scan string)
-	  width (ppcre:scan-to-strings width-scan string)
-	  height (ppcre:scan-to-strings heigth-scan string)
-	  codec (ppcre:scan-to-strings codec-scan string))
+          channels (ppcre:scan-to-strings chan-scan string)
+          bitdepth (ppcre:scan-to-strings bit-scan string)
+          duration (ppcre:scan-to-strings dur-scan string)
+          size (ppcre:scan-to-strings size-scan string)
+          fps (ppcre:scan-to-strings fps-scan string)
+          width (ppcre:scan-to-strings width-scan string)
+          height (ppcre:scan-to-strings heigth-scan string)
+          codec (ppcre:scan-to-strings codec-scan string))
     (when (and duration srate)
       (setf duration (read-from-string (subseq duration 9))
-	    srate (read-from-string (subseq srate 12))
-	    framples (round (* duration srate))))
+            srate (read-from-string (subseq srate 12))
+            framples (round (* duration srate))))
     ;; get the values:
     (list srate
-	  (when channels (read-from-string (subseq channels 9)))
-	  (when bitdepth (read-from-string (subseq bitdepth 16)))
-	  duration
-	  (when size (read-from-string (subseq size 5)))
-	  framples
-	  (when fps (read-from-string (subseq fps 13)))
-	  (when width (read-from-string (subseq width 6)))
-	  (when height (read-from-string (subseq height 7)))
-	  (when codec (read-from-string (subseq codec 11))))))
+          (when channels (read-from-string (subseq channels 9)))
+          (when bitdepth (read-from-string (subseq bitdepth 16)))
+          duration
+          (when size (read-from-string (subseq size 5)))
+          framples
+          (when fps (read-from-string (subseq fps 13)))
+          (when width (read-from-string (subseq width 6)))
+          (when height (read-from-string (subseq height 7)))
+          (when codec (read-from-string (subseq codec 11))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* sndfile/get-sound-info
@@ -699,27 +706,33 @@ data: /path/to/sndfile-1.aiff
   (when (and filename (probe-file filename))
     (let ((clm (find :clm *features*)))
       (if (and clm (not ffprobe))
-	  ;; this order should be the same as in parse-ffprobe-string
-          (list (clm::sound-srate filename)
-		(clm::sound-chans filename)
-		(* (clm::mus-sound-datum-size filename) 8)
-		(clm::sound-duration filename)
-		(clm::sound-length filename)
-		(clm::sound-framples filename))
-          (parse-ffprobe-string
-	   (shell-to-string
-            (if (stringp ffprobe)
-		ffprobe
-		(get-sc-config 'ffprobe-command))
-	    "-v" "quiet"
-	    "-show_entries" "format=duration,size"
-	    "-show_entries"
-	    "stream=sample_rate,channels,r_frame_rate,width,height"
-	    "-show_entries" "stream=bits_per_sample,codec_name"
-	    "-of" "default=noprint_wrappers=1:nokey=0"
-            filename))))))
+        ;; this order should be the same as in parse-ffprobe-string
+        (list (clm::sound-srate filename)
+              (clm::sound-chans filename)
+              (* (clm::mus-sound-datum-size filename) 8)
+              (clm::sound-duration filename)
+              (clm::sound-length filename)
+              (clm::sound-framples filename))
+        #+ffprobe
+        (parse-ffprobe-string
+         (shell-to-string
+          (if (stringp ffprobe)
+            ffprobe
+            (get-sc-config 'ffprobe-command))
+          "-v" "quiet"
+          "-show_entries" "format=duration,size"
+          "-show_entries"
+          "stream=sample_rate,channels,r_frame_rate,width,height"
+          "-show_entries" "stream=bits_per_sample,codec_name"
+          "-of" "default=noprint_wrappers=1:nokey=0"
+          filename))
+        #-ffprobe
+        (error "sndfile::get-sound-info: this command needs ffprobe, ~%i.e. ~
+                the ffprobe-command defined in globals.lsp needs to exist ~%~
+                and function properly.")))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun autoc-get-fundamental (file start duration)
   #+clm
   (progn 
@@ -745,13 +758,20 @@ data: /path/to/sndfile-1.aiff
 ;;; e.g. "video" "audio" (noting that "audio" will also be in video files so be
 ;;; specific if necesssary
 (defun codec-type-p (path type)
+  #+ffprobe
   (when (and path (probe-file path))
     (let* ((ffprobe (get-sc-config 'ffprobe-command)))
-      (if (probe-file ffprobe)
-        (let ((ffps (shell-to-string
-                     ffprobe "-loglevel" "error" "-show_entries"
-                     "stream=codec_type" "-of" "default=nw=1" path)))
-          (numberp (search (format nil "codec_type=~a" type) ffps)))))))
+      ;; MDE Tue Apr 16 16:30:37 2024, Heidhausen -- no need to check if ffprobe
+      ;; command exists as #+ffprobe will only work if it's been found (see
+      ;; slippery-chiciken.asd) 
+      (let ((ffps (shell-to-string
+                   ffprobe "-loglevel" "error" "-show_entries"
+                   "stream=codec_type" "-of" "default=nw=1" path)))
+        (numberp (search (format nil "codec_type=~a" type) ffps)))))
+  #-ffprobe
+  (error "sndfile::codec-type-p: this command needs ffprobe, i.e. the ~
+          ffprobe-command defined in globals.lsp needs to exist and function ~
+          properly."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; note that unlike vidfile we don't test by extension here (but unlike vidfile

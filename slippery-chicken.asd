@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  12:03:48 Thu Mar 28 2024 CET
+;;; $$ Last modified:  16:45:35 Tue Apr 16 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -185,13 +185,6 @@
   (asdf:component-version (asdf:find-system :slippery-chicken)))
                                           
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; from all.lsp
-;;; RP  Fri Mar 15 21:54:15 2024
-;;; MDE Fri Jun 21 17:08:42 2013 
-#+(and (or sbcl ccl) (or linux darwin))
-(pushnew :sc-auto-open *features*)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sc (&optional (logo t))
@@ -212,6 +205,13 @@
                   title)))
     #+sbcl t
     #-sbcl (values)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; originally from all.lsp
+;;; RP  Fri Mar 15 21:54:15 2024
+;;; MDE Fri Jun 21 17:08:42 2013 
+#+(and (or sbcl ccl) (or linux darwin))
+(pushnew :sc-auto-open *features*)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.asd

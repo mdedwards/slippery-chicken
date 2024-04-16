@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:27:13 Fri Mar 22 2024 CET
+;;; $$ Last modified:  17:50:28 Tue Apr 16 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8309,11 +8309,13 @@
 ;;; LF 2024-03-17 19:40:58
 (sc-deftest test-sndfile-get-sound-info ()
   (let ((info1 (get-sound-info (get-test-sf-path "tests/pink5s.wav")))
-	(info2 (get-sound-info (get-test-sf-path "tests/pink5s.wav") t)))
+        (info2 (get-sound-info (get-test-sf-path "tests/pink5s.wav")
+                               #+ffprobe t)))
     (sc-test-check
       ;; LF 2024-03-26 15:49:55 only test first 6 values for clm
       (equal (subseq info1 0 6) '(48000 1 16 5.000021 484098 240001))
       ;; LF 2024-03-26 15:33:42 ffprobe also returns fps, width, height:
+      #+ffprobe
       (equal info2 '(48000 1 16 5.000021 484098 240001 0 nil nil PCM_S16LE)))))
 
 ;;; SAR Mon Apr 16 17:52:23 BST 2012
@@ -19441,6 +19443,7 @@ est)")))
     (max-cue sf1)))
 
 ;;; MDE Wed Mar 20 18:12:26 2024, Heidhausen 
+#+ffprobe
 (sc-deftest test-sndfile-ext-force-ffprobe ()
   (let ((sf1 (make-sndfile-ext 
               (concatenate 'string
@@ -20450,6 +20453,7 @@ est)")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan 28 16:40:13 2021, Heidhausen -- reaper tests
+#+ffprobe
 (sc-deftest test-reaper ()
   (let* ((sndfiles (get-sndfiles
                    (concatenate 'string
@@ -20776,6 +20780,7 @@ est)")))
           ;; use his piece to check whether generating reaper files with videos
           ;; works
           :sndfile-palette
+          #+ffprobe
           `(((sndfile-group-1
                   ;; this is just a copy of the similarly named but has lower
                   ;; and upper case so we have to type a string. Spaces will
@@ -20795,8 +20800,10 @@ est)")))
              ,(concatenate 'string cl-user::+slippery-chicken-home-dir+ 
                            "tests/test-videos/")
              ,(concatenate 'string cl-user::+slippery-chicken-home-dir+ 
-                           "tests/test-sndfiles-dir-2/"))))))
+                           "tests/test-sndfiles-dir-2/")))
+          #-ffprobe nil)))
     (sc-test-check
+      #+ffprobe
       (reaper-play rc 2 nil 'sndfile-group-2 :check-overwrite nil
                    :num-sections 1 :sound-file-palette-ref2 'sndfile-group-3)
       (write-xml rc :respell-notes nil)
@@ -21274,6 +21281,7 @@ est)")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Mar 20 17:52:34 2024, Heidhausen
+#+ffprobe
 (sc-deftest test-vidfile ()
   (let* ((v1 (make-vidfile (file-from-sc-dir
                             "tests/test-videos/SampleVideo_720x480_1mb.mp4")))

@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    19th March 2024, Heidhausen, Germany
 ;;;
-;;; $$ Last modified:  12:20:44 Thu Mar 21 2024 CET
+;;; $$ Last modified:  17:37:47 Tue Apr 16 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -152,7 +152,8 @@
         (progn
           (when warn
             (warn "vidfile::video-file-p: ffprobe command not available or ~
-                   failed; ~%trying via file name extension only (~a)." path))
+                   failed; ~%trying via file name extension only if allowed ~
+                   (~a)." path))
           (when allow-just-extension
             (video-file-extension-p path))))))
 

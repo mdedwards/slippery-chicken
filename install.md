@@ -188,6 +188,8 @@ file depends on the implementation you are using. With SBCL, for example, it is
 Add the following line to the init file:
 
 ```lisp
+(ql:quickload :cmn) ;; if you're using it
+(ql:quickload :clm) ;; if you're using it
 (ql:quickload :slippery-chicken)
 ```
 
@@ -422,6 +424,8 @@ to your init file:
 
 
 ```lisp
+(ql:quickload :cmn) ;; if you're using it
+(ql:quickload :clm) ;; if you're using it
 (ql:quickload :slippery-chicken)
 ```
 

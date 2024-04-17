@@ -185,7 +185,7 @@ file depends on the implementation you are using. With SBCL, for example, it is
 `~/.sbclrc` by default, whereas Clozure CL uses `~/ccl-init.lisp` or
 `~/.ccl-init.lisp`.
 
-Add the following line to the init file:
+Add the following lines to the init file:
 
 ```lisp
 (ql:quickload :cmn) ;; if you're using it
@@ -419,7 +419,7 @@ chicken. It is recommended to do this via the init file of your Common Lisp
 implementation which will be loaded and evaluated when you start your Common
 Lisp interpreter. The name and location of your init file depends on the
 implementation. On SBCL, for example, it is `~/.sbclrc` by default, whereas
-Clozure CL uses `~/ccl-init.lisp` or `~/.ccl-init.lisp`. Add the following line
+Clozure CL uses `~/ccl-init.lisp` or `~/.ccl-init.lisp`. Add the following lines
 to your init file:
 
 

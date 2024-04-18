@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified:  14:58:59 Fri Mar 22 2024 CET
+;;; $$ Last modified:  13:17:17 Thu Apr 18 2024 CEST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -176,7 +176,9 @@
   (declare (special *slippery-chicken-get-spectrum-last-result*))
   (declare (special *slippery-chicken-get-spectrum-peak-amps*))
   (declare (special *slippery-chicken-get-spectrum-peak-freqs*))
+  ;; (print start-analysis)
   ;; Make sure the argument to order-by is acceptable.
+  (setq order-by (sc::rm-package order-by :clm))
   (when (not (or (eq order-by 'freq) (eq order-by 'amp)))
     (error 
      "get-spectrum: Argument to :order-by must be either 'freq or 'amp."))

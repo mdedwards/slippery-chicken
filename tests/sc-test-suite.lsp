@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:00:39 Thu Apr 18 2024 CEST
+;;; $$ Last modified:  13:41:58 Thu Apr 18 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8395,9 +8395,9 @@
           (sfa4 (msf 2 4))
           (sfa5 (msf 2 5))
           (sfa6 (msf 2 6))
-           ;; MDE Mon May 30 19:15:11 2022, Heidhausen -- we've now changed the
-           ;; auotocorrelation routine to sample 200ms. check this works with
-           ;; sines
+          ;; MDE Mon May 30 19:15:11 2022, Heidhausen -- we've now changed the
+          ;; auotocorrelation routine to sample 200ms. check this works with
+          ;; sines
           (matt1 (msf 1 "matt-sines" .1))
           (matt2 (msf 1 "matt-sines" 7.2))
           (matt3 (msf 1 "matt-sines" 12.5))
@@ -8406,8 +8406,8 @@
         ;; MDE Tue Feb  7 17:10:45 2023, Heidhausen
         ;; (print (list (centroid sfa4) (centroid sfa5) (centroid sfa6)))
         (if (fboundp 'clm::scentroid)
-            (> (centroid sfa4) (centroid sfa5) (centroid sfa6))
-            t)
+          (> (centroid sfa4) (centroid sfa5) (centroid sfa6))
+          t)
         ;; the lowest partial shown in glisseq is 3x this so the percussive
         ;; nature is confusing the algo. still at least there's a relationship
         (check-it 178 sf1)
@@ -8420,8 +8420,28 @@
         (check-it 201 matt1)
         (check-it 401 matt2)
         (check-it 604 matt3)
-        (check-it 802 matt4)))))
-
+        (check-it 802 matt4)
+        ;; MDE Thu Apr 18 12:51:36 2024, Heidhausen -- tack on some tests of
+        ;; the new spectrum method 
+        (equal-within-tolerance
+         531.953 (first (spectrum sf2 :start-analysis .2)) .001)
+        (equal-within-tolerance
+         572.625 (first (spectrum sf2 :start-analysis 1.2)) .001)
+        (equal-within-tolerance
+         656.881 (first (spectrum sf4 :start-analysis 0.1)) .001)
+        (equal-within-tolerance
+         .0995295
+         (first (nth-value 1 (spectrum sf4 :start-analysis 0.1
+                                           :order-by 'freq))))
+        (equal-within-tolerance
+         1.0
+         (first (nth-value 1 (spectrum sf4 :start-analysis 0.1))))
+        (equal-within-tolerance
+         .19595548
+         (second (nth-value 1 (spectrum sf4 :start-analysis 0.3))))
+        (equal-within-tolerance
+         629.817 (first (spectrum sf4 :start-analysis 0.1 :order-by 'freq))
+         .001)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ensemble tests

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  18:03:29 Tue Apr 16 2024 CEST
+;;; $$ Last modified:  13:45:04 Thu Apr 18 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -421,6 +421,37 @@ T
   (let ((midi (funcall name-fun (pathname-name (path sf)))))
     (when midi
       (setf (frequency sf) (midi-to-freq midi)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sndfile/spectrum
+;;; DATE
+;;; 18th April 2024
+;;; 
+;;; DESCRIPTION
+;;; This is a simple convenience method to access the get-spectrum function
+;;; defined in get-spectrum.lsp 
+;;; 
+;;; ARGUMENTS
+;;; - the sndfile object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; any keyword arguments that the get-spectrum function (get-spectrum.lsp) can
+;;; handle. E.g. :start-analysis 0.1 (seconds) or :order-by 'freq or 'amp
+;;; 
+;;; RETURN VALUE
+;;; two values: a list of the frequencies detected and a list of their
+;;; amplitudes. The ordering of the lists depends on the :order-by keyword
+;;; argment (see above).
+;;; 
+;;; SYNOPSIS
+#+clm
+(defmethod spectrum ((sf sndfile) &rest keyargs &key &allow-other-keys)
+;;; ****
+  (get-clm-ins 'clm::spec-an "get-spectrum.lsp"
+               cl-user::+slippery-chicken-src-path+)
+  (apply #'clm::get-spectrum
+         (cons (path sf) (append keyargs '(:perform-new-analysis? t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sndfile/centroid

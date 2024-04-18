@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:50:28 Tue Apr 16 2024 CEST
+;;; $$ Last modified:  12:00:39 Thu Apr 18 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8306,7 +8306,8 @@
                cl-user::+slippery-chicken-home-dir+ 
                sf))
 
-;;; LF 2024-03-17 19:40:58
+;;;  LF 2024-03-17 19:40:58
+#+(or clm ffprobe)
 (sc-deftest test-sndfile-get-sound-info ()
   (let ((info1 (get-sound-info (get-test-sf-path "tests/pink5s.wav")))
         (info2 (get-sound-info (get-test-sf-path "tests/pink5s.wav")
@@ -17962,9 +17963,12 @@ est)")))
             :rthm-seq-map rsm
             :snd-output-dir "/tmp/"
             :sndfile-palette
+            #+(or clm ffprobe)
             `(((grp-1
                 (test-sndfile-1.aiff test-sndfile-2.aiff test-sndfile-3.aiff)))
-              (,(file-from-sc-dir "tests/test-sndfiles-dir-1/"))))))
+              (,(file-from-sc-dir "tests/test-sndfiles-dir-1/")))
+            #-(or clm ffprobe)
+            nil)))
     (sc-test-check
       ;; not much to check other than that subsections work
       (= 29 (num-bars mini)))))
@@ -21078,10 +21082,13 @@ est)")))
                        (3 (1 1 1 1 1 1 1)))
             :tempo-map '((1 (q 60)))
             :sndfile-palette
+            #+(or clm ffprobe)
             `(((grp-1
                 (test-sndfile-1.aiff test-sndfile-2.aiff
                                      test-sndfile-3.aiff)))
               (,(file-from-sc-dir "tests/test-sndfiles-dir-1/")))
+            #-(or clm ffprobe)
+            nil
             :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
                                     :pitch-seq-palette ((1 (2) 3))))
                                 (2 ((((4 4) (q) e (s) s h))
@@ -21097,8 +21104,9 @@ est)")))
                             (3 ((pno (1 2 1 2 1 2 1))
                                 (vln (1 2 1 2 1 2 1))))))))
     (sc-test-check
-      ;;  MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
+      ;; MDE Tue Nov 28 20:13:14 2023, Heidhausen -- try reaper-play
       ;; with this too
+      #+(or clm ffprobe)
       (reaper-play mini 1 nil 'grp-1 :check-overwrite nil :min-channels 4
                                      :tracks-per-player 5)
       (multiple-value-bind (low high)

@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified:  13:17:17 Thu Apr 18 2024 CEST
+;;; $$ Last modified:  10:17:28 Fri Apr 19 2024 CEST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;

@@ -206,9 +206,9 @@ your system, by appending the respective lines to your CL init file:
 
 ```lisp
 # for example...
-(set-sc-config 'lilypond-command "/opt/homebrew/bin/lilypond")
-(set-sc-config 'ffprobe-command "/opt/homebrew/bin/ffprobe")
-(set-sc-config 'csound-command "/opt/homebrew/bin/csound")
+(sc:set-sc-config 'lilypond-command "/opt/homebrew/bin/lilypond")
+(sc:set-sc-config 'ffprobe-command "/opt/homebrew/bin/ffprobe")
+(sc:set-sc-config 'csound-command "/opt/homebrew/bin/csound")
 ```
 
 You should be able to use the slippery-chicken package in your Common Lisp REPL.
@@ -462,9 +462,9 @@ Common Lisp init file, but must be added after the commands which load
 slippery-chicken and its dependencies (see above).
 
 ```lisp
-(set-sc-config 'lilypond-command "/opt/homebrew/bin/lilypond")
-(set-sc-config 'ffprobe-command "/opt/homebrew/bin/ffprobe")
-(set-sc-config 'csound-command "/opt/homebrew/bin/csound")
+(sc:set-sc-config 'lilypond-command "/opt/homebrew/bin/lilypond")
+(sc:set-sc-config 'ffprobe-command "/opt/homebrew/bin/ffprobe")
+(sc:set-sc-config 'csound-command "/opt/homebrew/bin/csound")
 ```
 
 To find out where a particular program is, you can call e.g. `which ffprobe`

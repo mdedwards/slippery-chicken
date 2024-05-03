@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  21:06:54 Thu Nov  9 2023 CET
+;;; $$ Last modified:  13:12:55 Fri May  3 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -970,7 +970,10 @@ data: (
 ;;;   will be a morph structure. See below for an example. Default = NIL. 
 ;;; - T or NIL to make the morph first go down from item2 to item1 (mainly used
 ;;;   by fibonacci-transitions). This can also be an envelope (see
-;;;   fibonacci-transitions for details). Default = NIL. 
+;;;   fibonacci-transitions for details). Default = NIL.
+;;;
+;;; TAGS
+;;; transitions
 ;;;
 ;;; RETURN VALUE 
 ;;; A list.

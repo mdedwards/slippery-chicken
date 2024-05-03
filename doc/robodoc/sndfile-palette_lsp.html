@@ -33,24 +33,24 @@
 
 
 <a name="palette2fsndfile2dpalette"></a>
-<a name="robo309"></a><h2 class=robodoc>palette/sndfile-palette [ Classes ]</h2>
+<a name="robo315"></a><h2 class=robodoc>palette/sndfile-palette [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo415">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo421">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>sndfile-palette</strong>
 
  File:             <a href="#robo_top_of_doc">sndfile-palette.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo620">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
-                   <a href="./palette_lsp.html#robo415">palette</a> -&gt; <strong>sndfile-palette</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo629">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo113">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
+                   <a href="./palette_lsp.html#robo421">palette</a> -&gt; <strong>sndfile-palette</strong>
 
- Version:          1.0.12
+ Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
  Purpose:          Implementation of the <strong>sndfile-palette</strong> class, which is a
-                   simple <a href="./palette_lsp.html#robo415">palette</a> that checks that all the sound files given
+                   simple <a href="./palette_lsp.html#robo421">palette</a> that checks that all the sound files given
                    in a list for each id exist.  See comments in methods for
                    limitations and special features of this class.
 
@@ -58,22 +58,22 @@
 
  Creation date:    18th March 2001
 
- $$ Last modified:  08:26:30 Thu Feb  1 2024 CET
+ $$ Last modified:  12:25:25 Thu Mar 21 2024 CET
 
  SVN ID: $Id$
 </pre>
 
 
 <a name="sndfile2dpalette2ffind2dsndfile"></a>
-<a name="robo857"></a><h2 class=robodoc>sndfile-palette/find-sndfile [ Methods ]</h2>
+<a name="robo865"></a><h2 class=robodoc>sndfile-palette/find-sndfile [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Return the full directory path and file name of a specified sound file,
  from within the directories given in the PATHS slot.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo309">sndfile-palette</a> object.
+<pre> - A <a href="#robo315">sndfile-palette</a> object.
  - The name of a sound file from within that object. This can be a string or
    a symbol. Unless it is given as a string, it will be handled as a symbol
    and will be converted to lowercase. Inclusion of the file extension is
@@ -84,77 +84,77 @@
  as a string.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((msfp (<a href="#robo862">make-sfp</a> 'sfp-test 
-                      '((<a href="./sndfile_lsp.html#robo294">sndfile</a>-group-1
-                         (test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-1))
-                        (<a href="./sndfile_lsp.html#robo294">sndfile</a>-group-2
-                         (test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-2 test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-3 
-                          (test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-4 :frequency 261.61)))
-                        (<a href="./sndfile_lsp.html#robo294">sndfile</a>-group-3
-                         ((test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-5 :start 0.006 :end 0.182) 
-                          test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-6)))
+<pre class="source">(let ((msfp (<a href="#robo870">make-sfp</a> 'sfp-test 
+                      '((<a href="./sndfile_lsp.html#robo299">sndfile</a>-group-1
+                         (test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-1))
+                        (<a href="./sndfile_lsp.html#robo299">sndfile</a>-group-2
+                         (test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-2 test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-3 
+                          (test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-4 :frequency 261.61)))
+                        (<a href="./sndfile_lsp.html#robo299">sndfile</a>-group-3
+                         ((test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-5 :start 0.006 :end 0.182) 
+                          test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-6)))
                       :paths
                       '("/path/to/sndfiles-dir-1"
                         "/path/to/sndfiles-dir-2"))))
- (<strong>find-sndfile</strong> msfp 'test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-4))
+ (<strong>find-sndfile</strong> msfp 'test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-4))
 
-=&gt; "/path/to/sndfiles-dir-2/test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-4.aiff"
+=&gt; "/path/to/sndfiles-dir-2/test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-4.aiff"
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>find-sndfile</strong> ((sfp <a href="./sndfile_lsp.html#robo294">sndfile</a>-<a href="./palette_lsp.html#robo415">palette</a>) <a href="./sndfile_lsp.html#robo294">sndfile</a>)
+<pre class="source">(defmethod <strong>find-sndfile</strong> ((sfp <a href="./sndfile_lsp.html#robo299">sndfile</a>-<a href="./palette_lsp.html#robo421">palette</a>) <a href="./sndfile_lsp.html#robo299">sndfile</a>)
 </pre>
 
 
 <a name="sndfile2dpalette2fget2dnearest"></a>
-<a name="robo858"></a><h2 class=robodoc>sndfile-palette/get-nearest [ Methods ]</h2>
+<a name="robo866"></a><h2 class=robodoc>sndfile-palette/get-nearest [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the <a href="./sndfile_lsp.html#robo294">sndfile</a> whose frequency slot is <a href="./utilities_lsp.html#robo956">nearest</a> to the first argument.
+<pre> Get the <a href="./sndfile_lsp.html#robo299">sndfile</a> whose frequency slot is <a href="./utilities_lsp.html#robo967">nearest</a> to the first argument.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the frequency we're looking for, in Hertz (a number)
- - the <a href="#robo309">sndfile-palette</a> object we'll search
+ - the <a href="#robo315">sndfile-palette</a> object we'll search
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - the IDs of the <a href="./sndfile_lsp.html#robo294">sndfile</a> groups we'll search. Either a list of ids or a
+<pre> - the IDs of the <a href="./sndfile_lsp.html#robo299">sndfile</a> groups we'll search. Either a list of ids or a
  single id. If NIL then all groups will be searched. Default = NIL.
- - if more than one <a href="./sndfile_lsp.html#robo294">sndfile</a> is very close in frequency, select one at random
- (see also the <a href="#robo859">get-nearest-by-freq</a> function)
+ - if more than one <a href="./sndfile_lsp.html#robo299">sndfile</a> is very close in frequency, select one at random
+ (see also the <a href="#robo867">get-nearest-by-freq</a> function)
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the <a href="./utilities_lsp.html#robo956">nearest</a> <a href="./sndfile_lsp.html#robo294">sndfile</a> object
+<pre> the <a href="./utilities_lsp.html#robo967">nearest</a> <a href="./sndfile_lsp.html#robo299">sndfile</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-nearest</strong> (freq (sfp <a href="./sndfile_lsp.html#robo294">sndfile</a>-<a href="./palette_lsp.html#robo415">palette</a>) &amp;optional ids random)
+<pre class="source">(defmethod <strong>get-nearest</strong> (freq (sfp <a href="./sndfile_lsp.html#robo299">sndfile</a>-<a href="./palette_lsp.html#robo421">palette</a>) &amp;optional ids random)
 </pre>
 
 
 <a name="sndfile2dpalette2fget2dnearest2dby2dfreq"></a>
-<a name="robo859"></a><h2 class=robodoc>sndfile-palette/get-nearest-by-freq [ Functions ]</h2>
+<a name="robo867"></a><h2 class=robodoc>sndfile-palette/get-nearest-by-freq [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> October 1st 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Given a frequency and a list of <a href="./sndfile_lsp.html#robo294">sndfile</a> objects, return the <a href="./sndfile_lsp.html#robo294">sndfile</a> from
+<pre> Given a frequency and a list of <a href="./sndfile_lsp.html#robo299">sndfile</a> objects, return the <a href="./sndfile_lsp.html#robo299">sndfile</a> from
  the list whose frequency is closest to the first argument.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - a frequency in Hertz (number)
- - a simple list of <a href="./sndfile_lsp.html#robo294">sndfile</a> objects, such as that contained in the data slot
-  of a <a href="#robo309">sndfile-palette</a> group.
+ - a simple list of <a href="./sndfile_lsp.html#robo299">sndfile</a> objects, such as that contained in the data slot
+  of a <a href="#robo315">sndfile-palette</a> group.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether a random file should be chosen when there are
-   several sndfiles with the same frequency. (NB the function <a href="./permutations_lsp.html#robo319">random-rep</a> will
-   be used so if you wanted repeatable results call (<a href="./permutations_lsp.html#robo319">random-rep</a> 1 t) in order
-   to <a href="./l-for-lookup_lsp.html#robo285">reset</a> the random seed before calling <a href="./slippery-chicken_lsp.html#robo779">clm-play</a> or whatever context uses
+   several sndfiles with the same frequency. (NB the function <a href="./permutations_lsp.html#robo325">random-rep</a> will
+   be used so if you wanted repeatable results call (<a href="./permutations_lsp.html#robo325">random-rep</a> 1 t) in order
+   to <a href="./l-for-lookup_lsp.html#robo289">reset</a> the random seed before calling <a href="./slippery-chicken_lsp.html#robo788">clm-play</a> or whatever context uses
    this function.) Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the <a href="./utilities_lsp.html#robo956">nearest</a> <a href="./sndfile_lsp.html#robo294">sndfile</a> object
+<pre> the <a href="./utilities_lsp.html#robo967">nearest</a> <a href="./sndfile_lsp.html#robo299">sndfile</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>get-nearest-by-freq</strong> (freq sflist &amp;optional random)
@@ -162,9 +162,9 @@
 
 
 <a name="sndfile2dpalette2fget2dsndfiles"></a>
-<a name="robo860"></a><h2 class=robodoc>sndfile-palette/get-sndfiles [ Functions ]</h2>
+<a name="robo868"></a><h2 class=robodoc>sndfile-palette/get-sndfiles [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 5th September 2015, Edinburgh
 </pre>
@@ -205,29 +205,29 @@
 
 
 <a name="sndfile2dpalette2fkontakt2dto2dsfp"></a>
-<a name="robo861"></a><h2 class=robodoc>sndfile-palette/kontakt-to-sfp [ Functions ]</h2>
+<a name="robo869"></a><h2 class=robodoc>sndfile-palette/kontakt-to-sfp [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> October 2nd 2015, Edinburgh
  
  DESCRIPTION This function is only available on Mac OSX 64bit Intel machines
  and requires the nki executable which since version 1.0.6 comes with
- <a href="./slippery-chicken_lsp.html#robo617">slippery-chicken</a> (in the bin directory).
+ <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> (in the bin directory).
  
  Using the public-domain C programme "nki tool" from the Linux Sampler
  project (<a href="http://www.linuxsampler.org/nkitool/),">http://www.linuxsampler.org/nkitool/),</a> convert a Kontakt .nki
- sampler file to a <a href="#robo309">sndfile-palette</a> object. This will only include the sound
+ sampler file to a <a href="#robo315">sndfile-palette</a> object. This will only include the sound
  file and the MIDI note number it is mapped to, but it will mean that the
- <a href="./sndfile_lsp.html#robo294">sndfile</a> objects in the <a href="./palette_lsp.html#robo415">palette</a> include the correct frequency. So using such
- a <a href="#robo309">sndfile-palette</a> makes it possible to have <a href="./slippery-chicken_lsp.html#robo779">clm-play</a> act as a traditional
+ <a href="./sndfile_lsp.html#robo299">sndfile</a> objects in the <a href="./palette_lsp.html#robo421">palette</a> include the correct frequency. So using such
+ a <a href="#robo315">sndfile-palette</a> makes it possible to have <a href="./slippery-chicken_lsp.html#robo788">clm-play</a> act as a traditional
  sampler, though of course much more is possible too.
 
  The nki file could of course map more than one sample to any MIDI note
  (e.g. for handling different velocities). By default all of these could be
- included in the <a href="#robo309">sndfile-palette</a>, and the :snd-selector function passed to
- <a href="./slippery-chicken_lsp.html#robo779">clm-play</a> could select the correct file based on velocity, for
- instance. However, you may want to filter out some sound files. This is
+ included in the <a href="#robo315">sndfile-palette</a>, and the :snd-selector function passed to
+ <a href="./slippery-chicken_lsp.html#robo788">clm-play</a> could select the correct file based on velocity, for
+ instance. However, you may want to <a href="./rthm-seq_lsp.html#robo555">filter</a> out some sound files. This is
  where the :insist and :resist keyword arguments come in handy (see below).
 
  NB If you get the error message "zpipe: invalid or incomplete deflate data"
@@ -268,11 +268,11 @@
 
 
 <a name="sndfile2dpalette2fmake2dsfp"></a>
-<a name="robo862"></a><h2 class=robodoc>sndfile-palette/make-sfp [ Functions ]</h2>
+<a name="robo870"></a><h2 class=robodoc>sndfile-palette/make-sfp [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo309">sndfile-palette</a> object. This object is a simple <a href="./palette_lsp.html#robo415">palette</a> which checks
+<pre> Make a <a href="#robo315">sndfile-palette</a> object. This object is a simple <a href="./palette_lsp.html#robo421">palette</a> which checks
  to make sure that all of the sound files in a given list exist for each
  given ID.
 
@@ -280,16 +280,16 @@
  extension. These can be given using the optional keyword arguments &lt;paths&gt;
  and &lt;extensions&gt;.
 
- NB Although this class is a <a href="./palette_lsp.html#robo415">palette</a> and therefore a subclass of
- <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a>, the sound lists in this case cannot be nested beyond
+ NB Although this class is a <a href="./palette_lsp.html#robo421">palette</a> and therefore a subclass of
+ <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a>, the sound lists in this case cannot be nested beyond
  a depth of two (as in example below).  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An ID for the <a href="./palette_lsp.html#robo415">palette</a>.
+<pre> - An ID for the <a href="./palette_lsp.html#robo421">palette</a>.
  - A list of lists that contains IDs for the names of one or more groups of
    sound files, each paired with a list of one or more names of existing
    sound files. The sound file names themselves can be paired with keywords
-   from the <a href="./sndfile_lsp.html#robo294">sndfile</a> class, such as :start, :end, and :frequency, to define
+   from the <a href="./sndfile_lsp.html#robo299">sndfile</a> class, such as :start, :end, and :frequency, to define
    and describe segments of a given sound file.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -297,10 +297,10 @@
  - :paths. A list of one or more paths to where the sound files are located.
  - :extensions. A list of one or more sound file extensions for the
    specified sound files. The default initialization for this slot of the
-   <a href="#robo309">sndfile-palette</a> already contains ("wav" "aiff" "aif" "snd"), so this
+   <a href="#robo315">sndfile-palette</a> already contains ("wav" "aiff" "aif" "snd"), so this
    argument can often be left unspecified.
  - :auto-freq. whether to do automatic frequency detection on the sound
-   files. T would mean using a <a href="./pitch_lsp.html#robo290">pitch</a> detection routine, or a function can
+   files. T would mean using a <a href="./pitch_lsp.html#robo295">pitch</a> detection routine, or a function can
    also be passed, whereupon it will be called with the path slot as
    argument (the idea is that the fundamental can be extracted from the file
    name). Default = NIL.
@@ -313,14 +313,14 @@
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((msfp (<strong>make-sfp</strong> 'sfp-test 
-                      '((<a href="./sndfile_lsp.html#robo294">sndfile</a>-group-1
-                         (test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-1))
-                        (<a href="./sndfile_lsp.html#robo294">sndfile</a>-group-2
-                         (test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-2 test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-3 
-                          (test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-4 :frequency 261.61)))
-                        (<a href="./sndfile_lsp.html#robo294">sndfile</a>-group-3
-                         ((test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-5 :start 0.006 :end 0.182) 
-                          test-<a href="./sndfile_lsp.html#robo294">sndfile</a>-6)))
+                      '((<a href="./sndfile_lsp.html#robo299">sndfile</a>-group-1
+                         (test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-1))
+                        (<a href="./sndfile_lsp.html#robo299">sndfile</a>-group-2
+                         (test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-2 test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-3 
+                          (test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-4 :frequency 261.61)))
+                        (<a href="./sndfile_lsp.html#robo299">sndfile</a>-group-3
+                         ((test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-5 :start 0.006 :end 0.182) 
+                          test-<a href="./sndfile_lsp.html#robo299">sndfile</a>-6)))
                       :paths '("/path/to/sound-files-dir-1/"
                                "/path/to/sound-files-dir-2/")))))
 </pre>
@@ -331,14 +331,14 @@
 
 
 <a name="sndfile2dpalette2fmake2dsfp2dfrom2dfolder"></a>
-<a name="robo863"></a><h2 class=robodoc>sndfile-palette/make-sfp-from-folder [ Functions ]</h2>
+<a name="robo871"></a><h2 class=robodoc>sndfile-palette/make-sfp-from-folder [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 5th September 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Makes a <a href="#robo309">sndfile-palette</a> object from the sound files found in a specific
+<pre> Makes a <a href="#robo315">sndfile-palette</a> object from the sound files found in a specific
  folder (directory) on the file system. Allows any arbitrary levels of
  subfolders with the proviso that they'll be converted to a flat list, using
  the subfolders as tags (e.g. dir/subdir1/subdir2 becomes
@@ -364,7 +364,7 @@
    be in the file name. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="#robo309">sndfile-palette</a> object
+<pre> a <a href="#robo315">sndfile-palette</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <p class="item_name">EXAMPLE</p>
@@ -381,7 +381,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 16, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 16, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: AUTO, tag: NIL, 
 data: (
@@ -389,11 +389,11 @@ LINKED-NAMED-OBJECT: previous: NIL, this: (1), next: (10)
 NAMED-OBJECT: id: 1, tag: NIL, 
 data: (
 
-SNDFILE-EXT: use: T, cue-num: 2, <a href="./pitch_lsp.html#robo290">pitch</a>: -1, <a href="./pitch_lsp.html#robo290">pitch</a>-curve: -1, bandwidth: -1, 
+SNDFILE-EXT: use: T, cue-num: 2, <a href="./pitch_lsp.html#robo295">pitch</a>: -1, <a href="./pitch_lsp.html#robo295">pitch</a>-curve: -1, bandwidth: -1, 
              bandwidth-curve: -1, continuity: -1, continuity-curve: -1, 
              weight: -1, weight-curve: -1, energy: -1, energy-curve: -1, 
              harmonicity: -1, harmonicity-curve: -1, volume: -1, 
-             volume-curve: -1, loop-it: NIL, bitrate: 24, srate: 96000, 
+             volume-curve: -1, loop-it: NIL, bit-depth: 24, srate: 96000, 
              num-frames: 1719753, bytes: 5159314, group-id: (1)
              followers: NIL
 
@@ -405,16 +405,16 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 ...
 |#
 (defun <strong>make-sfp-from-folder</strong> (folder &amp;key skip auto-freq insist resist
-                                      (default-group 'default-group))
+                                         (default-group 'default-group))
 </pre>
 
 
 <a name="sndfile2dpalette2fmake2dsfp2dfrom2dgroups2din2dwavelab2dmarker2dfile"></a>
-<a name="robo864"></a><h2 class=robodoc>sndfile-palette/make-sfp-from-groups-in-wavelab-marker-file [ Functions ]</h2>
+<a name="robo872"></a><h2 class=robodoc>sndfile-palette/make-sfp-from-groups-in-wavelab-marker-file [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Automatically <a href="./wolfram_lsp.html#robo1011">generate</a> a <a href="#robo309">sndfile-palette</a> object using the specified sound
+<pre> Automatically <a href="./wolfram_lsp.html#robo1022">generate</a> a <a href="#robo315">sndfile-palette</a> object using the specified sound
  file from grouping defined in the specified wavelab marker file.
 
  The &lt;marker-file&gt; argument can be passed as a list of marker files, in
@@ -452,7 +452,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 <pre class="source">(<strong>make-sfp-from-groups-in-wavelab-marker-file</strong> 
  "/path/to/24-7.mrk"
  "24-7"
- :paths '("/path/to/<a href="./sndfile_lsp.html#robo294">sndfile</a>/directory/")
+ :paths '("/path/to/<a href="./sndfile_lsp.html#robo299">sndfile</a>/directory/")
  :sampling-rate 44100
  :extensions '("wav"))
 
@@ -469,7 +469,7 @@ tapping: 4 sounds
 splinter: 2 sounds
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>make-sfp-from-groups-in-wavelab-marker-file</strong> (marker-file <a href="./sndfile_lsp.html#robo294">sndfile</a> 
+<pre class="source">(defun <strong>make-sfp-from-groups-in-wavelab-marker-file</strong> (marker-file <a href="./sndfile_lsp.html#robo299">sndfile</a> 
                                                     &amp;key
                                                     paths
                                                     extensions
@@ -480,26 +480,26 @@ splinter: 2 sounds
 
 
 <a name="sndfile2dpalette2fmake2dsfp2dfrom2dreaper2dmarkers"></a>
-<a name="robo865"></a><h2 class=robodoc>sndfile-palette/make-sfp-from-reaper-markers [ Functions ]</h2>
+<a name="robo873"></a><h2 class=robodoc>sndfile-palette/make-sfp-from-reaper-markers [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> July 2nd 2021
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo309">sndfile-palette</a> object by reading a <a href="./reaper_lsp.html#robo631">reaper-file</a> with
+<pre> Create a <a href="#robo315">sndfile-palette</a> object by reading a <a href="./reaper_lsp.html#robo640">reaper-file</a> with
  specially-named markers. This is specifically aimed at the situation where
  you want to use one longer sound file in many segments, rather than lots of
  different sound files. We search the reaper file for all markers whose names
- begin with <a href="./slippery-chicken_lsp.html#robo779">clm-play</a>. A marker which begins a sound file segment will then
+ begin with <a href="./slippery-chicken_lsp.html#robo788">clm-play</a>. A marker which begins a sound file segment will then
  include the group name after a after a further hyphen e.g. the marker will
  be named clm-play-perc or clm-play-string-attack (in these cases the
- <a href="#robo309">sndfile-palette</a> will contain groups named perc and string-attack. A marker
- with the name <a href="./slippery-chicken_lsp.html#robo779">clm-play</a> will indicate the end of a <a href="./sndfile_lsp.html#robo294">sndfile</a> segment, and is
+ <a href="#robo315">sndfile-palette</a> will contain groups named perc and string-attack. A marker
+ with the name <a href="./slippery-chicken_lsp.html#robo788">clm-play</a> will indicate the end of a <a href="./sndfile_lsp.html#robo299">sndfile</a> segment, and is
  required. All other markers in the reaper file will be ignored.
 
  (N.B. In all, this is a little different from the funtion which creates
- <a href="./sndfile_lsp.html#robo294">sndfile</a>-palettes from wavelap-marker files but that is a different situation
+ <a href="./sndfile_lsp.html#robo299">sndfile</a>-palettes from wavelap-marker files but that is a different situation
  (marker files, not wavelab files in general, as here with reaper files) and
  had a slightly different goal at the time, creating groups in bundles rather
  than in names. So we're not reproducing functionality here with reaper files
@@ -513,31 +513,31 @@ splinter: 2 sounds
    playing. (string)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - the default frequency of the sound files: either a <a href="./pitch_lsp.html#robo290">pitch</a> symbol, a
-   frequency in Hertz, 'detect for autocorrelation <a href="./pitch_lsp.html#robo290">pitch</a> detection, or a
-   function to be called to e.g. extract the <a href="./pitch_lsp.html#robo290">pitch</a> from the file name or use
-   another <a href="./pitch_lsp.html#robo290">pitch</a> detection method. Default = 'C4 (<a href="./utilities_lsp.html#robo951">middle</a> C)
+<pre> - the default frequency of the sound files: either a <a href="./pitch_lsp.html#robo295">pitch</a> symbol, a
+   frequency in Hertz, 'detect for autocorrelation <a href="./pitch_lsp.html#robo295">pitch</a> detection, or a
+   function to be called to e.g. extract the <a href="./pitch_lsp.html#robo295">pitch</a> from the file name or use
+   another <a href="./pitch_lsp.html#robo295">pitch</a> detection method. Default = 'C4 (<a href="./utilities_lsp.html#robo962">middle</a> C)
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="#robo309">sndfile-palette</a> object with appropriate groups as read from the reaper
+<pre> a <a href="#robo315">sndfile-palette</a> object with appropriate groups as read from the reaper
  file. 
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>make-sfp-from-reaper-markers</strong> (<a href="./reaper_lsp.html#robo631">reaper-file</a> sound-file &amp;optional
+<pre class="source">(defun <strong>make-sfp-from-reaper-markers</strong> (<a href="./reaper_lsp.html#robo640">reaper-file</a> sound-file &amp;optional
                                                               (auto-freq 'c4))
 </pre>
 
 
 <a name="sndfile2dpalette2fmake2dsfp2dfrom2dwavelab2dmarker2dfile"></a>
-<a name="robo866"></a><h2 class=robodoc>sndfile-palette/make-sfp-from-wavelab-marker-file [ Functions ]</h2>
+<a name="robo874"></a><h2 class=robodoc>sndfile-palette/make-sfp-from-wavelab-marker-file [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Automatically create a <a href="#robo309">sndfile-palette</a> object from the specified wavelab
+<pre> Automatically create a <a href="#robo315">sndfile-palette</a> object from the specified wavelab
  marker file and the specified sound file (from which the marker file must
  have been generated).
 
- The function will produce a <a href="#robo309">sndfile-palette</a> object with multiple groups,
+ The function will produce a <a href="#robo315">sndfile-palette</a> object with multiple groups,
  each of which consists of the number of sound file segments specified using
  the :snds-per-group argument (defaults to 8). By default the segments will
  be collected into the groups in chronological order. If the optional
@@ -582,12 +582,12 @@ splinter: 2 sounds
  - :warn-not-found. T or NIL to indicate whether to print a warning to the
    listener if the specified sound file is not found. T = print a
    warning. Default = NIL.
- - :name. The name for the overall <a href="#robo309">sndfile-palette</a> and the base name for
+ - :name. The name for the overall <a href="#robo315">sndfile-palette</a> and the base name for
     each group within (these will have a suffix that is an auto-incrementing
     number e.g. 'auto would become 'auto1 'auto2 etc.).  Default = 'auto.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo309">sndfile-palette</a> object.
+<pre> A <a href="#robo315">sndfile-palette</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>make-sfp-from-wavelab-marker-file</strong> 
@@ -609,7 +609,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found NIL
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 8, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 8, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: AUTO, tag: NIL, 
 data: (
@@ -627,7 +627,7 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
 [...]
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>make-sfp-from-wavelab-marker-file</strong> (marker-file <a href="./sndfile_lsp.html#robo294">sndfile</a> 
+<pre class="source">(defun <strong>make-sfp-from-wavelab-marker-file</strong> (marker-file <a href="./sndfile_lsp.html#robo299">sndfile</a> 
                                           &amp;key
                                           (snds-per-group 8)
                                           (random-every 999999) ;; i.e. never
@@ -641,9 +641,9 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
 
 
 <a name="sndfile2dpalette2fset2dfrequency2dfrom2dfilename"></a>
-<a name="robo867"></a><h2 class=robodoc>sndfile-palette/set-frequency-from-filename [ Methods ]</h2>
+<a name="robo875"></a><h2 class=robodoc>sndfile-palette/set-frequency-from-filename [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo309">sndfile-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> October 1st 2015, Edinburgh
 </pre>
@@ -651,18 +651,18 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
 <pre> Set the frequency slot of every sound file object in the palate to a value
  extracted from the file name. This is intended but of course not restricted
  to palettes created from sample libraries, where, as is often the case, the
- file name of each sample contains the <a href="./pitch_lsp.html#robo290">pitch</a> of the file. For example, from
+ file name of each sample contains the <a href="./pitch_lsp.html#robo295">pitch</a> of the file. For example, from
  the Akoustik Piano sample library we have the file
  Stein-R(A1)-V(220)-dB(2446)-T(MF)-M(123)-P(404-03-01).wav. In this case the
- A1 in the first parentheses indicate the <a href="./pitch_lsp.html#robo290">pitch</a>. By writing and passing a
- short parsing function to read the <a href="./pitch_lsp.html#robo290">pitch</a> out of such a file name we can
- easily process each sound file in the <a href="./palette_lsp.html#robo415">palette</a>. See akoustik-piano-name
+ A1 in the first parentheses indicate the <a href="./pitch_lsp.html#robo295">pitch</a>. By writing and passing a
+ short parsing function to read the <a href="./pitch_lsp.html#robo295">pitch</a> out of such a file name we can
+ easily process each sound file in the <a href="./palette_lsp.html#robo421">palette</a>. See akoustik-piano-name
  below for an example of how to process such file names.
 
- See also <a href="#robo863">make-sfp-from-folder</a>.
+ See also <a href="#robo871">make-sfp-from-folder</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The sound file <a href="./palette_lsp.html#robo415">palette</a> object
+<pre> - The sound file <a href="./palette_lsp.html#robo421">palette</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> Keyword arguments:
@@ -670,26 +670,26 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
    wish to process.
  - :name-fun.The function for processing a single name. Of course the names
    must be consistent and each sound file must be able to be processed by
-   this single function. NB for reasons of similar usage in <a href="./spectra_lsp.html#robo883">get-spectra-al</a>
+   this single function. NB for reasons of similar usage in <a href="./spectra_lsp.html#robo893">get-spectra-al</a>
    (see <a href="./spectra_lsp.html#robo_top_of_doc">spectra.lsp</a>) this function actually must return the MIDI note number
-   (may be a floating point for <a href="./event_lsp.html#robo205">microtonal</a> applications), which is then
-   converted by the <a href="./sndfile_lsp.html#robo294">sndfile</a> class to a frequency in Hertz.
+   (may be a floating point for <a href="./event_lsp.html#robo209">microtonal</a> applications), which is then
+   converted by the <a href="./sndfile_lsp.html#robo299">sndfile</a> class to a frequency in Hertz.
  - :on-error. The function to be called when the name function cannot
    determine the frequency of the sound file. This could be #'error (the
    default), #'warn, or nil if nothing is to be done on failure.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo309">sndfile-palette</a> object after processing.
+<pre> The <a href="#robo315">sndfile-palette</a> object after processing.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>set-frequency-from-filename</strong>
-    ((sfp <a href="./sndfile_lsp.html#robo294">sndfile</a>-<a href="./palette_lsp.html#robo415">palette</a>)
+    ((sfp <a href="./sndfile_lsp.html#robo299">sndfile</a>-<a href="./palette_lsp.html#robo421">palette</a>)
      &amp;key groups (name-fun #'akoustik-piano-name) (on-error #'error))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/sndfile-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
+<p>Generated from ./../../src/sndfile-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-05-03 13:16:42</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -33,9 +33,9 @@
 
 
 <a name="bar2dholder2fchange2dpitches"></a>
-<a name="robo53"></a><h2 class=robodoc>bar-holder/change-pitches [ Methods ]</h2>
+<a name="robo55"></a><h2 class=robodoc>bar-holder/change-pitches [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo288">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo293">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Change the pitches in the specified bars to the specified new pitches. 
 
@@ -43,15 +43,15 @@
      are being changed.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo288">bar-holder</a> object (such as the PIECE slot within a <a href="./slippery-chicken_lsp.html#robo617">slippery-chicken</a>
+<pre> - A <a href="#robo293">bar-holder</a> object (such as the PIECE slot within a <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a>
   object).
- - The ID of the <a href="./player_lsp.html#robo291">player</a> whose part is to be changed.
+ - The ID of the <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> whose part is to be changed.
  - An integer that is the number of the first bar in which pitches are to be
    changed. 
  - A list of lists of note-name symbols, each sublist representing a
    consecutive bar and containing the same number of note-name symbols as
    there are rhythms in that bar. A NIL in these lists means no change is to
-   be made to the corresponding <a href="./rhythm_lsp.html#robo292">rhythm</a> or bar (see example below). NB: This
+   be made to the corresponding <a href="./rhythm_lsp.html#robo297">rhythm</a> or bar (see example below). NB: This
    method counts tied notes rather than just attacked notes.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -65,7 +65,7 @@
    indicators will use the last octave indicated; e.g. '((a3 b g cs4)). NB:
    This feature does not work with chords. Default = T.
  - :written.  T or NIL to indicate whether these are the written or sounding
-   notes for a transposing <a href="./instrument_lsp.html#robo289">instrument</a>. Default = NIL. 
+   notes for a transposing <a href="./instrument_lsp.html#robo294">instrument</a>. Default = NIL. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always returns T.
@@ -74,149 +74,149 @@
 <pre class="source">;;; NIL indicates that no change is to be made; this applies to single rhythms
 ;;; as well as entire bars.
 (let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo823">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo403">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
                      (vc (cello :midi-channel 2))))
-        :<a href="./set-palette_lsp.html#robo308">set-palette</a> '((1 ((c2 d2 e2 f2 g2 a2 b2 
+        :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((c2 d2 e2 f2 g2 a2 b2 
                                c3 d3 e3 f3 g3 a3 b3 
                                c4 d4 e4 f4 g4 a4 b4 c5))))
-        :<a href="./set-map_lsp.html#robo586">set-map</a> '((1 (1 1 1 1 1)))
-        :<a href="./rthm-seq-palette_lsp.html#robo307">rthm-seq-palette</a> '((1 ((((4 4) h q e (s) s))
-                                :<a href="./pitch-seq-palette_lsp.html#robo306">pitch-seq-palette</a> ((1 (2) 3 4)))))
-        :<a href="./rthm-seq-map_lsp.html#robo585">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
+        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e (s) s))
+                                :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 (2) 3 4)))))
+        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (<strong>change-pitches</strong> (<a href="./piece_lsp.html#robo56">piece</a> mini) 'cl 2 '((c4 d4 e4 f4)))
-  (<strong>change-pitches</strong> (<a href="./piece_lsp.html#robo56">piece</a> mini) 'vc 3 '((c3 d e f) nil (g3 nil b c4))))
+  (<strong>change-pitches</strong> (<a href="./piece_lsp.html#robo58">piece</a> mini) 'cl 2 '((c4 d4 e4 f4)))
+  (<strong>change-pitches</strong> (<a href="./piece_lsp.html#robo58">piece</a> mini) 'vc 3 '((c3 d e f) nil (g3 nil b c4))))
 
 =&gt; T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>change-pitches</strong> ((bh bar-holder) <a href="./player_lsp.html#robo291">player</a> start-bar new-pitches 
+<pre class="source">(defmethod <strong>change-pitches</strong> ((bh bar-holder) <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> start-bar new-pitches 
                            &amp;key (use-last-octave t) written)
 </pre>
 
 
 <a name="bar2dholder2fdelete2dall2dmarks"></a>
-<a name="robo54"></a><h2 class=robodoc>bar-holder/delete-all-marks [ Methods ]</h2>
+<a name="robo56"></a><h2 class=robodoc>bar-holder/delete-all-marks [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo288">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo293">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Delete all marks from the MARKS slots of all events in the specified
- measure range of a given <a href="#robo288">bar-holder</a> object and set the slot to NIL.
+ measure range of a given <a href="#robo293">bar-holder</a> object and set the slot to NIL.
 
  This method always applies to full bars.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo288">bar-holder</a> object.
+<pre> - A <a href="#robo293">bar-holder</a> object.
  - An integer that is the number of the first bar from which all marks are
    to be deleted.
  - An integer that is the number of consecutive bars including the first
    bar from which all marks are to be deleted.
- - The ID of the <a href="./player_lsp.html#robo291">player</a> from whose part the marks are to be deleted. 
+ - The ID of the <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> from whose part the marks are to be deleted. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always returns T.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo823">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo403">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
                      (vc (cello :midi-channel 2))))
-        :<a href="./set-palette_lsp.html#robo308">set-palette</a> '((1 ((c2 d2 e2 f2 g2 a2 b2 
+        :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((c2 d2 e2 f2 g2 a2 b2 
                                c3 d3 e3 f3 g3 a3 b3 
                                c4 d4 e4 f4 g4 a4 b4 c5))))
-        :<a href="./set-map_lsp.html#robo586">set-map</a> '((1 (1 1 1 1 1)))
-        :<a href="./rthm-seq-palette_lsp.html#robo307">rthm-seq-palette</a> '((1 ((((4 4) h q e (s) s))
-                                :<a href="./pitch-seq-palette_lsp.html#robo306">pitch-seq-palette</a> ((1 (2) 3 4))
+        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e (s) s))
+                                :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 (2) 3 4))
                                 :marks (a 1 s 2 te 3 as 4))))
-        :<a href="./rthm-seq-map_lsp.html#robo585">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (<strong>delete-all-marks</strong> (<a href="./piece_lsp.html#robo56">piece</a> mini) 2 2 'vc))
+  (<strong>delete-all-marks</strong> (<a href="./piece_lsp.html#robo58">piece</a> mini) 2 2 'vc))
 
 =&gt; T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>delete-all-marks</strong> ((bh bar-holder) start-bar <a href="./slippery-chicken_lsp.html#robo827">num-bars</a> <a href="./player_lsp.html#robo291">player</a>)
+<pre class="source">(defmethod <strong>delete-all-marks</strong> ((bh bar-holder) start-bar <a href="./slippery-chicken_lsp.html#robo835">num-bars</a> <a href="./slippery-chicken-edit_lsp.html#robo233">player</a>)
 </pre>
 
 
 <a name="bar2dholder2fget2dnote"></a>
-<a name="robo55"></a><h2 class=robodoc>bar-holder/get-note [ Methods ]</h2>
+<a name="robo57"></a><h2 class=robodoc>bar-holder/get-note [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo288">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo293">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the <a href="./event_lsp.html#robo438">event</a> object (or <a href="./pitch_lsp.html#robo290">pitch</a> object, if accessing a note within a
- <a href="./chord_lsp.html#robo619">chord</a>) from a specified bar and note within a given <a href="#robo288">bar-holder</a> object.
+<pre> Return the <a href="./event_lsp.html#robo444">event</a> object (or <a href="./pitch_lsp.html#robo295">pitch</a> object, if accessing a note within a
+ <a href="./chord_lsp.html#robo628">chord</a>) from a specified bar and note within a given <a href="#robo293">bar-holder</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo288">bar-holder</a> object (e.g. PIECE slot of a <a href="./slippery-chicken_lsp.html#robo617">slippery-chicken</a> object). 
+<pre> - A <a href="#robo293">bar-holder</a> object (e.g. PIECE slot of a <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> object). 
  - An integer that is the 1-based number of the bar from which the note is
    to be retrieved.
  - An integer or two-item list of integers that is the 1-based number of the
    note to retrieve within the specified bar. If an integer, the entire
-   <a href="./event_lsp.html#robo438">event</a> object is retrieved. A two-item list of integers is used to
-   retrieve a specific note from within a <a href="./chord_lsp.html#robo619">chord</a>, in the form '(2 1), where 2
-   is the second note (or non-<a href="./rhythm_lsp.html#robo292">rhythm</a> <a href="./event_lsp.html#robo438">event</a>) in the bar, and 1 is the first
-   note in the <a href="./chord_lsp.html#robo619">chord</a> counting from the bottom. NB: This argument also counts
+   <a href="./event_lsp.html#robo444">event</a> object is retrieved. A two-item list of integers is used to
+   retrieve a specific note from within a <a href="./chord_lsp.html#robo628">chord</a>, in the form '(2 1), where 2
+   is the second note (or non-<a href="./rhythm_lsp.html#robo297">rhythm</a> <a href="./event_lsp.html#robo444">event</a>) in the bar, and 1 is the first
+   note in the <a href="./chord_lsp.html#robo628">chord</a> counting from the bottom. NB: This argument also counts
    tied notes, not just attacked notes.
- - The ID of the <a href="./player_lsp.html#robo291">player</a> from whose part the note is to be retrieved.
+ - The ID of the <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> from whose part the note is to be retrieved.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether, when accessing a <a href="./pitch_lsp.html#robo290">pitch</a> in a <a href="./chord_lsp.html#robo619">chord</a>, to
-   return the written or sounding <a href="./pitch_lsp.html#robo290">pitch</a>. T = written. Default = NIL.
+<pre> - T or NIL to indicate whether, when accessing a <a href="./pitch_lsp.html#robo295">pitch</a> in a <a href="./chord_lsp.html#robo628">chord</a>, to
+   return the written or sounding <a href="./pitch_lsp.html#robo295">pitch</a>. T = written. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An <a href="./event_lsp.html#robo438">event</a> object, or single <a href="./pitch_lsp.html#robo290">pitch</a> object if accessing a note within a
- <a href="./chord_lsp.html#robo619">chord</a>. 
+<pre> An <a href="./event_lsp.html#robo444">event</a> object, or single <a href="./pitch_lsp.html#robo295">pitch</a> object if accessing a note within a
+ <a href="./chord_lsp.html#robo628">chord</a>. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo823">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo403">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
                      (vc (cello :midi-channel 2))))
-        :<a href="./set-palette_lsp.html#robo308">set-palette</a> '((1 ((c2 d2 e2 f2 g2 a2 b2 
+        :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((c2 d2 e2 f2 g2 a2 b2 
                                c3 d3 e3 f3 g3 a3 b3 
                                c4 d4 e4 f4 g4 a4 b4 c5))))
-        :<a href="./set-map_lsp.html#robo586">set-map</a> '((1 (1 1 1 1 1)))
-        :<a href="./rthm-seq-palette_lsp.html#robo307">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
-                                :<a href="./pitch-seq-palette_lsp.html#robo306">pitch-seq-palette</a> ((1 (2) 3 4 5)))))
-        :<a href="./rthm-seq-map_lsp.html#robo585">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
+        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
+                                :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 (2) 3 4 5)))))
+        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (print (<strong>get-note</strong> (<a href="./piece_lsp.html#robo56">piece</a> mini) 3 '(2 1) 'vc)) ; single <a href="./pitch_lsp.html#robo290">pitch</a> within a <a href="./chord_lsp.html#robo619">chord</a>
-  (print (<strong>get-note</strong> (<a href="./piece_lsp.html#robo56">piece</a> mini) 3 2 'vc)) ; entire <a href="./chord_lsp.html#robo619">chord</a> <a href="./event_lsp.html#robo438">event</a>
-  (print (<strong>get-note</strong> (<a href="./piece_lsp.html#robo56">piece</a> mini) 5 3 'cl)))
+  (print (<strong>get-note</strong> (<a href="./piece_lsp.html#robo58">piece</a> mini) 3 '(2 1) 'vc)) ; single <a href="./pitch_lsp.html#robo295">pitch</a> within a <a href="./chord_lsp.html#robo628">chord</a>
+  (print (<strong>get-note</strong> (<a href="./piece_lsp.html#robo58">piece</a> mini) 3 2 'vc)) ; entire <a href="./chord_lsp.html#robo628">chord</a> <a href="./event_lsp.html#robo444">event</a>
+  (print (<strong>get-note</strong> (<a href="./piece_lsp.html#robo58">piece</a> mini) 5 3 'cl)))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-note</strong> ((bh bar-holder) bar-num note-num <a href="./player_lsp.html#robo291">player</a> &amp;optional written)
+<pre class="source">(defmethod <strong>get-note</strong> ((bh bar-holder) bar-num note-num <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> &amp;optional written)
 </pre>
 
 
 <a name="bar2dholder2ftranspose2dbars"></a>
-<a name="robo60"></a><h2 class=robodoc>bar-holder/transpose-bars [ Methods ]</h2>
+<a name="robo62"></a><h2 class=robodoc>bar-holder/transpose-bars [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo288">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo293">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Transpose the pitches of the specified bars in a given <a href="./player_lsp.html#robo291">player</a>'s part by a
- specified number of <a href="./utilities_lsp.html#robo993">semitones</a>.
+<pre> Transpose the pitches of the specified bars in a given <a href="./slippery-chicken-edit_lsp.html#robo233">player</a>'s part by a
+ specified number of <a href="./utilities_lsp.html#robo1004">semitones</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo288">bar-holder</a> object (such as the PIECE slot of a <a href="./slippery-chicken_lsp.html#robo617">slippery-chicken</a>
+<pre> - A <a href="#robo293">bar-holder</a> object (such as the PIECE slot of a <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a>
    object). 
- - A positive or negative integer that is the number of <a href="./utilities_lsp.html#robo993">semitones</a> by which
+ - A positive or negative integer that is the number of <a href="./utilities_lsp.html#robo1004">semitones</a> by which
    the pitches of the specified bars are to be transposed. 
  - An integer that is the number of the first bar in which the pitches are
    to be transposed. 
  - An integer that is the number of consecutive bars, including the
    start-bar, in which the pitches are to be transposed.
- - The ID of the <a href="./player_lsp.html#robo291">player</a> whose part is to be changed.
+ - The ID of the <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> whose part is to be changed.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :destructively. T or NIL to indicate whether the transposed pitches are
-   to replace the existing pitches of the given <a href="#robo288">bar-holder</a> object. This must
+   to replace the existing pitches of the given <a href="#robo293">bar-holder</a> object. This must
    be set to T if the pitches of the original object are to be transposed
    before, for example, generating output. If NIL, the original object will
    first be cloned, the pitches of the original object will be left
@@ -224,60 +224,60 @@
  - :print-bar-nums. T or NIL to indicate whether the method should print
    feedback about which bars have been transposed to the listener. 
    T = print feedback. Default = NIL.
- - :<a href="./chord_lsp.html#robo619">chord</a>-function. The function that is to be used for transposition of
-   chords objects. Default = #'<a href="./tl-set_lsp.html#robo901">transpose</a> (of the <a href="./chord_lsp.html#robo619">chord</a> class).
- - :<a href="./chord_lsp.html#robo619">chord</a>-function. The function that is to be used for transposition of
-   <a href="./pitch_lsp.html#robo290">pitch</a> objects. Default = #'<a href="./tl-set_lsp.html#robo901">transpose</a> (of the <a href="./pitch_lsp.html#robo290">pitch</a> class).
+ - :<a href="./chord_lsp.html#robo628">chord</a>-function. The function that is to be used for transposition of
+   chords objects. Default = #'<a href="./rthm-seq-bar_lsp.html#robo524">transpose</a> (of the <a href="./chord_lsp.html#robo628">chord</a> class).
+ - :<a href="./chord_lsp.html#robo628">chord</a>-function. The function that is to be used for transposition of
+   <a href="./pitch_lsp.html#robo295">pitch</a> objects. Default = #'<a href="./rthm-seq-bar_lsp.html#robo524">transpose</a> (of the <a href="./pitch_lsp.html#robo295">pitch</a> class).
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a list of the <a href="./rthm-seq-bar_lsp.html#robo634">rthm-seq-bar</a> objects that have been transposed. 
+<pre> Returns a list of the <a href="./rthm-seq-bar_lsp.html#robo643">rthm-seq-bar</a> objects that have been transposed. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo823">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo403">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
                      (vc (cello :midi-channel 2))))
-        :<a href="./set-palette_lsp.html#robo308">set-palette</a> '((1 ((c2 d2 e2 f2 g2 a2 b2 
+        :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((c2 d2 e2 f2 g2 a2 b2 
                                c3 d3 e3 f3 g3 a3 b3 
                                c4 d4 e4 f4 g4 a4 b4 c5))))
-        :<a href="./set-map_lsp.html#robo586">set-map</a> '((1 (1 1 1 1 1)))
-        :<a href="./rthm-seq-palette_lsp.html#robo307">rthm-seq-palette</a> '((1 ((((4 4) h q e (s) s))
-                                :<a href="./pitch-seq-palette_lsp.html#robo306">pitch-seq-palette</a> ((1 (2) 3 4)))))
-        :<a href="./rthm-seq-map_lsp.html#robo585">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
+        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1)))
+        :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e (s) s))
+                                :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 (2) 3 4)))))
+        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (<strong>transpose-bars</strong> (<a href="./piece_lsp.html#robo56">piece</a> mini) 11 2 2 'cl
+  (<strong>transpose-bars</strong> (<a href="./piece_lsp.html#robo58">piece</a> mini) 11 2 2 'cl
                   :destructively t
                   :print-bar-nums t))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>transpose-bars</strong> ((bh bar-holder) <a href="./utilities_lsp.html#robo993">semitones</a> start-bar <a href="./slippery-chicken_lsp.html#robo827">num-bars</a> <a href="./player_lsp.html#robo291">player</a>
+<pre class="source">(defmethod <strong>transpose-bars</strong> ((bh bar-holder) <a href="./utilities_lsp.html#robo1004">semitones</a> start-bar <a href="./slippery-chicken_lsp.html#robo835">num-bars</a> <a href="./slippery-chicken-edit_lsp.html#robo233">player</a>
                            &amp;key
                            (destructively nil)
                            (print-bar-nums nil)
                            ;; the default functions are the class methods for
-                           ;; <a href="./pitch_lsp.html#robo290">pitch</a> or <a href="./chord_lsp.html#robo619">chord</a>.
-                           (<a href="./chord_lsp.html#robo619">chord</a>-function #'<a href="./tl-set_lsp.html#robo901">transpose</a>)
-                           (<a href="./pitch_lsp.html#robo290">pitch</a>-function #'<a href="./tl-set_lsp.html#robo901">transpose</a>))
+                           ;; <a href="./pitch_lsp.html#robo295">pitch</a> or <a href="./chord_lsp.html#robo628">chord</a>.
+                           (<a href="./chord_lsp.html#robo628">chord</a>-function #'<a href="./rthm-seq-bar_lsp.html#robo524">transpose</a>)
+                           (<a href="./pitch_lsp.html#robo295">pitch</a>-function #'<a href="./rthm-seq-bar_lsp.html#robo524">transpose</a>))
 </pre>
 
 
 <a name="linked2dnamed2dobject2fbar2dholder"></a>
-<a name="robo288"></a><h2 class=robodoc>linked-named-object/bar-holder [ Classes ]</h2>
+<a name="robo293"></a><h2 class=robodoc>linked-named-object/bar-holder [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>bar-holder</strong>
 
  File:             <a href="#robo_top_of_doc">bar-holder.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <strong>bar-holder</strong>  
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <strong>bar-holder</strong>  
 
- Version:          1.0.12
+ Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
- Purpose:          This class is meant to be sub-classed by <a href="./piece_lsp.html#robo56">piece</a>, <a href="./section_lsp.html#robo58">section</a>
+ Purpose:          This class is meant to be sub-classed by <a href="./piece_lsp.html#robo58">piece</a>, <a href="./section_lsp.html#robo60">section</a>
                    and sequence, all of which hold each other or, ultimately
                    a list of bars with relevant rhythms, timings, pitches
                    etc.   
@@ -293,7 +293,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/bar-holder.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
+<p>Generated from ./../../src/bar-holder.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-05-03 13:16:42</p>
 </div> <!-- footer -->
 </body>
 </html>

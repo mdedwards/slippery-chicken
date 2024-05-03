@@ -33,22 +33,22 @@
 
 
 <a name="circular2dsclist2frecurring2devent"></a>
-<a name="robo119"></a><h2 class=robodoc>circular-sclist/recurring-event [ Classes ]</h2>
+<a name="robo121"></a><h2 class=robodoc>circular-sclist/recurring-event [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo620">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo629">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
-<pre> <a href="./rthm-chain_lsp.html#robo527">rthm-chain</a>
+<pre> <a href="./rthm-chain_lsp.html#robo533">rthm-chain</a>
 
  File:             <a href="#robo_top_of_doc">recurring-event.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo620">circular-sclist</a> -&gt; <strong>recurring-event</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo629">circular-sclist</a> -&gt; <strong>recurring-event</strong>
 
- Version:          1.0.12
+ Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
- Purpose:          class used in <a href="./rthm-chain_lsp.html#robo527">rthm-chain</a>
+ Purpose:          class used in <a href="./rthm-chain_lsp.html#robo533">rthm-chain</a>
                    This class allows for the periodic/cyclic return of given
                    data.  It is intended for situations where you want to
                    do/collect something every several events, but the cycle
@@ -62,10 +62,10 @@
                    indices into this data in the return-data-cycle slot.
 
                    simple example, without return-data
-                   (let* ((re (<a href="#robo398">make-re</a> '((2 3) (3 2) (5 3) (8 2))
+                   (let* ((re (<a href="#robo404">make-re</a> '((2 3) (3 2) (5 3) (8 2))
                                        :return-data nil 
                                        :return-data-cycle nil)))
-                     (loop repeat 100 collect (<a href="#robo399">on-it</a> re)))
+                     (loop repeat 100 collect (<a href="#robo405">on-it</a> re)))
 
                    =&gt; (NIL NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL
                        NIL T NIL NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL
@@ -75,7 +75,7 @@
                        NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T NIL T
                        NIL T NIL NIL T NIL NIL T NIL)
  
-                   (let* ((re (<a href="#robo398">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
+                   (let* ((re (<a href="#robo404">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
                                        ;; the data about to be collected 
                                        :return-data '(a b c d)
                                        ;; the indices into the data; this
@@ -84,7 +84,7 @@
                                        ;; and B 5x
                                        :return-data-cycle 
                                        '((0 3) (3 2) (2 1) (1 5))))) 
-                     (loop repeat 100 collect (<a href="#robo397">get-it</a> re)))
+                     (loop repeat 100 collect (<a href="#robo403">get-it</a> re)))
 
                    =&gt; (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL
                        NIL C NIL NIL NIL NIL B NIL NIL NIL NIL B NIL NIL NIL
@@ -105,9 +105,9 @@
 
 
 <a name="recurring2devent2fget2dit"></a>
-<a name="robo397"></a><h2 class=robodoc>recurring-event/get-it [ Methods ]</h2>
+<a name="robo403"></a><h2 class=robodoc>recurring-event/get-it [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo119">recurring-event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo121">recurring-event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the next element from the return-data. This method is most effective
  when called repeatedly (e.g. within a loop) when the return-data and
@@ -116,7 +116,7 @@
  been specified, then the element itself will be returned.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo119">recurring-event</a> object.
+<pre> - A <a href="#robo121">recurring-event</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Data from the return-data slot (or the return-data-cycle element) when
@@ -124,7 +124,7 @@
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; Used together with return-data
-(let ((re (<a href="#robo398">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
+(let ((re (<a href="#robo404">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
                    :return-data '(a b c d)
                    :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
   (loop repeat 50 collect (<strong>get-it</strong> re)))
@@ -134,7 +134,7 @@
     NIL B NIL B NIL A NIL A)
 
 ;;; Used without return-data
-(let ((re (<a href="#robo398">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
+(let ((re (<a href="#robo404">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
                    :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
   (loop repeat 50 collect (<strong>get-it</strong> re)))
 
@@ -143,17 +143,17 @@
     NIL 1 NIL 1 NIL 0 NIL 0)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-it</strong> ((re recurring-<a href="./event_lsp.html#robo438">event</a>))
+<pre class="source">(defmethod <strong>get-it</strong> ((re recurring-<a href="./event_lsp.html#robo444">event</a>))
 </pre>
 
 
 <a name="recurring2devent2fmake2dre"></a>
-<a name="robo398"></a><h2 class=robodoc>recurring-event/make-re [ Functions ]</h2>
+<a name="robo404"></a><h2 class=robodoc>recurring-event/make-re [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo119">recurring-event</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo121">recurring-event</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make an instance of a <a href="#robo119">recurring-event</a> object, which allows for the
- periodic/cyclic return of given data. The <a href="#robo119">recurring-event</a> object is
+<pre> Make an instance of a <a href="#robo121">recurring-event</a> object, which allows for the
+ periodic/cyclic return of given data. The <a href="#robo121">recurring-event</a> object is
  intended for situations in which the user would like to perform an action
  or collect data every several events, but with a varying cycle period.
 </pre>
@@ -166,7 +166,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :return-data. If the <a href="#robo119">recurring-event</a> object is to be used to collect
+ - :return-data. If the <a href="#robo121">recurring-event</a> object is to be used to collect
    data, that data can be specified in this slot, with the indices into this
    data in the return-data-cycle slot. The return-data and return-data-cycle
    slots must be used together.
@@ -174,11 +174,11 @@
    into that data must be specified here. For example, the value 
    '((0 3) (3 2) (2 1) (1 5)) will the data item at (nth 0) thrice, that at
    (nth 3) twice, that at (nth 2) once, and that at (nth 1) five times.
- - :id. An optional ID can also be specified for the <a href="#robo119">recurring-event</a> object
+ - :id. An optional ID can also be specified for the <a href="#robo121">recurring-event</a> object
    created. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo119">recurring-event</a> object.
+<pre> A <a href="#robo121">recurring-event</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; Simple usage with no specified data
@@ -188,7 +188,7 @@ RECURRING-EVENT: current-period: 2, current-repeats: 3
                  pcount: -1, rcount: 0
                  return-data: NIL, return-data-cycle: NIL
 CIRCULAR-SCLIST: current 1
-SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 4, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 4, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: ((2 3) (3 2) (5 3) (8 2))
@@ -204,14 +204,14 @@ RECURRING-EVENT: current-period: 2, current-repeats: 3
                  return-data: (A B C D), return-data-cycle: 
 CYCLE-REPEATS: folded: ((0 3) (3 2) (2 1) (1 5))
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 11, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 11, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (0 0 0 3 3 2 1 1 1 1 1)
 **************
 
 CIRCULAR-SCLIST: current 1
-SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 4, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 4, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: ((2 3) (3 2) (5 3) (8 2))
@@ -222,9 +222,9 @@ data: ((2 3) (3 2) (5 3) (8 2))
 
 
 <a name="recurring2devent2fon2dit"></a>
-<a name="robo399"></a><h2 class=robodoc>recurring-event/on-it [ Methods ]</h2>
+<a name="robo405"></a><h2 class=robodoc>recurring-event/on-it [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo119">recurring-event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo121">recurring-event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Test to determine whether the method is currently at a period boundary. The
  object keeps track of its own internal state and position counter. This
@@ -235,14 +235,14 @@ data: ((2 3) (3 2) (5 3) (8 2))
  not want to be changed.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo119">recurring-event</a> object.
+<pre> - A <a href="#robo121">recurring-event</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T or NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; Straightforward usage
-(let ((re (<a href="#robo398">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
+(let ((re (<a href="#robo404">make-re</a> '((2 3) (3 2) (5 3) (8 2)) 
                    :return-data '(a b c d)
                    :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
   (loop repeat 50 collect (<strong>on-it</strong> re)))
@@ -252,12 +252,12 @@ data: ((2 3) (3 2) (5 3) (8 2))
     NIL T NIL T NIL T NIL T)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>on-it</strong> ((re recurring-<a href="./event_lsp.html#robo438">event</a>))
+<pre class="source">(defmethod <strong>on-it</strong> ((re recurring-<a href="./event_lsp.html#robo444">event</a>))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/recurring-event.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
+<p>Generated from ./../../src/recurring-event.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-05-03 13:16:42</p>
 </div> <!-- footer -->
 </body>
 </html>

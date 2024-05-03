@@ -33,7 +33,7 @@
 
 
 <a name="sc2fget2dspectrum"></a>
-<a name="robo9"></a><h2 class=robodoc>sc/get-spectrum [ Modules ]</h2>
+<a name="robo10"></a><h2 class=robodoc>sc/get-spectrum [ Modules ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_modules.html#robo_top_of_doc">Modules</a> ]</p>
 <p class="item_name">NAME</p>
@@ -43,29 +43,29 @@
 
  Class Hierarchy:  none (no classes defined)
 
- Version:          1.0.12
+ Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
  Purpose:          Used mainly by <a href="./spectra_lsp.html#robo_top_of_doc">spectra.lsp</a>, <strong>get-spectrum</strong> returns, as a
                    list, the most prominent frequencies in a sound file.
                    The list is ordered from the most prominent to the least
-                   prominent frequency (:order-by 'amp) or the <a href="./event_lsp.html#robo193">highest</a> to
-                   <a href="./chord_lsp.html#robo90">lowest</a> frequency (:order-by 'freq) and the number of
+                   prominent frequency (:order-by 'amp) or the <a href="./chord_lsp.html#robo90">highest</a> to
+                   <a href="./event_lsp.html#robo202">lowest</a> frequency (:order-by 'freq) and the number of
                    elements in the list is set by the &lt;num-partials&gt;
-                   parameter.  The <a href="./instrument_lsp.html#robo289">instrument</a> spec-an is called by
+                   parameter.  The <a href="./instrument_lsp.html#robo294">instrument</a> spec-an is called by
                    <strong>get-spectrum</strong> and is therefore not meant to be used as a
-                   public function (it is written as an <a href="./instrument_lsp.html#robo289">instrument</a> to take
+                   public function (it is written as an <a href="./instrument_lsp.html#robo294">instrument</a> to take
                    advantage of CLM's run-loop efficiency).  The results of
                    analysis are stored in
-                   *slippery-chicken-get-spectrum-last-result* so that if
+                   *slippery-chicken-get-<a href="./sndfile_lsp.html#robo882">spectrum</a>-last-result* so that if
                    you request the same analysis repeatedly, the analysis
                    will not need to be reperformed each time.  Be careful
                    though, only the input file, the ordering, the number of
                    partials requested and the analysis start time are used
                    to detect whether analysis has to be reperformed or not.
                    If you want to force reanalysis, do (setf
-                   *slippery-chicken-get-spectrum-last-result* nil) before
+                   *slippery-chicken-get-<a href="./sndfile_lsp.html#robo882">spectrum</a>-last-result* nil) before
                    the call to <strong>get-spectrum</strong>.
  
  Creation date:    This is very old code but it was added to slippery
@@ -73,14 +73,14 @@
 
  Author:           Michael Edwards: m@michael-edwards.org
 
- $$ Last modified:  11:23:34 Tue Jan 16 2024 CET
+ $$ Last modified:  10:17:28 Fri Apr 19 2024 CEST
 
  SVN ID: $Id: <a href="#robo_top_of_doc">get-spectrum.lsp</a> 5359 2015-07-24 20:53:22Z medward2 $
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/get-spectrum.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
+<p>Generated from ./../../src/get-spectrum.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-05-03 13:16:42</p>
 </div> <!-- footer -->
 </body>
 </html>

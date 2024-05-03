@@ -9,6 +9,7 @@ items:
 # 10.12.11 SEAN: Added ARGUMENTS, OPTIONAL ARGUMENTS, and RETURNS to the items block
     ARGUMENTS
     OPTIONAL ARGUMENTS
+    TAGS
     RETURN VALUE
     EXAMPLE             
     SYNOPSIS

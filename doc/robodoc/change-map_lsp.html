@@ -33,157 +33,157 @@
 
 
 <a name="change2dmap2fcm2dget2ddata"></a>
-<a name="robo63"></a><h2 class=robodoc>change-map/cm-get-data [ Methods ]</h2>
+<a name="robo65"></a><h2 class=robodoc>change-map/cm-get-data [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo574">change-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo583">change-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the data for a specified <a href="./section_lsp.html#robo58">section</a> and <a href="./player_lsp.html#robo291">player</a> of a given <a href="#robo574">change-map</a>
+<pre> Return the data for a specified <a href="./section_lsp.html#robo60">section</a> and <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> of a given <a href="#robo583">change-map</a>
  object. 
 
- NB: The &lt;<a href="./section_lsp.html#robo58">section</a>&gt; argument may require the ID of the <a href="./player_lsp.html#robo291">player</a> as well if
-     used, for example, with the <a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> subclass of this
+ NB: The &lt;<a href="./section_lsp.html#robo60">section</a>&gt; argument may require the ID of the <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> as well if
+     used, for example, with the <a href="./instrument-change-map_lsp.html#robo67">instrument-change-map</a> subclass of this
      class .
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo574">change-map</a> object.
- - A simple key reference into the given <a href="#robo574">change-map</a> object or a list of
-   references. NB: This reference may require a <a href="./player_lsp.html#robo291">player</a> ID if, for example,
-   used with an <a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> subclass of this class. 
+<pre> - A <a href="#robo583">change-map</a> object.
+ - A simple key reference into the given <a href="#robo583">change-map</a> object or a list of
+   references. NB: This reference may require a <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> ID if, for example,
+   used with an <a href="./instrument-change-map_lsp.html#robo67">instrument-change-map</a> subclass of this class. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - The ID of the sequence from which to return the <a href="#robo574">change-map</a> data.
- - An integer that is the bar number for which to return the <a href="#robo574">change-map</a>
+<pre> - The ID of the sequence from which to return the <a href="#robo583">change-map</a> data.
+ - An integer that is the bar number for which to return the <a href="#robo583">change-map</a>
    data. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo574">change-map</a> data stored at the specified location within the given
- <a href="#robo574">change-map</a>. 
+<pre> The <a href="#robo583">change-map</a> data stored at the specified location within the given
+ <a href="#robo583">change-map</a>. 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; An example using the <a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> subclass of <a href="#robo574">change-map</a>
+<pre class="source">;;; An example using the <a href="./instrument-change-map_lsp.html#robo67">instrument-change-map</a> subclass of <a href="#robo583">change-map</a>
 
 (let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo823">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo403">ensemble</a> '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
-        :<a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+        :<a href="./instrument-change-map_lsp.html#robo67">instrument-change-map</a> '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
                                  (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
                                  (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
-        :<a href="./set-palette_lsp.html#robo308">set-palette</a> '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
-        :<a href="./set-map_lsp.html#robo586">set-map</a> '((1 (1 1 1 1 1))
+        :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1))
                    (2 (1 1 1 1 1))
                    (3 (1 1 1 1 1)))
-        :<a href="./rthm-seq-palette_lsp.html#robo307">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
-                                :<a href="./pitch-seq-palette_lsp.html#robo306">pitch-seq-palette</a> ((1 2 3 4 5)))))
-        :<a href="./rthm-seq-map_lsp.html#robo585">rthm-seq-map</a> '((1 ((sax (1 1 1 1 1))))
+        :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
+                                :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4 5)))))
+        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((sax (1 1 1 1 1))))
                         (2 ((sax (1 1 1 1 1))))
                         (3 ((sax (1 1 1 1 1))))))))
-  (<strong>cm-get-data</strong> (<a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> mini) '(2 sax) 4))
+  (<strong>cm-get-data</strong> (<a href="./instrument-change-map_lsp.html#robo67">instrument-change-map</a> mini) '(2 sax) 4))
 
 =&gt; ALTO-SAX
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>cm-get-data</strong> ((<a href="./cm_lsp.html#robo4">cm</a> change-map) <a href="./section_lsp.html#robo58">section</a> 
+<pre class="source">(defmethod <strong>cm-get-data</strong> ((<a href="./cm_lsp.html#robo4">cm</a> change-map) <a href="./section_lsp.html#robo60">section</a> 
                         &amp;optional (sequence 1) (bar 1))
 </pre>
 
 
 <a name="change2dmap2ffind2dnearest"></a>
-<a name="robo64"></a><h2 class=robodoc>change-map/find-nearest [ Methods ]</h2>
+<a name="robo66"></a><h2 class=robodoc>change-map/find-nearest [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo574">change-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo583">change-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the <a href="./utilities_lsp.html#robo956">nearest</a> <a href="./change-data_lsp.html#robo618">change-data</a> object to the specified <a href="./section_lsp.html#robo58">section</a> within the
- given <a href="#robo574">change-map</a>. NB: The <a href="./section_lsp.html#robo58">section</a> may require a <a href="./player_lsp.html#robo291">player</a> ID if used, for
- example, with an <a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> subclass of <a href="#robo574">change-map</a>.
+<pre> Return the <a href="./utilities_lsp.html#robo967">nearest</a> <a href="./change-data_lsp.html#robo627">change-data</a> object to the specified <a href="./section_lsp.html#robo60">section</a> within the
+ given <a href="#robo583">change-map</a>. NB: The <a href="./section_lsp.html#robo60">section</a> may require a <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> ID if used, for
+ example, with an <a href="./instrument-change-map_lsp.html#robo67">instrument-change-map</a> subclass of <a href="#robo583">change-map</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./section_lsp.html#robo58">section</a> indication, either as a single reference ID or a list of
-   reference IDs into the given <a href="#robo574">change-map</a>.
- - A <a href="#robo574">change-map</a> object.
+<pre> - A <a href="./section_lsp.html#robo60">section</a> indication, either as a single reference ID or a list of
+   reference IDs into the given <a href="#robo583">change-map</a>.
+ - A <a href="#robo583">change-map</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns a <a href="./change-data_lsp.html#robo618">change-data</a> object.
+<pre> Returns a <a href="./change-data_lsp.html#robo627">change-data</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo823">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo403">ensemble</a> '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
-        :<a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+        :<a href="./instrument-change-map_lsp.html#robo67">instrument-change-map</a> '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
                                  (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
                                  (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
-        :<a href="./set-palette_lsp.html#robo308">set-palette</a> '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
-        :<a href="./set-map_lsp.html#robo586">set-map</a> '((1 (1 1 1 1 1))
+        :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1))
                    (2 (1 1 1 1 1))
                    (3 (1 1 1 1 1)))
-        :<a href="./rthm-seq-palette_lsp.html#robo307">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
-                                :<a href="./pitch-seq-palette_lsp.html#robo306">pitch-seq-palette</a> ((1 2 3 4 5)))))
-        :<a href="./rthm-seq-map_lsp.html#robo585">rthm-seq-map</a> '((1 ((sax (1 1 1 1 1))))
+        :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
+                                :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4 5)))))
+        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((sax (1 1 1 1 1))))
                         (2 ((sax (1 1 1 1 1))))
                         (3 ((sax (1 1 1 1 1))))))))
-  (<strong>find-nearest</strong> '(4 sax) (<a href="./instrument-change-map_lsp.html#robo65">instrument-change-map</a> mini)))
+  (<strong>find-nearest</strong> '(4 sax) (<a href="./instrument-change-map_lsp.html#robo67">instrument-change-map</a> mini)))
 
 =&gt; 
 CHANGE-DATA: 
             previous-data: TENOR-SAX, 
             last-data: TENOR-SAX
-SCLIST: <a href="./sclist_lsp.html#robo293">sclist</a>-length: 2, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 2, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: (2 SAX), this: (3 SAX), next: NIL
 NAMED-OBJECT: id: SAX, tag: NIL, 
 data: ((3 1 ALTO-SAX) (4 1 TENOR-SAX))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>find-nearest</strong> (<a href="./section_lsp.html#robo58">section</a> (<a href="./cm_lsp.html#robo4">cm</a> change-map))
+<pre class="source">(defmethod <strong>find-nearest</strong> (<a href="./section_lsp.html#robo60">section</a> (<a href="./cm_lsp.html#robo4">cm</a> change-map))
 </pre>
 
 
 <a name="sc2dmap2fchange2dmap"></a>
-<a name="robo574"></a><h2 class=robodoc>sc-map/change-map [ Classes ]</h2>
+<a name="robo583"></a><h2 class=robodoc>sc-map/change-map [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sc-map_lsp.html#robo424">sc-map</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sc-map_lsp.html#robo430">sc-map</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>change-map</strong>
 
  File:             <a href="#robo_top_of_doc">change-map.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo293">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo620">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo111">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo45">recursive-assoc-list</a> -&gt;
-                   <a href="./sc-map_lsp.html#robo424">sc-map</a> -&gt; <strong>change-map</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo629">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo113">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
+                   <a href="./sc-map_lsp.html#robo430">sc-map</a> -&gt; <strong>change-map</strong>
 
- Version:          1.0.12
+ Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
  Purpose:          Implementation of the <strong>change-map</strong> class where, unlike
                    normal sc-maps (data is given for each sequence) gives
                    data sporadically when the parameter changes, for
-                   instance <a href="./tempo_lsp.html#robo295">tempo</a>.
+                   instance <a href="./tempo_lsp.html#robo300">tempo</a>.
 
                    It is assumed that maps will be typed in the order in
                    which sections occur so that previous-data slots can be
                    kept up-to-date; also, unless all data will be given,
-                   that the sections (but not <a href="./instrument_lsp.html#robo289">instrument</a> ids) will be in
-                   integer sequential order so that <a href="./utilities_lsp.html#robo956">nearest</a> sections can be
-                   returned when given a non-existent <a href="./section_lsp.html#robo58">section</a> reference.
+                   that the sections (but not <a href="./instrument_lsp.html#robo294">instrument</a> ids) will be in
+                   integer sequential order so that <a href="./utilities_lsp.html#robo967">nearest</a> sections can be
+                   returned when given a non-existent <a href="./section_lsp.html#robo60">section</a> reference.
                     
-                   For example, the following <strong>change-map</strong> indicates <a href="./tempo_lsp.html#robo295">tempo</a> 
-                   (though <a href="./tempo_lsp.html#robo295">tempo</a>-maps have their own class now).
-                   It has sections within sections so that the <a href="./tempo_lsp.html#robo295">tempo</a> for
-                   <a href="./section_lsp.html#robo58">section</a> '(1 2 3) can be defined, that is, <a href="./section_lsp.html#robo58">section</a> 1 has
+                   For example, the following <strong>change-map</strong> indicates <a href="./tempo_lsp.html#robo300">tempo</a> 
+                   (though <a href="./tempo_lsp.html#robo300">tempo</a>-maps have their own class now).
+                   It has sections within sections so that the <a href="./tempo_lsp.html#robo300">tempo</a> for
+                   <a href="./section_lsp.html#robo60">section</a> '(1 2 3) can be defined, that is, <a href="./section_lsp.html#robo60">section</a> 1 has
                    subsections 1, 2, and 3 and subsection 2 has further
                    subsections 1, 2, and 3.  This can be nested to any
-                   depth.  The <a href="./tempo_lsp.html#robo295">tempo</a> information itself is given in sublists
+                   depth.  The <a href="./tempo_lsp.html#robo300">tempo</a> information itself is given in sublists
                    where (3 27) means that in the third sequence of the
-                   <a href="./section_lsp.html#robo58">section</a>, the <a href="./tempo_lsp.html#robo295">tempo</a> is 27.  (3 2 27) means the 2nd bar of
-                   the third sequence has <a href="./tempo_lsp.html#robo295">tempo</a> 27: when only two numbers
+                   <a href="./section_lsp.html#robo60">section</a>, the <a href="./tempo_lsp.html#robo300">tempo</a> is 27.  (3 2 27) means the 2nd bar of
+                   the third sequence has <a href="./tempo_lsp.html#robo300">tempo</a> 27: when only two numbers
                    are in the list, bar 1 is assumed.  The trick is, that
-                   this <a href="./tempo_lsp.html#robo295">tempo</a> then remains, as would be expected, until the
-                   next <a href="./tempo_lsp.html#robo295">tempo</a> change is indicated, which means that
-                   requesting the <a href="./tempo_lsp.html#robo295">tempo</a> of <a href="./section_lsp.html#robo58">section</a> (2 2 3) with any sequence
+                   this <a href="./tempo_lsp.html#robo300">tempo</a> then remains, as would be expected, until the
+                   next <a href="./tempo_lsp.html#robo300">tempo</a> change is indicated, which means that
+                   requesting the <a href="./tempo_lsp.html#robo300">tempo</a> of <a href="./section_lsp.html#robo60">section</a> (2 2 3) with any sequence
                    and bar in the map below would return 25, because that is
-                   the last <a href="./tempo_lsp.html#robo295">tempo</a> given in <a href="./section_lsp.html#robo58">section</a> 1 and no <a href="./tempo_lsp.html#robo295">tempo</a> is defined
-                   for <a href="./section_lsp.html#robo58">section</a> 2.
+                   the last <a href="./tempo_lsp.html#robo300">tempo</a> given in <a href="./section_lsp.html#robo60">section</a> 1 and no <a href="./tempo_lsp.html#robo300">tempo</a> is defined
+                   for <a href="./section_lsp.html#robo60">section</a> 2.
 
                    (setf x 
                      (make-<strong>change-map</strong>
@@ -207,18 +207,18 @@ data: ((3 1 ALTO-SAX) (4 1 TENOR-SAX))
                    You have to be careful with change-maps however as the
                    nesting is flexible and therefore ambiguous.  For
                    instance, in the following the bcl, tape1 etc. ids are
-                   not subsections of <a href="./section_lsp.html#robo58">section</a> 1, rather these are the hint
-                   pitches assigned to the <a href="./instruments_lsp.html#robo11">instruments</a> in <a href="./section_lsp.html#robo58">section</a> 1 (which
+                   not subsections of <a href="./section_lsp.html#robo60">section</a> 1, rather these are the hint
+                   pitches assigned to the <a href="./instruments_lsp.html#robo12">instruments</a> in <a href="./section_lsp.html#robo60">section</a> 1 (which
                    has no subsections).  This is where the last-ref-required
                    class slot comes in:  If this slot is t (this is the
                    second argument to make-change-map) then the last
-                   reference in a call to <a href="#robo63">cm-get-data</a> is always respected,
+                   reference in a call to <a href="#robo65">cm-get-data</a> is always respected,
                    i.e. not the last data given will be returned when the
-                   <a href="./section_lsp.html#robo58">section</a> doesn't exist, rather the last data for this
+                   <a href="./section_lsp.html#robo60">section</a> doesn't exist, rather the last data for this
                    reference.  E.g. In the following map, if
                    last-ref-required  were nil, then the call to
-                   (<a href="#robo63">cm-get-data</a> x '(2 tape2) 1) would fail (because we can't
-                   find <a href="./utilities_lsp.html#robo956">nearest</a> data when references aren't numbers), but
+                   (<a href="#robo65">cm-get-data</a> x '(2 tape2) 1) would fail (because we can't
+                   find <a href="./utilities_lsp.html#robo967">nearest</a> data when references aren't numbers), but
                    because it's t, we get the last data given for tape2 and
                    return cs5. 
 
@@ -245,7 +245,7 @@ data: ((3 1 ALTO-SAX) (4 1 TENOR-SAX))
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/change-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
+<p>Generated from ./../../src/change-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-05-03 13:16:42</p>
 </div> <!-- footer -->
 </body>
 </html>

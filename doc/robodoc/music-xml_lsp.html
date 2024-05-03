@@ -33,18 +33,18 @@
 
 
 <a name="sc2fmusic2dxml"></a>
-<a name="robo13"></a><h2 class=robodoc>sc/music-xml [ Modules ]</h2>
+<a name="robo14"></a><h2 class=robodoc>sc/music-xml [ Modules ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_modules.html#robo_top_of_doc">Modules</a> ]</p>
 
 
 <a name="music2dxml2fxml2dget2dmark"></a>
-<a name="robo297"></a><h2 class=robodoc>music-xml/xml-get-mark [ Functions ]</h2>
+<a name="robo302"></a><h2 class=robodoc>music-xml/xml-get-mark [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo13">music-xml</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">music-xml</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> xml-get-mark:
- Translation function for <a href="#robo13">music-xml</a> marks (dynamics, accents, etc.). Not
+ Translation function for <a href="#robo14">music-xml</a> marks (dynamics, accents, etc.). Not
  generally called by the user but the list of symbols that can be used will
  be useful. If &lt;silent&gt; then non-existing marks will not produce
  warnings/errors (but we'll return nil). 
@@ -67,7 +67,7 @@
                   ;; this function
                   (lhp '(tech "stopped" a))
                   (bartok '(tech "snap-pizzicato" a))
-                  ;; todo: could also <a href="./rhythm_lsp.html#robo429">add</a> the &lt;sound&gt; tag here to change
+                  ;; todo: could also <a href="./recursive-assoc-list_lsp.html#robo406">add</a> the &lt;sound&gt; tag here to change
                   ;; midi-programme (see MozartTrio.xml for e.g.)
                   ;; dir means xml-direction will be called
                   (pizz '(wds "pizz." a))
@@ -164,7 +164,7 @@
                   (triangle-up '(hd "inverted triangle"))
                   (airy-head (no-xml-mark 'airy-head))
                   (none '(hd "none"))
-                  ;; the On and Off versions were for <a href="./lilypond_lsp.html#robo12">lilypond</a>; here we only
+                  ;; the On and Off versions were for <a href="./lilypond_lsp.html#robo13">lilypond</a>; here we only
                   ;; need the On version (or preferably, just improv but for
                   ;; compatibility...) 
                   (improvOn '(hd "slash"))
@@ -176,11 +176,11 @@
                   (flag-head '(hd "diamond"))
                   (flag-dots-on (no-xml-mark 'flag-dots-on))
                   (flag-dots-off (no-xml-mark 'flag-dots-off))
-                  (<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a>-f (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a>-f))
-                  (<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a>-n (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a>-n))
-                  (<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a>-s (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a>-s))
-                  (beg-<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a>-a (xml-beg-<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a> stream))
-                  (end-<a href="./slippery-chicken-edit_lsp.html#robo771">trill</a>-a (xml-<a href="./event_lsp.html#robo175">end-trill</a> stream))
+                  (<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a>-f (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a>-f))
+                  (<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a>-n (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a>-n))
+                  (<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a>-s (no-xml-mark '<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a>-s))
+                  (beg-<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a>-a (xml-beg-<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a> stream))
+                  (end-<a href="./slippery-chicken-edit_lsp.html#robo780">trill</a>-a (xml-<a href="./event_lsp.html#robo179">end-trill</a> stream))
                   (slash (no-xml-mark 'slash))
                   (arp '(not "arpeggiate" "default-x=\"-12\"  number=\"1\""))
                   (arrow-up (no-xml-mark 'arrow-up))
@@ -215,7 +215,7 @@
                   (mphonic-diss (no-xml-mark 'mphonicDiss))
                   (mphonic-cluster (no-xml-mark 'mphonicCluster))
                   (sing (no-xml-mark 'sing))
-                  (high-<a href="./sine_lsp.html#robo17">sine</a> (no-xml-mark 'high-<a href="./sine_lsp.html#robo17">sine</a>))
+                  (high-<a href="./sine_lsp.html#robo18">sine</a> (no-xml-mark 'high-<a href="./sine_lsp.html#robo18">sine</a>))
                   (noise (no-xml-mark 'noise))
                   (focus (no-xml-mark 'focus))
                   (balance (no-xml-mark 'balance))
@@ -225,7 +225,7 @@
                   ;; no need to fiddle with these: can do in notation software,
                   ;; no? 
                   (start-arrow (no-xml-mark 'start-arrow))
-                  (<a href="./event_lsp.html#robo174">end-arrow</a> (no-xml-mark 'end-arrow))
+                  (<a href="./event_lsp.html#robo178">end-arrow</a> (no-xml-mark 'end-arrow))
                   (harm '(tech "harmonic" a "&lt;natural /&gt;"))
                   (sost '(wds "sost."))
                   (sost-up '(wds "sost.*"))
@@ -239,9 +239,9 @@
 
 
 <a name="music2dxml2fxml2dsalzedo"></a>
-<a name="robo298"></a><h2 class=robodoc>music-xml/xml-salzedo [ Functions ]</h2>
+<a name="robo303"></a><h2 class=robodoc>music-xml/xml-salzedo [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo13">music-xml</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">music-xml</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">AUTHOR</p>
 <pre> Ruben Philipp &lt;me@rubenphilipp.com&gt;
 
@@ -299,7 +299,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/music-xml.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
+<p>Generated from ./../../src/music-xml.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-05-03 13:16:42</p>
 </div> <!-- footer -->
 </body>
 </html>

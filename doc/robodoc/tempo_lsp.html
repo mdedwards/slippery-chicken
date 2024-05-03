@@ -33,17 +33,17 @@
 
 
 <a name="linked2dnamed2dobject2ftempo"></a>
-<a name="robo295"></a><h2 class=robodoc>linked-named-object/tempo [ Classes ]</h2>
+<a name="robo300"></a><h2 class=robodoc>linked-named-object/tempo [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>tempo</strong>
 
  File:             <a href="#robo_top_of_doc">tempo.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo616">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo303">linked-named-object</a> -&gt; <strong>tempo</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <strong>tempo</strong>
 
- Version:          1.0.12
+ Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
@@ -62,11 +62,11 @@
 
 
 <a name="tempo2fmake2dtempo"></a>
-<a name="robo884"></a><h2 class=robodoc>tempo/make-tempo [ Functions ]</h2>
+<a name="robo894"></a><h2 class=robodoc>tempo/make-tempo [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo295">tempo</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo300">tempo</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo295">tempo</a> object.
+<pre> Make a <a href="#robo300">tempo</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A number indicating beats per minute. If this is &gt;= 10000 we'll treat the
@@ -78,15 +78,15 @@
 <pre> keyword arguments:
  - :beat. Sets the "beat" value of the beats per minute; i.e., 'q (or 4) for
    "quarter = xx bpm" etc. Default = 4.
- - :id. Sets the ID of the <a href="#robo295">tempo</a> object.
- - :description. A text description (string) of the <a href="#robo295">tempo</a>, such as "Allegro
+ - :id. Sets the ID of the <a href="#robo300">tempo</a> object.
+ - :description. A text description (string) of the <a href="#robo300">tempo</a>, such as "Allegro
    con brio" etc.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo295">tempo</a> object.
+<pre> A <a href="#robo300">tempo</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Default beat is a quarter, thus the following makes a <a href="#robo295">tempo</a> object of
+<pre class="source">;; Default beat is a quarter, thus the following makes a <a href="#robo300">tempo</a> object of
 ;; quarter=60. 
 (<strong>make-tempo</strong> 60)
 
@@ -98,10 +98,10 @@ NAMED-OBJECT: id: NIL, tag: NIL,
 data: 60
 
 ;; Set the beat using the :beat keyword argument. Thus, the following makes a
-;; <a href="#robo295">tempo</a> object of dotted-quarter = 96.
+;; <a href="#robo300">tempo</a> object of dotted-quarter = 96.
 (<strong>make-tempo</strong> 96 :beat 'q.)
 
-;; Add a text description, which is stored in the <a href="#robo295">tempo</a> object's DESCRIPTION
+;; Add a text description, which is stored in the <a href="#robo300">tempo</a> object's DESCRIPTION
 ;; slot. 
 (let ((tt (<strong>make-tempo</strong> 76 :beat 2 :description "Allegretto")))
   (description tt))
@@ -114,41 +114,41 @@ data: 60
 
 
 <a name="tempo2ftempo2dequal"></a>
-<a name="robo885"></a><h2 class=robodoc>tempo/tempo-equal [ Methods ]</h2>
+<a name="robo895"></a><h2 class=robodoc>tempo/tempo-equal [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo295">tempo</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo300">tempo</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Test to determine whether the values of two <a href="#robo295">tempo</a> objects are equal.
+<pre> Test to determine whether the values of two <a href="#robo300">tempo</a> objects are equal.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo295">tempo</a> object.
- - A second <a href="#robo295">tempo</a> object.
+<pre> - A first <a href="#robo300">tempo</a> object.
+ - A second <a href="#robo300">tempo</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns T if the values of the two <a href="#robo295">tempo</a> objects are equal, otherwise NIL. 
+<pre> Returns T if the values of the two <a href="#robo300">tempo</a> objects are equal, otherwise NIL. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Equal
-(let ((tt1 (<a href="#robo884">make-tempo</a> 60))
-      (tt2 (<a href="#robo884">make-tempo</a> 60)))
+(let ((tt1 (<a href="#robo894">make-tempo</a> 60))
+      (tt2 (<a href="#robo894">make-tempo</a> 60)))
   (<strong>tempo-equal</strong> tt1 tt2))
 
 =&gt; T
 
 ;; Not equal
-(let ((tt1 (<a href="#robo884">make-tempo</a> 60))
-      (tt2 (<a href="#robo884">make-tempo</a> 96)))
+(let ((tt1 (<a href="#robo894">make-tempo</a> 60))
+      (tt2 (<a href="#robo894">make-tempo</a> 96)))
   (<strong>tempo-equal</strong> tt1 tt2))
 
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>tempo-equal</strong> ((t1 <a href="#robo295">tempo</a>) (t2 <a href="#robo295">tempo</a>))
+<pre class="source">(defmethod <strong>tempo-equal</strong> ((t1 <a href="#robo300">tempo</a>) (t2 <a href="#robo300">tempo</a>))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/tempo.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-02-02 11:20:35</p>
+<p>Generated from ./../../src/tempo.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-05-03 13:16:42</p>
 </div> <!-- footer -->
 </body>
 </html>

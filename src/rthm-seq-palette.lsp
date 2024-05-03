@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  13:15:16 Fri Mar 22 2024 CET
+;;; $$ Last modified:  13:14:24 Fri May  3 2024 CEST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1075,7 +1075,7 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
     dur))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* rthm-seq/invert
+;;; ****m* rthm-seq-palette/invert
 ;;; DATE
 ;;; February 6th 2024
 ;;; 

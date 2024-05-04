@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  12:26:25 Wed Aug 30 2023 CEST
+;;; $$ Last modified:  11:06:32 Sat May  4 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -484,10 +484,7 @@ C4
         (copy-secondary-slots p (make-pitch sym)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Aug  7 17:23:44 BST 2012: Added robodoc entry
-
-;;; ****M* pitch/no-accidental
+;;; ****m* pitch/no-accidental
 ;;; DESCRIPTION
 ;;; Set the SHOW-ACCIDENTAL and ACCIDENTAL-IN-PARENTHESES slots of a specified
 ;;; pitch object to NIL, preventing any accidentals or accidentals in
@@ -525,9 +522,6 @@ C4
         (accidental-in-parentheses p) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 14:03:51 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/transpose-to-octave
 ;;; DESCRIPTION
 ;;; Transpose the values of a given pitch object to a specified octave.

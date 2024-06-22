@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  12:16:44 Thu Mar 21 2024 CET
+;;; $$ Last modified:  15:37:48 Sat Jun 22 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -248,7 +248,8 @@
           (srate sfe) (first sf-info)
           ;; (num-frames sfe) (clm::sound-frames (path sfe))
           (num-frames sfe) (sixth sf-info)
-          (bytes sfe) (fifth sf-info))))
+          (bytes sfe) (fifth sf-info)))
+  sfe)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

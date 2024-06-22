@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    19th March 2024, Heidhausen, Germany
 ;;;
-;;; $$ Last modified:  17:37:47 Tue Apr 16 2024 CEST
+;;; $$ Last modified:  15:50:21 Sat Jun 22 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -92,7 +92,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod update :after ((vf vidfile) &key ignore)
   (declare (ignore ignore))
-  (setf (has-video-codec vf) (video-file-p (path vf) nil nil)))
+  (setf (has-video-codec vf) (video-file-p (path vf) nil nil))
+  vf)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((vf vidfile) stream)

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  13:45:04 Thu Apr 18 2024 CEST
+;;; $$ Last modified:  15:36:40 Sat Jun 22 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -378,7 +378,8 @@ T
                 end (snd-duration sf) sf)
           (setf (slot-value sf 'end) (snd-duration sf))
           (set-dur sf)))
-      (setf (data-consistent sf) t))))
+      (setf (data-consistent sf) t)))
+  sf)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

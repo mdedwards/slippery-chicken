@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  17:40:21 Tue Apr 16 2024 CEST
+;;; $$ Last modified:  15:40:59 Sat Jun 22 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -609,9 +609,8 @@
 ;;; shell to get its info). So here we just make a quick instance bypassing
 ;;; all that yummy sndfile stuff, primarly so that make-reaper-item can be
 ;;; replaced with this method for on-the-fly creation of objects that just need
-;;; to be written in above all reaper-play.
+;;; to be written in (above all) reaper-play.
 (defun make-reaper-item-fast (slots-list)
-  ;; (print slots-list)
   (let ((ri (make-instance 'reaper-item :init-update nil)))
     (loop for slot in slots-list by #'cddr
           and value in (rest slots-list) by #'cddr do

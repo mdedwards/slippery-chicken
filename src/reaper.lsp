@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  15:40:59 Sat Jun 22 2024 CEST
+;;; $$ Last modified:  16:18:41 Sat Jun 22 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -91,8 +91,7 @@
    ;; make-reaper-file then before writing they'll be separated into tracks and
    ;; written into those. This can be any string though of course it makes sense
    ;; to put more than one item on a single track
-   (track :accessor track :type string :initarg :track
-          :initform "reaper-lisp")
+   (track :accessor track :type string :initarg :track :initform "reaper-lisp")
    ;; MDE Tue Nov 28 14:16:25 2023, Heidhausen -- 
    ;; this is the volume defined with the slider in media item properties
    (slider-vol :accessor slider-vol :type number :initarg :slider-vol

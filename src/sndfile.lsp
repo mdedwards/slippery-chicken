@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  15:36:40 Sat Jun 22 2024 CEST
+;;; $$ Last modified:  10:02:08 Mon Jun 24 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -746,18 +746,27 @@ data: /path/to/sndfile-1.aiff
               (clm::sound-length filename)
               (clm::sound-framples filename))
         #+ffprobe
-        (parse-ffprobe-string
-         (shell-to-string
-          (if (stringp ffprobe)
-            ffprobe
-            (get-sc-config 'ffprobe-command))
-          "-v" "quiet"
-          "-show_entries" "format=duration,size"
-          "-show_entries"
-          "stream=sample_rate,channels,r_frame_rate,width,height"
-          "-show_entries" "stream=bits_per_sample,codec_name"
-          "-of" "default=noprint_wrappers=1:nokey=0"
-          filename))
+        (let ((info (parse-ffprobe-string
+                     (shell-to-string
+                      (if (stringp ffprobe)
+                        ffprobe
+                        (get-sc-config 'ffprobe-command))
+                      "-v" "quiet"
+                      "-show_entries" "format=duration,size"
+                      "-show_entries"
+                      "stream=sample_rate,channels,r_frame_rate,width,height"
+                      "-show_entries" "stream=bits_per_sample,codec_name"
+                      "-of" "default=noprint_wrappers=1:nokey=0"
+                      filename))))
+          ;; MDE Mon Jun 24 09:53:45 2024, Heidhausen -- warn if not found or
+          ;; not parsed, e.g. an existing file sometimes results in a list of
+          ;; nils if the path starts with "~" on macos :/
+          (when (or (not info) (every #'not info))
+            (setq info nil)
+            (warn "sndfile::get-sound-info: ~a~%can't be parsed: maybe  ~
+                   the path isn't working ~%(e.g. begins with \"~~/\" on macos)"
+                  filename))
+          info)
         #-ffprobe
         (error "sndfile::get-sound-info: this command needs ffprobe, ~%i.e. ~
                 the ffprobe-command defined in globals.lsp needs to exist ~%~

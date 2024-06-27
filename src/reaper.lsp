@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  15:12:00 Thu Jun 27 2024 CEST
+;;; $$ Last modified:  15:47:42 Thu Jun 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -87,6 +87,9 @@
    ;; slot, which is generally but not necesssarily unique (e.g. if used in
    ;; assoc-lists)
    (name :accessor name :initarg :name :initform nil)
+   ;; MDE Thu Jun 27 15:41:03 2024, Heidhausen -- whether to play in reverse
+   (backwards :accessor backwards :type boolean :initarg :backwards
+              :initform nil)
    ;; the name of the track to put this item on. If items are passed to
    ;; make-reaper-file then before writing they'll be separated into tracks and
    ;; written into those. This can be any string though of course it makes sense
@@ -238,10 +241,11 @@
   (format stream
           "~%REAPER-ITEM: fade-in: ~,3f, fade-out: ~,3f, play-rate: ~,3f, ~
            ~%preserve-pitch: ~a, start-time: ~a, name: ~a,~%track: ~a ~
-           ~%slider-vol: ~a, item-vol: ~a, pan: ~a, transposition: ~a"
+           ~%slider-vol: ~a, item-vol: ~a, pan: ~a, transposition: ~a, ~
+           ~%backwards: ~a"
           (fade-in ri) (fade-out ri) (play-rate ri) (preserve-pitch ri)
           (start-time ri) (name ri) (track ri) (slider-vol ri) (item-vol ri)
-          (pan ri) (transposition ri)))
+          (pan ri) (transposition ri) (backwards ri)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone ((ri reaper-item))
@@ -257,6 +261,7 @@
           (slot-value vidfile 'start-time) (start-time ri)
           (slot-value vidfile 'name) (name ri)
           (slot-value vidfile 'track) (track ri)
+          (slot-value vidfile 'backwards) (backwards ri)
           (slot-value vidfile 'transposition) (transposition ri)
           (slot-value vidfile 'play-rate) (play-rate ri)
           (slot-value vidfile 'pan) (pan ri))
@@ -332,6 +337,11 @@
           ;; expressed in DB within reaper.
           (* (slider-vol ri) (amplitude ri))
           (start ri) (play-rate  ri) (preserve-pitch ri) (transposition ri)
+          ;; MDE Thu Jun 27 15:44:14 2024, Heidhausen -- we can now play items
+          ;; in reverse, though this is not something we can do in
+          ;; reaper-play. on the other hand using the :items-processor arg to
+          ;; reaper-play we could set the backwards slot algorithmically
+          (if (backwards ri) 3 1) ; not sure what the other modes are yet
           ;; MDE Thu Mar 21 10:15:49 2024, Heidhausen -- the only cursory
           ;; difference I see between audio and video is that the former has
           ;; <SOURCE WAVE whereas the latter has <SOURCE VIDEO

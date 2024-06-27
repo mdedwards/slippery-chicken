@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  16:18:41 Sat Jun 22 2024 CEST
+;;; $$ Last modified:  15:12:00 Thu Jun 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -223,7 +223,14 @@
   ;; name.
   ;; trigger the setf method
   (setf (track ri) (track ri))
-  (when (and (path ri) (stringp (path ri)) (not (name ri)))
+  (set-name-from-path ri))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jun 27 15:04:54 2024, Heidhausen -- unless overwrite, only set the
+;;; name slot if it is currently nil 
+(defmethod set-name-from-path ((ri reaper-item) &optional (overwrite t))
+  (when (and (path ri) (stringp (path ri))
+             (or overwrite (not (name ri))))
     (setf (name ri) (pathname-name (path ri)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

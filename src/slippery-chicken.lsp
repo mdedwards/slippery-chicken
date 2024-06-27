@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:41:32 Fri Mar 22 2024 CET
+;;; $$ Last modified:  15:15:58 Thu Jun 27 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5594,8 +5594,8 @@ seq-num 5, VN, replacing G3 with B6
                                       :chord-accessor chord-accessor
                                       :note-number note-number))
          (section1-num-seqs (if num-sequences
-                                num-sequences
-                                (num-seqs sc section)))
+                              num-sequences
+                              (num-seqs sc section)))
          (num-players (length players))
          (events-per-player (ml 0 num-players))
          ;; clisp doesn't like (loop for player in events sum (loop for rs ...
@@ -5650,18 +5650,18 @@ seq-num 5, VN, replacing G3 with B6
               (short-file-names
                (format nil "~{~a-~}~a~{~a-~}~{~a.~}~a-~a~a~a.rpp"
                        (if (listp sound-file-palette-ref) 
-                           sound-file-palette-ref
-                           (list sound-file-palette-ref))
+                         sound-file-palette-ref
+                         (list sound-file-palette-ref))
                        (if sound-file-palette-ref2
-                           "to-"
-                           "")
+                         "to-"
+                         "")
                        (when sound-file-palette-ref2
                          (if (listp sound-file-palette-ref2) 
-                             sound-file-palette-ref2
-                             (list sound-file-palette-ref2)))
+                           sound-file-palette-ref2
+                           (list sound-file-palette-ref2)))
                        (if (listp section) 
-                           section 
-                           (list section))
+                         section 
+                         (list section))
                        from-sequence 
                        (+ -1 from-sequence section1-num-seqs)
                        output-name-uniquifier
@@ -5672,17 +5672,17 @@ seq-num 5, VN, replacing G3 with B6
                          ;; MDE Tue Feb 20 10:26:55 2024, Heidhausen -- now
                          ;; use the title, if it was explicitly given
                          (if (string= (title sc) "slippery chicken")
-                             (string-trim "+" (id sc))
-                             (filename-from-title (title sc)))
+                           (string-trim "+" (id sc))
+                           (filename-from-title (title sc)))
                          (if (listp section) section (list section))
                          players
                          (if (listp sound-file-palette-ref) 
-                             sound-file-palette-ref
-                             (list sound-file-palette-ref))
+                           sound-file-palette-ref
+                           (list sound-file-palette-ref))
                          (when sound-file-palette-ref2
                            (if (listp sound-file-palette-ref2) 
-                               sound-file-palette-ref2
-                               (list sound-file-palette-ref2)))
+                             sound-file-palette-ref2
+                             (list sound-file-palette-ref2)))
                          from-sequence 
                          (+ -1 from-sequence section1-num-seqs)
                          (if pitch-synchronous "-psync" ""))))))
@@ -5713,13 +5713,13 @@ seq-num 5, VN, replacing G3 with B6
     (when pan-min-max
       (setq pan-vals (loop for p in pan-vals
                            collect
-                               (fscale p 15 75 (first pan-min-max)
-                                       (second pan-min-max)))))
+                           (fscale p 15 75 (first pan-min-max)
+                                   (second pan-min-max)))))
     ;; now we have degrees but still have to convert to -1.0 to 1.0 whether
     ;; pan-min-max was given or not 
     (setq pan-vals (loop for p in pan-vals
-                           collect  ; convert degrees to -1.0 -> 1.0
-                              (rescale p 0 90 -1.0 1.0)))
+                         collect        ; convert degrees to -1.0 -> 1.0
+                         (rescale p 0 90 -1.0 1.0)))
     (when (and sound-file-palette-ref (zerop (sclist-length snds)))
       (error "slippery-chicken::reaper-play: <snds>: No sounds for reference ~a"
              sound-file-palette-ref))
@@ -5731,16 +5731,16 @@ seq-num 5, VN, replacing G3 with B6
     ;; are we setting snd-transitions by default with finonacci-transitions or
     ;; with a custom envelope?
     (if (and snd-transitions sound-file-palette-ref2)
-        (setq snd-transitions
-              (loop for num-events in events-per-player
-                    collect
-                       (loop for n below num-events
-                             collect
-                                (round
-                                 (interpolate n (new-lastx snd-transitions
-                                                           num-events))))))
-        (setq snd-transitions (loop for num-events in events-per-player
-                                    collect (fibonacci-transition num-events))))
+      (setq snd-transitions
+            (loop for num-events in events-per-player
+                  collect
+                  (loop for n below num-events
+                        collect
+                        (round
+                         (interpolate n (new-lastx snd-transitions
+                                                   num-events))))))
+      (setq snd-transitions (loop for num-events in events-per-player
+                                  collect (fibonacci-transition num-events))))
     (when (and check-overwrite (probe-file output))
       (setf output-ok 
             (yes-or-no-p "File exists: ~%~a  ~%Overwrite (yes or no) > " 
@@ -5754,24 +5754,24 @@ seq-num 5, VN, replacing G3 with B6
         (when snds2
           (loop for snd in (data snds2) do (reset-usage snd)))
         (loop for player in events and snd-trans in snd-transitions do
-                 (setf snd-trans (copy-list snd-trans))
-                 (loop for rs in player do
-                          (loop 
-                            for event in rs 
-                            for sndlist =
-                               (when snds
-                                 (get-sndfiles-from-user-fun
-                                  event
-                                  (if (and snds2 (= 1 (pop snd-trans)))
-                                      snds2 snds)
-                                  snd-selector))
-                            do
-                               (loop
-                                 for snd in sndlist do
-                                 (unless snd
-                                   (error "slippery-chicken:: reaper-play: ~
+          (setf snd-trans (copy-list snd-trans))
+          (loop for rs in player do
+            (loop 
+              for event in rs 
+              for sndlist =
+                          (when snds
+                            (get-sndfiles-from-user-fun
+                             event
+                             (if (and snds2 (= 1 (pop snd-trans)))
+                               snds2 snds)
+                             snd-selector))
+              do
+                 (loop
+                   for snd in sndlist do
+                     (unless snd
+                       (error "slippery-chicken:: reaper-play: ~
                                            snd is nil (whilst counting)!"))
-                                        (incf (will-be-used snd))))))
+                     (incf (will-be-used snd))))))
         ;; here we reset them before starting, this is correct!
         (reset snds)
         (when snds2 (reset snds)))
@@ -5786,7 +5786,7 @@ seq-num 5, VN, replacing G3 with B6
               ;; for ffv = (print (first (first player)))
               for ffv = (first (remove-if-not #'event-p (flatten player)))
               if ffv minimize (start-time ffv)))
-      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; here we go! ;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; here we go! ;;;;;;
       (loop
         for player in events and player-name in players and snd-trans in
         snd-transitions and player-count from 1
@@ -5840,214 +5840,218 @@ seq-num 5, VN, replacing G3 with B6
              (when snds2 (reset snds2)))
            (loop
              for rs in player and rs-count from 0 while happy do
-                (setf events-this-rs (length rs))
-                (format t "~%    Processing rthm-seq ~a (~a events)~%"
-                        ;; print the rthm-seq id if we're only doing one
-                        ;; section otherwise the rthm-seq count MDE Tue Apr 3
-                        ;; 09:54:46 2012 -- make sure we don't crash if the
-                        ;; requested instrument is sitting this section out
-                        ;; 
-                        ;; MDE Wed Feb 24 19:54:51 2016 -- now rs is the
-                        ;; list of events but we need to know the id of
-                        ;; the original rthm-seq hence the nth. In any
-                        ;; case the following test was wrong; instead we
-                        ;; can just see if we've got a list of events in
-                        ;; rs
-                        (let ((tmp (when (and rthm-seqs rs)
-                                     (nth rs-count rthm-seqs))))
-                          (if tmp 
-                              (id tmp)
-                              (1+ rs-count)))
-                        events-this-rs)
-                (when reset-snds-each-rs
-                  (when snds (reset snds))
-                  (when snds2 (reset snds2)))
-                (loop
-                  for event in rs and rs-event-count from 0
-                  while happy
-                  do
-                     (setq snd-group (pop snd-trans)
-                           ;; MDE Mon Nov  4 11:11:07 2013 
-                           freqs (let ((f (frequency
-                                           (pitch-or-chord event))))
-                                   (if (listp f) f (list f)))
-                           sndl (if snds
-                                    ;; MDE Fri Oct  2 09:48:39 2015 
-                                    (get-sndfiles-from-user-fun
-                                     event
-                                     (if (and snds2 (= 1 snd-group))
-                                         snds2 snds)
-                                     snd-selector)
-                                    ;; MDE Tue Aug 8 16:21:34 2017
-                                    ;; -- anything so long as we can
-                                    ;; make the loop below work
-                                    (ml nil (length freqs)))
-                           duration (* (interpolate
-                                        event-count-player
-                                        this-duration-scaler-env)
-                                       (compound-duration-in-tempo
-                                        event))
-                           skip-this-event 
-                           (unless (zerop events-before-max-start)
-                             (> (random-rep 100.0)
-                                (interpolate event-count-player 
-                                             this-play-chance-env
-                                             :exp
-                                             play-chance-env-exp)))
-                           srts (if do-src
-                                    (src-for-sample-freq  ; returns a list
-                                     (if srt-freq
-                                         srt-freq
-                                         (if
-                                          (and sndl
-                                               (not
-                                                (every #'not sndl)))
-                                          sndl 261.626))
-                                     event)
-                                    '(1.0)))
-                     (loop
-                       for srt in srts and freq in freqs
-                       and snd in sndl
-                       do
-                          (setq srt (* (interpolate
-                                        event-count-player
-                                        this-src-scaler-env)
-                                       srt)
-                                amp (if snd (amplitude snd) 1.0))
-                          (when (<= srt 0.0)
-                            (error "slippery-chicken:: reaper-play: illegal ~
+               (setf events-this-rs (length rs))
+               (format t "~%    Processing rthm-seq ~a (~a events)~%"
+                       ;; print the rthm-seq id if we're only doing one
+                       ;; section otherwise the rthm-seq count MDE Tue Apr 3
+                       ;; 09:54:46 2012 -- make sure we don't crash if the
+                       ;; requested instrument is sitting this section out
+                       ;; 
+                       ;; MDE Wed Feb 24 19:54:51 2016 -- now rs is the
+                       ;; list of events but we need to know the id of
+                       ;; the original rthm-seq hence the nth. In any
+                       ;; case the following test was wrong; instead we
+                       ;; can just see if we've got a list of events in
+                       ;; rs
+                       (let ((tmp (when (and rthm-seqs rs)
+                                    (nth rs-count rthm-seqs))))
+                         (if tmp 
+                           (id tmp)
+                           (1+ rs-count)))
+                       events-this-rs)
+               (when reset-snds-each-rs
+                 (when snds (reset snds))
+                 (when snds2 (reset snds2)))
+               (loop
+                 for event in rs and rs-event-count from 0
+                 while happy
+                 do
+                    (setq snd-group (pop snd-trans)
+                          ;; MDE Mon Nov  4 11:11:07 2013 
+                          freqs (let ((f (frequency
+                                          (pitch-or-chord event))))
+                                  (if (listp f) f (list f)))
+                          sndl (if snds
+                                 ;; MDE Fri Oct  2 09:48:39 2015 
+                                 (get-sndfiles-from-user-fun
+                                  event
+                                  (if (and snds2 (= 1 snd-group))
+                                    snds2 snds)
+                                  snd-selector)
+                                 ;; MDE Tue Aug 8 16:21:34 2017
+                                 ;; -- anything so long as we can
+                                 ;; make the loop below work
+                                 (ml nil (length freqs)))
+                          duration (* (interpolate
+                                       event-count-player
+                                       this-duration-scaler-env)
+                                      (compound-duration-in-tempo
+                                       event))
+                          skip-this-event 
+                          (unless (zerop events-before-max-start)
+                            (> (random-rep 100.0)
+                               (interpolate event-count-player 
+                                            this-play-chance-env
+                                            :exp
+                                            play-chance-env-exp)))
+                          srts (if do-src
+                                 (src-for-sample-freq ; returns a list
+                                  (if srt-freq
+                                    srt-freq
+                                    (if
+                                        (and sndl
+                                             (not
+                                              (every #'not sndl)))
+                                      sndl 261.626))
+                                  event)
+                                 '(1.0)))
+                    (loop
+                      for srt in srts and freq in freqs
+                      and snd in sndl
+                      do
+                         (setq srt (* (interpolate
+                                       event-count-player
+                                       this-src-scaler-env)
+                                      srt)
+                               amp (if snd (amplitude snd) 1.0))
+                         (when (<= srt 0.0)
+                           (error "slippery-chicken:: reaper-play: illegal ~
                                     sample rate conversion: ~a"
-                                   srt))
-                          ;; MDE Mon Apr  9 12:31:07 2012
-                          (when snd
-                            (unless (duration snd)
-                              (error "~a~%slippery-chicken:: reaper-play: ~
+                                  srt))
+                         ;; MDE Mon Apr  9 12:31:07 2012
+                         (when snd
+                           (unless (duration snd)
+                             (error "~a~%slippery-chicken:: reaper-play: ~
                                       sound duration is NIL!"
-                                     snd)))
-                          ;; given the srt, what's the longest output dur this
-                          ;; sound can make?
-                          (setq available-dur 
-                                (if snd
-                                    ;; handle transpostion vs. play-rate here
-                                    (if pitch-adjust
-                                         (duration snd)
-                                         (/ (duration snd) srt))
-                                    most-positive-short-float)
-                                wanted-duration-string ""
-                                input-start
-                                (if snd (start snd) 0.0))
-                          (when skip-this-event
-                            (incf total-skipped))
-                          (when inc-start
-                            (unless snd
-                              (error "~%slippery-chicken:: reaper-play: ~
+                                    snd)))
+                         ;; given the srt, what's the longest output dur this
+                         ;; sound can make?
+                         (setq available-dur 
+                               (if snd
+                                 ;; handle transpostion vs. play-rate here
+                                 (if pitch-adjust
+                                   (duration snd)
+                                   (/ (duration snd) srt))
+                                 most-positive-short-float)
+                               wanted-duration-string ""
+                               input-start
+                               (if snd (start snd) 0.0))
+                         (when skip-this-event
+                           (incf total-skipped))
+                         (when inc-start
+                           (unless snd
+                             (error "~%slippery-chicken:: reaper-play: ~
                                       can't do inc-start with no ~
                                       sndfile-palette."))
-                            ;; handle transpostion vs. play-rate here
-                            (setq latest-possible-start
-                                  (- (end snd) (if pitch-adjust
-                                                 duration
-                                                 (* srt duration))))
-                            (unless (and (< latest-possible-start
-                                            (start snd))
-                                         (not (zerop
-                                               (will-be-used snd))))
-                              (incf input-start
-                                    (* (has-been-used snd)
-                                       (/
-                                        (- latest-possible-start
+                           ;; handle transpostion vs. play-rate here
+                           (setq latest-possible-start
+                                 (- (end snd) (if pitch-adjust
+                                                duration
+                                                (* srt duration))))
+                           (unless (and (< latest-possible-start
                                            (start snd))
-                                        (will-be-used snd)))))
-                            (incf (has-been-used snd)))
-                          ;; MDE Thu Feb 29 09:32:24 2024, Heidhausen -- to be
-                          ;; sure  
-                          (setq input-start (max 0.0 (min latest-possible-start
-                                                          input-start)))
-                          ;; (when (>= input-start (end snd))
-                          ;; (print latest-possible-start)
-                          ;; (break))
-                          (when (> duration available-dur)
-                            (setq wanted-duration duration
-                                  wanted-duration-string 
-                                  (if duration-run-over
-                                      (format nil " (~,3f available but ~
+                                        (not (zerop
+                                              (will-be-used snd))))
+                             (incf input-start
+                                   (* (has-been-used snd)
+                                      (/
+                                       (- latest-possible-start
+                                          (start snd))
+                                       (will-be-used snd)))))
+                           (incf (has-been-used snd)))
+                         ;; MDE Thu Feb 29 09:32:24 2024, Heidhausen -- to be
+                         ;; sure  
+                         (setq input-start (max 0.0 (min latest-possible-start
+                                                         input-start)))
+                         ;; (when (>= input-start (end snd))
+                         ;; (print latest-possible-start)
+                         ;; (break))
+                         (when (> duration available-dur)
+                           (setq wanted-duration duration
+                                 wanted-duration-string 
+                                 (if duration-run-over
+                                   (format nil " (~,3f available but ~
                                                     duration-run-over is t)"
-                                              available-dur)
-                                      (format nil " (wanted ~,3f)"
-                                              wanted-duration)))
-                            (unless duration-run-over
-                              (setq duration available-dur)))
-                          (when (< duration 0)
-                            (warn "slippery-chicken::reaper-play: ~
+                                           available-dur)
+                                   (format nil " (wanted ~,3f)"
+                                           wanted-duration)))
+                           (unless duration-run-over
+                             (setq duration available-dur)))
+                         (when (< duration 0)
+                           (warn "slippery-chicken::reaper-play: ~
                                    Duration < 0  ?????~%"))
-                          (unless (start-time event)
-                            (error "~a~%slippery-chicken::reaper-play: ~
+                         (unless (start-time event)
+                           (error "~a~%slippery-chicken::reaper-play: ~
                                     no start time!!!" event))
-                          (setq output-start (+ time-offset
-                                                (- (start-time event)
-                                                   first-event-start)))
-                          (when (> output-start max-start-time)
-                            (setq happy nil))
-                          (when happy
-                            (format t "        ~a/~a Events: ~a~
+                         (setq output-start (+ time-offset
+                                               (- (start-time event)
+                                                  first-event-start)))
+                         (when (> output-start max-start-time)
+                           (setq happy nil))
+                         (when happy
+                           (format t "        ~a/~a Events: ~a~
                                  ~%             ~a ~a~
                                  ~%             start-time ~,3f, input-start: ~
                                  ~,3f, ~%             duration ~,3f~a, ~
                                  ~%             amp ~,2f, srt ~,2f ~
                                  (pitch-or-chord ~,3fHz, sample freq ~,3f)~%"
-                                    event-count total-events
-                                    (if skip-this-event "Skipped" 
-                                        "Written (not skipped)")
-                                    (if snd (path snd) "")
-                                    (if snds2
-                                        (format nil "(snd-group ~a)" 
-                                                (1+ snd-group))
-                                        "")
-                                    output-start input-start duration
-                                    wanted-duration-string amp srt 
-                                    ;; MDE Tue Apr 17 13:14:45 2012 -- added
-                                    ;; frequency method to chord also so that
-                                    ;; this doesn't fail
-                                    (frequency (pitch-or-chord event))
-                                    (if snd (frequency snd) "n/a")))
-                          (unless (or skip-this-event (not happy)
-                                      (zerop duration))
-                            (push 
-                             (make-reaper-item-fast
-                              (list 'path (path snd)
-                                     'fade-in (* duration fade-in)
-                                     'fade-out (* duration fade-out)
-                                     'duration duration
-                                     'start input-start
-                                     ;; in this method by default we simulate
-                                     ;; the sampling-rate conversion method of
-                                     ;; CLM where a change of 'speed' is
-                                     ;; accompanied by a change in pitch. But we
-                                     ;; also allow a change of pitch without a
-                                     ;; change in speed. This necessitates the
-                                     ;; 3rd arg (semitones) to the PLAYRATE line
-                                     ;; in the .rpp file and setting this to the
-                                     ;; transposition given to the reaper-item
-                                     ;; class
-                                     'play-rate (if pitch-adjust
-                                                  1.0
-                                                  srt)
-                                     'transposition (if pitch-adjust
-                                                      (srt srt)
-                                                      0.0)
-                                     'preserve-pitch nil
-                                     'channels (channels snd)
-                                     'start-time output-start
-                                     'item-vol amp
-                                     'track (get-next player-strings)
-                                     'pan (if pan-fun
-                                            (rescale
-                                             (funcall pan-fun event)
-                                             0 90 -1.0 1.0)
-                                            (nth (random 7) pan-vals))))
-                             reaper-items)))
-                     (incf event-count-player)
-                     (incf event-count)))))
+                                   event-count total-events
+                                   (if skip-this-event "Skipped" 
+                                     "Written (not skipped)")
+                                   (if snd (path snd) "")
+                                   (if snds2
+                                     (format nil "(snd-group ~a)" 
+                                             (1+ snd-group))
+                                     "")
+                                   output-start input-start duration
+                                   wanted-duration-string amp srt 
+                                   ;; MDE Tue Apr 17 13:14:45 2012 -- added
+                                   ;; frequency method to chord also so that
+                                   ;; this doesn't fail
+                                   (frequency (pitch-or-chord event))
+                                   (if snd (frequency snd) "n/a")))
+                         (unless (or skip-this-event (not happy)
+                                     (zerop duration))
+                           (let ((ri (make-reaper-item-fast
+                                      (list 'path (path snd)
+                                            'fade-in (* duration fade-in)
+                                            'fade-out (* duration fade-out)
+                                            'duration duration
+                                            'start input-start
+                                            ;; in this method by default we
+                                            ;; simulate the sampling-rate
+                                            ;; conversion method of CLM where a
+                                            ;; change of 'speed' is accompanied
+                                            ;; by a change in pitch. But we
+                                            ;; also allow a change of pitch
+                                            ;; without a change in speed. This
+                                            ;; necessitates the 3rd arg
+                                            ;; (semitones) to the PLAYRATE line
+                                            ;; in the .rpp file and setting
+                                            ;; this to the transposition given
+                                            ;; to the reaper-item class
+                                            'play-rate (if pitch-adjust
+                                                         1.0
+                                                         srt)
+                                            'transposition (if pitch-adjust
+                                                             (srt srt)
+                                                             0.0)
+                                            'preserve-pitch nil
+                                            'channels (channels snd)
+                                            'start-time output-start
+                                            'item-vol amp
+                                            'track (get-next player-strings)
+                                            'pan (if pan-fun
+                                                   (rescale
+                                                    (funcall pan-fun event)
+                                                    0 90 -1.0 1.0)
+                                                   (nth (random 7)
+                                                        pan-vals))))))
+                             ;; MDE Thu Jun 27 15:15:30 2024, Heidhausen
+                             (set-name-from-path ri)
+                             (push ri reaper-items))))
+                    (incf event-count-player)
+                    (incf event-count)))))
     ;; MDE Wed Feb 21 13:18:49 2024, Heidhausen -- process the reaper-items, if
     ;; desired, before writing the file
     (setq reaper-items (reverse reaper-items))

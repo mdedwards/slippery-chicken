@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:41:58 Thu Apr 18 2024 CEST
+;;; $$ Last modified:  15:13:20 Thu Jun 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8306,7 +8306,7 @@
                cl-user::+slippery-chicken-home-dir+ 
                sf))
 
-;;;  LF 2024-03-17 19:40:58
+;;; LF 2024-03-17 19:40:58
 #+(or clm ffprobe)
 (sc-deftest test-sndfile-get-sound-info ()
   (let ((info1 (get-sound-info (get-test-sf-path "tests/pink5s.wav")))
@@ -20514,6 +20514,7 @@ est)")))
                ;; )
                ;; rf1)))))
                (rf2  (make-reaper-file 'otest2 items2 :cursor end-time2))
+               (ri1 (make-reaper-item (first sndfiles)))
                (items3 (make-reaper-items3 (append sndfiles sndfiles) .1))
                (rf3  (make-reaper-file 'otest3 items3 :cursor end-time2)))
           (probe-delete "/tmp/reaper-test.rpp")
@@ -20523,6 +20524,12 @@ est)")))
           (probe-delete "/tmp/reaper-test5.rpp")
           (probe-delete "/tmp/test.rpp")
           (sc-test-check
+            (string= "test-sndfile-4" (name ri1))
+            (setf (name ri1) "blah")
+            (not (set-name-from-path ri1 nil))
+            (string= "blah" (name ri1))
+            (set-name-from-path ri1)
+            (string= "test-sndfile-4" (name ri1))
             ;; MDE Wed Oct 18 10:09:21 2023, Heidhausen -- check marker writing
             ;; throws no errors when writing to the default path
             (write-reaper-file (make-reaper-file 'test nil)

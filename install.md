@@ -410,6 +410,8 @@ dependencies, is usually very easy. You can either download the sources from
 # in your ASDF/Quicklisp standard directory
 git clone https://github.com/mdedwards/slippery-chicken.git
 ```
+> [!NOTE]
+> On `Windows`, the recommended way is to use [GitBash](https://gitforwindows.org/) to clone slippery chicken, with line-endings set to Unix-style. This can be configured globally in Git with these commands: `git config --global core.autocrlf false` `git config --global core.eol lf`. This configuration is necessary because slippery chicken might not compile correctly if the end-of-line (EOL) characters are set to CRLF instead of LF.
 
 ### Configure slippery-chicken
 

@@ -62,7 +62,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  10:37:45 Wed Jun  7 2023 CEST
+;;; $$ Last modified:  16:18:50 Sat Jun 29 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -322,7 +322,6 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* recurring-event/make-re
 ;;; DESCRIPTION
 ;;; Make an instance of a recurring-event object, which allows for the

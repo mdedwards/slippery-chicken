@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  12:25:25 Thu Mar 21 2024 CET
+;;; $$ Last modified:  17:10:00 Sat Jun 29 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1062,7 +1062,9 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 ;;; - A single pattern (string) or list of patterns that the sound
 ;;;   file name must have--just the filename, excluding path/folders and
 ;;;   extension. If a list then all patterns must be in the file name, not
-;;;   just one of them. Default = NIL.
+;;;   just one of them, unless (hack alert!) the first element of the list is
+;;;   the symbol or, in which case only one of the patterns must be
+;;;   present. Default = NIL.  
 ;;; - Sim. to :insist except this/these are patterns none of which can
 ;;;   be in the file name. Default = NIL.
 ;;; 
@@ -1096,7 +1098,12 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
                                                  "aif\"" "wav\"" "aiff\""
                                                  "snd\"")
                           :test #'string=)
-                  (seq-has-all insist name)
+                  ;; MDE Sat Jun 29 17:08:17 2024, Heidhausen -- this is a bit
+                  ;; of a hack but I don't want to destroy existing
+                  ;; functionality and it is somehow fitting
+                  (if (eq (first insist) 'or)
+                    (seq-has-some (rest insist) name)
+                    (seq-has-all insist name))
                   (seq-has-none resist name))
           collect file))
 

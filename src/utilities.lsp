@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:16:48 Thu Mar 21 2024 CET
+;;; $$ Last modified:  17:01:31 Sat Jun 29 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5656,6 +5656,12 @@ RETURNS:
        (when (search p sequence)
          (incf count))
      finally (return (= count (length patterns)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun seq-has-some (patterns sequence)
+  (loop for p in patterns do
+    (when (search p sequence)
+      (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Oct  1 16:29:34 2015 -- T or NIL depending on whether sequence has

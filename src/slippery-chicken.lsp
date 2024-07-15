@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:15:58 Thu Jun 27 2024 CEST
+;;; $$ Last modified:  20:29:49 Tue Jul  2 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4876,14 +4876,13 @@ seq-num 5, VN, replacing G3 with B6
     ;; are we setting snd-transitions by default with finonacci-transitions or
     ;; with a custom envelope?
     (if (and snd-transitions sound-file-palette-ref2)
-      (setf snd-transitions
+      (setq snd-transitions
             (loop for num-events in events-per-player
                   collect
-                  (loop for n below num-events
-                        collect
-                        (round (interpolate n (new-lastx snd-transitions
-                                                         num-events))))))
-      (setf snd-transitions (loop for num-events in events-per-player
+                  (loop with sts = (new-lastx snd-transitions num-events)
+                        for n below num-events collect
+                        (round (interpolate n sts)))))
+      (setq snd-transitions (loop for num-events in events-per-player
                                   collect (fibonacci-transition num-events))))
     (when (and check-overwrite (probe-file output))
       (setf output-ok 
@@ -5728,17 +5727,16 @@ seq-num 5, VN, replacing G3 with B6
                        No sounds for reference ~a"
                       sound-file-palette-ref2)))
     ;; DJR Mon 16 Sep 2019 01:26:11 BST
-    ;; are we setting snd-transitions by default with finonacci-transitions or
+    ;; are we setting snd-transitions by default with fibonacci-transitions or
     ;; with a custom envelope?
     (if (and snd-transitions sound-file-palette-ref2)
       (setq snd-transitions
             (loop for num-events in events-per-player
                   collect
-                  (loop for n below num-events
-                        collect
+                  (loop with sts = (new-lastx snd-transitions num-events)
+                        for n below num-events collect
                         (round
-                         (interpolate n (new-lastx snd-transitions
-                                                   num-events))))))
+                         (interpolate n sts)))))
       (setq snd-transitions (loop for num-events in events-per-player
                                   collect (fibonacci-transition num-events))))
     (when (and check-overwrite (probe-file output))

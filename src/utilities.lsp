@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:01:31 Sat Jun 29 2024 CEST
+;;; $$ Last modified:  20:38:20 Tue Jul  2 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1627,29 +1627,29 @@
    be raised to."
   ;; MDE Thu Jul 14 21:29:59 2016 -- could happen...
   (if (not env)
-      point
-      (let ((lastx (lastx env))
-            (lasty (first (last env))))
-        (cond ((> point lastx)
-               (when warn
-                 (warn "interpolate: ~a is off the x axis of ~%~a~
-                        ~%returning last y value: ~a"
-                       point env lasty))
-               lasty)
-              ((< point (car env))
-               (let (y1)
-                 ;; (error "interpolate: Can't interpolate ~a in ~a" point env))
-                 ;; MDE Thu Apr 23 09:48:57 2020, Heidhausen -- if our x values
-                 ;; start > the point we're looking for, return the first y value
-                 (warn "utilities::interp-aux: envelope starts later than point!~
+    point
+    (let ((lastx (lastx env))
+          (lasty (first (last env))))
+      (cond ((> point lastx)
+             (when warn
+               (warn "interpolate: ~a is off the x axis of ~%~a~
+                      ~%returning last y value: ~a"
+                     point env lasty))
+             lasty)
+            ((< point (car env))
+             (let (y1)
+               ;; (error "interpolate: Can't interpolate ~a in ~a" point env))
+               ;; MDE Thu Apr 23 09:48:57 2020, Heidhausen -- if our x values
+               ;; start > the point we're looking for, return the first y value
+               (warn "utilities::interp-aux: envelope starts later than point!~
                       ~%Returning first y value: ~a" (setq y1 (second env)))
-                 y1))
-              (t (interp-aux point env scaler exp))))))
+               y1))
+            (t (interp-aux point env scaler exp))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun interp-aux (point env scaler exp)
   (let ((here (loop for i in env by #'cddr and j from 1 do
-                   (if (<= point i) (return (+ j j -2))))))
+    (if (<= point i) (return (+ j j -2))))))
     ;; rounding in making the new-env with new-lastx can cause the very last
     ;; event to be just a little bigger than the last x value in the new-env.
     ;; If this is the case, <here> will be nil so we better deal with this:
@@ -1666,16 +1666,16 @@
                 numbers: ~a"
                env))
       (if (= x1 x2)
-          (progn
-            (warn "utilities::interp-aux: weird values for interp-aux: ~a in ~a."
-                  point env)
-            (nth (1- here) env))
-          (get-interpd-y point 
-                         x1 
-                         (* scaler (nth (- here 1) env))
-                         x2
-                         (* scaler (nth (+ here 1) env))
-                         exp)))))
+        (progn
+          (warn "utilities::interp-aux: weird values for interp-aux: ~a in ~a."
+                point env)
+          (nth (1- here) env))
+        (get-interpd-y point 
+                       x1 
+                       (* scaler (nth (- here 1) env))
+                       x2
+                       (* scaler (nth (+ here 1) env))
+                       exp)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun get-interpd-y (point x1 y1 x2 y2 exp)
@@ -6552,6 +6552,7 @@ yes_foo, 1 2 3 4;
     (helper (rescale (rationalize selector) 0 1 0 (loop for i in weights sum
                                                        (rationalize i)))
             (cdr weights) 0 (rationalize (car weights)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/visualize
 ;;; AUTHOR

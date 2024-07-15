@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  22:04:42 Tue Dec 19 2023 CET
+;;; $$ Last modified:  20:10:53 Mon Jul 15 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -550,7 +550,7 @@
       (:staff-name "double bass" :staff-short-name "db"
        :lowest-written e2 :highest-written g5 :transposition-semitones -12 
        :prefers-notes low
-       :largest-fast-leap 10
+       :largest-fast-leap 8 ; 10
        :clefs (bass tenor treble) :starting-clef bass
        :chords nil 
        :microtones t :harmonics t

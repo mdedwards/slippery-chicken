@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  15:54:44 Sat Mar 16 2024 CET
+;;; $$ Last modified:  11:08:27 Wed Jul 17 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -416,34 +416,41 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
     (let* ((n (make-pitch note))
            (deviation (cents-hertz n tolerance))
            result string node)
-      (when (harmonics ins) ; (harmonic-pitches ins))
+      (when (harmonics ins)                            ; (harmonic-pitches ins))
         (if (and (nodes ins) (not (open-strings ins))) ; e.g. harp
-            ;; this means we'll only ever use one partial, the lowest, probably
-            ;; the 8ve but for now that's all we need.
-            (let* ((lowest-partial (first (sort (mapcar #'second (nodes ins))
-                                                #'<)))
-                   ;; get the string we'll play the harmonic on, probably the
-                   ;; 8ve below
-                   (string (transpose n (- (srt lowest-partial)))))
-              (when (in-range ins string nil nil t t)
-                ;; (setq result (transpose n -12))))
-                (setq result n)))
-            ;; violin etc.: strings ascend in pitch but down in number, of
-            ;; course 
+          ;; this means we'll only ever use one partial, the lowest, probably
+          ;; the 8ve but for now that's all we need.
+          (let* ((lowest-partial (first (sort (mapcar #'second (nodes ins))
+                                              #'<)))
+                 ;; get the string we'll play the harmonic on, probably the
+                 ;; 8ve below
+                 (string (transpose n (- (srt lowest-partial)))))
+            (when (in-range ins string nil nil t t)
+              ;; (setq result (transpose n -12))))
+              (setq result n)))
+          ;; violin etc.: strings ascend in pitch but down in number, of
+          ;; course
+          (progn
+            ;; MDE Wed Jul 17 11:06:11 2024, Heidhausen -- if we've used
+            ;; set-standard-instrument-slot to change the open-strings, then we
+            ;; might have forgotten that they need to be pitch objects
+            (unless (every #'pitch-p (open-strings ins))
+              (setf (open-strings ins) (mapcar #'make-pitch
+                                               (open-strings ins))))
             (loop for i from 0 for harms in (harmonic-pitches ins) do
-                 (setq result 
-                       (loop for j from 0 for harm in harms do
-                          ;; are frequencies within tolerance of each other?
-                            (when (<= (abs (- (frequency (second harm))
-                                              (frequency n)))
-                                      deviation)
-                              (setq string i
-                                    ;; get the note at the nodal point
-                                    node (transpose
-                                          (nth i (open-strings ins))
-                                          (first (nth j (nodes ins)))))
-                              (return n))))
-                 (when result (return))))
+              (setq result 
+                    (loop for j from 0 for harm in harms do
+                      ;; are frequencies within tolerance of each other?
+                      (when (<= (abs (- (frequency (second harm))
+                                        (frequency n)))
+                                deviation)
+                        (setq string i
+                              ;; get the note at the nodal point
+                              node (transpose
+                                    (nth i (open-strings ins))
+                                    (first (nth j (nodes ins)))))
+                        (return n))))
+              (when result (return)))))
         ;; actually, the 'harm mark needs to be on the event, not the pitch, but
         ;; we'll set them here and move them over later, because that's easiest
         (when result (add-mark result 'harm))

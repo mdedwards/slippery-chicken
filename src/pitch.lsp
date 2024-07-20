@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:06:32 Sat May  4 2024 CEST
+;;; $$ Last modified:  11:42:21 Sat Jul 20 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2104,19 +2104,19 @@ pitch::add-mark: mark PIZZ already present but adding again!
          (natural (natural p))
          (id-string (string (id p)))
          (result
-          (cond ((not (show-accidental p)) white)
-                ((qtr-sharp p) (list white 'cmn::sharp-with-centered-vertical))
-                ((sharp p) (list white 'cmn::sharp))
-                ((qtr-flat p) (list white 'cmn::flat-reversed))
-                ((flat p) (list white 'cmn::flat))
-                #|
-                ((or (and natural force-natural)
-                     (and natural (accidental-in-parentheses p)))
-                 (list white 'cmn::natural))
-                 (natural id)
+           (cond ((not (show-accidental p)) white)
+                 ((qtr-sharp p) (list white 'cmn::sharp-with-centered-vertical))
+                 ((sharp p) (list white 'cmn::sharp))
+                 ((qtr-flat p) (list white 'cmn::flat-reversed))
+                 ((flat p) (list white 'cmn::flat))
+                 #|
+                 ((or (and natural force-natural) ;
+                 (and natural (accidental-in-parentheses p))) ;
+                 (list white 'cmn::natural)) ;
+                 (natural id)           ;
                  |#
-                (natural (list white 'cmn::natural))
-                (t (list white (get-cmn-12th-tone-accidentals p))))))
+                 (natural (list white 'cmn::natural))
+                 (t (list white (get-cmn-12th-tone-accidentals p))))))
     ;; don't allow bsts or bsss
     ;; (when (and (string= (string (id p)) "BS" :end1 2)
     ;;        (not (sharp p)))
@@ -2142,11 +2142,12 @@ pitch::add-mark: mark PIZZ already present but adding again!
       (setf result (append (if (listp result) result (list result))
                            (cmn::get-all-cmn-marks (marks p)))))
     ;; (format t "~%rthm: ~a" (eval (rm-package rhythm :cmn)))
+    ;; (print result)
     (if just-list
-        result
+      result
       (apply #'cmn::note (econs 
                           (if (listp result)
-                              (loop for i in result collect (eval i))
+                            (print (loop for i in result collect (eval i)))
                             (list (eval result)))
                           (eval (rm-package rhythm :cmn)))))))
 
@@ -2501,6 +2502,14 @@ data: D7
   (if (flat p)
       (setf p (enharmonic p))
       p))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jul 17 12:11:25 2024, Heidhausen 
+(defmethod scale ((p pitch) scaler &optional (clone t) ignore1 ignore2)
+  (declare (ignore ignore1) (ignore ignore2))
+  (when clone (setq p (clone p)))
+  (setf (frequency p) (* scaler (frequency p)))
+  p)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

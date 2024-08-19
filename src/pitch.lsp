@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:42:21 Sat Jul 20 2024 CEST
+;;; $$ Last modified:  20:33:12 Mon Aug 19 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3732,7 +3732,7 @@ data: F4
         (when auto-open
           (system-open-file file)))
       (error "pitch::cmn-display-pitch-list: argument 1 must be a list of ~
-          pitch objects: ~a" pitches)))
+              pitch objects: ~a" pitches)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 6.8.13

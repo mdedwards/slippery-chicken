@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    August 3rd 2010 Edinburgh
 ;;;
-;;; $$ Last modified:  12:52:49 Mon Aug 19 2024 CEST
+;;; $$ Last modified:  20:24:51 Mon Aug 19 2024 CEST
 ;;;
 ;;;
 ;;; SVN ID: $Id$
@@ -403,6 +403,12 @@ data: E4
      do
        (when (pitch-class-eq pitch this-pitch t)
          (return (if return-nth start degree)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod cmn-display ((im intervals-mapper)
+                        &rest keyargs &key &allow-other-keys)
+  (apply #'cmn-display-pitch-list (cons (scale-pitches im) keyargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

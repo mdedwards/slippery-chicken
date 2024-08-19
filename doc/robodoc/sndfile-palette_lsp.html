@@ -23,7 +23,6 @@
 <a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
 <a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
 <a class="menuitem" href="./roboindex.html#top">Index</a>
-<a class="menuitem" href="./robo_metadata.html#top">Metadata</a>
 <a class="menuitem" href="./robo_parameters.html#top">Global Parameters</a>
 <a class="menuitem" href="./robo_classes.html#top">Classes</a>
 <a class="menuitem" href="./robo_functions.html#top">Functions</a>
@@ -58,7 +57,7 @@
 
  Creation date:    18th March 2001
 
- $$ Last modified:  12:25:25 Thu Mar 21 2024 CET
+ $$ Last modified:  17:10:00 Sat Jun 29 2024 CEST
 
  SVN ID: $Id$
 </pre>
@@ -181,7 +180,9 @@
  - A single pattern (string) or list of patterns that the sound
    file name must have--just the filename, excluding path/folders and
    extension. If a list then all patterns must be in the file name, not
-   just one of them. Default = NIL.
+   just one of them, unless (hack alert!) the first element of the list is
+   the symbol or, in which case only one of the patterns must be
+   present. Default = NIL.  
  - Sim. to :insist except this/these are patterns none of which can
    be in the file name. Default = NIL.
 </pre>
@@ -689,7 +690,7 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/sndfile-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-05-04 10:39:11</p>
+<p>Generated from ./../../src/sndfile-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-08-13 16:13:20</p>
 </div> <!-- footer -->
 </body>
 </html>

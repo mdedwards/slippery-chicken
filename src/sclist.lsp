@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  17:52:24 Wed Jan 31 2024 CET
+;;; $$ Last modified:  12:45:35 Mon Aug 19 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -91,8 +91,6 @@
 
 (defmethod (setf data) :after (value (i sclist))
   (declare (ignore value))
-  ;; (print 'setf-data-sclist)
-  ;; (print value)
   (verify-and-store i))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

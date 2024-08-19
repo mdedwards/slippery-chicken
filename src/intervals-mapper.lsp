@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    August 3rd 2010 Edinburgh
 ;;;
-;;; $$ Last modified:  12:57:04 Fri Sep 23 2016 BST
+;;; $$ Last modified:  12:52:49 Mon Aug 19 2024 CEST
 ;;;
 ;;;
 ;;; SVN ID: $Id$
@@ -63,6 +63,7 @@
 ;;; from it we'll extract the intervals stored in steps.
 (defclass intervals-mapper (sclist)
   ((steps :accessor steps :type list :initform nil)
+   (highest :accessor highest :type number :initarg :highest :initform 119)
    ;; tonic remains a simple note symbol e.g. 'c4
    (tonic ::accessor tonic :type symbol :initarg :tonic :initform 'c4)
    (scale-pitches :accessor scale-pitches :type list :initform nil)
@@ -81,9 +82,6 @@
   (clone-with-new-class im 'intervals-mapper))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 18:15:56 BST 2012: Added robodoc entry
-
 ;;; ****m* intervals-mapper/get-pitch-symbols
 ;;; DESCRIPTION
 ;;; Get the pitches contained in a given intervals-mapper object returned as a
@@ -115,9 +113,9 @@
 
 (defmethod print-object :before ((im intervals-mapper) stream)
   (format stream "~&INTERVALS-MAPPER: steps: ~a, ~&scale-pitches ~
-                              (pitch objects): ~a~&tonic: ~a"
+                              (pitch objects): ~a~&tonic: ~a, highest: ~a (~a)"
           (steps im) (pitch-list-to-symbols (scale-pitches im))
-          (tonic im)))
+          (tonic im) (highest im) (midi-to-note (highest im))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -125,20 +123,20 @@
   (declare (ignore new-class))
   (let ((scl (call-next-method)))
     ;; the data list is copied by the named-object class clone method
-    (setf (slot-value scl 'steps) (my-copy-list (steps scl))
-          (slot-value scl 'scale-pitches) (my-copy-list (scale-pitches scl)))
+    (setf (slot-value scl 'steps) (my-copy-list (steps im))
+          (slot-value scl 'highest) (highest im)
+          (slot-value scl 'tonic) (tonic im)
+          (slot-value scl 'scale-pitches) (my-copy-list (scale-pitches im)))
     scl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store ((im intervals-mapper))
-  (get-steps im)
-  (get-scale im (tonic im)))
+  (when (and (data im) (tonic im))
+    (get-steps im)
+    (get-scale im (tonic im))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 18:21:13 BST 2012: Added robodoc entry
-
 ;;; ****m* intervals-mapper/get-steps
 ;;; DESCRIPTION
 ;;; Extract the interval structure of the list of note-name pitch symbols
@@ -172,14 +170,11 @@
     (setf (steps im) steps)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 18:27:43 BST 2012: Conforming robodoc entry
-
 ;;; ****m* intervals-mapper/get-scale
 ;;; DESCRIPTION
 ;;; Create a scale (sequence of pitches) beginning with the specified starting
-;;; note and extending up to MIDI note 127 by cycling through the interval
-;;; structure of the STEPS slot.
+;;; note and extending up to MIDI note 119 (by default: settable in the highest
+;;; slot) by cycling through the interval structure of the STEPS slot.
 ;;;
 ;;; The scale will only repeat at octaves if the interval structure of the list
 ;;; of pitches passed at initialisation creates that result. 
@@ -209,8 +204,10 @@
 (defmethod get-scale ((im intervals-mapper) start-note)
 ;;; ****
   (let* ((midi-start (note-to-midi start-note))
-         (steps nil) 
-         (midi (loop with current = midi-start while (< current 128)
+         (steps nil)
+         (stop (1+ (highest im)))
+         (midi (loop with current = midi-start
+                     while (< current stop)
                   do (unless steps
                        (setf steps (copy-list (steps im))))
                   collect current
@@ -404,10 +401,7 @@ data: E4
      for this-pitch = (nth start (scale-pitches im))
      while this-pitch
      do
-     ;; (print (data this-pitch))
        (when (pitch-class-eq pitch this-pitch t)
-         ;; (print (data this-pitch))
-         ;; (print (data (nth start (scale-pitches im))))
          (return (if return-nth start degree)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

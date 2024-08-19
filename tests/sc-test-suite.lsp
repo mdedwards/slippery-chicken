@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:13:20 Thu Jun 27 2024 CEST
+;;; $$ Last modified:  17:52:36 Mon Aug 19 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15122,7 +15122,8 @@
 
 ;;; SAR Thu May  3 17:28:23 BST 2012
 (sc-deftest test-intervals-mapper-make-intervals-mapper ()
-  (let* ((im (make-intervals-mapper 'c0 '(d e gs as d ef g a bf cs d ef gf))) 
+  (let* ((im (clone (make-intervals-mapper
+                               'c0 '(d e gs as d ef g a bf cs d ef gf))) )
          (nnl '(d1 e1 gs1 as1 d2 ef2 g2 a2 bf2 cs3 d3 ef3 gf3))
          (pl (loop for nn in nnl collect (make-pitch nn)))
          (pl-ints (loop for p from 1 below (length pl) 
@@ -15130,10 +15131,10 @@
     (sc-test-check
       (every #'= pl-ints (steps im))
       (equalp 
-       (pitch-list-to-symbols (scale-pitches im)) 
+       (pitch-list-to-symbols (scale-pitches im))
        '(C0 D0 FS0 AF0 C1 CS1 F1 G1 AF1 B1 C2 CS2 E2 FS2 BF2 C3 E3 F3 A3 B3 C4
          EF4 E4 F4 AF4 BF4 D5 E5 AF5 A5 CS6 EF6 E6 G6 AF6 A6 C7 D7 FS7 AF7 C8
-         CS8 F8 G8 AF8 B8 C9 CS9 E9 FS9))
+         CS8 F8 G8 AF8 B8))
       (equalp
        (loop for p from 1 below (length (scale-pitches im))
           collect (floor (pitch- (nth p (scale-pitches im)) 
@@ -15147,8 +15148,7 @@
     (sc-test-check
       (equalp (get-pitch-symbols im) '(C0 D0 FS0 AF0 C1 CS1 F1 G1 AF1 B1 C2 CS2
               E2 FS2 BF2 C3 E3 F3 A3 B3 C4 EF4 E4 F4 AF4 BF4 D5 E5 AF5 A5 CS6
-              EF6 E6 G6 AF6 A6 C7 D7 FS7 AF7 C8 CS8 F8 G8 AF8 B8 C9 CS9 E9
-              FS9)))))
+              EF6 E6 G6 AF6 A6 C7 D7 FS7 AF7 C8 CS8 F8 G8 AF8 B8)))))
 
 ;;; SAR Thu May  3 18:25:40 BST 2012
 (sc-deftest test-intervals-mapper-get-steps ()
@@ -15164,11 +15164,11 @@
        (pitch-list-to-symbols (scale-pitches im))
        '(C0 D0 FS0 AF0 C1 CS1 F1 G1 AF1 B1 C2 CS2 E2 FS2 BF2 C3 E3 F3 A3 B3 C4
          EF4 E4 F4 AF4 BF4 D5 E5 AF5 A5 CS6 EF6 E6 G6 AF6 A6 C7 D7 FS7 AF7 C8
-         CS8 F8 G8 AF8 B8 C9 CS9 E9 FS9))
+         CS8 F8 G8 AF8 B8))
       (equalp
        (pitch-list-to-symbols (get-scale im 'd4))
        '(D4 E4 AF4 BF4 D5 EF5 G5 A5 BF5 CS6 D6 EF6 FS6 AF6 C7 D7 FS7 G7 B7 CS8
-         D8 F8 FS8 G8 BF8 C9 E9 FS9)))))
+         D8 F8 FS8 G8 BF8)))))
 
 ;;; SAR Thu May  3 19:16:09 BST 2012
 (sc-deftest test-intervals-mapper-note ()

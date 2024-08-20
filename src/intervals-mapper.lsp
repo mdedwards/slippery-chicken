@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    August 3rd 2010 Edinburgh
 ;;;
-;;; $$ Last modified:  20:24:51 Mon Aug 19 2024 CEST
+;;; $$ Last modified:  20:38:22 Mon Aug 19 2024 CEST
 ;;;
 ;;;
 ;;; SVN ID: $Id$
@@ -132,6 +132,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store ((im intervals-mapper))
+  (when (symbolp (highest im))
+    (setf (highest im) (note-to-midi (highest im))))
   (when (and (data im) (tonic im))
     (get-steps im)
     (get-scale im (tonic im))))
@@ -463,9 +465,9 @@ data: (D E GS AS D EF G A BF CS D EF GF)
 |#
 ;;; 
 ;;; SYNOPSIS
-(defun make-intervals-mapper (tonic notes)
+(defun make-intervals-mapper (tonic notes &optional (highest 119))
 ;;; ****
-  (make-instance 'intervals-mapper :data notes :tonic tonic))
+  (make-instance 'intervals-mapper :data notes :tonic tonic :highest highest))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:52:36 Mon Aug 19 2024 CEST
+;;; $$ Last modified:  13:04:04 Fri Aug 23 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -13702,6 +13702,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 19 19:45:20 2011 -- rthm-chain methods
+
+(sc-deftest test-smooth-procession ()
+  (sc-test-check
+    (equalp
+     '(1 2 3 4 5 6 7 6 5 4 3 2 1 0 -1 -2 -3 -4 -3 -2 -1 0 1 2 3)      
+     (single-steps '(1 2 4 5 6 7 -2 -4 -3 -2 1 2 3)))
+    (equalp
+     '(1 2 3 4 5 6 5 4 3 2 3 4 5 6 7 6 5 4 3 2 1 0 -1 -2 -3 -4 -3 -2 -1 0 1 2
+       3 4 5 6 7)
+     (single-steps '(1 6 2 4 5 6 7 -2 -4 -3 -2 1 2 3 7)))
+    (steps-by-one-max (smooth-procession 100 '(1 2 3 4 5 6 7 8)))
+    (steps-by-one-max (smooth-procession 20 '(1 2 3 4)))
+    ;; these created errors so just see if they now work
+    (smooth-procession 38 '(0 -7 -6 2))
+    (smooth-procession 196 '(-4 -5 -1 -7 -15 -8 -4 4 4 -8 -5 -9 3 -6 -11 1))
+    (every #'(lambda (x) x)
+           (let ((results '()))
+             (loop repeat 10000
+                   for num-els = (+ 4 (random 20))
+                   for num-results = (+ num-els 2 (random 5000))
+                   do (multiple-value-bind (sp indices)
+                          (smooth-procession num-results
+                                             (loop repeat num-els
+                                                   collect (- (random 20) 15)))
+                        (push (and (= num-results (length sp))
+                                   (steps-by-one-max indices))
+                              results)))
+             (print results)))))
 
 (sc-deftest test-procession ()
     (sc-test-check

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  20:38:20 Tue Jul  2 2024 CEST
+;;; $$ Last modified:  13:02:21 Fri Aug 23 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -3286,9 +3286,6 @@ WARNING:
                           (econs result rem))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 15:26:49 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/remove-more
 ;;; DESCRIPTION
 ;;; Remove all instances of a list of specified elements from an original
@@ -3537,9 +3534,6 @@ WARNING:
        list))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May 21 10:13:35 EDT 2012: Added robodoc entry
-
 ;;; ****f* utilities/read-from-file
 ;;; DESCRIPTION
 ;;; Read a Lisp expression from a file. This is determined by the Lisp
@@ -6688,6 +6682,96 @@ yes_foo, 1 2 3 4;
       ((or windows) (format nil "~a:~a" device rest))
       ;; if type is unknown, no error but unix type path:
       (t (format nil "/~a~a" device rest)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; helper/main worker for smooth-procession
+(defun single-steps (list)
+  (if (every #'integerp list)
+    (let ((result (list (first list))))
+      (loop for i1 in list for i2 in (rest list)
+            for diff = (- i2 i1)
+            for dabs = (abs diff)
+            for down = (< diff 0)
+            do
+               (when (> dabs 1)
+                 (loop with ni = i1 repeat (1- dabs) do
+                   (if down (decf ni) (incf ni))
+                   (push ni result)))
+               (push i2 result))
+      (nreverse result))
+    (error "utilities::single-steps: all elements of the given list ~
+            must be integers: ~a" list)))
+
+(defun steps-by-one-max (list)
+  (loop for i1 in list for i2 in (rest list)
+        for diff = (abs (- i2 i1)) do
+          (unless (or (zerop diff) (= 1 diff))
+            (return nil))
+        finally (return t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/smooth-procession
+;;; DATE
+;;; 23rd August 2024
+;;; 
+;;; DESCRIPTION
+;;; like the procession function but ensuring that we only ever ascend or
+;;; descend values by a step of 1 
+;;; 
+;;; ARGUMENTS
+;;; the same as the procession function
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; ditto for the keyword arguments
+;;; 
+;;; RETURN VALUE
+;;; the procession list
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun smooth-procession (num-results items
+                          &rest keyargs &key &allow-other-keys)
+  ;; if :orders isn't explicitly given, then use a different default that should
+  ;; result in less jumps
+  (unless (member :orders keyargs)
+    (push '((1 2 1 2 3 2) (1 2 1 2 3) (2 1 2 3 2 1)) keyargs)
+    (push :orders keyargs))
+  (let ((last (first (last items)))
+        (nr num-results)
+        (max-len (floor num-results .9))
+        (indices (loop for i below (length items) collect i))
+        sproc)
+    (flet ((do-it ()
+             (setq sproc (single-steps
+                          (apply #'procession
+                                 (cons nr (cons indices keyargs))))))
+           (wiggle (x) (setq nr (floor nr x))))
+      ;; reduce num-results by 10% until the length of smooth-procession is
+      ;; within 10% of the target. This won't guarantee we hit the last element
+      ;; but it'll give us a decent chance.
+      (loop (do-it)
+            (if (<= (length sproc) max-len)
+              (return)
+              (wiggle 1.1)))
+      ;; we couldn't get a result that was longer than num-results but not too
+      ;; long so go back up again
+      (loop while (< (length sproc) num-results) do
+        (let ((tmp nr))
+          (wiggle .9)
+          ;; when we get down below 10 wiggle might not result in enough
+          (when (= tmp nr)
+            (incf nr))
+          (do-it)))
+      (setq sproc (subseq sproc 0 num-results)
+            indices (copy-list sproc)
+            sproc (mapcar #'(lambda (i) (nth i items)) sproc))
+      (unless (member last sproc)
+        (warn "utilities: smooth-procession: last element (~a) not present in ~
+             result." last))
+      (values sproc indices))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

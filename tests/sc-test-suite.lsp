@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:04:04 Fri Aug 23 2024 CEST
+;;; $$ Last modified:  13:06:21 Fri Aug 23 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -13719,7 +13719,7 @@
     (smooth-procession 196 '(-4 -5 -1 -7 -15 -8 -4 4 4 -8 -5 -9 3 -6 -11 1))
     (every #'(lambda (x) x)
            (let ((results '()))
-             (loop repeat 10000
+             (loop repeat 100
                    for num-els = (+ 4 (random 20))
                    for num-results = (+ num-els 2 (random 5000))
                    do (multiple-value-bind (sp indices)

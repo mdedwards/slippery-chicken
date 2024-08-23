@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  15:37:49 Sat Nov 27 2021 CET
+;;; $$ Last modified:  15:13:59 Fri Aug 23 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -209,9 +209,6 @@
     named-object))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan  7 18:29:17 EST 2012: Added robodoc info
-
 ;;; ****m* player/plays-transposing-instrument
 ;;; DESCRIPTION
 ;;; Determine whether a given player object has one or more transposing
@@ -362,14 +359,11 @@
   int)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sun Apr 29 15:37:13 BST 2012: Added robodoc entry
-
 ;;; ****m* player/total-notes
 ;;; DESCRIPTION
 ;;; Get the total number of notes (actually events) played by a specified
 ;;; player (not rests or tied notes, but midi-notes) in the piece which this
-;;; instrument plays.  A chord counts as 1 note/event.
+;;; instrument plays. A chord counts as 1 note/event.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A player object.
@@ -409,9 +403,6 @@
         (total-notes data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Aug  8 10:47:10 BST 2012: Added robodoc entry
-
 ;;; ****m* player/total-degrees
 ;;; DESCRIPTION
 ;;; Return a number that reflects the mean note (tessitura) of a player's
@@ -459,9 +450,6 @@
         (total-degrees data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Aug  8 11:14:10 BST 2012: Added robodoc entry
-
 ;;; ****m* player/total-bars
 ;;; DESCRIPTION
 ;;; Return the number of bars in a specified player object.
@@ -542,9 +530,6 @@
           (statistics data stream)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sun Apr 29 15:48:52 BST 2012: Started robodoc entry
-
 ;;; ****m* player/tessitura-degree
 ;;; DESCRIPTION
 ;;; Return a number that represents the average pitch for a specified
@@ -591,9 +576,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Apr 19 13:32:34 2012 
-
-;;; SAR Wed Aug  8 11:18:08 BST 2012: Added robodoc entry
-
 ;;; ****m* player/tessitura-note
 ;;; DESCRIPTION
 ;;; Return the value of the TESSITURA-DEGREE slot of a specified player object
@@ -637,9 +619,6 @@
       (degree-to-note td))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sun Apr 29 16:04:48 BST 2012: Added robodoc entry
-
 ;;; ****m* player/total-duration
 ;;; DESCRIPTION
 ;;; Get the total duration of played notes for a given player over the span of
@@ -988,9 +967,7 @@ data:
                        collect (clone ins))))
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Sat Jan  7 16:08:08 EST 2012: Added player-p function
-
 (defun player-p (thing)
   (typep thing 'player))
 

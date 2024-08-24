@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  16:51:39 Sat Feb 24 2024 CET
+;;; $$ Last modified:  10:56:40 Sat Aug 24 2024 CEST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -52,6 +52,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
+
+(declaim (ftype function make-wolfram-empty-bars splice-in-rest-seqs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; the data slot holds the indexed generations

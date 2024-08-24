@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified:  10:56:52 Sat Nov 27 2021 CET
+;;; $$ Last modified:  11:32:35 Sat Aug 24 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,7 +101,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Mar  5 17:51:35 2016 -- simply what initialize-instance used to do
 (defmethod init-tempo ((i tempo))
-  (setf (beat-value i) (value (make-rhythm (beat i)))
+  (setf (slot-value i 'bpm) (float (bpm i)) ; added 24/8/24 to avoid xml errors
+        (beat-value i) (value (make-rhythm (beat i)))
         (beat-dur i) (/ 60.0 (bpm i))
         (qtr-dur i) (* (beat-dur i) (/ (beat-value i) 4.0))
         (qtr-bpm i) (* (bpm i) (/ 4 (beat-value i)))

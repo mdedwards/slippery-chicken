@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  20:01:16 Thu Aug 22 2024 CEST
+;;; $$ Last modified:  11:24:53 Sat Aug 24 2024 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7812,6 +7812,35 @@ NIL
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/set-score-order
+;;; DATE
+;;; 24th August 2024
+;;; 
+;;; DESCRIPTION
+;;; Set the order of the players in the score. This is basically a convenience
+;;; function to set the players slot of the piece object slot but also checks
+;;; that your new players are in the piece already.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - a list of players (symbols). Note that these must already be part of the
+;;;   piece. 
+;;; 
+;;; RETURN VALUE
+;;; The slippery chicken object
+;;; 
+;;; SYNOPSIS
+(defmethod set-score-order ((sc slippery-chicken) players)
+;;; ****  
+  (let ((current-players (players sc)))
+    (unless (every #'(lambda (player) (member player current-players))
+                   players)
+      (error "slippery-chicken-edit::set-score-order: ~a is not in the piece"
+             player))
+    (setf (players (piece sc)) players))
+  sc)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -7984,6 +8013,7 @@ NIL
     (check-tuplets sc)
     (check-beams sc)
     sc))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

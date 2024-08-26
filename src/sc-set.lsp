@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  22:10:40 Sun Mar 17 2024 CET
+;;; $$ Last modified:  20:10:15 Mon Aug 26 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1772,27 +1772,34 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
                    (get-ids-from-pitch-list (data no))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Aug 24 14:23:49 2018 -- added midi-channel and microtone-midi-
+;;; MDE Fri Aug 24 14:23:49 2018 -- added midi-channel and microtone-midi
+;;; MDE Mon Aug 26 20:04:00 2024, Heidhausen -- added skip so that certain
+;;; symbols can be skipped (but collected and returned) 
 (defun init-pitch-list (pitches &optional auto-sort midi-channel
-                                  microtone-midi-channel)
-  (let ((result (loop with p for pitch in pitches do
-                     (unless pitch
-                       (error "~a~&sc-set::init-pitch-list: pitch is nil!"
-                              pitches))
-                     (setq p (make-pitch pitch))
-                   ;; MDE Fri Aug 24 14:24:12 2018
-                     (if (micro-tone p)
-                         (if microtone-midi-channel
-                             (setf (midi-channel p) microtone-midi-channel)
-                             (when midi-channel
-                               (setf (midi-channel p) midi-channel)))
-                         (when midi-channel
-                           (setf (midi-channel p) midi-channel)))
-                   collect p)))
+                                microtone-midi-channel skip)
+  (let ((result (loop with p
+                      for pitch in pitches do
+                        (unless pitch
+                          (error "~a~&sc-set::init-pitch-list: pitch is nil!"
+                                 pitches))
+                        (setq p (cond ((pitch-p pitch) pitch)
+                                      ((and skip (symbolp skip) (eq pitch skip))
+                                       pitch)
+                                      (t (make-pitch pitch))))
+                        ;; MDE Fri Aug 24 14:24:12 2018
+                        (when (pitch-p p)
+                          (if (micro-tone p)
+                            (if microtone-midi-channel
+                              (setf (midi-channel p) microtone-midi-channel)
+                              (when midi-channel
+                                (setf (midi-channel p) midi-channel)))
+                            (when midi-channel
+                              (setf (midi-channel p) midi-channel))))
+                      collect p)))
     (if auto-sort
-        (sort (copy-list result)
-              #'(lambda (x y) (< (frequency x) (frequency y))))
-        result)))
+      (sort (copy-list result)
+            #'(lambda (x y) (< (frequency x) (frequency y))))
+      result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

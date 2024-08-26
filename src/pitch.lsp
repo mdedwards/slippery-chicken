@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  20:33:12 Mon Aug 19 2024 CEST
+;;; $$ Last modified:  21:11:04 Mon Aug 26 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3143,14 +3143,84 @@ data: EF3
         result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* pitch/pitch-list-intervals
+;;; DATE
+;;; 26th August 2024
+;;; 
+;;; DESCRIPTION
+;;; Get the interval structure of a list of pitches or pitch symbols.
+;;; 
+;;; ARGUMENTS
+;;; the list of pitches, either as pitch objects or symbols
+;;; 
+;;; RETURN VALUE
+;;; a list of intervals in semitones
+;;; 
+;;; EXAMPLE
+#|
+(pitch-list-intervals '(c2 cqs2 g2 d3 c3))
+--> (0.5 6.5 7.0 -2.0)
+|#
+;;; SYNOPSIS
+(defun pitch-list-intervals (pitch-list)
+;;; ****
+  (let ((pl (init-pitch-list pitch-list))) ; just in case
+    (loop for p1 in pl and p2 in (rest pl) collect
+          (pitch- p2 p1))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* pitch/stretch-intervals
+;;; DATE
+;;; 26th August 2024
+;;; 
+;;; DESCRIPTION
+;;; stretch a list of pitches by scaling and/or adding their intervals
+;;; 
+;;; ARGUMENTS
+;;; a list of pitches, either as pitch objects or symbols
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the interval multiplication factor (number)
+;;; - a semitone value to add to each interval
+;;; - a symbol to skip, e.g. 
+;;; 
+;;; RETURN VALUE
+;;; a list of pitch objects reflecting the stretch, including the 'skip' symbol
+;;; if passed and a member of the list 
+;;; 
+;;; EXAMPLE
+#|
+(mapcar #'id (remove 'r (stretch-intervals '(c2 cs d3 r e4 c) 0.5 0 'r)))
+--> (C2 CQS2 G2 D3 C3)
+
+(mapcar #'id (stretch-intervals '(c2 cs d3 e4 c) 2 3))
+--> (C2 F2 BF4 F7 C7)
+|#
+;;; SYNOPSIS
+(defun stretch-intervals (pitch-list &optional (multiply 1.0) (add 0.0) skip)
+;;; ****
+  (let* ((pl (init-pitch-list pitch-list nil nil nil skip))
+         (just-pitches (if skip (remove skip pl) pl))
+         (intervals (pitch-list-intervals just-pitches))
+         (last (first just-pitches))
+         (result (cons last
+                       (loop for i in intervals
+                             for this = (transpose last (+ add (* i multiply)))
+                             do (setq last this)
+                             collect this))))
+    (if skip
+      (loop for i in pitch-list collect (if (eq i skip) skip (pop result)))
+      result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun get-ids-from-pitch-list (pitch-list)
-  (loop for p in pitch-list collect
-     ;; MDE Sat Apr 23 12:22:25 2016 -- particularly for pitch-seq::get-notes
-     ;; printing  
-       (if (chord-p p)
-           (get-ids-from-pitch-list (data p))
-           (id p))))
+  (loop for p in pitch-list 
+        ;; MDE Sat Apr 23 12:22:25 2016 -- particularly for pitch-seq::get-notes
+        ;; printing
+        collect (if (chord-p p)
+                  (get-ids-from-pitch-list (data p))
+                  (id p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Apr 10 08:07:57 2012 
@@ -3174,12 +3244,12 @@ data: EF3
 ;;; The list of pitch data symbols.
 ;;; 
 ;;; EXAMPLE
-#|
-(print-simple-pitch-list (init-pitch-list '(c4 d4 e4)))
-=>
-(C4 D4 E4) 
-(C4 D4 E4)
-|#
+  #|
+  (print-simple-pitch-list (init-pitch-list '(c4 d4 e4))) ;
+  =>                                    ;
+  (C4 D4 E4)                            ;
+  (C4 D4 E4)                            ;
+  |#
 ;;; SYNOPSIS
 (defun print-simple-pitch-list (pitch-list &optional (stream t))
 ;;; ****
@@ -3220,13 +3290,13 @@ data: EF3
 
 (defun count-bad-adjacent-intervals (pitch-list)
   (loop 
-      with result = 0
-      with pitches = (init-pitch-list pitch-list nil)
-      for p1 in pitches and p2 in (cdr pitches) do
-        (when (bad-interval p1 p2)
-          ;; (format t "~&~a ~a" (id p) (id (nth j ps)))
-          (incf result))
-      finally (return result)))
+    with result = 0
+    with pitches = (init-pitch-list pitch-list nil)
+    for p1 in pitches and p2 in (cdr pitches) do
+      (when (bad-interval p1 p2)
+        ;; (format t "~&~a ~a" (id p) (id (nth j ps)))
+        (incf result))
+    finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3250,9 +3320,7 @@ data: EF3
       (aug8ve p1 p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; e.g. gf-fs (gf-gf or fs-gs) aka enharmonic!
-
 (defun dim2nd (p1 p2)
   (interval-aux p1 p2 0 1))
 
@@ -3267,21 +3335,16 @@ data: EF3
   (interval-aux p1 p2 3 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; e.g. gf-as (gf-bf)
-
 (defun augaug2nd (p1 p2)
   (interval-aux p1 p2 4 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; e.g. f-as (f-bf), ef-gs (ef-af)
-
 (defun aug3rd (p1 p2)
   (interval-aux p1 p2 5 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; better expressed as a major 3rd
 ;;; e.g. c-ff (c-e), cs-f (df-f), d-gf (d-fs), ds-g (ef-g), e-af (e-gs),
 ;;; fs-bf (fs-as or gf-bf), g-cf (g-b), gs-c (af-c), a-df (a-cs), as-d (bf-d),
@@ -3291,9 +3354,7 @@ data: EF3
   (interval-aux p1 p2 4 3))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. gf-cs (gf-df)
-
+; ;; e.g. gf-cs (gf-df)
 (defun augaug4th (p1 p2)
   (interval-aux p1 p2 7 3))
 
@@ -3303,58 +3364,45 @@ data: EF3
   (interval-aux p1 p2 5 4))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. c-gs (c-af), df-a (cs a)
+;;; e.g. c-gs (c-af), df-a (cs a)
 
 (defun aug5th (p1 p2)
   (interval-aux p1 p2 8 4))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. cs-ef (cs-ds)
-
+;;; e.g. cs-ef (cs-ds)
 (defun dim3rd (p1 p2)
   (interval-aux p1 p2 2 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. cs-af (cs-gs)
-
+;;; e.g. cs-af (cs-gs)
 (defun dim6th (p1 p2)
   (interval-aux p1 p2 7 5))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. cs-bf (cs-as)
+;;; e.g. cs-bf (cs-as)
 
 (defun dim7th (p1 p2)
   (interval-aux p1 p2 9 6))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. bf-as (bf-bf)
-
+;;; e.g. bf-as (bf-bf)
 (defun aug7th (p1 p2)
   (interval-aux p1 p2 12 6))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. cf-bs (b-c)
+;;; e.g. cf-bs (b-c)
 
 (defun augaug7th (p1 p2)
   (interval-aux p1 p2 13 6))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. cs-c (df-c), e-ef (e-ds)
-
+;;; e.g. cs-c (df-c), e-ef (e-ds)
 (defun dim8ve (p1 p2)
   (interval-aux p1 p2 11 7))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; e.g. c-cs (c-df) cf-c (b c)
-
+;;; e.g. c-cs (c-df) cf-c (b c)
 (defun aug8ve (p1 p2)
   (interval-aux p1 p2 13 7))
 
@@ -3394,36 +3442,36 @@ data: EF3
 
 #|
 ;; Returns NIL if the specified pitch item is not a member of the given list 
-(let ((pl '(c4 d4 e4)))
-  (pitch-member 'f4 pl))
-
-=> NIL
-
-;; Returns the tail of the given list starting from the specified pitch if that
-;; pitch is indeed a member of the tested list
-(let ((pl '(c4 d4 e4)))
-  (pitch-list-to-symbols (pitch-member 'd4 pl)))
-
-=> (D4 E4)
-
-;; Enharmonically equivalent pitches are considered equal by default
-(let ((pl '(c4 ds4 e4)))
-  (pitch-list-to-symbols (pitch-member 'ef4 pl)))
-
-=> (DS4 E4)
-
-;; Enharmonic equivalence can be turned off by setting the first optional
-;; argument to NIL
-(let ((pl '(c4 ds4 e4)))
-  (pitch-list-to-symbols (pitch-member 'ef4 pl nil)))
-
-=> NIL
-
+(let ((pl '(c4 d4 e4)))             
+(pitch-member 'f4 pl))              
+                                        
+=> NIL                              
+                                        
+;; Returns the tail of the given list starting from the specified pitch if that 
+;; pitch is indeed a member of the tested list 
+(let ((pl '(c4 d4 e4)))             
+(pitch-list-to-symbols (pitch-member 'd4 pl))) 
+                                        
+=> (D4 E4)                          
+                                        
+;; Enharmonically equivalent pitches are considered equal by default 
+(let ((pl '(c4 ds4 e4)))            
+(pitch-list-to-symbols (pitch-member 'ef4 pl))) 
+                                        
+=> (DS4 E4)                         
+                                        
+;; Enharmonic equivalence can be turned off by setting the first optional 
+;; argument to NIL                      
+(let ((pl '(c4 ds4 e4)))            
+(pitch-list-to-symbols (pitch-member 'ef4 pl nil))) 
+                                        
+=> NIL                              
+                                        
 |#
 ;;; SYNOPSIS
 (defun pitch-member (pitch pitch-list 
                      &optional (enharmonics-are-equal t)
-                               (test #'pitch=))
+                     (test #'pitch=))
 ;;; ****
   ;; just in case they're not pitch objects already...
   (setf pitch-list (init-pitch-list pitch-list nil)
@@ -3433,9 +3481,6 @@ data: EF3
               (funcall test p1 p2 enharmonics-are-equal))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 15:30:17 EST 2012: Added robodoc info
-
 ;;; ****f* pitch/remove-pitches
 ;;; DESCRIPTION
 ;;; Remove a list of specified pitch items from a given list of pitch
@@ -3474,63 +3519,63 @@ data: EF3
 ;;; EXAMPLE
 
 #|
-;; By default the function returns a list of pitch objects
-(let ((pl '(c4 d4 e4)))
-  (remove-pitches pl '(d4 e4)))
-
-=> (
+;; By default the function returns a list of pitch objects 
+(let ((pl '(c4 d4 e4)))               
+(remove-pitches pl '(d4 e4)))         
+                                        
+=> (                                  
 PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
-[...]
-data: C4
-[...]
-)
-
-;; Setting the keyword argument :return-symbols to T causes the function to
-;; return a list of note-name symbols instead. Note in this example too that
+[...]                                 
+data: C4                              
+[...]                                 
+)                                     
+                                        
+;; Setting the keyword argument :return-symbols to T causes the function to 
+;; return a list of note-name symbols instead. Note in this example too that 
 ;; even when only one pitch item is being removed, it must be stated as a list. 
-(let ((pl '(261.62 293.66 329.62)))
-  (remove-pitches pl '(293.66) :return-symbols t))
-
-=> (C4 E4)
-
-;; The function will also accept pitch objects
-(let ((pl (loop for n in '(c4 d4 e4) collect (make-pitch n))))
-  (remove-pitches pl `(,(make-pitch 'e4)) :return-symbols t))
-
-=> (C4 D4)
-
-;; By default the function considers enharmonically equivalent pitches to be
-;; equal 
-(let ((pl (loop for n in '(c4 ds4 e4) collect (make-pitch n))))
-  (remove-pitches pl '(ef4) :return-symbols t))
-
-=> (C4 E4)
-
-;; This feature can be turned off by setting the :enharmonics-are-equal keyword
-;; argument to NIL. In this case here, the specified pitch is therefore not
+(let ((pl '(261.62 293.66 329.62)))   
+(remove-pitches pl '(293.66) :return-symbols t)) 
+                                        
+=> (C4 E4)                            
+                                        
+;; The function will also accept pitch objects 
+(let ((pl (loop for n in '(c4 d4 e4) collect (make-pitch n)))) 
+(remove-pitches pl `(,(make-pitch 'e4)) :return-symbols t)) 
+                                        
+=> (C4 D4)                            
+                                        
+;; By default the function considers enharmonically equivalent pitches to be 
+;; equal                                
+(let ((pl (loop for n in '(c4 ds4 e4) collect (make-pitch n)))) 
+(remove-pitches pl '(ef4) :return-symbols t)) 
+                                        
+=> (C4 E4)                            
+                                        
+;; This feature can be turned off by setting the :enharmonics-are-equal keyword 
+;; argument to NIL. In this case here, the specified pitch is therefore not 
 ;; found in the given list and the entire original list is returned. 
-(let ((pl (loop for n in '(c4 ds4 e4) collect (make-pitch n))))
-  (remove-pitches pl '(ef4) 
-                  :return-symbols t
-                  :enharmonics-are-equal nil))
-
-=> (C4 DS4 E4)
-
+(let ((pl (loop for n in '(c4 ds4 e4) collect (make-pitch n)))) 
+(remove-pitches pl '(ef4)             
+:return-symbols t                     
+:enharmonics-are-equal nil))          
+                                        
+=> (C4 DS4 E4)                        
+                                        
 |#
 ;;; SYNOPSIS
 (defun remove-pitches (pitch-list remove 
                        &key (enharmonics-are-equal t)
-                            (return-symbols nil))
+                       (return-symbols nil))
 ;;; ****
   ;; convert all notes to pitch objects if they aren't already.
   (setf pitch-list (init-pitch-list pitch-list nil)
         remove (init-pitch-list remove nil))
   (let ((result
-         (remove-if #'(lambda (p)
-                        (pitch-member p remove enharmonics-are-equal))
-                    pitch-list)))
+          (remove-if #'(lambda (p)
+                         (pitch-member p remove enharmonics-are-equal))
+                     pitch-list)))
     (if return-symbols
-        (pitch-list-to-symbols result)
+      (pitch-list-to-symbols result)
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3556,26 +3601,26 @@ data: C4
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns a list of pitch objects
-(let ((p1 '(c4 d4 e4 f4))
-      (p2 (loop for nn in '(d4 e4 f4 g4) collect (make-pitch nn))))
-  (pitch-intersection p1 p2))
-
-(
+;; Returns a list of pitch objects      
+(let ((p1 '(c4 d4 e4 f4))             
+(p2 (loop for nn in '(d4 e4 f4 g4) collect (make-pitch nn)))) 
+(pitch-intersection p1 p2))           
+                                        
+(                                     
 PITCH: frequency: 293.665, midi-note: 62, midi-channel: 0 
-[...]
-data: D4
-[...]
+[...]                                 
+data: D4                              
+[...]                                 
 PITCH: frequency: 329.628, midi-note: 64, midi-channel: 0 
-[...]
-data: E4
-[...]
+[...]                                 
+data: E4                              
+[...]                                 
 PITCH: frequency: 349.228, midi-note: 65, midi-channel: 0 
-[...]
-data: F4
-[...]
-) 
-
+[...]                                 
+data: F4                              
+[...]                                 
+)                                     
+                                        
 |#
 ;;; SYNOPSIS
 (defun pitch-intersection (pitch-list1 pitch-list2)
@@ -3609,31 +3654,31 @@ data: F4
 ;;; EXAMPLE
 
 #|
-;; The function returns NIL if the specified pitch item does not fall within
-;; the specified octave.
-(let ((p (make-pitch 'c4)))
-  (in-octave p 3))
-
-=> NIL
-
-;; The function will accept pitch objects
-(let ((p (make-pitch 'c4)))
-  (in-octave p 4))
-
-=> T
-
-;; The function will accept numerical frequency values
-(let ((p 261.63))
-  (in-octave p 4))
-
-=> T
-
-;; The function will accept note-name symbols
-(let ((p 'c4))
-  (in-octave p 4))
-
-=> T
-
+;; The function returns NIL if the specified pitch item does not fall within ; ;
+;; the specified octave.                
+(let ((p (make-pitch 'c4)))           
+(in-octave p 3))                      
+                                        
+=> NIL                                
+                                        
+;; The function will accept pitch objects 
+(let ((p (make-pitch 'c4)))           
+(in-octave p 4))                      
+                                        
+=> T                                  
+                                        
+;; The function will accept numerical frequency values 
+(let ((p 261.63))                     
+(in-octave p 4))                      
+                                        
+=> T                                  
+                                        
+;; The function will accept note-name symbols 
+(let ((p 'c4))                        
+(in-octave p 4))                      
+                                        
+=> T                                  
+                                        
 |#
 
 ;;; SYNOPSIS
@@ -3645,8 +3690,11 @@ data: F4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; MDE Mon Feb 13 15:19:57 2012 
-(defun pitch-list= (pl1 pl2)
-  (every #'pitch= pl1 pl2))
+(defun pitch-list= (pl1 pl2 &optional enharmonics-are-equal
+                            (frequency-tolerance 0.01))
+  (every #'(lambda (p1 p2)
+             (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
+         pl1 pl2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* pitch/midi-play-pitch-list

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:06:21 Fri Aug 23 2024 CEST
+;;; $$ Last modified:  21:03:24 Mon Aug 26 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3332,32 +3332,49 @@
       (= (frequency tp3) (frequency tp4))
       (equalp (data tp3) (data tp4)))))
 
+;;;  MDE Mon Aug 26 20:33:43 2024, Heidhausen
+(sc-deftest test-stretch-intervals ()
+  (let* ((si1 (stretch-intervals '(c4 cs d ds e) 2))
+         (si2 (stretch-intervals '(c4 cs d ds e) 2 3))
+         (si3 (stretch-intervals '(c2 cs d3 r e4 c) 0.5 0 'r))
+         (si4 (stretch-intervals '(c2 cs d3 e4 c) 2 3)))
+    (sc-test-check
+      (pitch-list= si1 (init-pitch-list '(c4 d4 e4 fs4 gs4)) t)
+      (equalp '(c2 f2 bf4 f7 c7) (mapcar #'id si4))
+      (pitch-list= si2 (init-pitch-list '(c4 f4 bf4 ef5 af5)))
+      (= 3 (position 'r si3))
+      (pitch-list= (remove 'r si3) (init-pitch-list '(c2 cqs2 g2 d3 c3))))))
+
 ;;; MDE Fri Mar 25 14:29:31 2016 -- this arose out of an example for Adam
 ;;; Linson but it's worth testing too
 (sc-deftest test-pitch-transpose2 ()
-    (let* ((intervals '(0 1 3 5))
-           (starting-pitches (init-pitch-list '(cs3 d4 ef5)))
-           (pitches
-            (loop for sp in starting-pitches appending
-                 (loop for i in intervals collect
-                      (transpose (clone sp) i))))
-           (events (loop for p in pitches collect 
-                        (make-event p 'q :amplitude 60)))
-           (time 0.0))
-      (loop for e in events do
-           (setf (start-time e) time)
-           (incf time (between 5.0 9.0)))
-      (sc-test-check
-        (= 12 (length events))
-        (eq 'cs3 (data (pitch-or-chord (first events))))
-        (eq 'af5 (data (pitch-or-chord (first (last events)))))
-        (cm::event-list-to-midi-file events "/tmp/test.mid" 120 0)
-        ;; MDE Wed Jun 29 13:45:20 2016 -- why not test this too?
-        (stringp (event-list-to-midi-file
-                  (midi-file-to-events "/tmp/test.mid")
-                  :midi-file "/tmp/mftoe.mid"))
-        (file-write-ok "/tmp/mftoe.mid" 160)
-        (file-write-ok "/tmp/test.mid" 160))))
+  (let* ((intervals '(0 1 3 5))
+         (starting-pitches (init-pitch-list '(cs3 d4 ef5)))
+         (pitches-with-skip (init-pitch-list '(bf6 cs0 d5 r gf2 r)
+                                             nil nil nil 'r))
+         (pitches
+           (loop for sp in starting-pitches
+                 appending (loop for i in intervals collect
+                                                    (transpose (clone sp) i))))
+         (events (loop for p in pitches
+                       collect (make-event p 'q :amplitude 60)))
+         (time 0.0))
+    (loop for e in events do
+      (setf (start-time e) time)
+      (incf time (between 5.0 9.0)))
+    (sc-test-check
+      (= 2 (count 'r pitches-with-skip))
+      (every #'pitch-p (remove 'r pitches-with-skip))
+      (= 12 (length events))
+      (eq 'cs3 (data (pitch-or-chord (first events))))
+      (eq 'af5 (data (pitch-or-chord (first (last events)))))
+      (cm::event-list-to-midi-file events "/tmp/test.mid" 120 0)
+      ;; MDE Wed Jun 29 13:45:20 2016 -- why not test this too?
+      (stringp (event-list-to-midi-file
+                (midi-file-to-events "/tmp/test.mid")
+                :midi-file "/tmp/mftoe.mid"))
+      (file-write-ok "/tmp/mftoe.mid" 160)
+      (file-write-ok "/tmp/test.mid" 160))))
 
 
 ;;; SAR Mon Jan  2 14:00:07 EST 2012
@@ -3876,7 +3893,8 @@
     (sc-test-check
       (equalp '(c4 ds4 b4) (pitch-list-to-symbols (rm-bad-intervals ps1 '(1 6))))
       (equalp '(c4 ds4 a4) (pitch-list-to-symbols (rm-bad-intervals ps1 '(1 2))))
-      (equalp '(c4 e4 a4) (pitch-list-to-symbols (rm-bad-intervals ps1 '(1 2 3))))
+      (equalp '(c4 e4 a4) (pitch-list-to-symbols (rm-bad-intervals ps1
+                                                                   '(1 2 3))))
       (equalp '(c4 gs4 b4) (pitch-list-to-symbols
                             (rm-bad-intervals ps2 '(2 4)))))))
 
@@ -7145,6 +7163,13 @@
          (get-data-data '(2 1) msp)
          (init-pitch-list 
           '(EF2 AF2 DQF3 F3 A3 BQS3 CQS4 FS4 G4 C5 D5 FQS5 GQF5 CS6 E6)))
+        ;; MDE Mon Aug 26 20:41:14 2024, Heidhausen -- do it again with some
+        ;; enharmonics  
+        (pitch-list=
+         (get-data-data '(2 1) msp)
+         (init-pitch-list 
+          '(ds2 AF2 DQF3 F3 A3 BQS3 CQS4 gf4 G4 C5 D5 FQS5 GQF5 CS6 E6))
+         t) ; enharmonics-are-true
         (equalp
          (loop for i in (data msp) 
             collect (id i)

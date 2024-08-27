@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  21:11:04 Mon Aug 26 2024 CEST
+;;; $$ Last modified:  12:24:57 Tue Aug 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3246,9 +3246,9 @@ data: EF3
 ;;; EXAMPLE
   #|
   (print-simple-pitch-list (init-pitch-list '(c4 d4 e4))) ;
-  =>                                    ;
-  (C4 D4 E4)                            ;
-  (C4 D4 E4)                            ;
+  =>
+  (C4 D4 E4)
+  (C4 D4 E4)
   |#
 ;;; SYNOPSIS
 (defun print-simple-pitch-list (pitch-list &optional (stream t))

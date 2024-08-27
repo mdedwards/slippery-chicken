@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  16:20:27 Sat Mar 16 2024 CET
+;;; $$ Last modified:  13:31:58 Tue Aug 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -941,8 +941,9 @@ data: (
   (setq lowest (make-pitch lowest)
         highest (make-pitch highest))
   (setf (slot-value c 'data)
-        (transpose-pitch-list (data c) semitones
-                              :lowest lowest :highest highest))
+        (transpose-pitch-list
+         (data c) semitones :sort (auto-sort c) :lowest lowest
+                            :highest highest))
   ;; 8.2.11: got to do this here too now
   ;; MDE Sun Aug  6 11:26:39 2017 -- no, added to verify-and-store instead
   ;; (set-micro-tone result)

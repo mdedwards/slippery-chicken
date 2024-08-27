@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  12:24:57 Tue Aug 27 2024 CEST
+;;; $$ Last modified:  13:21:17 Tue Aug 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2623,9 +2623,6 @@ PITCH: frequency: 1760.000, midi-note: 93, midi-channel: 1
       collect (force-white-note p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 10:51:55 EST 2012: Added robodoc info
-
 ;;; ****f* pitch/transpose-pitch-list
 ;;; DESCRIPTION
 ;;; Transpose the values of a list of pitch objects by a specified number of
@@ -2646,7 +2643,9 @@ PITCH: frequency: 1760.000, midi-note: 93, midi-channel: 1
 ;;; - :lowest. Don't transpose pitches which are lower than this
 ;;;   argument. Default = C-1 (midi note 0)  
 ;;; - :lowest. Don't transpose pitches which are higher than this
-;;;   argument. Default = B8 (midi note 119) 
+;;;   argument. Default = B8 (midi note 119)
+;;; - :sort. Whether to sort the pitch list from highest to lowest.
+;;;   Default = NIL
 ;;; 
 ;;; RETURN VALUE
 ;;; By default, the method returns a list of pitch objects. When the first
@@ -2699,9 +2698,7 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
 |#
 ;;; SYNOPSIS
 (defun transpose-pitch-list (pitch-list semitones
-                             &key
-                               (return-symbols nil)
-                               (package :sc)
+                             &key (sort nil) (return-symbols nil) (package :sc)
                                lowest highest)
 ;;; ****
   (setq lowest (make-pitch lowest)
@@ -2725,8 +2722,7 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
                 (setf (marks new) (my-copy-list (marks pitch))
                       (marks-before new) (my-copy-list (marks-before pitch))))
            collect new)))
-    ;;      (result (loop for p in pl collect (transpose p semitones))))
-    (setq result (sort-pitch-list result))
+    (when sort (setq result (sort-pitch-list result)))
     (if return-symbols
         (pitch-list-to-symbols result package)
         result)))
@@ -2872,9 +2868,6 @@ data: F4
                         p)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 12:26:26 EST 2012: Added robodoc info
-
 ;;; ****f* pitch/sort-pitch-list
 ;;; DESCRIPTION
 ;;; Sort a list of pitch objects from low to high based on their frequency
@@ -3174,7 +3167,8 @@ data: EF3
 ;;; 26th August 2024
 ;;; 
 ;;; DESCRIPTION
-;;; stretch a list of pitches by scaling and/or adding their intervals
+;;; Stretch a list of pitches by scaling and/or adding their intervals. Note
+;;; that all pitches will be rounded to the nearest note in the current scale.
 ;;; 
 ;;; ARGUMENTS
 ;;; a list of pitches, either as pitch objects or symbols

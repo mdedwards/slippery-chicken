@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  21:03:24 Mon Aug 26 2024 CEST
+;;; $$ Last modified:  13:32:52 Tue Aug 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3570,15 +3570,16 @@
     (sc-test-check
       (listp pl)
       (listp (transpose-pitch-list pl 2))
-      (equalp (loop for p in (transpose-pitch-list pl 2) collect (data p))
+      (equalp (loop for p in (transpose-pitch-list pl 2 :sort t)
+                    collect (data p))
               '(D4 EF4 E4 F4 FS4 G4 AF4 A4 BF4 B4 C5 CS5))
-      (listp (transpose-pitch-list pl 2 :return-symbols t))
+      (listp (transpose-pitch-list pl 2 :return-symbols t :sort t))
       ;; MDE Tue Apr 10 08:13:14 2012 -- 
       ;; (equalp (print-simple-pitch-list pl)
       ;;      '(C4 CS4 D4 EF4 E4 F4 FS4 G4 AF4 A4 BF4 B4))
       (string= (print-simple-pitch-list pl nil)
                "(C4 CS4 D4 EF4 E4 F4 FS4 G4 AF4 A4 BF4 B4)")
-      (equalp (transpose-pitch-list pl 2 :return-symbols t) 
+      (equalp (transpose-pitch-list pl 2 :return-symbols t :sort t)
               '(D4 EF4 E4 F4 FS4 G4 AF4 A4 BF4 B4 C5 CS5)))))
 
 ;;; SAR Tue Jan  3 11:53:23 EST 2012

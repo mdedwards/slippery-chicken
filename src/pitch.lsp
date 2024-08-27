@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  14:45:12 Tue Aug 27 2024 CEST
+;;; $$ Last modified:  18:57:56 Tue Aug 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2730,9 +2730,6 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
         result)))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 11:19:09 EST 2012: Added to robodoc info
-
 ;;; ****f* pitch/transpose-pitch-list-to-octave
 ;;; DESCRIPTION
 ;;; Transpose the pitch values of a list of pitch objects into a specified
@@ -3721,6 +3718,69 @@ data: F4
                      (make-event p rhythm))))
     (events-update-time events)
     (event-list-to-midi-file events :midi-file file :start-tempo tempo)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* pitch/pitch-list-to-xml
+;;; DATE
+;;; 27th August 2027
+;;; 
+;;; DESCRIPTION
+;;; Write a MusicXML file from a list of pitches or pitch symbols. The list may
+;;; also contain NILs: these will be interpreted to be rests. A slippery-chicken
+;;; object is created (via bars-to-sc) in order to accomplish this and is
+;;; returned by the function.
+;;; 
+;;; ARGUMENTS
+;;; - the list of pitches
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :time-sig. The time signature (list) for the XML file. Default = '(2 4)
+;;; - :rhythm. The rhythm (symbol or object) that will be used for every pitch
+;;;   and rest. Default = 'e
+;;; - :tempo. The tempo that will be written: BPM as a number. Default = 120.
+;;; - :instrument. The instrument that the pitches will be assigned to. Must be
+;;;   part of the +slippery-chicken-standard-instrument-palette+. Default =
+;;;   'flute
+;;; - :auto-beam. Whether to automatically beam the rhythms generated. Default =
+;;;   T.
+;;; - :midi-channel. An integer that will be used to set the MIDI-CHANNEL slot
+;;;   of any event objects passed. Default = 1.
+;;; - :microtones-midi-channel. An integer that is the MIDI channel that will
+;;;   be assigned to event objects for microtonal MIDI pitches. NB: This value
+;;;   is only set when attached to event objects within a slippery-chicken
+;;;   object. Default = 2. NB: See player.lsp/make-player for details on
+;;;   microtones in MIDI output.  
+;;; - :file. The path of the XML file to be written. Default = pitch-list.xml in
+;;;   the current default directory ("/tmp" if not otherwise set).
+;;; 
+;;; RETURN VALUE
+;;; The slippery-chicken created in order to generated the XML file.
+;;; 
+;;; SYNOPSIS
+(defun pitch-list-to-xml (pitches
+                          &key (time-sig '(2 4)) (rhythm 'e) (tempo 120)
+                          (instrument 'flute) (auto-beam t)
+                          (midi-channel 1) (microtones-midi-channel 2)
+                          (file (default-dir-file "pitch-list.xml")))
+;;; ****
+  (let* ((events (loop for p in pitches collect ; NIL will create a rest
+                                        (make-event p rhythm)))
+         (bars '())
+         bar ate sc)
+    (loop while events do
+      (setq bar (make-rthm-seq-bar (list time-sig)) ; make an empty bar
+            ate (fill-with-rhythms
+                 bar events :midi-channel midi-channel
+                 :microtones-midi-channel microtones-midi-channel)
+            ;; ate should always be 32 but best to check
+            events (when ate (nthcdr ate events)))
+      (when auto-beam (auto-beam bar))
+      (push bar bars))
+    (setq sc (bars-to-sc (nreverse bars) :tempo tempo :instrument instrument))
+    (write-xml sc :file file)
+    sc))
+        
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr  3 20:53:55 2013 -- 

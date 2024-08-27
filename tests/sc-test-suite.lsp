@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:32:52 Tue Aug 27 2024 CEST
+;;; $$ Last modified:  19:05:04 Tue Aug 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3342,6 +3342,12 @@
       (pitch-list= si1 (init-pitch-list '(c4 d4 e4 fs4 gs4)) t)
       (equalp '(c2 f2 bf4 f7 c7) (mapcar #'id si4))
       (pitch-list= si2 (init-pitch-list '(c4 f4 bf4 ef5 af5)))
+      (probe-delete "/tmp/pitch-list.xml")
+      (pitch-list-to-xml (substitute nil 'r si3) :time-sig '(3 4)
+                                                 :instrument 'double-bass)
+      (file-write-ok "/tmp/pitch-list.xml" 4000)
+      (eq 'cqs2 (id (second si3)))
+      (eq 'g2 (id (third si3)))
       (= 3 (position 'r si3))
       (pitch-list= (remove 'r si3) (init-pitch-list '(c2 cqs2 g2 d3 c3))))))
 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  13:21:17 Tue Aug 27 2024 CEST
+;;; $$ Last modified:  14:45:12 Tue Aug 27 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2629,7 +2629,8 @@ PITCH: frequency: 1760.000, midi-note: 93, midi-channel: 1
 ;;; semitones. 
 ;;; 
 ;;; ARGUMENTS
-;;; - A list of pitch objects.
+;;; - A list of pitch objects or pitch symbols. Note that any NILs in the list
+;;;   will be collected but obviously not turned into pitches.
 ;;; - A number indicating the number of semitones by which the list is to be
 ;;;   transposed. 
 ;;; 
@@ -2644,7 +2645,8 @@ PITCH: frequency: 1760.000, midi-note: 93, midi-channel: 1
 ;;;   argument. Default = C-1 (midi note 0)  
 ;;; - :lowest. Don't transpose pitches which are higher than this
 ;;;   argument. Default = B8 (midi note 119)
-;;; - :sort. Whether to sort the pitch list from highest to lowest.
+;;; - :sort. Whether to sort the pitch list from highest to lowest. This will
+;;;   only work if there are no NILs in the list.
 ;;;   Default = NIL
 ;;; 
 ;;; RETURN VALUE
@@ -2705,16 +2707,16 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
         highest (make-pitch highest))
   (unless lowest (setq lowest (make-pitch 'c-1)))
   (unless highest (setq highest (make-pitch 'b8)))
-  (let* ((pl (loop for p in pitch-list collect (make-pitch p)))
+  (let* ((pl (loop for p in pitch-list collect (when p (make-pitch p))))
          ;; MDE Wed Aug 22 09:56:03 2018 -- taken from chord and integrated here
          ;; to avoid code duplication
          (result
           (loop 
            for pitch in pl
-           for pir = (pitch-in-range pitch lowest highest)
+           for pir = (when pitch (pitch-in-range pitch lowest highest))
            for new = (if pir
-                         (transpose (make-pitch pitch) semitones)
-                         pitch)
+                       (when pitch (transpose (make-pitch pitch) semitones))
+                       pitch)
            ;; copy over the cmn marks (like special note heads etc.) if a list
            ;; of actual pitch objects was passed (make-pitch above will return
            ;; the original pitch unchanged); if not, no problem.
@@ -2724,7 +2726,7 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
            collect new)))
     (when sort (setq result (sort-pitch-list result)))
     (if return-symbols
-        (pitch-list-to-symbols result package)
+        (pitch-list-to-symbols result package) ; this handles NILs
         result)))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -14,9 +14,9 @@
 ;;;
 ;;; Purpose:          Inspired by popping popcorn, generate a series of values
 ;;;                   ranging between > 0.0 and <= 1.0 by (optionally fixed)
-;;;                   random selection.  Given 1 or more starting values (not
+;;;                   random selection. Given 1 or more starting values (not
 ;;;                   zero) we generate tendentially increasing new values
-;;;                   until we reach 1.0.  This is not a linear process,
+;;;                   until we reach 1.0. This is not a linear process,
 ;;;                   rather, we get spike values that increase the average
 ;;;                   value and thus increase the chance of further spikes.
 ;;;
@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    3rd February 2011 (Ko Lanta, Thailand)
 ;;;
-;;; $$ Last modified:  08:04:31 Tue Feb 21 2023 CET
+;;; $$ Last modified:  20:44:58 Wed Aug 28 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -55,9 +55,8 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; We only subclass the circular version for convenience; it's a straight list
-;;; we're generally after.  The starting data is stored in the data slot.
+;;; we're generally after. The starting data is stored in the data slot.
 
 (defclass popcorn (circular-sclist)
   ;; our results
@@ -81,12 +80,13 @@
    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#|
 (defmethod initialize-instance :after ((pc popcorn) &rest initargs)
   (declare (ignore initargs))
   ;; reset the random-rep function
   (when (fixed-random pc)
     (random-rep 1.0 t)))
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store :after ((pc popcorn))
@@ -97,6 +97,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod reinit ((pc popcorn))
+  (when (fixed-random pc) ; reset the random-rep function
+    (random-rep 1.0 t))
   (loop for val in (data pc) do
        (when (or (<= val 0.0) (>= val 1.0))
          (error "popcorn::verify-and-store: starting values should be ~
@@ -158,11 +160,6 @@
   (setf (mean pc) (/ (total pc) (numk pc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sat Apr 28 14:13:25 BST 2012: Added robodoc entry
-
-;;; MDE original comment:
-;;; this is the main function we'll call
-
 ;;; ****m* popcorn/heat
 ;;; DESCRIPTION
 ;;; Generate a series of values for the KERNELS slot of a popcorn object,
@@ -395,7 +392,6 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
       k)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; just return the next kernel (spike or no spike) without changing internal
 ;;; state 
 (defmethod get-kernel-aux ((pc popcorn))
@@ -418,7 +414,7 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 ;;; ****f* popcorn/make-popcorn
 ;;; DESCRIPTION
 ;;; Make a popcorn object. This method uses the heat method internally to
-;;; generate a series of decimal values ('kernels'), ranging between >0.0 and
+;;; generate a series of decimal values ('kernels'), ranging between > 0.0 and
 ;;; <= 1.0, by (optionally fixed) random selection.
 ;;;
 ;;; Taking the one or more starting values, the method generates tendentially

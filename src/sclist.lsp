@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  12:45:35 Mon Aug 19 2024 CEST
+;;; $$ Last modified:  21:02:53 Wed Aug 28 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -673,6 +673,9 @@ data TURKEY
 ;;; files respectively. It is assumed that the data to be plotted is a list of
 ;;; numbers. An error will be triggered if not.
 ;;;
+;;; NB gnuplot's 'postscript terminal' is used and to my knowledge there is no
+;;; pdf terminal, so if you want a pdf you'll have to use something like ps2pdf 
+;;;
 ;;; The user must then call gnuplot in a terminal, in a manner such as "gnuplot
 ;;; sclist.txt; open sclist.ps". 
 ;;;
@@ -701,7 +704,7 @@ data TURKEY
   (plot ppcn "/tmp/ppcn" 'kernels))
 
 then in a terminal:
-gnuplot ppcn.txt
+gnuplot ppcn.txt; ps2pdf ppcn.ps
 
 this will create the postscript file ppcn.ps
 |#

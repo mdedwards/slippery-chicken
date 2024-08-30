@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  18:57:56 Tue Aug 27 2024 CEST
+;;; $$ Last modified:  16:13:53 Fri Aug 30 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1916,7 +1916,6 @@ data: CQS4
       (string (id p)))))
                                      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* pitch/add-mark
 ;;; DESCRIPTION
 ;;; Add a specified mark to the MARKS slot of the given pitch object.

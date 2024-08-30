@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:02:21 Fri Aug 23 2024 CEST
+;;; $$ Last modified:  14:35:20 Fri Aug 30 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6727,10 +6727,6 @@ yes_foo, 1 2 3 4;
 ;;; RETURN VALUE
 ;;; the procession list
 ;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun smooth-procession (num-results items
                           &rest keyargs &key &allow-other-keys)

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:35:20 Fri Aug 30 2024 CEST
+;;; $$ Last modified:  16:05:01 Sat Aug 31 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -487,9 +487,6 @@
          (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; e.g (split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 2 3 2 1)) ->
-;;; ((1 2) (3 4) (5 6 7) (8 9) (10))
-
 ;;; ****f* utilities/split-into-sub-groups
 ;;; DESCRIPTION
 ;;; Create a new list consisting of sublists made from the elements of the
@@ -705,6 +702,20 @@
        do
          (setq list (nthcdr n list)))))
     
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; a special case for dealing with large lists that need to be varied (e.g. the
+;;; results of a (slow/long) procession.
+(defun split-into-8-subgroups (list &optional cscls mirror)
+  (let* ((sgs (split-into-sub-groups2 list (ceiling (length list) 8)))
+         (result (interleave 
+                  (loop for sg in sgs by #'cddr collect sg)
+                  (loop for sg in (rest sgs) by #'cddr collect sg))))
+    (when mirror (setq result (loop for sg in result
+                                    collect (append sg (rest (reverse sg))))))
+    (if cscls
+      (mapcar #'make-cscl result)
+      result)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun whole-num-p (float &optional (allow-tolerance nil))

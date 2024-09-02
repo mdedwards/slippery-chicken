@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    15th December 2011
 ;;;
-;;; $$ Last modified:  19:15:39 Wed Feb 24 2021 CET
+;;; $$ Last modified:  12:23:02 Mon Sep  2 2024 CEST
 ;;;
 ;;; SVN ID: $Id: rthm-seq-bar.lsp 509 2011-12-14 20:35:27Z reed@seanreed.ie $
 ;;;
@@ -154,7 +154,6 @@
     ;; MDE Fri Jan 10 16:18:08 2020 -- return file size as wel instead of just T
     ;; or NIL result))
     (values result size)))
-
 
 ;;; SAR Fri Mar 16 10:07:50 GMT 2012 -- probe a file and delete if it exists
 (defun probe-delete (file)

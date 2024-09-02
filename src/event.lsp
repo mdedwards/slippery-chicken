@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:01:59 Sat Mar 16 2024 CET
+;;; $$ Last modified:  12:09:18 Mon Sep  2 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -860,7 +860,8 @@ data: 132
 ;;; Some time somewhere in 2013
 ;;; 
 ;;; DESCRIPTION
-;;; Change the written (as opposed to sounding) pitch/chord data of an event.
+;;; Change the written (as opposed to sounding) pitch/chord data of an event. If
+;;; the second argument is NIL, do nothing. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the event object
@@ -877,24 +878,24 @@ data: 132
 ;;; SYNOPSIS
 (defmethod set-written-pitch-or-chord ((e event) value &optional instrument)
 ;;; ****
-  ;; (print (data value))
-  (let* ((wporc (written-pitch-or-chord e))
-         (porc (pitch-or-chord e))
-         (diff (if instrument
+  (when value
+    (let* ((wporc (written-pitch-or-chord e))
+           (porc (pitch-or-chord e))
+           (diff (if instrument
                    (transposition-semitones instrument)
                    (when wporc (decimal-places (pitch- porc wporc) 4)))))
-    ;; (print diff)
-    ;; MDE Fri Mar 18 17:49:32 2022, Heidhausen -- if no (new) value then we
-    ;; probably just want to set the written slot from the existing porc 
-    (unless value (setq value porc))
-    (setf-pitch-aux e value 'written-pitch-or-chord)
-    (when (written-pitch-or-chord e)
-      (setf (is-rest e) nil
-            ;; MDE Thu Mar 20 15:55:52 2014 -- can't believe it's taken this
-            ;; long!  
-            (is-whole-bar-rest e) nil
-            (slot-value e 'pitch-or-chord)
-            (transpose (clone (written-pitch-or-chord e)) diff))))
+      ;; (print diff)
+      ;; MDE Fri Mar 18 17:49:32 2022, Heidhausen -- if no (new) value then we
+      ;; probably just want to set the written slot from the existing porc 
+      (unless value (setq value porc))
+      (setf-pitch-aux e value 'written-pitch-or-chord)
+      (when (written-pitch-or-chord e)
+        (setf (is-rest e) nil
+              ;; MDE Thu Mar 20 15:55:52 2014 -- can't believe it's taken this
+              ;; long!  
+              (is-whole-bar-rest e) nil
+              (slot-value e 'pitch-or-chord)
+              (transpose (clone (written-pitch-or-chord e)) diff)))))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

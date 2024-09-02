@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:05:04 Tue Aug 27 2024 CEST
+;;; $$ Last modified:  12:22:48 Mon Sep  2 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3338,11 +3338,11 @@
          (si2 (stretch-intervals '(c4 cs d ds e) 2 3))
          (si3 (stretch-intervals '(c2 cs d3 r e4 c) 0.5 0 'r))
          (si4 (stretch-intervals '(c2 cs d3 e4 c) 2 3)))
+    (probe-delete "/tmp/pitch-list.xml")
     (sc-test-check
       (pitch-list= si1 (init-pitch-list '(c4 d4 e4 fs4 gs4)) t)
       (equalp '(c2 f2 bf4 f7 c7) (mapcar #'id si4))
       (pitch-list= si2 (init-pitch-list '(c4 f4 bf4 ef5 af5)))
-      (probe-delete "/tmp/pitch-list.xml")
       (pitch-list-to-xml (substitute nil 'r si3) :time-sig '(3 4)
                                                  :instrument 'double-bass)
       (file-write-ok "/tmp/pitch-list.xml" 4000)

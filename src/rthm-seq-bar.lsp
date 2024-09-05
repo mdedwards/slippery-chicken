@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  14:08:56 Mon Mar  4 2024 CET
+;;; $$ Last modified:  19:19:26 Thu Sep  5 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3937,7 +3937,7 @@ data: (2 4)
     ;; MDE Wed Mar  3 16:17:22 2021, Heidhausen -- now we write for every bar
     (format stream "~&        <divisions>~a</divisions>" divisions)
     ;; todo: sc can have a key-sig but we're not writing one for now
-    (format stream "~&        <key><fifths>0</fifths></key>")
+    (format stream "~&        <key><fifths>0</fifths><mode>none</mode></key>")
     ;; strange: time sig has to come before clef in Finale otherwise you get a
     ;; bogus error message
     (when (write-time-sig rsb)

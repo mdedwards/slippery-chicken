@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  16:13:53 Fri Aug 30 2024 CEST
+;;; $$ Last modified:  10:38:09 Tue Sep 10 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3721,7 +3721,7 @@ data: F4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* pitch/pitch-list-to-xml
 ;;; DATE
-;;; 27th August 2027
+;;; 27th August 2024
 ;;; 
 ;;; DESCRIPTION
 ;;; Write a MusicXML file from a list of pitches or pitch symbols. The list may

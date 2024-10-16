@@ -20,7 +20,12 @@ numbers
 (defun make-envelope (env-list &key (y-min 0) (y-max 1) (x-min 0) (x-max 100)))  
 #+end_src
 **** alle env-related utilities als Methoden
+**** decimate-envelope
 
+- Verringern der Anzahl der Envelope-Punkte
+- z.B. via /Ramer–Douglas–Peucker algorithm/
+  - https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm
+  
 *** Anwendung
 - entweder track-basiert -> umwandlung in reaper-envelope
 - oder Item-basiert-> binden an item
@@ -28,4 +33,6 @@ numbers
 ** Reaper-Envelope Class (child von envelope)
 *** Slots
 - schon existierende slots
-- 
+
+
+

@@ -1,0 +1,31 @@
+* Envelopes
+
+** Envelope Class (child von sclist)
+
+*** Slots
+**** original Envelope
+- irgendeine Liste (x-y paare)
+**** y-min y-max x-min x-max
+numbers
+**** normalisierter Envelope
+- y: 0 - 1, x: 0 - 100
+**** sample-rate?
+**** destination
+- entweder hier oder in einem child
+- Wenn item-envelopes zu einem track-envelope zusammengefasst werden, muss man wissen was sie automatisieren sollen.
+  
+*** Methods
+**** Make-Envelope
+#+begin_src lisp
+(defun make-envelope (env-list &key (y-min 0) (y-max 1) (x-min 0) (x-max 100)))  
+#+end_src
+**** alle env-related utilities als Methoden
+
+*** Anwendung
+- entweder track-basiert -> umwandlung in reaper-envelope
+- oder Item-basiert-> binden an item
+
+** Reaper-Envelope Class (child von envelope)
+*** Slots
+- schon existierende slots
+- 

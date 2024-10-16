@@ -1,38 +1,60 @@
-* Envelopes
+# -*- eval: (flyspell-mode); eval: (ispell-change-dictionary "en") -*-
+#+CATEGORY: sc
+#+title: envelopes (feature)
+#+LANGUAGE: en
+#+startup: overview
 
-** Envelope Class (child von sclist)
+* Overview
 
-*** Slots
+Implementation notes and todos for the development of (automation) envelope
+classes and related methods.
+
+Leon Focker, Ruben Philipp -- october 2024
+
+* Classes
+
+** ~sclist->envelope~ 
+
+*** slots
 **** original Envelope
 - irgendeine Liste (x-y paare)
 **** y-min y-max x-min x-max
 numbers
-**** normalisierter Envelope
+**** normalized envelope
 - y: 0 - 1, x: 0 - 100
 **** sample-rate?
+- sample rate for points e.g. converted via polar->cartesian
+  - might be better located in a specialized class or the conversion-method (RP
+    Wed Oct 16 21:49:16 2024) 
 **** destination
-- entweder hier oder in einem child
-- Wenn item-envelopes zu einem track-envelope zusammengefasst werden, muss man wissen was sie automatisieren sollen.
-  
-*** Methods
-**** Make-Envelope
+- either here, or in a child-class
+- when item-envelopes are bundled to a track-envelope, it is necessary to know
+  what they are actually automating
+
+*** methods
+**** make-envelope
 #+begin_src lisp
 (defun make-envelope (env-list &key (y-min 0) (y-max 1) (x-min 0) (x-max 100)))  
 #+end_src
-**** alle env-related utilities als Methoden
+**** all env-related utilities as methods
+- need to redesign a bunch of "old" functions as methods
 **** decimate-envelope
 
-- Verringern der Anzahl der Envelope-Punkte
-- z.B. via /Ramer–Douglas–Peucker algorithm/
+- reduce number of envelope-points
+- e.g. via /Ramer–Douglas–Peucker algorithm/
   - https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm
   
-*** Anwendung
-- entweder track-basiert -> umwandlung in reaper-envelope
-- oder Item-basiert-> binden an item
 
-** Reaper-Envelope Class (child von envelope)
-*** Slots
-- schon existierende slots
+*** usage
+
+- either track-based -> conversion to reaper-envelope,
+- or item-based -> bind to an item
+
+** ~envelope->reaper-envelope~
+
+*** slots
+- all existing slots
+- ...
 
 
 

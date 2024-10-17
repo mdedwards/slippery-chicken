@@ -1587,7 +1587,7 @@
        (interpolate i curve :exp exponent)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/interpolate
+;;; ****m* utilities/interpolate
 ;;; DESCRIPTION
 ;;; Get the interpolated value at a specified point within an envelope. The
 ;;; envelope must be specified in the form of a list of break-point pairs.
@@ -1630,7 +1630,7 @@
 
 |#
 ;;; SYNOPSIS
-(defun interpolate (point env &key (scaler 1) (exp 1) (warn t))
+(defmethod interpolate (point (env list) &key (scaler 1) (exp 1) (warn t))
 ;;; ****
   "e.g. (interpolate 50 '(0 0 100 1) :scaler .5 :exp 2)
    => 0.0625
@@ -1700,7 +1700,7 @@
                   (- y2 y1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun lastx (env)
+(defmethod lastx ((env list))
   "lastx returns the last x value in the given envelope.
    e.g. (lastx '(0 0 20 4 30 5 100 0)) => 100"
   (unless env
@@ -1711,7 +1711,7 @@
     (when env (nth (- len 2) env))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun new-lastx (env x)
+(defmethod new-lastx ((env list) x)
   "new-lastx will take an envelope and return it
    with scaled x values, the maximum of which is the value of new-lastx's 
    second argument.
@@ -1724,7 +1724,7 @@
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/scale-env
+;;; ****m* utilities/scale-env
 ;;; DESCRIPTION
 ;;; Scale either the x-axis values, the data values, or both of a list of
 ;;; break-point pairs by specified factors.
@@ -1787,11 +1787,11 @@
 
 |#
 ;;; SYNOPSIS
-(defun scale-env (env y-scaler &key x-scaler first-x last-x
-                                 (x-min most-negative-double-float)
-                                 (y-min most-negative-double-float)
-                                 (x-max most-positive-double-float)
-                                 (y-max most-positive-double-float))
+(defmethod scale-env ((env list) y-scaler &key x-scaler first-x last-x
+					(x-min most-negative-double-float)
+					(y-min most-negative-double-float)
+					(x-max most-positive-double-float)
+					(y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
      collect (cond ((or first-x last-x)
@@ -1808,15 +1808,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun env-y-min (env)
+(defmethod env-y-min ((env list))
   (loop for y in (cdr env) by #'cddr minimize y))
 
-(defun env-y-max (env)
+(defmethod env-y-max ((env list))
   (loop for y in (cdr env) by #'cddr maximize y))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jun 15 15:05:02 2017
-;;; ****f* utilities/invert-env
+;;; ****m* utilities/invert-env
 ;;; DATE
 ;;; June 15th 2017, Edinburgh
 ;;; 
@@ -1837,7 +1837,7 @@
 (invert-env '(0 -.9 40 .4 100 .9)) -> (0 0.9 40 -0.39999998 100 -0.9)
 |#
 ;;; SYNOPSIS
-(defun invert-env (env)
+(defmethod invert-env ((env list))
 ;;; ****
   (let* ((min (env-y-min env))
          (max (env-y-max env))
@@ -1847,7 +1847,7 @@
        collect x collect (between-extremes min max (- 1.0 d)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/auto-scale-env
+;;; ****m* utilities/auto-scale-env
 ;;; DATE
 ;;; August 29th 2013
 ;;;
@@ -1900,10 +1900,10 @@
 
 |#
 ;;; SYNOPSIS
-(defun auto-scale-env (env &key
-                             (x-min 0.0) (x-max 100.0)
-                             (y-min 0.0) (y-max 10.0)
-                             orig-y-range)
+(defmethod auto-scale-env ((env list) &key
+					(x-min 0.0) (x-max 100.0)
+					(y-min 0.0) (y-max 10.0)
+					orig-y-range)
 ;;; ****
   (unless (and (> x-max x-min) (>= y-max y-min))
     (error "utilities::auto-scale-env: x-max (~a) must be > x-min (~a) and ~
@@ -1928,7 +1928,7 @@
        collect (float (+ y-min (* (- y env-y-min) y-scaler))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/exaggerate-env
+;;; ****m* utilities/exaggerate-env
 ;;; DESCRIPTION
 ;;; Makes the y values in an envelope more radically pushed towards its
 ;;; extremes. Y values below the mid-point will be pushed downwards; those
@@ -1967,7 +1967,7 @@
 --> (0 0.0 50 0.9751001 100 1.0)
 |#
 ;;; SYNOPSIS
-(defun exaggerate-env (env expt &optional easy-expt)
+(defmethod exaggerate-env ((env list) expt &optional easy-expt)
 ;;; ****
   (let* ((env-y-min (env-y-min env))
          (env-y-max (env-y-max env))
@@ -1999,7 +1999,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Sep  5 19:02:18 2013
-;;; ****f* utilities/decimate-env
+;;; ****m* utilities/decimate-env
 ;;; DESCRIPTION
 ;;; Reduce the number of x,y pairs in an envelope.  In every case the envelope
 ;;; is first stretched along the x-axis to fit the new number of points
@@ -2042,7 +2042,7 @@
 
 |#
 ;;; SYNOPSIS
-(defun decimate-env (env num-points &optional (method 'points))
+(defmethod decimate-env ((env list) num-points &optional (method 'points))
 ;;; ****
   (let* ((e (auto-scale-env env :x-max (1- num-points) :y-min (env-y-min env)
                             :y-max (env-y-max env)))
@@ -2081,7 +2081,7 @@
       (t (error "utilities::decimate-env: unknown method: ~a" method)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/douglas-peucker
+;;; ****m* utilities/douglas-peucker
 ;;; AUTHOR
 ;;; Ruben Philipp <me@rubenphilipp.com>
 ;;;
@@ -2136,7 +2136,7 @@
 ;;  100 4.167)
 |#
 ;;; SYNOPSIS
-(defun douglas-peucker (env epsilon &key sort)
+(defmethod douglas-peucker ((env list) epsilon &key sort)
 ;;; ****
   (unless (<= 0.0 epsilon)
     (error "utilities::douglas-peucker: epsilon must be >= 0"))
@@ -2206,9 +2206,9 @@
                                         
 |#
 ;;; SYNOPSIS
-(defun env-symmetrical (env &optional (centre .5) 
-                              (min most-negative-double-float)
-                              (max most-positive-double-float))
+(defmethod env-symmetrical ((env list) &optional (centre .5) 
+				     (min most-negative-double-float)
+				     (max most-positive-double-float))
 ;;; ****
   "Returns an envelope that is symmetrical around the key variable 'centre'.
   e.g. (symmetrical '(0 0 30 .2 70 .95 100 .5)) => 
@@ -2218,7 +2218,7 @@
         collect x collect (max min (min new-y max))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/env-plus
+;;; ****m* utilities/env-plus
 ;;; DESCRIPTION
 ;;; Increase all y values of a given list of break-point pairs by a specified
 ;;; amount.
@@ -2239,13 +2239,13 @@
 
 |#
 ;;; SYNOPSIS
-(defun env-plus (env add)
+(defmethod env-plus ((env list) add)
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr
      collect x collect (+ y add)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/env-to-xy-list
+;;; ****m* utilities/env-to-xy-list
 ;;; AUTHOR
 ;;; Ruben Philipp <me@rubenphilipp.com>
 ;;;
@@ -2273,7 +2273,7 @@
 ;; => ((0 2.4) (4 1.3) (40 3.3) (100 0.1))
 |#
 ;;; SYNOPSIS
-(defun env-to-xy-list (env &key sort)
+(defmethod env-to-xy-list ((env list) &key sort)
 ;;; ****
   (unless (evenp (length env))
     (error "utilities::env-to-xy-list: The envelope is malformed."))
@@ -4575,7 +4575,7 @@ WARNING:
     `(,angle ,elevation ,distance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/convert-polar-envelopes
+;;; ****m* utilities/convert-polar-envelopes
 ;;;
 ;;; AUTHOR
 ;;; Leon Focker: leon@leonfocker.de
@@ -4612,9 +4612,9 @@ WARNING:
 
 |#
 ;;; SYNOPSIS
-(defun convert-polar-envelopes (angle-env elevation-env
-                                &key (distance-env '(0 1 1 1))
-                                  minimum-samples)
+(defmethod convert-polar-envelopes ((angle-env list) (elevation-env list)
+                                    &key (distance-env '(0 1 1 1))
+                                      minimum-samples)
 ;;; ****
   ;; stretch the envelopes so they align:
   (setf angle-env (scale-env angle-env 1 :first-x 0 :last-x 100)
@@ -4625,22 +4625,22 @@ WARNING:
          (distance-all-x (loop for x in distance-env by #'cddr collect x))
          (all-x angle-all-x))
     (loop for i in elevation-all-x
-       unless (member i all-x :test #'=) do (push i all-x))
+	  unless (member i all-x :test #'=) do (push i all-x))
     (loop for i in distance-all-x
-       unless (member i all-x :test #'=) do (push i all-x))
+	  unless (member i all-x :test #'=) do (push i all-x))
     (when minimum-samples
       (loop for i from 0 to 100 by (/ 100 (1- minimum-samples))
-         unless (member i all-x :test #'=) do (push i all-x)))
+            unless (member i all-x :test #'=) do (push i all-x)))
     (setf all-x (sort all-x #'<))
     (loop for i in all-x
-       for new = (polar-to-cartesian
-                  (interpolate i angle-env)
-                  (interpolate i elevation-env)
-                  (interpolate i distance-env))
-       collect i into x-env collect (first new) into x-env
-       collect i into y-env collect (second new) into y-env
-       collect i into z-env collect (third new) into z-env
-       finally (return (values x-env y-env z-env)))))
+	  for new = (polar-to-cartesian
+                     (interpolate i angle-env)
+                     (interpolate i elevation-env)
+                     (interpolate i distance-env))
+	  collect i into x-env collect (first new) into x-env
+	  collect i into y-env collect (second new) into y-env
+	  collect i into z-env collect (third new) into z-env
+	  finally (return (values x-env y-env z-env)))))
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5601,7 +5601,7 @@ RETURNS:
           (+ f2 c1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/env2gnuplot
+;;; ****m* utilities/env2gnuplot
 ;;; DATE
 ;;; 24th December 2013
 ;;;
@@ -5622,7 +5622,7 @@ RETURNS:
 ;;; Always T
 ;;; 
 ;;; SYNOPSIS
-(defun env2gnuplot (env &optional (file "/tmp/env.txt"))
+(defmethod env2gnuplot ((env list) &optional (file "/tmp/env.txt"))
 ;;; ****
   (with-open-file
       (stream file :direction :output :if-exists :supersede
@@ -5665,7 +5665,7 @@ RETURNS:
      finally (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/envelope-boundaries
+;;; ****m* utilities/envelope-boundaries
 ;;; DESCRIPTION
 ;;; Find sharp changes in envelope values. These are defined as when a y value
 ;;; rises or falls over 30% (by default) of it's overall range within 5%
@@ -5690,8 +5690,8 @@ RETURNS:
 --> (21 26 51 56)
 |#
 ;;; SYNOPSIS
-(defun envelope-boundaries (envelope &optional (jump-threshold 30)
-                            (steepness-min 5))
+(defmethod envelope-boundaries ((envelope list) &optional (jump-threshold 30)
+						  (steepness-min 5))
 ;;; ****
   (loop 
      with last-x = (first envelope)     ; i.e. first x val first time around

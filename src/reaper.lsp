@@ -736,7 +736,7 @@
   (equal "PARMENV" (write-reaper-envelope-aux env-type)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/make-reaper-envelope
+;;; ****f* reaper/make-reaper-envelope
 ;;; AUTHOR
 ;;; Leon Focker: leon@leonfocker.de
 ;;;
@@ -968,7 +968,7 @@
     items))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/make-reaper-items4
+;;; ****f* reaper/make-reaper-items4
 ;;; AUTHOR
 ;;; Leon Focker: leon@leonfocker.de
 ;;;

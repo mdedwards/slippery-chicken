@@ -1609,7 +1609,7 @@
 ;;;   the list of break-point pairs. T = warn. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - the interpolated value (number)
 ;;; 
 ;;; EXAMPLE
 #|
@@ -4606,7 +4606,9 @@ WARNING:
 ;;; going from y = 1 to y = -1.
 ;;; 
 ;;; RETURN VALUE
-;;; A list that holds the three envelopes for x, y and z
+;;; - The envelope for the x coordinates
+;;; - The envelope for the y coordinates
+;;; - The envelope for the z coordinates
 ;;; 
 ;;; EXAMPLE
 #|

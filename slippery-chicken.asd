@@ -83,6 +83,7 @@
                (:file "music-xml")
                (:file "linked-named-object")
                (:file "sclist")
+	       (:file "envelope")
                (:file "circular-sclist")
                (:file "assoc-list")
                (:file "recursive-assoc-list")

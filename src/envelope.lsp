@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    October 17th 2024
 ;;;
-;;; $$ Last modified: Thu Oct 17 2024 CEST
+;;; $$ Last modified:  19:05:38 Thu Oct 17 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,12 +67,12 @@
    ;; a scaled version of the env-list, that matches the 'standard'-values
    ;; for the x and y range (see the initforms above)
    (normalised-env :accessor normalised-env :initarg :normalised-env
-		   :initform nil)
-   ;; a minimum distanve between points on the x-axis. Relevant for example when
+                   :initform nil)
+   ;; a minimum distance between points on the x-axis. Relevant for example when
    ;; converting the coordinate-space of an envelope, which could potentially
    ;; distort the original shape.
    (min-point-distance :accessor min-point-distance :initarg :min-point-distance
-		       :initform 1 :type number)))
+                       :initform 1 :type number)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -92,12 +92,12 @@
   (let ((named-object (call-next-method)))
     ;; the data list is copied by the named-object class clone method
     (setf (slot-value named-object 'x-min) (x-min env)
-	  (slot-value named-object 'x-max) (x-max env)
-	  (slot-value named-object 'y-min) (y-min env)
-	  (slot-value named-object 'y-max) (y-max env)
+          (slot-value named-object 'x-max) (x-max env)
+          (slot-value named-object 'y-min) (y-min env)
+          (slot-value named-object 'y-max) (y-max env)
           (slot-value named-object 'normalised-env) (normalised-env env)
           (slot-value named-object 'min-point-distance)
-	  (min-point-distance env))
+          (min-point-distance env))
     named-object))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -127,19 +127,19 @@
   (when (oddp (length (data env)))
     (error "envelope::check-sanity: Wrong number of elements in ~a." env))
   (unless (loop for first in (data env) by #'cddr
-		and next in (cddr (data env)) by #'cddr
-		always (<= first next))
+                and next in (cddr (data env)) by #'cddr
+                always (<= first next))
     (warn "envelope::check-sanity: x-values don't seem to be sorted in ~a."
-	  env)))
+          env)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store :after ((env envelope))
   (check-sanity env)
   (setf (normalised-env env)
-	(auto-scale-env (data env)
-			:orig-y-range (list (y-min env) (y-max env))
-			:y-max 1.0)))
+        (auto-scale-env (data env)
+                        :orig-y-range (list (y-min env) (y-max env))
+                        :y-max 1.0)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* envelope/interpolate
@@ -167,21 +167,21 @@
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Using the defaults			
+;;; Using the defaults                  
 (interpolate 50 (make-envelope '(0 0 100 1))) 
-					
-=> 0.5					
-					
-;;; Specifying a different scaler	
+                                        
+=> 0.5                                  
+                                        
+;;; Specifying a different scaler       
 (interpolate 50 (make-envelope '(0 0 100 1)) :scaler 2) 
-					
-=> 1.0					
-					
+                                        
+=> 1.0                                  
+                                        
 ;;; Specifying a different exponent by which the result is to be raised 
 (interpolate 50 (make-envelope '(0 0 100 1)) :exp 2) 
-					
-=> 0.25					
-					
+                                        
+=> 0.25                                 
+                                        
 |#
 ;;; SYNOPSIS
 (defmethod interpolate (point (env envelope) &key (scaler 1) (exp 1) (warn t))
@@ -207,7 +207,7 @@
   ;; let's avoid another (sanity-check), becaus it will get called in lastx
   (let* ((scaler (float (/ x (lastx env))))
          (result (loop for x in (data env) by #'cddr
-		       and y in (cdr (data env)) by #'cddr
+                       and y in (cdr (data env)) by #'cddr
                        collect (* x scaler) collect y)))
     ;; rounding errors can cause lastx to be slightly off so correct
     (setf (nth (- (length result) 2) result) x)
@@ -257,7 +257,7 @@
 
 ;;; Scaling the y values and setting a min and max for those values
 (data (scale-env (make-envelope '(0 53 25 189 50 7 75 200 100 3))
-		 0.5 :y-min 20 :y-max 100))
+                 0.5 :y-min 20 :y-max 100))
 
 => (0 26.5 25 94.5 50 20 75 100 100 20)
 
@@ -268,7 +268,7 @@
 
 ;;; Scaling the x values and setting a min and max for those values
 (data (scale-env (make-envelope '(0 53 25 189 50 7 75 200 100 3))
-		 1.0 :x-scaler 2 :x-min 9 :x-max 90))
+                 1.0 :x-scaler 2 :x-min 9 :x-max 90))
 
 => (9 53.0 50 189.0 90 7.0 90 200.0 90 3.0)
 
@@ -280,16 +280,16 @@
 |#
 ;;; SYNOPSIS
 (defmethod scale-env ((env envelope) y-scaler &key x-scaler first-x last-x
-					(x-min most-negative-double-float)
-					(y-min most-negative-double-float)
-					(x-max most-positive-double-float)
-					(y-max most-positive-double-float))
+                                        (x-min most-negative-double-float)
+                                        (y-min most-negative-double-float)
+                                        (x-max most-positive-double-float)
+                                        (y-max most-positive-double-float))
 ;;; ****
   (check-sanity env)
   (setf (data env)
-	(scale-env (data env) y-scaler :x-scaler x-scaler :first-x first-x
-				       :last-x last-x :x-min x-min :x-max x-max
-				       :y-min y-min :y-max y-max))
+        (scale-env (data env) y-scaler :x-scaler x-scaler :first-x first-x
+                                       :last-x last-x :x-min x-min :x-max x-max
+                                       :y-min y-min :y-max y-max))
   env)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -339,11 +339,11 @@
   (check-sanity env)
   (let* ((range (- (y-max env) (y-min env))))
     (setf (data env)
-	  (loop for x in (data env) by #'cddr
-		and y in (cdr (data env)) by #'cddr
-		for d = (/ (- y (y-min env)) range)
-		collect x
-		collect (between-extremes (y-min env) (y-max env) (- 1.0 d))))
+          (loop for x in (data env) by #'cddr
+                and y in (cdr (data env)) by #'cddr
+                for d = (/ (- y (y-min env)) range)
+                collect x
+                collect (between-extremes (y-min env) (y-max env) (- 1.0 d))))
     (verify-and-store env)
     env))
 
@@ -374,37 +374,37 @@
 (0.0 0.0 100.0 10.0)
 
 (data (auto-scale-env (make-envelope '(-1 0 .3 -3 1 1) :auto-set-min-max t)
-		      :y-min 5 :y-max 6 :x-min 2))
+                      :y-min 5 :y-max 6 :x-min 2))
 =>
 (2.0 5.75 65.7 5.0 100.0 6.0))
 
 (data (auto-scale-env (make-envelope '(0 1 5 1.5 7 0 10 1) :auto-set-min-max t)
-		      :y-min -15 :y-max -4))
+                      :y-min -15 :y-max -4))
 =>
 (0.0 -7.6666665 50.0 -4.0 70.0 -15.0 100.0 -7.6666665)
 
 (data (auto-scale-env (make-envelope '(0 .5 100 .5) :auto-set-min-max t)
-		      :y-min 1 :y-max 2))
+                      :y-min 1 :y-max 2))
 
 => (0.0 1.0 100.0 1.0)
 
 (data (auto-scale-env (make-envelope '(0 .5 100 .5) :y-min 0 :y-max 1)
-		      :y-min 1 :y-max 2))
+                      :y-min 1 :y-max 2))
 => (0.0 1.5 100.0 1.5)
 
 |#
 ;;; SYNOPSIS
 (defmethod auto-scale-env ((env envelope) &key
-					    (x-min 0.0) (x-max 100.0)
-				            (y-min 0.0) (y-max 10.0)
-					    (orig-y-range (list (y-min env)
-								(y-max env))))
+                                            (x-min 0.0) (x-max 100.0)
+                                            (y-min 0.0) (y-max 10.0)
+                                            (orig-y-range (list (y-min env)
+                                                                (y-max env))))
 ;;; ****
   (check-sanity env)
   (setf (data env)
-	(auto-scale-env (data env) :x-min x-min :x-max x-max
-				   :y-min y-min :y-max y-max
-				   :orig-y-range orig-y-range))
+        (auto-scale-env (data env) :x-min x-min :x-max x-max
+                                   :y-min y-min :y-max y-max
+                                   :orig-y-range orig-y-range))
   env)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -492,10 +492,10 @@
 ;;; EXAMPLE
 #|
 
-(data (decimate-env (make-envelope '(0 0 4 4 5 5 5.1 5.1 5.3 1 5.6 5.6 6 6 10 10))
-		    6))
-=>
-(0.0 0.0 1 2.0 2 4.5 3 4.425 4 8.0 5.0 10.0)
+(data (decimate-env (make-envelope '(0 0 4 4 5 5 5.1 5.1 5.3 1
+                                     5.6 5.6 6 6 10 10))
+                    6))
+;;=> (0.0 0.0 1 2.0 2 4.5 3 4.425 4 8.0 5.0 10.0)
 
 |#
 ;;; SYNOPSIS
@@ -539,19 +539,19 @@
                                         
 ;;; Specifying minimum and maximum y values for the envelope returned 
 (data (env-symmetrical (make-envelope '(0 0 25 11 50 13 75 19 100 23))
-		       0 -20 -7))
+                       0 -20 -7))
                                         
 => (0 -7 25 -11.0 50 -13.0 75 -19.0 100 -20) 
                                      
 |#
 ;;; SYNOPSIS
 (defmethod env-symmetrical ((env envelope) &optional (centre .5) 
-				     (min most-negative-double-float)
-				     (max most-positive-double-float))
+                                     (min most-negative-double-float)
+                                     (max most-positive-double-float))
 ;;; ****
   (check-sanity env)
   (setf (data env)
-	(env-symmetrical (data env) centre min max))
+        (env-symmetrical (data env) centre min max))
   (verify-and-store env)
   env)
 
@@ -580,8 +580,8 @@
 ;;; ****
   (check-sanity env)
   (setf (data env)
-	(loop for x in (data env) by #'cddr and y in (cdr (data env)) by #'cddr
-	      collect x collect (+ y add)))
+        (loop for x in (data env) by #'cddr and y in (cdr (data env)) by #'cddr
+              collect x collect (+ y add)))
   env)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -618,8 +618,8 @@
 #|
 
 (convert-polar-envelopes (make-envelope '(0 0  1 180))
-			 (make-envelope '(0 30  .5 0  1 45))
-			 :minimum-samples 5)
+                         (make-envelope '(0 30  .5 0  1 45))
+                         :minimum-samples 5)
 
 => ENVELOPE: x-min: 0, x-min: 100, x-min: 0, x-min: 1
 SCLIST: sclist-length: 10, bounds-alert: T, copy: T
@@ -649,11 +649,11 @@ data: (0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343 100.0 0.70710677)
   (check-sanity distance-env)
   (multiple-value-bind (x y z)
       (convert-polar-envelopes (data angle-env) (data elevation-env)
-			       :distance-env (data distance-env)
-			       :minimum-samples minimum-samples)
+                               :distance-env (data distance-env)
+                               :minimum-samples minimum-samples)
     (values (make-envelope x)
-	    (make-envelope y)
-	    (make-envelope z))))
+            (make-envelope y)
+            (make-envelope z))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* envelope/env2gnuplot
@@ -709,7 +709,7 @@ data: (0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343 100.0 0.70710677)
 |#
 ;;; SYNOPSIS
 (defmethod envelope-boundaries ((env envelope) &optional (jump-threshold 30)
-						  (steepness-min 5))
+                                                  (steepness-min 5))
 ;;; ****
   (envelope-boundaries (data env) jump-threshold steepness-min))
 
@@ -770,15 +770,15 @@ data: (0 -1 1 2)
 |#
 ;;; SYNOPSIS
 (defun make-envelope (list &key (id nil) (bounds-alert t) (copy t)
-			     (x-min 0) (x-max 100) (y-min 0) (y-max 1)
-			     auto-set-min-max)
+                             (x-min 0) (x-max 100) (y-min 0) (y-max 1)
+                             auto-set-min-max)
 ;;; ****
   (when auto-set-min-max
     (setf x-min (env-x-min list)
-	  x-max (env-x-max list)
-	  y-min (env-y-min list)
-	  y-max (env-y-max  list)))
+          x-max (env-x-max list)
+          y-min (env-y-min list)
+          y-max (env-y-max  list)))
   (make-instance 'envelope :id id :data list :bounds-alert bounds-alert
-			   :copy copy :x-min x-min :x-max x-max
-			   :y-min y-min :y-max y-max))
+                           :copy copy :x-min x-min :x-max x-max
+                           :y-min y-min :y-max y-max))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@ Leon Focker, Ruben Philipp -- october 2024
 
 *** slots
 **** original Envelope
-- irgendeine Liste (x-y paare)
+- some list (of x-y pairs)
 **** y-min y-max x-min x-max
 numbers
 **** normalized envelope
@@ -26,10 +26,6 @@ numbers
 - sample rate for points e.g. converted via polar->cartesian
   - might be better located in a specialized class or the conversion-method (RP
     Wed Oct 16 21:49:16 2024) 
-**** destination
-- either here, or in a child-class
-- when item-envelopes are bundled to a track-envelope, it is necessary to know
-  what they are actually automating
 
 *** methods
 **** make-envelope
@@ -52,7 +48,11 @@ numbers
 ** ~envelope->reaper-envelope~
 
 *** slots
-- all existing slots
+**** env-type (destination)
+- which parameter to automate
+- when item-envelopes are bundled to a track-envelope, it is necessary to know
+  what they are actually automating
+- all other existing slots
 - ...
 
 

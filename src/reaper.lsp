@@ -105,7 +105,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-02 Tu>
-(defclass reaper-envelope (sclist)
+(defclass reaper-envelope (envelope)
   ((env-type :accessor env-type :initform 'volume :initarg :env-type)
    ;; MDE Thu Feb 22 16:29:31 2024, Heidhausen -- removing :type number as the
    ;; default is NIL.

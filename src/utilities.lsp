@@ -1814,6 +1814,12 @@
 (defmethod env-y-max ((env list))
   (loop for y in (cdr env) by #'cddr maximize y))
 
+(defmethod env-x-min ((env list))
+  (loop for x in env by #'cddr minimize x))
+
+(defmethod env-x-max ((env list))
+  (loop for x in env by #'cddr maximize x))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jun 15 15:05:02 2017
 ;;; ****m* utilities/invert-env
@@ -2169,7 +2175,7 @@
               (/ reduced-points num-pts)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* utilities/env-symmetrical
+;;; ****m* utilities/env-symmetrical
 ;;; DESCRIPTION
 ;;; Create a new list of break-point pairs that is symmetrical to the original
 ;;; around a specified center. If no center is specified, the center value

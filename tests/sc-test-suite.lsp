@@ -21396,6 +21396,21 @@ est)")))
       )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF 2024-10-17 15:41:04
+;;; Test Envelope Class and Methods
+
+(sc-deftest test-invert-env ()
+  (let ((env_1 (make-envelope '(0 0 100 1)))
+	(env_2 (make-envelope '(0 0 100 1) :y-max 2))
+	(env_3 (make-envelope '(0 .3 40 .4 100 .9)))
+	(env_4 (make-envelope '(0 -.9 40 .4 100 .9) :auto-set-min-max t)))
+    (sc-test-check
+      (equal (data (invert-env env_1)) '(0 1.0 100 0.0))
+      (equal (data (invert-env env_2)) '(0 2.0 100 1.0))
+      (equal (data (invert-env env_3)) '(0 0.7 40 0.6 100 0.100000024))
+      (equal (data (invert-env env_4)) '(0 0.9 40 -0.39999998 100 -0.9)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*
 ;;; (setf *sc-test-all-tests* (remove 'test-rs-chop *sc-test-all-tests*)) 
 

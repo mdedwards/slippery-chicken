@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:05:01 Sat Aug 31 2024 CEST
+;;; $$ Last modified:  11:15:59 Thu Oct 17 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -2081,6 +2081,94 @@
       (t (error "utilities::decimate-env: unknown method: ~a" method)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/douglas-peucker
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2024-10-16
+;;; 
+;;; DESCRIPTION
+;;; Implementation of the (Ramer-)Douglas–Peucker algorithm. This algorithm
+;;; reduces the number of points in an envelope
+;;; (cf. https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm). 
+;;;
+;;; ARGUMENTS
+;;; - The envelope. Must be a list with xy-pairs.
+;;; - The epsilon value. This value determines the degree of decimation by
+;;;   defining the maximum distance between the original points and the
+;;;   reduced/simplified envelope. The higher the value, the more the envelope
+;;;   will be simplified.  Must be a float >= 0.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword-arguments:
+;;; - :sort. A function (e.g. #'<) indicating whether to sort the list by its
+;;;   x-values before applying the algorithm. Default = NIL.
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; Three values:
+;;; - The simplified envelope.
+;;; - The number of reduced/removed points.
+;;; - The reduction ratio in percent (0.0-1.0).
+;;;
+;;; EXAMPLE
+#|
+(let ((env '(0. 0.481 0.626 1.394 3.052 1.458 3.13 3.397
+             3.443 2.484 8.294 4.712 8.529 2.869 13.615
+             3.189 17.293 5.673 19.092 4.856 23.552 5.144
+             26.526 5.497 27.778 4.487 30.203 5.369 31.612
+             4.054 34.585 5.577 34.664 3.59 36.62 5.337 39.515
+             5.369 40.767 6.186 44.053 4.087 44.757 5.08 48.983
+             4.103 49.609 2.997 55.634 5.272 56.495 3.958 56.495
+             2.901 60.172 3.125 61.033 4.135 61.659 2.901 62.128
+             3.958 64.241 7.276 65.649 2.58 65.962 3.253 65.962
+             7.212 65.962 7.276 67.997 7.292 68.936 5.897 71.596
+             7.372 72.926 3.462 73.865 7.548 74.413 5.577 77.7 4.663
+             80.438 4.856 83.49 5.304 86.307 4.087 86.62 4.888 91.862
+             2.837 94.053 4.167 95.931 5.321 97.418 4.952 100. 4.167))
+      (epsilon 1.8))
+  (douglas-peucker env epsilon))
+;; =>
+;; (0 0.481 3.13 3.397 13.615 3.189 17.293 5.673 34.585 5.577 34.664 3.59 40.767
+;;  6.186 49.609 2.997 55.634 5.272 56.495 2.901 61.659 2.901 64.241 7.276
+;;  65.649 2.58 65.962 7.276 71.596 7.372 72.926 3.462 73.865 7.548 77.7 4.663
+;;  100 4.167)
+|#
+;;; SYNOPSIS
+(defun douglas-peucker (env epsilon &key sort)
+;;; ****
+  (unless (<= 0.0 epsilon)
+    (error "utilities::douglas-peucker: epsilon must be >= 0"))
+  (unless (evenp (length env))
+    (error "utilities::douglas-peucker: the envelope is malformed"))
+  (let* ((points (env-to-xy-list env :sort sort))
+         (max-distance 0)
+         (idx 0)
+         (num-pts (length points))
+         (result '()))
+    (loop for i from 1 to (- num-pts 2)
+          for distance = (perpendicular-distance
+                          (list (car points) (car (last points)))
+                          (nth i points))
+          do (when (> distance max-distance)
+               (setf idx i)
+               (setf max-distance distance)))
+    (if (> max-distance epsilon)
+        (let ((res1 (douglas-peucker (xy-list-to-env (butlast points
+                                                            (- num-pts
+                                                               (1+ idx))))
+                                     epsilon))
+              (res2 (douglas-peucker (xy-list-to-env (nthcdr idx points))
+                                     epsilon)))
+          (setf result (append (butlast res1 2) res2)))
+        (setf result (xy-list-to-env (cons (car points) (last points)))))
+    (let ((reduced-points (- num-pts (/ (length result) 2))))
+      (values result
+              reduced-points
+              (/ reduced-points num-pts)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/env-symmetrical
 ;;; DESCRIPTION
 ;;; Create a new list of break-point pairs that is symmetrical to the original
@@ -2101,33 +2189,33 @@
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Default center is 0.5
-(env-symmetrical '(0 0 25 11 50 13 75 19 100 23))
-
-=> (0 1.0 25 -10.0 50 -12.0 75 -18.0 100 -22.0)
-
-;; Specifying a center of 0
-(env-symmetrical '(0 0 25 11 50 13 75 19 100 23) 0)
-
-=> (0 0.0 25 -11.0 50 -13.0 75 -19.0 100 -23.0)
-
-;;; Specifying minimum and maximum y values for the envelope returned
-(env-symmetrical '(0 0 25 11 50 13 75 19 100 23) 0 -20 -7)
-
-=> (0 -7 25 -11.0 50 -13.0 75 -19.0 100 -20)
-
+;;; Default center is 0.5               ; ; ;
+(env-symmetrical '(0 0 25 11 50 13 75 19 100 23)) ; ; ;
+                                        ; ; ;
+=> (0 1.0 25 -10.0 50 -12.0 75 -18.0 100 -22.0) ; ; ;
+                                        ; ; ;
+;; Specifying a center of 0             ; ; ;
+(env-symmetrical '(0 0 25 11 50 13 75 19 100 23) 0) ; ; ;
+                                        ; ; ;
+=> (0 0.0 25 -11.0 50 -13.0 75 -19.0 100 -23.0) ; ; ;
+                                        ; ; ;
+;;; Specifying minimum and maximum y values for the envelope returned ; ; ;
+(env-symmetrical '(0 0 25 11 50 13 75 19 100 23) 0 -20 -7) ; ; ;
+                                        ; ; ;
+=> (0 -7 25 -11.0 50 -13.0 75 -19.0 100 -20) ; ; ;
+                                        ; ; ;
 |#
 ;;; SYNOPSIS
 (defun env-symmetrical (env &optional (centre .5) 
-                        (min most-negative-double-float)
-                        (max most-positive-double-float))
+                              (min most-negative-double-float)
+                              (max most-positive-double-float))
 ;;; ****
   "Returns an envelope that is symmetrical around the key variable 'centre'.
   e.g. (symmetrical '(0 0 30 .2 70 .95 100 .5)) => 
   (0 1.0 30 0.8 70 0.05 100 0.5)"
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
-     for new-y = (- (* 2.0 centre) y)
-     collect x collect (max min (min new-y max))))
+        for new-y = (- (* 2.0 centre) y)
+        collect x collect (max min (min new-y max))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/env-plus
@@ -2156,6 +2244,140 @@
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr
      collect x collect (+ y add)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/env-to-xy-list
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2024-10-16
+;;; 
+;;; DESCRIPTION
+;;; This function converts an envelope-list of the form '(x1 y1 x2 y2 ...) to
+;;; a nested list of x,y-pairs of the form '((x1 y1) (x2 y2) ...). 
+;;;
+;;; ARGUMENTS
+;;; The envelope to be transformed. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword-arguments:
+;;; - :sort. Whether to sort the envelope by its x-values. Must be either NIL or
+;;;   a function (e.g. #'<). Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; The x,y-list. 
+;;;
+;;; EXAMPLE
+#|
+(env-to-xy-list '(0 2.4 4 1.3 40 3.3 100 0.1))
+;; => ((0 2.4) (4 1.3) (40 3.3) (100 0.1))
+|#
+;;; SYNOPSIS
+(defun env-to-xy-list (env &key sort)
+;;; ****
+  (unless (evenp (length env))
+    (error "utilities::env-to-xy-list: The envelope is malformed."))
+  (unless (or (functionp sort) (null sort))
+    (error "utilities::env-to-xy-list: sort must be of type function."))
+  (let ((res (loop for x in env by #'cddr and y in (rest env) by #'cddr
+                   collect (list x y))))
+    (if sort
+        (sort res sort :key #'car)
+        res)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RP  Thu Oct 17 11:07:36 2024
+(defun xy-list-p (thing)
+  (every #'(lambda (x)
+             (and (listp x)
+                  (eq 2 (length x))))
+         thing))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/xy-list-to-env
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2024-10-16
+;;; 
+;;; DESCRIPTION
+;;; This function converts an xy-list of the form '((x1 y1) (x2 y2) ...) to
+;;; an envelope list of the form '(x1 y1 x2 y2 ...). Cf. env-to-xy-list. 
+;;;
+;;; ARGUMENTS
+;;; The xy-list to be converted. 
+;;; 
+;;; RETURN VALUE
+;;; The envelope. 
+;;;
+;;; EXAMPLE
+#|
+(xy-list-to-env '((0 3.4) (30 5.6) (80 4.4) (100 0.1)))
+;; => (0 3.4 30 5.6 80 4.4 100 0.1)
+|#
+;;; SYNOPSIS
+(defun xy-list-to-env (xy-list)
+;;; ****
+  (unless (xy-list-p xy-list)
+    (error "utilities::xy-list-to-env: The xy-list is malformed."))
+  (loop for val in xy-list
+        append (list (first val) (second val))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/perpendicular-distance
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2024-10-16
+;;; 
+;;; DESCRIPTION
+;;; Calculate the perpendicular distance between a line and a point.
+;;;
+;;; ARGUMENTS
+;;; - The line. Must be a two-item list, each item containing the xy-coordinates
+;;;   of the starting and end point of the line. E.g.: '((0 0) (2 3))
+;;; - The point. Must be a two-item list with the coordinates of the point.
+;;;   E.g.: '(2 2)
+;;; 
+;;; RETURN VALUE
+;;; The perpendicular distance. 
+;;;
+;;; EXAMPLE
+#|
+(perpendicular-distance '((0 0) (10 0)) '(2 2))
+;; => 2.0
+|#
+;;; SYNOPSIS
+(defun perpendicular-distance (line point)
+;;; ****
+  (unless (and (listp line)
+               (= 2 (length line))
+               (every #'listp line)
+               (every #'(lambda (x)
+                          (= 2 (length x)))
+                      line))
+    (error "utilities::perpendicular-distance: line must be a two-item list ~
+            with each item being a two-item list."))
+  (unless (and (listp point)
+               (= 2 (length point)))
+    (error "utilities::perpendicular-distance: point must be a two-item list."))
+  (let* ((p1 (first line))
+         (p2 (second line))
+         (x1 (first p1))
+         (y1 (second p1))
+         (x2 (first p2))
+         (y2 (second p2))
+         (x0 (first point))
+         (y0 (second point)))
+    (/ (abs
+        (+ (- (* (- y2 y1) x0)
+              (* (- x2 x1) y0))
+           (- (* x2 y1) (* y2 x1))))
+       (sqrt
+        (+ (expt (- y2 y1) 2)
+           (expt (- x2 x1) 2))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/force-length
 ;;; DATE
@@ -2181,26 +2403,26 @@
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Shortening a list
-(force-length (loop for i from 1 to 100 collect i) 17)
-
-=> (1 7 13 20 26 32 39 45 51 57 63 70 76 82 89 95 100)
-
-;;; Lengthening a list
-(force-length (loop for i from 1 to 100 collect i) 199)
-
-=> (1 1.5 2 2.5 3 3.5 4 4.5 5 5.5 6 6.5 7 7.5 8 8.5 9 9.5 10 10.5 11 11.5 12
-    12.5 13 13.5 14 14.5 15 15.5 16 16.5 17 17.5 18 18.5 19 19.5 20 20.5 21
-    21.5 22 22.5 23 23.5 24 24.5 25 25.5 26 26.5 27 27.5 28 28.5 29 29.5 30
-    30.5 31 31.5 32 32.5 33 33.5 34 34.5 35 35.5 36 36.5 37 37.5 38 38.5 39
-    39.5 40 40.5 41 41.5 42 42.5 43 43.5 44 44.5 45 45.5 46 46.5 47 47.5 48
-    48.5 49 49.5 50 50.5 51 51.5 52 52.5 53 53.5 54 54.5 55 55.5 56 56.5 57
-    57.5 58 58.5 59 59.5 60 60.5 61 61.5 62 62.5 63 63.5 64 64.5 65 65.5 66
-    66.5 67 67.5 68 68.5 69 69.5 70 70.5 71 71.5 72 72.5 73 73.5 74 74.5 75
-    75.5 76 76.5 77 77.5 78 78.5 79 79.5 80 80.5 81 81.5 82 82.5 83 83.5 84
-    84.5 85 85.5 86 86.5 87 87.5 88 88.5 89 89.5 90 90.5 91 91.5 92 92.5 93
-    93.5 94 94.5 95 95.5 96 96.5 97 97.5 98 98.5 99 99.5 100)
-
+;;; Shortening a list                   ; ; ; ; ; ; ; ;
+(force-length (loop for i from 1 to 100 collect i) 17) ; ; ; ; ; ; ; ;
+                                        ; ; ; ; ; ; ; ;
+=> (1 7 13 20 26 32 39 45 51 57 63 70 76 82 89 95 100) ; ; ; ; ; ; ; ;
+                                        ; ; ; ; ; ; ; ;
+;;; Lengthening a list                  ; ; ; ; ; ; ; ;
+(force-length (loop for i from 1 to 100 collect i) 199) ; ; ; ; ; ; ; ;
+                                        ; ; ; ; ; ; ; ;
+=> (1 1.5 2 2.5 3 3.5 4 4.5 5 5.5 6 6.5 7 7.5 8 8.5 9 9.5 10 10.5 11 11.5 12 ; ; ; ; ; ; ; ;
+12.5 13 13.5 14 14.5 15 15.5 16 16.5 17 17.5 18 18.5 19 19.5 20 20.5 21 ; ; ; ; ; ; ; ;
+21.5 22 22.5 23 23.5 24 24.5 25 25.5 26 26.5 27 27.5 28 28.5 29 29.5 30 ; ; ; ; ; ; ; ;
+30.5 31 31.5 32 32.5 33 33.5 34 34.5 35 35.5 36 36.5 37 37.5 38 38.5 39 ; ; ; ; ; ; ; ;
+39.5 40 40.5 41 41.5 42 42.5 43 43.5 44 44.5 45 45.5 46 46.5 47 47.5 48 ; ; ; ; ; ; ; ;
+48.5 49 49.5 50 50.5 51 51.5 52 52.5 53 53.5 54 54.5 55 55.5 56 56.5 57 ; ; ; ; ; ; ; ;
+57.5 58 58.5 59 59.5 60 60.5 61 61.5 62 62.5 63 63.5 64 64.5 65 65.5 66 ; ; ; ; ; ; ; ;
+66.5 67 67.5 68 68.5 69 69.5 70 70.5 71 71.5 72 72.5 73 73.5 74 74.5 75 ; ; ; ; ; ; ; ;
+75.5 76 76.5 77 77.5 78 78.5 79 79.5 80 80.5 81 81.5 82 82.5 83 83.5 84 ; ; ; ; ; ; ; ;
+84.5 85 85.5 86 86.5 87 87.5 88 88.5 89 89.5 90 90.5 91 91.5 92 92.5 93 ; ; ; ; ; ; ; ;
+93.5 94 94.5 95 95.5 96 96.5 97 97.5 98 98.5 99 99.5 100) ; ; ; ; ; ; ; ;
+                                        ; ; ; ; ; ; ; ;
 |#
 ;;; SYNOPSIS
 (defun force-length (list new-len)
@@ -2218,10 +2440,10 @@
             (let* ((skip (/ len (1- new-len)))
                    (last-el (first (last list)))
                    (result
-                    (loop for count below new-len with i = 0 collect
-                         (nth (round i) list)
-                       do
-                         (incf i skip))))
+                     (loop for count below new-len with i = 0 collect
+                                                              (nth (round i) list)
+                           do
+                              (incf i skip))))
               (unless (equalp last-el (first (last result)))
                 (setf-last result last-el))
               result)
@@ -2229,23 +2451,23 @@
                    (result '())
                    (cycle (unless (zerop diff) (max 1 (1- (floor len adiff)))))
                    (points (loop for i from cycle by cycle repeat adiff
-                              collect i)))
+                                 collect i)))
               (loop with next = (pop points) with last-el
-                 for el in list and i from 0 do
-                   (if (and next (= i next))
-                       (progn 
-                         (when (> diff 0)
-                           (if (and (numberp el) (numberp last-el)) ; add items
-                               ;; interpolate to get the new element
-                               (push (+ last-el (/ (- el last-el) 2.0)) 
-                                     result)
-                               ;; if not numbers just push in the last element
-                               (push last-el result))
-                           (push el result)) ; get this element too of course
-                         (setf next (pop points)))
-                       ;; not on point so get it
-                       (push el result))
-                   (setf last-el el))
+                    for el in list and i from 0 do
+                      (if (and next (= i next))
+                          (progn 
+                            (when (> diff 0)
+                              (if (and (numberp el) (numberp last-el)) ; add items
+                                  ;; interpolate to get the new element
+                                  (push (+ last-el (/ (- el last-el) 2.0)) 
+                                        result)
+                                  ;; if not numbers just push in the last element
+                                  (push last-el result))
+                              (push el result)) ; get this element too of course
+                            (setf next (pop points)))
+                          ;; not on point so get it
+                          (push el result))
+                      (setf last-el el))
               (setf result (nreverse result))
               (unless (= (length result) new-len)
                 (error "force-length:: somehow got the wrong length: ~a"

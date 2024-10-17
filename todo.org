@@ -38,12 +38,11 @@ numbers
 #+end_src
 **** all env-related utilities as methods
 - need to redesign a bunch of "old" functions as methods
-**** decimate-envelope
+**** NEXT decimate-envelope
 
-- reduce number of envelope-points
-- e.g. via /Ramer–Douglas–Peucker algorithm/
-  - https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm
-  
+- state: implemented by RP (~douglas-peucker~ function in utilities.lsp)
+***** TODO add method to ~decimate-env~
+- heuristically determine the epsilon from the ~num-points~ argument
 
 *** usage
 

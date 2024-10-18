@@ -1914,6 +1914,8 @@
   (unless (and (> x-max x-min) (>= y-max y-min))
     (error "utilities::auto-scale-env: x-max (~a) must be > x-min (~a) and ~
             ~%y-max (~a) >= y-min (~a): ~%~a" x-max x-min y-max y-min env))
+  (unless (> (length env) 2)
+    (return-from auto-scale-env (list x-min y-min)))
   (let* ((env-x-min (first env))
          (env-x-max (lastx env))
          (env-x-range (- env-x-max env-x-min))

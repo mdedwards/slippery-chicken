@@ -102,9 +102,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod (setf data) :after (value (i envelope))
-  (declare (ignore value))
-  (verify-and-store i))
+;;; LF 2024-10-18 23:58:33 not needed, done in parent-class
+;; (defmethod (setf data) :after (value (i envelope))
+;;   (declare (ignore value))
+;;   (verify-and-store i))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -122,8 +123,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod check-sanity ((env envelope))
-  (unless (data env)
-    (warn "envelope::check-sanity: env-data should not be nil."))
   (when (oddp (length (data env)))
     (error "envelope::check-sanity: Wrong number of elements in ~a." env))
   (unless (loop for first in (data env) by #'cddr
@@ -196,7 +195,7 @@
   "lastx returns the last x value in the given envelope.
    e.g. (lastx '(0 0 20 4 30 5 100 0)) => 100"
   (check-sanity env)
-  (when env (nth (- (length (data env)) 2) (data env))))
+  (when (data env) (nth (- (length (data env)) 2) (data env))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -206,6 +205,8 @@
    second argument.
    e.g. (new-lastx '(0 0 30 2 100 0) 20) => (0.0 0 6.0 2 20.0 0)"
   ;; let's avoid another (sanity-check), becaus it will get called in lastx
+  (unless (data env)
+    (error "envelope::new-lastx: envelope object has no data"))
   (let* ((scaler (float (/ x (lastx env))))
          (result (loop for x in (data env) by #'cddr
                        and y in (cdr (data env)) by #'cddr

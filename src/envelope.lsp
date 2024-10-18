@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    October 17th 2024
 ;;;
-;;; $$ Last modified:  22:59:32 Fri Oct 18 2024 CEST
+;;; $$ Last modified:  23:08:05 Fri Oct 18 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -77,7 +77,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((o envelope) stream)
-  (format stream "~&ENVELOPE: x-min: ~a, x-min: ~a, x-min: ~a, x-min: ~a"
+  (format stream "~&ENVELOPE: x-min: ~a, x-max: ~a, y-min: ~a, y-max: ~a"
           (x-min o) (x-max o) (y-min o) (y-max o)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

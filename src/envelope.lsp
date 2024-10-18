@@ -136,11 +136,12 @@
 
 (defmethod verify-and-store :after ((env envelope))
   (check-sanity env)
-  (setf (normalised-env env)
-        (auto-scale-env (data env)
-                        :orig-y-range (list (y-min env) (y-max env))
-                        :y-max 1.0)))
-  
+  (when (data env)
+    (setf (normalised-env env)
+          (auto-scale-env (data env)
+			  :orig-y-range (list (y-min env) (y-max env))
+			  :y-max 1.0))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* envelope/interpolate
 ;;; DESCRIPTION

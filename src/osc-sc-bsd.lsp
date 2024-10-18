@@ -87,31 +87,33 @@
     (unwind-protect 
          (format t "~&All good. Awaiting osc messages.~%")
       (loop with happy = t while happy do 
-         ;; need this otherwise messages only get printed when we quit
-           (finish-output t)
-           (socket-receive +osc-sc-in-socket+ buffer nil)
-           (let* ((oscuff (osc:decode-bundle buffer))
-                  ;; here: check if there's an opening (
-                  (soscuff 
-                   (progn
-                     (unless (third oscuff)
-                       (error "osc-sc::osc-call: Couldn't decode buffer: ~a"
-                              buffer))
-                     (if (char= #\( (elt (third oscuff) 0))
-                         'lisp
-                         (read-from-string (third oscuff))))))
-             (when print                ; MDE Mon May 26 10:39:48 2014
-               (format t "~&osc-->message: ~a" oscuff))
-             (finish-output t)
-             (case (sc::rm-package soscuff :sb-bsd-sockets)
-               ;; test
-               (int (handle-number +osc-sc-output-stream+ (second oscuff)))
-               (quit (setf happy nil))
-               ;; saw opening ( so evaluate lisp code
-               (lisp (osc-eval +osc-sc-output-stream+ oscuff print))
-               (t (warn "osc-sc::osc-call: Don't understand ~a. Ignoring."
-                        soscuff)
-                  (finish-output)))))))
+	;; need this otherwise messages only get printed when we quit
+        (finish-output t)
+        (socket-receive +osc-sc-in-socket+ buffer nil)
+	(let* ((tmp (first (sc::string-to-list
+			    (sc::list-to-string (osc:decode-bundle buffer)))))
+	       (oscuff (list (loop for i in tmp collect (write-to-string i))))
+	       ;; here: check if there's an opening (
+               (soscuff 
+                 (progn
+                   (unless (third (first oscuff))
+                     (error "osc-sc::osc-call: Couldn't decode buffer: ~a"
+                            buffer))
+                   (if (char= #\( (elt (third (first oscuff)) 0))
+                       'lisp
+                       (read-from-string (third oscuff))))))
+          (when print			; MDE Mon May 26 10:39:48 2014
+            (format t "~&osc-->message: ~a" oscuff))
+          (finish-output t)
+          (case (sc::rm-package soscuff :sb-bsd-sockets)
+	    ;; test
+            (int (handle-number +osc-sc-output-stream+ (second oscuff)))
+            (quit (setf happy nil))
+	    ;; saw opening ( so evaluate lisp code
+            (lisp (osc-eval +osc-sc-output-stream+ oscuff print))
+            (t (warn "osc-sc::osc-call: Don't understand ~a. Ignoring."
+                     soscuff)
+             (finish-output)))))))
   (osc-cleanup-sockets)
   t)
 

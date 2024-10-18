@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    October 17th 2024
 ;;;
-;;; $$ Last modified:  23:08:05 Fri Oct 18 2024 CEST
+;;; $$ Last modified:  23:08:45 Fri Oct 18 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -559,7 +559,7 @@
       (epsilon 2.8))
   (douglas-peucker env epsilon :destructive t))
 ;; =>
-ENVELOPE: x-min: 0, x-min: 100, x-min: 0, x-min: 1
+ENVELOPE: x-min: 0, x-max: 100, y-min: 0, y-max: 1
 SCLIST: sclist-length: 18, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, 
                      this: NIL, 

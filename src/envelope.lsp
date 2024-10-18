@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    October 17th 2024
 ;;;
-;;; $$ Last modified:  19:21:24 Thu Oct 17 2024 CEST
+;;; $$ Last modified:  22:59:32 Fri Oct 18 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -507,6 +507,85 @@
   env)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* envelope/douglas-peucker
+;;; AUTHOR
+;;; Ruben Philipp <me@rubenphilipp.com>
+;;;
+;;; CREATED
+;;; 2024-10-18
+;;; 
+;;; DESCRIPTION
+;;; Implementation of the (Ramer-)Douglas–Peucker algorithm. This algorithm
+;;; reduces the number of points in an envelope
+;;; (cf. https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm). 
+;;;
+;;; ARGUMENTS
+;;; - The envelope-object. 
+;;; - The epsilon value. This value determines the degree of decimation by
+;;;   defining the maximum distance between the original points and the
+;;;   reduced/simplified envelope. The higher the value, the more the envelope
+;;;   will be simplified.  Must be a float >= 0.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword-arguments:
+;;; - :sort. A function (e.g. #'<) indicating whether to sort the list by its
+;;;   x-values before applying the algorithm. Default = NIL.
+;;; - :destructive. When T, the original envelope object will be changed by
+;;;   this method. Default = NIL.
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; Three values:
+;;; - The simplified envelope-object.
+;;; - The number of reduced/removed points.
+;;; - The reduction ratio in percent (0.0-1.0).
+;;;
+;;; EXAMPLE
+#|
+(let ((env (make-envelope
+            '(0. 0.481 0.626 1.394 3.052 1.458 3.13 3.397
+              3.443 2.484 8.294 4.712 8.529 2.869 13.615
+              3.189 17.293 5.673 19.092 4.856 23.552 5.144
+              26.526 5.497 27.778 4.487 30.203 5.369 31.612
+              4.054 34.585 5.577 34.664 3.59 36.62 5.337 39.515
+              5.369 40.767 6.186 44.053 4.087 44.757 5.08 48.983
+              4.103 49.609 2.997 55.634 5.272 56.495 3.958 56.495
+              2.901 60.172 3.125 61.033 4.135 61.659 2.901 62.128
+              3.958 64.241 7.276 65.649 2.58 65.962 3.253 65.962
+              7.212 65.962 7.276 67.997 7.292 68.936 5.897 71.596
+              7.372 72.926 3.462 73.865 7.548 74.413 5.577 77.7 4.663
+              80.438 4.856 83.49 5.304 86.307 4.087 86.62 4.888 91.862
+              2.837 94.053 4.167 95.931 5.321 97.418 4.952 100. 4.167)))
+      (epsilon 2.8))
+  (douglas-peucker env epsilon :destructive t))
+;; =>
+ENVELOPE: x-min: 0, x-min: 100, x-min: 0, x-min: 1
+SCLIST: sclist-length: 18, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (0 0.481 17.293 5.673 61.659 2.901 64.241 7.276 65.649 2.58 65.962 7.276
+       72.926 3.462 73.865 7.548 100 4.167)
+**************
+|#
+;;; SYNOPSIS
+(defmethod douglas-peucker ((env envelope) epsilon
+                            &key
+                              sort
+                              destructive)
+;;; ****
+  (check-sanity env)
+  (unless destructive
+    (setf env (clone env)))
+  (multiple-value-bind (result reduced-pts reduction-ratio)
+      (douglas-peucker (data env) epsilon :sort sort)
+    (setf (data env) (douglas-peucker (data env) epsilon :sort sort))
+    (verify-and-store env)
+    (values env reduced-pts reduction-ratio)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* envelope/env-symmetrical
 ;;; DESCRIPTION
 ;;; Create a new list of break-point pairs that is symmetrical to the original
@@ -606,7 +685,7 @@
 ;;; :minimum-samples. A number - minimal amount of points between first and
 ;;; last point of the envelopes at which to convert. If nil, only the original
 ;;; points of the envelopes are used, this however doesn't always fully
-;;; represent the envelopes... Going from 0� to 180� is something else than
+;;; represent the envelopes... Going from 0° to 180° is something else than
 ;;; going from y = 1 to y = -1.
 ;;; 
 ;;; RETURN VALUE

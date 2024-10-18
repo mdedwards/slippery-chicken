@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  11:21:47 Thu Oct 17 2024 CEST
+;;; $$ Last modified:  22:58:40 Fri Oct 18 2024 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1788,10 +1788,10 @@
 |#
 ;;; SYNOPSIS
 (defmethod scale-env ((env list) y-scaler &key x-scaler first-x last-x
-					(x-min most-negative-double-float)
-					(y-min most-negative-double-float)
-					(x-max most-positive-double-float)
-					(y-max most-positive-double-float))
+                                        (x-min most-negative-double-float)
+                                        (y-min most-negative-double-float)
+                                        (x-max most-positive-double-float)
+                                        (y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
      collect (cond ((or first-x last-x)
@@ -1907,9 +1907,9 @@
 |#
 ;;; SYNOPSIS
 (defmethod auto-scale-env ((env list) &key
-					(x-min 0.0) (x-max 100.0)
-					(y-min 0.0) (y-max 10.0)
-					orig-y-range)
+                                        (x-min 0.0) (x-max 100.0)
+                                        (y-min 0.0) (y-max 10.0)
+                                        orig-y-range)
 ;;; ****
   (unless (and (> x-max x-min) (>= y-max y-min))
     (error "utilities::auto-scale-env: x-max (~a) must be > x-min (~a) and ~
@@ -2213,8 +2213,8 @@
 |#
 ;;; SYNOPSIS
 (defmethod env-symmetrical ((env list) &optional (centre .5) 
-				     (min most-negative-double-float)
-				     (max most-positive-double-float))
+                                     (min most-negative-double-float)
+                                     (max most-positive-double-float))
 ;;; ****
   "Returns an envelope that is symmetrical around the key variable 'centre'.
   e.g. (symmetrical '(0 0 30 .2 70 .95 100 .5)) => 
@@ -4633,22 +4633,22 @@ WARNING:
          (distance-all-x (loop for x in distance-env by #'cddr collect x))
          (all-x angle-all-x))
     (loop for i in elevation-all-x
-	  unless (member i all-x :test #'=) do (push i all-x))
+          unless (member i all-x :test #'=) do (push i all-x))
     (loop for i in distance-all-x
-	  unless (member i all-x :test #'=) do (push i all-x))
+          unless (member i all-x :test #'=) do (push i all-x))
     (when minimum-samples
       (loop for i from 0 to 100 by (/ 100 (1- minimum-samples))
             unless (member i all-x :test #'=) do (push i all-x)))
     (setf all-x (sort all-x #'<))
     (loop for i in all-x
-	  for new = (polar-to-cartesian
+          for new = (polar-to-cartesian
                      (interpolate i angle-env)
                      (interpolate i elevation-env)
                      (interpolate i distance-env))
-	  collect i into x-env collect (first new) into x-env
-	  collect i into y-env collect (second new) into y-env
-	  collect i into z-env collect (third new) into z-env
-	  finally (return (values x-env y-env z-env)))))
+          collect i into x-env collect (first new) into x-env
+          collect i into y-env collect (second new) into y-env
+          collect i into z-env collect (third new) into z-env
+          finally (return (values x-env y-env z-env)))))
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5699,7 +5699,7 @@ RETURNS:
 |#
 ;;; SYNOPSIS
 (defmethod envelope-boundaries ((envelope list) &optional (jump-threshold 30)
-						  (steepness-min 5))
+                                                  (steepness-min 5))
 ;;; ****
   (loop 
      with last-x = (first envelope)     ; i.e. first x val first time around

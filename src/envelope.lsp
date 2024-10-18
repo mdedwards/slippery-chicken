@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    October 17th 2024
 ;;;
-;;; $$ Last modified:  19:05:38 Thu Oct 17 2024 CEST
+;;; $$ Last modified:  19:21:24 Thu Oct 17 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,10 +60,10 @@
   ;; this case adjust the following slots:
   ;; (note that these ranges might affect the behavior of some of the methods
   ;; below)
-  ((x-min :accessor x-min :initarg :x-min :initform 0 :type number)
-   (x-max :accessor x-max :initarg :x-max :initform 100 :type number)
-   (y-min :accessor y-min :initarg :y-min :initform 0 :type number)
-   (y-max :accessor y-max :initarg :y-max :initform 1 :type number)
+  ((x-min :accessor x-min :initarg :x-min :initform 0.0 :type number)
+   (x-max :accessor x-max :initarg :x-max :initform 100.0 :type number)
+   (y-min :accessor y-min :initarg :y-min :initform 0.0 :type number)
+   (y-max :accessor y-max :initarg :y-max :initform 1.0 :type number)
    ;; a scaled version of the env-list, that matches the 'standard'-values
    ;; for the x and y range (see the initforms above)
    (normalised-env :accessor normalised-env :initarg :normalised-env
@@ -72,7 +72,7 @@
    ;; converting the coordinate-space of an envelope, which could potentially
    ;; distort the original shape.
    (min-point-distance :accessor min-point-distance :initarg :min-point-distance
-                       :initform 1 :type number)))
+                       :initform 1.0 :type number)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

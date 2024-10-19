@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  10:04:27 Mon Mar 18 2024 CET
+;;; $$ Last modified:  14:50:54 Sat Oct 19 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -651,24 +651,25 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun is-sharp (note)
-  (let ((str (string (cm::note (rm-package note :cm)))))
-    (when (and (equal #\S (elt str 1))
+  ;; MDE Sat Oct 19 14:50:29 2024, Heidhausen -- no need for cm note
+  (let ((str (string note))) ;(cm::note (rm-package note :cm)))))
+    (and (equal #\S (elt str 1))
                ;; (digit-char-p (elt str 2)))
                ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
                ;; account!  
-               (integer-as-string str 2))
-      t)))
+               (integer-as-string str 2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun is-flat (note)
-  (let ((str (string (cm::note (rm-package note :cm)))))
-    (when (and (equal #\F (elt str 1))
-               ;; (digit-char-p (elt str 2)))
-               ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
-               ;; account!  
-               (integer-as-string str 2))
-      t)))
+  ;; MDE Sat Oct 19 14:47:43 2024, Heidhausen -- not need to use the cm fun
+  (let ((str (string note)))            ;(cm::note (rm-package note :cm)))))
+    ;; (print str)
+    (and (equal #\F (elt str 1))
+         ;; (digit-char-p (elt str 2)))
+         ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
+         ;; account!  
+         (integer-as-string str 2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

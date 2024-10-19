@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  10:38:09 Tue Sep 10 2024 CEST
+;;; $$ Last modified:  14:45:04 Sat Oct 19 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1694,6 +1694,7 @@ data: CQS4
         (unless (src p)
           (setf (src p) (/ (frequency p)
                            (note-to-freq (src-ref-pitch p)))))
+        ;; (print note-octave)
         (setf (qtr-sharp p) (is-qtr-sharp note-octave)
               (sharp p) (is-sharp note-octave)
               (qtr-flat p) (is-qtr-flat note-octave)
@@ -2012,7 +2013,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
           ((search "SS" idstr) 'cmn::natural-up)      ;; natural 6th sharp
           ((search "TF" idstr) 'cmn::natural-12-down) ;; natural 12th flat
           ((search "SF" idstr) 'cmn::natural-down)    ;; natural 6th flat
-          (t (error "~a ~%pitch::cmn-get-cmn-12th-tone-accidentals: ~
+          (t (error "~a ~%pitch::get-cmn-12th-tone-accidentals: ~
                      what pitch was that?" p)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

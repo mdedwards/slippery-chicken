@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:22:48 Mon Sep  2 2024 CEST
+;;; $$ Last modified:  14:48:46 Sat Oct 19 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3332,7 +3332,7 @@
       (= (frequency tp3) (frequency tp4))
       (equalp (data tp3) (data tp4)))))
 
-;;;  MDE Mon Aug 26 20:33:43 2024, Heidhausen
+;;; MDE Mon Aug 26 20:33:43 2024, Heidhausen
 (sc-deftest test-stretch-intervals ()
   (let* ((si1 (stretch-intervals '(c4 cs d ds e) 2))
          (si2 (stretch-intervals '(c4 cs d ds e) 2 3))
@@ -7703,7 +7703,7 @@
                    :include-missing-non-chromatic nil)
       (file-write-ok "/tmp/sp-output.eps" 30000))))
 
-;;; MDE Fri May 17 19:32:57 2013 -- test creation of set-palette from
+;;;  MDE Fri May 17 19:32:57 2013 -- test creation of set-palette from
 ;;; individual sets made from a call to stack (along with a couple of other
 ;;; things) 
 (sc-deftest test-set-palette-from-stack ()

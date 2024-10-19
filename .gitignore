@@ -12,3 +12,6 @@ workshops/
 sc.asd
 /src/ppcre/
 grep-find.txt
+clm_*.c
+clm_*.o
+clm_*.so

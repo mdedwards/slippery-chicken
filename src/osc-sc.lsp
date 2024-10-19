@@ -95,6 +95,9 @@
 ;;;    Default = #(127 0 0 1))
 ;;; - :send-port. The UDP port to send messages back out on. Default = 8091.
 ;;; - :print. Print messages as they arrive. Default = NIL.
+;;; - :csound. Default = NIL, meaning incomming messages should
+;;;   be formatted similar to ("/osc-sc" "something" "(+" 1 "1"). When set to T,
+;;;   messages can also have this format: ("/osc-sc something (+ 1 1)").
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -104,9 +107,11 @@
                  (listen-port 8090)
                  (send-ip #(127 0 0 1))
                  (print nil)
-                 (send-port 8091))
+		 (send-port 8091)
+		 csound)
 ;;; ****
-  (sb-bsd-sockets::osc-call listen-port send-ip send-port print))
+  ;; LF 2024-10-19, added csound argument.
+  (sb-bsd-sockets::osc-call listen-port send-ip send-port print csound))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

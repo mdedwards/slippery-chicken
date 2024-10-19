@@ -65,11 +65,24 @@
         +osc-sc-out-socket+ nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; LF 2024-10-19 added to keep osc-call clean
+;;; parse a message of style ("/osc-sc something (+ 1 1)")
+;;; => ("/osc-sc" "something" "(+" 1 "1")
+(defun parse-one-string-message (message)
+  (loop for i in (first (sc::string-to-list (sc::list-to-string message)))
+	collect (write-to-string i) into result
+	finally (progn (setf (first result) (format nil "(~a" (first result)))
+		       (setf (first (last result))
+			     (format nil "~a)" (first (last result))))
+		       (return result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The main function we call to process lisp code and other messages sent via
 ;;; OSC. Listens on a given port and sends out on another. NB ip#s need to
 ;;; be in the format #(127 0 0 1) for now.
 
-(defun osc-call (listen-port send-ip send-port print) 
+(defun osc-call (listen-port send-ip send-port print input-as-one-string) 
   ;; (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
   ;; MDE Mon Apr 11 11:15:47 2016 -- increased buffer size
   ;; MDE Tue Mar 31 15:07:24 2020 -- increased again
@@ -90,16 +103,17 @@
 	;; need this otherwise messages only get printed when we quit
         (finish-output t)
         (socket-receive +osc-sc-in-socket+ buffer nil)
-	(let* ((tmp (first (sc::string-to-list
-			    (sc::list-to-string (osc:decode-bundle buffer)))))
-	       (oscuff (list (loop for i in tmp collect (write-to-string i))))
+	;; LF 2024-10-19, added input-as-one-string argument and parsing
+	(let* ((oscuff (if input-as-one-string
+			   (parse-one-string-message (osc:decode-bundle buffer))
+			   (osc:decode-bundle buffer)))
 	       ;; here: check if there's an opening (
                (soscuff 
                  (progn
-                   (unless (third (first oscuff))
+                   (unless (third oscuff)
                      (error "osc-sc::osc-call: Couldn't decode buffer: ~a"
                             buffer))
-                   (if (char= #\( (elt (third (first oscuff)) 0))
+                   (if (char= #\( (elt (third oscuff) 0))
                        'lisp
                        (read-from-string (third oscuff))))))
           (when print			; MDE Mon May 26 10:39:48 2014

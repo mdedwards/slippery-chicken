@@ -95,6 +95,9 @@
 ;;;    Default = #(127 0 0 1))
 ;;; - :send-port. The UDP port to send messages back out on. Default = 8091.
 ;;; - :print. Print messages as they arrive. Default = NIL.
+;;; - :input-as-one-string. Default = NIL, meaning incomming messages should
+;;;   be formatted similar to ("/osc-sc" "something" "(+" 1 "1"). When set to T,
+;;;   messages can also have this format: ("/osc-sc something (+ 1 1)")
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -104,9 +107,12 @@
                  (listen-port 8090)
                  (send-ip #(127 0 0 1))
                  (print nil)
-                 (send-port 8091))
+		 (send-port 8091)
+		 input-as-one-string)
 ;;; ****
-  (sb-bsd-sockets::osc-call listen-port send-ip send-port print))
+  ;; LF 2024-10-19, added input-as-one-string argument.
+  (sb-bsd-sockets::osc-call listen-port send-ip send-port print
+			    input-as-one-string))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

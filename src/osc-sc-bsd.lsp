@@ -82,7 +82,7 @@
 ;;; OSC. Listens on a given port and sends out on another. NB ip#s need to
 ;;; be in the format #(127 0 0 1) for now.
 
-(defun osc-call (listen-port send-ip send-port print input-as-one-string) 
+(defun osc-call (listen-port send-ip send-port print csound) 
   ;; (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
   ;; MDE Mon Apr 11 11:15:47 2016 -- increased buffer size
   ;; MDE Tue Mar 31 15:07:24 2020 -- increased again
@@ -103,8 +103,8 @@
 	;; need this otherwise messages only get printed when we quit
         (finish-output t)
         (socket-receive +osc-sc-in-socket+ buffer nil)
-	;; LF 2024-10-19, added input-as-one-string argument and parsing
-	(let* ((oscuff (if input-as-one-string
+	;; LF 2024-10-19, added csound argument and parsing
+	(let* ((oscuff (if csound
 			   (parse-one-string-message (osc:decode-bundle buffer))
 			   (osc:decode-bundle buffer)))
 	       ;; here: check if there's an opening (

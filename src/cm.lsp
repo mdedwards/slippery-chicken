@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  14:50:54 Sat Oct 19 2024 CEST
+;;; $$ Last modified:  08:14:50 Mon Oct 21 2024 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -641,52 +641,62 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun is-qtr-flat (note)
- (search "QF" (string (cm::note (rm-package note :cm)))))
+  ;; MDE Mon Oct 21 08:14:44 2024, Heidhausen -- different logic: see below
+  (when (cm::note note)
+    (search "QF" (string note)))) ;(cm::note (rm-package note :cm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun is-qtr-sharp (note)
-  (search "QS" (string (cm::note (rm-package note :cm)))))
+  (when (cm::note note)
+    (search "QS" (string note )))) ;(cm::note (rm-package note :cm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun is-sharp (note)
-  ;; MDE Sat Oct 19 14:50:29 2024, Heidhausen -- no need for cm note
-  (let ((str (string note))) ;(cm::note (rm-package note :cm)))))
-    (and (equal #\S (elt str 1))
-               ;; (digit-char-p (elt str 2)))
-               ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
-               ;; account!  
-               (integer-as-string str 2))))
+  ;; MDE Sat Oct 19 14:50:29 2024, Heidhausen -- no need for cm note in the
+  ;; string
+  (when (cm::note note)
+    (let ((str (string note)))          ;(cm::note (rm-package note :cm)))))
+      (and (equal #\S (elt str 1))
+           ;; (digit-char-p (elt str 2)))
+           ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
+           ;; account!  
+           (integer-as-string str 2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun is-flat (note)
-  ;; MDE Sat Oct 19 14:47:43 2024, Heidhausen -- not need to use the cm fun
-  (let ((str (string note)))            ;(cm::note (rm-package note :cm)))))
-    ;; (print str)
-    (and (equal #\F (elt str 1))
-         ;; (digit-char-p (elt str 2)))
-         ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
-         ;; account!  
-         (integer-as-string str 2))))
+  ;; MDE Sat Oct 19 14:47:43 2024, Heidhausen -- not need to use the cm fun for
+  ;; making the string--problematic as e.g. es4 is turned into f4 so (sharp ) is
+  ;; nil when turned into a pitch--as before but good to check that we've been
+  ;; passed an actual note symbol
+  (when (cm::note note)
+    (let ((str (string note)))            
+      ;; (print str)
+      (and (equal #\F (elt str 1))
+           ;; (digit-char-p (elt str 2)))
+           ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
+           ;; account!  
+           (integer-as-string str 2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; N.B. won't work with bracketed accidentals of the form cbn3!
 
 (defun is-natural (note)
-  (let* ((string (string note))
-         2nd-char)
-    (when (> (length string) 1)
-      (setf 2nd-char (elt string 1))
-      ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
-      ;; account!  
-      ;; (or (numberp (digit-char-p 2nd-char))
-      ;;    (equal 2nd-char #\N)))))
-      (or (integer-as-string string 1)
-          (and (equal 2nd-char #\N)
-               (integer-as-string string 2))))))
+  (when (cm::note note)
+    (let* ((string (string note))
+           2nd-char)
+      (when (> (length string) 1)
+        (setf 2nd-char (elt string 1))
+        ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
+        ;; account!  
+        ;; (or (numberp (digit-char-p 2nd-char))
+        ;;    (equal 2nd-char #\N)))))
+        (or (integer-as-string string 1)
+            (and (equal 2nd-char #\N)
+                 (integer-as-string string 2)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

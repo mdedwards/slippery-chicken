@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:48:46 Sat Oct 19 2024 CEST
+;;; $$ Last modified:  08:11:18 Mon Oct 21 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3273,6 +3273,13 @@
   (let ((p1 (make-pitch 'c4))
         (p2 (make-pitch 261.63 :src-ref-pitch 'a4 :midi-channel 1)))
     (sc-test-check
+      ;; MDE Mon Oct 21 08:02:39 2024, Heidhausen -- the cm fun first then check
+      ;; that enharmonic-equivalents are not produced for b# and c-flat 
+      (is-flat 'cf3)
+      (is-sharp 'es9)
+      (is-natural 'f5)
+      (sharp (make-pitch 'bs4))
+      (flat (make-pitch 'ff1))
       ;; p1
       (pitch-p p1)
       (= (frequency p1) (note-to-freq 'c4))

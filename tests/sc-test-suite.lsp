@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  09:07:27 Thu Oct 24 2024 CEST
+;;; $$ Last modified:  20:12:23 Thu Oct 24 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -18188,14 +18188,16 @@ est)")))
     (probe-delete "/tmp/mini.eps")
     (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif")
     (sc-test-check
+      ;; RP  Thu Oct 24 20:11:33 2024 -- aiff causes problems on my machine.
+      ;; Changed output to .wav (cf. test-clm-play).
       (clm-play mini 1 nil 'audio-1 :num-sections 3 :check-overwrite nil
-                :src-width 5
-                :play nil :header-type clm::mus-aiff)
+                                    :src-width 5
+                                    :play nil :header-type clm::mus-riff)
       ;; (not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif" 2500000)
+      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav" 2500000)
       ;; MDE Thu Mar 6 10:54:54 2014 -- make sure do-src works with numbers and
       ;; note-name symbols
-      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif")
+      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav")
       (clm-play mini 1 nil 'audio-1 :num-sections 3 :check-overwrite nil
                 :src-width 5 :do-src 100
                 :snd-selector #'(lambda (sflist pitch event)
@@ -18205,22 +18207,22 @@ est)")))
                 :pan-fun #'(lambda (event)
                              (declare (ignore event))
                              (random 90))
-                :play nil :header-type clm::mus-aiff)
+                :play nil :header-type clm::mus-riff)
       ;; (not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif" 2500000)
-      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif")
+      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav" 2500000)
+      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav")
       (clm-play mini 1 nil 'audio-1 :num-sections 3 :check-overwrite nil
                 :src-width 5 :do-src 'c3 :pan-min-max '(30 60)
-                :play nil :header-type clm::mus-aiff)
+                :play nil :header-type clm::mus-riff)
       ;; (not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif" 2500000)
-      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif")
+      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav" 2500000)
+      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav")
       ;; and should work with nil
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
                 :do-src nil
-                :play nil :header-type clm::mus-aiff)
+                :play nil :header-type clm::mus-riff)
       ;;(not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 2500000))))
+      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.wav" 2500000))))
 
 
 ;;; MDE Tue Apr 17 11:55:59 2012

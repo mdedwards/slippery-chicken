@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  08:11:18 Mon Oct 21 2024 CEST
+;;; $$ Last modified:  09:07:27 Thu Oct 24 2024 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7710,7 +7710,7 @@
                    :include-missing-non-chromatic nil)
       (file-write-ok "/tmp/sp-output.eps" 30000))))
 
-;;;  MDE Fri May 17 19:32:57 2013 -- test creation of set-palette from
+;;; MDE Fri May 17 19:32:57 2013 -- test creation of set-palette from
 ;;; individual sets made from a call to stack (along with a couple of other
 ;;; things) 
 (sc-deftest test-set-palette-from-stack ()
@@ -18106,55 +18106,58 @@ est)")))
       (file-write-ok "/tmp/mini.mid" 400)
       #+cmn (cmn-display mini :file "/tmp/mini.eps")
       #+cmn (file-write-ok "/tmp/mini.eps" 25000)
+      ;; MDE Thu Oct 24 09:04:09 2024, Heidhausen -- aiff writing is causing
+      ;; problems for Ruben. As the sndfile format is not the issue here, just
+      ;; write .wav instead
       (clm-play mini 1 nil 'audio-1 :num-sections 3 :check-overwrite nil
                 :src-width 5
-                :play nil :header-type clm::mus-aiff)
+                :play nil :header-type clm::mus-riff)
       ;; (not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif" 6000000)
+      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav" 6000000)
       ;; MDE Thu Mar 6 10:54:54 2014 -- make sure do-src works with numbers and
       ;; note-name symbols
-      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif")
+      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav")
       (clm-play mini 1 nil 'audio-1 :num-sections 3 :check-overwrite nil
                 :src-width 5 :do-src 100
-                :play nil :header-type clm::mus-aiff)
+                :play nil :header-type clm::mus-riff)
       ;; (not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif" 6000000)
-      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif")
+      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav" 6000000)
+      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav")
       (clm-play mini 1 nil 'audio-1 :num-sections 3 :check-overwrite nil
                 :src-width 5 :do-src 'c3
-                :play nil :header-type clm::mus-aiff)
+                :play nil :header-type clm::mus-riff)
       ;; (not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif" 6000000)
-      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif")
+      (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav" 6000000)
+      (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.wav")
       ;; DJR Thu 22 Aug 2019 15:17:56 BST
       ;; test decay-time arg
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
                 :do-src nil
                 :decay-time 10
-                :play nil :header-type clm::mus-aiff)
-      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 6000000)
-      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.aif")
+                :play nil :header-type clm::mus-riff)
+      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.wav" 6000000)
+      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.wav")
       ;; and should work with nil
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
                 :do-src nil
-                :play nil :header-type clm::mus-aiff)
+                :play nil :header-type clm::mus-riff)
       ;;(not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 5000000)
-      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.aif")
+      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.wav" 5000000)
+      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.wav")
       ;; LMF Wed 21 Jul 2021
       ;; envelope argument for duration-scaler
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
                 :duration-scaler '(0 .1  100 2)
                 :do-src nil
-                :play nil :header-type clm::mus-aiff)
-      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 5000000)
-      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.aif")
+                :play nil :header-type clm::mus-riff)
+      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.wav" 5000000)
+      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.wav")
       ;; and for src src-scaler
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
                 :src-scaler '(0 .5  100 2) :src-width 5
-                :play nil :header-type clm::mus-aiff)
+                :play nil :header-type clm::mus-riff)
       ;;(not (sleep 1))
-      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 5000000))))
+      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.wav" 5000000))))
 
 ;;; MDE Wed Feb 24 20:07:17 2016
 #+clm

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  15:26:23 Wed Nov  6 2024 CET
+;;; $$ Last modified:  15:28:03 Wed Nov  6 2024 CET
 ;;;
 ;;; SVN ID: $Id: sine.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -72,7 +72,7 @@
      ;; compensation? (needs routines from utilities.lsp):
      a-weighting
      (degree 45)
-     (distance 0.0)
+     (distance 0.01)
      unused-arg-for-testing             ; ignored
      (rev-amt 0.0))
   (let* ((beg (floor (* time *srate*)))

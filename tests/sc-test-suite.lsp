@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:25:26 Wed Nov  6 2024 CET
+;;; $$ Last modified:  15:52:10 Wed Nov  6 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19160,25 +19160,26 @@ est)")))
 ;;; SAR Thu May 10 21:45:19 BST 2012
 #+clm
 (sc-deftest test-clm-clm-loops ()
-  (probe-delete "/tmp/test-sndfile-3-loops-from-00m00s180ms.aif")
+  (probe-delete "/tmp/test-sndfile-3-loops-from-00m00s180ms.wav")
   (sc-test-check
-    (clm-loops 
+    (print (clm-loops 
      (concatenate 'string 
                   cl-user::+slippery-chicken-home-dir+
                   "tests/test-sndfiles-dir-1/test-sndfile-3.aiff")
      '(0.180 2.164 4.371 7.575 9.4 10.864)
      :fibonacci-transitions '(1 2 3 4 5)
      :max-perms 7
+     :scaled-to .9
      :output-dir "/tmp/"
-     :header-type clm::mus-aifc
+     ;; MDE Wed Nov  6 15:49:20 2024, Heidhausen -- use .wav
+     :header-type clm::mus-riff
      :channels 1
      :transpositions '(1 12 -12)
      :num-shuffles 3
-     :src-width 20)
+     :src-width 20))
     ;; MDE Fri May 11 16:29:00 2012 -- changed name to reflect new scheme
-    (file-write-ok
-     "/tmp/test-sndfile-3-loops-from-00m00s180ms.aif"
-     8600000)))
+    (file-write-ok "/tmp/test-sndfile-3-loops-from-00m00s180ms.wav" 8600000)
+    ))
 
 #+clm
 (sc-deftest test-clm-clm-loops2 ()

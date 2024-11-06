@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:56:24 Tue Nov  5 2024 CET
+;;; $$ Last modified:  15:25:26 Wed Nov  6 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -18225,7 +18225,7 @@ est)")))
       (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.wav" 2500000))))
 
 
-;;; MDE Tue Apr 17 11:55:59 2012
+;;;  MDE Tue Apr 17 11:55:59 2012
 #+clm 
 (sc-deftest test-clm-play-psynch ()
   (let ((mini

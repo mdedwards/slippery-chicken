@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:51:48 Tue Aug 27 2024 CEST
+;;; $$ Last modified:  14:35:15 Mon Oct 28 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -5178,7 +5178,8 @@ seq-num 5, VN, replacing G3 with B6
                                    ;; create these for us.
                                    (apply clm-ins
                                           (append 
-                                           (list (if snd (path snd) "no path")
+                                           (list (if snd (path snd)
+                                                   "no path required")
                                                  output-start
                                                  :duration duration
                                                  :start input-start

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  09:52:33 Wed Mar 20 2024 CET
+;;; $$ Last modified:  15:12:56 Mon Oct 28 2024 CET
 ;;;
 ;;; SVN ID: $Id: sine.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -91,8 +91,8 @@
     ;; (print amp-env)
     ;; (print ampw)
     (run (loop for i from beg to end do
-            ;;  (clm-print i)
-              (locsig loc i (* (env envelope) (oscil sinewave)))))))
+      ;; (clm-print i)
+      (locsig loc i (* (env envelope) (oscil sinewave)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sine.lsp

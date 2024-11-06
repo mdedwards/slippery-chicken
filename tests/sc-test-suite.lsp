@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  20:12:23 Thu Oct 24 2024 CEST
+;;; $$ Last modified:  13:56:24 Tue Nov  5 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19946,8 +19946,8 @@ est)")))
 (sc-deftest test-activity-levels-pc ()
   (let ((alpc (make-alpc)))
     (labels ((do-it (pc)
-               (print pc)
-               (print (count t (loop repeat 1000 collect (active alpc pc)))))
+               ;; (print pc)
+               (count t (loop repeat 1000 collect (active alpc pc))))
              (do-em ()
                (loop for i from 0 to 100
                      for rand = (random 1.0)

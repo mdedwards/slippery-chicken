@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  09:52:33 Wed Mar 20 2024 CET
+;;; $$ Last modified:  14:09:28 Tue Nov  5 2024 CET
 ;;;
 ;;; SVN ID: $Id: sine.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -57,33 +57,33 @@
 ;;; clm-play rather than via :clm-ins-args)
 (definstrument sine
     (ignore time &key       
-            (duration 5)
-            (frequency 440)
-            start                       ; ignored
-            srt                         ; ignored
-            width                       ; ignored
-            (amp .6)
-            printing
-            (amp-env '(0 0 5 1 95 1 100 0))
-            (amp-env-base 2)
-            ;; in addition to amp, which is set by clm-play:
-            (amp-env-scaler 1.0) 
-            ;; scale amplitude of frequency according to a-weighting loudness
-            ;; compensation? (needs routines from utilities.lsp):
-            a-weighting
-            (degree 45)
-            (distance 0.0)
-            unused-arg-for-testing      ; ignored
-            (rev-amt 0.0))
+     (duration 5)
+     (frequency 440)
+     start                              ; ignored
+     srt                                ; ignored
+     width                              ; ignored
+     (amp .6)
+     printing
+     (amp-env '(0 0 5 1 95 1 100 0))
+     (amp-env-base 2)
+     ;; in addition to amp, which is set by clm-play:
+     (amp-env-scaler 1.0) 
+     ;; scale amplitude of frequency according to a-weighting loudness
+     ;; compensation? (needs routines from utilities.lsp):
+     a-weighting
+     (degree 45)
+     (distance 0.0)
+     unused-arg-for-testing             ; ignored
+     (rev-amt 0.0))
   (let* ((beg (floor (* time *srate*)))
          (end (+ beg (floor (* duration *srate*))))
          (sinewave (make-oscil :frequency frequency))
          (amps (* amp amp-env-scaler))
          (ampw (if a-weighting 
-                   ;; MDE Tue Dec 3 10:26:43 2013 -- a-weighting now returns
-                   ;; linear (not db) scalers by default.
-                   (* amps (sc::a-weighting frequency))
-                   amps))
+                 ;; MDE Tue Dec 3 10:26:43 2013 -- a-weighting now returns
+                 ;; linear (not db) scalers by default.
+                 (* amps (sc::a-weighting frequency))
+                 amps))
          (envelope (make-env :envelope amp-env :scaler ampw :base amp-env-base
                              :duration duration))
          (loc (make-locsig :degree degree :distance distance 
@@ -91,8 +91,8 @@
     ;; (print amp-env)
     ;; (print ampw)
     (run (loop for i from beg to end do
-            ;;  (clm-print i)
-              (locsig loc i (* (env envelope) (oscil sinewave)))))))
+      (locsig loc i (* (env envelope) (oscil sinewave)))))))
+      ;; (outa i (* (env envelope) (oscil sinewave)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sine.lsp

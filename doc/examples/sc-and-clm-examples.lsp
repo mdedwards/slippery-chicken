@@ -13,7 +13,7 @@
 ;;;
 ;;; Creation date:    17th July 2012
 ;;;
-;;; $$ Last modified: 11:41:14 Mon Jun 10 2013 BST
+;;; $$ Last modified:  20:49:51 Tue Nov 12 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-and-clm-examples.lsp 3673 2013-06-10 10:56:24Z medward2 $
 ;;;
@@ -559,7 +559,7 @@
             :channels 8
             :check-overwrite nil
             :srate 44100
-            :header-type clm::mus-aiff
+            :header-type clm::mus-riff
             :data-format clm::mus-bshort
             :sndfile-extension ".aiff"))
 

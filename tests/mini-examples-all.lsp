@@ -2492,7 +2492,7 @@
                   :src-width 5
                   :channels 8
                   :srate 44100
-                  :header-type clm::mus-aiff
+                  :header-type clm::mus-riff
                   :data-format clm::mus-bshort 
                   :sndfile-extension ".aiff"))
 

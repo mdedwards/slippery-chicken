@@ -34,27 +34,27 @@
 <a name="complete2dset2fmake2dcomplete2dset"></a>
 <a name="robo149"></a><h2 class=robodoc>complete-set/make-complete-set [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo904">complete-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo908">complete-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo904">complete-set</a> object, which as an extension of the <a href="./tl-set_lsp.html#robo624">tl-set</a> class
- allows checking for full sets: ones in which every note of *standard-<a href="./popcorn_lsp.html#robo395">scale</a>*
+<pre> Create a <a href="#robo908">complete-set</a> object, which as an extension of the <a href="./tl-set_lsp.html#robo627">tl-set</a> class
+ allows checking for full sets: ones in which every note of *standard-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*
  is present.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A set of pitches. This can either take the form of a list of note-name
-   symbols or a <a href="#robo904">complete-set</a>, <a href="./tl-set_lsp.html#robo624">tl-set</a> or <a href="./sc-set_lsp.html#robo645">sc-set</a> object.
+   symbols or a <a href="#robo908">complete-set</a>, <a href="./tl-set_lsp.html#robo627">tl-set</a> or <a href="./sc-set_lsp.html#robo648">sc-set</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :id. An number, symbol or string that is to be the ID of the given
-   <a href="#robo904">complete-set</a> object (see doc for sc-set).
+   <a href="#robo908">complete-set</a> object (see doc for sc-set).
  - :tag. A number, symbol or string that is secondary name, description, tag
-   etc. for the given <a href="#robo904">complete-set</a> object. The :tag serves for
+   etc. for the given <a href="#robo908">complete-set</a> object. The :tag serves for
    identification but not searching purposes (see doc for named-object).
  - :subsets. An <a href="./assoc-list_lsp.html#robo113">assoc-list</a> of key/data pairs, in which the data is a list of
    note-name symbols that are a subset of the main set. One use for this
    keyword argument might be to create subsets that particular <a href="./instruments_lsp.html#robo12">instruments</a>
-   can play; these would then be selected in the <a href="./chord_lsp.html#robo628">chord</a>-function passed to
+   can play; these would then be selected in the <a href="./chord_lsp.html#robo631">chord</a>-function passed to
    the <a href="./instrument_lsp.html#robo294">instrument</a> object (see doc for sc-set).
  - :related-sets. An <a href="./assoc-list_lsp.html#robo113">assoc-list</a> of key/data pairs, similar to :subsets, only
    that the pitches given here do not have to be part of the main set. This
@@ -63,27 +63,27 @@
  - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
    symbols) are to be automatically sorted from <a href="./event_lsp.html#robo202">lowest</a> to <a href="./chord_lsp.html#robo90">highest</a>. 
   T = sort. Default = T. (see doc for sc-set)
- - :transposition. A number that is the number of <a href="./utilities_lsp.html#robo1004">semitones</a> by which the
-   pitches of the new <a href="#robo904">complete-set</a> are to be transposed when the object is
+ - :transposition. A number that is the number of <a href="./utilities_lsp.html#robo1008">semitones</a> by which the
+   pitches of the new <a href="#robo908">complete-set</a> are to be transposed when the object is
    created. Default = 0.  (see doc for tl-set)
- - :<a href="./tl-set_lsp.html#robo906">limit</a>-upper. A note-name symbol or a <a href="./pitch_lsp.html#robo295">pitch</a> object to indicate the
-   <a href="./chord_lsp.html#robo90">highest</a> possible <a href="./pitch_lsp.html#robo295">pitch</a> in the given <a href="#robo904">complete-set</a> object to be
+ - :<a href="./tl-set_lsp.html#robo910">limit</a>-upper. A note-name symbol or a <a href="./pitch_lsp.html#robo295">pitch</a> object to indicate the
+   <a href="./chord_lsp.html#robo90">highest</a> possible <a href="./pitch_lsp.html#robo295">pitch</a> in the given <a href="#robo908">complete-set</a> object to be
    created. (see doc for tl-set)
- - :<a href="./tl-set_lsp.html#robo906">limit</a>-lower.  A note-name symbol or a <a href="./pitch_lsp.html#robo295">pitch</a> object to indicate the
-   <a href="./event_lsp.html#robo202">lowest</a> possible <a href="./pitch_lsp.html#robo295">pitch</a> in the <a href="#robo904">complete-set</a> object to be created. (see doc
+ - :<a href="./tl-set_lsp.html#robo910">limit</a>-lower.  A note-name symbol or a <a href="./pitch_lsp.html#robo295">pitch</a> object to indicate the
+   <a href="./event_lsp.html#robo202">lowest</a> possible <a href="./pitch_lsp.html#robo295">pitch</a> in the <a href="#robo908">complete-set</a> object to be created. (see doc
    for tl-set)
  - :complete. T, NIL, or 'CHROMATIC. This argument can be given at init, and
    if the set is not complete in the sense of T or 'CHROMATIC (all
    chromatic, equally-tempered notes are present in the set), a warning is
    printed. If the set is neither T nor 'CHROMATIC at init, then no warning
-   will be issued. In both cases the COMPLETE slot of the given <a href="#robo904">complete-set</a>
+   will be issued. In both cases the COMPLETE slot of the given <a href="#robo908">complete-set</a>
    object will be set after checking the set.
  - :midi-channel. The channel to set chromatic pitches to. Default = 1.
  - :microtones-midi-channel The channel to set <a href="./event_lsp.html#robo209">microtonal</a> pitches to.
    Default = 2.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo904">complete-set</a> object.
+<pre> A <a href="#robo908">complete-set</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Create a complete set using a list of note-name symbols and the default
@@ -95,16 +95,16 @@ COMPLETE-SET: complete: NIL
 ... 
 data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
-;; A new <a href="#robo904">complete-set</a> object can be created from <a href="./tl-set_lsp.html#robo624">tl-set</a> and <a href="./sc-set_lsp.html#robo645">sc-set</a> objects
+;; A new <a href="#robo908">complete-set</a> object can be created from <a href="./tl-set_lsp.html#robo627">tl-set</a> and <a href="./sc-set_lsp.html#robo648">sc-set</a> objects
 (let ((mcs (<strong>make-complete-set</strong> 
-            (<a href="./tl-set_lsp.html#robo909">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
-  (<a href="./sc-set_lsp.html#robo615">pitch-symbols</a> mcs))
+            (<a href="./tl-set_lsp.html#robo913">make-tl-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
+  (<a href="./sc-set_lsp.html#robo618">pitch-symbols</a> mcs))
 
 =&gt; (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5)
 
 (let ((mcs (<strong>make-complete-set</strong> 
-            (<a href="./sc-set_lsp.html#robo613">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
-  (<a href="./sc-set_lsp.html#robo615">pitch-symbols</a> mcs))
+            (<a href="./sc-set_lsp.html#robo616">make-sc-set</a> '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
+  (<a href="./sc-set_lsp.html#robo618">pitch-symbols</a> mcs))
 
 =&gt; (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5)
 
@@ -115,8 +115,8 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
                         (mid (b3 d4)))
              :related-sets '((not-playable (dqs2 eqf3)))
              :transposition 3
-             :<a href="./tl-set_lsp.html#robo906">limit</a>-upper 'g5
-             :<a href="./tl-set_lsp.html#robo906">limit</a>-lower 'e2)
+             :<a href="./tl-set_lsp.html#robo910">limit</a>-upper 'g5
+             :<a href="./tl-set_lsp.html#robo910">limit</a>-lower 'e2)
 
 =&gt; 
 COMPLETE-SET: complete: NIL
@@ -127,7 +127,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 <pre class="source">(defun <strong>make-complete-set</strong> (set &amp;rest keys
                           &amp;key id tag subsets related-sets 
                             (transposition 0) (auto-sort t) (warn-dups t)
-                            (rm-dups t) <a href="./tl-set_lsp.html#robo906">limit</a>-upper <a href="./tl-set_lsp.html#robo906">limit</a>-lower complete
+                            (rm-dups t) <a href="./tl-set_lsp.html#robo910">limit</a>-upper <a href="./tl-set_lsp.html#robo910">limit</a>-lower complete
                             ;; MDE Fri Aug 24 14:56:50 2018 
                             (midi-channel 1) (microtones-midi-channel 2))
 </pre>
@@ -136,10 +136,10 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 <a name="complete2dset2fmake2dstack"></a>
 <a name="robo150"></a><h2 class=robodoc>complete-set/make-stack [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo904">complete-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo908">complete-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo904">complete-set</a> containing stacks based on the given notes.  See
- documentation for the <a href="./sc-set_lsp.html#robo619">stack</a> method in the <a href="./sc-set_lsp.html#robo645">sc-set</a> class for details of
+<pre> Make a <a href="#robo908">complete-set</a> containing stacks based on the given notes.  See
+ documentation for the <a href="./tl-set_lsp.html#robo914">stack</a> method in the <a href="./sc-set_lsp.html#robo648">sc-set</a> class for details of
  what this algorithm does.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -149,15 +149,15 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :by-freq. Use the frequencies of the pitches to create the <a href="./sc-set_lsp.html#robo619">stack</a> instead
+ - :by-freq. Use the frequencies of the pitches to create the <a href="./tl-set_lsp.html#robo914">stack</a> instead
    of the interval structure. Default = NIL.  
  - :up. Apply the process upwards in <a href="./pitch_lsp.html#robo295">pitch</a> space. Default = T.
  - :down. Apply the process downwards in <a href="./pitch_lsp.html#robo295">pitch</a> space. Default = T.
- - :respell. Respell the <a href="./chord_lsp.html#robo628">chord</a> after the stacking process to (hopefully get
+ - :respell. Respell the <a href="./chord_lsp.html#robo631">chord</a> after the stacking process to (hopefully get
    better spellings. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="#robo904">complete-set</a> object
+<pre> a <a href="#robo908">complete-set</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>make-stack</strong> (id notes num-stacks &amp;key by-freq (up t) (down t) (respell t))
@@ -165,24 +165,24 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 
 
 <a name="tl2dset2fcomplete2dset"></a>
-<a name="robo904"></a><h2 class=robodoc>tl-set/complete-set [ Classes ]</h2>
+<a name="robo908"></a><h2 class=robodoc>tl-set/complete-set [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./tl-set_lsp.html#robo624">tl-set</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./tl-set_lsp.html#robo627">tl-set</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>complete-set</strong>
 
  File:             <a href="#robo_top_of_doc">complete-set.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; <a href="./chord_lsp.html#robo628">chord</a> -&gt;
-                   <a href="./sc-set_lsp.html#robo645">sc-set</a> -&gt; <a href="./tl-set_lsp.html#robo624">tl-set</a> -&gt; <strong>complete-set</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; <a href="./chord_lsp.html#robo631">chord</a> -&gt;
+                   <a href="./sc-set_lsp.html#robo648">sc-set</a> -&gt; <a href="./tl-set_lsp.html#robo627">tl-set</a> -&gt; <strong>complete-set</strong>
 
  Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
  Purpose:          Implementation of the <strong>complete-set</strong> class which as an
-                   extension of the <a href="./tl-set_lsp.html#robo624">tl-set</a> class allows checking for full
-                   sets: ones in which every note of the current <a href="./popcorn_lsp.html#robo395">scale</a> is
+                   extension of the <a href="./tl-set_lsp.html#robo627">tl-set</a> class allows checking for full
+                   sets: ones in which every note of the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> is
                    present. 
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -196,7 +196,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/complete-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-08-13 16:13:20</p>
+<p>Generated from ./../../src/complete-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
 </div> <!-- footer -->
 </body>
 </html>

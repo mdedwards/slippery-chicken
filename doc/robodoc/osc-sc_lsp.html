@@ -77,6 +77,9 @@
     Default = #(127 0 0 1))
  - :send-port. The UDP port to send messages back out on. Default = 8091.
  - :print. Print messages as they arrive. Default = NIL.
+ - :csound. Default = NIL, meaning incomming messages should
+   be formatted similar to ("/osc-sc" "something" "(+" 1 "1"). When set to T,
+   messages can also have this format: ("/osc-sc something (+ 1 1)").
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T
@@ -86,12 +89,13 @@
                  (listen-port 8090)
                  (send-ip #(127 0 0 1))
                  (print nil)
-                 (send-port 8091))
+                 (send-port 8091)
+                 csound)
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/osc-sc.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-08-13 16:13:20</p>
+<p>Generated from ./../../src/osc-sc.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
 </div> <!-- footer -->
 </body>
 </html>

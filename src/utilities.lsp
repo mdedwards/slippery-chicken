@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:38:18 Wed Nov 13 2024 CET
+;;; $$ Last modified:  19:46:21 Wed Nov 13 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6784,6 +6784,9 @@ yes_foo, 1 2 3 4;
 ;;; Given a list of integers > 0, representing perhaps the number of items
 ;;; (e.g. pitches, rhythms etc.) in an arbitrary number of lists, calculate the
 ;;; cycle length before we repeat, i.e. start again at the beginning.
+;;;
+;;; NB for convenience the argument can be a list of lists, the lengths of which
+;;; will then be used as above. 
 ;;; 
 ;;; ARGUMENTS
 ;;; a list of integers > 0
@@ -6813,6 +6816,8 @@ yes_foo, 1 2 3 4;
 ;;; SYNOPSIS
 (defun periodicity (proportions)
 ;;; ****
+  (when (every #'listp proportions)
+    (setq proportions (loop for p in proportions collect (length p))))
   (assert (and proportions (listp proportions)
                (every #'integer>0 proportions)))
   (let ((nds (remove-duplicates proportions

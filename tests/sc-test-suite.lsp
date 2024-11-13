@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:38:49 Wed Nov 13 2024 CET
+;;; $$ Last modified:  19:45:19 Wed Nov 13 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16427,6 +16427,7 @@
             (and (= p period) (equalp l props)))))
     (sc-test-check
       (test-it '(1 2 5) 10 '(2 5))
+      (test-it '((1 2 3) (1 2 3 4 5) (a b c d e f)) 30 '(5 6))
       (test-it '(1 2 3 4 5 6) 120 '(4 5 6))
       (test-it '(1 2 3 4 5 6 20) 120 '(6 20))
       (test-it '(1 2 3 4 5 6 16) 480 '(5 6 16)))))

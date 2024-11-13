@@ -34,15 +34,15 @@
 <a name="pitch2dseq2fget2dnotes"></a>
 <a name="robo335"></a><h2 class=robodoc>pitch-seq/get-notes [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo638">pitch-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">pitch-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> This gets notes from the sets, limiting the notes used to the range of the
- <a href="./instrument_lsp.html#robo294">instrument</a> and any other ranges defined in the <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> class. If
+ <a href="./instrument_lsp.html#robo294">instrument</a> and any other ranges defined in the <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> class. If
  either the <a href="./instrument_lsp.html#robo294">instrument</a> or set are missing it just gets the relative pitches
  we use to display a <a href="./pitch_lsp.html#robo295">pitch</a> sequence.
 
- <a href="./tl-set_lsp.html#robo906">limit</a>-high and <a href="./tl-set_lsp.html#robo906">limit</a>-low are <a href="./pitch_lsp.html#robo295">pitch</a> objects. They are extra range definers
- that are given to the <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> object to control the <a href="./pitch_lsp.html#robo295">pitch</a> curve of
+ <a href="./tl-set_lsp.html#robo910">limit</a>-high and <a href="./tl-set_lsp.html#robo910">limit</a>-low are <a href="./pitch_lsp.html#robo295">pitch</a> objects. They are extra range definers
+ that are given to the <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> object to control the <a href="./pitch_lsp.html#robo295">pitch</a> curve of
  an <a href="./instrument_lsp.html#robo294">instrument</a> over the duration of the whole <a href="./piece_lsp.html#robo58">piece</a>. They always refer to
  sounding pitches.  
  
@@ -51,34 +51,34 @@
  1) Limit the set object to the <a href="./instrument_lsp.html#robo294">instrument</a>'s range.
  
  2) Remove the notes that have already been selected for other <a href="./instruments_lsp.html#robo12">instruments</a>.
-    This is where the <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> slot :<a href="./instrument_lsp.html#robo294">instrument</a>-hierarchy plays an
+    This is where the <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> slot :<a href="./instrument_lsp.html#robo294">instrument</a>-hierarchy plays an
     important role.  This can be skipped if the &lt;avoid-used-notes&gt; argument
     is nil.
  
  3) If there is a subset with the same ID as the ID slot for the
-    <a href="./slippery-chicken-edit_lsp.html#robo233">player</a>, use only those pitches common to that subset and those in
+    <a href="./player_lsp.html#robo296">player</a>, use only those pitches common to that subset and those in
     step 2. If not, try again using the subset-id of the <a href="./instrument_lsp.html#robo294">instrument</a>.
  
- 4) If the ratio <a href="./utilities_lsp.html#robo921">between</a> the number of pitches now available and the number
-    of different numbers in the <a href="#robo638">pitch-seq</a> is less than the <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a>
-    slot <a href="./pitch_lsp.html#robo295">pitch</a>-seq-index-scaler-min*, <a href="./recursive-assoc-list_lsp.html#robo406">add</a> notes from those used by other
-    <a href="./instruments_lsp.html#robo12">instruments</a> until there are enough; the <a href="./event_lsp.html#robo202">lowest</a> number in the <a href="#robo638">pitch-seq</a>
+ 4) If the ratio <a href="./utilities_lsp.html#robo925">between</a> the number of pitches now available and the number
+    of different numbers in the <a href="#robo641">pitch-seq</a> is less than the <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a>
+    slot <a href="./pitch_lsp.html#robo295">pitch</a>-seq-index-scaler-min*, <a href="./recursive-assoc-list_lsp.html#robo409">add</a> notes from those used by other
+    <a href="./instruments_lsp.html#robo12">instruments</a> until there are enough; the <a href="./event_lsp.html#robo202">lowest</a> number in the <a href="#robo641">pitch-seq</a>
     will now select the <a href="./event_lsp.html#robo202">lowest</a> <a href="./pitch_lsp.html#robo295">pitch</a> in the set that is in the <a href="./instrument_lsp.html#robo294">instrument</a>'s
     range.
 
     If however there are enough pitches without adding pitches already used
     by other <a href="./instruments_lsp.html#robo12">instruments</a>, then where in the available pitches the <a href="./event_lsp.html#robo202">lowest</a>
-    number of the <a href="#robo638">pitch-seq</a> will be placed depends on whether the
+    number of the <a href="#robo641">pitch-seq</a> will be placed depends on whether the
     prefers-notes slot of the <a href="./instrument_lsp.html#robo294">instrument</a> has been set to be high or low. If
-    high, then the <a href="./chord_lsp.html#robo90">highest</a> number in the <a href="#robo638">pitch-seq</a> will result in the
+    high, then the <a href="./chord_lsp.html#robo90">highest</a> number in the <a href="#robo641">pitch-seq</a> will result in the
     <a href="./chord_lsp.html#robo90">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> in the available pitches that is in the <a href="./instrument_lsp.html#robo294">instrument</a>'s
-    range. If low, then the <a href="./event_lsp.html#robo202">lowest</a> number in the <a href="#robo638">pitch-seq</a> will result in
+    range. If low, then the <a href="./event_lsp.html#robo202">lowest</a> number in the <a href="#robo641">pitch-seq</a> will result in
     the <a href="./event_lsp.html#robo202">lowest</a> <a href="./pitch_lsp.html#robo295">pitch</a> in the available pitches that is in the <a href="./instrument_lsp.html#robo294">instrument</a>'s
-    range. If the user hasn't set this slot, then the range of the <a href="#robo638">pitch-seq</a>
-    will correspond to the <a href="./utilities_lsp.html#robo962">middle</a> of the available pitches.
+    range. If the user hasn't set this slot, then the range of the <a href="#robo641">pitch-seq</a>
+    will correspond to the <a href="./utilities_lsp.html#robo966">middle</a> of the available pitches.
 
     There are two caveats here if the <a href="./instrument_lsp.html#robo294">instrument</a>'s prefers-notes slot is
-    NIL: 1) If the <a href="./event_lsp.html#robo202">lowest</a> number in the <a href="#robo638">pitch-seq</a> is 5 or higher, this will
+    NIL: 1) If the <a href="./event_lsp.html#robo202">lowest</a> number in the <a href="#robo641">pitch-seq</a> is 5 or higher, this will
     have the same effect as the prefers-notes slot being high. Similarly, if
     the <a href="./event_lsp.html#robo202">lowest</a> number is 1, it will have the same effect as the
     prefers-notes slot being low. These two numbers (5 and 1) are actually
@@ -89,21 +89,21 @@
 
     * The question as to how many pitches are enough pitches before adding
     used notes is determined by the <a href="./pitch_lsp.html#robo295">pitch</a>-seq-index-scaler-min argument,
-    which is by default 0.5 (in the <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> slot that's usually
-    used and passed to this method). As the <a href="#robo638">pitch-seq</a> notes must be offset
+    which is by default 0.5 (in the <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> slot that's usually
+    used and passed to this method). As the <a href="#robo641">pitch-seq</a> notes must be offset
     and scaled before they can be used as indices, there's a minimum scaler
     that's considered acceptable; anything below this would result in more
     notes being added.
  
  5) If at this point there are no available pitches, the function will by
     default trigger an error and exit (see however <a href="./pitch_lsp.html#robo295">pitch</a>-seq-no-pitches-error
-    in <a href="./globals_lsp.html#robo_top_of_doc">globals.lsp</a>). This could happen if the value of set-<a href="./sclist_lsp.html#robo634">limits</a>, both high
+    in <a href="./globals_lsp.html#robo_top_of_doc">globals.lsp</a>). This could happen if the value of set-<a href="./sclist_lsp.html#robo637">limits</a>, both high
     and low, took the available pitches outside of the <a href="./instrument_lsp.html#robo294">instrument</a>'s range,
     for instance.
  
- 6) The <a href="#robo638">pitch-seq</a> numbers are now offset and scaled, then rounded in order
+ 6) The <a href="#robo641">pitch-seq</a> numbers are now offset and scaled, then rounded in order
     to use them as indices into the <a href="./pitch_lsp.html#robo295">pitch</a> list. If a number is in
-    parentheses then this is where the <a href="./instrument_lsp.html#robo294">instrument</a>'s <a href="./chord_lsp.html#robo628">chord</a> function would be
+    parentheses then this is where the <a href="./instrument_lsp.html#robo294">instrument</a>'s <a href="./chord_lsp.html#robo631">chord</a> function would be
     called. As notes are selected, the set marks them as used for the next
     time around. Also, there's an attempt to avoid melodic octaves on
     adjacent notes; however, if the set is full of octaves this won't be
@@ -111,17 +111,17 @@
     used.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo638">pitch-seq</a> object.
+<pre> - A <a href="#robo641">pitch-seq</a> object.
  - An <a href="./instrument_lsp.html#robo294">instrument</a> object.
- - A <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> object.
- - An <a href="./sc-set_lsp.html#robo645">sc-set</a> object.
+ - A <a href="./player_lsp.html#robo296">player</a> object.
+ - An <a href="./sc-set_lsp.html#robo648">sc-set</a> object.
  - A hint <a href="./pitch_lsp.html#robo295">pitch</a> (ignored for now).
  - A <a href="./pitch_lsp.html#robo295">pitch</a>-object defining the <a href="./chord_lsp.html#robo90">highest</a> possible note.
  - A <a href="./pitch_lsp.html#robo295">pitch</a>-object defining the <a href="./event_lsp.html#robo202">lowest</a> possible note.
  - The sequence number (for diagnostics).
  - The last note of the previous sequence, as a <a href="./pitch_lsp.html#robo295">pitch</a> object.
  - The <a href="./event_lsp.html#robo202">lowest</a> scaler that will be accepted before adding notes from those
-   used; i.e., if the <a href="#robo638">pitch-seq</a> needs 6 notes and only 3 are available,
+   used; i.e., if the <a href="#robo641">pitch-seq</a> needs 6 notes and only 3 are available,
    there would be note repetition, but as this would create a scaler of 0.5,
    that would be acceptable
  - Whether to avoid lines jumping an octave in either direction (passed by
@@ -131,11 +131,11 @@
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns the list of <a href="./pitch_lsp.html#robo295">pitch</a> objects that forms the notes slot of the given
- <a href="#robo638">pitch-seq</a> 
+ <a href="#robo641">pitch-seq</a> 
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-notes</strong> ((ps <a href="./pitch_lsp.html#robo295">pitch</a>-seq) <a href="./instrument_lsp.html#robo294">instrument</a> <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> set hint-<a href="./pitch_lsp.html#robo295">pitch</a> <a href="./tl-set_lsp.html#robo906">limit</a>-high
-                      <a href="./tl-set_lsp.html#robo906">limit</a>-low seq-num last-note-previous-seq
+<pre class="source">(defmethod <strong>get-notes</strong> ((ps <a href="./pitch_lsp.html#robo295">pitch</a>-seq) <a href="./instrument_lsp.html#robo294">instrument</a> <a href="./player_lsp.html#robo296">player</a> set hint-<a href="./pitch_lsp.html#robo295">pitch</a> <a href="./tl-set_lsp.html#robo910">limit</a>-high
+                      <a href="./tl-set_lsp.html#robo910">limit</a>-low seq-num last-note-previous-seq
                       <a href="./pitch_lsp.html#robo295">pitch</a>-seq-index-scaler-min avoid-melodic-octaves
                       avoid-used-notes)
 </pre>
@@ -144,16 +144,16 @@
 <a name="pitch2dseq2finvert"></a>
 <a name="robo336"></a><h2 class=robodoc>pitch-seq/invert [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo638">pitch-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">pitch-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Invert the <a href="./pitch_lsp.html#robo295">pitch</a> sequence contour attached to a given <a href="#robo638">pitch-seq</a> object. The
+<pre> Invert the <a href="./pitch_lsp.html#robo295">pitch</a> sequence contour attached to a given <a href="#robo641">pitch-seq</a> object. The
  inversion uses only the same numbers from the original <a href="./pitch_lsp.html#robo295">pitch</a> contour list. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo638">pitch-seq</a> object.
+<pre> - A <a href="#robo641">pitch-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo638">pitch-seq</a> object.
+<pre> A <a href="#robo641">pitch-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((ps (<a href="#robo337">make-pitch-seq</a> '(pseq1 (1 2 1 3 4 7)))))
@@ -169,19 +169,19 @@
 <a name="pitch2dseq2fmake2dpitch2dseq"></a>
 <a name="robo337"></a><h2 class=robodoc>pitch-seq/make-pitch-seq [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo638">pitch-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">pitch-seq</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo638">pitch-seq</a> object.
+<pre> Create a <a href="#robo641">pitch-seq</a> object.
 
  This function can be either called with one argument, consisting of a
- two-item list, in which the first item is the <a href="#robo638">pitch-seq</a> ID and the second
+ two-item list, in which the first item is the <a href="#robo641">pitch-seq</a> ID and the second
  is a list of numbers representing the <a href="./pitch_lsp.html#robo295">pitch</a> curve of the intended <a href="./pitch_lsp.html#robo295">pitch</a>
  sequence; or it can be created with two arguments, the first of which being
  the list of numbers representing the <a href="./pitch_lsp.html#robo295">pitch</a> curve and the second being the
  <a href="./pitch_lsp.html#robo295">pitch</a>-seq's ID.
 
- NB We can assign a <a href="#robo638">pitch-seq</a> exclusively to particular <a href="./instruments_lsp.html#robo12">instruments</a> in the
- <a href="./ensemble_lsp.html#robo409">ensemble</a> simply by passing their names as symbols along with the curve
+ NB We can assign a <a href="#robo641">pitch-seq</a> exclusively to particular <a href="./instruments_lsp.html#robo12">instruments</a> in the
+ <a href="./ensemble_lsp.html#robo412">ensemble</a> simply by passing their names as symbols along with the curve
  data.  See below for an example.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -192,14 +192,14 @@
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - If the optional argument format is used, the first argument is to be 
    a list of numbers representing the general contour of the <a href="./pitch_lsp.html#robo295">pitch</a> sequence, 
-   and the second is to be a symbol for the <a href="#robo638">pitch-seq</a> object's ID. 
+   and the second is to be a symbol for the <a href="#robo641">pitch-seq</a> object's ID. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - A <a href="#robo638">pitch-seq</a> object.
+<pre> - A <a href="#robo641">pitch-seq</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; The first creation option is using one argument that is a two-item list,
-;; whereby the first item is a symbol to be used as the <a href="#robo638">pitch-seq</a> object's ID 
+;; whereby the first item is a symbol to be used as the <a href="#robo641">pitch-seq</a> object's ID 
 ;; and the second is a list of numbers representing the general contour of the 
 ;; <a href="./pitch_lsp.html#robo295">pitch</a> sequence.
 (<strong>make-pitch-seq</strong> '(pseq1 (1 2 1 1 3)))
@@ -237,7 +237,7 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: PSEQ2, tag: NIL, 
 data: (2 1 1 3 1)
 
-;; An example assigning a <a href="#robo638">pitch-seq</a> only to specific <a href="./instruments_lsp.html#robo12">instruments</a>: ; ;
+;; An example assigning a <a href="#robo641">pitch-seq</a> only to specific <a href="./instruments_lsp.html#robo12">instruments</a>: ; ;
 (<strong>make-pitch-seq</strong> '((1 2 1 1 3) violin flute) 'ps1))
 </pre>
 <p class="item_name">SYNOPSIS</p>
@@ -246,7 +246,7 @@ data: (2 1 1 3 1)
 
 
 <a name="sclist2fpitch2dseq"></a>
-<a name="robo638"></a><h2 class=robodoc>sclist/pitch-seq [ Classes ]</h2>
+<a name="robo641"></a><h2 class=robodoc>sclist/pitch-seq [ Classes ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo298">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
@@ -254,7 +254,7 @@ data: (2 1 1 3 1)
 
  File:             <a href="#robo_top_of_doc">pitch-seq.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
                    <strong>pitch-seq</strong>
 
  Version:          1.1.0
@@ -278,7 +278,7 @@ data: (2 1 1 3 1)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/pitch-seq.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-08-13 16:13:20</p>
+<p>Generated from ./../../src/pitch-seq.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
 </div> <!-- footer -->
 </body>
 </html>

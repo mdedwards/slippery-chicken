@@ -32,17 +32,17 @@
 
 
 <a name="sc2dmap2fset2dmap"></a>
-<a name="robo595"></a><h2 class=robodoc>sc-map/set-map [ Classes ]</h2>
+<a name="robo598"></a><h2 class=robodoc>sc-map/set-map [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sc-map_lsp.html#robo430">sc-map</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sc-map_lsp.html#robo433">sc-map</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>set-map</strong>
 
  File:             <a href="#robo_top_of_doc">set-map.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo629">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo113">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
-                   <a href="./sc-map_lsp.html#robo430">sc-map</a> -&gt; <strong>set-map</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo113">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
+                   <a href="./sc-map_lsp.html#robo433">sc-map</a> -&gt; <strong>set-map</strong>
 
  Version:          1.1.0
 
@@ -62,17 +62,17 @@
 
 
 <a name="set2dmap2fcmn2ddisplay"></a>
-<a name="robo656"></a><h2 class=robodoc>set-map/cmn-display [ Methods ]</h2>
+<a name="robo659"></a><h2 class=robodoc>set-map/cmn-display [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo595">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo598">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> January 30th 2016
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Generate musical notation of the <a href="#robo595">set-map</a> object using CMN. 
+<pre> Generate musical notation of the <a href="#robo598">set-map</a> object using CMN. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> a <a href="#robo595">set-map</a> object
+<pre> a <a href="#robo598">set-map</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> see the <a href="./set-palette_lsp.html#robo314">set-palette</a> class for a description of the keyword arguments.
@@ -86,20 +86,20 @@
 
 
 <a name="set2dmap2fgen2dmidi2dchord2dseq"></a>
-<a name="robo657"></a><h2 class=robodoc>set-map/gen-midi-chord-seq [ Methods ]</h2>
+<a name="robo660"></a><h2 class=robodoc>set-map/gen-midi-chord-seq [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo595">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo598">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Write a midi file with each set in the <a href="#robo595">set-map</a> played as a <a href="./chord_lsp.html#robo628">chord</a> at 1
+<pre> Write a midi file with each set in the <a href="#robo598">set-map</a> played as a <a href="./chord_lsp.html#robo631">chord</a> at 1
  second intervals.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo595">set-map</a> object.
+<pre> - A <a href="#robo598">set-map</a> object.
  - The path+file-name for the midi file to be written.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - the <a href="./tempo_lsp.html#robo300">tempo</a> in beats per minute. Default = 60.
- - subsets-id, related-sets-id. If you want to <a href="./wolfram_lsp.html#robo1022">generate</a> a MIDI file of just
+ - subsets-id, related-sets-id. If you want to <a href="./wolfram_lsp.html#robo1027">generate</a> a MIDI file of just
    a named subset or related-set, pass the ID here. NB this ID will have to
    exist for all sets.
 </pre>
@@ -108,15 +108,15 @@
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo835">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((vn (violin :midi-channel 1))))
+        :<a href="./ensemble_lsp.html#robo412">ensemble</a> '(((vn (violin :midi-channel 1))))
         :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((c3 e3 g3 a3 c4 d4 g4 a4 b4 e5))))
-        :<a href="#robo595">set-map</a> '((1 (1 1 1)))
+        :<a href="#robo598">set-map</a> '((1 (1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((2 4) q e s s))
                                 :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4)))))
-        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((vn (1 1 1))))))))
-  (<strong>gen-midi-chord-seq</strong> (<a href="#robo595">set-map</a> mini) "/tmp/mchsq.mid"))
+        :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((vn (1 1 1))))))))
+  (<strong>gen-midi-chord-seq</strong> (<a href="#robo598">set-map</a> mini) "/tmp/mchsq.mid"))
 
 =&gt; T
 </pre>
@@ -128,14 +128,14 @@
 
 
 <a name="set2dmap2fmidi2dplay"></a>
-<a name="robo658"></a><h2 class=robodoc>set-map/midi-play [ Methods ]</h2>
+<a name="robo661"></a><h2 class=robodoc>set-map/midi-play [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo595">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo598">set-map</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Write a MIDI file containing the sets in order of the <a href="#robo595">set-map</a>.
+<pre> Write a MIDI file containing the sets in order of the <a href="#robo598">set-map</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo595">set-map</a> object
+<pre> - the <a href="#robo598">set-map</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -146,7 +146,7 @@
    on all operating systems). Default is (get-sc-config
    'midi-play-auto-open) which itself defaults to sc-auto-open in the
    *features* list.
- - :related-sets-id :subsets-id. If you want to <a href="./wolfram_lsp.html#robo1022">generate</a> a MIDI file of just
+ - :related-sets-id :subsets-id. If you want to <a href="./wolfram_lsp.html#robo1027">generate</a> a MIDI file of just
    a named subset or related-set, pass the ID here. NB this ID will have to
    exist for all sets.
 </pre>
@@ -168,7 +168,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/set-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-08-13 16:13:20</p>
+<p>Generated from ./../../src/set-map.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  16:50:35 Thu Mar 21 2024 CET
+;;; $$ Last modified:  15:52:00 Wed Nov  6 2024 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -292,28 +292,28 @@
 #+clm
 (defun clm-loops (sndfile entry-points
                   &key
-                    (max-perms 1000)
-                    (fibonacci-transitions '(34 21 13 8))
-                    (max-start-time 60.0)
-                    (output-dir (get-sc-config 'default-dir))
-                    (srate clm::*clm-srate*)
-                    (data-format clm::*clm-data-format*)
-                    ;; MDE Fri May 11 15:33:45 2012 
-                    (header-type clm::*clm-header-type*)
-                    ;; MDE Fri May 11 15:34:17 2012 -- 
-                    (sndfile-extension nil)
-                    (channels 1)
-                    ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
-                    (scaled-to .99)
-                    ;; semitones
-                    (transpositions '(0))
-                    ;; added 31/7/05 to vary the order of
-                    ;; entry points, transpositions and
-                    ;; fibonacci-transitions (could be 0!)
-                    (num-shuffles 1) 
-                    (suffix "")
-                    (pan t)
-                    (src-width 5))
+                  (max-perms 1000)
+                  (fibonacci-transitions '(34 21 13 8))
+                  (max-start-time 60.0)
+                  (output-dir (get-sc-config 'default-dir))
+                  (srate clm::*clm-srate*)
+                  (data-format clm::*clm-data-format*)
+                  ;; MDE Fri May 11 15:33:45 2012 
+                  (header-type clm::*clm-header-type*)
+                  ;; MDE Fri May 11 15:34:17 2012 -- 
+                  (sndfile-extension nil)
+                  (channels 1)
+                  ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
+                  (scaled-to .99)
+                  ;; semitones
+                  (transpositions '(0))
+                  ;; added 31/7/05 to vary the order of
+                  ;; entry points, transpositions and
+                  ;; fibonacci-transitions (could be 0!)
+                  (num-shuffles 1) 
+                  (suffix "")
+                  (pan t)
+                  (src-width 5))
 ;;; ****
   (format t "~&num-shuffles: ~a" num-shuffles)
   ;; MDE Fri May 11 15:34:36 2012 
@@ -366,12 +366,12 @@
                (let ((this (nth (mod current-perm max-perms) perms))
                      (next (nth (mod (1+ current-perm) max-perms) perms)))
                  (if (= this next)
-                     (progn
-                       (incf current-perm)
-                       (get-entry))
-                     (sort (list (nth this shuffled)
-                                 (nth next shuffled))
-                           #'<))))
+                   (progn
+                     (incf current-perm)
+                     (get-entry))
+                   (sort (list (nth this shuffled)
+                               (nth next shuffled))
+                         #'<))))
              (get-entries ()
                (let ((entry (get-entry)))
                  (setf start1 (first entry)
@@ -385,56 +385,57 @@
                        end2 (second entry)))))
       (format t "~%Output file will be ~a~%" output-file)
       (clm::with-sound 
-          (:scaled-to scaled-to :play nil :output output-file :channels channels
-                      :srate srate
-                      :data-format data-format
-                      :header-type header-type
-                      :statistics t) 
+          (:scaled-to scaled-to
+            :play nil :output output-file :channels channels :srate srate
+            :data-format data-format
+            :header-type header-type
+            :statistics t)
         (loop while (<= output-start max-start-time)
-           do
-             (get-entries)
-             (format t "~%~%seg1 [time (nth entry point)]: ~a (~a) -> ~a (~a)~
+              do
+                 (get-entries)
+                 (format t "~%~%seg1 [time (nth entry point)]: ~a (~a) -> ~a ~
+                            (~a)~
                            ~%seg2:                          ~a (~a) -> ~a (~a)"
-                     start1 (position start1 entry-points)
-                     end1 (position end1 entry-points)
-                     start2 (position start2 entry-points)
-                     end2 (position end2 entry-points))
-             (setf transition (fibonacci-transition (get-next fts))
-                   src1 src2
-                   src2 (nth (get-next transp-perms) srcs))
-             (loop 
-                for tr in transition 
-                while (<= output-start max-start-time)
-                do
-                ;; transition is a list of 0s and 1s
-                  (if (zerop tr)
-                      (setf src src1
-                            start start1
-                            end end1)
-                      (setf src src2
-                            start start2
-                            end end2))
-                  (setf duration (/ (- end start) src))
-                  (format t "~&   ~a: src: ~a, dur: ~a, ~a -> ~a~%" 
-                          output-start src duration start end)
-                  (clm::samp5 sndfile output-start
-                              :printing nil
-                              :duration duration
-                              :start start
-                              ;; MDE Thu Aug 26 15:58:58 2021, Heidhausen --
-                              ;; panning or not?
-                              :degree (if pan
-                                          (nth (random 5) '(15 30 45 60 75))
-                                          (nth (random 2) '(0 90)))
-                              :srt src
-                              :width src-width
-                              :amp-env '(0 0 3 1 97 1 100 0))
-                ;; 6/10/06: as long as amp-env above doesn't change the *
-                ;; 0.94 for duration should ensure an overlap--ok, the next
-                ;; duration might be shorter/longer than this so it won't
-                ;; perfectly overlap but it will start before this one
-                ;; finishes. 
-                  (incf output-start (* 0.94 duration))))))))
+                         start1 (position start1 entry-points)
+                         end1 (position end1 entry-points)
+                         start2 (position start2 entry-points)
+                         end2 (position end2 entry-points))
+                 (setf transition (fibonacci-transition (get-next fts))
+                       src1 src2
+                       src2 (nth (get-next transp-perms) srcs))
+                 (loop 
+                   for tr in transition 
+                   while (<= output-start max-start-time)
+                   do
+                      ;; transition is a list of 0s and 1s
+                      (if (zerop tr)
+                        (setf src src1
+                              start start1
+                              end end1)
+                        (setf src src2
+                              start start2
+                              end end2))
+                      (setf duration (/ (- end start) src))
+                      (format t "~&   ~a: src: ~a, dur: ~a, ~a -> ~a~%" 
+                              output-start src duration start end)
+                      (clm::samp5 sndfile output-start
+                                  :printing nil
+                                  :duration duration
+                                  :start start
+                                  ;; MDE Thu Aug 26 15:58:58 2021, Heidhausen --
+                                  ;; panning or not?
+                                  :degree (if pan
+                                            (nth (random 5) '(15 30 45 60 75))
+                                            (nth (random 2) '(0 90)))
+                                  :srt src
+                                  :width src-width
+                                  :amp-env '(0 0 3 1 97 1 100 0))
+                      ;; 6/10/06: as long as amp-env above doesn't change the *
+                      ;; 0.94 for duration should ensure an overlap--ok, the
+                      ;; next duration might be shorter/longer than this so it
+                      ;; won't perfectly overlap but it will start before this
+                      ;; one finishes.
+                      (incf output-start (* 0.94 duration))))))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* clm/clm-loops-all

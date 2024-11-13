@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:20:43 Thu Feb  1 2024 CET
+;;; $$ Last modified:  20:43:31 Tue Nov 12 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 2976 2012-07-24 10:06:19Z sreed23 $
 ;;;
@@ -4098,7 +4098,7 @@
       #+clm (clm-play +sc-object+ 1 '(player-one player-two) 
                 'source-sndfile-grp-1
                 :srate 44100
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff ; clm::mus-aiff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif"
                 :src-width 5
@@ -4163,7 +4163,7 @@
       (write-lp-data-for-all slippery-chicken)
       #+clm (clm-play +sc-object+ 1 nil 'source-sndfile-grp-1
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif"
                 :src-width 5
@@ -4230,7 +4230,7 @@
                 :duration-scaler 1.3
                 :ignore-rests nil
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif"
                 :src-width 5
@@ -4295,7 +4295,7 @@
       (write-lp-data-for-all slippery-chicken)
       #+clm (clm-play +sc-object+ 1 'player-one 'source-sndfile-grp-1 
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif"
                 :src-width 5
@@ -4363,7 +4363,7 @@
       (write-lp-data-for-all slippery-chicken)
       #+clm (clm-play +sc-object+ 1 'flt 'percussive-models-group
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif"
                 :src-width 5
@@ -4431,7 +4431,7 @@
       (write-lp-data-for-all slippery-chicken)
       #+clm (clm-play +sc-object+ 1 'flt 'source-sndfile-grp-1
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif"
                 :pitch-synchronous t
@@ -4507,7 +4507,7 @@
                 :duration-scaler 0.7
                 :inc-start nil
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4517,7 +4517,7 @@
                 :duration-scaler 1.3
                 :inc-start t
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4526,7 +4526,7 @@
                 'source-sndfile-grp-3
                 :ignore-rests nil
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4596,7 +4596,7 @@
                 'source-sndfile-grp-1  
                 :sound-file-palette-ref2 'source-sndfile-grp-2
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4658,7 +4658,7 @@
       (write-lp-data-for-all slippery-chicken)
       #+clm (clm-play +sc-object+ 1 'fl 'percussive-models-group
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4730,7 +4730,7 @@
       #+clm (clm-play +sc-object+ 1 nil 'source-sndfile-grp-1 
                 :num-sections 2
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4740,7 +4740,7 @@
                 :from-sequence 2
                 :num-sequences 2
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4749,7 +4749,7 @@
                 :reset-snds-each-rs nil
                 :reset-snds-each-player nil
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4757,7 +4757,7 @@
       #+clm (clm-play +sc-object+ 2 nil 'source-sndfile-grp-2
                 :time-scaler 1.7
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4765,7 +4765,7 @@
       #+clm (clm-play +sc-object+ 3 nil 'source-sndfile-grp-1 
                 :src-scaler 1.9
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5
@@ -4773,7 +4773,7 @@
       #+clm (clm-play +sc-object+ 3 nil 'source-sndfile-grp-2
                 :rev-amt 0.1
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif"
                 :src-width 5
@@ -4833,7 +4833,7 @@
       #+clm (clm-play +sc-object+ 1 nil 'source-sndfile-grp-1 
                 :channels 8
                 :srate 44100
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aiff"
                 :src-width 5
@@ -4901,7 +4901,7 @@
     (sc-test-check
       #+clm (clm-play +sc-object+ 1 'cp 'source-sndfile-grp-1
                 :srate 441000
-                :header-type clm::mus-aiff
+                :header-type clm::mus-riff
                 :data-format clm::mus-bshort
                 :sndfile-extension ".aif" 
                 :src-width 5

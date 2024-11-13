@@ -60,7 +60,7 @@
                             ,(list sndfiles-dir)
                             ("aiff")))))
   (clm-play mini 1 'fl 'group-1 :channels 8 :srate 44100
-            :header-type clm::mus-aiff :data-format clm::mus-bshort 
+            :header-type clm::mus-riff :data-format clm::mus-bshort 
             :sndfile-extension ".aiff"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

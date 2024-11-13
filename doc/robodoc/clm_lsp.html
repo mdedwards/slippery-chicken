@@ -79,7 +79,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments.
- - :max-perms. A number that is the maximum number of <a href="./permutations_lsp.html#robo324">permutations</a> generated
+ - :max-perms. A number that is the maximum number of <a href="./permutations_lsp.html#robo16">permutations</a> generated
    for the transitions. Default = 1000.
  - :<a href="./l-for-lookup_lsp.html#robo284">fibonacci-transitions</a>. A list of numbers that serve as the number of
    steps in each transition from one segment to the next. These numbers will
@@ -108,7 +108,7 @@
    output. If greater than one, the segments will be automatically panned
    amongst the channels. Default = 1.
  - :transpositions. A list of number that are transpositions in
-   <a href="./utilities_lsp.html#robo1004">semitones</a>. These will be shuffled and applied randomly to each
+   <a href="./utilities_lsp.html#robo1008">semitones</a>. These will be shuffled and applied randomly to each
    consecutive segment in the output. Default = '(0).
  - :num-shuffles. An integer that will indicate how many times the lists
    passed to <a href="./l-for-lookup_lsp.html#robo284">fibonacci-transitions</a> and entry-points will be shuffled before
@@ -144,28 +144,28 @@
 <pre class="source">#+clm
 (defun <strong>clm-loops</strong> (<a href="./sndfile_lsp.html#robo299">sndfile</a> entry-points
                   &amp;key
-                    (max-perms 1000)
-                    (<a href="./l-for-lookup_lsp.html#robo284">fibonacci-transitions</a> '(34 21 13 8))
-                    (max-start-time 60.0)
-                    (output-dir (get-sc-config 'default-dir))
-                    (srate clm::*clm-srate*)
-                    (data-format clm::*clm-data-format*)
-                    ;; MDE Fri May 11 15:33:45 2012 
-                    (header-type clm::*clm-header-type*)
-                    ;; MDE Fri May 11 15:34:17 2012 -- 
-                    (<a href="./sndfile_lsp.html#robo299">sndfile</a>-extension nil)
-                    (channels 1)
-                    ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
-                    (scaled-to .99)
-                    ;; <a href="./utilities_lsp.html#robo1004">semitones</a>
-                    (transpositions '(0))
-                    ;; added 31/7/05 to vary the order of
-                    ;; entry points, transpositions and
-                    ;; <a href="./l-for-lookup_lsp.html#robo284">fibonacci-transitions</a> (could be 0!)
-                    (num-shuffles 1) 
-                    (suffix "")
-                    (pan t)
-                    (src-width 5))
+                  (max-perms 1000)
+                  (<a href="./l-for-lookup_lsp.html#robo284">fibonacci-transitions</a> '(34 21 13 8))
+                  (max-start-time 60.0)
+                  (output-dir (get-sc-config 'default-dir))
+                  (srate clm::*clm-srate*)
+                  (data-format clm::*clm-data-format*)
+                  ;; MDE Fri May 11 15:33:45 2012 
+                  (header-type clm::*clm-header-type*)
+                  ;; MDE Fri May 11 15:34:17 2012 -- 
+                  (<a href="./sndfile_lsp.html#robo299">sndfile</a>-extension nil)
+                  (channels 1)
+                  ;; MDE Fri Jul  2 09:43:05 2021, Heidhausen -- added
+                  (scaled-to .99)
+                  ;; <a href="./utilities_lsp.html#robo1008">semitones</a>
+                  (transpositions '(0))
+                  ;; added 31/7/05 to vary the order of
+                  ;; entry points, transpositions and
+                  ;; <a href="./l-for-lookup_lsp.html#robo284">fibonacci-transitions</a> (could be 0!)
+                  (num-shuffles 1) 
+                  (suffix "")
+                  (pan t)
+                  (src-width 5))
 </pre>
 
 
@@ -187,7 +187,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :max-perms. A number that is the maximum number of <a href="./permutations_lsp.html#robo324">permutations</a> generated
+ - :max-perms. A number that is the maximum number of <a href="./permutations_lsp.html#robo16">permutations</a> generated
    for the transitions. Default = 1000.
  - :<a href="./l-for-lookup_lsp.html#robo284">fibonacci-transitions</a>. A list of numbers that serve as the number of
    steps in each transition from one segment to the next. These numbers will
@@ -227,9 +227,9 @@
  - :suffix. A string that will be automatically appended to the end of the
    file name. Default = "".
  - :transpositions. A list of number that are transpositions in
-   <a href="./utilities_lsp.html#robo1004">semitones</a>. These will be shuffled and applied randomly to each
+   <a href="./utilities_lsp.html#robo1008">semitones</a>. These will be shuffled and applied randomly to each
    consecutive segment in the output. Default = '(0).
- - :transposition-offset. A number that is an additional number of <a href="./utilities_lsp.html#robo1004">semitones</a>
+ - :transposition-offset. A number that is an additional number of <a href="./utilities_lsp.html#robo1008">semitones</a>
    to be added to each transposition value before performing the
    transposition. Default = 0.0.
  - :src-width. A number that represents the accuracy of the sample-rate
@@ -281,7 +281,7 @@
                       (start-after -1.0)                      
                       (stop-after 99999999.0)
                       (suffix "")
-                      ;; <a href="./utilities_lsp.html#robo1004">semitones</a>
+                      ;; <a href="./utilities_lsp.html#robo1008">semitones</a>
                       ;; 6/10/06: using just one list of transpositions passed
                       ;; onto <a href="#robo124">clm-loops</a> created the same tone structure for
                       ;; every file generated (boring).  This list will now be
@@ -307,24 +307,24 @@
 
  This function also produces an output text file containing the same list of
  lists. This file is in Lisp syntax and can therefore be accessed using
- <a href="./utilities_lsp.html#robo994">read-from-file</a>. 
+ <a href="./utilities_lsp.html#robo998">read-from-file</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A string that is the file name, including directory path and extension,
    of the output file to produce.
- - A string that is the sound file for which to <a href="./wolfram_lsp.html#robo1022">generate</a> random entry
+ - A string that is the sound file for which to <a href="./wolfram_lsp.html#robo1027">generate</a> random entry
    points. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :min-points. An integer that is the least number of entry points to
-   <a href="./wolfram_lsp.html#robo1022">generate</a> for each list. Default = 5.
+   <a href="./wolfram_lsp.html#robo1027">generate</a> for each list. Default = 5.
  - :max-points. An integer that is the greatest number of entry points to
-   <a href="./wolfram_lsp.html#robo1022">generate</a> for each list. Default = 13.
- - :min-dur. A number that is the shortest duration <a href="./utilities_lsp.html#robo921">between</a> two entry
+   <a href="./wolfram_lsp.html#robo1027">generate</a> for each list. Default = 13.
+ - :min-dur. A number that is the shortest duration <a href="./utilities_lsp.html#robo925">between</a> two entry
    points. Default = 0.05.
  - :num-loop-sets. An integer that is the number of lists of entry points to
-   <a href="./wolfram_lsp.html#robo1022">generate</a>. Default = 20.
+   <a href="./wolfram_lsp.html#robo1027">generate</a>. Default = 20.
  - :scalers. A list of fractions that are durations relative to the min-dur,
    such that, for example, a min-dur of 0.05 with a scaler of 13/8 would
    result in a scaled duration of 0.08125. The fractions in this list will
@@ -357,7 +357,7 @@
                            ;; loop--number of looped sound segments is 1- this
                            (min-points 5)
                            ;; max number of time points--the actual number of
-                           ;; points will be randomly chosen <a href="./utilities_lsp.html#robo921">between</a> these two
+                           ;; points will be randomly chosen <a href="./utilities_lsp.html#robo925">between</a> these two
                            ;; numbers. 
                            (max-points 13)
                            ;; minimum duration of a loop segment--this number
@@ -376,7 +376,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/clm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-08-13 16:13:20</p>
+<p>Generated from ./../../src/clm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
 </div> <!-- footer -->
 </body>
 </html>

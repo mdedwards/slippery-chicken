@@ -40,7 +40,7 @@
 
  File:             <a href="#robo_top_of_doc">section.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./bar-holder_lsp.html#robo293">bar-holder</a> 
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./bar-holder_lsp.html#robo293">bar-holder</a> 
                    -&gt; <strong>section</strong>
 
  Version:          1.1.0
@@ -49,7 +49,7 @@
 
  Purpose:          Implementation of <strong>section</strong> class which is simply a bar
                    holder and <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> that contains (possibly
-                   subsections which contain) <a href="./slippery-chicken-edit_lsp.html#robo233">player</a>-sections. 
+                   subsections which contain) <a href="./player_lsp.html#robo296">player</a>-sections. 
 
  Author:           Michael Edwards: m@michael-edwards.org
 
@@ -62,44 +62,44 @@
 
 
 <a name="section2fget2dall2dplayers"></a>
-<a name="robo650"></a><h2 class=robodoc>section/get-all-players [ Methods ]</h2>
+<a name="robo653"></a><h2 class=robodoc>section/get-all-players [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo60">section</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return a list of the IDs from all <a href="./slippery-chicken_lsp.html#robo841">players</a> in a <a href="#robo60">section</a> object. NB: When
- retrieving from a <a href="#robo60">section</a> within a <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> object, all <a href="./slippery-chicken_lsp.html#robo841">players</a> in
- the <a href="./ensemble_lsp.html#robo409">ensemble</a> will be returned, as the <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> object will <a href="./wolfram_lsp.html#robo1022">generate</a>
- rest bars for <a href="./slippery-chicken_lsp.html#robo841">players</a> even when they're not <a href="./activity-levels-env_lsp.html#robo22">active</a> in a given <a href="#robo60">section</a>.
+<pre> Return a list of the IDs from all <a href="./slippery-chicken_lsp.html#robo845">players</a> in a <a href="#robo60">section</a> object. NB: When
+ retrieving from a <a href="#robo60">section</a> within a <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> object, all <a href="./slippery-chicken_lsp.html#robo845">players</a> in
+ the <a href="./ensemble_lsp.html#robo412">ensemble</a> will be returned, as the <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> object will <a href="./wolfram_lsp.html#robo1027">generate</a>
+ rest bars for <a href="./slippery-chicken_lsp.html#robo845">players</a> even when they're not <a href="./activity-levels-env_lsp.html#robo22">active</a> in a given <a href="#robo60">section</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo60">section</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - A list of <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> IDs (symbols).
+<pre> - A list of <a href="./player_lsp.html#robo296">player</a> IDs (symbols).
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo835">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo412">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
                      (hn (french-horn :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1))
+        :<a href="./set-map_lsp.html#robo598">set-map</a> '((1 (1 1 1 1 1))
                    (2 (1 1 1 1 1))
                    (3 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
                                 :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4 5)))))
-        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
                             (hn (1 1 1 1 1))
                             (vc (1 1 1 1 1))))
                         (2 ((cl (1 1 1 1 1))
                             (vc (1 1 1 1 1))))
                         (3 ((hn (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (print (<strong>get-all-players</strong> (<a href="./slippery-chicken_lsp.html#robo821">get-section</a> mini 1)))
-  (print (<strong>get-all-players</strong> (<a href="./slippery-chicken_lsp.html#robo821">get-section</a> mini 2)))
-  (print (<strong>get-all-players</strong> (<a href="./slippery-chicken_lsp.html#robo821">get-section</a> mini 3))))
+  (print (<strong>get-all-players</strong> (<a href="./slippery-chicken_lsp.html#robo825">get-section</a> mini 1)))
+  (print (<strong>get-all-players</strong> (<a href="./slippery-chicken_lsp.html#robo825">get-section</a> mini 2)))
+  (print (<strong>get-all-players</strong> (<a href="./slippery-chicken_lsp.html#robo825">get-section</a> mini 3))))
 
 =&gt;
 (CL HN VC) 
@@ -112,11 +112,11 @@
 
 
 <a name="section2fget2dbar"></a>
-<a name="robo651"></a><h2 class=robodoc>section/get-bar [ Methods ]</h2>
+<a name="robo654"></a><h2 class=robodoc>section/get-bar [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo60">section</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the <a href="./rthm-seq-bar_lsp.html#robo643">rthm-seq-bar</a> object at the specified bar number within the given
+<pre> Return the <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object at the specified bar number within the given
  <a href="#robo60">section</a>.  
 
  NB: The bar number is counted from the beginning of the entire <a href="./piece_lsp.html#robo58">piece</a>, not
@@ -124,31 +124,31 @@
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo60">section</a> object.
- - An integer that is the bar number for which to return the <a href="./rthm-seq-bar_lsp.html#robo643">rthm-seq-bar</a>
+ - An integer that is the bar number for which to return the <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a>
    object. This number is 1-based and counts from the beginning of the
    <a href="./piece_lsp.html#robo58">piece</a>, not the beginning of the <a href="#robo60">section</a>.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> NB: The &lt;<a href="./slippery-chicken-edit_lsp.html#robo233">player</a>&gt; argument is actually required, but is listed as optional
+<pre> NB: The &lt;<a href="./player_lsp.html#robo296">player</a>&gt; argument is actually required, but is listed as optional
      for reasons of class inheritance.
 
- - The ID of the <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> for whose part the <a href="./rthm-seq-bar_lsp.html#robo643">rthm-seq-bar</a> object is to be
+ - The ID of the <a href="./player_lsp.html#robo296">player</a> for whose part the <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object is to be
    returned. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./rthm-seq-bar_lsp.html#robo643">rthm-seq-bar</a> object.
+<pre> A <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo835">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo412">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
                      (hn (french-horn :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
                        (2 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
                        (3 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1))
+        :<a href="./set-map_lsp.html#robo598">set-map</a> '((1 (1 1 1 1 1))
                    (2 (2 2 2 2 2))
                    (3 (3 3 3 3 3)))
         :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
@@ -157,7 +157,7 @@
                                 :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4 5))))
                             (3 ((((4 4) e s s h q))
                                 :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4 5)))))
-        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
                             (hn (1 1 1 1 1))
                             (vc (1 1 1 1 1))))
                         (2 ((cl (2 2 2 2 2))
@@ -166,18 +166,18 @@
                         (3 ((cl (3 3 3 3 3))
                             (hn (3 3 3 3 3))
                             (vc (3 3 3 3 3))))))))
-  (<strong>get-bar</strong> (<a href="./slippery-chicken_lsp.html#robo821">get-section</a> mini 3) 11 'hn))
+  (<strong>get-bar</strong> (<a href="./slippery-chicken_lsp.html#robo825">get-section</a> mini 3) 11 'hn))
 
 =&gt;
 RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 11, 
               old-bar-nums: NIL, write-bar-num: NIL, start-time: 40.000, 
               start-time-qtrs: 40.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
               show-rest: T, notes-needed: 5, 
-              tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo942">factor</a>: 0.35, beams: NIL, 
+              tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo946">factor</a>: 0.35, beams: NIL, 
               current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
               num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
               missing-duration: NIL, bar-line-type: 0, 
-              <a href="./slippery-chicken-edit_lsp.html#robo233">player</a>-<a href="#robo60">section</a>-ref: (3 HN), nth-seq: 0, nth-bar: 0, 
+              <a href="./player_lsp.html#robo296">player</a>-<a href="#robo60">section</a>-ref: (3 HN), nth-seq: 0, nth-bar: 0, 
               rehearsal-letter: NIL, all-time-sigs: (too long to print) 
               sounding-duration: 4.000, 
               rhythms: (
@@ -189,12 +189,12 @@ NAMED-OBJECT: id: "3-bar1", tag: NIL,
 data: ((4 4) E S S H Q)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-bar</strong> ((s <a href="#robo60">section</a>) bar-num &amp;optional <a href="./slippery-chicken-edit_lsp.html#robo233">player</a>)
+<pre class="source">(defmethod <strong>get-bar</strong> ((s <a href="#robo60">section</a>) bar-num &amp;optional <a href="./player_lsp.html#robo296">player</a>)
 </pre>
 
 
 <a name="section2fget2dsequenz"></a>
-<a name="robo652"></a><h2 class=robodoc>section/get-sequenz [ Methods ]</h2>
+<a name="robo655"></a><h2 class=robodoc>section/get-sequenz [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo60">section</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -202,7 +202,7 @@ data: ((4 4) E S S H Q)
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo60">section</a> object.
- - The ID of the <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> from whose part the <a href="./sequenz_lsp.html#robo61">sequenz</a> object is to be
+ - The ID of the <a href="./player_lsp.html#robo296">player</a> from whose part the <a href="./sequenz_lsp.html#robo61">sequenz</a> object is to be
    returned. 
  - An integer that is the number of the sequence object to be returned from
    within the given <a href="#robo60">section</a> object. This number is 1-based.
@@ -212,12 +212,12 @@ data: ((4 4) E S S H Q)
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo835">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
+        :<a href="./ensemble_lsp.html#robo412">ensemble</a> '(((cl (b-flat-clarinet :midi-channel 1))
                      (vc (cello :midi-channel 2))))
         :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((f3 g3 a3 b3 c4))))
-        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1))
+        :<a href="./set-map_lsp.html#robo598">set-map</a> '((1 (1 1 1 1 1))
                    (2 (1 1 1 1 1))
                    (3 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
@@ -226,13 +226,13 @@ data: ((4 4) E S S H Q)
                                 :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4 5))))
                             (3 ((((4 4) e s s h q))
                                 :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4 5)))))
-        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
+        :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
                             (vc (1 1 1 1 1))))
                         (2 ((cl (2 2 2 2 2))
                             (vc (2 2 2 2 2))))
                         (3 ((cl (3 3 3 3 3))
                             (vc (3 3 3 3 3))))))))
-  (<strong>get-sequenz</strong> (<a href="./slippery-chicken_lsp.html#robo821">get-section</a> mini 2) 'vc 2))
+  (<strong>get-sequenz</strong> (<a href="./slippery-chicken_lsp.html#robo825">get-section</a> mini 2) 'vc 2))
 
 =&gt;
 SEQUENZ: <a href="./pitch_lsp.html#robo295">pitch</a>-curve: (1 2 3 4 5)
@@ -245,7 +245,7 @@ RTHM-SEQ: num-bars: 1
           psp-inversions: NIL
           marks: NIL
           time-sigs-tag: NIL
-          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo774">tie</a>: NIL
+          handled-first-note-<a href="./slippery-chicken-edit_lsp.html#robo778">tie</a>: NIL
          (for brevity's sake, slots <a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> and bars are not printed)
 SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: (1), this: (2), next: (3)
@@ -257,23 +257,23 @@ BAR-HOLDER:
             end-time: 28.0
             start-time-qtrs: 24.0
             end-time-qtrs: 28.0
-            <a href="./chord_lsp.html#robo97">num-notes</a> (attacked notes, not tied): 5
+            <a href="./event_lsp.html#robo213">num-notes</a> (attacked notes, not tied): 5
             num-score-notes (tied notes counted separately): 5 
             num-rests: 0
             duration-qtrs: 4.0 
             duration: 4.0 (4.000)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-sequenz</strong> ((s <a href="#robo60">section</a>) <a href="./slippery-chicken-edit_lsp.html#robo233">player</a> seq-num) ; 1-based
+<pre class="source">(defmethod <strong>get-sequenz</strong> ((s <a href="#robo60">section</a>) <a href="./player_lsp.html#robo296">player</a> seq-num) ; 1-based
 </pre>
 
 
 <a name="section2fhas2dsubsections"></a>
-<a name="robo653"></a><h2 class=robodoc>section/has-subsections [ Methods ]</h2>
+<a name="robo656"></a><h2 class=robodoc>section/has-subsections [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo60">section</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Boolean test to determine whether a specified <a href="#robo60">section</a> of a <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a>
+<pre> Boolean test to determine whether a specified <a href="#robo60">section</a> of a <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a>
  object has subsections.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -284,11 +284,11 @@ BAR-HOLDER:
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo835">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((vn (violin :midi-channel 1))))
+        :<a href="./ensemble_lsp.html#robo412">ensemble</a> '(((vn (violin :midi-channel 1))))
         :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1
+        :<a href="./set-map_lsp.html#robo598">set-map</a> '((1
                     ((a (1 1 1))
                      (b (1 1 1))))
                    (2 (1 1 1 1))
@@ -303,7 +303,7 @@ BAR-HOLDER:
                      (c (1 1 1 1)))))
         :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((2 4) (q) e (s) s))
                                 :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2)))))
-        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1
+        :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1
                          ((a ((vn (1 1 1))))
                           (b ((vn (1 1 1))))))
                         (2 ((vn (1 1 1 1))))
@@ -316,8 +316,8 @@ BAR-HOLDER:
                          ((a ((vn (1 1 1))))
                           (b ((vn (1 1 1))))
                           (c ((vn (1 1 1 1))))))))))
-  (print (<strong>has-subsections</strong> (<a href="./slippery-chicken_lsp.html#robo821">get-section</a> mini 1)))
-  (print (<strong>has-subsections</strong> (<a href="./slippery-chicken_lsp.html#robo821">get-section</a> mini 2))))
+  (print (<strong>has-subsections</strong> (<a href="./slippery-chicken_lsp.html#robo825">get-section</a> mini 1)))
+  (print (<strong>has-subsections</strong> (<a href="./slippery-chicken_lsp.html#robo825">get-section</a> mini 2))))
 
 =&gt;
 T 
@@ -329,7 +329,7 @@ NIL
 
 
 <a name="section2fnum2dsequenzes"></a>
-<a name="robo654"></a><h2 class=robodoc>section/num-sequenzes [ Methods ]</h2>
+<a name="robo657"></a><h2 class=robodoc>section/num-sequenzes [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo60">section</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -344,19 +344,19 @@ NIL
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((mini
-       (<a href="./slippery-chicken_lsp.html#robo831">make-slippery-chicken</a>
+       (<a href="./slippery-chicken_lsp.html#robo835">make-slippery-chicken</a>
         '+mini+
-        :<a href="./ensemble_lsp.html#robo409">ensemble</a> '(((vc (cello :midi-channel 1))))
+        :<a href="./ensemble_lsp.html#robo412">ensemble</a> '(((vc (cello :midi-channel 1))))
         :<a href="./set-palette_lsp.html#robo314">set-palette</a> '((1 ((f3 g3 a3 b3 c4))))
-        :<a href="./set-map_lsp.html#robo595">set-map</a> '((1 (1 1 1 1 1))
+        :<a href="./set-map_lsp.html#robo598">set-map</a> '((1 (1 1 1 1 1))
                    (2 (1 1 1 1 1))
                    (3 (1 1 1 1 1)))
         :<a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> '((1 ((((4 4) h q e s s))
                                 :<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> ((1 2 3 4 5)))))
-        :<a href="./rthm-seq-map_lsp.html#robo594">rthm-seq-map</a> '((1 ((vc (1 1 1 1 1))))
+        :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((vc (1 1 1 1 1))))
                         (2 ((vc (1 1 1 1 1))))
                         (3 ((vc (1 1 1 1 1))))))))
-  (<strong>num-sequenzes</strong> (<a href="./slippery-chicken_lsp.html#robo821">get-section</a> mini 2)))
+  (<strong>num-sequenzes</strong> (<a href="./slippery-chicken_lsp.html#robo825">get-section</a> mini 2)))
 
 =&gt; 5
 </pre>
@@ -366,22 +366,22 @@ NIL
 
 
 <a name="section2fre2dbar"></a>
-<a name="robo655"></a><h2 class=robodoc>section/re-bar [ Methods ]</h2>
+<a name="robo658"></a><h2 class=robodoc>section/re-bar [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo60">section</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Regroup the consecutive note and rest events of a given <a href="#robo60">section</a> object into
  new bars of the specified time signature. 
 
- This method will only <a href="./rthm-seq_lsp.html#robo553">combine</a> short bars into longer ones; it will not
- <a href="./rthm-seq_lsp.html#robo581">split</a> up longer bars and recombine them. 
+ This method will only <a href="./pitch-seq-palette_lsp.html#robo333">combine</a> short bars into longer ones; it will not
+ <a href="./rthm-seq_lsp.html#robo584">split</a> up longer bars and recombine them. 
 
  The method will also use the specified (or default) time signature as a
  target, and may be forced to create a number of bars that are not of the
  specified time signature if the number of beats in the given <a href="#robo60">section</a> object
  do not correspond.
 
- NB: The user must call the <a href="./slippery-chicken_lsp.html#robo852">update-slots</a> method after using this method as a
+ NB: The user must call the <a href="./slippery-chicken_lsp.html#robo856">update-slots</a> method after using this method as a
      post-generation editing method.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -398,7 +398,7 @@ NIL
    deviate from this target time signature. Default = '(2 4).
  - :verbose. T or NIL to indicate whether to print feedback on the
    re-barring process to the Lisp listener. Default = NIL.
- - :<a href="./slippery-chicken-edit_lsp.html#robo703">auto-beam</a>.  T, NIL, or an integer. If T, the method will automatically
+ - :<a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a>.  T, NIL, or an integer. If T, the method will automatically
    attach beam indications to the corresponding events according to the beat
    unit of the time signature. If an integer, the method will beam in
    accordance with a beat unit that is equal to that integer. If NIL, the
@@ -415,12 +415,12 @@ NIL
                    (min-<a href="./time-sig_lsp.html#robo301">time-sig</a> '(2 4))
                    verbose
                    ;; could also be a beat rhythmic unit
-                   (<a href="./slippery-chicken-edit_lsp.html#robo703">auto-beam</a> t))
+                   (<a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> t))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/section.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-08-13 16:13:20</p>
+<p>Generated from ./../../src/section.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
 </div> <!-- footer -->
 </body>
 </html>

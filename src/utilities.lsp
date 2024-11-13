@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:26:22 Wed Nov 13 2024 CET
+;;; $$ Last modified:  19:38:18 Wed Nov 13 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6735,6 +6735,7 @@ yes_foo, 1 2 3 4;
 ;;; SYNOPSIS
 (defun smooth-procession (num-results items
                           &rest keyargs &key &allow-other-keys)
+;;; ****    
   ;; if :orders isn't explicitly given, then use a different default that should
   ;; result in less jumps
   (unless (member :orders keyargs)

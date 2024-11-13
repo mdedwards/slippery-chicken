@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    3rd August 2012
 ;;;
-;;; $$ Last modified:  18:44:11 Sat Mar 16 2024 CET
+;;; $$ Last modified:  20:50:04 Tue Nov 12 2024 CET
 ;;;
 ;;; SVN ID: $Id: tempus-perfectum.lsp 3406 2013-01-28 15:13:21Z medward2 $
 ;;;
@@ -237,7 +237,7 @@
                   :pitch-synchronous t
                   :src-width src-width
                   :srate 44100
-                  :header-type clm::mus-aiff
+                  :header-type clm::mus-riff
                   :data-format clm::mus-bshort
                   :sndfile-extension ".aiff"
                   :check-overwrite nil)
@@ -247,7 +247,7 @@
                   :pitch-synchronous t
                   :src-width src-width
                   :srate 44100
-                  :header-type clm::mus-aiff
+                  :header-type clm::mus-riff
                   :data-format clm::mus-bshort
                   :sndfile-extension ".aiff"
                   :check-overwrite nil)

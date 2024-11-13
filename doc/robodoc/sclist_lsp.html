@@ -36,11 +36,11 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
-<pre> <a href="./slippery-chicken-edit_lsp.html#robo233">player</a>
+<pre> <a href="./player_lsp.html#robo296">player</a>
 
  File:             <a href="#robo_top_of_doc">sclist.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo625">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <strong>sclist</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <strong>sclist</strong>
 
  Version:          1.1.0
 
@@ -53,19 +53,19 @@
 
  Creation date:    February 11th 2001
 
- $$ Last modified:  17:52:24 Wed Jan 31 2024 CET
+ $$ Last modified:  21:02:53 Wed Aug 28 2024 CEST
 
  SVN ID: $Id$
 </pre>
 
 
 <a name="sclist2fcombine"></a>
-<a name="robo630"></a><h2 class=robodoc>sclist/combine [ Methods ]</h2>
+<a name="robo633"></a><h2 class=robodoc>sclist/combine [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Combine the contents of two given <a href="#robo298">sclist</a> objects into one list.  NB This
- changes the data list of a <a href="./slippery-chicken_lsp.html#robo789">clone</a> of the first argument by appending a
+ changes the data list of a <a href="./slippery-chicken_lsp.html#robo793">clone</a> of the first argument by appending a
  copy of the data list of the second argument i.e. it creates a wholly new
  <a href="#robo298">sclist</a> object which it then returns.
 </pre>
@@ -78,8 +78,8 @@
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Combine the contents of two <a href="#robo298">sclist</a> objects to make a new one
-(let ((scl1 (<a href="#robo635">make-sclist</a> '(0 1 2 3 4)))
-      (scl2 (<a href="#robo635">make-sclist</a> '(5 6 7 8 9))))
+(let ((scl1 (<a href="#robo638">make-sclist</a> '(0 1 2 3 4)))
+      (scl2 (<a href="#robo638">make-sclist</a> '(5 6 7 8 9))))
   (<strong>combine</strong> scl1 scl2))
 
 =&gt; 
@@ -94,7 +94,7 @@ data: (0 1 2 3 4 5 6 7 8 9)
 
 
 <a name="sclist2fget2dlast"></a>
-<a name="robo631"></a><h2 class=robodoc>sclist/get-last [ Methods ]</h2>
+<a name="robo634"></a><h2 class=robodoc>sclist/get-last [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -122,7 +122,7 @@ data TURKEY
 
 
 <a name="sclist2fget2dnth"></a>
-<a name="robo632"></a><h2 class=robodoc>sclist/get-nth [ Methods ]</h2>
+<a name="robo635"></a><h2 class=robodoc>sclist/get-nth [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -140,14 +140,14 @@ data TURKEY
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Get the 3th item from the given <a href="#robo298">sclist</a> object
-(let ((scl (<a href="#robo635">make-sclist</a> '(cat dog cow pig sheep))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(cat dog cow pig sheep))))
   (<strong>get-nth</strong> 3 scl))
 
 =&gt; PIG
 
 ;; Returns NIL and prints a warning when the specified index is beyond the
 ;; bounds of the given list
-(let ((scl (<a href="#robo635">make-sclist</a> '(cat dog cow pig sheep))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(cat dog cow pig sheep))))
   (<strong>get-nth</strong> 31 scl))
 
 =&gt; 
@@ -161,7 +161,7 @@ WARNING: <a href="#robo298">sclist</a>::<a href="#robo298">sclist</a>-check-boun
 
 
 <a name="sclist2flimits"></a>
-<a name="robo634"></a><h2 class=robodoc>sclist/limits [ Methods ]</h2>
+<a name="robo637"></a><h2 class=robodoc>sclist/limits [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
@@ -182,7 +182,7 @@ WARNING: <a href="#robo298">sclist</a>::<a href="#robo298">sclist</a>-check-boun
 
 
 <a name="sclist2fmake2dsclist"></a>
-<a name="robo635"></a><h2 class=robodoc>sclist/make-sclist [ Functions ]</h2>
+<a name="robo638"></a><h2 class=robodoc>sclist/make-sclist [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -199,7 +199,7 @@ WARNING: <a href="#robo298">sclist</a>::<a href="#robo298">sclist</a>-check-boun
    when a request is given to set or get an out-of-bounds element (i.e. not
    enough elements in list). T = print warning. Default = NIL.
  - :copy. T or NIL to indicate whether the data in the list should be copied
-   (any <a href="./slippery-chicken_lsp.html#robo626">slippery-chicken</a> class instances will be cloned), with subsequent
+   (any <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> class instances will be cloned), with subsequent
    modifications being applied to the copy. T = copy. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -230,7 +230,7 @@ data: (1 2 3 4 5 6 7)
 
 
 <a name="sclist2fmax2ditems"></a>
-<a name="robo636"></a><h2 class=robodoc>sclist/max-items [ Methods ]</h2>
+<a name="robo639"></a><h2 class=robodoc>sclist/max-items [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
@@ -239,7 +239,7 @@ data: (1 2 3 4 5 6 7)
 <p class="item_name">DESCRIPTION</p>
 <pre> A destructive method to reduce the number of items in the list to a maximum
  of the 2nd argument. The remaining elements can be from either the beginning
- of the list, the <a href="./utilities_lsp.html#robo962">middle</a>, or the end. If the list has fewer then or the same
+ of the list, the <a href="./utilities_lsp.html#robo966">middle</a>, or the end. If the list has fewer then or the same
  number of elements as the 2nd argument, the list will remain unchanged.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -247,14 +247,14 @@ data: (1 2 3 4 5 6 7)
  - the number of elements the list should be reduced to (integer, &gt;= 0)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - a symbol ('start '<a href="./utilities_lsp.html#robo962">middle</a> or 'end) to indicate which elements remain. See
+<pre> - a symbol ('start '<a href="./utilities_lsp.html#robo966">middle</a> or 'end) to indicate which elements remain. See
    examples below. Default = 'start
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> the (potentially) modified <a href="#robo298">sclist</a> object (NB this method is destructive!)
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>max-items</strong> (<a href="#robo635">make-sclist</a> '(1 2 3 4 5 6 7)) 3)
+<pre class="source">(<strong>max-items</strong> (<a href="#robo638">make-sclist</a> '(1 2 3 4 5 6 7)) 3)
 SCLIST: <a href="#robo298">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, 
                      this: NIL, 
@@ -263,7 +263,7 @@ NAMED-OBJECT: id: NIL, tag: NIL,
 data: (1 2 3)
 **************
 
-(<strong>max-items</strong> (<a href="#robo635">make-sclist</a> '(1 2 3 4 5 6 7)) 3 'end)
+(<strong>max-items</strong> (<a href="#robo638">make-sclist</a> '(1 2 3 4 5 6 7)) 3 'end)
 
 
 SCLIST: <a href="#robo298">sclist</a>-length: 3, bounds-alert: T, copy: T
@@ -274,7 +274,7 @@ NAMED-OBJECT: id: NIL, tag: NIL,
 data: (5 6 7)
 **************
 
-(<strong>max-items</strong> (<a href="#robo635">make-sclist</a> '(1 2 3 4 5 6 7)) 3 '<a href="./utilities_lsp.html#robo962">middle</a>)
+(<strong>max-items</strong> (<a href="#robo638">make-sclist</a> '(1 2 3 4 5 6 7)) 3 '<a href="./utilities_lsp.html#robo966">middle</a>)
 SCLIST: <a href="#robo298">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, 
                      this: NIL, 
@@ -289,7 +289,7 @@ data: (3 4 5)
 
 
 <a name="sclist2fnew2dlimits"></a>
-<a name="robo637"></a><h2 class=robodoc>sclist/new-limits [ Methods ]</h2>
+<a name="robo640"></a><h2 class=robodoc>sclist/new-limits [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
@@ -309,7 +309,7 @@ data: (3 4 5)
 <pre> the new data list
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>new-limits</strong> (<a href="#robo635">make-sclist</a> '(-1.4 5 6 2.3 7.3 -2.1)))
+<pre class="source">(<strong>new-limits</strong> (<a href="#robo638">make-sclist</a> '(-1.4 5 6 2.3 7.3 -2.1)))
 --&gt;
 (7.4468083 75.53192 86.17022 46.80851 100.0 0.0)
 </pre>
@@ -319,7 +319,7 @@ data: (3 4 5)
 
 
 <a name="sclist2fplot"></a>
-<a name="robo639"></a><h2 class=robodoc>sclist/plot [ Methods ]</h2>
+<a name="robo642"></a><h2 class=robodoc>sclist/plot [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -328,6 +328,9 @@ data: (3 4 5)
  as the method will create a .txt and a .data file, for the command and data
  files respectively. It is assumed that the data to be plotted is a list of
  numbers. An error will be triggered if not.
+
+ NB gnuplot's 'postscript terminal' is used and to my knowledge there is no
+ pdf terminal, so if you want a pdf you'll have to use something like ps2pdf 
 
  The user must then call gnuplot in a terminal, in a manner such as "gnuplot
  <a href="#robo298">sclist</a>.txt; open <a href="#robo298">sclist</a>.ps". 
@@ -351,12 +354,12 @@ data: (3 4 5)
 <pre> Returns the number of points plotted.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((ppcn (<a href="./popcorn_lsp.html#robo394">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
-  (<a href="./popcorn_lsp.html#robo391">fit-to-length</a> ppcn 100)
+<pre class="source">(let ((ppcn (<a href="./popcorn_lsp.html#robo397">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
+  (<a href="./popcorn_lsp.html#robo394">fit-to-length</a> ppcn 100)
   (<strong>plot</strong> ppcn "/tmp/ppcn" 'kernels))
 
 then in a terminal:
-gnuplot ppcn.txt
+gnuplot ppcn.txt; ps2pdf ppcn.ps
 
 this will create the postscript file ppcn.ps
 </pre>
@@ -366,7 +369,7 @@ this will create the postscript file ppcn.ps
 
 
 <a name="sclist2fsc2dnthcdr"></a>
-<a name="robo644"></a><h2 class=robodoc>sclist/sc-nthcdr [ Methods ]</h2>
+<a name="robo647"></a><h2 class=robodoc>sclist/sc-nthcdr [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -389,13 +392,13 @@ this will create the postscript file ppcn.ps
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Create an <a href="#robo298">sclist</a> object and get the tail of the list starting at place
 ;; 4. The subset returned replaces the data of the original.
-(let ((scl (<a href="#robo635">make-sclist</a> '(0 1 2 3 4 5 6 7 8 9))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(0 1 2 3 4 5 6 7 8 9))))
   (<strong>sc-nthcdr</strong> 4 scl)
   (data scl))
 
 =&gt; (4 5 6 7 8 9)
 
-(let ((scl (<a href="#robo635">make-sclist</a> '(0 1 2 3 4 5 6 7 8 9))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(0 1 2 3 4 5 6 7 8 9))))
   (<strong>sc-nthcdr</strong> 14 scl))
 
 =&gt; NIL
@@ -406,7 +409,7 @@ this will create the postscript file ppcn.ps
 
 
 <a name="sclist2fsc2dsubseq"></a>
-<a name="robo646"></a><h2 class=robodoc>sclist/sc-subseq [ Methods ]</h2>
+<a name="robo649"></a><h2 class=robodoc>sclist/sc-subseq [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -442,21 +445,21 @@ this will create the postscript file ppcn.ps
 ;; zero-based index of the first item in the given list to be returned and the
 ;; FINISH argument indicates the zero-based index of the first item after that
 ;; to NOT be returned. 
-(let ((scl (<a href="#robo635">make-sclist</a> '(1 2 3 4 5 6 7 8 9))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(1 2 3 4 5 6 7 8 9))))
   (<strong>sc-subseq</strong> scl 2 7))
 
 =&gt; (3 4 5 6 7)
 
 ;; Drops into the debugger with an error if one of the indexing arguments is
 ;; beyond the bounds of the given <a href="#robo298">sclist</a> object
-(let ((scl (<a href="#robo635">make-sclist</a> '(1 2 3 4 5 6 7 8 9))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(1 2 3 4 5 6 7 8 9))))
   (<strong>sc-subseq</strong> scl 0 15))
 
 =&gt;
 <a href="#robo298">sclist</a>::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
    [Condition of type SIMPLE-ERROR]
 
-(let ((scl (<a href="#robo635">make-sclist</a> '(1 2 3 4 5 6 7 8 9))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(1 2 3 4 5 6 7 8 9))))
   (<strong>sc-subseq</strong> scl 0 15 NIL))
 =&gt;
 NIL
@@ -467,7 +470,7 @@ NIL
 
 
 <a name="sclist2fsclist2decons"></a>
-<a name="robo647"></a><h2 class=robodoc>sclist/sclist-econs [ Methods ]</h2>
+<a name="robo650"></a><h2 class=robodoc>sclist/sclist-econs [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -476,7 +479,7 @@ NIL
  NB: This method destructively modifies the list.
 
  NB: This method adds any element specified as a single item. For combining
-     two lists into one see <a href="#robo298">sclist</a>/<a href="./rthm-seq_lsp.html#robo553">combine</a>.
+     two lists into one see <a href="#robo298">sclist</a>/<a href="./pitch-seq-palette_lsp.html#robo333">combine</a>.
 
  NB: Though related to Lisp's cons function, remember that the order of
     arguments here is the other way round i.e. element after list, not 
@@ -484,14 +487,14 @@ NIL
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - An <a href="#robo298">sclist</a> object.
- - An item to <a href="./recursive-assoc-list_lsp.html#robo406">add</a> to the end of the given <a href="#robo298">sclist</a> object.
+ - An item to <a href="./recursive-assoc-list_lsp.html#robo409">add</a> to the end of the given <a href="#robo298">sclist</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> - The new value (list) of the given <a href="#robo298">sclist</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Add a single integer to the end of a list of integers
-(let ((scl (<a href="#robo635">make-sclist</a> '(0 1 2 3 4))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(0 1 2 3 4))))
   (<strong>sclist-econs</strong> scl 5))
 
 =&gt; (0 1 2 3 4 5)
@@ -502,7 +505,7 @@ NIL
 
 
 <a name="sclist2fsclist2dremove2delements"></a>
-<a name="robo648"></a><h2 class=robodoc>sclist/sclist-remove-elements [ Methods ]</h2>
+<a name="robo651"></a><h2 class=robodoc>sclist/sclist-remove-elements [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -522,7 +525,7 @@ NIL
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; Returns an <a href="#robo298">sclist</a> object.
-(let ((scl (<a href="#robo635">make-sclist</a> '(0 1 2 3 4 5 6 7 8 9))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(0 1 2 3 4 5 6 7 8 9))))
   (<strong>sclist-remove-elements</strong> scl 3 4))
 
 =&gt; 
@@ -533,7 +536,7 @@ data: (0 1 2 7 8 9)
 
 ;; Drops into the debugger with an error if the given <a href="#robo298">sclist</a> object has fewer
 ;; items than specified for the START or HOW-MANY arguments
-(let ((scl (<a href="#robo635">make-sclist</a> '(0 1 2 3 4 5 6 7 8 9))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(0 1 2 3 4 5 6 7 8 9))))
   (data (<strong>sclist-remove-elements</strong> scl 3 41)))
 
 =&gt; 
@@ -547,7 +550,7 @@ remove-elements: arguments 2 and 3 must be integers &lt; the length of argument 
 
 
 <a name="sclist2fset2dnth"></a>
-<a name="robo649"></a><h2 class=robodoc>sclist/set-nth [ Methods ]</h2>
+<a name="robo652"></a><h2 class=robodoc>sclist/set-nth [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo298">sclist</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -567,13 +570,13 @@ remove-elements: arguments 2 and 3 must be integers &lt; the length of argument 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Returns the item added
-(let ((scl (<a href="#robo635">make-sclist</a> '(cat dog cow pig sheep))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(cat dog cow pig sheep))))
   (<strong>set-nth</strong> 3 'horse scl))
 
 =&gt; HORSE
 
 ;; Access the DATA slot to see the change
-(let ((scl (<a href="#robo635">make-sclist</a> '(cat dog cow pig sheep))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(cat dog cow pig sheep))))
   (<strong>set-nth</strong> 3 'horse scl)
   (data scl))
 
@@ -581,7 +584,7 @@ remove-elements: arguments 2 and 3 must be integers &lt; the length of argument 
 
 ;; Returns NIL and prints a warning if the index number is beyond the bounds of
 ;; the list
-(let ((scl (<a href="#robo635">make-sclist</a> '(cat dog cow pig sheep))))
+(let ((scl (<a href="#robo638">make-sclist</a> '(cat dog cow pig sheep))))
   (<strong>set-nth</strong> 31 'horse scl))
 
 =&gt; NIL
@@ -594,7 +597,7 @@ WARNING: <a href="#robo298">sclist</a>::<a href="#robo298">sclist</a>-check-boun
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/sclist.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-08-13 16:13:20</p>
+<p>Generated from ./../../src/sclist.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
 </div> <!-- footer -->
 </body>
 </html>

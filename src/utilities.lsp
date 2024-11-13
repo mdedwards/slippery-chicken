@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:05:01 Sat Aug 31 2024 CEST
+;;; $$ Last modified:  19:26:22 Wed Nov 13 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -3764,9 +3764,6 @@ WARNING:
         result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 23:06:43 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/factor
 ;;; DESCRIPTION
 ;;; Boolean test to check if a specified number is a multiple of a second
@@ -3782,10 +3779,7 @@ WARNING:
 ;;; 
 ;;; EXAMPLE
 #|
-(factor 14 7)
-
-=> T
-
+(factor 14 7) => T
 |#
 ;;; SYNOPSIS
 (defun factor (num fac)
@@ -6779,6 +6773,53 @@ yes_foo, 1 2 3 4;
         (warn "utilities: smooth-procession: last element (~a) not present in ~
              result." last))
       (values sproc indices))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/periodicity
+;;; DATE
+;;; November 13th 2024
+;;; 
+;;; DESCRIPTION
+;;; Given a list of integers > 0, representing perhaps the number of items
+;;; (e.g. pitches, rhythms etc.) in an arbitrary number of lists, calculate the
+;;; cycle length before we repeat, i.e. start again at the beginning.
+;;; 
+;;; ARGUMENTS
+;;; a list of integers > 0
+;;; 
+;;; RETURN VALUE
+;;; 2 values: the cycle length before repeat, the lengths which aren't subsumed
+;;; into a higher value because they are a factor of it
+;;; 
+;;; EXAMPLE
+#|
+(periodicity '(1 2 5))
+10
+(2 5)
+
+(periodicity '(1 2 3 4 5 6))
+120
+(4 5 6)
+
+(periodicity '(1 2 3 4 5 6 20))
+120 
+(6 20)
+
+(periodicity '(1 2 3 4 5 6 16))
+480
+(5 6 16)
+|#
+;;; SYNOPSIS
+(defun periodicity (proportions)
+;;; ****
+  (assert (and proportions (listp proportions)
+               (every #'integer>0 proportions)))
+  (let ((nds (remove-duplicates proportions
+                                :test #'(lambda (x y)
+                                          (or (zerop (mod x y))
+                                              (zerop (mod y x)))))))
+    (values (apply #'* nds) nds)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

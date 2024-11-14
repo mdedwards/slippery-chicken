@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:46:21 Wed Nov 13 2024 CET
+;;; $$ Last modified:  10:38:54 Thu Nov 14 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6793,7 +6793,7 @@ yes_foo, 1 2 3 4;
 ;;; 
 ;;; RETURN VALUE
 ;;; 2 values: the cycle length before repeat, the lengths which aren't subsumed
-;;; into a higher value because they are a factor of it
+;;; into a higher value because they are a factor of it.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -6814,13 +6814,13 @@ yes_foo, 1 2 3 4;
 (5 6 16)
 |#
 ;;; SYNOPSIS
-(defun periodicity (proportions)
+(defun periodicity (cycle-lengths)
 ;;; ****
-  (when (every #'listp proportions)
-    (setq proportions (loop for p in proportions collect (length p))))
-  (assert (and proportions (listp proportions)
-               (every #'integer>0 proportions)))
-  (let ((nds (remove-duplicates proportions
+  (when (every #'listp cycle-lengths)
+    (setq cycle-lengths (loop for p in cycle-lengths collect (length p))))
+  (assert (and cycle-lengths (listp cycle-lengths)
+               (every #'integer>0 cycle-lengths)))
+  (let ((nds (remove-duplicates cycle-lengths
                                 :test #'(lambda (x y)
                                           (or (zerop (mod x y))
                                               (zerop (mod y x)))))))

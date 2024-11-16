@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  09:43:37 Fri Nov 15 2024 CET
+;;; $$ Last modified:  17:25:19 Sat Nov 16 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16418,18 +16418,37 @@
     (factor 14 7)
     (not (factor 15 7))))
 
-;;; MDE Wed Nov 13 19:27:07 2024, Heidhausen
+;;;  MDE Wed Nov 13 19:27:07 2024, Heidhausen
 (sc-deftest test-utilities-periodicity ()
-  (flet ((test-it (list period)           
-           (= (periodicity list) period)))
+  (flet ((really-test-it (list &optional period)
+           (print list)
+           (let* ((lists (if (integerp (first list))
+                           (loop for i in list
+                                 collect (make-cscl
+                                          (loop for j below i
+                                                collect (gentemp))))
+                           (mapcar #'make-cscl list)))
+                  (prd (periodicity list))
+                  (all (loop repeat prd
+                             collect (loop for cl in lists
+                                           collect (get-next cl)))))
+             ;; (print all)
+             (and (or (not period) (= prd period))
+                  (= prd (length (remove-duplicates all :test #'equalp)))))))
     (sc-test-check
-      (test-it '(14 35 26) 910)
-      (test-it '(1 2 5) 10)
-      (test-it '((1 2 3) (1 2 3 4 5) (a b c d e f)) 30)
-      (test-it '(1 2 3 4 5 6) 120)
-      (test-it '(1 2 3 4 5 6 20) 60)
-      (test-it '(1 2 3 4 5 6 16) 120)
-      )))
+      (really-test-it '(14 35 26) 910)
+      (really-test-it '(1 2 5) 10)
+      (really-test-it '((1 2 3) (1 2 3 4 5) (a b c d e f)) 30)
+      (really-test-it '(1 2 3 4 5 6) 60)
+      (really-test-it '(1 2 3 4 5 6 20) 60)
+      (really-test-it '(1 2 3 4 5 6 16) 240)
+      (notany #'not
+              (loop repeat 100 ; now many we'll test
+                    collect
+                    (really-test-it
+                     ;; num cycles: any more than 8 and things get slow
+                     (loop repeat (+ 2 (random 7)) 
+                           collect (1+ (random 13))))))))) ; elements in cycle
 
 ;;; SAR Mon May  7 23:40:39 BST 2012
 (sc-deftest test-utilities-get-harmonics ()
@@ -18238,7 +18257,7 @@ est)")))
       (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.wav" 2500000))))
 
 
-;;;  MDE Tue Apr 17 11:55:59 2012
+;;; MDE Tue Apr 17 11:55:59 2012
 #+clm 
 (sc-deftest test-clm-play-psynch ()
   (let ((mini

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:14:42 Fri Nov 15 2024 CET
+;;; $$ Last modified:  17:43:19 Sat Nov 16 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6803,33 +6803,40 @@ yes_foo, 1 2 3 4;
 60 
 
 (periodicity '(1 2 3 4 5 6 16))
-480
+240
 
 |#
 ;;; SYNOPSIS
 (defun periodicity (cycle-lengths)
 ;;; ****
   (when (every #'listp cycle-lengths)
-    (setq cycle-lengths (loop for p in cycle-lengths collect (length p))))
-  (assert (and cycle-lengths (listp cycle-lengths)
+    (setq cycle-lengths (mapcar #'length cycle-lengths)))
+  (assert (and (consp cycle-lengths)
                (every #'integer>0 cycle-lengths)))
-  ;; sort in ascending order so that remove-dups below removes the lower value
+  ;; sort in ascending order so that the first in the 'actual' list below is the
+  ;; result 
   (setq cycle-lengths (sort cycle-lengths #'<))
-  ;;          remove simple factors first
-  (let* ((nds (remove-duplicates cycle-lengths :test
-                                 #'(lambda (x y)
-                                     (or (zerop (mod y x))
-                                         (> (gcd x y) 2)))))
-         (largest (first (last nds)))
-         (result (apply #'* nds))
-         (gcd (apply #'gcd nds)))
-    (setq result (/ result gcd))
-    (format t "~&nds: ~a, gcd: ~a, result: ~a" nds gcd result)
-    (loop while (and (> result largest)
-                     (zerop (mod result largest)))
-          do (setq result (/ result 2)))
-    (print (* 2 result))))
-    ;; result))
+  ;; to speed things up remove simple factors (which includes same numbers)
+  (let ((no-dups (remove-duplicates cycle-lengths :test
+                                    #'(lambda (x y) ; x < y
+                                        (factor y x)))))
+    (let* ((big (apply #'* no-dups)) ; this would be the obvious result
+           ;; now, using the obvious number of repeats as a starting point,
+           ;; find out how many repeats each cycle-length would go through
+           ;; before we start over
+           (repeats (loop for cl in no-dups collect (/ big cl)))
+           ;; there might be a common divisor for the number of repeats that's >
+           ;; 1 
+           (gcd (apply #'gcd repeats))
+           ;; make each repeat length a fraction of its previous value by
+           ;; dividing by the greatest common divisor 
+           (actual (loop for c in repeats collect (/ c gcd))))
+      ;; we might now think that we can simply return the first element of
+      ;; actual but if we take (periodicity '(1 2 3 4 5 6 16)) then no-dups is
+      ;; (5 6 16) and the first element of actual is 48 of which 5 is clearly
+      ;; not a factor. So the actual result is the first element of actual * the
+      ;; first element of no-dups
+      (* (first actual) (first no-dups)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:25:19 Sat Nov 16 2024 CET
+;;; $$ Last modified:  17:56:28 Sat Nov 16 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16421,7 +16421,7 @@
 ;;;  MDE Wed Nov 13 19:27:07 2024, Heidhausen
 (sc-deftest test-utilities-periodicity ()
   (flet ((really-test-it (list &optional period)
-           (print list)
+           ;; (print list)
            (let* ((lists (if (integerp (first list))
                            (loop for i in list
                                  collect (make-cscl
@@ -16429,11 +16429,22 @@
                                                 collect (gentemp))))
                            (mapcar #'make-cscl list)))
                   (prd (periodicity list))
-                  (all (loop repeat prd
+                  ;; we get all the possible combinations (not permutations!)
+                  ;; from the list by running through each one, getting the next
+                  ;; element and combining them into lists: there would then be
+                  ;; as many lists as our periodicity tells us, but we go
+                  ;; further and get 3x as many, to see if we end up with more
+                  ;; unique lists than our periodicity would tell us
+                  (all (loop repeat (* 3 prd)
                              collect (loop for cl in lists
                                            collect (get-next cl)))))
              ;; (print all)
              (and (or (not period) (= prd period))
+                  ;; So what we test here is that if we take our periodicity as
+                  ;; read, then there are no duplicates in that number. Remember
+                  ;; tough that we've made 3x as many lists as our periodicity
+                  ;; should be so remove-duplicates should reduce the list
+                  ;; length by 2/3
                   (= prd (length (remove-duplicates all :test #'equalp)))))))
     (sc-test-check
       (really-test-it '(14 35 26) 910)

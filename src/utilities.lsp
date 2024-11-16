@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:38:54 Thu Nov 14 2024 CET
+;;; $$ Last modified:  10:14:42 Fri Nov 15 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -3790,9 +3790,6 @@ WARNING:
   (zerop (mod num fac)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May 21 09:55:17 EDT 2012: Added robodoc entry
-
 ;;; ****f* utilities/octave-freqs
 ;;; DESCRIPTION
 ;;; A boolean test to determine whether two specified frequencies are octave
@@ -6792,26 +6789,22 @@ yes_foo, 1 2 3 4;
 ;;; a list of integers > 0
 ;;; 
 ;;; RETURN VALUE
-;;; 2 values: the cycle length before repeat, the lengths which aren't subsumed
-;;; into a higher value because they are a factor of it.
+;;; the cycle length before a repeat occurs
 ;;; 
 ;;; EXAMPLE
 #|
 (periodicity '(1 2 5))
 10
-(2 5)
 
 (periodicity '(1 2 3 4 5 6))
-120
-(4 5 6)
+60
 
 (periodicity '(1 2 3 4 5 6 20))
-120 
-(6 20)
+60 
 
 (periodicity '(1 2 3 4 5 6 16))
 480
-(5 6 16)
+
 |#
 ;;; SYNOPSIS
 (defun periodicity (cycle-lengths)
@@ -6820,12 +6813,23 @@ yes_foo, 1 2 3 4;
     (setq cycle-lengths (loop for p in cycle-lengths collect (length p))))
   (assert (and cycle-lengths (listp cycle-lengths)
                (every #'integer>0 cycle-lengths)))
-  (let ((nds (remove-duplicates cycle-lengths
-                                :test #'(lambda (x y)
-                                          (or (zerop (mod x y))
-                                              (zerop (mod y x)))))))
-    (values (apply #'* nds) nds)))
-
+  ;; sort in ascending order so that remove-dups below removes the lower value
+  (setq cycle-lengths (sort cycle-lengths #'<))
+  ;;          remove simple factors first
+  (let* ((nds (remove-duplicates cycle-lengths :test
+                                 #'(lambda (x y)
+                                     (or (zerop (mod y x))
+                                         (> (gcd x y) 2)))))
+         (largest (first (last nds)))
+         (result (apply #'* nds))
+         (gcd (apply #'gcd nds)))
+    (setq result (/ result gcd))
+    (format t "~&nds: ~a, gcd: ~a, result: ~a" nds gcd result)
+    (loop while (and (> result largest)
+                     (zerop (mod result largest)))
+          do (setq result (/ result 2)))
+    (print (* 2 result))))
+    ;; result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

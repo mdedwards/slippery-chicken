@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:45:19 Wed Nov 13 2024 CET
+;;; $$ Last modified:  09:43:37 Fri Nov 15 2024 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16420,17 +16420,16 @@
 
 ;;; MDE Wed Nov 13 19:27:07 2024, Heidhausen
 (sc-deftest test-utilities-periodicity ()
-  (flet ((test-it (list period props)
-           (multiple-value-bind
-            (p l)
-            (periodicity list)
-            (and (= p period) (equalp l props)))))
+  (flet ((test-it (list period)           
+           (= (periodicity list) period)))
     (sc-test-check
-      (test-it '(1 2 5) 10 '(2 5))
-      (test-it '((1 2 3) (1 2 3 4 5) (a b c d e f)) 30 '(5 6))
-      (test-it '(1 2 3 4 5 6) 120 '(4 5 6))
-      (test-it '(1 2 3 4 5 6 20) 120 '(6 20))
-      (test-it '(1 2 3 4 5 6 16) 480 '(5 6 16)))))
+      (test-it '(14 35 26) 910)
+      (test-it '(1 2 5) 10)
+      (test-it '((1 2 3) (1 2 3 4 5) (a b c d e f)) 30)
+      (test-it '(1 2 3 4 5 6) 120)
+      (test-it '(1 2 3 4 5 6 20) 60)
+      (test-it '(1 2 3 4 5 6 16) 120)
+      )))
 
 ;;; SAR Mon May  7 23:40:39 BST 2012
 (sc-deftest test-utilities-get-harmonics ()

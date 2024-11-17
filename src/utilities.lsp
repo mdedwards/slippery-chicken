@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:43:19 Sat Nov 16 2024 CET
+;;; $$ Last modified:  13:43:56 Sun Nov 17 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4968,9 +4968,9 @@ RETURNS:
 |#
 ;;; SYNOPSIS
 (defun pdivide (start levels &key (duration 1.0) print reverse alternate
-                    halves shuffle increment)
+                               halves shuffle increment)
 ;;; ****
-  (setf duration (float duration))
+  (setq duration (float duration))
   (let ((result '())
         (resultd '())
         (resultd-first '())
@@ -4984,39 +4984,39 @@ RETURNS:
       (error "utilities::pdivide: levels (~a) should be an integer >= 1."
              levels))
     (loop with n = num with d = den for i from 0 repeat levels do
-         (setf this (loop with l for i below (expt 2 i)
+      (setf this (loop with l for i below (expt 2 i)
                        do
-                       (setf l (list n d))
-                       (when reverse
-                         (setf l (reverse l)))
-                       (when (and alternate (oddp i))
-                         (setf l (reverse l)))
+                          (setf l (list n d))
+                          (when reverse
+                            (setf l (reverse l)))
+                          (when (and alternate (oddp i))
+                            (setf l (reverse l)))
                        collect l
                        do (when increment (incf d) (incf n)))
-               thisd (loop for ps in this
+            thisd (loop for ps in this
                         for dur in (if resultd (first resultd) (list duration))
                         for sum = (+ (first ps) (second ps))
                         collect (* dur (/ (first ps) sum))
                         collect (* dur (/ (second ps) sum))))
-         (push this result)
-         (push thisd resultd)
-         (when print 
-           (terpri) 
-           (terpri)
-           (format t "Generation ~a: " (1+ i))
-           (loop with time = 0.0 for p in (flatten this) for d in thisd do
-                (format t "~d (~,2f=~,2f), " p d (incf time d)))))
+      (push this result)
+      (push thisd resultd)
+      (when print 
+        (terpri) 
+        (terpri)
+        (format t "Generation ~a: " (1+ i))
+        (loop with time = 0.0 for p in (flatten this) for d in thisd do
+          (format t "~d (~,2f=~,2f), " p d (incf time d)))))
     (setf resultd-first (first resultd))
     (when halves
       (let ((half (expt 2 (1- levels))))
         (setf resultd-first (loop for i in resultd-first
-                               for j in (nthcdr half resultd-first)
-                               collect i collect j))))
+                                  for j in (nthcdr half resultd-first)
+                                  collect i collect j))))
     (when shuffle
       (setf resultd-first (shuffle resultd-first)))
     (flet ((cumulative (list)
              (cons 0.0 (loop with time = 0.0 for d in list
-                          collect (incf time d)))))
+                             collect (incf time d)))))
       (values 
        (cumulative resultd-first)
        resultd-first
@@ -6780,13 +6780,14 @@ yes_foo, 1 2 3 4;
 ;;; DESCRIPTION
 ;;; Given a list of integers > 0, representing perhaps the number of items
 ;;; (e.g. pitches, rhythms etc.) in an arbitrary number of lists, calculate the
-;;; cycle length before we repeat, i.e. start again at the beginning.
+;;; cycle length before we repeat, i.e. start again at the beginning of each
+;;; list. 
 ;;;
 ;;; NB for convenience the argument can be a list of lists, the lengths of which
 ;;; will then be used as above. 
 ;;; 
 ;;; ARGUMENTS
-;;; a list of integers > 0
+;;; a list of integers > 0 or a list of sublists
 ;;; 
 ;;; RETURN VALUE
 ;;; the cycle length before a repeat occurs
@@ -6814,29 +6815,34 @@ yes_foo, 1 2 3 4;
   (assert (and (consp cycle-lengths)
                (every #'integer>0 cycle-lengths)))
   ;; sort in ascending order so that the first in the 'actual' list below is the
-  ;; result 
+  ;; result, after a little massaging.
   (setq cycle-lengths (sort cycle-lengths #'<))
-  ;; to speed things up remove simple factors (which includes same numbers)
-  (let ((no-dups (remove-duplicates cycle-lengths :test
-                                    #'(lambda (x y) ; x < y
-                                        (factor y x)))))
-    (let* ((big (apply #'* no-dups)) ; this would be the obvious result
-           ;; now, using the obvious number of repeats as a starting point,
-           ;; find out how many repeats each cycle-length would go through
-           ;; before we start over
-           (repeats (loop for cl in no-dups collect (/ big cl)))
-           ;; there might be a common divisor for the number of repeats that's >
-           ;; 1 
-           (gcd (apply #'gcd repeats))
-           ;; make each repeat length a fraction of its previous value by
-           ;; dividing by the greatest common divisor 
-           (actual (loop for c in repeats collect (/ c gcd))))
-      ;; we might now think that we can simply return the first element of
-      ;; actual but if we take (periodicity '(1 2 3 4 5 6 16)) then no-dups is
-      ;; (5 6 16) and the first element of actual is 48 of which 5 is clearly
-      ;; not a factor. So the actual result is the first element of actual * the
-      ;; first element of no-dups
-      (* (first actual) (first no-dups)))))
+  ;; to speed things up remove simple factors (which include repeated numbers)
+  (let* ((no-dups (remove-duplicates cycle-lengths :test
+                                     #'(lambda (x y) ; x < y
+                                         (factor y x))))
+         (big (apply #'* no-dups))      ; this would be the obvious result
+         ;; now, using the obvious number of repeats as a starting point,
+         ;; find out how many repeats each cycle-length would go through
+         ;; before we start over
+         (repeats (loop for cl in no-dups collect (/ big cl)))
+         ;; there might be a common divisor for the number of repeats that's >
+         ;; 1 
+         (gcd (apply #'gcd repeats))
+         ;; make each repeat length a fraction of its previous value by
+         ;; dividing by the greatest common divisor 
+         (actual (if (> gcd 1)
+                     (loop for c in repeats collect (/ c gcd))
+                     repeats)))
+    ;; (print repeats) (print gcd) (print actual)
+    ;; 
+    ;; we might now think that we can simply return the first element of
+    ;; 'actual' but if we evaluate (periodicity '(1 2 3 4 5 6 16)) then
+    ;; 'no-dups' is (5 6 16), 'big' is 480, 'repeats' is (96 80 30), 'gcd' is 2,
+    ;; and 'actual' is (48 40 15). The first element of actual, 48, clearly does
+    ;; not have 5 as a factor, so the actual result is the first (smallest)
+    ;; element of actual * the first element of no-dups (5), i.e. 240.
+    (* (first actual) (first no-dups))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:43:56 Sun Nov 17 2024 CET
+;;; $$ Last modified:  15:29:55 Sun Nov 17 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6836,12 +6836,11 @@ yes_foo, 1 2 3 4;
                      repeats)))
     ;; (print repeats) (print gcd) (print actual)
     ;; 
-    ;; we might now think that we can simply return the first element of
-    ;; 'actual' but if we evaluate (periodicity '(1 2 3 4 5 6 16)) then
-    ;; 'no-dups' is (5 6 16), 'big' is 480, 'repeats' is (96 80 30), 'gcd' is 2,
-    ;; and 'actual' is (48 40 15). The first element of actual, 48, clearly does
-    ;; not have 5 as a factor, so the actual result is the first (smallest)
-    ;; element of actual * the first element of no-dups (5), i.e. 240.
+    ;; all we have to do now is multiple one element of 'actual' by the
+    ;; respective element of 'no-dups' and we're done. E.g. if we evaluate
+    ;; (periodicity '(1 2 3 4 5 6 16)) then 'no-dups' is (5 6 16), 'big' is 480,
+    ;; 'repeats' is (96 80 30), 'gcd' is 2, and 'actual' is (48 40 15), so the
+    ;; result is 48 * 5 == 40 * 6 == 15 * 16 == 240
     (* (first actual) (first no-dups))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

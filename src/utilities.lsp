@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:29:55 Sun Nov 17 2024 CET
+;;; $$ Last modified:  10:15:52 Mon Nov 18 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6778,7 +6778,15 @@ yes_foo, 1 2 3 4;
 ;;; November 13th 2024
 ;;; 
 ;;; DESCRIPTION
-;;; Given a list of integers > 0, representing perhaps the number of items
+
+;;; Think of isorhythm: you have a list of x pitches which you go through,
+;;; repeating from the beginning when you get to the end, plus a similarly
+;;; handled list of y rhythms. x and y are different (lengths) so when does the
+;;; cycle repeat i.e. when do we reused the first element of each list and
+;;; proceed again as at the beginning? The simple answer is x * y but it could
+;;; be significantly less. This routine works that out.
+;;;
+;;; So, given a list of integers > 0, representing perhaps the number of items
 ;;; (e.g. pitches, rhythms etc.) in an arbitrary number of lists, calculate the
 ;;; cycle length before we repeat, i.e. start again at the beginning of each
 ;;; list. 
@@ -6814,18 +6822,19 @@ yes_foo, 1 2 3 4;
     (setq cycle-lengths (mapcar #'length cycle-lengths)))
   (assert (and (consp cycle-lengths)
                (every #'integer>0 cycle-lengths)))
-  ;; sort in ascending order so that the first in the 'actual' list below is the
-  ;; result, after a little massaging.
-  (setq cycle-lengths (sort cycle-lengths #'<))
-  ;; to speed things up remove simple factors (which include repeated numbers)
-  (let* ((no-dups (remove-duplicates cycle-lengths :test
+  ;; only helpful if we remove-dups below (which is slower)
+  ;; (setq cycle-lengths (sort cycle-lengths #'<))
+  ;; you might think it would speed things up if we removed simple factors
+  ;; (which include repeated numbers) but the overhead of that vs. the extra
+  ;; multiplies etc. when we don't appears to be about 30%, so let's not bother.
+  (let* (#|(no-dups (remove-duplicates cycle-lengths :test
                                      #'(lambda (x y) ; x < y
-                                         (factor y x))))
-         (big (apply #'* no-dups))      ; this would be the obvious result
+                                         (factor y x))))|#
+         (big (apply #'* cycle-lengths))      ; this would be the obvious result
          ;; now, using the obvious number of repeats as a starting point,
          ;; find out how many repeats each cycle-length would go through
          ;; before we start over
-         (repeats (loop for cl in no-dups collect (/ big cl)))
+         (repeats (loop for cl in cycle-lengths collect (/ big cl)))
          ;; there might be a common divisor for the number of repeats that's >
          ;; 1 
          (gcd (apply #'gcd repeats))
@@ -6837,11 +6846,11 @@ yes_foo, 1 2 3 4;
     ;; (print repeats) (print gcd) (print actual)
     ;; 
     ;; all we have to do now is multiple one element of 'actual' by the
-    ;; respective element of 'no-dups' and we're done. E.g. if we evaluate
-    ;; (periodicity '(1 2 3 4 5 6 16)) then 'no-dups' is (5 6 16), 'big' is 480,
-    ;; 'repeats' is (96 80 30), 'gcd' is 2, and 'actual' is (48 40 15), so the
-    ;; result is 48 * 5 == 40 * 6 == 15 * 16 == 240
-    (* (first actual) (first no-dups))))
+    ;; respective element of 'cycle-lengths' and we're done. E.g. if we evaluate
+    ;; (periodicity '(1 2 3 4 5 6 16)) then 'big' is 11520, 'repeats' is (11520
+    ;; 5760 3840 2880 2304 1920 720), 'gcd' is 48, and 'actual' is (240 120 80
+    ;; 60 48 40 15) so the result is 240*1 == 120*2 == 80*3 ... 15*16 == 240
+    (* (first actual) (first cycle-lengths))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

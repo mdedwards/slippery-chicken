@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:15:52 Mon Nov 18 2024 CET
+;;; $$ Last modified:  10:19:19 Mon Nov 18 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6778,7 +6778,6 @@ yes_foo, 1 2 3 4;
 ;;; November 13th 2024
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Think of isorhythm: you have a list of x pitches which you go through,
 ;;; repeating from the beginning when you get to the end, plus a similarly
 ;;; handled list of y rhythms. x and y are different (lengths) so when does the

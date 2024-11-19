@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:19:19 Mon Nov 18 2024 CET
+;;; $$ Last modified:  09:23:08 Tue Nov 19 2024 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6778,12 +6778,13 @@ yes_foo, 1 2 3 4;
 ;;; November 13th 2024
 ;;; 
 ;;; DESCRIPTION
+
 ;;; Think of isorhythm: you have a list of x pitches which you go through,
-;;; repeating from the beginning when you get to the end, plus a similarly
-;;; handled list of y rhythms. x and y are different (lengths) so when does the
-;;; cycle repeat i.e. when do we reused the first element of each list and
-;;; proceed again as at the beginning? The simple answer is x * y but it could
-;;; be significantly less. This routine works that out.
+;;; repeating from the beginning when you get to the end, plus a
+;;; similarly-handled list of y rhythms. x and y are different (lengths) so when
+;;; does the cycle repeat i.e. when do we reuse the first element of each list
+;;; and proceed again as at the beginning? The simple answer is x * y but it
+;;; could be significantly less. This routine works that out.
 ;;;
 ;;; So, given a list of integers > 0, representing perhaps the number of items
 ;;; (e.g. pitches, rhythms etc.) in an arbitrary number of lists, calculate the
@@ -6844,7 +6845,7 @@ yes_foo, 1 2 3 4;
                      repeats)))
     ;; (print repeats) (print gcd) (print actual)
     ;; 
-    ;; all we have to do now is multiple one element of 'actual' by the
+    ;; all we have to do now is multiply one element of 'actual' by the
     ;; respective element of 'cycle-lengths' and we're done. E.g. if we evaluate
     ;; (periodicity '(1 2 3 4 5 6 16)) then 'big' is 11520, 'repeats' is (11520
     ;; 5760 3840 2880 2304 1920 720), 'gcd' is 48, and 'actual' is (240 120 80

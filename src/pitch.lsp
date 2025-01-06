@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  14:45:04 Sat Oct 19 2024 CEST
+;;; $$ Last modified:  10:19:55 Mon Jan  6 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2147,7 +2147,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
       result
       (apply #'cmn::note (econs 
                           (if (listp result)
-                            (print (loop for i in result collect (eval i)))
+                            (loop for i in result collect (eval i))
                             (list (eval result)))
                           (eval (rm-package rhythm :cmn)))))))
 

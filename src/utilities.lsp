@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:41:07 Mon Nov 25 2024 CET
+;;; $$ Last modified:  20:38:45 Thu Jan  9 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1658,7 +1658,16 @@
             (t (interp-aux point env scaler exp))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun ascending-xs (env &optional (error #'error))
+  (let* ((xs (loop for x in env by #'cddr collect x))
+         (ok (apply #'< xs)))
+    (when (and (not ok) (functionp error))
+      (funcall error "~&x values are not ascending in envelope ~a" env))
+    ok))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun interp-aux (point env scaler exp)
+  (ascending-xs env)
   (let ((here (loop for i in env by #'cddr and j from 1 do
     (if (<= point i) (return (+ j j -2))))))
     ;; rounding in making the new-env with new-lastx can cause the very last
@@ -1708,7 +1717,7 @@
   (let ((len (length env)))
     (when (oddp len) 
         (error "utilities::lastx: Wrong number of elements in ~a." env))
-    (when env (nth (- len 2) env))))
+    (when env (first (last env 2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun new-lastx (env x)
@@ -2155,6 +2164,41 @@
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr
      collect x collect (+ y add)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/env-mean-y
+;;; DATE
+;;; january 9th 2025
+;;; 
+;;; DESCRIPTION
+;;; Get the mean value of the y values in an envelope considering the breadth of
+;;; the x axis. In other words, by sampling the envelope over many evenly spread
+;;; points, return the mean y value
+;;; 
+;;; ARGUMENTS
+;;; - the envelope as a list of x y breakpoint
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - how many points to use to sample the envelope. Default = 1000.
+;;; 
+;;; RETURN VALUE
+;;; the mean y value: a number
+;;; 
+;;; EXAMPLE
+#|
+(env-mean-y '(0 0 100 1)) = 0.5 (approx)
+|#
+;;; SYNOPSIS
+(defun env-mean-y (env &optional (granularity 1000))
+;;; ****
+  (let* ((x-min (first env))
+         (x-max (first (last env 2)))
+         (diff (- x-max x-min))
+         (delta (/ diff (1- granularity)))
+         (ys (loop for x from x-min to x-max by delta
+                   collect (interpolate x env))))
+    ;; (print (length ys))
+    (average ys)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/force-length

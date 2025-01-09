@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:56:28 Sat Nov 16 2024 CET
+;;; $$ Last modified:  20:35:07 Thu Jan  9 2025 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16330,6 +16330,20 @@
            (env-symmetrical '(0 0 25 11 50 13 75 19 100 23) 0 -20 -7)
            '(0 -7 25 -11.0 50 -13.0 75 -19.0 100 -20))))
 
+(sc-deftest test-utilities-env-mean-y ()
+  (sc-test-check
+    (equal-within-tolerance 0.5 (env-mean-y '(0 0 100 1)))
+    (equal-within-tolerance 0.5 (env-mean-y '(0 0 100 1) 100))
+    (equal-within-tolerance 0.5 (env-mean-y '(0 0 100 1) 100000))
+    (equal-within-tolerance 0.05 (env-mean-y '(0 0 100 .1)))
+    (equal-within-tolerance 1 (env-mean-y '(55 1 100 1)))
+    (equal-within-tolerance 0.55 (env-mean-y '(0 1 100 .1)))
+    (equal-within-tolerance 0.5 (env-mean-y '(0 1 100 0)))
+    (equal-within-tolerance 0.5 (env-mean-y '(100 1 150 0 200 1)) .001)
+    (equal-within-tolerance 0.71059941
+                            (env-mean-y '(15 0 100 1 110 -.3 140 .1 156 7))
+                            .00001)))
+
 (sc-deftest test-utilities-invert-env ()
   (flet ((ok (l1 l2)
            (every #'(lambda (x y) (equal-within-tolerance x y .00001))
@@ -16418,7 +16432,7 @@
     (factor 14 7)
     (not (factor 15 7))))
 
-;;;  MDE Wed Nov 13 19:27:07 2024, Heidhausen
+;;; MDE Wed Nov 13 19:27:07 2024, Heidhausen
 (sc-deftest test-utilities-periodicity ()
   (flet ((really-test-it (list &optional period)
            ;; (print list)

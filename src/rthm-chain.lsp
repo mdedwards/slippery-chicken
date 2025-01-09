@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  11:51:14 Wed Jan 31 2024 CET
+;;; $$ Last modified:  20:20:50 Thu Jan  9 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1787,8 +1787,12 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
            ;; we use this curve to proceed from just 3 items at the beginning
            ;; to the full number of items by the end (or rather 70% from the
            ;; end by default).
-           (max-curve (list 0 3 num-at-full num-items (1- num-results)
-                            num-items))
+           (max-curve (list 0 3
+                            ;; MDE Thu Jan  9 20:20:25 2025, Heidhausen --
+                            ;; interpolate is now checking that x values are
+                            ;; ascending so don't make dud envelopes
+                            (min num-at-full (- num-results 2))
+                            num-items (1- num-results)  num-items))
            ;; we're going to use a hash table to keep track of how often each
            ;; item is used so we can always select the 3 least used
            (hash (make-hash-table))

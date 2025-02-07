@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  20:38:45 Thu Jan  9 2025 CET
+;;; $$ Last modified:  10:34:06 Fri Feb  7 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6515,6 +6515,8 @@ yes_foo, 1 2 3 4;
   (string-replace " " "\\ " string))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; duration can be in seconds or a 2- or 3-element list of (mins secs
+;;; millisecs) 
 (defun sndfile-size (duration channels bits-per-sample
                      &optional (sampling-rate 48000))
   (let ((bytes (float (* channels (mins-secs-to-secs duration)

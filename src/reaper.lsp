@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  15:47:42 Thu Jun 27 2024 CEST
+;;; $$ Last modified:  14:15:08 Sat Jan 11 2025 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -633,6 +633,12 @@
             (setf (slot-value ri slot) value))
     ri))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; args are the same as those you'd pass to make-sndfile. quick and easy way to
+;;; make a reaper-item without the overhead of video files (and shell calls)
+(defun make-reaper-item-from-sndfile (&rest args)
+  (change-class (apply #'make-sndfile args) 'reaper-item))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LF <2023-05-02 Tu>
 ;;; generate string with random numbers in style:

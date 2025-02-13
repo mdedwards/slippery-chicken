@@ -277,7 +277,7 @@ data: (2 4)
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo301">time-sig</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> This tries to <a href="./wolfram_lsp.html#robo1027">generate</a> a reasonable time signature from a given duration in
+<pre> This tries to <a href="./wolfram_lsp.html#robo1029">generate</a> a reasonable time signature from a given duration in
  seconds. Will not do anything sophisticated like decide <a href="./utilities_lsp.html#robo925">between</a> simple and
  compound times.
  
@@ -318,11 +318,11 @@ data: (2 4)
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo301">time-sig</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Scale the value of the given <a href="#robo301">time-sig</a> object by a specified <a href="./utilities_lsp.html#robo946">factor</a>.
+<pre> Scale the value of the given <a href="#robo301">time-sig</a> object by a specified <a href="./utilities_lsp.html#robo947">factor</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo301">time-sig</a> object.
- - A number (scaling <a href="./utilities_lsp.html#robo946">factor</a>).
+ - A number (scaling <a href="./utilities_lsp.html#robo947">factor</a>).
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether or not to preserve the meter by maintaining 
@@ -358,7 +358,7 @@ data: (6 4)
 
 =&gt; (4 4)
 
-;; Halving the value of a <a href="#robo301">time-sig</a> object is achieved using a <a href="./utilities_lsp.html#robo946">factor</a> of .5
+;; Halving the value of a <a href="#robo301">time-sig</a> object is achieved using a <a href="./utilities_lsp.html#robo947">factor</a> of .5
 (let ((ts (<a href="#robo904">make-time-sig</a> '(2 4))))
   (data (<strong>scale</strong> ts .5)))
 
@@ -417,7 +417,7 @@ data: (6 4)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/time-sig.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/time-sig.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:45</p>
 </div> <!-- footer -->
 </body>
 </html>

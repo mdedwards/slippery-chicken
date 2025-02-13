@@ -40,7 +40,7 @@
  material and slot values already contained in that object.
 
  The main <a href="#robo536">rthm-chain</a> algorithm generates only two voices. Rather than
- <a href="./wolfram_lsp.html#robo1027">generate</a> further voices in the same fashion by which the first two were
+ <a href="./wolfram_lsp.html#robo1029">generate</a> further voices in the same fashion by which the first two were
  created, this method uses the already created rthm-seqs in the given
  <a href="#robo536">rthm-chain</a> object to create a new voice. 
 
@@ -123,7 +123,7 @@
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :start. The <a href="./event_lsp.html#robo202">lowest</a> key value we'll test. Default = 0.
- - :end. The <a href="./chord_lsp.html#robo90">highest</a> key value we'll test. Default = number of items in the
+ - :end. The <a href="./event_lsp.html#robo197">highest</a> key value we'll test. Default = number of items in the
    hash table.
  - :ignore. A list of keys to ignore when processing. NIL = process all
    keys. Default = NIL. 
@@ -570,10 +570,10 @@ SC-MAP: <a href="./palette_lsp.html#robo424">palette</a> id: RTHM-CHAIN-RSP
                    &amp;key 
                      ;; what proportion of the way through should we aim to
                      ;; reach the max number of items?  NB This is approximate
-                     ;; only: you may find the first occurrence of the <a href="./chord_lsp.html#robo90">highest</a>
+                     ;; only: you may find the first occurrence of the <a href="./event_lsp.html#robo197">highest</a>
                      ;; element earlier or later depending on the values of the
                      ;; other arguments.  In particular, with a low number of
-                     ;; items the <a href="./chord_lsp.html#robo90">highest</a> element will be hit very early on,
+                     ;; items the <a href="./event_lsp.html#robo197">highest</a> element will be hit very early on,
                      ;; perhaps nowhere near the peak argument.
                      (peak 0.7)
                      ;; for an exponential curve going from 3 to num &lt;items&gt;
@@ -634,9 +634,9 @@ SC-MAP: <a href="./palette_lsp.html#robo424">palette</a> id: RTHM-CHAIN-RSP
 <pre> Returns T.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Print the results of applying <a href="./circular-sclist_lsp.html#robo118">get-next</a> to the STICKING-RTHMS slot of the
+<pre class="source">;;; Print the results of applying <a href="./sndfile-ext_lsp.html#robo861">get-next</a> to the STICKING-RTHMS slot of the
 ;;; given <a href="#robo536">rthm-chain</a> object, repeat, <strong>reset</strong>, and print again to see that the
-;;; <a href="./circular-sclist_lsp.html#robo118">get-next</a> now begins at the beginning of the slot again.
+;;; <a href="./sndfile-ext_lsp.html#robo861">get-next</a> now begins at the beginning of the slot again.
 
 (let ((rch
        (<a href="#robo469">make-rthm-chain</a>
@@ -669,14 +669,14 @@ SC-MAP: <a href="./palette_lsp.html#robo424">palette</a> id: RTHM-CHAIN-RSP
             ({ 3 - te te te - } (e) e { 3 (te) (te) te })))))))
   (print 
    (loop repeat 19
-      collect (data (<a href="./circular-sclist_lsp.html#robo118">get-next</a> (sticking-rthms rch)))))
+      collect (data (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> (sticking-rthms rch)))))
   (print 
    (loop repeat 19
-      collect (data (<a href="./circular-sclist_lsp.html#robo118">get-next</a> (sticking-rthms rch)))))
+      collect (data (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> (sticking-rthms rch)))))
   (<strong>reset</strong> rch)
   (print 
    (loop repeat 19
-      collect (data (<a href="./circular-sclist_lsp.html#robo118">get-next</a> (sticking-rthms rch))))))
+      collect (data (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> (sticking-rthms rch))))))
 
 =&gt;
 (E E E E E. E E. E E Q E E. E Q E. Q E. Q E) 
@@ -721,10 +721,10 @@ SC-MAP: <a href="./palette_lsp.html#robo424">palette</a> id: RTHM-CHAIN-RSP
 <pre> keyword arguments:
  - :rests. T or NIL to indicate whether rests are to be automatically
    inserted. T = automatically insert. Default = T.
- - :stick. T or NIL to indicate whether to <a href="./wolfram_lsp.html#robo1027">generate</a> the sticking points. T =
-   <a href="./wolfram_lsp.html#robo1027">generate</a> sticking points. Default = T.
+ - :stick. T or NIL to indicate whether to <a href="./wolfram_lsp.html#robo1029">generate</a> the sticking points. T =
+   <a href="./wolfram_lsp.html#robo1029">generate</a> sticking points. Default = T.
  - :num-beats. NIL or an integer to indicate how many beats are to be used
-   for the algorithm. NB: The method will <a href="./wolfram_lsp.html#robo1027">generate</a> considerably more beats
+   for the algorithm. NB: The method will <a href="./wolfram_lsp.html#robo1029">generate</a> considerably more beats
    if also generating sticking points and inserting rests; this number
    merely refers to the number of standard 1-beat rhythms to be generated.
    If NIL, the method will obtain the number of beats from the NUM-BEATS
@@ -740,7 +740,7 @@ SC-MAP: <a href="./palette_lsp.html#robo424">palette</a> id: RTHM-CHAIN-RSP
    also be parcelled up into an object with this ID, so ID conflicts can be
    avoided if combining two or more sections generated by separate
    <a href="#robo536">rthm-chain</a> objects. Default = 1.
- - :<a href="./set-palette_lsp.html#robo685">wrap</a>. An integer or NIL to determine the position within the list of
+ - :<a href="./chord_lsp.html#robo111">wrap</a>. An integer or NIL to determine the position within the list of
    1-beat rhythms and slow rhythms from which the generated <a href="./rhythm_lsp.html#robo297">rhythm</a> chain
    will begin. NIL = begin at the beginning. Default = NIL.
  - :<a href="./rthm-seq_lsp.html#robo584">split</a>. T or NIL to indicate whether to <a href="./rthm-seq_lsp.html#robo584">split</a> up longer generated bars
@@ -759,7 +759,7 @@ SC-MAP: <a href="./palette_lsp.html#robo424">palette</a> id: RTHM-CHAIN-RSP
                            (stick t)
                            (<a href="./section_lsp.html#robo60">section</a>-id 1)
                            num-beats
-                           <a href="./set-palette_lsp.html#robo685">wrap</a>)
+                           <a href="./chord_lsp.html#robo111">wrap</a>)
 </pre>
 
 
@@ -870,12 +870,12 @@ SC-MAP: <a href="./palette_lsp.html#robo424">palette</a> id: RTHM-CHAIN-RSP
 
  Purpose:          Algorithmic generation of rthm-seqs that include
                    slower-moving counterpoint and a means to control
-                   activity development through curves.  Here we <a href="./wolfram_lsp.html#robo1027">generate</a> a
+                   activity development through curves.  Here we <a href="./wolfram_lsp.html#robo1029">generate</a> a
                    <a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> and its associated <a href="./palette_lsp.html#robo424">palette</a> algorithmically.
 
                    Say we have 9 irregular 1 beat duration patterns; these
                    would enter in the sequence defined by (<a href="#robo470">procession</a> x 9)
-                   where x would be the number of patterns to <a href="./wolfram_lsp.html#robo1027">generate</a>. 
+                   where x would be the number of patterns to <a href="./wolfram_lsp.html#robo1029">generate</a>. 
  
                    Rests are inserted at regular but changing intervals e.g
  
@@ -924,14 +924,14 @@ SC-MAP: <a href="./palette_lsp.html#robo424">palette</a> id: RTHM-CHAIN-RSP
 
  Creation date:    4th February 2010
 
- $$ Last modified:  11:51:14 Wed Jan 31 2024 CET
+ $$ Last modified:  20:20:50 Thu Jan  9 2025 CET
 
  SVN ID: $Id$
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/rthm-chain.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/rthm-chain.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:45</p>
 </div> <!-- footer -->
 </body>
 </html>

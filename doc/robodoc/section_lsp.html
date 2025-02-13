@@ -68,7 +68,7 @@
 <p class="item_name">DESCRIPTION</p>
 <pre> Return a list of the IDs from all <a href="./slippery-chicken_lsp.html#robo845">players</a> in a <a href="#robo60">section</a> object. NB: When
  retrieving from a <a href="#robo60">section</a> within a <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> object, all <a href="./slippery-chicken_lsp.html#robo845">players</a> in
- the <a href="./ensemble_lsp.html#robo412">ensemble</a> will be returned, as the <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> object will <a href="./wolfram_lsp.html#robo1027">generate</a>
+ the <a href="./ensemble_lsp.html#robo412">ensemble</a> will be returned, as the <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> object will <a href="./wolfram_lsp.html#robo1029">generate</a>
  rest bars for <a href="./slippery-chicken_lsp.html#robo845">players</a> even when they're not <a href="./activity-levels-env_lsp.html#robo22">active</a> in a given <a href="#robo60">section</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -173,7 +173,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 11,
               old-bar-nums: NIL, write-bar-num: NIL, start-time: 40.000, 
               start-time-qtrs: 40.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
               show-rest: T, notes-needed: 5, 
-              tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo946">factor</a>: 0.35, beams: NIL, 
+              tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo947">factor</a>: 0.35, beams: NIL, 
               current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
               num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
               missing-duration: NIL, bar-line-type: 0, 
@@ -257,7 +257,7 @@ BAR-HOLDER:
             end-time: 28.0
             start-time-qtrs: 24.0
             end-time-qtrs: 28.0
-            <a href="./event_lsp.html#robo213">num-notes</a> (attacked notes, not tied): 5
+            <a href="./slippery-chicken_lsp.html#robo840">num-notes</a> (attacked notes, not tied): 5
             num-score-notes (tied notes counted separately): 5 
             num-rests: 0
             duration-qtrs: 4.0 
@@ -398,7 +398,7 @@ NIL
    deviate from this target time signature. Default = '(2 4).
  - :verbose. T or NIL to indicate whether to print feedback on the
    re-barring process to the Lisp listener. Default = NIL.
- - :<a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a>.  T, NIL, or an integer. If T, the method will automatically
+ - :<a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a>.  T, NIL, or an integer. If T, the method will automatically
    attach beam indications to the corresponding events according to the beat
    unit of the time signature. If an integer, the method will beam in
    accordance with a beat unit that is equal to that integer. If NIL, the
@@ -415,12 +415,12 @@ NIL
                    (min-<a href="./time-sig_lsp.html#robo301">time-sig</a> '(2 4))
                    verbose
                    ;; could also be a beat rhythmic unit
-                   (<a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> t))
+                   (<a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a> t))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/section.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/section.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:45</p>
 </div> <!-- footer -->
 </body>
 </html>

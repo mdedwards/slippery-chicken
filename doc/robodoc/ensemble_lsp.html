@@ -81,7 +81,7 @@
  (but before rendering any MIDI files, if it's to make sense). It will
  automatically set the MIDI channels of all <a href="./slippery-chicken_lsp.html#robo845">players</a> in the <a href="#robo412">ensemble</a> to
  ascending values, if all values are currently 1 or the optional second
- argument is T. If using the :chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>, then the
+ argument is T. If using the :chromatic-<a href="./afu_lsp.html#robo32">scale</a>, then the
  microtones-midi-channel will be the same as the main channel, otherwise it
  will be 1+ the main channel.
 </pre>
@@ -220,15 +220,15 @@
 <pre> November 8th 2018, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get various <a href="./permutations_lsp.html#robo16">permutations</a> of the <a href="#robo412">ensemble</a> <a href="./slippery-chicken_lsp.html#robo845">players</a>, ranging from a single
+<pre> Get various <a href="./permutations_lsp.html#robo324">permutations</a> of the <a href="#robo412">ensemble</a> <a href="./slippery-chicken_lsp.html#robo845">players</a>, ranging from a single
  <a href="./player_lsp.html#robo296">player</a> up to one less than the number of <a href="./slippery-chicken_lsp.html#robo845">players</a> in the <a href="#robo412">ensemble</a>. This uses
  the <a href="./permutations_lsp.html#robo326">shuffle</a> method so is random, but as we use fixed-seed randomness we get
  repeatable results.
 
- NB This will return groups of <a href="./slippery-chicken_lsp.html#robo845">players</a> that are mere <a href="./permutations_lsp.html#robo16">permutations</a> of each
+ NB This will return groups of <a href="./slippery-chicken_lsp.html#robo845">players</a> that are mere <a href="./permutations_lsp.html#robo324">permutations</a> of each
  others (e.g. (vln vla vc) and (vla vln vc)). As the combo-<a href="./chord_lsp.html#robo631">chord</a>-possible?
  <a href="./chord_lsp.html#robo631">chord</a> method will <a href="./permutations_lsp.html#robo323">permutate</a> these to try and find an instrumentation that is
- possible, you might think there's no point accepting <a href="./permutations_lsp.html#robo16">permutations</a> in this
+ possible, you might think there's no point accepting <a href="./permutations_lsp.html#robo324">permutations</a> in this
  method. However, which combination (i.e. <a href="./instruments_lsp.html#robo12">instruments</a> in any given order) is
  first deemed playable for any given <a href="./chord_lsp.html#robo631">chord</a> will determine the voicing
  selected, so different results can be expected.
@@ -241,7 +241,7 @@
  number of <a href="./slippery-chicken_lsp.html#robo845">players</a>. Note that depending on the number of <a href="./slippery-chicken_lsp.html#robo845">players</a> in the
  <a href="#robo412">ensemble</a> and the number we're looking to put into a combo, we might not
  always be able to hit this target (e.g. there are only 6 possible
- <a href="./permutations_lsp.html#robo16">permutations</a> of three values). Default = 7.
+ <a href="./permutations_lsp.html#robo324">permutations</a> of three values). Default = 7.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> a list of lists of <a href="./player_lsp.html#robo296">player</a> IDs.
@@ -577,7 +577,7 @@ NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL,
  perform this task.
 
  NB: This method processes data in relationship to degrees of the current
-     tuning system (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>), which is quarter-tone by default. It is
+     tuning system (<a href="./afu_lsp.html#robo32">scale</a>), which is quarter-tone by default. It is
      therefore possible, when generating a <a href="./piece_lsp.html#robo58">piece</a> using only chromatic
      pitches but within a non-chromatic tuning to get <a href="./event_lsp.html#robo209">microtonal</a> results.
 </pre>
@@ -592,7 +592,7 @@ NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL,
 <pre class="source">;;; Change the tuning to chromatic first to get an accurate result:
 (<a href="./cm_lsp.html#robo136">in-scale</a> :chromatic)
 
-=&gt; #&lt;tuning "chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>"&gt;
+=&gt; #&lt;tuning "chromatic-<a href="./afu_lsp.html#robo32">scale</a>"&gt;
 
 (let ((mini
        (<a href="./slippery-chicken_lsp.html#robo835">make-slippery-chicken</a>
@@ -644,7 +644,7 @@ NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL,
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/ensemble.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/ensemble.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

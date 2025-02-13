@@ -124,7 +124,7 @@
    name of an existing method or function.  It should take at least one
    argument, an <a href="./event_lsp.html#robo447">event</a>, and any other arguments as supplied.  
  - Any additional argument values the specified method/function may
-   take or require. See the <a href="./chord_lsp.html#robo108">thin</a> method below for an example that uses
+   take or require. See the <a href="./set-palette_lsp.html#robo684">thin</a> method below for an example that uses
    additional arguments.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -212,7 +212,7 @@ FS4 G4)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>check-beams</strong> ((sc slippery-chicken) &amp;key start-bar end-bar <a href="#robo845">players</a>
-                        <a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> print (on-fail #'warn))
+                        <a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a> print (on-fail #'warn))
 </pre>
 
 
@@ -309,7 +309,7 @@ FS4 G4)
          :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((vn (1 1 1))
                              (va (1 1 1))
                              (vc (1 1 1))))))))
-  (setf (<a href="./time-sig_lsp.html#robo301">time-sig</a> (<a href="#robo807">get-bar</a> mini 1 'vn)) '(3 4))
+  (setf (<a href="./time-sig_lsp.html#robo301">time-sig</a> (<a href="./section_lsp.html#robo654">get-bar</a> mini 1 'vn)) '(3 4))
   (<strong>check-time-sigs</strong> mini))
 
 =&gt;
@@ -372,14 +372,14 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
 <p class="item_name">DESCRIPTION</p>
 <pre> Using the sound files (samples) defined for the given reference (group ID)
  in the <a href="./sndfile-palette_lsp.html#robo315">sndfile-palette</a> slot of the <a href="#robo629">slippery-chicken</a> object, use CLM to
- <a href="./wolfram_lsp.html#robo1027">generate</a> a new sound file using the <a href="./pitch_lsp.html#robo295">pitch</a> and timing information of one or
+ <a href="./wolfram_lsp.html#robo1029">generate</a> a new sound file using the <a href="./pitch_lsp.html#robo295">pitch</a> and timing information of one or
  more <a href="#robo845">players</a>' parts from the <a href="#robo629">slippery-chicken</a> object.
 
  NB: The sound file will begin with the first sounding <a href="./event_lsp.html#robo447">event</a> in the <a href="./section_lsp.html#robo60">section</a>
      at 0.0 seconds. If there are any leading rests in the <a href="./player_lsp.html#robo296">player</a>'s part,
      these will be omitted in the output file.
 
- By grouping sound files in the <a href="./sndfile-palette_lsp.html#robo315">sndfile-palette</a> slot, the user can <a href="./wolfram_lsp.html#robo1027">generate</a>
+ By grouping sound files in the <a href="./sndfile-palette_lsp.html#robo315">sndfile-palette</a> slot, the user can <a href="./wolfram_lsp.html#robo1029">generate</a>
  a CLM sound file version of the <a href="./piece_lsp.html#robo58">piece</a> in various 'flavours'; perhaps, for
  example, using exclusively source sound files consisting of string samples,
  or percussion sounds, or a variety of sounds, as desired. See below for an
@@ -404,7 +404,7 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
  :note-number keyword can be specified to indicate an index into the current
  set of pitches to serve as the <a href="./event_lsp.html#robo202">lowest</a> voice. If you increase :note-number
  the transpositions will get higher. If the number of voices plus this index
- exceeds the number of pitches in the set, the method will <a href="./set-palette_lsp.html#robo685">wrap</a> around to
+ exceeds the number of pitches in the set, the method will <a href="./chord_lsp.html#robo111">wrap</a> around to
  the <a href="./event_lsp.html#robo202">lowest</a> <a href="./pitch_lsp.html#robo295">pitch</a> of the set. Bear in mind then that when :<a href="./pitch_lsp.html#robo295">pitch</a>-synchronous
  is NIL, the <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> curves given in the rthm-seq-<a href="./palette_lsp.html#robo424">palette</a>--and therefore
  all the carefully chosen pitches in the <a href="./piece_lsp.html#robo58">piece</a>--will be ignored in favour of
@@ -447,11 +447,11 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
    generated, including the starting <a href="./section_lsp.html#robo60">section</a>. If NIL, sound file data will
    be generated for all sections of the <a href="./piece_lsp.html#robo58">piece</a>. NB If there are sub-sections
    this will include them in the total, i.e., if <a href="./section_lsp.html#robo60">section</a> 1 has 3 subsections
-   and :num-sections is 2, we'll <a href="./wolfram_lsp.html#robo1027">generate</a> data from the first two
+   and :num-sections is 2, we'll <a href="./wolfram_lsp.html#robo1029">generate</a> data from the first two
    subsections of <a href="./section_lsp.html#robo60">section</a> 1, not all subsections of main sections 1 and
    2. Default = NIL. 
  - :from-sequence. An integer that is the number of the first sequence
-   within the specified starting <a href="./section_lsp.html#robo60">section</a> to be used to <a href="./wolfram_lsp.html#robo1027">generate</a> the output
+   within the specified starting <a href="./section_lsp.html#robo60">section</a> to be used to <a href="./wolfram_lsp.html#robo1029">generate</a> the output
    file. This argument can only be used when num-sections = 1. Default = 1. 
  - :<a href="./sc-map_lsp.html#robo595">num-sequences</a>. NIL or an integer that indicates how many sequences are
    to be generated, including that specified by :from-sequence. If NIL, all
@@ -518,7 +518,7 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
    (frequency in Hertz) or a note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol, the method will use
    only that <a href="./pitch_lsp.html#robo295">pitch</a> instead of the sound files' frequencies when transposing
    to the events' pitches. NB Whichever is used, after being converted to a
-   sample rate conversion <a href="./utilities_lsp.html#robo946">factor</a>, this is always multiplied by the
+   sample rate conversion <a href="./utilities_lsp.html#robo947">factor</a>, this is always multiplied by the
    src-scaler (see below). T = match sound files' frequencies to set
    pitches. NIL means no transposition will be performed. Default = T.
  - :<a href="./pitch_lsp.html#robo295">pitch</a>-synchronous: T or NIL to indicate whether the source sound files
@@ -527,10 +527,10 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
    has a perceptible frequency that has been specified using the <a href="./sndfile_lsp.html#robo299">sndfile</a>
    object's :frequency slot in the <a href="./sndfile-palette_lsp.html#robo315">sndfile-palette</a>. :do-src must also be T
    for this to work. T = match pitches. Default = NIL.
- - :<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-rs. T or NIL to indicate whether to begin with the first
+ - :<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-rs. T or NIL to indicate whether to begin with the first
    source sound file of the specified group at the beginning of each
    <a href="./rthm-seq_lsp.html#robo645">rthm-seq</a>. T = begin with the first sound file. Default = T.
- - :<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a>. T or NIL to indicate whether to begin with the
+ - :<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a>. T or NIL to indicate whether to begin with the
    first source sound file of the specified group for the beginning of each
    <a href="./player_lsp.html#robo296">player</a>'s part. T = begin with the first sound file. Default = T. 
  - :play-chance-env. A list of break-point pairs that determines the chance
@@ -546,12 +546,12 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
    time is specified here (in seconds), events after this will be
    skipped. The default value of 99999999 seconds (27778 hours) will result
    in all events being reflected in the sound file.
- - :time-scaler. A number that will be the <a href="./utilities_lsp.html#robo946">factor</a> by which all start times
+ - :time-scaler. A number that will be the <a href="./utilities_lsp.html#robo947">factor</a> by which all start times
    are scaled for the output file (in effect a <a href="./tempo_lsp.html#robo300">tempo</a> scaler). If
    :ignore-rests is T, this will also have an indirect effect on
    durations. This argument should not be confused with
    :duration-scaler. Default = 1.0.
- - :duration-scaler. A number that is the <a href="./utilities_lsp.html#robo946">factor</a> by which the duration of
+ - :duration-scaler. A number that is the <a href="./utilities_lsp.html#robo947">factor</a> by which the duration of
    all  events in the output sound file will be scaled. This does not alter
    start times, and will therefore result in overlapping sounds if greater
    than 1.0. This is not to be confused with :time-scaler. 
@@ -574,7 +574,7 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
    conversion. The higher the value, the more accurate the transposition,
    but the slower the processing. Values of 100 might be useful for very low
    transpositions. Default = 20.
- - :src-scaler: A number that is the <a href="./utilities_lsp.html#robo946">factor</a> by which all sample-rate
+ - :src-scaler: A number that is the <a href="./utilities_lsp.html#robo947">factor</a> by which all sample-rate
    conversion values will be scaled (for increasing or decreasing the
    transposition of the overall resulting sound file). 
    Instead of a simple number, :src-scaler can also be an envelope 
@@ -609,7 +609,7 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
  - :<a href="./chord_lsp.html#robo631">chord</a>-accessor. Sometimes the <a href="./chord_lsp.html#robo631">chord</a> stored in the <a href="./palette_lsp.html#robo424">palette</a> is not a
    simple list of data so we need to access the nth of the <a href="./chord_lsp.html#robo631">chord</a>
    list. Default = NIL.
- - :clm-ins. The CLM <a href="./instrument_lsp.html#robo294">instrument</a> that should be called to <a href="./wolfram_lsp.html#robo1027">generate</a> sound file
+ - :clm-ins. The CLM <a href="./instrument_lsp.html#robo294">instrument</a> that should be called to <a href="./wolfram_lsp.html#robo1029">generate</a> sound file
    output. This must accept required and keyword arguments like <a href="./samp5_lsp.html#robo17">samp5</a> (see
    src/<a href="./samp5_lsp.html#robo_top_of_doc">samp5.lsp</a> or more simply src/<a href="./sine_lsp.html#robo_top_of_doc">sine.lsp</a>) but can of course choose to
    ignore them. Remember that your CLM <a href="./instruments_lsp.html#robo12">instruments</a> will (most probably) be
@@ -624,7 +624,7 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
    channels in the output sound file. The values used are chosen from the
    following list of degrees: (15 25 35 45 55 65 75). However, these can be
    scaled to be within new <a href="./sclist_lsp.html#robo637">limits</a> by passing a two-element list to
-   :pan-mix-max. E.g. '(40 50) would <a href="./tl-set_lsp.html#robo910">limit</a> most values to the <a href="./utilities_lsp.html#robo966">middle</a> area of
+   :pan-mix-max. E.g. '(40 50) would <a href="./tl-set_lsp.html#robo910">limit</a> most values to the <a href="./utilities_lsp.html#robo967">middle</a> area of
    <a href="./sndfile_lsp.html#robo887">stereo</a> space. NB if <a href="./sndfile_lsp.html#robo887">stereo</a> soundfiles are used as input the original
    panning will generally be retained. See <a href="./samp5_lsp.html#robo_top_of_doc">samp5.lsp</a> for details of how such
    files are handled. Default = NIL (i.e. use the list given above).
@@ -654,7 +654,7 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
    <a href="./sndfile-palette_lsp.html#robo315">sndfile-palette</a> group has a list of sound files whose frequencies really
    correspond to their perceived fundamentals (e.g. see the
    <a href="./sndfile-palette_lsp.html#robo879">set-frequency-from-filename</a> method, and the <a href="./sndfile-palette_lsp.html#robo873">kontakt-to-sfp</a> function) we
-   choose the <a href="./utilities_lsp.html#robo971">nearest</a> sound file in the group to the frequency of the
+   choose the <a href="./utilities_lsp.html#robo972">nearest</a> sound file in the group to the frequency of the
    current <a href="./event_lsp.html#robo447">event</a>'s <a href="./pitch_lsp.html#robo295">pitch</a>:
 
             :snd-selector #'(lambda (sflist <a href="./pitch_lsp.html#robo295">pitch</a> <a href="./event_lsp.html#robo447">event</a>)
@@ -726,8 +726,8 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
             :ignore-rests nil
             :sound-file-<a href="./palette_lsp.html#robo424">palette</a>-ref2 '<a href="./sndfile_lsp.html#robo299">sndfile</a>-grp-2
             :<a href="./pitch_lsp.html#robo295">pitch</a>-synchronous t
-            :<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-rs nil
-            :<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a> nil))
+            :<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-rs nil
+            :<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a> nil))
 
 ;;; A minimal working example demonstrating envelope-arguments 
 ;;; to duration-scaler and src-scaler
@@ -796,8 +796,8 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
                      (duration-scaler 1.0)
                      (short-file-names nil)
                      (check-overwrite t)
-                     (<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-rs t)
-                     (<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a> t)
+                     (<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-rs t)
+                     (<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a> t)
                      (duration-run-over nil)
                      (channels 2)
                      (srate clm::*clm-srate*)
@@ -1497,7 +1497,7 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
    statements. They are chosen chronologically from the given <a href="./chord_lsp.html#robo631">chord</a>.
    Default = T.
  - :p-fields. This should be either NIL, a list of lists or a function used
-   to <a href="./wolfram_lsp.html#robo1027">generate</a> the p-fields starting from p4. Cf. the documentation of
+   to <a href="./wolfram_lsp.html#robo1029">generate</a> the p-fields starting from p4. Cf. the documentation of
    <a href="#robo858">write-csound-score</a> for more detail.
    Default: #'<a href="#robo151">csound-p-fields-simple</a>.
 </pre>
@@ -1586,7 +1586,7 @@ slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the <a href="#robo629">slippery-chicken</a> object
- - the <a href="./event_lsp.html#robo447">event</a> object at the start or in the <a href="./utilities_lsp.html#robo966">middle</a> of a the group of tied
+ - the <a href="./event_lsp.html#robo447">event</a> object at the start or in the <a href="./utilities_lsp.html#robo967">middle</a> of a the group of tied
    notes  
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -1885,7 +1885,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17,
 old-bar-nums: NIL, write-bar-num: NIL, start-time: 64.000, 
 start-time-qtrs: 64.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
 show-rest: T, notes-needed: 5, 
-tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo946">factor</a>: 0.35, beams: NIL, 
+tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo947">factor</a>: 0.35, beams: NIL, 
 current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
 num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
 missing-duration: NIL, bar-line-type: 0, 
@@ -1949,7 +1949,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 23,
 old-bar-nums: NIL, write-bar-num: NIL, start-time: 88.000, 
 start-time-qtrs: 88.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
 show-rest: T, notes-needed: 5, 
-tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo946">factor</a>: 0.35, beams: NIL, 
+tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo947">factor</a>: 0.35, beams: NIL, 
 current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
 num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
 missing-duration: NIL, bar-line-type: 0, 
@@ -2110,11 +2110,11 @@ rhythms: (
   (<strong>get-current-instrument-for-player</strong> 2 'sax 3 mini))
 
 =&gt; 
-INSTRUMENT: <a href="./event_lsp.html#robo202">lowest</a>-written: BF3, <a href="./chord_lsp.html#robo90">highest</a>-written: FS6
-<a href="./event_lsp.html#robo202">lowest</a>-sounding: CS3, <a href="./chord_lsp.html#robo90">highest</a>-sounding: A5
+INSTRUMENT: <a href="./event_lsp.html#robo202">lowest</a>-written: BF3, <a href="./event_lsp.html#robo197">highest</a>-written: FS6
+<a href="./event_lsp.html#robo202">lowest</a>-sounding: CS3, <a href="./event_lsp.html#robo197">highest</a>-sounding: A5
 starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
 prefers-notes: NIL, midi-program: 66
-transposition: EF, transposition-<a href="./utilities_lsp.html#robo1008">semitones</a>: -9
+transposition: EF, transposition-<a href="./utilities_lsp.html#robo1010">semitones</a>: -9
 score-write-in-c: NIL, score-write-bar-line: NIL
 chords: NIL, <a href="./chord_lsp.html#robo631">chord</a>-function: NIL, 
 total-bars: 5 total-notes: 25, total-duration: 20.000
@@ -2190,7 +2190,7 @@ midi-time-sig: NIL, midi-program-changes: NIL,
 PITCH: frequency: 293.665, midi-note: 62, midi-channel: 1 
 <a href="./pitch_lsp.html#robo295">pitch</a>-bend: 0.0 
 degree: 124, data-consistent: T, white-note: D4
-<a href="./utilities_lsp.html#robo971">nearest</a>-chromatic: D4
+<a href="./utilities_lsp.html#robo972">nearest</a>-chromatic: D4
 src: 1.122462, src-ref-<a href="./pitch_lsp.html#robo295">pitch</a>: C4, score-note: D4 
 qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
 micro-tone: NIL, 
@@ -2282,7 +2282,7 @@ midi-time-sig: NIL, midi-program-changes: NIL,
 PITCH: frequency: 164.814, midi-note: 52, midi-channel: 1 
 <a href="./pitch_lsp.html#robo295">pitch</a>-bend: 0.0 
 degree: 104, data-consistent: T, white-note: E3
-<a href="./utilities_lsp.html#robo971">nearest</a>-chromatic: E3
+<a href="./utilities_lsp.html#robo972">nearest</a>-chromatic: E3
 src: 0.62996054, src-ref-<a href="./pitch_lsp.html#robo295">pitch</a>: C4, score-note: E3 
 qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
 micro-tone: NIL, 
@@ -2300,7 +2300,7 @@ written-<a href="./pitch_lsp.html#robo295">pitch</a>-or-<a href="./chord_lsp.htm
 PITCH: frequency: 369.994, midi-note: 66, midi-channel: 1 
 <a href="./pitch_lsp.html#robo295">pitch</a>-bend: 0.0 
 degree: 132, data-consistent: T, white-note: F4
-<a href="./utilities_lsp.html#robo971">nearest</a>-chromatic: FS4
+<a href="./utilities_lsp.html#robo972">nearest</a>-chromatic: FS4
 src: 1.4142135, src-ref-<a href="./pitch_lsp.html#robo295">pitch</a>: C4, score-note: FS4 
 qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
 micro-tone: NIL, 
@@ -2402,11 +2402,11 @@ EVENT: start-time: 11.000, end-time: 11.500,
                              (db (1 1 1 1 1))))))))
   (<strong>get-instrument-for-player-at-bar</strong> 'sax 3 mini))
 =&gt; 
-INSTRUMENT: <a href="./event_lsp.html#robo202">lowest</a>-written: BF3, <a href="./chord_lsp.html#robo90">highest</a>-written: FS6
-<a href="./event_lsp.html#robo202">lowest</a>-sounding: AF2, <a href="./chord_lsp.html#robo90">highest</a>-sounding: E5
+INSTRUMENT: <a href="./event_lsp.html#robo202">lowest</a>-written: BF3, <a href="./event_lsp.html#robo197">highest</a>-written: FS6
+<a href="./event_lsp.html#robo202">lowest</a>-sounding: AF2, <a href="./event_lsp.html#robo197">highest</a>-sounding: E5
 starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (BASS TREBLE)
 prefers-notes: NIL, midi-program: 67
-transposition: BF, transposition-<a href="./utilities_lsp.html#robo1008">semitones</a>: -14
+transposition: BF, transposition-<a href="./utilities_lsp.html#robo1010">semitones</a>: -14
 score-write-in-c: NIL, score-write-bar-line: NIL
 chords: NIL, <a href="./chord_lsp.html#robo631">chord</a>-function: NIL, 
 total-bars: 5 total-notes: 25, total-duration: 20.000
@@ -2471,17 +2471,17 @@ data: NIL
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo629">slippery-chicken</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Find the <a href="./utilities_lsp.html#robo971">nearest</a> <a href="./event_lsp.html#robo447">event</a> by time to &lt;reference-<a href="./event_lsp.html#robo447">event</a>&gt; in the &lt;search-<a href="./player_lsp.html#robo296">player</a>&gt;.  
+<pre> Find the <a href="./utilities_lsp.html#robo972">nearest</a> <a href="./event_lsp.html#robo447">event</a> by time to &lt;reference-<a href="./event_lsp.html#robo447">event</a>&gt; in the &lt;search-<a href="./player_lsp.html#robo296">player</a>&gt;.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the <a href="#robo629">slippery-chicken</a> object
- - the reference <a href="./event_lsp.html#robo447">event</a> object that we want to find the <a href="./utilities_lsp.html#robo971">nearest</a> <a href="./event_lsp.html#robo447">event</a> to in
+ - the reference <a href="./event_lsp.html#robo447">event</a> object that we want to find the <a href="./utilities_lsp.html#robo972">nearest</a> <a href="./event_lsp.html#robo447">event</a> to in
    another <a href="./player_lsp.html#robo296">player</a> 
- - the <a href="./player_lsp.html#robo296">player</a> we want to find the <a href="./utilities_lsp.html#robo971">nearest</a> <a href="./event_lsp.html#robo447">event</a> in (symbol).
+ - the <a href="./player_lsp.html#robo296">player</a> we want to find the <a href="./utilities_lsp.html#robo972">nearest</a> <a href="./event_lsp.html#robo447">event</a> in (symbol).
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - if T only return sounding events (pitches/chords) otherwise return the
-   <a href="./utilities_lsp.html#robo971">nearest</a> rest or sounding <a href="./event_lsp.html#robo447">event</a>.
+   <a href="./utilities_lsp.html#robo972">nearest</a> rest or sounding <a href="./event_lsp.html#robo447">event</a>.
  - if T only return struck events i.e. ignore those that are tied to
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2710,7 +2710,7 @@ total-duration: 20.000, total-bars: 5, <a href="./ensemble_lsp.html#robo166">tes
 LINKED-NAMED-OBJECT: previous: (TP), this: (VN), next: NIL
 NAMED-OBJECT: id: VN, tag: NIL, 
 data: 
-INSTRUMENT: <a href="./event_lsp.html#robo202">lowest</a>-written: G3, <a href="./chord_lsp.html#robo90">highest</a>-written: C7
+INSTRUMENT: <a href="./event_lsp.html#robo202">lowest</a>-written: G3, <a href="./event_lsp.html#robo197">highest</a>-written: C7
 ...
 </pre>
 <p class="item_name">SYNOPSIS</p>
@@ -2828,7 +2828,7 @@ start-time: 20.0
 end-time: 40.0
 start-time-qtrs: 0
 end-time-qtrs: 40.0
-<a href="./event_lsp.html#robo213">num-notes</a> (attacked notes, not tied): 50
+<a href="#robo840">num-notes</a> (attacked notes, not tied): 50
 num-score-notes (tied notes counted separately): 50 
 num-rests: 0
 duration-qtrs: 20.0 
@@ -3057,11 +3057,11 @@ data: (11 15)
   (<strong>get-starting-ins</strong> mini 'sax))
 
 =&gt; 
-INSTRUMENT: <a href="./event_lsp.html#robo202">lowest</a>-written: BF3, <a href="./chord_lsp.html#robo90">highest</a>-written: FS6
-<a href="./event_lsp.html#robo202">lowest</a>-sounding: CS3, <a href="./chord_lsp.html#robo90">highest</a>-sounding: A5
+INSTRUMENT: <a href="./event_lsp.html#robo202">lowest</a>-written: BF3, <a href="./event_lsp.html#robo197">highest</a>-written: FS6
+<a href="./event_lsp.html#robo202">lowest</a>-sounding: CS3, <a href="./event_lsp.html#robo197">highest</a>-sounding: A5
 starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
 prefers-notes: NIL, midi-program: 66
-transposition: EF, transposition-<a href="./utilities_lsp.html#robo1008">semitones</a>: -9
+transposition: EF, transposition-<a href="./utilities_lsp.html#robo1010">semitones</a>: -9
 score-write-in-c: NIL, score-write-bar-line: NIL
 chords: NIL, <a href="./chord_lsp.html#robo631">chord</a>-function: NIL, 
 total-bars: 5 total-notes: 25, total-duration: 20.000
@@ -3175,7 +3175,7 @@ data: (5 8)
 <pre> 24-Mar-2011
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the number of <a href="./utilities_lsp.html#robo1008">semitones</a> difference <a href="./utilities_lsp.html#robo925">between</a> the sounding pitches and
+<pre> Return the number of <a href="./utilities_lsp.html#robo1010">semitones</a> difference <a href="./utilities_lsp.html#robo925">between</a> the sounding pitches and
  written pitches of a given <a href="./player_lsp.html#robo296">player</a>'s part in a specified bar within a
  <a href="#robo629">slippery-chicken</a> object; e.g. bass clarinet = -14.
 </pre>
@@ -3453,7 +3453,7 @@ data: (5 8)
    signature.
  - :transposition-curve. An envelope describing over the duration of the
    <a href="./piece_lsp.html#robo58">piece</a> (but using any arbitrary x-axis range) what transpositions in
-   <a href="./utilities_lsp.html#robo1008">semitones</a> should be applied to the sets. Default = (0 0 100 0) 
+   <a href="./utilities_lsp.html#robo1010">semitones</a> should be applied to the sets. Default = (0 0 100 0) 
  (- :warn-ties. This slot is now obsolete, but is left here for backwards
     compatibility with pieces composed with earlier versions of
     <a href="#robo629">slippery-chicken</a>. Default = T.)
@@ -3546,7 +3546,7 @@ data: (5 8)
         :bars-per-system-map '((1 1) (2 2) (3 3) (7 4) (11 5))
         :rthm-seq-map-replacements '(((1 va) 3 1) ((2 fl) 4 3))
         :set-map-replacements '((1 2 2) (3 3 1)))))
-  (<a href="./set-map_lsp.html#robo661">midi-play</a> mini :midi-file "/tmp/mini.mid")
+  (<a href="#robo836">midi-play</a> mini :midi-file "/tmp/mini.mid")
   (<a href="./set-map_lsp.html#robo659">cmn-display</a> mini)
   (<a href="#robo859">write-lp-data-for-all</a> mini))
 </pre>
@@ -3633,7 +3633,7 @@ data: (5 8)
    added (and therefore amplitude slots updated as a side-effect) reflect
    the subsequent events' amplitudes also. This will override any amplitude
    slots that have been changed other than by (setf (amplitude ...)) or
-   (<a href="./chord_lsp.html#robo70">add-mark</a> ... 'some-dynamic). Also, if T, then hairpins (cresc, dim) will
+   (<a href="./event_lsp.html#robo169">add-mark</a> ... 'some-dynamic). Also, if T, then hairpins (cresc, dim) will
    result in increasing/decreasing amplitudes over their extent (but this
    will only work if the amplitude/dynamic of the hairpins' starting and
    ending events are correct, and in that case intervening events'
@@ -3703,7 +3703,7 @@ data: (5 8)
                         (start-<a href="./section_lsp.html#robo60">section</a> 1) 
                         ;; these voices are used to get the actual sequence
                         ;; orders i.e. each voice will be appended to &lt;<a href="./section_lsp.html#robo60">section</a>&gt;
-                        ;; when calling <a href="./assoc-list_lsp.html#robo37">get-data</a>.
+                        ;; when calling <a href="./recursive-assoc-list_lsp.html#robo414">get-data</a>.
                         ;; if nil then all voices.
                         (voices nil)
                         ;; MDE Thu Oct 18 17:07:57 2018 -- <a href="#robo845">players</a> is a more
@@ -3739,8 +3739,8 @@ data: (5 8)
 <pre> Get the events from a specified <a href="./player_lsp.html#robo296">player</a>'s part within a given
  <a href="#robo629">slippery-chicken</a> object one after the other (e.g. in a loop). This method
  must be called once with a bar number (or any other non-NIL value,
- whereupon we start at bar 1) first in order to <a href="./sndfilenet_lsp.html#robo896">reset</a> the counter; doing
- this will return NIL. Once the counter has been <a href="./sndfilenet_lsp.html#robo896">reset</a>, calling the method
+ whereupon we start at bar 1) first in order to <a href="./circular-sclist_lsp.html#robo122">reset</a> the counter; doing
+ this will return NIL. Once the counter has been <a href="./circular-sclist_lsp.html#robo122">reset</a>, calling the method
  without a bar number will return the events in sequence.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -3752,7 +3752,7 @@ data: (5 8)
    attacked notes (i.e., no ties or rests). T = return only events with
    attacked notes. Default = NIL.
  - T, NIL, or an integer to indicate the first bar from which events are to
-   be retrieved. If T, the counter is <a href="./sndfilenet_lsp.html#robo896">reset</a> to the first <a href="./event_lsp.html#robo447">event</a> of the
+   be retrieved. If T, the counter is <a href="./circular-sclist_lsp.html#robo122">reset</a> to the first <a href="./event_lsp.html#robo447">event</a> of the
    <a href="./player_lsp.html#robo296">player</a>'s part. This should be NIL after the first resetting call.
    Default = NIL
  - NIL or an integer to indicate the last bar from which events are to be
@@ -3807,7 +3807,7 @@ data: (5 8)
 <pre> May 20th 2022, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> for statistical purposes, <a href="./wolfram_lsp.html#robo1027">generate</a> a list of the count of all the notes in
+<pre> for statistical purposes, <a href="./wolfram_lsp.html#robo1029">generate</a> a list of the count of all the notes in
  the whole or part of a <a href="./piece_lsp.html#robo58">piece</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -3818,7 +3818,7 @@ data: (5 8)
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - how to sort the result. Default = '<a href="./pitch_lsp.html#robo295">pitch</a> meaning that the pitches will
  ascend irrespective of their counts. Anything else (e.g. nil) will print in
- the order of <a href="./event_lsp.html#robo202">lowest</a> to <a href="./chord_lsp.html#robo90">highest</a> note count
+ the order of <a href="./event_lsp.html#robo202">lowest</a> to <a href="./event_lsp.html#robo197">highest</a> note count
  - the start bar number. Default = NIL = 1
  - the end bar number. Default = NIL = last bar
  - T or NIL to indicate sounding (nil) or written (t) pitches should be
@@ -3967,7 +3967,7 @@ data: (5 8)
 <pre> February 9th 2017
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Find the <a href="./chord_lsp.html#robo90">highest</a> and <a href="./event_lsp.html#robo202">lowest</a> events in the (given bars of the) <a href="./piece_lsp.html#robo58">piece</a>,
+<pre> Find the <a href="./event_lsp.html#robo197">highest</a> and <a href="./event_lsp.html#robo202">lowest</a> events in the (given bars of the) <a href="./piece_lsp.html#robo58">piece</a>,
  printing if requested.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -3986,7 +3986,7 @@ data: (5 8)
  - :attacked-only. Whether only to include attacked notes. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> two values: the <a href="./event_lsp.html#robo202">lowest</a> <a href="./event_lsp.html#robo447">event</a> and the <a href="./chord_lsp.html#robo90">highest</a> <a href="./event_lsp.html#robo447">event</a>.
+<pre> two values: the <a href="./event_lsp.html#robo202">lowest</a> <a href="./event_lsp.html#robo447">event</a> and the <a href="./event_lsp.html#robo197">highest</a> <a href="./event_lsp.html#robo447">event</a>.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>player-ambitus</strong> ((sc slippery-chicken) <a href="./player_lsp.html#robo296">player</a> &amp;key written print
@@ -4090,7 +4090,7 @@ data: (5 8)
 <pre> see <a href="#robo843">player-ambitus</a> method
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the <a href="./event_lsp.html#robo202">lowest</a> and <a href="./chord_lsp.html#robo90">highest</a> events of all the <a href="#robo845">players</a>
+<pre> the <a href="./event_lsp.html#robo202">lowest</a> and <a href="./event_lsp.html#robo197">highest</a> events of all the <a href="#robo845">players</a>
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>players-ambitus</strong> ((sc slippery-chicken)
@@ -4157,11 +4157,11 @@ data: (5 8)
    generated, including the starting <a href="./section_lsp.html#robo60">section</a>. If NIL, sound file data will
    be generated for all sections of the <a href="./piece_lsp.html#robo58">piece</a>. NB If there are sub-sections
    this will include them in the total, i.e., if <a href="./section_lsp.html#robo60">section</a> 1 has 3 subsections
-   and :num-sections is 2, we'll <a href="./wolfram_lsp.html#robo1027">generate</a> data from the first two
+   and :num-sections is 2, we'll <a href="./wolfram_lsp.html#robo1029">generate</a> data from the first two
    subsections of <a href="./section_lsp.html#robo60">section</a> 1, not all subsections of main sections 1 and
    2. Default = NIL. 
  - :from-sequence. An integer that is the number of the first sequence
-   within the specified starting <a href="./section_lsp.html#robo60">section</a> to be used to <a href="./wolfram_lsp.html#robo1027">generate</a> the output
+   within the specified starting <a href="./section_lsp.html#robo60">section</a> to be used to <a href="./wolfram_lsp.html#robo1029">generate</a> the output
    file. This argument can only be used when num-sections = 1. Default = 1. 
  - :<a href="./sc-map_lsp.html#robo595">num-sequences</a>. NIL or an integer that indicates how many sequences are
    to be generated, including that specified by :from-sequence. If NIL, all
@@ -4198,7 +4198,7 @@ data: (5 8)
    frequencies when transposing to the events' pitches. If :do-src
    'transposition, then reaper's <a href="./pitch_lsp.html#robo295">pitch</a>-adjust will be used instead of
    playback rate (default). NB Whichever is used, after being converted to a
-   sample rate conversion <a href="./utilities_lsp.html#robo946">factor</a>, this is always multiplied by the src-scaler
+   sample rate conversion <a href="./utilities_lsp.html#robo947">factor</a>, this is always multiplied by the src-scaler
    (see below). T = match sound files' frequencies to set pitches or score
    pitches via playback rate (depending on :<a href="./pitch_lsp.html#robo295">pitch</a>-synchronous). NIL means no
    transposition will be performed. Default = T.
@@ -4208,10 +4208,10 @@ data: (5 8)
    has a perceptible frequency that has been specified using the <a href="./sndfile_lsp.html#robo299">sndfile</a>
    object's :frequency slot in the <a href="./sndfile-palette_lsp.html#robo315">sndfile-palette</a>. :do-src must also be T
    for this to work. T = match pitches. Default = NIL.
- - :<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-rs. T or NIL to indicate whether to begin with the first
+ - :<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-rs. T or NIL to indicate whether to begin with the first
    source sound file of the specified group at the beginning of each
    <a href="./rthm-seq_lsp.html#robo645">rthm-seq</a>. T = begin with the first sound file. Default = T.
- - :<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a>. T or NIL to indicate whether to begin with the
+ - :<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a>. T or NIL to indicate whether to begin with the
    first source sound file of the specified group for the beginning of each
    <a href="./player_lsp.html#robo296">player</a>'s part. T = begin with the first sound file. Default = T. 
  - :play-chance-env. A list of break-point pairs that determines the chance
@@ -4227,12 +4227,12 @@ data: (5 8)
    time is specified here (in seconds), events after this will be
    skipped. The default value of 99999999 seconds (27778 hours) will result
    in all events being reflected in the sound file.
- - :time-scaler. A number that will be the <a href="./utilities_lsp.html#robo946">factor</a> by which all start times
+ - :time-scaler. A number that will be the <a href="./utilities_lsp.html#robo947">factor</a> by which all start times
    are scaled for the output file (in effect a <a href="./tempo_lsp.html#robo300">tempo</a> scaler). If
    :ignore-rests is T, this will also have an indirect effect on
    durations. This argument should not be confused with
    :duration-scaler. Default = 1.0.
- - :duration-scaler. A number that is the <a href="./utilities_lsp.html#robo946">factor</a> by which the duration of
+ - :duration-scaler. A number that is the <a href="./utilities_lsp.html#robo947">factor</a> by which the duration of
    all  events in the output sound file will be scaled. This does not alter
    start times, and will therefore result in overlapping sounds if greater
    than 1.0. This is not to be confused with :time-scaler. 
@@ -4240,7 +4240,7 @@ data: (5 8)
    (a list of break-point pairs). This means you could smoothly transition
    from staccato-like to overlapping sounds in a single <strong>reaper-play</strong> call.
    Default = 1.0.
- - :src-scaler: A number that is the <a href="./utilities_lsp.html#robo946">factor</a> by which all sample-rate
+ - :src-scaler: A number that is the <a href="./utilities_lsp.html#robo947">factor</a> by which all sample-rate
    conversion values will be scaled (for increasing or decreasing the
    transposition of the overall resulting sound file). 
    Instead of a simple number, :src-scaler can also be an envelope 
@@ -4275,7 +4275,7 @@ data: (5 8)
    is channel 2 (right). The values used are chosen from the following list
    of degrees: (15 25 35 45 55 65 75). However, these can be scaled to be
    within new <a href="./sclist_lsp.html#robo637">limits</a> by passing a two-element list to
-   :pan-mix-max. E.g. '(40 50) would <a href="./tl-set_lsp.html#robo910">limit</a> most values to the <a href="./utilities_lsp.html#robo966">middle</a> area
+   :pan-mix-max. E.g. '(40 50) would <a href="./tl-set_lsp.html#robo910">limit</a> most values to the <a href="./utilities_lsp.html#robo967">middle</a> area
    of <a href="./sndfile_lsp.html#robo887">stereo</a> space. Note that no matter how many channels a sound file or
    channel has, the item's panner is set as if it were <a href="./sndfile_lsp.html#robo887">stereo</a>. Also that,
    for convenience, :min-channels and :max-channels can set the tracks'
@@ -4308,7 +4308,7 @@ data: (5 8)
    <a href="./sndfile-palette_lsp.html#robo315">sndfile-palette</a> group has a list of sound files whose frequencies really
    correspond to their perceived fundamentals (e.g. see the
    <a href="./sndfile-palette_lsp.html#robo879">set-frequency-from-filename</a> method, and the <a href="./sndfile-palette_lsp.html#robo873">kontakt-to-sfp</a> function) we
-   choose the <a href="./utilities_lsp.html#robo971">nearest</a> sound file in the group to the frequency of the
+   choose the <a href="./utilities_lsp.html#robo972">nearest</a> sound file in the group to the frequency of the
    current <a href="./event_lsp.html#robo447">event</a>'s <a href="./pitch_lsp.html#robo295">pitch</a>:
 
             :snd-selector #'(lambda (sflist <a href="./pitch_lsp.html#robo295">pitch</a> <a href="./event_lsp.html#robo447">event</a>)
@@ -4385,13 +4385,13 @@ data: (5 8)
                         ;; either a number or an envelope
                         (duration-scaler 1.0)
                         (short-file-names nil)
-                        ;; by default we <a href="./wolfram_lsp.html#robo1027">generate</a> filenames according to <a href="#robo845">players</a>
+                        ;; by default we <a href="./wolfram_lsp.html#robo1029">generate</a> filenames according to <a href="#robo845">players</a>
                         ;; and other relevent data but if this is given then
                         ;; we'll use it instead 
                         (file nil)
                         (check-overwrite t)
-                        (<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-rs t)
-                        (<a href="./sndfilenet_lsp.html#robo896">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a> t)
+                        (<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-rs t)
+                        (<a href="./circular-sclist_lsp.html#robo122">reset</a>-snds-each-<a href="./player_lsp.html#robo296">player</a> t)
                         (duration-run-over nil)
                         (srate 48000)
                         (output-name-uniquifier "")
@@ -4428,7 +4428,7 @@ data: (5 8)
  the vertically combined sequences and rebars as described above.
 
  NB: See documentation in <a href="./piece_lsp.html#robo58">piece</a> class method. Don't confuse this method with
-     the <a href="./slippery-chicken-edit_lsp.html#robo745">re-bar</a> method.
+     the <a href="./section_lsp.html#robo658">re-bar</a> method.
 
  NB: This method is used internally and not recommended for direct use. 
 </pre>
@@ -4512,7 +4512,7 @@ data: (5 8)
 <pre> keyword arguments:
  - :slot. The <a href="./section_lsp.html#robo60">section</a> slot to use. 'num-score-notes is the default and makes
    sense in that ties indicate a higher level of density than just attacked
-   notes by themselves, but further useful slots could be '<a href="./event_lsp.html#robo213">num-notes</a>
+   notes by themselves, but further useful slots could be '<a href="#robo840">num-notes</a>
    (attacks) or indeed 'num-rests
  - :percent. Whether to return values as percentages (where 0 would be the
    least dense <a href="./section_lsp.html#robo60">section</a> and 100 the most). If NIL the actual <a href="./utilities_lsp.html#robo924">average</a> notes per
@@ -4672,7 +4672,7 @@ start-time: 0.0
 end-time: 24.0
 start-time-qtrs: 0
 end-time-qtrs: 24.0
-<a href="./event_lsp.html#robo213">num-notes</a> (attacked notes, not tied): 30
+<a href="#robo840">num-notes</a> (attacked notes, not tied): 30
 num-score-notes (tied notes counted separately): 30 
 num-rests: 0
 duration-qtrs: 24.0 
@@ -4694,11 +4694,11 @@ duration: 24.0 (24.000)
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo629">slippery-chicken</a> object.
  - A <a href="./player_lsp.html#robo296">player</a> ID.
- - An integer that is the first bar in which to <a href="./pitch_lsp.html#robo379">transpose</a> events.
- - An integer that is the first <a href="./event_lsp.html#robo447">event</a> in that bar to <a href="./pitch_lsp.html#robo379">transpose</a>. 
- - An integer that is the last bar in which to <a href="./pitch_lsp.html#robo379">transpose</a> events.
- - An integer that is the last <a href="./event_lsp.html#robo447">event</a> in that bar to <a href="./pitch_lsp.html#robo379">transpose</a>.
- - A positive or negative number that is the number of <a href="./utilities_lsp.html#robo1008">semitones</a> by which
+ - An integer that is the first bar in which to <a href="./tl-set_lsp.html#robo915">transpose</a> events.
+ - An integer that is the first <a href="./event_lsp.html#robo447">event</a> in that bar to <a href="./tl-set_lsp.html#robo915">transpose</a>. 
+ - An integer that is the last bar in which to <a href="./tl-set_lsp.html#robo915">transpose</a> events.
+ - An integer that is the last <a href="./event_lsp.html#robo447">event</a> in that bar to <a href="./tl-set_lsp.html#robo915">transpose</a>.
+ - A positive or negative number that is the number of <a href="./utilities_lsp.html#robo1010">semitones</a> by which
    the pitches of the events in the specified region should be transposed. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -4736,7 +4736,7 @@ duration: 24.0 (24.000)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>transpose-events</strong> ((sc slippery-chicken) <a href="./player_lsp.html#robo296">player</a> start-bar
-                             start-<a href="./event_lsp.html#robo447">event</a> end-bar end-<a href="./event_lsp.html#robo447">event</a> <a href="./utilities_lsp.html#robo1008">semitones</a>
+                             start-<a href="./event_lsp.html#robo447">event</a> end-bar end-<a href="./event_lsp.html#robo447">event</a> <a href="./utilities_lsp.html#robo1010">semitones</a>
                              &amp;key (destructively t))
 </pre>
 
@@ -4848,7 +4848,7 @@ duration: 24.0 (24.000)
  MIDI with antescofo, rather, that you have something that picks up midi
  note data and uses them (or ignores them) somehow or other. In any case,
  the MIDI notes sent consist of four messages: the MIDI note (in midi cents
- e.g. <a href="./utilities_lsp.html#robo966">middle</a> C = 6000), the velocity (taken as usual from the amplitude slot
+ e.g. <a href="./utilities_lsp.html#robo967">middle</a> C = 6000), the velocity (taken as usual from the amplitude slot
  of the <a href="./event_lsp.html#robo447">event</a>), the channel, and the duration in beats. Each may be preceded
  by a delay, which will be relative to the previous NOTE or group MIDI note.
 
@@ -4871,7 +4871,7 @@ duration: 24.0 (24.000)
  otherwise some strange <a href="./event_lsp.html#robo447">event</a> ordering might occur in the antescofo~ file.
  
  Bear in mind that if you want to write antescofo~ files without having to
- work within the usual slippery chicken workflow, you could <a href="./wolfram_lsp.html#robo1027">generate</a> events
+ work within the usual slippery chicken workflow, you could <a href="./wolfram_lsp.html#robo1029">generate</a> events
  by any method, then put them into <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> objects before then calling
  <a href="./slippery-chicken-edit_lsp.html#robo709">bars-to-sc</a> in order to create a <a href="#robo629">slippery-chicken</a> object by brute force (as
  it were).
@@ -4912,7 +4912,7 @@ duration: 24.0 (24.000)
    created from the <a href="#robo629">slippery-chicken</a> title and placed in (get-sc-config
    'default-dir). Default = NIL. 
  - :group-duration-in-millisecs. Should we write the group notes (i.e. those
-    we <a href="./wolfram_lsp.html#robo1027">generate</a>) as fractions of a beat (NIL) or have antescofo~ convert
+    we <a href="./wolfram_lsp.html#robo1029">generate</a>) as fractions of a beat (NIL) or have antescofo~ convert
     this to millisec duration according to the current <a href="./tempo_lsp.html#robo300">tempo</a> (T)? Default =
     NIL.
  - :warn. Issue a warning when we write labels on group (rather than NOTE)
@@ -4921,7 +4921,7 @@ duration: 24.0 (24.000)
     to.)  Default = T.
  - :messages-first. Write antescofo messages immediately before the note
     data sent to the midi-note-receiver (T), or after (NIL)? Default = NIL.
- - :round-tempi. Round <a href="./tempo_lsp.html#robo300">tempo</a> values to the <a href="./utilities_lsp.html#robo971">nearest</a> integer? (If you don't do
+ - :round-tempi. Round <a href="./tempo_lsp.html#robo300">tempo</a> values to the <a href="./utilities_lsp.html#robo972">nearest</a> integer? (If you don't do
     this, then MIDI playback could become out of synch with
     antescofo). Default = T. 
  - :include-program-changes. If T, we write any programme changes attached
@@ -4929,7 +4929,7 @@ duration: 24.0 (24.000)
     symbol or string then that ID will be used instead of
     "midi-program-change". (Symbols will be made lowercase.) Default = T.
  - :makenote-compatible. If T, we'll write midi note information in the
-    following order: midi note (rounded to <a href="./utilities_lsp.html#robo971">nearest</a> chromatic note i.e. no
+    following order: midi note (rounded to <a href="./utilities_lsp.html#robo972">nearest</a> chromatic note i.e. no
     longer midi-cents), velocity, duration, channel. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -4938,7 +4938,7 @@ duration: 24.0 (24.000)
  then correspond to what Antescofo~ prints when it loads the score in MaxMSP.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Follow the violin part and <a href="./wolfram_lsp.html#robo1027">generate</a> group events for all other parts ;
+<pre class="source">;;; Follow the violin part and <a href="./wolfram_lsp.html#robo1029">generate</a> group events for all other parts ;
 (let* ((mini
         (<a href="#robo835">make-slippery-chicken</a>
          '+mini+
@@ -5064,10 +5064,10 @@ NOTE 6200 0.6666667
    directory (per default /tmp).
  - :start-<a href="./section_lsp.html#robo60">section</a>. An integer that is the number of the first <a href="./section_lsp.html#robo60">section</a> for
    which the Csound-score is to be generated. Default = 1.
- - :num-sections. An integer that is the number of sections to <a href="./wolfram_lsp.html#robo1027">generate</a> the
+ - :num-sections. An integer that is the number of sections to <a href="./wolfram_lsp.html#robo1029">generate</a> the
    score data. If NIL, all sections will be written. Default = NIL.
  - :from-sequence.  An integer that is the number of the first sequence
-   within the specified starting <a href="./section_lsp.html#robo60">section</a> to be used to <a href="./wolfram_lsp.html#robo1027">generate</a> the output
+   within the specified starting <a href="./section_lsp.html#robo60">section</a> to be used to <a href="./wolfram_lsp.html#robo1029">generate</a> the output
    file. Default = 1.
  - :<a href="./sc-map_lsp.html#robo595">num-sequences</a>. An integer that s the number of sequences for which
    <a href="./event_lsp.html#robo447">event</a> data is to be generated in the resulting .sco-file, including the
@@ -5087,7 +5087,7 @@ NOTE 6200 0.6666667
    recommends using spaces, though #\tab does also work an might, in some
    cases, improve legibility. Default = #\space.
  - :p-fields. This should be either NIL, a list of lists or a function used
-   to <a href="./wolfram_lsp.html#robo1027">generate</a> the p-fields starting from p4. The lists can be of arbitrary
+   to <a href="./wolfram_lsp.html#robo1029">generate</a> the p-fields starting from p4. The lists can be of arbitrary
    length and are solely limited by Csound's internal parsing restrictions.
    When NIL, no additional p-statements are added to any of the score-
    statements, regardless of the amount of included <a href="#robo845">players</a> (i.e. no further
@@ -5098,7 +5098,7 @@ NOTE 6200 0.6666667
    possible to pass an empty list (i.e. NIL) for a single <a href="./player_lsp.html#robo296">player</a>, if it is
    desired not to <a href="./recursive-assoc-list_lsp.html#robo409">add</a> any further p-fields other than <a href="./instrument_lsp.html#robo294">instrument</a>-name (p1),
    onset (p2), and duration (p3).
-   When a function is given as argument, it will be used to <a href="./wolfram_lsp.html#robo1027">generate</a> the
+   When a function is given as argument, it will be used to <a href="./wolfram_lsp.html#robo1029">generate</a> the
    p-values based on the <a href="./event_lsp.html#robo447">event</a>-data and other arguments. This enables dynamic
    generation of score content dependent on the data contained in the
    specific <a href="./event_lsp.html#robo447">event</a> used for generating the i-statement (e.g. <a href="./pitch_lsp.html#robo295">pitch</a> or
@@ -5170,7 +5170,7 @@ NOTE 6200 0.6666667
 ;;;   pitches, i.e. every <a href="./chord_lsp.html#robo631">chord</a> results in a list instead of a list of
 ;;;   lists of p-fields.
 (defun csound-p-fields-custom (<a href="./event_lsp.html#robo447">event</a> <a href="./event_lsp.html#robo447">event</a>-num cs-<a href="./instrument_lsp.html#robo294">instrument</a>)
-  ;; <a href="./wolfram_lsp.html#robo1027">generate</a> different p-field sets depending on the
+  ;; <a href="./wolfram_lsp.html#robo1029">generate</a> different p-field sets depending on the
   ;; given Csound <a href="./instrument_lsp.html#robo294">instrument</a>-number
   (format t "~%ins: ~a; enum: ~a~%"
           cs-<a href="./instrument_lsp.html#robo294">instrument</a>
@@ -5283,7 +5283,7 @@ NOTE 6200 0.6666667
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :base-path. A string that is the directory path only for the resulting
-   files. The method will automatically <a href="./wolfram_lsp.html#robo1027">generate</a> the file names and
+   files. The method will automatically <a href="./wolfram_lsp.html#robo1029">generate</a> the file names and
    extensions. Default =  (get-sc-config 'default-dir).
  - :start-bar. An integer that is the first bar of the given
    <a href="#robo629">slippery-chicken</a> object for which output is to be generated. If NIL, the
@@ -5312,7 +5312,7 @@ NOTE 6200 0.6666667
    Default = T
  - :in-c. T or NIL to indicate whether the full score is to contain written
    pitches or sounding pitches. NB: Some transposing C <a href="./instruments_lsp.html#robo12">instruments</a> still
-   <a href="./pitch_lsp.html#robo379">transpose</a> at the octave in C scores, such as <a href="./sc-map_lsp.html#robo589">double</a>-bass and piccolo.
+   <a href="./tl-set_lsp.html#robo915">transpose</a> at the octave in C scores, such as <a href="./sc-map_lsp.html#robo589">double</a>-bass and piccolo.
    NB: Parts will always be transposed. T = sounding pitches. Default = NIL.
  - :page-nums. T or NIL to indicate whether page numbers should
    automatically be added to each page (not including the start page) of the
@@ -5386,7 +5386,7 @@ NOTE 6200 0.6666667
    rests. Default = NIL. NB: LilyPond can be instructed to extend beams over
    rests (without stemlets) simply by using the '-' in the definition of the
    <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object, as is done with any other note; however,
-   starting/ending a beam on a rest and then trying to <a href="./wolfram_lsp.html#robo1027">generate</a> a score with
+   starting/ending a beam on a rest and then trying to <a href="./wolfram_lsp.html#robo1029">generate</a> a score with
    CMN will fail.
  - :footer. A string to <a href="./recursive-assoc-list_lsp.html#robo409">add</a> to the footer of every score page. Default = NIL.
  - :title. Usually T or NIL to include the title of the <a href="./piece_lsp.html#robo58">piece</a> at the top of
@@ -5603,7 +5603,7 @@ NOTE 6200 0.6666667
  - :tenths. A number representing tenths of interline staff space (positive
    or negative). Both integer and decimal values are allowed, such as 5 for a
    half space and 2.5 for a quarter space. Interline space is measured from
-   the <a href="./utilities_lsp.html#robo966">middle</a> of a staff line. Distances in a MusicXML file are measured in
+   the <a href="./utilities_lsp.html#robo967">middle</a> of a staff line. Distances in a MusicXML file are measured in
    tenths of staff space. Tenths are then scaled to millimeters within the
    scaling element, used in the defaults element at the start of a score. See
    <a href="https://usermanuals.musicxml.com/MusicXML/Content/EL-MusicXML-scaling.htm">https://usermanuals.musicxml.com/MusicXML/Content/EL-MusicXML-scaling.htm</a>
@@ -5653,7 +5653,7 @@ NOTE 6200 0.6666667
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/slippery-chicken.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/slippery-chicken.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:45</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -49,10 +49,10 @@
   (<strong>at-start</strong> cscl))
 =&gt; T
 
-;; Retrieve a number of the items using <a href="#robo118">get-next</a>, then determine whether the
+;; Retrieve a number of the items using <a href="./sndfile-ext_lsp.html#robo861">get-next</a>, then determine whether the
 ;; pointer is located at the start of the list
 (let ((cscl (<a href="#robo119">make-cscl</a> '(0 1 2 3 4))))
-  (loop repeat 7 do (<a href="#robo118">get-next</a> cscl))
+  (loop repeat 7 do (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl))
   (<strong>at-start</strong> cscl))
 =&gt; NIL
 </pre>
@@ -77,10 +77,10 @@
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((cscl (<a href="#robo119">make-cscl</a> '(0 1 2 3 4))))
   (loop for i below 10 do
-     (print (if (oddp i) (<a href="#robo118">get-next</a> cscl) (<strong>get-current</strong> cscl)))))
+     (print (if (oddp i) (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl) (<strong>get-current</strong> cscl)))))
 (let ((cscl (<a href="#robo119">make-cscl</a> '(0 1 2 3 4))))
   (loop for i below 10 
-     collect (if (oddp i) (<a href="#robo118">get-next</a> cscl) (<strong>get-current</strong> cscl))))
+     collect (if (oddp i) (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl) (<strong>get-current</strong> cscl))))
 =&gt;
 (0 0 1 1 2 2 3 3 4 4)
 </pre>
@@ -108,10 +108,10 @@
   (<strong>get-last</strong> cscl))
 =&gt; 4
 
-;; Get and print a number of items from the list using <a href="#robo118">get-next</a>, then return
+;; Get and print a number of items from the list using <a href="./sndfile-ext_lsp.html#robo861">get-next</a>, then return
 ;; the most recent item retrieved using <strong>get-last</strong>
 (let ((cscl (<a href="#robo119">make-cscl</a> '(0 1 2 3 4))))
-  (loop repeat 7 do (print (<a href="#robo118">get-next</a> cscl)))
+  (loop repeat 7 do (print (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl)))
   (<strong>get-last</strong> cscl))
 =&gt; 1
 </pre>
@@ -236,9 +236,9 @@ WARNING: <a href="./sclist_lsp.html#robo298">sclist</a>::<a href="./sclist_lsp.h
  to 0 by default, but the desired index may be specified using the optional
  argument. 
 
- NB: An immediately subsequent <a href="#robo118">get-next</a> call will retrieve the item at the
+ NB: An immediately subsequent <a href="./sndfile-ext_lsp.html#robo861">get-next</a> call will retrieve the item at the
      index to which the pointer is <strong>reset</strong>. An immediately subsequent
-     <a href="./rthm-seq_lsp.html#robo561">get-last</a> call will retrieve the item at the index one-less
+     <a href="#robo117">get-last</a> call will retrieve the item at the index one-less
      than the value to which the pointer is set.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -252,27 +252,27 @@ WARNING: <a href="./sclist_lsp.html#robo298">sclist</a>::<a href="./sclist_lsp.h
 <pre> Returns T.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Resets to 0 by default. Here: Get a number of items using <a href="#robo118">get-next</a>, <strong>reset</strong>
-;; the pointer, and apply <a href="#robo118">get-next</a> again.
+<pre class="source">;; Resets to 0 by default. Here: Get a number of items using <a href="./sndfile-ext_lsp.html#robo861">get-next</a>, <strong>reset</strong>
+;; the pointer, and apply <a href="./sndfile-ext_lsp.html#robo861">get-next</a> again.
 (let ((cscl (<a href="#robo119">make-cscl</a> '(0 1 2 3 4))))
-  (loop repeat 8 do (print (<a href="#robo118">get-next</a> cscl)))
+  (loop repeat 8 do (print (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl)))
   (<strong>reset</strong> cscl)
-  (<a href="#robo118">get-next</a> cscl))
+  (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl))
 =&gt; 0
 
 ;; Reset to a specified index
 (let ((cscl (<a href="#robo119">make-cscl</a> '(0 1 2 3 4))))
-  (loop repeat 8 do (print (<a href="#robo118">get-next</a> cscl)))
+  (loop repeat 8 do (print (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl)))
   (<strong>reset</strong> cscl 3)
-  (<a href="#robo118">get-next</a> cscl))
+  (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl))
 =&gt; 3
 
-;; By default, <a href="./rthm-seq_lsp.html#robo561">get-last</a> will then retrieve the item at index one less than the
+;; By default, <a href="#robo117">get-last</a> will then retrieve the item at index one less than the
 ;; <strong>reset</strong> value
 (let ((cscl (<a href="#robo119">make-cscl</a> '(0 1 2 3 4))))
-  (loop repeat 8 do (print (<a href="#robo118">get-next</a> cscl)))
+  (loop repeat 8 do (print (<a href="./sndfile-ext_lsp.html#robo861">get-next</a> cscl)))
   (<strong>reset</strong> cscl 3)
-  (<a href="./rthm-seq_lsp.html#robo561">get-last</a> cscl))
+  (<a href="#robo117">get-last</a> cscl))
 =&gt; 2
 </pre>
 <p class="item_name">SYNOPSIS</p>
@@ -312,7 +312,7 @@ WARNING: <a href="./sclist_lsp.html#robo298">sclist</a>::<a href="./sclist_lsp.h
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/circular-sclist.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/circular-sclist.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

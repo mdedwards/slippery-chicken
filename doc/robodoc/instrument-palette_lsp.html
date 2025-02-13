@@ -77,16 +77,16 @@
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Returns an <a href="#robo311">instrument-palette</a> object
 (<strong>make-instrument-palette</strong> 'inst-pal 
-                         '((piccolo (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> 12
-                                     :<a href="./event_lsp.html#robo202">lowest</a>-written d4 :<a href="./chord_lsp.html#robo90">highest</a>-written c6))  
-                           (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -2
+                         '((piccolo (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> 12
+                                     :<a href="./event_lsp.html#robo202">lowest</a>-written d4 :<a href="./event_lsp.html#robo197">highest</a>-written c6))  
+                           (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -2
                                          :<a href="./event_lsp.html#robo202">lowest</a>-written e3 
-                                         :<a href="./chord_lsp.html#robo90">highest</a>-written c6)) 
-                           (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -7 
-                                  :<a href="./event_lsp.html#robo202">lowest</a>-written f2 :<a href="./chord_lsp.html#robo90">highest</a>-written c5)) 
-                           (violin (:<a href="./event_lsp.html#robo202">lowest</a>-written g3 :<a href="./chord_lsp.html#robo90">highest</a>-written c7
+                                         :<a href="./event_lsp.html#robo197">highest</a>-written c6)) 
+                           (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -7 
+                                  :<a href="./event_lsp.html#robo202">lowest</a>-written f2 :<a href="./event_lsp.html#robo197">highest</a>-written c5)) 
+                           (violin (:<a href="./event_lsp.html#robo202">lowest</a>-written g3 :<a href="./event_lsp.html#robo197">highest</a>-written c7
                                     :chords t)) 
-                           (viola (:<a href="./event_lsp.html#robo202">lowest</a>-written c3 :<a href="./chord_lsp.html#robo90">highest</a>-written f6
+                           (viola (:<a href="./event_lsp.html#robo202">lowest</a>-written c3 :<a href="./event_lsp.html#robo197">highest</a>-written f6
                                    :chords t))))
 
 =&gt;
@@ -139,21 +139,21 @@ data: (
 <pre class="source">;; Define an <a href="#robo311">instrument-palette</a> object, then set the PREFERS-NOTES slot of the
 ;; <a href="./instrument_lsp.html#robo294">instrument</a> object 'piccolo within that <a href="#robo311">instrument-palette</a> object to 'HIGH 
 (let ((ip (<a href="#robo238">make-instrument-palette</a> 'inst-pal 
-                                   '((piccolo (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> 12
+                                   '((piccolo (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> 12
                                                :<a href="./event_lsp.html#robo202">lowest</a>-written d4
-                                               :<a href="./chord_lsp.html#robo90">highest</a>-written c6))   
-                                     (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -2 
+                                               :<a href="./event_lsp.html#robo197">highest</a>-written c6))   
+                                     (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -2 
                                                    :<a href="./event_lsp.html#robo202">lowest</a>-written e3 
-                                                   :<a href="./chord_lsp.html#robo90">highest</a>-written c6)) 
+                                                   :<a href="./event_lsp.html#robo197">highest</a>-written c6)) 
                                      (horn (:transposition f
-                                            :transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -7  
+                                            :transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -7  
                                             :<a href="./event_lsp.html#robo202">lowest</a>-written f2 
-                                            :<a href="./chord_lsp.html#robo90">highest</a>-written c5))   
+                                            :<a href="./event_lsp.html#robo197">highest</a>-written c5))   
                                      (violin (:<a href="./event_lsp.html#robo202">lowest</a>-written g3
-                                              :<a href="./chord_lsp.html#robo90">highest</a>-written c7 
+                                              :<a href="./event_lsp.html#robo197">highest</a>-written c7 
                                               :chords t)) 
                                      (viola (:<a href="./event_lsp.html#robo202">lowest</a>-written c3
-                                             :<a href="./chord_lsp.html#robo90">highest</a>-written f6 
+                                             :<a href="./event_lsp.html#robo197">highest</a>-written f6 
                                              :chords t))))))
   (<strong>set-prefers-high</strong> ip 'piccolo))
 
@@ -194,21 +194,21 @@ data: (
 <pre class="source">;; Define an <a href="#robo311">instrument-palette</a> object, then set the PREFERS-NOTES slot of the
 ;; <a href="./instrument_lsp.html#robo294">instrument</a> object 'piccolo within that <a href="#robo311">instrument-palette</a> object to 'LOW
 (let ((ip (<a href="#robo238">make-instrument-palette</a> 'inst-pal 
-                                   '((piccolo (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> 12
+                                   '((piccolo (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> 12
                                                :<a href="./event_lsp.html#robo202">lowest</a>-written d4
-                                               :<a href="./chord_lsp.html#robo90">highest</a>-written c6))   
-                                     (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -2 
+                                               :<a href="./event_lsp.html#robo197">highest</a>-written c6))   
+                                     (bf-clarinet (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -2 
                                                    :<a href="./event_lsp.html#robo202">lowest</a>-written e3 
-                                                   :<a href="./chord_lsp.html#robo90">highest</a>-written c6)) 
+                                                   :<a href="./event_lsp.html#robo197">highest</a>-written c6)) 
                                      (horn (:transposition f
-                                            :transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -7  
+                                            :transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -7  
                                             :<a href="./event_lsp.html#robo202">lowest</a>-written f2 
-                                            :<a href="./chord_lsp.html#robo90">highest</a>-written c5))   
+                                            :<a href="./event_lsp.html#robo197">highest</a>-written c5))   
                                      (violin (:<a href="./event_lsp.html#robo202">lowest</a>-written g3
-                                              :<a href="./chord_lsp.html#robo90">highest</a>-written c7 
+                                              :<a href="./event_lsp.html#robo197">highest</a>-written c7 
                                               :chords t)) 
                                      (viola (:<a href="./event_lsp.html#robo202">lowest</a>-written c3
-                                             :<a href="./chord_lsp.html#robo90">highest</a>-written f6 
+                                             :<a href="./event_lsp.html#robo197">highest</a>-written f6 
                                              :chords t))))))
   (<strong>set-prefers-low</strong> ip 'piccolo))
 
@@ -251,7 +251,7 @@ data: (
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/instrument-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/instrument-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

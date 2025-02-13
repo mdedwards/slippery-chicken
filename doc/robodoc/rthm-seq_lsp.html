@@ -509,7 +509,7 @@ NIL
                                   :marks (ff 1 a 1 3 6 8 10 pizz 1 ppp
                                           2 s 2))))))
   (<strong>filter</strong> mrs #'(lambda (r) (<a href="./rhythm_lsp.html#robo451">has-mark</a> r 'a)))
-  (print (= 5 (<a href="./event_lsp.html#robo213">num-notes</a> mrs)))
+  (print (= 5 (<a href="./slippery-chicken_lsp.html#robo840">num-notes</a> mrs)))
   (print (= 5 (num-rests mrs)))
   (print-simple mrs nil))
 
@@ -551,7 +551,7 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
               old-bar-nums: NIL, write-bar-num: NIL, start-time: -1.000, 
               start-time-qtrs: -1.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
               show-rest: T, notes-needed: 1, 
-              tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo946">factor</a>: 0.35, beams: NIL, 
+              tuplets: NIL, nudge-<a href="./utilities_lsp.html#robo947">factor</a>: 0.35, beams: NIL, 
               current-time-sig: 6, write-time-sig: NIL, num-rests: 2, 
               num-rhythms: 3, num-score-notes: 1, parent-start-end: NIL, 
               missing-duration: NIL, bar-line-type: 0, 
@@ -659,7 +659,7 @@ data: S
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL indicating whether to print a warning message if the given index
    (minus 1) is greater than the number of attacks in the <a href="#robo645">rthm-seq</a> object 
-   (default = T). This is a carry-over argument from the <a href="./rthm-seq-bar_lsp.html#robo500">get-nth-attack</a>
+   (default = T). This is a carry-over argument from the <a href="#robo566">get-nth-attack</a>
    method called within the <strong>get-last-attack</strong> method and not likely to be
    needed for use with <strong>get-last-attack</strong>.
 </pre>
@@ -987,7 +987,7 @@ WARNING: rthm-seq::rthm-seq-check-bounds: Illegal list reference: 11
 <p class="item_name">RETURN VALUE</p>
 <pre> A <a href="./rhythm_lsp.html#robo297">rhythm</a> object.
 
- Returns NIL if the given index is higher than the <a href="./chord_lsp.html#robo90">highest</a> possible index of
+ Returns NIL if the given index is higher than the <a href="./event_lsp.html#robo197">highest</a> possible index of
  non-rest rhythms in the given <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
@@ -1260,7 +1260,7 @@ data: (3 8)
 <p class="item_name">DESCRIPTION</p>
 <pre> Insert a <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object into the given <a href="#robo645">rthm-seq</a> object and
  re-initialize it. If there's a <a href="./pitch_lsp.html#robo295">pitch</a>-seq/<a href="./pitch-seq-palette_lsp.html#robo312">pitch-seq-palette</a> given (list of
- numbers, or list of lists), <a href="./utilities_lsp.html#robo1012">splice</a> this in at the appropriate location.
+ numbers, or list of lists), <a href="./utilities_lsp.html#robo1014">splice</a> this in at the appropriate location.
 
  NB: This method sets the values of the individual slots but leaves the DATA
      slot untouched (for cases in which the user might want to see where the
@@ -1360,13 +1360,13 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 <pre> - the <a href="#robo645">rthm-seq</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to call <a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> on the result. Default = NIL.
+<pre> - T or NIL to call <a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a> on the result. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> The modified <a href="#robo645">rthm-seq</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>invert</strong> ((rs rthm-seq) &amp;optional <a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> ignore)
+<pre class="source">(defmethod <strong>invert</strong> ((rs rthm-seq) &amp;optional <a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a> ignore)
 </pre>
 
 
@@ -1457,8 +1457,8 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword argument 
  - :psp-inversions. T or NIL to indicate whether to also automatically
-   <a href="./wolfram_lsp.html#robo1027">generate</a> and <a href="./recursive-assoc-list_lsp.html#robo409">add</a> inverted forms of the specified <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> objects.
-   T = <a href="./wolfram_lsp.html#robo1027">generate</a> and <a href="./recursive-assoc-list_lsp.html#robo409">add</a>. Default = NIL.
+   <a href="./wolfram_lsp.html#robo1029">generate</a> and <a href="./recursive-assoc-list_lsp.html#robo409">add</a> inverted forms of the specified <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> objects.
+   T = <a href="./wolfram_lsp.html#robo1029">generate</a> and <a href="./recursive-assoc-list_lsp.html#robo409">add</a>. Default = NIL.
  - :warn-time-sigs. T or NIL to indicate whether to issue a warning when a
    time-signature is given where it's not needed (i.e. two bars of 4/4)
 </pre>
@@ -1546,7 +1546,7 @@ data: ((((2 4) Q E S S) ((E) Q (E)) ((3 8) S S E. S)))
 
 =&gt; (
 PITCH-SEQ: notes: NIL
-           <a href="./chord_lsp.html#robo90">highest</a>: 4
+           <a href="./event_lsp.html#robo197">highest</a>: 4
            <a href="./event_lsp.html#robo202">lowest</a>: 1
            original-data: (1 2 3 4)
            user-id: NIL
@@ -1561,7 +1561,7 @@ data: (1 2 3 4)
 
     
 PITCH-SEQ: notes: NIL
-           <a href="./chord_lsp.html#robo90">highest</a>: 4
+           <a href="./event_lsp.html#robo197">highest</a>: 4
            <a href="./event_lsp.html#robo202">lowest</a>: 1
            original-data: (4 3 2 1)
            user-id: NIL
@@ -1657,9 +1657,9 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
  At this point the unit should be a whole number divisor of the beat in the
  time signature, i.e. quintuple eighths won't work in 4/4.
 
- NB: Setting the <a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> keyword argument to T can result in errors if
-     creating durations longer than 1 beat, as <a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> will call
-     <a href="./rthm-seq-bar_lsp.html#robo495">get-beats</a>. :<a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> is therefore set to NIL by default.
+ NB: Setting the <a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a> keyword argument to T can result in errors if
+     creating durations longer than 1 beat, as <a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a> will call
+     <a href="./rthm-seq-bar_lsp.html#robo495">get-beats</a>. :<a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a> is therefore set to NIL by default.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A rhythmic duration unit.
@@ -1671,7 +1671,7 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
  - :tag. A symbol that is another name, description etc. for the given
    object. The tag may be used for identification but not for searching
    purposes. Default = NIL.
- - :<a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a>.  T or NIL. When T, the function will attempt to automatically
+ - :<a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a>.  T or NIL. When T, the function will attempt to automatically
    set beaming indicators among the resulting <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> objects. This can
    result in errors if the resulting rhythms have a duration of more than 1
    beat. Default = NIL.
@@ -1735,7 +1735,7 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
                                               ;; each beat.
                                               (tuplet nil)
                                               (tag nil)
-                                              (<a href="./slippery-chicken-edit_lsp.html#robo706">auto-beam</a> nil) ; see above
+                                              (<a href="./rthm-seq-bar_lsp.html#robo477">auto-beam</a> nil) ; see above
                                               (id "from-multipliers"))
 </pre>
 
@@ -1819,14 +1819,14 @@ note Q,
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo645">rthm-seq</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Scale the durations of the <a href="./rhythm_lsp.html#robo297">rhythm</a> objects in a given <a href="#robo645">rthm-seq</a> object by the
- specified <a href="./utilities_lsp.html#robo946">factor</a>.
+ specified <a href="./utilities_lsp.html#robo947">factor</a>.
 
  NB: As is evident in the examples below, this method does not replace the
      original data in the <a href="#robo645">rthm-seq</a> object's DATA slot.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo645">rthm-seq</a> object.
- - A real number that is the scaling <a href="./utilities_lsp.html#robo946">factor</a>.
+ - A real number that is the scaling <a href="./utilities_lsp.html#robo947">factor</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns a <a href="#robo645">rthm-seq</a> object.
@@ -2218,7 +2218,7 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/rthm-seq.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/rthm-seq.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:45</p>
 </div> <!-- footer -->
 </body>
 </html>

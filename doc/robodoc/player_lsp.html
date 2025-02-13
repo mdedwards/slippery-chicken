@@ -113,15 +113,15 @@
 <pre class="source">;; Create a <a href="#robo296">player</a> object with just one <a href="./instrument_lsp.html#robo294">instrument</a> object
 (let ((ip (<a href="./instrument-palette_lsp.html#robo238">make-instrument-palette</a> 
             'inst-pal 
-            '((picc (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> 12 :<a href="./event_lsp.html#robo202">lowest</a>-written d4
-                     :<a href="./chord_lsp.html#robo90">highest</a>-written c6)) 
-              (flute (:<a href="./event_lsp.html#robo202">lowest</a>-written c4 :<a href="./chord_lsp.html#robo90">highest</a>-written d7))  
-              (clar (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -2 :<a href="./event_lsp.html#robo202">lowest</a>-written e3
-                     :<a href="./chord_lsp.html#robo90">highest</a>-written c6))  
-              (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -7
-                     :<a href="./event_lsp.html#robo202">lowest</a>-written f2 :<a href="./chord_lsp.html#robo90">highest</a>-written c5))    
-              (vln (:<a href="./event_lsp.html#robo202">lowest</a>-written g3 :<a href="./chord_lsp.html#robo90">highest</a>-written c7 :chords t))  
-              (vla (:<a href="./event_lsp.html#robo202">lowest</a>-written c3 :<a href="./chord_lsp.html#robo90">highest</a>-written f6 :chords t))))))
+            '((picc (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> 12 :<a href="./event_lsp.html#robo202">lowest</a>-written d4
+                     :<a href="./event_lsp.html#robo197">highest</a>-written c6)) 
+              (flute (:<a href="./event_lsp.html#robo202">lowest</a>-written c4 :<a href="./event_lsp.html#robo197">highest</a>-written d7))  
+              (clar (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -2 :<a href="./event_lsp.html#robo202">lowest</a>-written e3
+                     :<a href="./event_lsp.html#robo197">highest</a>-written c6))  
+              (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -7
+                     :<a href="./event_lsp.html#robo202">lowest</a>-written f2 :<a href="./event_lsp.html#robo197">highest</a>-written c5))    
+              (vln (:<a href="./event_lsp.html#robo202">lowest</a>-written g3 :<a href="./event_lsp.html#robo197">highest</a>-written c7 :chords t))  
+              (vla (:<a href="./event_lsp.html#robo202">lowest</a>-written c3 :<a href="./event_lsp.html#robo197">highest</a>-written f6 :chords t))))))
   (<strong>make-player</strong> '<a href="#robo296">player</a>-one ip 'flute))
 
 =&gt; 
@@ -139,15 +139,15 @@ data: NIL
 ;; the keyword arguments, then print the corresponding slots to see the changes 
 (let* ((ip (<a href="./instrument-palette_lsp.html#robo238">make-instrument-palette</a> 
             'inst-pal 
-            '((picc (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> 12 :<a href="./event_lsp.html#robo202">lowest</a>-written d4
-                     :<a href="./chord_lsp.html#robo90">highest</a>-written c6)) 
-              (flute (:<a href="./event_lsp.html#robo202">lowest</a>-written c4 :<a href="./chord_lsp.html#robo90">highest</a>-written d7))  
-              (clar (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -2 :<a href="./event_lsp.html#robo202">lowest</a>-written e3
-                     :<a href="./chord_lsp.html#robo90">highest</a>-written c6))  
-              (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -7
-                     :<a href="./event_lsp.html#robo202">lowest</a>-written f2 :<a href="./chord_lsp.html#robo90">highest</a>-written c5))    
-              (vln (:<a href="./event_lsp.html#robo202">lowest</a>-written g3 :<a href="./chord_lsp.html#robo90">highest</a>-written c7 :chords t))  
-              (vla (:<a href="./event_lsp.html#robo202">lowest</a>-written c3 :<a href="./chord_lsp.html#robo90">highest</a>-written f6 :chords t))))) 
+            '((picc (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> 12 :<a href="./event_lsp.html#robo202">lowest</a>-written d4
+                     :<a href="./event_lsp.html#robo197">highest</a>-written c6)) 
+              (flute (:<a href="./event_lsp.html#robo202">lowest</a>-written c4 :<a href="./event_lsp.html#robo197">highest</a>-written d7))  
+              (clar (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -2 :<a href="./event_lsp.html#robo202">lowest</a>-written e3
+                     :<a href="./event_lsp.html#robo197">highest</a>-written c6))  
+              (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -7
+                     :<a href="./event_lsp.html#robo202">lowest</a>-written f2 :<a href="./event_lsp.html#robo197">highest</a>-written c5))    
+              (vln (:<a href="./event_lsp.html#robo202">lowest</a>-written g3 :<a href="./event_lsp.html#robo197">highest</a>-written c7 :chords t))  
+              (vla (:<a href="./event_lsp.html#robo202">lowest</a>-written c3 :<a href="./event_lsp.html#robo197">highest</a>-written f6 :chords t))))) 
        (plr (<strong>make-player</strong> '<a href="#robo296">player</a>-one ip '(flute picc) 
                          :midi-channel 1
                          :microtones-midi-channel 2)))
@@ -163,15 +163,15 @@ data: NIL
 ;;; With specified <a href="./cmn_lsp.html#robo7">cmn</a>-staff-args
 (let ((ip (<a href="./instrument-palette_lsp.html#robo238">make-instrument-palette</a> 
            'inst-pal 
-           '((picc (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> 12 :<a href="./event_lsp.html#robo202">lowest</a>-written d4
-                    :<a href="./chord_lsp.html#robo90">highest</a>-written c6)) 
-             (flute (:<a href="./event_lsp.html#robo202">lowest</a>-written c4 :<a href="./chord_lsp.html#robo90">highest</a>-written d7))  
-             (clar (:transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -2 :<a href="./event_lsp.html#robo202">lowest</a>-written e3
-                    :<a href="./chord_lsp.html#robo90">highest</a>-written c6))  
-             (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> -7
-                    :<a href="./event_lsp.html#robo202">lowest</a>-written f2 :<a href="./chord_lsp.html#robo90">highest</a>-written c5))    
-             (vln (:<a href="./event_lsp.html#robo202">lowest</a>-written g3 :<a href="./chord_lsp.html#robo90">highest</a>-written c7 :chords t))  
-             (vla (:<a href="./event_lsp.html#robo202">lowest</a>-written c3 :<a href="./chord_lsp.html#robo90">highest</a>-written f6 :chords t))))))
+           '((picc (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> 12 :<a href="./event_lsp.html#robo202">lowest</a>-written d4
+                    :<a href="./event_lsp.html#robo197">highest</a>-written c6)) 
+             (flute (:<a href="./event_lsp.html#robo202">lowest</a>-written c4 :<a href="./event_lsp.html#robo197">highest</a>-written d7))  
+             (clar (:transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -2 :<a href="./event_lsp.html#robo202">lowest</a>-written e3
+                    :<a href="./event_lsp.html#robo197">highest</a>-written c6))  
+             (horn (:transposition f :transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> -7
+                    :<a href="./event_lsp.html#robo202">lowest</a>-written f2 :<a href="./event_lsp.html#robo197">highest</a>-written c5))    
+             (vln (:<a href="./event_lsp.html#robo202">lowest</a>-written g3 :<a href="./event_lsp.html#robo197">highest</a>-written c7 :chords t))  
+             (vla (:<a href="./event_lsp.html#robo202">lowest</a>-written c3 :<a href="./event_lsp.html#robo197">highest</a>-written f6 :chords t))))))
   (<strong>make-player</strong> '<a href="#robo296">player</a>-one ip '(flute picc) 
                :midi-channel 1
                :microtones-midi-channel 2
@@ -345,14 +345,14 @@ the <a href="./instrument_lsp.html#robo294">instrument</a> you want.
 <pre> - A <a href="#robo296">player</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./pitch_lsp.html#robo379">transpose</a> at the octave are
-   to be considered transposing <a href="./instruments_lsp.html#robo12">instruments</a>.  T = <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./pitch_lsp.html#robo379">transpose</a>
+<pre> - T or NIL to indicate whether <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./tl-set_lsp.html#robo915">transpose</a> at the octave are
+   to be considered transposing <a href="./instruments_lsp.html#robo12">instruments</a>.  T = <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./tl-set_lsp.html#robo915">transpose</a>
    at the octave are not considered transposing <a href="./instruments_lsp.html#robo12">instruments</a>. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns T if one or more of the <a href="./instrument_lsp.html#robo294">instrument</a> objects assigned to the given
  <a href="#robo296">player</a> object has a transposition value other than C or a
- transposition-<a href="./utilities_lsp.html#robo1008">semitones</a> value other than 0.
+ transposition-<a href="./utilities_lsp.html#robo1010">semitones</a> value other than 0.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Create a <a href="#robo296">player</a> object using the 'b-flat-clarinet <a href="./instrument_lsp.html#robo294">instrument</a> object
@@ -392,7 +392,7 @@ the <a href="./instrument_lsp.html#robo294">instrument</a> you want.
 
 =&gt; T
 
-;; Setting the optional argument to NIL causes <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./pitch_lsp.html#robo379">transpose</a> at
+;; Setting the optional argument to NIL causes <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./tl-set_lsp.html#robo915">transpose</a> at
 ;; the octave to return T.
 (let* ((ip +slippery-chicken-standard-<a href="./instrument_lsp.html#robo294">instrument</a>-<a href="./palette_lsp.html#robo424">palette</a>+)
        (plr (<a href="#robo383">make-player</a> 'db ip '<a href="./sc-map_lsp.html#robo589">double</a>-bass)))
@@ -444,7 +444,7 @@ the <a href="./instrument_lsp.html#robo294">instrument</a> you want.
 <p class="item_name">DESCRIPTION</p>
 <pre> Return a number that represents the <a href="./utilities_lsp.html#robo924">average</a> <a href="./pitch_lsp.html#robo295">pitch</a> for a specified
  <a href="./instrument_lsp.html#robo294">instrument</a> over the course of a <a href="./piece_lsp.html#robo58">piece</a>. The number returned will be degrees
- in the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>.
+ in the current <a href="./afu_lsp.html#robo32">scale</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo296">player</a> object.
@@ -467,7 +467,7 @@ the <a href="./instrument_lsp.html#robo294">instrument</a> you want.
         :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (<strong>tessitura-degree</strong> (<a href="./assoc-list_lsp.html#robo37">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini))))
+  (<strong>tessitura-degree</strong> (<a href="./recursive-assoc-list_lsp.html#robo414">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini))))
 
 =&gt; 136
 </pre>
@@ -559,7 +559,7 @@ the <a href="./instrument_lsp.html#robo294">instrument</a> you want.
 <pre> Return a number that reflects the mean note (<a href="./ensemble_lsp.html#robo166">tessitura</a>) of a <a href="#robo296">player</a>'s
  part. This is calculated by incrementing the TOTAL-DEGREES slot of the
  corresponding <a href="./instrument_lsp.html#robo294">instrument</a> object for each attacked note in the <a href="#robo296">player</a>'s part
- by the degree of that note (in the <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> of the <a href="./piece_lsp.html#robo58">piece</a>), and then dividing
+ by the degree of that note (in the <a href="./afu_lsp.html#robo32">scale</a> of the <a href="./piece_lsp.html#robo58">piece</a>), and then dividing
  the sum by the total number of notes in the <a href="#robo296">player</a>'s part.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -623,9 +623,9 @@ the <a href="./instrument_lsp.html#robo294">instrument</a> you want.
         :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (2 2 2 2 2))
                             (vc (1 2 1 2 1))))))))
-  (print (<strong>total-duration</strong> (<a href="./assoc-list_lsp.html#robo37">get-data</a> 'vn (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini))))
-  (print (<strong>total-duration</strong> (<a href="./assoc-list_lsp.html#robo37">get-data</a> 'va (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini))))
-  (print (<strong>total-duration</strong> (<a href="./assoc-list_lsp.html#robo37">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini)))))
+  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo414">get-data</a> 'vn (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini))))
+  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo414">get-data</a> 'va (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini))))
+  (print (<strong>total-duration</strong> (<a href="./recursive-assoc-list_lsp.html#robo414">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini)))))
 
 =&gt;
 6.875 
@@ -666,7 +666,7 @@ the <a href="./instrument_lsp.html#robo294">instrument</a> you want.
         :<a href="./rthm-seq-map_lsp.html#robo597">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))
                             (va (1 1 1 1 1))
                             (vc (1 1 1 1 1))))))))
-  (print (<strong>total-notes</strong> (<a href="./assoc-list_lsp.html#robo37">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini)))))
+  (print (<strong>total-notes</strong> (<a href="./recursive-assoc-list_lsp.html#robo414">get-data</a> 'vc (<a href="./ensemble_lsp.html#robo412">ensemble</a> mini)))))
 
 =&gt; 15
 </pre>
@@ -676,7 +676,7 @@ the <a href="./instrument_lsp.html#robo294">instrument</a> you want.
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/player.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/player.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

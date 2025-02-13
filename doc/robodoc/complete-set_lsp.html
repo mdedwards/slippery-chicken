@@ -37,7 +37,7 @@
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo908">complete-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Create a <a href="#robo908">complete-set</a> object, which as an extension of the <a href="./tl-set_lsp.html#robo627">tl-set</a> class
- allows checking for full sets: ones in which every note of *standard-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*
+ allows checking for full sets: ones in which every note of *standard-<a href="./afu_lsp.html#robo32">scale</a>*
  is present.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -61,13 +61,13 @@
    can be used, for example, for pitches missing from the main set (see doc
    for sc-set).
  - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
-   symbols) are to be automatically sorted from <a href="./event_lsp.html#robo202">lowest</a> to <a href="./chord_lsp.html#robo90">highest</a>. 
+   symbols) are to be automatically sorted from <a href="./event_lsp.html#robo202">lowest</a> to <a href="./event_lsp.html#robo197">highest</a>. 
   T = sort. Default = T. (see doc for sc-set)
- - :transposition. A number that is the number of <a href="./utilities_lsp.html#robo1008">semitones</a> by which the
+ - :transposition. A number that is the number of <a href="./utilities_lsp.html#robo1010">semitones</a> by which the
    pitches of the new <a href="#robo908">complete-set</a> are to be transposed when the object is
    created. Default = 0.  (see doc for tl-set)
  - :<a href="./tl-set_lsp.html#robo910">limit</a>-upper. A note-name symbol or a <a href="./pitch_lsp.html#robo295">pitch</a> object to indicate the
-   <a href="./chord_lsp.html#robo90">highest</a> possible <a href="./pitch_lsp.html#robo295">pitch</a> in the given <a href="#robo908">complete-set</a> object to be
+   <a href="./event_lsp.html#robo197">highest</a> possible <a href="./pitch_lsp.html#robo295">pitch</a> in the given <a href="#robo908">complete-set</a> object to be
    created. (see doc for tl-set)
  - :<a href="./tl-set_lsp.html#robo910">limit</a>-lower.  A note-name symbol or a <a href="./pitch_lsp.html#robo295">pitch</a> object to indicate the
    <a href="./event_lsp.html#robo202">lowest</a> possible <a href="./pitch_lsp.html#robo295">pitch</a> in the <a href="#robo908">complete-set</a> object to be created. (see doc
@@ -182,7 +182,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 
  Purpose:          Implementation of the <strong>complete-set</strong> class which as an
                    extension of the <a href="./tl-set_lsp.html#robo627">tl-set</a> class allows checking for full
-                   sets: ones in which every note of the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> is
+                   sets: ones in which every note of the current <a href="./afu_lsp.html#robo32">scale</a> is
                    present. 
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -196,7 +196,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/complete-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/complete-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

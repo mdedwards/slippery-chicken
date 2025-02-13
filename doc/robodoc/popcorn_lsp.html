@@ -47,10 +47,10 @@
 
  Project:          slippery chicken (algorithmic composition)
 
- Purpose:          Inspired by popping <strong>popcorn</strong>, <a href="./wolfram_lsp.html#robo1027">generate</a> a series of values
+ Purpose:          Inspired by popping <strong>popcorn</strong>, <a href="./wolfram_lsp.html#robo1029">generate</a> a series of values
                    ranging <a href="./utilities_lsp.html#robo925">between</a> &gt; 0.0 and &lt;= 1.0 by (optionally fixed)
                    random selection. Given 1 or more starting values (not
-                   zero) we <a href="./wolfram_lsp.html#robo1027">generate</a> tendentially increasing new values
+                   zero) we <a href="./wolfram_lsp.html#robo1029">generate</a> tendentially increasing new values
                    until we reach 1.0. This is not a linear process,
                    rather, we get spike values that increase the <a href="./utilities_lsp.html#robo924">average</a>
                    value and thus increase the chance of further spikes.
@@ -170,7 +170,7 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo120">popcorn</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Make a <a href="#robo120">popcorn</a> object. This method uses the <a href="#robo396">heat</a> method internally to
- <a href="./wolfram_lsp.html#robo1027">generate</a> a series of decimal values ('kernels'), ranging <a href="./utilities_lsp.html#robo925">between</a> &gt; 0.0 and
+ <a href="./wolfram_lsp.html#robo1029">generate</a> a series of decimal values ('kernels'), ranging <a href="./utilities_lsp.html#robo925">between</a> &gt; 0.0 and
  &lt;= 1.0, by (optionally fixed) random selection.
 
  Taking the one or more starting values, the method generates tendentially
@@ -189,7 +189,7 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
  - :fixed-random. T or NIL to indicate whether the 'kernel' values generated
    by the subsequent <a href="#robo396">heat</a> method are to be based on a fixed random seed. 
    T = fixed random. Default = T.
- - :max-spike. A decimal number that is the <a href="./chord_lsp.html#robo90">highest</a> possible 'spike' value
+ - :max-spike. A decimal number that is the <a href="./event_lsp.html#robo197">highest</a> possible 'spike' value
    that the <a href="#robo396">heat</a> method may produce when generating the 'kernel'
    values. This is a sudden high value that will itself not be present in
    the final data, but will go towards skewing the mean, thus increasing the
@@ -369,7 +369,7 @@ data: (0.02 0.03)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/popcorn.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/popcorn.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

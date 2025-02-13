@@ -37,7 +37,7 @@
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo631">chord</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Adds pitches to the set which are harmonically related to the existing
- pitches. The keywords are the same as for the <a href="./utilities_lsp.html#robo952">get-harmonics</a> function.  See
+ pitches. The keywords are the same as for the <a href="./utilities_lsp.html#robo953">get-harmonics</a> function.  See
  also <a href="./sc-set_lsp.html#robo648">sc-set</a> method of the same name and get-<a href="./pitch_lsp.html#robo295">pitch</a>-list-harmonics. NB This
  will automatically sort all pitches from high to low.
 </pre>
@@ -46,7 +46,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
-  see <a href="./utilities_lsp.html#robo952">get-harmonics</a> function
+  see <a href="./utilities_lsp.html#robo953">get-harmonics</a> function
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> the same set object as the first argument but with new pitches added.
@@ -173,7 +173,7 @@
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - cents-tolerance: how many cents the top note can deviate from a pure
    partial frequency. E.g. the 7th harmonic is about 31 cents from the
-   <a href="./utilities_lsp.html#robo971">nearest</a> tempered note.
+   <a href="./utilities_lsp.html#robo972">nearest</a> tempered note.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> If the <a href="#robo631">chord</a> is an artificial harmonic then the sounding (3rd) note is
@@ -202,7 +202,7 @@
  all other tones' partials, taking their amplitudes into account.
 
  NB If notes are above/below the piano range for which we have data then we
- use the <a href="#robo90">highest</a>/<a href="./event_lsp.html#robo202">lowest</a> spectral data available.
+ use the <a href="./event_lsp.html#robo197">highest</a>/<a href="./event_lsp.html#robo202">lowest</a> spectral data available.
 
  NB This method will be called automatically the first time you access a
  <a href="#robo631">chord</a> object's dissonance slot. In that case the default keyword arguments
@@ -223,7 +223,7 @@
  - :num-partials. The number of partials we want to use in our
    calculation. Default = 12.
  - :<a href="./utilities_lsp.html#robo924">average</a>. T or NIL to indicate whether we want to use the <a href="./utilities_lsp.html#robo924">average</a>
-   <a href="./sndfile_lsp.html#robo886">spectrum</a> for an octave with the current note of a <a href="#robo631">chord</a> in the <a href="./utilities_lsp.html#robo966">middle</a>.
+   <a href="./sndfile_lsp.html#robo886">spectrum</a> for an octave with the current note of a <a href="#robo631">chord</a> in the <a href="./utilities_lsp.html#robo967">middle</a>.
    Default = T.
  - :<a href="./sndfile_lsp.html#robo886">spectrum</a>. Pass a two-element list of partial frequency scalers (list)
    and amplitudes (list) to use instead of the piano data. The amplitudes
@@ -232,7 +232,7 @@
    same data for several calls, this will still give different results for
    the same <a href="#robo631">chord</a> type starting on different notes, as the perceptual
    dissonance is based on <a href="./pitch_lsp.html#robo295">pitch</a> height as well as interval structure.
-   Default = (get-sc-config 'default-<a href="./spectra_lsp.html#robo20">spectra</a>) (see <a href="./globals_lsp.html#robo_top_of_doc">globals.lsp</a>)
+   Default = (get-sc-config 'default-<a href="./spectra_lsp.html#robo20">spectra</a>) (see <a href="./globals_lsp.html#robo11">globals.lsp</a>)
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A floating point number representing the dissonance value. Higher values
@@ -291,13 +291,13 @@
  - :num-partials. The number of partials we want to use in our
    calculation. Default = 12.
  - :<a href="./utilities_lsp.html#robo924">average</a>. T or NIL to indicate whether we want to use the <a href="./utilities_lsp.html#robo924">average</a>
-   <a href="./sndfile_lsp.html#robo886">spectrum</a> for an octave with the current note of a <a href="#robo631">chord</a> in the <a href="./utilities_lsp.html#robo966">middle</a>.
+   <a href="./sndfile_lsp.html#robo886">spectrum</a> for an octave with the current note of a <a href="#robo631">chord</a> in the <a href="./utilities_lsp.html#robo967">middle</a>.
    Default = T.
  - :<a href="./sndfile_lsp.html#robo886">spectrum</a>. Pass a two-element list of partial frequency scalers (list)
    and amplitudes (list) to use instead of the piano data. The amplitudes
    should be normalised from 0.0 to 1.0 and there should be as many of these
    as frequency scalers and :num-partials. Default = (get-sc-config
-   'default-<a href="./spectra_lsp.html#robo20">spectra</a>) (see <a href="./globals_lsp.html#robo_top_of_doc">globals.lsp</a>)  
+   'default-<a href="./spectra_lsp.html#robo20">spectra</a>) (see <a href="./globals_lsp.html#robo11">globals.lsp</a>)  
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A floating point value representing the frequency in Hertz of the spectral
@@ -638,8 +638,8 @@
 <pre class="source">;;; Make a <a href="#robo631">chord</a> object, <a href="./recursive-assoc-list_lsp.html#robo409">add</a> two marks, and print the MARKS slot to see them;
 ;;; apply <strong>delete-marks</strong> and print the MARKS slot again to see the change
 (let ((chrd (<a href="#robo93">make-chord</a> '(cs4 e4 fs4 af4 bf4))))
-  (<a href="#robo70">add-mark</a> chrd 'fff)
-  (<a href="#robo70">add-mark</a> chrd 'pizz)
+  (<a href="./event_lsp.html#robo169">add-mark</a> chrd 'fff)
+  (<a href="./event_lsp.html#robo169">add-mark</a> chrd 'pizz)
   (print (marks chrd))
   (<strong>delete-marks</strong> chrd)
   (print (marks chrd)))
@@ -662,13 +662,13 @@ NIL
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Assuming the auto-sort slot is T (which it is by default), return the last
- (= <a href="#robo90">highest</a>) <a href="./pitch_lsp.html#robo295">pitch</a> in the <a href="#robo631">chord</a>. 
+ (= <a href="./event_lsp.html#robo197">highest</a>) <a href="./pitch_lsp.html#robo295">pitch</a> in the <a href="#robo631">chord</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - a <a href="#robo631">chord</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo90">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> (object) in the <a href="#robo631">chord</a>.
+<pre> The <a href="./event_lsp.html#robo197">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> (object) in the <a href="#robo631">chord</a>.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-highest</strong> ((c <a href="#robo631">chord</a>))
@@ -690,10 +690,10 @@ NIL
 <pre> - An <a href="./sc-set_lsp.html#robo648">sc-set</a> object.
 
  OPTIONAL
- - T or NIL indicating whether to return values in <a href="./utilities_lsp.html#robo1008">semitones</a> or default of
+ - T or NIL indicating whether to return values in <a href="./utilities_lsp.html#robo1010">semitones</a> or default of
    degrees. Special case: if this argument is 'frequencies, then the
    interval structure will be returned as frequency differences. T =
-   <a href="./utilities_lsp.html#robo1008">semitones</a>. Default = NIL.
+   <a href="./utilities_lsp.html#robo1010">semitones</a>. Default = NIL.
  - T or NIL to indicated whether we should return intervals from <a href="./pitch_lsp.html#robo295">pitch</a> to
    <a href="./pitch_lsp.html#robo295">pitch</a> (T) or from the <a href="./event_lsp.html#robo202">lowest</a> to each <a href="./pitch_lsp.html#robo295">pitch</a> (NIL). Default = NIL.
 </pre>
@@ -703,12 +703,12 @@ NIL
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; Returns the distances in degrees (which are quarter-tones by default
 ;;; in slippery chicken--use (<a href="./cm_lsp.html#robo136">in-scale</a> :chromatic) at the top of your code to
-;;; set to the chromatic <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>):
+;;; set to the chromatic <a href="./afu_lsp.html#robo32">scale</a>):
 
 (<strong>get-interval-structure</strong> (<a href="#robo93">make-chord</a> '(c4 e4 g4)))
 -&gt; (8.0 14.0)
 
-;;; Return <a href="./utilities_lsp.html#robo1008">semitones</a>
+;;; Return <a href="./utilities_lsp.html#robo1010">semitones</a>
 (<strong>get-interval-structure</strong> (<a href="#robo93">make-chord</a> '(c4 e4 g4)) t)
 -&gt; (4.0 7.0)
 
@@ -718,7 +718,7 @@ NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-interval-structure</strong> ((c <a href="#robo631">chord</a>) &amp;optional
-                                               in-<a href="./utilities_lsp.html#robo1008">semitones</a> neighbour)
+                                               in-<a href="./utilities_lsp.html#robo1010">semitones</a> neighbour)
 </pre>
 
 
@@ -776,7 +776,7 @@ NIL
  - :<a href="./utilities_lsp.html#robo924">average</a>. Whether to <a href="./utilities_lsp.html#robo924">average</a> spectral data over one octave centring around
  each of the pictures in the <a href="#robo631">chord</a>. Default = T.
  - :<a href="./sndfile_lsp.html#robo886">spectrum</a>. The <a href="./sndfile_lsp.html#robo886">spectrum</a> data. Default = (get-sc-config 'default-<a href="./spectra_lsp.html#robo20">spectra</a>)
-   (see <a href="./globals_lsp.html#robo_top_of_doc">globals.lsp</a>)
+   (see <a href="./globals_lsp.html#robo11">globals.lsp</a>)
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of two element sublist. of numbers.
@@ -830,7 +830,7 @@ NIL
 PITCH: frequency: 403.482, midi-note: 67, midi-channel: 12 
        <a href="./pitch_lsp.html#robo295">pitch</a>-bend: 0.5 
        degree: 135, data-consistent: T, white-note: G4
-       <a href="./utilities_lsp.html#robo971">nearest</a>-chromatic: G4
+       <a href="./utilities_lsp.html#robo972">nearest</a>-chromatic: G4
        src: 1.5422108173370361, src-ref-<a href="./pitch_lsp.html#robo295">pitch</a>: C4, score-note: GS4 
        qtr-sharp: 1, qtr-flat: NIL, qtr-tone: 1,  
        micro-tone: T, 
@@ -947,7 +947,7 @@ data: GQS4
 PITCH: frequency: 698.456, midi-note: 77, midi-channel: 11 
        <a href="./pitch_lsp.html#robo295">pitch</a>-bend: 0.0 
        degree: 154, data-consistent: T, white-note: F5
-       <a href="./utilities_lsp.html#robo971">nearest</a>-chromatic: F5
+       <a href="./utilities_lsp.html#robo972">nearest</a>-chromatic: F5
        src: 2.669679641723633, src-ref-<a href="./pitch_lsp.html#robo295">pitch</a>: C4, score-note: F5 
        qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
        micro-tone: NIL, 
@@ -1040,7 +1040,7 @@ data: F5
 PITCH: frequency: 261.626, midi-note: 60, midi-channel: 11 
        <a href="./pitch_lsp.html#robo295">pitch</a>-bend: 0.0 
        degree: 120, data-consistent: T, white-note: C4
-       <a href="./utilities_lsp.html#robo971">nearest</a>-chromatic: C4
+       <a href="./utilities_lsp.html#robo972">nearest</a>-chromatic: C4
        src: 1.0, src-ref-<a href="./pitch_lsp.html#robo295">pitch</a>: C4, score-note: C4 
        qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
        micro-tone: NIL, 
@@ -1154,11 +1154,11 @@ data: F5
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Make a <a href="#robo631">chord</a> object from a starting <a href="./pitch_lsp.html#robo295">pitch</a> and a list of intervals in
- <a href="./utilities_lsp.html#robo1008">semitones</a>.  
+ <a href="./utilities_lsp.html#robo1010">semitones</a>.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the starting <a href="./pitch_lsp.html#robo295">pitch</a>: symbol or <a href="./pitch_lsp.html#robo295">pitch</a> object
- - the list of intervals in <a href="./utilities_lsp.html#robo1008">semitones</a> (may be fractional if current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> is
+ - the list of intervals in <a href="./utilities_lsp.html#robo1010">semitones</a> (may be fractional if current <a href="./afu_lsp.html#robo32">scale</a> is
  <a href="./event_lsp.html#robo209">microtonal</a>) 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -1522,23 +1522,23 @@ data: F5
 <pre> October 18th 2018
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Round the pitches in the <a href="#robo631">chord</a> to the <a href="./utilities_lsp.html#robo971">nearest</a> pitches in the current
- or given <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>. See the <a href="./pitch_lsp.html#robo295">pitch</a> class for more details. 
+<pre> Round the pitches in the <a href="#robo631">chord</a> to the <a href="./utilities_lsp.html#robo972">nearest</a> pitches in the current
+ or given <a href="./afu_lsp.html#robo32">scale</a>. See the <a href="./pitch_lsp.html#robo295">pitch</a> class for more details. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> the <a href="#robo631">chord</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword argument:
- :<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>. The <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> to use when rounding. (Common Music tuning object or
- symbol). If a symbol, then 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>, 'twelfth-tone, or 'quarter-tone
- only at present. Default is the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> as set by (<a href="./cm_lsp.html#robo136">in-scale</a> :...).
+ :<a href="./afu_lsp.html#robo32">scale</a>. The <a href="./afu_lsp.html#robo32">scale</a> to use when rounding. (Common Music tuning object or
+ symbol). If a symbol, then 'chromatic-<a href="./afu_lsp.html#robo32">scale</a>, 'twelfth-tone, or 'quarter-tone
+ only at present. Default is the current <a href="./afu_lsp.html#robo32">scale</a> as set by (<a href="./cm_lsp.html#robo136">in-scale</a> :...).
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> the modified <a href="#robo631">chord</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>round-to-nearest</strong> ((c <a href="#robo631">chord</a>) &amp;key (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defmethod <strong>round-to-nearest</strong> ((c <a href="#robo631">chord</a>) &amp;key (<a href="./afu_lsp.html#robo32">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -1597,7 +1597,7 @@ data: F5
 <pre> 12th August 2015, Wals, Austria
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Calculates the <strong>similarity</strong> of two <a href="#robo631">chord</a> objects on a <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> of 0.0-1.0. This
+<pre> Calculates the <strong>similarity</strong> of two <a href="#robo631">chord</a> objects on a <a href="./afu_lsp.html#robo32">scale</a> of 0.0-1.0. This
  weights equally the number of common notes and the interval structure
  <a href="./utilities_lsp.html#robo925">between</a> adjacent notes.
 </pre>
@@ -1766,15 +1766,15 @@ data: F5
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo631">chord</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Transpose the pitches of a given <a href="#robo631">chord</a> object by a specified number of
- <a href="./utilities_lsp.html#robo1008">semitones</a>. The specified number can be positive or negative, and may
+ <a href="./utilities_lsp.html#robo1010">semitones</a>. The specified number can be positive or negative, and may
  contain a decimal segment for <a href="./event_lsp.html#robo209">microtonal</a> transposition. If passed a decimal
- number, the resulting note-names will be scaled to the <a href="./utilities_lsp.html#robo971">nearest</a> degree of
+ number, the resulting note-names will be scaled to the <a href="./utilities_lsp.html#robo972">nearest</a> degree of
  the current tuning. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo631">chord</a> object.  
  - A positive or negative integer or decimal number indicating the number of
-   <a href="./utilities_lsp.html#robo1008">semitones</a> by which the pitches of the given <a href="#robo631">chord</a> object are to be
+   <a href="./utilities_lsp.html#robo1010">semitones</a> by which the pitches of the given <a href="#robo631">chord</a> object are to be
    transposed.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -1787,7 +1787,7 @@ data: F5
  - :<a href="./event_lsp.html#robo202">lowest</a>. Don't <strong>transpose</strong> pitches in the original <a href="#robo631">chord</a> which are lower
    than  this argument. Default = NIL but eventually via the
    <a href="./pitch_lsp.html#robo380">transpose-pitch-list</a> function C-1 (midi note 0) 
- - :<a href="#robo90">highest</a>. Don't <strong>transpose</strong> pitches in the original <a href="#robo631">chord</a> which are higher
+ - :<a href="./event_lsp.html#robo197">highest</a>. Don't <strong>transpose</strong> pitches in the original <a href="#robo631">chord</a> which are higher
    than this argument. Default = NIL but eventually B8 (midi note 119)
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -1824,10 +1824,10 @@ data: (
 =&gt; (AQF3 CQS4 EQF4)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>transpose</strong> ((c <a href="#robo631">chord</a>) <a href="./utilities_lsp.html#robo1008">semitones</a>
+<pre class="source">(defmethod <strong>transpose</strong> ((c <a href="#robo631">chord</a>) <a href="./utilities_lsp.html#robo1010">semitones</a>
                       &amp;key (destructively t) ; do-related-sets
                         ;; MDE Tue Aug 21 19:49:47 2018
-                        <a href="./event_lsp.html#robo202">lowest</a> <a href="#robo90">highest</a>
+                        <a href="./event_lsp.html#robo202">lowest</a> <a href="./event_lsp.html#robo197">highest</a>
                         ;; MDE Thu Mar  4 11:48:29 2021, Heidhausen
                         (complete-error nil))
 </pre>
@@ -1841,12 +1841,12 @@ data: (
 <pre> March 5th 2016, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Take the <a href="#robo90">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> and <strong>wrap</strong> it around to the bottom, placing it at the
- same interval to the former <a href="./event_lsp.html#robo202">lowest</a> <a href="./pitch_lsp.html#robo295">pitch</a> as the <a href="#robo90">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> is to the
- next-to-<a href="#robo90">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a>. Then, by default, we shift (<a href="./pitch_lsp.html#robo379">transpose</a>) the <a href="#robo631">chord</a> so
- that the next-to-<a href="#robo90">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> is the former <a href="#robo90">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a>.
+<pre> Take the <a href="./event_lsp.html#robo197">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> and <strong>wrap</strong> it around to the bottom, placing it at the
+ same interval to the former <a href="./event_lsp.html#robo202">lowest</a> <a href="./pitch_lsp.html#robo295">pitch</a> as the <a href="./event_lsp.html#robo197">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> is to the
+ next-to-<a href="./event_lsp.html#robo197">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a>. Then, by default, we shift (<a href="./tl-set_lsp.html#robo915">transpose</a>) the <a href="#robo631">chord</a> so
+ that the next-to-<a href="./event_lsp.html#robo197">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> is the former <a href="./event_lsp.html#robo197">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a>.
 
- NB If the &lt;<a href="./pitch_lsp.html#robo379">transpose</a>&gt; optional argument is T, then the <a href="./event_lsp.html#robo202">lowest</a> and <a href="#robo90">highest</a>
+ NB If the &lt;<a href="./tl-set_lsp.html#robo915">transpose</a>&gt; optional argument is T, then the <a href="./event_lsp.html#robo202">lowest</a> and <a href="./event_lsp.html#robo197">highest</a>
  notes of the <a href="#robo631">chord</a> will always remain the same no matter how many times this
  operation is performed.
 </pre>
@@ -1877,7 +1877,7 @@ data: (
 =&gt; (G3 D4 F4 BF4 E5)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>wrap</strong> ((c <a href="#robo631">chord</a>) &amp;optional (num-times 1) (<a href="./pitch_lsp.html#robo379">transpose</a> t))
+<pre class="source">(defmethod <strong>wrap</strong> ((c <a href="#robo631">chord</a>) &amp;optional (num-times 1) (<a href="./tl-set_lsp.html#robo915">transpose</a> t))
 </pre>
 
 
@@ -1910,7 +1910,7 @@ data: (
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/chord.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/chord.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -83,11 +83,11 @@
      :data
      ;; MDE Sun Mar 25 10:39:07 2012 -- The following two are used in
      ;; <a href="./pitch_lsp.html#robo295">pitch</a>-seq::<a href="./pitch-seq_lsp.html#robo335">get-notes</a> to indicate which <a href="./event_lsp.html#robo202">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a>
-     ;; would indicate that we should select the <a href="./chord_lsp.html#robo90">highest</a> or <a href="./event_lsp.html#robo202">lowest</a> notes
+     ;; would indicate that we should select the <a href="./event_lsp.html#robo197">highest</a> or <a href="./event_lsp.html#robo202">lowest</a> notes
      ;; possible for the <a href="./instrument_lsp.html#robo294">instrument</a>/set.
      ;; 
      ;; The first is used to indicate the <a href="./event_lsp.html#robo202">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> that
-     ;; would indicate that the <a href="./pitch-seq_lsp.html#robo335">get-notes</a> algorithm should select the <a href="./chord_lsp.html#robo90">highest</a>
+     ;; would indicate that the <a href="./pitch-seq_lsp.html#robo335">get-notes</a> algorithm should select the <a href="./event_lsp.html#robo197">highest</a>
      ;; notes possible for the <a href="./instrument_lsp.html#robo294">instrument</a>/set.
      `((<a href="./pitch_lsp.html#robo295">pitch</a>-seq-<a href="./event_lsp.html#robo202">lowest</a>-equals-<a href="./instrument_lsp.html#robo247">prefers-high</a> 5)
        ;; the <a href="./event_lsp.html#robo202">lowest</a> number in a <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> that would indicate that the
@@ -98,9 +98,9 @@
        ;; signalled if the were no pitches in a set for an <a href="./instrument_lsp.html#robo294">instrument</a> which
        ;; should be playing. We can now have a rest-sequence generated instead
        (<a href="./pitch_lsp.html#robo295">pitch</a>-seq-no-pitches-error t)
-       ;; MDE Thu Oct 8 16:27:19 2020, Heidhausen -- issue a warning if we <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>
+       ;; MDE Thu Oct 8 16:27:19 2020, Heidhausen -- issue a warning if we <a href="./afu_lsp.html#robo32">scale</a>
        ;; a <a href="./rhythm_lsp.html#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> to longer than 10xwhole?
-       (<a href="./rhythm_lsp.html#robo297">rhythm</a>-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>-warning t)
+       (<a href="./rhythm_lsp.html#robo297">rhythm</a>-<a href="./afu_lsp.html#robo32">scale</a>-warning t)
        ;; MDE Sat Aug 3 16:39:40 2019 -- should <a href="./slippery-chicken_lsp.html#robo852">shorten-large-fast-leaps</a> issue a
        ;; warning or not?
        (<a href="./sc-map_lsp.html#robo599">shorten</a>-large-fast-leaps-warning t)
@@ -113,7 +113,7 @@
        ;; Whether to automatically open PDF files generated with via <a href="./slippery-chicken_lsp.html#robo834">lp-display</a>.
        ;; Currently only works with SBCL and CCL on Mac OSX.
        (lp-display-auto-open #+sc-auto-open T #-sc-auto-open nil)
-       ;; Whether to automatically open MIDI files generated with via <a href="./set-map_lsp.html#robo661">midi-play</a>.
+       ;; Whether to automatically open MIDI files generated with via <a href="./slippery-chicken_lsp.html#robo836">midi-play</a>.
        ;; Currently only works with SBCL and CCL on Mac OSX.
        (midi-play-auto-open #+sc-auto-open T #-sc-auto-open nil)
        ;; MDE Sat Dec  7 11:56:24 2019 -- if a <a href="./pitch_lsp.html#robo295">pitch</a> has a mark included in this
@@ -230,7 +230,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/globals.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/globals.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

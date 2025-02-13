@@ -57,8 +57,8 @@
 <pre class="source">;;; insert the angle-env value of a <a href="./sndfile_lsp.html#robo299">sndfile</a> as an envelope on track 1 of 
 ;;; project.rpp and give it the duration of the <a href="./sndfile_lsp.html#robo299">sndfile</a>.
 (let ((snd (<a href="./sndfile_lsp.html#robo882">make-sndfile</a> "/E/sound.wav" :angle-env '(0 0 1 1 2 .5))))
-  (<strong>insert-envelope</strong> (<a href="./utilities_lsp.html#robo997">read-file-as-string</a> "/E/project.rpp")
-                   (<a href="#robo964">make-reaper-envelope</a> (angle-env snd)
+  (<strong>insert-envelope</strong> (<a href="./utilities_lsp.html#robo999">read-file-as-string</a> "/E/project.rpp")
+                   (<a href="#robo965">make-reaper-envelope</a> (angle-env snd)
                                          :env-type 'parmenv
                                          :parameter-slot 6)
                    1 0 (duration snd)))
@@ -104,7 +104,7 @@
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; insert the blue ripple binaural ambisonics decoder on the master track of 
 ;;; project.rpp
-(<strong>insert-plugin</strong> (<a href="./utilities_lsp.html#robo997">read-file-as-string</a> "/E/project.rpp") *blue-ripple-decoder* 0 t)
+(<strong>insert-plugin</strong> (<a href="./utilities_lsp.html#robo999">read-file-as-string</a> "/E/project.rpp") *blue-ripple-decoder* 0 t)
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">#+cl-ppcre
@@ -162,7 +162,7 @@
  you want to place on, say, a track which should become 5th order ambisonics,
  you can set this to 36. Note that all reaper tracks should have an even
  number of channels so however the channel number is achieved it will be
- rouned up to the <a href="./utilities_lsp.html#robo971">nearest</a> even number if necessary. Default = 2.
+ rouned up to the <a href="./utilities_lsp.html#robo972">nearest</a> even number if necessary. Default = 2.
  :max-channels. This can be set to override the number of channels of any
  given sound file, should it have more channels than you want, for some
  reason. Default = 4.
@@ -172,7 +172,7 @@
  details. Default = T.
  :indent. How far in to start the shorter sounds, as a function of their
  duration difference to the longest file (see above). 0.5 would have them
- centered bang in the <a href="./utilities_lsp.html#robo966">middle</a>. By default the golden mean, 0.618034 (what
+ centered bang in the <a href="./utilities_lsp.html#robo967">middle</a>. By default the golden mean, 0.618034 (what
  else?) i.e. (/ (- (sqrt 5) 1) 2).
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -321,7 +321,7 @@
  If a number, every automation envelope gets this duration -
  envs-use-end-times will be ignored in this case.
  envs-only. If t, don't write a file or insert any plugins, just re-write the
- envelopes. This is usefull if you <a href="./wolfram_lsp.html#robo1027">generate</a> a file with this function and 
+ envelopes. This is usefull if you <a href="./wolfram_lsp.html#robo1029">generate</a> a file with this function and 
  edited the project file by adding more tracks etc. (These should be added
  after the already existing ones). Then you could edit the envelopes of the
  sndfiles and set envs-only to t. This way, the file will stay the same
@@ -502,7 +502,7 @@
  If a number, every automation envelope gets this duration -
  envs-use-end-times will be ignored in this case.
  envs-only. If t, don't write a file or insert any plugins, just re-write the
- envelopes. This is usefull if you <a href="./wolfram_lsp.html#robo1027">generate</a> a file with this function and 
+ envelopes. This is usefull if you <a href="./wolfram_lsp.html#robo1029">generate</a> a file with this function and 
  edited the project file by adding more tracks etc. (These should be added
  after the already existing ones). Then you could edit the envelopes of the
  sndfiles and set envs-only to t. This way, the file will stay the same
@@ -601,14 +601,14 @@
 
  Creation date:    January 21st 2021
 
- $$ Last modified:  15:47:42 Thu Jun 27 2024 CEST
+ $$ Last modified:  14:15:08 Sat Jan 11 2025 CET
 
  SVN ID: $Id: <a href="./sclist_lsp.html#robo_top_of_doc">sclist.lsp</a> 963 2010-04-08 20:58:32Z medward2 $
 </pre>
 
 
 <a name="utilities2fmake2dreaper2denvelope"></a>
-<a name="robo964"></a><h2 class=robodoc>utilities/make-reaper-envelope [ Functions ]</h2>
+<a name="robo965"></a><h2 class=robodoc>utilities/make-reaper-envelope [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./utilities_lsp.html#robo21">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">AUTHOR</p>
@@ -626,7 +626,7 @@
  Usually the first x value would be 0, all following x values should be
  ascending numbers. The length of the envelope (meaning the value of the last
  x value isn't important here)
- Note that if you use <a href="./wolfram_lsp.html#robo1027">generate</a>-auotmation-data on the resulting
+ Note that if you use <a href="./wolfram_lsp.html#robo1029">generate</a>-auotmation-data on the resulting
  reaper-envelope object, y values will range from 0 to 1. The env list can
  obviously have y values greater than that, but those will be reduced
  modulo 1 (see env-mod). An envelope like '(0 0 1 3) would then result in
@@ -672,7 +672,7 @@
 
 
 <a name="utilities2fmake2dreaper2ditems4"></a>
-<a name="robo965"></a><h2 class=robodoc>utilities/make-reaper-items4 [ Functions ]</h2>
+<a name="robo966"></a><h2 class=robodoc>utilities/make-reaper-items4 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./utilities_lsp.html#robo21">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">AUTHOR</p>
@@ -699,15 +699,15 @@
 
 
 <a name="utilities2fpdivide2dreaper2dmarkers"></a>
-<a name="robo984"></a><h2 class=robodoc>utilities/pdivide-reaper-markers [ Functions ]</h2>
+<a name="robo985"></a><h2 class=robodoc>utilities/pdivide-reaper-markers [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./utilities_lsp.html#robo21">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Write to standard out (terminal/interpreter) marker data for a reaper file
- generated from calls to the <a href="./utilities_lsp.html#robo983">pdivide</a> function.
+ generated from calls to the <a href="./utilities_lsp.html#robo984">pdivide</a> function.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> Takes the same arguments as the <a href="./utilities_lsp.html#robo983">pdivide</a> function
+<pre> Takes the same arguments as the <a href="./utilities_lsp.html#robo984">pdivide</a> function
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T
@@ -718,18 +718,18 @@
 
 
 <a name="utilities2fpexpand2dreaper2dmarkers"></a>
-<a name="robo987"></a><h2 class=robodoc>utilities/pexpand-reaper-markers [ Functions ]</h2>
+<a name="robo989"></a><h2 class=robodoc>utilities/pexpand-reaper-markers [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./utilities_lsp.html#robo21">utilities</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 4th 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Using the <a href="./utilities_lsp.html#robo985">pexpand</a> function, we write marker information in a format which
+<pre> Using the <a href="./utilities_lsp.html#robo987">pexpand</a> function, we write marker information in a format which
  can be read by the Reaper (version 4/5+) DAW software. Though we can think
- of the outputs of <a href="./utilities_lsp.html#robo985">pexpand</a> to be in beats, seconds, bars, or any arbitrary
- <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>, the timings of Reaper markers are in seconds, hence the need here
- for an initial <a href="./tempo_lsp.html#robo300">tempo</a>. In other words, we treat the output of <a href="./utilities_lsp.html#robo985">pexpand</a> to be
+ of the outputs of <a href="./utilities_lsp.html#robo987">pexpand</a> to be in beats, seconds, bars, or any arbitrary
+ <a href="./afu_lsp.html#robo32">scale</a>, the timings of Reaper markers are in seconds, hence the need here
+ for an initial <a href="./tempo_lsp.html#robo300">tempo</a>. In other words, we treat the output of <a href="./utilities_lsp.html#robo987">pexpand</a> to be
  beat counts; if you would prefer to interpret these as bars, simply divide
  the <a href="./tempo_lsp.html#robo300">tempo</a> by the number of beats per bar. If there are to be <a href="./tempo_lsp.html#robo300">tempo</a> changes
  in the mix/<a href="./piece_lsp.html#robo58">piece</a> Reaper itself will update the markers' positions when the
@@ -742,8 +742,8 @@
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the <a href="./tempo_lsp.html#robo300">tempo</a> in BPM
- - the number of generations: see the <a href="./utilities_lsp.html#robo985">pexpand</a> function
- - (&amp;rest) the proportions: see the <a href="./utilities_lsp.html#robo985">pexpand</a> function
+ - the number of generations: see the <a href="./utilities_lsp.html#robo987">pexpand</a> function
+ - (&amp;rest) the proportions: see the <a href="./utilities_lsp.html#robo987">pexpand</a> function
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always T
@@ -800,7 +800,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/reaper.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/reaper.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

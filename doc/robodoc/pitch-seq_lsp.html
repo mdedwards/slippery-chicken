@@ -70,12 +70,12 @@
     by other <a href="./instruments_lsp.html#robo12">instruments</a>, then where in the available pitches the <a href="./event_lsp.html#robo202">lowest</a>
     number of the <a href="#robo641">pitch-seq</a> will be placed depends on whether the
     prefers-notes slot of the <a href="./instrument_lsp.html#robo294">instrument</a> has been set to be high or low. If
-    high, then the <a href="./chord_lsp.html#robo90">highest</a> number in the <a href="#robo641">pitch-seq</a> will result in the
-    <a href="./chord_lsp.html#robo90">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> in the available pitches that is in the <a href="./instrument_lsp.html#robo294">instrument</a>'s
+    high, then the <a href="./event_lsp.html#robo197">highest</a> number in the <a href="#robo641">pitch-seq</a> will result in the
+    <a href="./event_lsp.html#robo197">highest</a> <a href="./pitch_lsp.html#robo295">pitch</a> in the available pitches that is in the <a href="./instrument_lsp.html#robo294">instrument</a>'s
     range. If low, then the <a href="./event_lsp.html#robo202">lowest</a> number in the <a href="#robo641">pitch-seq</a> will result in
     the <a href="./event_lsp.html#robo202">lowest</a> <a href="./pitch_lsp.html#robo295">pitch</a> in the available pitches that is in the <a href="./instrument_lsp.html#robo294">instrument</a>'s
     range. If the user hasn't set this slot, then the range of the <a href="#robo641">pitch-seq</a>
-    will correspond to the <a href="./utilities_lsp.html#robo966">middle</a> of the available pitches.
+    will correspond to the <a href="./utilities_lsp.html#robo967">middle</a> of the available pitches.
 
     There are two caveats here if the <a href="./instrument_lsp.html#robo294">instrument</a>'s prefers-notes slot is
     NIL: 1) If the <a href="./event_lsp.html#robo202">lowest</a> number in the <a href="#robo641">pitch-seq</a> is 5 or higher, this will
@@ -97,7 +97,7 @@
  
  5) If at this point there are no available pitches, the function will by
     default trigger an error and exit (see however <a href="./pitch_lsp.html#robo295">pitch</a>-seq-no-pitches-error
-    in <a href="./globals_lsp.html#robo_top_of_doc">globals.lsp</a>). This could happen if the value of set-<a href="./sclist_lsp.html#robo637">limits</a>, both high
+    in <a href="./globals_lsp.html#robo11">globals.lsp</a>). This could happen if the value of set-<a href="./sclist_lsp.html#robo637">limits</a>, both high
     and low, took the available pitches outside of the <a href="./instrument_lsp.html#robo294">instrument</a>'s range,
     for instance.
  
@@ -116,7 +116,7 @@
  - A <a href="./player_lsp.html#robo296">player</a> object.
  - An <a href="./sc-set_lsp.html#robo648">sc-set</a> object.
  - A hint <a href="./pitch_lsp.html#robo295">pitch</a> (ignored for now).
- - A <a href="./pitch_lsp.html#robo295">pitch</a>-object defining the <a href="./chord_lsp.html#robo90">highest</a> possible note.
+ - A <a href="./pitch_lsp.html#robo295">pitch</a>-object defining the <a href="./event_lsp.html#robo197">highest</a> possible note.
  - A <a href="./pitch_lsp.html#robo295">pitch</a>-object defining the <a href="./event_lsp.html#robo202">lowest</a> possible note.
  - The sequence number (for diagnostics).
  - The last note of the previous sequence, as a <a href="./pitch_lsp.html#robo295">pitch</a> object.
@@ -206,7 +206,7 @@
 
 =&gt;
 PITCH-SEQ: notes: NIL
-<a href="./chord_lsp.html#robo90">highest</a>: 3
+<a href="./event_lsp.html#robo197">highest</a>: 3
 <a href="./event_lsp.html#robo202">lowest</a>: 1
 original-data: (1 2 1 1 3)
 user-id: T
@@ -225,7 +225,7 @@ data: (1 2 1 1 3)
 
 =&gt; 
 PITCH-SEQ: notes: NIL
-<a href="./chord_lsp.html#robo90">highest</a>: 3
+<a href="./event_lsp.html#robo197">highest</a>: 3
 <a href="./event_lsp.html#robo202">lowest</a>: 1
 original-data: (2 1 1 3 1)
 user-id: NIL
@@ -278,7 +278,7 @@ data: (2 1 1 3 1)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/pitch-seq.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/pitch-seq.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

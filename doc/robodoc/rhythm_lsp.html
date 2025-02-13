@@ -643,14 +643,14 @@ NI
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Add a specific mark and check to see if the <a href="#robo297">rhythm</a> object has it.
 (let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="./chord_lsp.html#robo70">add-mark</a> r 'a)
+  (<a href="./event_lsp.html#robo169">add-mark</a> r 'a)
   (<strong>has-mark</strong> r 'a))
 
 =&gt; (A)
 
 ;; Check to see if the given <a href="#robo297">rhythm</a> object possess a mark we know it doesn't. 
 (let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="./chord_lsp.html#robo70">add-mark</a> r 'a)
+  (<a href="./event_lsp.html#robo169">add-mark</a> r 'a)
   (<strong>has-mark</strong> r 's))
 
 =&gt; NIL
@@ -823,7 +823,7 @@ data: NIL
 <pre> September 14th 2018, Heidhausen
  
  DESCRIPTION return T or NIL depending on whether the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> is in the
- <a href="./utilities_lsp.html#robo966">middle</a> of a <a href="./slippery-chicken-edit_lsp.html#robo778">tie</a> (i.e. both tied-from or tied-to are T)
+ <a href="./utilities_lsp.html#robo967">middle</a> of a <a href="./slippery-chicken-edit_lsp.html#robo778">tie</a> (i.e. both tied-from or tied-to are T)
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> object
@@ -856,7 +856,7 @@ data: NIL
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Make a <a href="#robo297">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo409">add</a> the mark 'a, then replace 'a with 's
 (let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="./chord_lsp.html#robo70">add-mark</a> r 'a)
+  (<a href="./event_lsp.html#robo169">add-mark</a> r 'a)
   (<strong>replace-mark</strong> r 'a 's))
 
 =&gt; (S)
@@ -1103,14 +1103,14 @@ WARNING: <a href="#robo297">rhythm</a>::rm-marks: no mark ZIPPY in (X-HEAD COL-L
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Change the value of a <a href="#robo297">rhythm</a> object's duration value by a specified
- scaling <a href="./utilities_lsp.html#robo946">factor</a>. Bear in mind that after scaling, depending on the
+ scaling <a href="./utilities_lsp.html#robo947">factor</a>. Bear in mind that after scaling, depending on the
  complexity of the <a href="#robo297">rhythm</a>, the data slot may no longer accurately represent
  the new rhythmic value (though of course the value, duration, and rq, etc.,
  slots will). 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo297">rhythm</a> object.
- - A scaling <a href="./utilities_lsp.html#robo946">factor</a>.
+ - A scaling <a href="./utilities_lsp.html#robo947">factor</a>.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - &lt;<a href="./slippery-chicken_lsp.html#robo793">clone</a>&gt;. This argument determines whether a new <a href="#robo297">rhythm</a> object is made or
@@ -1147,7 +1147,7 @@ WARNING: <a href="#robo297">rhythm</a>::rm-marks: no mark ZIPPY in (X-HEAD COL-L
 <pre> September 29th 2020, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Sometimes you don't want to actually <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> a <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a>'s duration rather
+<pre> Sometimes you don't want to actually <a href="./afu_lsp.html#robo32">scale</a> a <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a>'s duration rather
  stretch it out with rests. This method will leave the <a href="#robo297">rhythm</a> object intact
  (or cloned) before then cloning it a given number of times but as a rest.
 </pre>
@@ -1280,7 +1280,7 @@ NIL
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/rhythm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/rhythm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -65,23 +65,23 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the specified <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree number as a note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol within
- the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>. An optional argument allows the user to specify that the
- <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree number should be used to get the note-name <a href="./pitch_lsp.html#robo295">pitch</a> from a
- different <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>. 
+<pre> Get the specified <a href="./afu_lsp.html#robo32">scale</a> degree number as a note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol within
+ the current <a href="./afu_lsp.html#robo32">scale</a>. An optional argument allows the user to specify that the
+ <a href="./afu_lsp.html#robo32">scale</a> degree number should be used to get the note-name <a href="./pitch_lsp.html#robo295">pitch</a> from a
+ different <a href="./afu_lsp.html#robo32">scale</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> An integer that is a <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree number.
+<pre> An integer that is a <a href="./afu_lsp.html#robo32">scale</a> degree number.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - The <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> from which the note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol associated with the
-   specified <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree is to be drawn.
+<pre> - The <a href="./afu_lsp.html#robo32">scale</a> from which the note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol associated with the
+   specified <a href="./afu_lsp.html#robo32">scale</a> degree is to be drawn.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>degree-to-note</strong> 127 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>)
+<pre class="source">(<strong>degree-to-note</strong> 127 'chromatic-<a href="./afu_lsp.html#robo32">scale</a>)
 
 =&gt; G9
 
@@ -94,7 +94,7 @@
 =&gt; EQF4
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>degree-to-note</strong> (degree &amp;optional (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defun <strong>degree-to-note</strong> (degree &amp;optional (<a href="./afu_lsp.html#robo32">scale</a> <a href="#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -103,14 +103,14 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the number of <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degrees in the span of one octave within the
+<pre> Return the number of <a href="./afu_lsp.html#robo32">scale</a> degrees in the span of one octave within the
  current tuning system.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - No arguments.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - An integer that is the number of <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degrees in each octave.
+<pre> - An integer that is the number of <a href="./afu_lsp.html#robo32">scale</a> degrees in each octave.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<a href="#robo136">in-scale</a> :chromatic)
@@ -124,7 +124,7 @@
 =&gt; 24
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>degrees-per-octave</strong> (&amp;optional (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defun <strong>degrees-per-octave</strong> (&amp;optional (<a href="./afu_lsp.html#robo32">scale</a> <a href="#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -133,21 +133,21 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the number of <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degrees per equal-tempered semitone in the current
- tuning <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>. 
+<pre> Get the number of <a href="./afu_lsp.html#robo32">scale</a> degrees per equal-tempered semitone in the current
+ tuning <a href="./afu_lsp.html#robo32">scale</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - No arguments
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - The <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> for which the number of degrees per semitone is to be
+<pre> - The <a href="./afu_lsp.html#robo32">scale</a> for which the number of degrees per semitone is to be
    retrieved.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> An integer.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>degrees-per-semitone</strong> 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>)
+<pre class="source">(<strong>degrees-per-semitone</strong> 'chromatic-<a href="./afu_lsp.html#robo32">scale</a>)
 
 =&gt; 1
 
@@ -160,7 +160,7 @@
 =&gt; 2
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>degrees-per-semitone</strong> (&amp;optional (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defun <strong>degrees-per-semitone</strong> (&amp;optional (<a href="./afu_lsp.html#robo32">scale</a> <a href="#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -169,13 +169,13 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> NB: If the specified <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>-degree number within the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> would
+<pre> NB: If the specified <a href="./afu_lsp.html#robo32">scale</a>-degree number within the current <a href="./afu_lsp.html#robo32">scale</a> would
      result in <a href="./pitch_lsp.html#robo295">pitch</a> outside of the maximum MIDI <a href="./pitch_lsp.html#robo295">pitch</a> range for that tuning
      (chromatic: C-1 to B10; quarter-tone: C-1 to BQS10; twelfth-tone: C-1
      to CTF11), the function will return an error.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> An integer that is a <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree number in the current tuning.
+<pre> An integer that is a <a href="./afu_lsp.html#robo32">scale</a> degree number in the current tuning.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbols.
@@ -237,22 +237,22 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree of the specified frequency in Hertz within the current
- <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>. 
+<pre> Get the <a href="./afu_lsp.html#robo32">scale</a> degree of the specified frequency in Hertz within the current
+ <a href="./afu_lsp.html#robo32">scale</a>. 
  
- NB: This method will return fractional <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degrees.
+ NB: This method will return fractional <a href="./afu_lsp.html#robo32">scale</a> degrees.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> A frequency in Hertz.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - The <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> in which to find the corresponding <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree.
+<pre> - The <a href="./afu_lsp.html#robo32">scale</a> in which to find the corresponding <a href="./afu_lsp.html#robo32">scale</a> degree.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree number. This may be a decimal number.
+<pre> A <a href="./afu_lsp.html#robo32">scale</a> degree number. This may be a decimal number.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>freq-to-degree</strong> 423 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>)
+<pre class="source">(<strong>freq-to-degree</strong> 423 'chromatic-<a href="./afu_lsp.html#robo32">scale</a>)
 
 =&gt; 68.317856
 
@@ -265,7 +265,7 @@
 =&gt; 136.63571
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>freq-to-degree</strong> (freq &amp;optional (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defun <strong>freq-to-degree</strong> (freq &amp;optional (<a href="./afu_lsp.html#robo32">scale</a> <a href="#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -301,21 +301,21 @@
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the note-name <a href="./pitch_lsp.html#robo295">pitch</a> equivalent of the specified frequency, rounded to
- the <a href="./utilities_lsp.html#robo971">nearest</a> <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree of the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>.
+ the <a href="./utilities_lsp.html#robo972">nearest</a> <a href="./afu_lsp.html#robo32">scale</a> degree of the current <a href="./afu_lsp.html#robo32">scale</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> A number that is a frequency in Hertz.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - The <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> in which the note-name <a href="./pitch_lsp.html#robo295">pitch</a> equivalent is to be sought (Common
- Music <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> object or symbol). If a symbol, then 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>,
+<pre> - The <a href="./afu_lsp.html#robo32">scale</a> in which the note-name <a href="./pitch_lsp.html#robo295">pitch</a> equivalent is to be sought (Common
+ Music <a href="./afu_lsp.html#robo32">scale</a> object or symbol). If a symbol, then 'chromatic-<a href="./afu_lsp.html#robo32">scale</a>,
  'twelfth-tone, or 'quarter-tone only at present.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>freq-to-note</strong> 423 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>)
+<pre class="source">(<strong>freq-to-note</strong> 423 'chromatic-<a href="./afu_lsp.html#robo32">scale</a>)
 
 =&gt; AF4
 
@@ -328,7 +328,7 @@
 =&gt; AQF4
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>freq-to-note</strong> (freq &amp;optional (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defun <strong>freq-to-note</strong> (freq &amp;optional (<a href="./afu_lsp.html#robo32">scale</a> <a href="#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -341,7 +341,7 @@
  order to achieve the specified frequency.
 
  NB: This will always return a positive value <a href="./utilities_lsp.html#robo925">between</a> 0.0 and 1.0, as
-     <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> always applies <a href="./pitch_lsp.html#robo295">pitch</a>-bends upwards from the <a href="./utilities_lsp.html#robo971">nearest</a>
+     <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> always applies <a href="./pitch_lsp.html#robo295">pitch</a>-bends upwards from the <a href="./utilities_lsp.html#robo972">nearest</a>
      chromatic note below the specified frequency. 
 
  NB: This value will be the same in all tuning scales.
@@ -368,21 +368,21 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Set the global <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> (tuning) for the current <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a>
+<pre> Set the global <a href="./afu_lsp.html#robo32">scale</a> (tuning) for the current <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a>
  environment. Current options are :chromatic, :quarter-tone or
  :twelfth-tone. See the file <a href="./cm-load_lsp.html#robo_top_of_doc">cm-load.lsp</a> for specifications and the html
  manual page "More about note-names and scales" for more details on use.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> (tuning) designation.
+<pre> - A <a href="./afu_lsp.html#robo32">scale</a> (tuning) designation.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the (new) Common Music <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> object
+<pre> the (new) Common Music <a href="./afu_lsp.html#robo32">scale</a> object
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>in-scale</strong> :chromatic)
 
-=&gt; #&lt;tuning "chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>"&gt;
+=&gt; #&lt;tuning "chromatic-<a href="./afu_lsp.html#robo32">scale</a>"&gt;
 
 (<strong>in-scale</strong> :quarter-tone)
 
@@ -393,7 +393,7 @@
 =&gt; #&lt;tuning "twelfth-tone"&gt;
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>in-scale</strong> (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>)
+<pre class="source">(defun <strong>in-scale</strong> (<a href="./afu_lsp.html#robo32">scale</a>)
 </pre>
 
 
@@ -432,14 +432,14 @@
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Convert the specified MIDI note number to the degree number of the current
- <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>. 
+ <a href="./afu_lsp.html#robo32">scale</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A MIDI note number.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - An integer that is the <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>-degree equivalent of the specified MIDI note
-   number in the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>.
+<pre> - An integer that is the <a href="./afu_lsp.html#robo32">scale</a>-degree equivalent of the specified MIDI note
+   number in the current <a href="./afu_lsp.html#robo32">scale</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<a href="#robo136">in-scale</a> :chromatic)
@@ -458,7 +458,7 @@
 =&gt; 128
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>midi-to-degree</strong> (midi-note &amp;optional (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defun <strong>midi-to-degree</strong> (midi-note &amp;optional (<a href="./afu_lsp.html#robo32">scale</a> <a href="#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -499,7 +499,7 @@
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - a MIDI note number: integer or float. If float, appropriate microtones
- will be returned if the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> is <a href="./event_lsp.html#robo209">microtonal</a> (e.g. (<a href="#robo136">in-scale</a>
+ will be returned if the current <a href="./afu_lsp.html#robo32">scale</a> is <a href="./event_lsp.html#robo209">microtonal</a> (e.g. (<a href="#robo136">in-scale</a>
  :quarter-tone)) 
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -512,7 +512,7 @@
 =&gt;CQS4
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>midi-to-note</strong> (midi-note &amp;optional (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defun <strong>midi-to-note</strong> (midi-note &amp;optional (<a href="./afu_lsp.html#robo32">scale</a> <a href="#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -549,20 +549,20 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo4">cm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree number of the specified note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol within
- the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>. 
+<pre> Get the <a href="./afu_lsp.html#robo32">scale</a> degree number of the specified note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol within
+ the current <a href="./afu_lsp.html#robo32">scale</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A note-name <a href="./pitch_lsp.html#robo295">pitch</a> symbol.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - The <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> in which to find the <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>-degree of the specified <a href="./pitch_lsp.html#robo295">pitch</a>.
+<pre> - The <a href="./afu_lsp.html#robo32">scale</a> in which to find the <a href="./afu_lsp.html#robo32">scale</a>-degree of the specified <a href="./pitch_lsp.html#robo295">pitch</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An integer that is a <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> degree in the current <a href="./rthm-seq-palette_lsp.html#robo550">scale</a>.
+<pre> An integer that is a <a href="./afu_lsp.html#robo32">scale</a> degree in the current <a href="./afu_lsp.html#robo32">scale</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(<strong>note-to-degree</strong> 'AF4 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>)
+<pre class="source">(<strong>note-to-degree</strong> 'AF4 'chromatic-<a href="./afu_lsp.html#robo32">scale</a>)
 
 =&gt; 68
 
@@ -575,7 +575,7 @@
 =&gt; 136
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>note-to-degree</strong> (note &amp;optional (<a href="./rthm-seq-palette_lsp.html#robo550">scale</a> <a href="#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo550">scale</a>*))
+<pre class="source">(defun <strong>note-to-degree</strong> (note &amp;optional (<a href="./afu_lsp.html#robo32">scale</a> <a href="#robo4">cm</a>::*<a href="./afu_lsp.html#robo32">scale</a>*))
 </pre>
 
 
@@ -648,13 +648,13 @@
 <pre> Set the frequency of the note A4 (the diapason). By default, in slippery
  chicken (and common music) this is 440 Hertz. If this function is called, it
  will change the diapason for all currently defined scales, and thus will
- affect all calculations in any <a href="./rthm-seq-palette_lsp.html#robo550">scale</a> that converts to or from frequency.
+ affect all calculations in any <a href="./afu_lsp.html#robo32">scale</a> that converts to or from frequency.
 
  NB Explicit calling of this function is discouraged. Use instead something
  like this: (set-sc-config 'diapason 442)
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the new frequency of the note A4 (<a href="./utilities_lsp.html#robo966">middle</a> A: i.e. the note played by the
+<pre> - the new frequency of the note A4 (<a href="./utilities_lsp.html#robo967">middle</a> A: i.e. the note played by the
    oboe when a western orchestra tunes). (For internal use, if this is NIL,
    the frequency of the <a href="./event_lsp.html#robo202">lowest</a> A will be returned.)
 </pre>
@@ -669,7 +669,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/cm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/cm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:46</p>
 </div> <!-- footer -->
 </body>
 </html>

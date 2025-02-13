@@ -109,7 +109,7 @@
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the <a href="./sndfile_lsp.html#robo299">sndfile</a> whose frequency slot is <a href="./utilities_lsp.html#robo971">nearest</a> to the first argument.
+<pre> Get the <a href="./sndfile_lsp.html#robo299">sndfile</a> whose frequency slot is <a href="./utilities_lsp.html#robo972">nearest</a> to the first argument.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - the frequency we're looking for, in Hertz (a number)
@@ -122,7 +122,7 @@
  (see also the <a href="#robo871">get-nearest-by-freq</a> function)
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the <a href="./utilities_lsp.html#robo971">nearest</a> <a href="./sndfile_lsp.html#robo299">sndfile</a> object
+<pre> the <a href="./utilities_lsp.html#robo972">nearest</a> <a href="./sndfile_lsp.html#robo299">sndfile</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-nearest</strong> (freq (sfp <a href="./sndfile_lsp.html#robo299">sndfile</a>-<a href="./palette_lsp.html#robo424">palette</a>) &amp;optional ids random)
@@ -149,11 +149,11 @@
 <pre> - T or NIL to indicate whether a random file should be chosen when there are
    several sndfiles with the same frequency. (NB the function <a href="./permutations_lsp.html#robo325">random-rep</a> will
    be used so if you wanted repeatable results call (<a href="./permutations_lsp.html#robo325">random-rep</a> 1 t) in order
-   to <a href="./sndfilenet_lsp.html#robo896">reset</a> the random seed before calling <a href="./slippery-chicken_lsp.html#robo792">clm-play</a> or whatever context uses
+   to <a href="./circular-sclist_lsp.html#robo122">reset</a> the random seed before calling <a href="./slippery-chicken_lsp.html#robo792">clm-play</a> or whatever context uses
    this function.) Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the <a href="./utilities_lsp.html#robo971">nearest</a> <a href="./sndfile_lsp.html#robo299">sndfile</a> object
+<pre> the <a href="./utilities_lsp.html#robo972">nearest</a> <a href="./sndfile_lsp.html#robo299">sndfile</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>get-nearest-by-freq</strong> (freq sflist &amp;optional random)
@@ -415,7 +415,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo315">sndfile-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Automatically <a href="./wolfram_lsp.html#robo1027">generate</a> a <a href="#robo315">sndfile-palette</a> object using the specified sound
+<pre> Automatically <a href="./wolfram_lsp.html#robo1029">generate</a> a <a href="#robo315">sndfile-palette</a> object using the specified sound
  file from grouping defined in the specified wavelab marker file.
 
  The &lt;marker-file&gt; argument can be passed as a list of marker files, in
@@ -517,7 +517,7 @@ splinter: 2 sounds
 <pre> - the default frequency of the sound files: either a <a href="./pitch_lsp.html#robo295">pitch</a> symbol, a
    frequency in Hertz, 'detect for autocorrelation <a href="./pitch_lsp.html#robo295">pitch</a> detection, or a
    function to be called to e.g. extract the <a href="./pitch_lsp.html#robo295">pitch</a> from the file name or use
-   another <a href="./pitch_lsp.html#robo295">pitch</a> detection method. Default = 'C4 (<a href="./utilities_lsp.html#robo966">middle</a> C)
+   another <a href="./pitch_lsp.html#robo295">pitch</a> detection method. Default = 'C4 (<a href="./utilities_lsp.html#robo967">middle</a> C)
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> a <a href="#robo315">sndfile-palette</a> object with appropriate groups as read from the reaper
@@ -690,7 +690,7 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/sndfile-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2024-11-12 20:37:48</p>
+<p>Generated from ./../../src/sndfile-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:45</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  14:07:56 Sat Feb 15 2025 CET
+;;; $$ Last modified:  14:33:38 Sat Feb 15 2025 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -639,10 +639,15 @@
 ;;; file that's neither a sound file nor a video, e.g. a PNG, which reaper can
 ;;; display as a video and which can be passed a duration. In this case none of
 ;;; the usual parsing will be done to discover duration, channels etc.
-(defun make-reaper-item-blind (path time duration &optional (track "blind"))
+(defun make-reaper-item-blind (path time duration &key (track "blind")
+                                    ;; pass T if the item should be treated as
+                                    ;; video, otherwise it'll be treated as
+                                    ;; sound 
+                                    has-video-codec)
   (let ((ri (make-reaper-item-fast
              (list 'path path 'start-time time 'init-update nil 'track track
                    'channels 2 'duration duration))))
+    (setf (has-video-codec ri) has-video-codec)
     (set-name-from-path ri)
     ri))
 

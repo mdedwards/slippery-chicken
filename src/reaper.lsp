@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  14:07:01 Sat Feb 15 2025 CET
+;;; $$ Last modified:  14:07:56 Sat Feb 15 2025 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -637,7 +637,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Feb 15 14:06:59 2025, Heidhausen -- in case you just want to place a
 ;;; file that's neither a sound file nor a video, e.g. a PNG, which reaper can
-;;; display as a video and which can be passed a duration.
+;;; display as a video and which can be passed a duration. In this case none of
+;;; the usual parsing will be done to discover duration, channels etc.
 (defun make-reaper-item-blind (path time duration &optional (track "blind"))
   (let ((ri (make-reaper-item-fast
              (list 'path path 'start-time time 'init-update nil 'track track

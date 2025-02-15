@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:34:06 Fri Feb  7 2025 CET
+;;; $$ Last modified:  12:37:29 Sat Feb 15 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6704,7 +6704,7 @@ yes_foo, 1 2 3 4;
 |#
 ;;; SYNOPSIS
 (defun os-format-path (path &optional type)
-;;; ****  
+;;; ****
   (let* ((new-path (substitute #\/ #\: path))
          (device (if (char= #\/ (elt path 0))
                      (second (pathname-directory path))

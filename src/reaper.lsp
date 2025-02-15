@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  12:17:51 Sat Feb 15 2025 CET
+;;; $$ Last modified:  14:07:01 Sat Feb 15 2025 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -632,6 +632,17 @@
     (loop for slot in slots-list by #'cddr
           and value in (rest slots-list) by #'cddr do
             (setf (slot-value ri slot) value))
+    ri))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Feb 15 14:06:59 2025, Heidhausen -- in case you just want to place a
+;;; file that's neither a sound file nor a video, e.g. a PNG, which reaper can
+;;; display as a video and which can be passed a duration.
+(defun make-reaper-item-blind (path time duration &optional (track "blind"))
+  (let ((ri (make-reaper-item-fast
+             (list 'path path 'start-time time 'init-update nil 'track track
+                   'channels 2 'duration duration))))
+    (set-name-from-path ri)
     ri))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  14:20:55 Sat Jan 11 2025 CET
+;;; $$ Last modified:  12:16:23 Sat Feb 15 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -81,7 +81,7 @@
    (distance-env :accessor distance-env :type list :initarg :distance-env
                  :initform '(0 1  100 1))
    ;; MDE Fri Mar 22 09:58:25 2024, Heidhausen -- calling update is expensive so
-   ;; some init routines like make-sndfile  might want to put this off when
+   ;; some init routines like make-sndfile might want to put this off when
    ;; make-instance is called so that they can explicitly call update later
    (init-update :accessor init-update :type boolean :initarg :init-update
                 :initform t)

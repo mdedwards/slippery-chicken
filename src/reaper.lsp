@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    January 21st 2021
 ;;;
-;;; $$ Last modified:  14:15:08 Sat Jan 11 2025 CET
+;;; $$ Last modified:  12:17:51 Sat Feb 15 2025 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -242,10 +242,10 @@
           "~%REAPER-ITEM: fade-in: ~,3f, fade-out: ~,3f, play-rate: ~,3f, ~
            ~%preserve-pitch: ~a, start-time: ~a, name: ~a,~%track: ~a ~
            ~%slider-vol: ~a, item-vol: ~a, pan: ~a, transposition: ~a, ~
-           ~%backwards: ~a"
+           ~%backwards: ~a, skip-init: ~a"
           (fade-in ri) (fade-out ri) (play-rate ri) (preserve-pitch ri)
           (start-time ri) (name ri) (track ri) (slider-vol ri) (item-vol ri)
-          (pan ri) (transposition ri) (backwards ri)))
+          (pan ri) (transposition ri) (backwards ri) (skip-init ri)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod clone ((ri reaper-item))
@@ -260,6 +260,7 @@
           (slot-value vidfile 'preserve-pitch) (preserve-pitch ri)
           (slot-value vidfile 'start-time) (start-time ri)
           (slot-value vidfile 'name) (name ri)
+          (slot-value vidfile 'skip-init) (skip-init ri)
           (slot-value vidfile 'track) (track ri)
           (slot-value vidfile 'backwards) (backwards ri)
           (slot-value vidfile 'transposition) (transposition ri)

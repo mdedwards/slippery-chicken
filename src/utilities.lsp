@@ -6680,6 +6680,9 @@ yes_foo, 1 2 3 4;
 ;;; Windows:  "E:"
 ;;; Unix:     "/E/"
 ;;; If type is nil it will be set to the system this function was called on.
+;;; If a path does not contain a device-name, it is left unchanged.
+;;; A device-name is detected, when the name of the first directory consists
+;;; of only one letter and the path does not start with a ./ or ~/
 ;;; 
 ;;; ARGUMENTS
 ;;; - a string representing a path
@@ -6701,35 +6704,35 @@ yes_foo, 1 2 3 4;
 => "E:/samples/kicks/kick.wav"
 (os-format-path "E:/samples/kicks/kick.wav" 'windows)
 => "E:/samples/kicks/kick.wav"
+(os-format-path "./test.lsp" 'windows)
+=> "./test.lsp"
+(os-format-path "test.lsp" 'unix)
+=> "test.lsp"
 |#
 ;;; SYNOPSIS
 (defun os-format-path (path &optional type)
 ;;; ****
-  (let* ((new-path (substitute #\/ #\: path))
-         (device (if (char= #\/ (elt path 0))
-                     (second (pathname-directory path))
-                     (format nil "~{~a~}"
-                             (loop with break until break for i from 0 collect
-                                  (let ((this (elt path i))
-                                        (next (elt path (1+ i))))
-                                    (when (or (char= #\: next)
-                                              (char= #\/ next))
-                                      (setf break t))
-                                    this)))))
-         (helper (subseq new-path (1+ (position #\/ new-path :start 1))))
-         (rest (if (and (> (length helper) 0) (char= #\/ (elt helper 0)))
-                   helper
-                   (format nil "/~a" helper))))
-    (unless type
-      (setf type
-            #+(or win32 win64) 'windows
-            #-(or win32 win64) 'unix))
-    ;; intering the symbol is nicer when calling this from other packages
-    (case (intern (string type) :sc)
-      ((unix linux) (format nil "/~a~a" device rest))
-      ((or windows) (format nil "~a:~a" device rest))
-      ;; if type is unknown, no error but unix type path:
-      (t (format nil "/~a~a" device rest)))))
+  (check-type path string)
+  ;; input should be longer than 1, else return input.
+  (when (<= (length path) 1) (return-from os-format-path path))
+  (let* ((split-path (uiop:split-string path :separator '(#\/ #\\ #\:)))
+	 (elements (loop for e in split-path when (> (length e) 0) collect e))
+	 (device? (first elements)))
+    ;; If first directory is definietly not a device name, return path unchanged
+    (if (or (not (= (length device?) 1))
+	    (member device? '("." "~") :test #'string=))
+	path
+	;; else modify path accordingly
+	(progn
+	  (unless type
+	    (setf type
+		  #+(or win32 win64) 'windows
+		  #-(or win32 win64) 'unix))
+	  ;; intering the symbol is nicer when calling this from other packages
+	  (case (intern (string type) :sc)
+	    ((windows) (format nil "~a:~{/~a~}" device? (subseq elements 1)))
+	    ;; if type is not windows, unix style formatting
+	    (t (format nil "/~a~{/~a~}" device? (subseq elements 1))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; helper/main worker for smooth-procession

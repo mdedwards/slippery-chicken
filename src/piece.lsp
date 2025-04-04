@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  12:08:32 Mon Dec 20 2021 CET
+;;; $$ Last modified:  14:56:43 Fri Apr  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -722,9 +722,12 @@ BAR-HOLDER:
                      (dur dur-tmpo)
                    (get-tied-durations p bar-num event-num
                                        player)
-                 (setf (compound-duration event) (+ (duration event) 
-                                                    dur)
-                       (compound-duration-in-tempo event) 
+                 (setf (slot-value event 'compound-duration)
+                       (+ (duration event)  dur)
+                       ;; MDE Fri Apr  4 14:56:34 2025, Heidhausen -- use
+                       ;; slot-value rather than direct setf due to new setf
+                       ;; methods 
+                       (slot-value event 'compound-duration-in-tempo)
                        (+ (duration-in-tempo event) dur-tmpo)
                        (end-time event) 
                        (+ (start-time event)

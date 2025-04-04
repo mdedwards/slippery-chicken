@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    15th December 2011
 ;;;
-;;; $$ Last modified:  12:23:02 Mon Sep  2 2024 CEST
+;;; $$ Last modified:  15:18:00 Fri Apr  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id: rthm-seq-bar.lsp 509 2011-12-14 20:35:27Z reed@seanreed.ie $
 ;;;
@@ -44,6 +44,7 @@
 
 (in-package :sc)
 
+(proclaim '(special +mini+))
 ;;; 08.12.2011 SAR: Added a new global variable to hold the complete list of
 ;;; all tests named as they're made. (This is a crude approach, I know.)
 (defparameter *sc-test-name* nil)

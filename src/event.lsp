@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:09:18 Mon Sep  2 2024 CEST
+;;; $$ Last modified:  15:58:08 Fri Apr  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -589,6 +589,21 @@
            ;; Enspire 3.10.00 
            (sost (pedal 127 66))
            (sost-up (pedal 0 66))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr 4 12:58:13 2025, Heidhausen -- ideally we'd also set duration
+;;; and compound-duration slots from the rhythm class but that would mean
+;;; working at what the new values should be with a tempo of 60 (as opposed to
+;;; whatever we're working with at this point in the piece). Doable but too much
+;;; overhead for too little gain, esp. because once we need the *-in-tempo slots
+;;; then the rhythm slots are (generally) no longer of interest.
+(defmethod (setf duration-in-tempo) (value (e event))
+  (handle-duration-type-changes e value 'duration-in-tempo
+                                'compound-duration-in-tempo))
+
+(defmethod (setf compound-duration-in-tempo) (value (e event))
+  (handle-duration-type-changes e value 'compound-duration-in-tempo
+                                'duration-in-tempo))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/add-mark
@@ -1474,13 +1489,13 @@ NIL
 
 ;;; ****m* event/inc-duration
 ;;; DESCRIPTION
-;;; Increase the duration of a given event object by a specified time in
-;;; seconds. This will also result in new values for the end-time,
-;;; duration-in-tempo, compound-duration, and compound-duration-in-tempo slots. 
+;;; Increase the duration-in-tempo of a given event object by a specified time
+;;; in seconds. This will also result in a new value for the end-time and
+;;; compound-duration-in-tempo slots.
 ;;;
 ;;; NB: Changing this value directly could result in incorrect timing info in a
-;;;     bar. Also, the *-in-duration slots are changed by the same amount as the
-;;;     other slots, i.e. tempo does not play a role here 
+;;;     bar so use with caution (e.g. via make-hammer-friendly)) or use
+;;; setf/incf the duration / compound-duration slots directly.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -1532,8 +1547,13 @@ NIL
            (numberp (end-time e)))
       (progn
         (incf (duration-in-tempo e) inc)
-        (incf (compound-duration-in-tempo e) inc)
-        (incf (compound-duration e) inc)
+        ;; MDE Fri Apr  4 15:43:21 2025, Heidhausen -- handled by new setf
+        ;; methods  
+        ;; (incf (compound-duration-in-tempo e) inc)
+        ;; MDE Fri Apr  4 15:56:11 2025, Heidhausen -- don't do either of these:
+        ;; it's just the in-tempo durations we're interested in
+        ;; (incf (compound-duration e) inc)
+        ;; (incf (duration e) inc)
         (incf (end-time e) inc))
       (error "~a~%~%event::inc-duration: can't increment non-number slots ~
               duration-in-tempo, compound-duration-in-tempo, end-time."

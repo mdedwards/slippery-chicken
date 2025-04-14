@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  12:09:13 Wed Jul 17 2024 CEST
+;;; $$ Last modified:  16:20:48 Fri Apr  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -68,7 +68,7 @@
    ;; passable to the rq function
    ;; when compound rhythms are given (e.g. q+s.), the value of all the rhythms
    ;; together; this will only be set for the first of the compound, the others
-   ;; will be nil.  When rthm-seqs are made, this slot is calculated.  This is
+   ;; will be nil. When a piece is made, this slot is updated.  This is
    ;; still with reference to qtr=60.  
    (compound-duration :accessor compound-duration :type number :initform -1)
    ;; rq is in relation to quarter notes so rq of q is 1, e is 1/2, w is 4 etc.
@@ -144,8 +144,10 @@
          (parse-rhythm i)
          (unless (id i)
            (setf (id i) (data i))))
-        ((duration i) ;; no letter associated with this 
-         (setf (compound-duration i) (duration i)
+        ((duration i) ;; no letter associated with this
+         ;; MDE Fri Apr  4 13:08:42 2025, Heidhausen -- use slot-value rather
+         ;; than direct setf so as to avoid setf method
+         (setf (slot-value i 'compound-duration) (duration i)
                (rq i) (rationalize (duration i))
                (value i) (/ 4.0 (duration i)))))
   (update-needs-new-note i))
@@ -222,7 +224,7 @@
         (is-tied-from r) nil
         ;; MDE Fri Jan 23 16:43:44 2015 -- strange this hasn't caused errors
         ;; before now...anyway, compound-duration only applies to tied notes
-        (compound-duration r) (duration r)
+        (slot-value r 'compound-duration) (duration r)
         (is-rest r) t)
   ;; 22.7.11 (Pula)
   (rm-marks r '(beg-sl end-sl) nil)
@@ -305,6 +307,22 @@
     r))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr  4 12:58:13 2025, Heidhausen. When duration slot changes then
+;;; compound-duration also: note that this is not an :after method otherwise
+;;; things get messy 
+
+(defmethod handle-duration-type-changes ((r rhythm) new-value slot related-slot)
+  (let ((diff (- new-value (slot-value r slot))))
+    (setf (slot-value r slot) new-value
+          (slot-value r related-slot) (+ diff (slot-value r related-slot)))))
+
+(defmethod (setf duration) (value (r rhythm))
+  (handle-duration-type-changes r value 'duration 'compound-duration))
+
+(defmethod (setf compound-duration) (value (r rhythm))
+  (handle-duration-type-changes r value 'compound-duration 'duration))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rhythm/scale
 ;;; DESCRIPTION
 ;;; Change the value of a rhythm object's duration value by a specified
@@ -354,7 +372,9 @@
               ;; MDE Tue Feb  7 20:40:40 2017
               (letter-value r) (/ (letter-value r) (nearest-power-of-2 scaler))
               (duration r) (* (duration r) scaler)
-              (compound-duration r) (* (compound-duration r) scaler)
+              ;; MDE Fri Apr  4 16:20:31 2025, Heidhausen -- no longer necessary
+              ;; as done in new setf method 
+              ;; (compound-duration r) (* (compound-duration r) scaler)
               (rq r) (rationalize (* (rq r) scaler))
               (undotted-value r) (/ (undotted-value r) scaler)
               (num-flags r) (rthm-num-flags (undotted-value r)))
@@ -1373,9 +1393,6 @@ NIL
   (arithmetic r1 r2 #'+ warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 22.12.11 SAR: Added robodoc info
-
 ;;; ****m* rhythm/subtract 
 ;;; DESCRIPTION
 ;;; Create a new rhythm object with a duration that is equal to the difference
@@ -2408,10 +2425,12 @@ data: (
                                          rq) ;; (cmn::rq rq)
                   (value rhythm-object) value
                   ;; set duration to be the duration in seconds when qtr = 60
-                  (duration rhythm-object) (if (zerop value) 
-                                               0.0 
-                                               (/ 4.0 value))
-                  (compound-duration rhythm-object) (duration rhythm-object)
+                  ;; MDE Fri Apr  4 13:11:02 2025, Heidhausen -- use slot-value
+                  ;; to avoid setf methods
+                  (slot-value rhythm-object 'duration) (if (zerop value) 
+                                                         0.0 
+                                                         (/ 4.0 value))
+                  (slot-value rhythm-object 'compound-duration) (duration rhythm-object)
                   (num-dots rhythm-object) num-dots
                   ;; 30.1.11 next two for lilypond
                   ;; MDE Wed Jun 24 17:25:41 2015 -- this used to just be

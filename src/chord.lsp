@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  13:31:58 Tue Aug 27 2024 CEST
+;;; $$ Last modified:  19:33:32 Wed Apr  9 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2696,7 +2696,7 @@ data: (
 (defmethod single-pitch-chord-to-pitch ((c chord))
 ;;; ****
   (when (= (length (data c)) 1)
-    (setf c (first (data c))))
+    (setq c (first (data c))))
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

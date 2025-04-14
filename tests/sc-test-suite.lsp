@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  20:35:07 Thu Jan  9 2025 CET
+;;; $$ Last modified:  16:17:11 Fri Apr  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -572,7 +572,7 @@
              '((H.) (E E) ("E." E. E) (Q)))
       (not (split rsb :max-beats 1)))))
 
-;;; MDE
+;;; MDE 
 (sc-deftest test-consolidate ()
   (let ((rs (make-rthm-seq 
              '(7 ((((2 4) h)
@@ -2424,6 +2424,31 @@
       (setf (pitch-or-chord (get-note mini 1 2 'vc)) '(ds4 fs4))
       (add-mark (get-note mini 1 2 'vc) "hello chord text marks")
       (write-xml mini))))
+
+;;; MDE Fri Apr  4 12:46:58 2025, Heidhausen
+(sc-deftest test-event-incf-durs ()
+  (let ((r (make-rhythm 's))
+        ;; NB this depends on test-event-write-xml having just been called with
+        ;; that e+e. compound rhythm  
+        (e (clone (get-event +mini+ 1 3 'vn))))
+    (sc-test-check
+      (incf (duration r) 0.05)
+      (equal-within-tolerance 0.3 (duration r))
+      (equal-within-tolerance 0.3 (compound-duration r))
+      (incf (compound-duration r) 1)
+      (equal-within-tolerance 1.3 (duration r))
+      (equal-within-tolerance 1.3 (compound-duration r))
+      (setf (duration r) .31)
+      (equal-within-tolerance .31 (compound-duration r))
+      ;; now event class: d in tempo = 0.5, compound in tempo 1.25
+      (incf (duration-in-tempo e) 0.5)
+      (equal-within-tolerance 1.0 (duration-in-tempo e))
+      (equal-within-tolerance 1.75 (compound-duration-in-tempo e))
+      (incf (compound-duration-in-tempo e) 1)
+      (equal-within-tolerance 2 (duration-in-tempo e))
+      (equal-within-tolerance 2.75 (compound-duration-in-tempo e))
+      (setf (compound-duration-in-tempo e) 3.1)
+      (equal-within-tolerance 2.35 (duration-in-tempo e)))))
 
 ;;; MDE Tue Jul 16 13:10:42 2019 
 (sc-deftest test-event-common-notes ()
@@ -7523,7 +7548,7 @@
       (file-write-ok "/tmp/msp-mcft.txt" 45)
       (file-write-ok "/tmp/msp-mcfm.txt" 45))))
 
-;;; MDE Sat May 18 13:32:24 2013 
+;;; MDE Sat May 18 13:32:24 2013  
 (sc-deftest test-ring-mod-piece ()
   (labels
       ((make-rm-rsm-aux (num-seqs num-rthm-seqs ins)

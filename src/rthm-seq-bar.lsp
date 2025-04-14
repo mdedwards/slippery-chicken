@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:19:26 Thu Sep  5 2024 CEST
+;;; $$ Last modified:  16:19:28 Fri Apr  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6586,7 +6586,7 @@ rsb-rb)
         (print-rhythms-rqs rhythms)
         (print-rhythms-rqs result)
         (error "~%rthm-seq-bar::consolidate-notes-aux: bar num: ~a ~
-                Consolidated rthms sum (~a) != previous sum (~a)"
+                Consolidated rthms sum ~% (~a) != previous sum (~a)"
                bar-num sum-consol sum))
       ;; (print 'consolidate-notes-aux-out)
       ;; (print-rhythms-rqs result)
@@ -6864,7 +6864,7 @@ rsb-rb)
 |#
 ;;; SYNOPSIS
 (defun events-update-time (events &key (start-time 0.0) start-time-qtrs
-                                    max-start-time (tempo 60.0))
+                                  max-start-time (tempo 60.0))
 ;;; ****
   (unless (typep tempo 'tempo)
     (setf tempo (make-tempo tempo)))
@@ -6874,31 +6874,34 @@ rsb-rb)
   (let ((qtr-dur (qtr-dur tempo))
         (time start-time)
         (time-qtrs (if start-time-qtrs
-                       start-time-qtrs
-                       (/ start-time (if (tempo-p tempo)
-                                         (beat-dur tempo)
-                                         (/ 60.0 tempo)))))
+                     start-time-qtrs
+                     (/ start-time (if (tempo-p tempo)
+                                     (beat-dur tempo)
+                                     (/ 60.0 tempo)))))
         result)
     (loop for event in events do
-       ;; MDE Mon Sep 30 18:18:34 2019 -- do this here too so that we can access
-       ;; most probable midi channels of rests (for pedals etc.). This is a good
-       ;; place as this gets called eventually via update-slots, which is called
-       ;; at init
-         (set-last-midi-channel event)
-         (if (or (not max-start-time) (<= time max-start-time))
-             (progn
-               (setf (start-time event) time
-                     (start-time-qtrs event) time-qtrs
-                     (duration-in-tempo event) (* (duration event) qtr-dur)
-                     (compound-duration-in-tempo event) 
-                     (* (compound-duration event) qtr-dur)
-                     (end-time event) (+ (start-time event) 
-                                         (compound-duration-in-tempo event)))
-               (push event result)
-               (incf time-qtrs (duration event))
-               (incf time (duration-in-tempo event)))
-             ;; we've reached max-start-time
-             (return)))
+      ;; MDE Mon Sep 30 18:18:34 2019 -- do this here too so that we can access
+      ;; most probable midi channels of rests (for pedals etc.). This is a good
+      ;; place as this gets called eventually via update-slots, which is called
+      ;; at init
+      (set-last-midi-channel event)
+      (if (or (not max-start-time) (<= time max-start-time))
+        (progn
+          (setf (start-time event) time
+                (start-time-qtrs event) time-qtrs
+                ;; MDE Fri Apr  4 15:27:02 2025, Heidhausen -- slot-value
+                ;; now because of the setf methods  
+                (slot-value event 'duration-in-tempo)
+                (* (duration event) qtr-dur)
+                (slot-value event 'compound-duration-in-tempo)
+                (* (compound-duration event) qtr-dur)
+                (end-time event) (+ (start-time event) 
+                                    (compound-duration-in-tempo event)))
+          (push event result)
+          (incf time-qtrs (duration event))
+          (incf time (duration-in-tempo event)))
+        ;; we've reached max-start-time
+        (return)))
     (values (nreverse result) time)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

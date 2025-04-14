@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  15:47:19 Sat Mar 16 2024 CET
+;;; $$ Last modified:  19:34:19 Wed Apr  9 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -530,6 +530,9 @@
                      (get-data (list seq-num (id instrument))
                      (used-notes set)))
                      |#
+                     ;; MDE Wed Apr  9 19:32:19 2025, Heidhausen
+                     (when (chord-p note)
+                       (setq note (single-pitch-chord-to-pitch note)))
                      (setf last note)
                    collect note)))
           (when (get-sc-config 'verbose-pitch-selection)

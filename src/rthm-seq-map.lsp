@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:42:38 Wed Jan 31 2024 CET
+;;; $$ Last modified:  15:06:07 Mon Apr 14 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1114,7 +1114,11 @@ Each instrument must have the same number of sequences for any given section:
                      do
                         ;; (print section) (print player)
                         (when (and plen  (/= len plen))
-                          (error "blah"))))))
+                          (error "rthm-seq-map::check-num-sequences: ~
+                                  In rthm-seq-map ~a, instrument ~a: ~
+                                ~%Each instrument must have the same number of ~
+                                  sequences for any given section: ~%~a"
+                                 (id rsm) (id no) (data no)))))))
   t)
         
 #|

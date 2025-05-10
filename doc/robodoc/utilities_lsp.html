@@ -52,7 +52,7 @@
 
  Creation date:    June 24th 2002
 
- $$ Last modified:  10:34:06 Fri Feb  7 2025 CET
+ $$ Last modified:  20:41:42 Thu Feb 20 2025 CET
 </pre>
 
 
@@ -2211,6 +2211,9 @@
  Windows:  "E:"
  Unix:     "/E/"
  If type is nil it will be set to the system this function was called on.
+ If a path does not contain a device-name, it is left unchanged.
+ A device-name is detected, when the name of the first directory consists
+ of only one letter and the path does not start with a ./ or ~/
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - a string representing a path
@@ -2231,6 +2234,10 @@
 =&gt; "E:/samples/kicks/kick.wav"
 (<strong>os-format-path</strong> "E:/samples/kicks/kick.wav" 'windows)
 =&gt; "E:/samples/kicks/kick.wav"
+(<strong>os-format-path</strong> "./test.lsp" 'windows)
+=&gt; "./test.lsp"
+(<strong>os-format-path</strong> "test.lsp" 'unix)
+=&gt; "test.lsp"
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>os-format-path</strong> (path &amp;optional type)
@@ -4111,7 +4118,7 @@ yes_foo, 1 2 3 4;
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/utilities.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-02-13 09:01:45</p>
+<p>Generated from ./../../src/utilities.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-05-10 11:02:11</p>
 </div> <!-- footer -->
 </body>
 </html>

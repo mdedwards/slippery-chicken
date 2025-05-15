@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:02:44 Thu May 15 2025 CEST
+;;; $$ Last modified:  12:15:21 Thu May 15 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15975,7 +15975,7 @@
                                      .001))) ; millisecond accuracy is ok
       (sc-test-check
         (last-ok?)
-        (event-list-to-midi-file el4 :midi-file "/tmp/ilya-new.mid")
+        (event-list-to-midi-file el4 :midi-file f4)
         (setq el4 (midi-file-to-events f4))
         (last-ok?)
         ;; MDE Sat Jun 18 10:18:25 2022, Heidhausen -- these numbers all just

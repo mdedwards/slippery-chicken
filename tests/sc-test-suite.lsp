@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:17:11 Fri Apr  4 2025 CEST
+;;; $$ Last modified:  11:02:44 Thu May 15 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -572,7 +572,7 @@
              '((H.) (E E) ("E." E. E) (Q)))
       (not (split rsb :max-beats 1)))))
 
-;;; MDE 
+;;; MDE 
 (sc-deftest test-consolidate ()
   (let ((rs (make-rthm-seq 
              '(7 ((((2 4) h)
@@ -7548,7 +7548,7 @@
       (file-write-ok "/tmp/msp-mcft.txt" 45)
       (file-write-ok "/tmp/msp-mcfm.txt" 45))))
 
-;;; MDE Sat May 18 13:32:24 2013  
+;;; MDE Sat May 18 13:32:24 2013 
 (sc-deftest test-ring-mod-piece ()
   (labels
       ((make-rm-rsm-aux (num-seqs num-rthm-seqs ins)
@@ -15947,7 +15947,7 @@
     ;; (= 61 (print (length (cm::parse-midi-file "/tmp/msp-gmchs.mid"))))))
     (< 100 (length (cm::parse-midi-file "/tmp/msp-gmchs.mid")))))
 
-;;; MDE Thu Nov 10 10:40:05 2016 
+;;; MDE Thu Nov 10 10:40:05 2016  
 (sc-deftest test-midi-file-to-events ()
   (let* ((f1 (concatenate 'string 
                           cl-user::+slippery-chicken-home-dir+
@@ -15956,24 +15956,42 @@
          (f2 (concatenate 'string 
                           cl-user::+slippery-chicken-home-dir+
                           "tests/var5.mid"))
+         ;; MDE Thu May 15 10:49:51 2025, Heidhausen
+         (f3 (concatenate 'string 
+                          cl-user::+slippery-chicken-home-dir+
+                          "tests/ilya.mid"))
+         ;; we'll slurp in f3 and then write it to f4 for comparison
+         (f4 "/tmp/ilya-new.mid")
          (el1 (midi-file-to-events f1))
          (el2 (midi-file-to-events f2 :track 1))
-         (el3 (midi-file-to-events f2 :track 2)))
-    (sc-test-check
-      ;; MDE Sat Jun 18 10:18:25 2022, Heidhausen -- these numbers all just went
-      ;; up by 1 or 2 because we were missing the first events! 
-      (= 3803 (length el1))
-      (eq 'd4 (get-pitch-symbol (first el2)))
-      (eq 'g3 (get-pitch-symbol (first el3)))
-      (eq 'g5 (get-pitch-symbol (first (last el2))))
-      (eq 'g2 (get-pitch-symbol (first (last el3))))
-      ;; on a related note, try this too:
-      (= 3803 (midi2qlist f1 nil))
-      (= 810 (midi2qlist f2 nil 1 2))
-      ;; (print (first el2))
-      ;; (print (first el3))
-      (= 441 (length el2))
-      (= 369 (length el3)))))
+         (el3 (midi-file-to-events f2 :track 2))
+         (el4 (midi-file-to-events f3)))
+    (flet ((last-ok? ()
+             ;; MDE Thu May 15 10:51:28 2025, Heidhausen -- test Ilya's file
+             ;; first I eyeballed this in reaper to get the start time of the
+             ;; last event
+             (equal-within-tolerance 123.901
+                                     (start-time (first (last el4)))
+                                     .001))) ; millisecond accuracy is ok
+      (sc-test-check
+        (last-ok?)
+        (event-list-to-midi-file el4 :midi-file "/tmp/ilya-new.mid")
+        (setq el4 (midi-file-to-events f4))
+        (last-ok?)
+        ;; MDE Sat Jun 18 10:18:25 2022, Heidhausen -- these numbers all just
+        ;; went up by 1 or 2 because we were missing the first events!
+        (= 3803 (length el1))
+        (eq 'd4 (get-pitch-symbol (first el2)))
+        (eq 'g3 (get-pitch-symbol (first el3)))
+        (eq 'g5 (get-pitch-symbol (first (last el2))))
+        (eq 'g2 (get-pitch-symbol (first (last el3))))
+        ;; on a related note, try this too:
+        (= 3803 (midi2qlist f1 nil))
+        (= 810 (midi2qlist f2 nil 1 2))
+        ;; (print (first el2))
+        ;; (print (first el3))
+        (= 441 (length el2))
+        (= 369 (length el3))))))
 
 (sc-deftest test-diapason ()
   (sc-test-check

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  15:13:59 Fri Aug 23 2024 CEST
+;;; $$ Last modified:  17:28:48 Thu May 15 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -835,7 +835,7 @@ the instrument you want.
 ;;;   so that microtonal chords are possible, but due to a current glitch these
 ;;;   tracks contain no pitch-bend data. A work-around for this is to simply
 ;;;   open the MIDI file in a sequencer and shift the entire channel by the
-;;;   desired pitch-bend value. Default = -1.
+;;;   desired pitch-bend value. Default = -1 = same as :midi-channel.
 ;;; - :cmn-staff-args. A list of pairs that indicate any additional arguments
 ;;;   to the call to cmn::staff for this player, such as staff size, number of
 ;;;   lines etc. Instead of being real cmn function calls, as they would be in

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  12:31:15 Tue Apr  2 2024 CEST
+;;; $$ Last modified:  17:28:59 Thu May 15 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -495,6 +495,7 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;;   +slippery-chicken-standard-instrument-palette+.
 ;;; - :midi-channel the midi-channel for the new player
 ;;; - :microtones-midi-channel the microtones-midi-channel for the new player
+;;;   Default = -1 = same as :midi-channel.
 ;;;
 ;;; RETURN VALUE
 ;;; The player object added.

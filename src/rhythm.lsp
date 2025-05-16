@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  16:20:48 Fri Apr  4 2025 CEST
+;;; $$ Last modified:  12:30:16 Fri May 16 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2062,10 +2062,10 @@ data: NIL
 ;;; e.g. (GET-RHYTHM-LETTER-FOR-VALUE 6) -> TQ
 ;;;      (GET-RHYTHM-LETTER-FOR-VALUE 2.6666667) -> Q.
 
-(defun get-rhythm-letter-for-value (value &optional (warn t))
+(defun get-rhythm-letter-for-value (value &optional (warn t) (tolerance .0001))
   ;; some floating-point operations will have degraded our value so that what
-  ;; should be an integer is something like 23.999999999999.  
-  (let ((val (round-if-close value 0.0001))
+  ;; should be an integer is something like 23.999999999999.
+  (let ((val (round-if-close value tolerance))
         (1-dot (* value 1.5))
         (2-dots (* value 1.75))
         (3-dots (* value 1.875))
@@ -2074,6 +2074,8 @@ data: NIL
         (ok t)
         result
         (num-dots 0))
+    ;; (print value)
+    ;; (print val)
     (flet 
         ((parse-error 
              (hint)
@@ -2083,11 +2085,11 @@ data: NIL
            (setf ok nil)))
       (unless (whole-num-p value t)
         (loop for d in (list 1-dot 2-dots 3-dots)
-           and dots from 1 do
-             (when (whole-num-p d t)
-               (setf num-dots dots
-                     val d)
-               (return))))
+              and dots from 1 do
+                (when (whole-num-p d t)
+                  (setf num-dots dots
+                        val d)
+                  (return))))
       ;; MDE Thu May 28 19:55:51 2015 -- both these cases could trigger with a
       ;; value like 60 but in that case we'll catch the problem below  
       (when (zerop (mod val 3)) ;; triplet
@@ -2109,14 +2111,19 @@ data: NIL
       (unless letter
         (parse-error "letter"))
       (when ok
+        ;; (print val)
         ;; MDE Thu May 28 19:48:40 2015 -- this used to have a values call in it
         (setf result (read-from-string 
                       (format nil "~a~a~a" 
                               tuplet letter 
                               (make-string num-dots :initial-element #\.)))))
       ;; MDE Thu May 28 19:55:09 2015 -- now do a sanity check
+      ;; (print result)
       (when result
-        (unless (equal-within-tolerance value (value (make-rhythm result)))
+        ;; MDE Fri May 16 11:50:49 2025, Heidhausen -- made more tolerant
+        ;; (print value)
+        (unless (equal-within-tolerance value (value (make-rhythm result))
+                                        tolerance)
           (when warn
             (warn "rhythm::get-rhythm-letter-for-value: can't do ~a (got ~a)"
                   value result))
@@ -2430,7 +2437,8 @@ data: (
                   (slot-value rhythm-object 'duration) (if (zerop value) 
                                                          0.0 
                                                          (/ 4.0 value))
-                  (slot-value rhythm-object 'compound-duration) (duration rhythm-object)
+                  (slot-value rhythm-object 'compound-duration)
+                  (duration rhythm-object)
                   (num-dots rhythm-object) num-dots
                   ;; 30.1.11 next two for lilypond
                   ;; MDE Wed Jun 24 17:25:41 2015 -- this used to just be

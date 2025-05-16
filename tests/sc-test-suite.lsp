@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:15:21 Thu May 15 2025 CEST
+;;; $$ Last modified:  12:22:28 Fri May 16 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1669,6 +1669,17 @@
   (= 3 (rthm-num-flags 32))
   (= 4 (rthm-num-flags 64))
   (= 5 (rthm-num-flags 128)))
+
+;;; MDE Fri May 16 11:51:43 2025, Heidhausen 
+(sc-deftest test-guess-rhythms ()
+  (sc-test-check
+    (eq 'q. (get-rhythm-letter-for-value 2.6666667))
+    (eq 'tq (get-rhythm-letter-for-value 6))
+    (eq 'te (get-rhythm-letter-for-duration 0.33333325 :warn nil))
+    (eq 's (get-rhythm-letter-for-duration 0.250001 :warn nil))
+    (eq 'fe (get-rhythm-letter-for-duration 0.399999 :warn nil))
+    (= 32 (get-rhythm-letter-for-duration 0.1249999 :warn nil))
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; event tests

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:24:53 Sat Aug 24 2024 CEST
+;;; $$ Last modified:  12:44:13 Fri May 16 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6933,7 +6933,8 @@ NIL
 ;;; - :instrument-palette. an instrument-palette object in which the instrument
 ;;;   exists. Default is the standard palette.
 ;;; - :midi-channel. the midi-channel for the new player
-;;; - microtones-midi-channel. the microtones-midi-channel for the new player
+;;; - microtones-midi-channel. the microtones-midi-channel for the new player.
+;;;   Default = -1 = same as :midi-channel.
 ;;; 
 ;;; RETURN VALUE
 ;;; the new player object from the ensemble slot of the slippery-chicken object

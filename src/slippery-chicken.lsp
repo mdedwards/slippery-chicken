@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:35:15 Mon Oct 28 2024 CET
+;;; $$ Last modified:  13:45:46 Fri May 16 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -2628,20 +2628,23 @@ data: NIL
     (setf section (list section)))
   (let* ((player-obj (get-data player (ensemble sc)))
          ins-obj)
+    (unless player-obj
+      (error "slippery-chicken::get-current-instrument-for-player: ~
+              Can't get player object ~%for ~a" player))
     (if (doubles player-obj)
-        (multiple-value-bind
-              (current-ins changes-here)
-            (cm-get-data (instrument-change-map sc)
-                         (econs section player)
-                         sequence)
-          (setf ins-obj (player-get-instrument player-obj current-ins nil))
-          (unless ins-obj
-            (error "slippery-chicken::get-current-instrument-for-player: ~
+      (multiple-value-bind
+            (current-ins changes-here)
+          (cm-get-data (instrument-change-map sc)
+                       (econs section player)
+                       sequence)
+        (setf ins-obj (player-get-instrument player-obj current-ins nil))
+        (unless ins-obj
+          (error "slippery-chicken::get-current-instrument-for-player: ~
                     Couldn't get instrument at section~a, sequence ~a, for ~a"
-                   section sequence player))
-          (values ins-obj changes-here))
-        ;; doesn't double
-        (values (get-starting-ins sc player) nil))))
+                 section sequence player))
+        (values ins-obj changes-here))
+      ;; doesn't double
+      (values (get-starting-ins sc player) nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

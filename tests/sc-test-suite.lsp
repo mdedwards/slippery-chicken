@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:22:28 Fri May 16 2025 CEST
+;;; $$ Last modified:  14:51:57 Fri May 16 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1382,6 +1382,43 @@
         (probe-delete file)
         (cmn-display rsp :file file)    ; this will generate about 103 pages
         (file-write-ok file 6000000)))))
+
+;;; MDE Fri May 16 14:51:53 2025, Heidhausen 
+;;; to really hit things hard (because there's randomness here):
+;;; (loop repeat 100 collect (test-rsb-pad-right))
+(sc-deftest test-rsb-pad-right ()
+  ;; the triplet 1/4 and quintuple 16th make things difficult/fail
+  (let* ((rthms (mapcar #'make-rhythm '(e s 32 q q. e. tq fs)))
+         (nmax (length rthms))
+         (runs 500)                     ; how many times we'll call do-one
+         ;; how much success do we expect (some bars can't as yet be filled)
+         (min-filled (* .3 runs)))
+    (flet ((do-one ()       
+             (let ((bar (make-rest-bar (list (between 2 7) 4)))
+                   (rlist (loop repeat 40 collect (nth (random nmax) rthms)))
+                   full)
+               (print '*****************do-one***********)
+               (print (fill-with-rhythms bar rlist :is-full-error nil))
+               (print-simple bar)
+               (print (nth-value 1 (is-full bar nil)))
+               ;;(multiple-value-bind (bar full)
+               ;;  (pad-right bar)
+               ;;(print-simple bar)
+               ;;full)
+               (setq full (pad-right bar))
+               (print-simple bar)
+               full)))
+      (let ((successes (loop repeat runs collect (do-one))))
+        (sc-test-check
+          (> (print (count t successes)) min-filled))))))
+
+(sc-deftest test-rsb-pad-right2 ()
+  (let ((bar (make-rest-bar '(3 4))))
+    (setf (rhythms bar) (rhythm-list '(e e e e tq)))
+    (pad-right bar)
+    (is-full bar nil)))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rhythm tests

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:19:28 Fri Apr  4 2025 CEST
+;;; $$ Last modified:  14:50:11 Fri May 16 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5939,6 +5939,62 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
   (if (event-p (first (rhythms rsb)))
       (setf (tempo-change (first (rhythms rsb))) tempo)
       (error "rthm-seq-bar::add-tempo: no events in bar: ~a" rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-bar/pad-right
+;;; DATE
+;;; May 13th 2025
+;;; 
+;;; DESCRIPTION
+;;; If a bar is underfull, try and fill it with one or more events: either rests
+;;; or tied pitches.
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq-bar object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :pitch. a pitch (object, symbol) or chord (object, list of pitch symbols)
+;;;   that will be used to create the events instead of rests. Note that if the
+;;;   duration requires more than one event (e.g. a 1/4 and a 16th note) then
+;;;   the pitch will be used (and tied) for all. Note also that the
+;;;   pitch-or-chord slot will be set in any case, not the
+;;;   written-pitch-or-chord slot.
+;;; - :dots. T or nil to indicated whether tied notes should be turned into
+;;;   dotted notes where possible.
+;;; 
+;;; RETURN VALUE
+;;; T or NIL: whether it was possible to fill the bar or not. Note that the
+;;; rthm-seq-bar object passed here is altered.
+;;; 
+;;; SYNOPSIS
+(defmethod pad-right ((rsb rthm-seq-bar) &key pitch dots)
+;;; ****
+  (let ((missing (nth-value 1 (is-full rsb nil))))
+    (unless (zerop missing)
+      (let* ((porc (typecase pitch
+                     (list (make-chord pitch))
+                     (symbol (make-pitch pitch))
+                     (t pitch)))        ; chord/pitch object or nil (= rest)
+             ;; note that the rationalize method will produce '(e s) for .75
+             ;; (instead of e.) so consolidating might be desirable
+             (rest (make-rest
+                    (get-rhythm-letter-for-duration missing :warn nil)))
+             (events (if rest (list rest) (rationalize-for-division missing))))
+        (when events
+          (when pitch
+            ;; (when (second events) (setf (is-tied-from )))
+            (loop with last = (first events)
+                  for e in events and i from 0 do
+                    (setf (pitch-or-chord e) (clone porc))
+                    (unless (zerop i)
+                      (setf (is-tied-to e) t))
+                    (setf (is-tied-from last) t
+                          last e)))
+          (setf (rhythms rsb) (append (rhythms rsb) events)))
+        (when dots (ties-to-dots rsb))))
+    ;; call this again as we may very have failed to fill the bar
+    (is-full rsb nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  12:44:13 Fri May 16 2025 CEST
+;;; $$ Last modified:  14:49:45 Fri May 16 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7841,6 +7841,124 @@ NIL
     (setf (players (piece sc)) players))
   sc)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/double-events-scaled
+;;; DATE
+;;; 15.5.25
+;;; 
+;;; DESCRIPTION
+;;; Double the events of one player and then rhythmically scale (augment or
+;;; diminute) them. Add them to a new part, where time signature and rhythmic
+;;; properties allow. Note that
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the scaler to apply to the rhythms, e.g. 2 would be half speed
+;;; - the player whose events will be copied before scaling
+;;; - the symbol associated with the new player in the ensemble
+;;; - the instrument symbol (from the :instrument-palette) for the new player
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :transposition. The semitone transposition for the master-player's
+;;;   pitches. Either this or the :pitches argument may be given, not both.
+;;; - :pitches. A list of pitch/chord objects or symbols/symbols lists (chords)
+;;;   that will be used to replace the pitches/chords of the events of the 
+;;;   master player. If this is shorter than the number of events that we 
+;;;   generate, then they will be reused circularly. If this is not passed, then
+;;;   the pitches of the master-player will be used, optionally transposed (see
+;;;   above).
+;;; - :auto-beam. Whether to call auto-beam on the slippery-chicken object after
+;;;   the process is finished.
+;;; - :update-slots. Whether to call update-slots on the slippery-chicken object
+;;;   after the process is finished. This is left to the user as it is
+;;;   computationally expensive and thus might be put off to a later stage.
+;;; - :verbose. Print useful information as the process takes place.
+;;; - :midi-channel. the midi-channel for the new player
+;;; - microtones-midi-channel. the microtones-midi-channel for the new player.
+;;;   Default = -1 = same as :midi-channel.
+;;; - :instrument. a symbol ID for an existing instrument in the
+;;;   instrument-palette (the next argument). This is actually required unless
+;;;   the default of 'computer is acceptable or a player object is passed as
+;;;   second argument.
+;;; - :instrument-palette. an instrument-palette object in which the instrument
+;;;   exists. Default is the standard palette.
+;;; - :start-bar (:start-event, :end-bar, :end-event). The start/end points for
+;;;   that determine the range that we first of all copy, before scaling and
+;;;   begin pasting from :new-start-bar. Defaults are the whole piece.
+;;; - :new-start-bar. The bar at which we start pasting in the scaled
+;;;   events (it's not possible to specify a starting event) . Default = 1.
+;;; - :new-end-bar. The bar at which we end (inclusive) pasting in the scaled
+;;;   events (it's not possible to specify a stopping event) . Default = NIL =
+;;;   end of the piece.
+;;; 
+;;; RETURN VALUE
+;;; the sc object with the new player added
+;;;
+;;; SYNOPSIS
+(defmethod double-events-scaled
+    ((sc slippery-chicken) rthm-scaler master-player
+     new-player new-instrument
+     &key transposition (new-start-bar 1) new-end-bar (start-bar 1) 
+     start-event end-bar end-event pitches (auto-beam t) (midi-channel 1)
+     (microtones-midi-channel -1) (update-slots t) verbose
+     (instrument-palette +slippery-chicken-standard-instrument-palette+))
+;;; ****
+  (when (and transposition pitches)
+    (error "double-events-scaled: use either :transposition or :pitches, ~
+            not both.")) 
+  (when (and pitches (not (cscl-p pitches)))
+    (setq pitches (make-cscl (mapcar #'make-pitch pitches)
+                             :id 'double-events-scaled)))
+  (unless new-end-bar (setq new-end-bar (num-bars sc)))
+  ;; this creates empty bars, ready for filling
+  (add-player sc new-player :instrument new-instrument
+                            :instrument-palette instrument-palette
+                            :midi-channel midi-channel
+                            :microtones-midi-channel microtones-midi-channel)
+  (let* ((m-events (get-events-from-to sc master-player start-bar start-event
+                                       end-bar end-event))
+         (s-events (loop for me in m-events
+                         for se = (scale me rthm-scaler t)
+                         do (if pitches
+                              (setf (pitch-or-chord se) (get-next pitches))
+                              (when (and transposition
+                                         (not (zerop transposition)))
+                                (transpose se transposition :destructively t)))
+                            (setf (player se) new-player)
+                         collect se))
+         bar used full)
+    (loop for bar-num from new-start-bar to new-end-bar do
+      (setq bar (get-bar sc bar-num new-player))
+      ;; long rests can mean we never fill another bar
+      (loop until (< (duration (first s-events))
+                     (bar-duration bar))
+            do (when verbose
+                 (format t "~&Skipping ~a rest" (data (first s-events))))
+               (pop s-events))
+      (setq used (fill-with-rhythms
+                  bar s-events :is-full-error nil :warn nil
+                  :midi-channel midi-channel 
+                  :microtones-midi-channel
+                  microtones-midi-channel)
+            full (pad-right bar :dots t))
+      (set-player bar new-player)
+      (if (and full (> used 0))
+        (progn 
+          (setq s-events (nthcdr used s-events))
+          (when verbose
+            (format t "~&Added ~a events to bar ~a" used bar-num)))
+        (progn
+          (force-rest-bar bar)
+          (when verbose
+            (format t "~&Couldn't add events to bar ~a" bar-num)
+            (format t "~%  Next events: ")
+            (loop for e in s-events repeat 5 do
+              (print-simple e)))))))
+  (when auto-beam (auto-beam sc))
+  (when update-slots (update-slots sc))
+  sc)
+             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

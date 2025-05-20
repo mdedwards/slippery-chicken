@@ -807,4 +807,5 @@
 0.000 qlmidinote 47 115;
 136.360 qlmidinote 71 100;
 136.368 qlmidinote 79 113;
+0.000 qlmidinote 43 115;te 79 113;
 0.000 qlmidinote 43 115;

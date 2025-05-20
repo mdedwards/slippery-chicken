@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    26th March 2020 (abstracted out of cm.lsp)
 ;;;
-;;; $$ Last modified:  14:36:00 Sat Mar 16 2024 CET
+;;; $$ Last modified:  13:50:33 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -212,9 +212,9 @@
 |#
 ;;; 
 ;;; SYNOPSIS
-(defun parse-midi-file (file &optional track)
+(defun parse-midi-file (file &optional track tempo)
 ;;; ****
-  (let ((midi-stream (parse-midi-file-aux file track))
+  (let ((midi-stream (parse-midi-file-aux file track tempo))
         (num-events 0))
     (setf num-events (length (subobjects midi-stream)))
     ;; MDE Mon Jun 17 11:47:47 2013 -- not much point printing them when the
@@ -281,17 +281,17 @@
     (values high low)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun midi-file-to-events-list (file &optional track)
-  (let ((midi-stream (parse-midi-file-aux file track)))
+(defun midi-file-to-events-list (file &optional track tempo)
+  (let ((midi-stream (parse-midi-file-aux file track tempo)))
     (subobjects midi-stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; btw the time slot is cm::object-time, midi note number cm::midi-keynum
-(defun parse-midi-file-aux (file &optional track)
+(defun parse-midi-file-aux (file &optional track tempo)
   ;; MDE Sat Nov 25 13:31:12 2017 -- ignore MIDI meta messages
   ;; MDE Wed Jan 30 14:21:24 2019 -- TODO: allow track to be T whereupon we
   ;; would get them all  
-  (let ((midi-stream (import-events file :meta-exclude nil)))
+  (let ((midi-stream (import-events file :meta-exclude nil :tempo tempo)))
     (when track
       (setf midi-stream (nth track midi-stream)))
     midi-stream))

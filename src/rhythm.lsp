@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  12:30:16 Fri May 16 2025 CEST
+;;; $$ Last modified:  08:15:19 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1832,6 +1832,7 @@ data: NIL
          (error "rhythm::make-rhythm: can't process both a <rthm> (~a) and ~
                  <duration> (~a) (duration should be T or NIL)" rthm duration))
         ((and rthm duration)
+         ;; (print 'here)
          (let ((rthm-letter
                 (get-rhythm-letter-for-duration 
                  rthm :tempo tempo :warn nil :error-on-fail nil)))

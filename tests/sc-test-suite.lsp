@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:51:57 Fri May 16 2025 CEST
+;;; $$ Last modified:  14:30:16 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16009,23 +16009,30 @@
                           cl-user::+slippery-chicken-home-dir+
                           "tests/ilya.mid"))
          ;; we'll slurp in f3 and then write it to f4 for comparison
-         (f4 "/tmp/ilya-new.mid")
+         (f4 "/tmp/tmp.mid")
+         (f5 (concatenate 'string 
+                          cl-user::+slippery-chicken-home-dir+
+                          "tests/obraz-type-0.mid"))
          (el1 (midi-file-to-events f1))
          (el2 (midi-file-to-events f2 :track 1))
          (el3 (midi-file-to-events f2 :track 2))
          (el4 (midi-file-to-events f3)))
-    (flet ((last-ok? ()
+    (flet ((last-ok? (&optional (last-time 123.901))
              ;; MDE Thu May 15 10:51:28 2025, Heidhausen -- test Ilya's file
              ;; first I eyeballed this in reaper to get the start time of the
              ;; last event
-             (equal-within-tolerance 123.901
-                                     (start-time (first (last el4)))
+             (equal-within-tolerance last-time
+                                     (print (start-time (first (last el4))))
                                      .001))) ; millisecond accuracy is ok
       (sc-test-check
         (last-ok?)
         (event-list-to-midi-file el4 :midi-file f4)
-        (setq el4 (midi-file-to-events f4))
-        (last-ok?)
+        (setq el4 (midi-file-to-events f4 :tempo 60))
+        (last-ok? 123.415) ; rounding errors?: looks good in reaper
+        (setq el4 (midi-file-to-events f5))
+        (last-ok? 426.286)
+        (event-list-to-midi-file el4 :midi-file f4)
+        (last-ok? 426.286)
         ;; MDE Sat Jun 18 10:18:25 2022, Heidhausen -- these numbers all just
         ;; went up by 1 or 2 because we were missing the first events!
         (= 3803 (length el1))

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:58:08 Fri Apr  4 2025 CEST
+;;; $$ Last modified:  13:53:31 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -403,7 +403,7 @@
         ;; MDE Sat Dec  7 11:58:42 2019 -- if certain marks mean a note
         ;; shouldn't be played, we ignore it 
         (setq omn (output-midi-note noc
-                                    time
+                                    time ;(print time)
                                     (if force-velocity
                                         ;; MDE Thu Sep 17 17:31:18 2015 --
                                         ;; allow functions too 

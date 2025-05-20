@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  08:14:50 Mon Oct 21 2024 CEST
+;;; $$ Last modified:  14:28:49 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1025,7 +1025,8 @@
        
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; nothing more than an alias to this files cm package function really.
+;;; nothing more than an alias to the same function really in cm package in
+;;; cm-cm.lsp 
 ;;; ****f* cm/event-list-to-midi-file
 ;;; DESCRIPTION
 ;;; Write the events in a list to a midi-file. events-update-time is a related
@@ -1044,7 +1045,7 @@
 ;;; RETURN VALUE
 ;;; The MIDI file path
 ;;; 
-;;; SYNOPSIS
+;;; SYNOPSIS 
 (defun event-list-to-midi-file (event-list 
                                 &key (midi-file "/tmp/tmp.mid")
                                   (start-tempo 120) (time-offset 0)
@@ -1075,70 +1076,86 @@
 ;;; - :track. The track number to read. Default = NIL which means read all
 ;;; tracks.
 ;;; - :tempo. The tempo of the track in crotchets (quarter notes) per
-;;; minute. Default, q = 120.
+;;; minute. This should override the midi-file's tempo.
 ;;; 
 ;;; RETURN VALUE
 ;;; a list of event objects
 ;;; 
-;;; SYNOPSIS
-(defun midi-file-to-events (file &key track (tempo 120.0))
+;;; SYNOPSIS 
+(defun midi-file-to-events (file &key track tempo)
 ;;; ****
-  (let* ((cm-midi (cm::parse-midi-file file track))
-         (tmpo (make-tempo tempo))
-         (start-qtrs (cm::object-time (first cm-midi)))
+  (let* ((cm-midi (cm::parse-midi-file file track tempo))
+         (tmpo (when tempo (make-tempo tempo)))
+         ;; (start-qtrs 0.0)
          (tempo-change nil)
          (result '()))
+    ;; 
+    ;; (print (subseq cm-midi 0 50))
     (loop for m in cm-midi do
-         (typecase m
-           (cm::midi (let* ((dur (cm::midi-duration m))
-                            (e (unless (zerop dur)
-                                 (make-event (midi-to-note (cm::midi-keynum m))
-                                             dur :duration t 
-                                             :tempo (bpm tmpo)))))
-                       ;; (print e)
-                       (when e
-                         ;; assume last change was on this chan
-                         (when tempo-change 
-                           (setf (tempo-change e) tmpo
-                                 (display-tempo e) t
-                                 tempo-change nil))
-                         (setf (amplitude e) (cm::midi-amplitude m)
-                               (start-time e) (cm::object-time m)
-                               (start-time-qtrs e) start-qtrs
-                               (duration-in-tempo e) (* (duration e)
-                                                        (qtr-dur tmpo))
-                               (compound-duration-in-tempo e)
-                               (duration-in-tempo e))
-                         (set-midi-channel e (1+ (cm::midi-channel m)))
-                         (incf start-qtrs (duration e))
-                         (push e result))))
-           (cm::midi-tempo-change
-            (setq tempo-change t
-                  ;;                 that's the usecs slot
-                  tmpo (make-tempo (cm::midi-event-data1 m))))))
+      (typecase m
+        (cm::midi (let* ((dur (cm::midi-duration m))
+                         (e (unless (zerop dur)
+                              (make-event (midi-to-note (cm::midi-keynum m))
+                                          dur :duration t))))
+                                          ;;:tempo (bpm tmpo)))))
+                    ;; (print e)
+                    (when e
+                      ;; assume last change was on this chan
+                      (when tempo-change 
+                        (setf (tempo-change e) tmpo
+                              (display-tempo e) t
+                              tempo-change nil))
+                      ;; (print (cm::object-time m))
+                      (setf (amplitude e) (cm::midi-amplitude m)
+                            ;; MDE Mon May 19 19:51:47 2025, Heidhausen -- the
+                            ;; time and duration slots of cm::midi are seconds,
+                            ;; not quarter notes or ticks 
+                            (start-time e) (cm::object-time m)
+                            ;; (start-time-qtrs e) start-qtrs
+                            ;; todo: it's not as simple as this
+                            ;; (start-time-qtrs e) (/ (start-time e)
+                               ;;                    (beat-dur tmpo))
+                            (duration-in-tempo e) dur
+                            ;; (* (duration e) (qtr-dur tmpo))
+                            (compound-duration e) dur
+                            (compound-duration-in-tempo e)
+                            ;; (duration-in-tempo e))
+                            dur)
+                      (set-midi-channel e (1+ (cm::midi-channel m)))
+                      ;; (incf start-qtrs (duration e))
+                      (push e result))))
+        (cm::midi-tempo-change
+           (setq tempo-change t
+                 ;;                 that's the usecs slot
+                 tmpo (make-tempo (cm::midi-event-data1 m))))))
+    ;; (nreverse result))) 
     ;; result is in reverse order but the following function will effectively
     ;; reverse for us so save some consing.
     (midi-file-to-events-handle-chords result nil)))
 
-;;; this assumes all events are single pitches. todo: something still doesn't
-;;; seem 100% correct about MIDI file importing
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; this assumes all events are single pitches. 
 (defun midi-file-to-events-handle-chords (events &optional (reverse t))
-  (let* ((last (first events))
-         (time (start-time last))
-         result)
+  (let ((last (first events))
+        result)
     (loop for e in (rest events) do
       ;; tolerance of 1 millisec which is OK for midi files generated by
-      ;; sequencers etc. but might not so wiggle room if played in by humans: if
-      ;; it crops up make this .001 an optional arg.
-      (if (equal-within-tolerance time (start-time e) .001)
-          (add-pitches last (pitch-or-chord e))
-          (progn
-            (push last result)
-            (setq last e
-                  time (start-time e))))
+      ;; sequencers etc. but might not be enough wiggle room if played in by
+      ;; humans: if it crops up make this .001 an optional arg.
+      ;;
+      ;; have to consider durations here too: if two notes played
+      ;; together but one is longer than the other, then it shouldn't be a
+      ;; chord 
+      (if (and (equal-within-tolerance (start-time last) (start-time e) .001)
+               (equal-within-tolerance (compound-duration-in-tempo last)
+                                       (compound-duration-in-tempo e) .001))
+        (add-pitches last (pitch-or-chord e))
+        (progn
+          (push last result)
+          (setq last e)))
       ;; MDE Sat Jun 18 10:18:54 2022, Heidhausen -- doh! was forgetting to get
       ;; the first event :/
-      finally (push last result))
+          finally (push last result))
     (if reverse (nreverse result) result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

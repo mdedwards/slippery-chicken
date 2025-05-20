@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:44:24 Tue May 20 2025 CEST
+;;; $$ Last modified:  14:46:14 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16031,7 +16031,9 @@
         ;; we just generated itm but ilya.mid has tempo 120 attached, hence
         ;; problemo. If we don't do this then the times are interpreted by CM as
         ;; quarter notes which with the tempo 120 halves the duration of the
-        ;; file 
+        ;; file. Note that this tempo was not previously being passed all the
+        ;; way down (eventually) to CM's import-events, so we couldn't get
+        ;; proper timing info.
         (setq el4 (midi-file-to-events f4 :tempo 60))
         (last-ok? 123.415) ; rounding errors?: looks good in reaper
         (setq el4 (midi-file-to-events f5))

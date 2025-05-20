@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  14:28:49 Tue May 20 2025 CEST
+;;; $$ Last modified:  14:46:42 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1076,7 +1076,8 @@
 ;;; - :track. The track number to read. Default = NIL which means read all
 ;;; tracks.
 ;;; - :tempo. The tempo of the track in crotchets (quarter notes) per
-;;; minute. This should override the midi-file's tempo.
+;;; minute. This should override the midi-file's tempo. See also
+;;; test-midi-file-to-events in sc-test-suite.lsp  
 ;;; 
 ;;; RETURN VALUE
 ;;; a list of event objects

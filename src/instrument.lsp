@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:16:08 Tue May 20 2025 CEST
+;;; $$ Last modified:  19:41:42 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1168,10 +1168,11 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
     (with-slots ((poc pitch-or-chord)) e
       (when (and (micro-tone poc)       ; shame about the - inconsistency
                  (not (microtones ins)))
-        (warn "instrument::force-in-range: event (~a) in bar ~a is ~
+        (when (get-sc-config 'ins-force-in-range-warning)
+          (warn "instrument::force-in-range: event (~a) in bar ~a is ~
                microtonal ~%but instrument (~a) is not. ~
                Rounding pitches to nearest chromatic."
-              (print-simple poc nil) (bar-num e) (id ins))
+                (print-simple poc nil) (bar-num e) (id ins)))
         (setf poc (round-to-nearest poc :scale cm::*chromatic-scale*)))
       (setf poc (apply #'force-in-range (cons ins (cons poc keyargs)))))
     e))

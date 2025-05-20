@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  12:04:39 Thu Apr 18 2024 CEST
+;;; $$ Last modified:  19:41:20 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -95,6 +95,9 @@
        ;; MDE Thu Oct 8 16:27:19 2020, Heidhausen -- issue a warning if we scale
        ;; a rhythm/event to longer than 10xwhole?
        (rhythm-scale-warning t)
+       ;; (repeatedly) warn about force-in-range turning microtones into
+       ;; chromatics pitches?  
+       (ins-force-in-range-warning t)
        ;; MDE Sat Aug 3 16:39:40 2019 -- should shorten-large-fast-leaps issue a
        ;; warning or not?
        (shorten-large-fast-leaps-warning t)

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  08:10:53 Thu Feb  1 2024 CET
+;;; $$ Last modified:  19:22:09 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -530,8 +530,8 @@ Each pitch sequence must have 5 notes (you have 6):
             (progn
               ;; must avoid infinite recursions....
               (when (= 1 num-notes)
-                (error "rthm-seq-palette::create-psps-default: no data for 1!~
-                    Avoiding infinite recursion."))
+                (error "rthm-seq-palette::create-psps-default: no data for 1! ~
+                        Avoiding infinite recursion."))
               (let* ((left (floor num-notes 2))
                      (right left))
                 (when (oddp num-notes)

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  11:08:27 Wed Jul 17 2024 CEST
+;;; $$ Last modified:  17:16:08 Tue May 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1162,11 +1162,19 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 ;;; MDE Fri Oct 19 16:22:11 2018
 (defmethod force-in-range ((ins instrument) (e event)
                            &rest keyargs &key &allow-other-keys)
+  ;; MDE Tue May 20 16:40:09 2025, Heidhausen -- this is a desperate move but
+  ;; needs must when the devil drives
   (unless (is-rest e)
-    (setf (pitch-or-chord e) (apply #'force-in-range
-                                    (cons ins (cons (pitch-or-chord e)
-                                                    keyargs)))))
-  e)
+    (with-slots ((poc pitch-or-chord)) e
+      (when (and (micro-tone poc)       ; shame about the - inconsistency
+                 (not (microtones ins)))
+        (warn "instrument::force-in-range: event (~a) in bar ~a is ~
+               microtonal ~%but instrument (~a) is not. ~
+               Rounding pitches to nearest chromatic."
+              (print-simple poc nil) (bar-num e) (id ins))
+        (setf poc (round-to-nearest poc :scale cm::*chromatic-scale*)))
+      (setf poc (apply #'force-in-range (cons ins (cons poc keyargs)))))
+    e))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Nov 13 17:00:53 2018 -- helper method for combo-chord-possible?: see

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  13:14:24 Fri May  3 2024 CEST
+;;; $$ Last modified:  17:32:45 Tue May 20 2025 CEST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -262,6 +262,7 @@
   ;; MDE Sat Jul 14 17:19:51 2012 -- only reinit once, i.e. not on recursive
   ;; calls.   
   ;; (format t "~&create-psps ~a" (id rsp))
+  ;; (print selection-fun-data)
   (when reinit
     (create-psps-default nil nil))      ; see pitch-seq-palette.lsp
   (loop with pass-data = t

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  20:22:55 Mon Aug 19 2024 CEST
+;;; $$ Last modified:  16:15:18 Wed May 21 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1107,6 +1107,7 @@ data: (C4 F4 A4 C5)
 (defmethod stack ((sp set-palette) num-stacks &key id by-freq (up t) (down t))
 ;;; ****
   (loop for ref in (get-all-refs sp) do
+    (print ref)
        (set-data ref (stack (get-data ref sp) num-stacks :id id :by-freq by-freq
                             :up up :down down)
                  sp))
@@ -1955,6 +1956,9 @@ data: (
     ;; (print (micro-tonality (get-data 1 sp)))
     (when force-chromatic
       (force-micro-tone sp nil))
+    ;; MDE Wed May 21 16:14:59 2025, Heidhausen -- so we can call stack for
+    ;; instance (otherwise get-all-refs doesn't work) 
+    (relink-named-objects sp)
     sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:45:46 Fri May 16 2025 CEST
+;;; $$ Last modified:  14:13:05 Wed May 21 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -228,7 +228,9 @@
 ;;; instrument using the pitch-seqs in the rthm-seq-palette. By setting this
 ;;; to T we can force regeneration (e.g. if the rthm-seq-palette has changed
 ;;; and we want to re-init the sc with different data). Default = T.
-;;; 
+;;; - :shorten-large-fast-leaps. T or NIL to call the associated method or
+;;;   not. Eg. you might want to call this explicitly elsewhere because the
+;;;   tempo-map is set after sc-init is called. Default = T.
 ;;; RETURN VALUE
 ;;; the now fully initialized slippery-chicken object
 ;;; 
@@ -248,7 +250,8 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod sc-init ((sc slippery-chicken) &key (regenerate-pitch-seq-map t))
+(defmethod sc-init ((sc slippery-chicken) &key (regenerate-pitch-seq-map t)
+                                          (shorten-large-fast-leaps t))
 ;;; ****
   (let ((given-tempo-map (tempo-map sc)))
     (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))
@@ -450,7 +453,7 @@
     ;; be nil so we can avoid calling shorten-large-fast-leaps
     ;; (unless (fast-leap-threshold sc)
     ;; (setf (fast-leap-threshold sc) 0.125))
-    (when (fast-leap-threshold sc)
+    (when (and shorten-large-fast-leaps (fast-leap-threshold sc))
       (format t "~&Shortening short, fast leaps...")
       (format t "~&Shortened ~a large fast leaps"
               (shorten-large-fast-leaps sc :verbose nil)))
@@ -3456,185 +3459,189 @@ seq-num 5, VN, replacing G3 with B6
   ;; 24.3.11 get threshold from class if not given
   (unless threshold (setq threshold (fast-leap-threshold sc)))
   (loop 
-     for player in (get-players (ensemble sc))
-     with global-seq-num 
-     with count = 0
-     do
+    for player in (get-players (ensemble sc))
+    with global-seq-num 
+    with count = 0
+    do
        (setq global-seq-num 1)
        (loop for section in (get-all-section-refs sc) do
-            (loop 
-               for seq-num from 0
-               ;; MDE Wed Feb  1 14:04:45 2012 -- don't create-rest-seq
-               for seq = (get-nth-sequenz (piece sc) section player seq-num nil)
-               for set = (get-nth-from-palette section seq-num (set-map sc))
-               ;; MDE Fri Sep  7 10:36:46 2018
-               for set-transp = (interpolate global-seq-num
-                                             ;; MDE Wed Sep 12 10:15:58 2018 --
-                                             ;; no need to warn when we run
-                                             ;; 1-seq over: it'll be picked up
-                                             ;; below  
-                                             (transposition-curve sc) :warn nil)
-               for first-bar-num = (when seq
-                                     (bar-num (first (bars seq))))
-               for ins = (get-current-instrument-for-player
-                          section player (1+ seq-num) sc)
-               for transp = (- (transposition-semitones ins))
-               for lfl = (largest-fast-leap ins)
-               with qnis with last-seq
-               while seq do
-                 (if set                ; MDE Fri Sep  7 10:37:50 2018
-                     (progn
-                       (setq set (clone set))
-                       (unless (zerop set-transp)
-                         (setq set (transpose set set-transp
-                                              :destructively t))))
-                     (error "slippery-chicken::shorten-large-fast-leaps: ~
-                             no set! ~%section = ~a seq-num = ~a"
-                            section seq-num))
-                 (setf qnis (get-quick-notes-indices seq last-seq 
-                                                     threshold))
-                 (when (zerop transp)
-                   (setf transp nil))
-                 (when (and qnis lfl)
-                   (loop 
-                      with limits = (get-set-limits sc player 
-                                                    global-seq-num)
-                      with pitches = (limit-for-instrument 
-                                      ;; (clone set) ins
-                                      ;; MDE Fri Sep  7 10:41:07 2018 -- no need
-                                      ;; to clone now as it's cloned above
-                                      set ins
-                                      :upper (second limits)
-                                      :lower (first limits))
-                      for qni in qnis
-                      ;; a zero means we got a fast note from the last note last
-                      ;; seq to the first note this seq
-                      for e1 = (if (zerop qni)
-                                   (get-last-attack last-seq)
-                                   (get-nth-attack (1- qni) seq))
-                      for e2 = (get-nth-attack qni seq)
-                      for distance = (event-distance e1 e2)
-                      for up = (> distance 0)
-                      with new-pitch with pos with compare
-                      do
-                        (when (> (abs distance) lfl)
-                          ;; MDE Mon Aug  3 18:32:37 2020, Heidhausen -- warn
-                          ;; rather than error (below) but also neated code to
-                          ;; avoid duplication 
-                          (setq
-                           compare (if up
-                                       (lowest e1)
-                                       (highest e1))
-                           pos (position (if up
-                                             (highest e2)
-                                             (lowest e2))
-                                         pitches
-                                         :test #'pitch=)
-                           new-pitch 
-                           (if pos
-                               (loop
-                                  with 1-len = (1- (length pitches))
-                                  with i = pos
-                                  for p = (nth i pitches)
-                                  for interval = (abs (pitch- p compare))
-                                  do
-                                  ;; MDE Tue Aug 4 20:58:48 2020, Heidhausen --
-                                  ;; don't create fast repeated notes!
-                                    (when (integer-between interval 1 lfl)
-                                      ;; a side-effect here is that quick leaps
-                                      ;; to chords are replaced with single
-                                      ;; pitches
-                                      (return p))
-                                    (if up
-                                        (if (zerop i) (return) (decf i))
-                                        (if (= i 1-len) (return) (incf i))))
-                               (when (get-sc-config
-                                      'shorten-large-fast-leaps-warning)
-                                 (warn "slippery-chicken::~
-                                        shorten-large-fast-leaps: ~
-                                        for ~a at bar ~a: skipping ~
-                                        ~&pitch ~a: not in set ~a ~%pitches:~a"
-                                       player (bar-num e1)
-                                       (data (highest e2))
-                                       (pitch-list-to-symbols (data set))
-                                       (pitch-list-to-symbols pitches)))))
-                          (if new-pitch
-                              (flet ((doit (event)
-                                       (when verbose
-                                         (format t "~&seq-num ~a, ~a, ~
-                                                    replacing ~a with ~a"
-                                                 seq-num player
-                                                 (id new-pitch)
-                                                 (id (pitch-or-chord e2))))
-                                       (setf (midi-channel new-pitch)
-                                             (midi-channel 
-                                              (if (is-chord event)
-                                                  (first 
-                                                   (data 
-                                                    (pitch-or-chord event)))
-                                                  (pitch-or-chord event)))
-                                             (marks new-pitch)
-                                             (marks (pitch-or-chord event))
-                                             (pitch-or-chord event)
-                                             new-pitch
-                                             (written-pitch-or-chord event)
-                                             (when transp
-                                               (set-written event transp)))))
-                                (incf count)
-                                (doit e2)
-                                (when (is-tied-from e2)
-                                  ;; get the attack again but this time the
-                                  ;; bar and event indices of where it is 
-                                  (multiple-value-bind
-                                        (e nth-bar nth-event)
-                                      (get-nth-attack qni seq)
-                                    (unless (and e nth-bar nth-event)
-                                      (error
-                                       "~a~&slippery-chicken::shorten-large-~
-                                        fast-leaps: couldn't get-nth-attack"
-                                       seq))
-                                    (unless first-bar-num
-                                      (error
-                                       "slippery-chicken::shorten-large-fast-~
-                                        leaps: first-bar-num is NIL!"))
-                                    (loop 
-                                       with bar-num = (+ nth-bar 
-                                                         first-bar-num)
-                                       with bar = 
-                                         (get-bar sc bar-num player)
-                                       with happy = t 
-                                       while happy do
-                                         (if bar
-                                             (progn
-                                               (incf nth-event)
-                                               (when (>= nth-event 
-                                                         (num-rhythms bar))
-                                                 (incf bar-num)
-                                                 (setf nth-event 0
-                                                       bar (get-bar 
-                                                            sc bar-num player)))
-                                               (setf e (get-nth-event
-                                                        nth-event bar))
-                                               (when (is-tied-to e)
-                                                 (doit e))
-                                               (unless (is-tied-from e)
-                                                 (setf happy nil)))
-                                             (setf happy nil))))))
-                              ;; (if new-pitch ... else:
+         (loop 
+           for seq-num from 0
+           ;; MDE Wed Feb  1 14:04:45 2012 -- don't create-rest-seq
+           for seq = (get-nth-sequenz (piece sc) section player seq-num nil)
+           for set = (get-nth-from-palette section seq-num (set-map sc))
+           ;; MDE Fri Sep  7 10:36:46 2018
+           for set-transp = (interpolate global-seq-num
+                                         ;; MDE Wed Sep 12 10:15:58 2018 --
+                                         ;; no need to warn when we run
+                                         ;; 1-seq over: it'll be picked up
+                                         ;; below  
+                                         (transposition-curve sc) :warn nil)
+           for first-bar-num = (when seq
+                                 (bar-num (first (bars seq))))
+           for ins = (get-current-instrument-for-player
+                      section player (1+ seq-num) sc)
+           for transp = (- (transposition-semitones ins))
+           for lfl = (largest-fast-leap ins)
+           with qnis with last-seq
+           while seq do
+             (when verbose            ; MDE Wed May 21 11:58:44 2025, Heidhausen
+               (format t "~&Processing seq beginning at bar ~a for ~a (~a)~%  ~
+                         (largest fast leap: ~a)"
+                       first-bar-num player (id ins) lfl))
+             (if set                    ; MDE Fri Sep  7 10:37:50 2018
+               (progn
+                 (setq set (clone set))
+                 (unless (zerop set-transp)
+                   (setq set (transpose set set-transp
+                                        :destructively t))))
+               (error "slippery-chicken::shorten-large-fast-leaps: ~
+                       no set! ~%section = ~a seq-num = ~a"
+                      section seq-num))
+             (setf qnis (get-quick-notes-indices seq last-seq threshold))
+             (when (zerop transp)
+               (setf transp nil))
+             (when verbose            ; MDE Wed May 21 11:58:44 2025, Heidhausen
+               (format t " quick-notes-indices: ~a" qnis))
+             (when (and qnis lfl)
+               (loop 
+                 with limits = (get-set-limits sc player 
+                                               global-seq-num)
+                 with pitches = (limit-for-instrument 
+                                 ;; (clone set) ins
+                                 ;; MDE Fri Sep  7 10:41:07 2018 -- no need
+                                 ;; to clone now as it's cloned above
+                                 set ins
+                                 :upper (second limits)
+                                 :lower (first limits))
+                 for qni in qnis
+                 ;; a zero means we got a fast note from the last note last
+                 ;; seq to the first note this seq
+                 for e1 = (if (zerop qni)
+                            (get-last-attack last-seq)
+                            (get-nth-attack (1- qni) seq))
+                 for e2 = (get-nth-attack qni seq)
+                 for distance = (event-distance e1 e2)
+                 for up = (> distance 0)
+                 with new-pitch with pos with compare
+                 do
+                    (when (> (abs distance) lfl)
+                      ;; MDE Mon Aug 3 18:32:37 2020, Heidhausen -- warn rather
+                      ;; than error (below) but also neatened code to avoid
+                      ;; duplication
+                      (setq compare (if up (lowest e1) (highest e1))
+                            pos (position (if up (highest e2) (lowest e2))
+                                          pitches :test #'pitch=)
+                            new-pitch 
+                            (if pos
+                              (loop
+                                with 1-len = (1- (length pitches))
+                                with i = pos
+                                for p = (nth i pitches)
+                                for interval = (abs (pitch- p compare))
+                                do
+                                   ;; (print (data p))
+                                   ;; MDE Tue Aug 4 20:58:48 2020, Heidhausen --
+                                   ;; don't create fast repeated notes!
+                                   ;; MDE Wed May 21 14:10:59 2025, Heidhausen
+                                   ;; -- integer-between causes problems with
+                                   ;; micritones! 
+                                   ;; (when (integer-between interval 1 lfl)
+                                   (when (number-between interval 1 lfl)
+                                     ;; a side-effect here is that quick leaps
+                                     ;; to chords are replaced with single
+                                     ;; pitches
+                                     (return p))
+                                   (if up
+                                     (if (zerop i) (return) (decf i))
+                                     (if (= i 1-len) (return) (incf i))))
                               (when (get-sc-config
                                      'shorten-large-fast-leaps-warning)
-                                (warn "~&slippery-chicken::~
+                                (warn "slippery-chicken::~
+                                  shorten-large-fast-leaps: ~
+                                  for ~a at bar ~a: skipping ~
+                                  ~&pitch ~a: not in set ~a ~%pitches:~a"
+                                      player (bar-num e1)
+                                      (data (highest e2))
+                                      (pitch-list-to-symbols (data set))
+                                      (pitch-list-to-symbols pitches)))))
+                      (if new-pitch
+                        (flet ((doit (event)
+                                 (when verbose
+                                   (format t "~&seq-num ~a, ~a, ~
+                                                    replacing ~a with ~a"
+                                           seq-num player
+                                           (id new-pitch)
+                                           (id (pitch-or-chord e2))))
+                                 (setf (midi-channel new-pitch)
+                                       (midi-channel 
+                                        (if (is-chord event)
+                                          (first 
+                                           (data 
+                                            (pitch-or-chord event)))
+                                          (pitch-or-chord event)))
+                                       (marks new-pitch)
+                                       (marks (pitch-or-chord event))
+                                       (pitch-or-chord event)
+                                       new-pitch
+                                       (written-pitch-or-chord event)
+                                       (when transp
+                                         (set-written event transp)))))
+                          (incf count)
+                          (doit e2)
+                          (when (is-tied-from e2)
+                            ;; get the attack again but this time the
+                            ;; bar and event indices of where it is 
+                            (multiple-value-bind
+                                  (e nth-bar nth-event)
+                                (get-nth-attack qni seq)
+                              (unless (and e nth-bar nth-event)
+                                (error
+                                 "~a~&slippery-chicken::shorten-large-~
+                                        fast-leaps: couldn't get-nth-attack"
+                                 seq))
+                              (unless first-bar-num
+                                (error
+                                 "slippery-chicken::shorten-large-fast-~
+                                        leaps: first-bar-num is NIL!"))
+                              (loop 
+                                with bar-num = (+ nth-bar 
+                                                  first-bar-num)
+                                with bar = 
+                                         (get-bar sc bar-num player)
+                                with happy = t 
+                                while happy do
+                                  (if bar
+                                    (progn
+                                      (incf nth-event)
+                                      (when (>= nth-event 
+                                                (num-rhythms bar))
+                                        (incf bar-num)
+                                        (setf nth-event 0
+                                              bar (get-bar 
+                                                   sc bar-num player)))
+                                      (setf e (get-nth-event
+                                               nth-event bar))
+                                      (when (is-tied-to e)
+                                        (doit e))
+                                      (unless (is-tied-from e)
+                                        (setf happy nil)))
+                                    (setf happy nil))))))
+                        ;; (if new-pitch ... else:
+                        (when (get-sc-config
+                               'shorten-large-fast-leaps-warning)
+                          (warn "~&slippery-chicken::~
                                        shorten-large-fast-leaps: ~
                                        ~%Couldn't get new pitch for ~a, ~
                                        section ~a, seq-num ~a, e1 ~a, e2 ~a! ~
                                        ~%pitches: ~a" 
-                                      player section (1+ seq-num)
-                                      (id (pitch-or-chord e1))
-                                      (id (pitch-or-chord e2))
-                                      (pitch-list-to-symbols pitches)))))))
-                 (setf last-seq seq)
-                 (incf global-seq-num)))
-     finally (return count)))
+                                player section (1+ seq-num)
+                                (id (pitch-or-chord e1))
+                                (id (pitch-or-chord e2))
+                                (pitch-list-to-symbols pitches)))))))
+             (setf last-seq seq)
+             (incf global-seq-num)))
+    finally (return count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

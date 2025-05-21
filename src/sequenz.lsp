@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified:  12:04:23 Thu Dec 15 2022 CET
+;;; $$ Last modified:  13:39:55 Wed May 21 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -218,24 +218,32 @@
 ;;; we can check for quick notes on the changeover of sequences too.
 
 (defmethod get-quick-notes-indices ((s sequenz) 
-                                    &optional last-seq (threshold 0.125))
+                                    &optional last-seq (threshold 0.125)
+                                    verbose)
   ;; MDE Tue Aug 4 14:12:16 2020, Heidhausen -- don't do this if threshold is
   ;; nil
-  (when (and (numberp threshold) (> (num-notes s) 0))
-    (loop 
+  (let ((result '()))
+    (when (and (numberp threshold) (> (num-notes s) 0))
+    ;; (when (and (numberp (print threshold)) (> (print (num-notes s)) 0))
+      (loop 
         with last = (if last-seq 
-                        (get-last-attack last-seq nil)
+                      (get-last-attack last-seq nil)
                       (get-nth-attack 0 s))
-        with result = '()
         for i from (if last-seq 0 1) below (num-notes s) 
         for this = (get-nth-attack i s)
         do
-          (when (and last this
-                     (<= (- (start-time this) (start-time last))
-                         threshold))
-            (push i result))
-          (setf last this)
-        finally (return (nreverse result)))))
+           (when (and verbose last this)
+             (format t "~&last: ~a ~a, this: ~a ~a"
+                     (get-pitch-symbol last) (start-time last)
+                     (get-pitch-symbol this) (start-time this)))
+           (when (and last this
+                      (<= (- (start-time this) (start-time last))
+                          threshold))
+             ;; (print 'gotit)
+             (push i result))
+           (setf last this)))
+    (when verbose (print result))
+    (nreverse result)))
                   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

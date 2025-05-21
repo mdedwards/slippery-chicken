@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  20:10:15 Mon Aug 26 2024 CEST
+;;; $$ Last modified:  16:52:04 Wed May 21 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1255,9 +1255,6 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
        finally (return nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Feb  6 17:32:38 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-set/create-chord
 ;;; DESCRIPTION
 ;;; Create a chord object from the pitches of the given sc-set object. As of
@@ -1299,7 +1296,6 @@ PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0
                 (related-sets-id (get-data-data related-sets-id
                                                 (related-sets s)))
                 (t (data s)))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-set/create-event

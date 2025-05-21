@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:49:45 Fri May 16 2025 CEST
+;;; $$ Last modified:  20:03:20 Wed May 21 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7891,6 +7891,9 @@ NIL
 ;;; - :new-end-bar. The bar at which we end (inclusive) pasting in the scaled
 ;;;   events (it's not possible to specify a stopping event) . Default = NIL =
 ;;;   end of the piece.
+;;; - :bar-ok-fun. A function to call in every bar to decide whether to double
+;;;   events to this bar (e.g. you might want to skip over bars in which other
+;;;   players aren't playing). Default returns T = every bar.
 ;;; 
 ;;; RETURN VALUE
 ;;; the sc object with the new player added
@@ -7902,6 +7905,7 @@ NIL
      &key transposition (new-start-bar 1) new-end-bar (start-bar 1) 
      start-event end-bar end-event pitches (auto-beam t) (midi-channel 1)
      (microtones-midi-channel -1) (update-slots t) verbose
+     (bar-ok-fun #'(lambda (bar) (declare (ignore bar)) t))
      (instrument-palette +slippery-chicken-standard-instrument-palette+))
 ;;; ****
   (when (and transposition pitches)
@@ -7928,33 +7932,35 @@ NIL
                             (setf (player se) new-player)
                          collect se))
          bar used full)
+    (update-slots sc) ; this one necessary so that at least bar-nums get updated
     (loop for bar-num from new-start-bar to new-end-bar do
       (setq bar (get-bar sc bar-num new-player))
-      ;; long rests can mean we never fill another bar
-      (loop until (< (duration (first s-events))
-                     (bar-duration bar))
-            do (when verbose
-                 (format t "~&Skipping ~a rest" (data (first s-events))))
-               (pop s-events))
-      (setq used (fill-with-rhythms
-                  bar s-events :is-full-error nil :warn nil
-                  :midi-channel midi-channel 
-                  :microtones-midi-channel
-                  microtones-midi-channel)
-            full (pad-right bar :dots t))
-      (set-player bar new-player)
-      (if (and full (> used 0))
-        (progn 
-          (setq s-events (nthcdr used s-events))
-          (when verbose
-            (format t "~&Added ~a events to bar ~a" used bar-num)))
-        (progn
-          (force-rest-bar bar)
-          (when verbose
-            (format t "~&Couldn't add events to bar ~a" bar-num)
-            (format t "~%  Next events: ")
-            (loop for e in s-events repeat 5 do
-              (print-simple e)))))))
+      (when (funcall bar-ok-fun bar)
+        ;; long rests can mean we never fill another bar
+        (loop until (< (duration (first s-events))
+                       (bar-duration bar))
+              do (when verbose
+                   (format t "~&Skipping ~a rest" (data (first s-events))))
+                 (pop s-events))
+        (setq used (fill-with-rhythms
+                    bar s-events :is-full-error nil :warn nil
+                    :midi-channel midi-channel 
+                    :microtones-midi-channel
+                    microtones-midi-channel)
+              full (pad-right bar :dots t))
+        (set-player bar new-player)
+        (if (and full (> used 0))
+          (progn 
+            (setq s-events (nthcdr used s-events))
+            (when verbose
+              (format t "~&Added ~a events to bar ~a" used bar-num)))
+          (progn
+            (force-rest-bar bar)
+            (when verbose
+              (format t "~&Couldn't add events to bar ~a" bar-num)
+              (format t "~%  Next events: ")
+              (loop for e in s-events repeat 5 do
+                (print-simple e))))))))
   (when auto-beam (auto-beam sc))
   (when update-slots (update-slots sc))
   sc)

@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  19:28:13 Tue Feb  6 2024 CET
+;;; $$ Last modified:  17:04:29 Wed May 21 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2087,5 +2087,3 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF recursive-assoc-list.lsp
-
-;;; ****

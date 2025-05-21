@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  12:21:40 Fri Mar 22 2024 CET
+;;; $$ Last modified:  16:59:19 Wed May 21 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -954,7 +954,6 @@ data: 1
     it))
    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* assoc-list/remove-data
 ;;; DATE
 ;;; February 1st 2016

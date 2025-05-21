@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  16:15:18 Wed May 21 2025 CEST
+;;; $$ Last modified:  16:36:58 Wed May 21 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1107,10 +1107,9 @@ data: (C4 F4 A4 C5)
 (defmethod stack ((sp set-palette) num-stacks &key id by-freq (up t) (down t))
 ;;; ****
   (loop for ref in (get-all-refs sp) do
-    (print ref)
-       (set-data ref (stack (get-data ref sp) num-stacks :id id :by-freq by-freq
-                            :up up :down down)
-                 sp))
+    (set-data ref (stack (get-data ref sp) num-stacks :id id :by-freq by-freq
+                                                      :up up :down down)
+              sp))
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1634,8 +1633,6 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Ring Modulation routines
 
-;;; SAR Wed Feb  8 12:48:17 GMT 2012: Edited robodoc entry
-;;; 
 ;;; ****f* set-palette/recursive-set-palette-from-ring-mod
 ;;; DESCRIPTION
 ;;; Create a set-palette object consisting of sub palette-objects whose pitch
@@ -1672,9 +1669,10 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
 ;;; - :ring-mod-bass-octave. An integer that is the MIDI octave reference
 ;;;   number (such as the 4 in 'C4), indicating the octave from which the bass
 ;;;   note(s) are to be taken.
-;;; - :force-chromatic. T or NIL. If T, force all micro-tone slots of pitch objects
-;;;   to be NIL so that they won't be filtered out when a set is to be used by a
-;;;   chromatic instrument. See sc-set class force-micro-tone for more details.
+;;; - :force-chromatic. T or NIL. If T, force all micro-tone slots of pitch
+;;;   objects to be NIL so that they won't be filtered out when a set is to be
+;;;   used by a chromatic instrument. See sc-set class force-micro-tone for more
+;;;   details. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; - A set-palette object (recursive)

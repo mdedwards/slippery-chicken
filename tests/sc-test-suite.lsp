@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:46:14 Tue May 20 2025 CEST
+;;; $$ Last modified:  19:37:01 Thu May 22 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -12806,6 +12806,164 @@
       (integer-between tmp 450 550))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(sc-deftest test-sc-combine ()
+  (let* ((sc1 (make-slippery-chicken
+               '+mini1+
+               :ensemble '(((pno (piano :midi-channel 1))
+                            (vln (violin :midi-channel 2))))
+               :set-palette '((1 ((f3 g3 as3 a3 bf3 b3 c4
+                                   d4 e4 f4 g4 a4 bf4 cs5))))
+               :set-map '((1 (1 1 1 1 1 1 1))
+                          (2 (1 1 1 1 1 1 1))
+                          (3 (1 1 1 1 1 1 1)))
+               :tempo-map '((1 (q 60)))
+               :title "mini 1"
+               :sndfile-palette
+               #+(or clm ffprobe)
+               `(((grp-1
+                   (test-sndfile-1.aiff test-sndfile-2.aiff
+                                        test-sndfile-3.aiff)))
+                 (,(file-from-sc-dir "tests/test-sndfiles-dir-1/")))
+               #-(or clm ffprobe)
+               nil
+               :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                       :pitch-seq-palette ((1 (2) 3))))
+                                   (2 ((((4 4) (q) e (s) s h))
+                                       :pitch-seq-palette ((1 2 3))))
+                                   (3 ((((4 4) e (s) s h (q)))
+                                       :pitch-seq-palette ((2 3 3))))
+                                   (4 ((((4 4) (s) s h (q) e))
+                                       :pitch-seq-palette ((3 1 (2))))))
+               :rthm-seq-map '((1 ((pno (1 2 1 2 1 2 1))
+                                   (vln (1 2 1 2 1 2 1))))
+                               (2 ((pno (3 4 3 4 3 4 3))
+                                   (vln (3 4 3 4 3 4 3))))
+                               (3 ((pno (1 2 1 2 1 2 1))
+                                   (vln (1 2 1 2 1 2 1)))))))
+         (sc2 (make-slippery-chicken  
+               '+mini2+
+               :ensemble '(((one (computer :midi-channel 1))
+                            (two (computer :midi-channel 2))))
+               :set-limits-high '((one (0 f5 100 f5)))
+               :set-limits-low '((two (0 f4 100 f4)))
+               :avoid-used-notes t
+               :staff-groupings '(2)
+               :title "mini 2"
+               :tempo-map '((1 (q 120)))
+               :set-palette '((set1 ((C2 CQS2 D2 DQS2 E2 F2 FQS2 G2 GQS2 A2 AQS2
+                                      B2 C3 CQS3 D3 DQS3 E3 F3 FQS3 G3 GQS3
+                                      A3 AQS3 B3 C4 CQS4 D4 DQS4 E4 F4 FQS4
+                                      G4 GQS4 A4 AQS4 B4 C5))) 
+                              (set2 ((D2 EF2 E2 F2 GF2 G2 AF2 A2 BF2 B2 C3 CQS3
+                                      D3 EF3 E3 F3 GF3 G3 AF3 A3 BF3 B3 C4
+                                      CQS4 D4 EF4 E4 F4 GF4 G4 AF4 A4 BF4 B4
+                                      C5 CQS5 D5))))  
+               :set-map `((1 ,(fibonacci-transitions 10 '(set1 set2))))
+               :rthm-seq-palette
+               '((seq1 ((((4 4) { 3 - te (te) te - - te te te -
+                          - te (te) te - - te te te - })
+                         ({ 3 - te te te - - te te te -
+                          - te te te - - te te te - }))
+                        :pitch-seq-palette (((1) 3 (1) 2 3 (1) 2 3 (1) 2 3
+                                             (1) 2 3 (1) 2 3 (1) 3 (1) 2 3))))
+                 (seq2 ((((4 4) q (q) q q) (e. (s) s s e q. e))
+                        :pitch-seq-palette (((1) (3) 4 1 (2) 4 5 6 7)))))
+               :rthm-seq-map `((1 ((one ,(fibonacci-transitions
+                                          10
+                                          '(seq1 seq1)))
+                                   (two ,(fibonacci-transitions
+                                          10
+                                          '(seq2 seq2))))))))
+         (sc3 (make-slippery-chicken
+               '+mini3+
+               :ensemble '(((fl (flute :midi-channel 1))
+                            (cl (b-flat-clarinet :midi-channel 2))
+                            (hn (french-horn :midi-channel 3))
+                            (tp (b-flat-trumpet :midi-channel 4))
+                            (vn (violin :midi-channel 5))
+                            (vc (cello :midi-channel 6))))
+               :set-palette '((1 ((f3 g3 a3 b3 c4 dqs4 e4 f4 g4 a4 b4 c5)))
+                              (2 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+                              (3 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+               :set-map '((1 (1 1 1 1 1)))
+               :title "mini 3"
+               ;; dynamics marks will affect following event's amplitudes when
+               ;; the sequenz is created but this won't carry over sequenzes
+               :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                       :pitch-seq-palette ((1 2 3 4 5))
+                                       :marks (pp 1 f 4)))
+                                   (2 ((((4 4) q e s s h))
+                                       :pitch-seq-palette ((1 2 3 4 5))
+                                       :marks (ppp 1 mp 2 mf 5)))
+                                   (3 ((((4 4) e s s h q))
+                                       :pitch-seq-palette ((1 2 3 4 5))
+                                       :marks (ff 1 p 3 fff 4)))
+                                   (3a ((((4 4) e s s h q))
+                                        :pitch-seq-palette ((1 2 3 4 5)))))
+               :rthm-seq-map '((1 ((fl (3 1 1 2 2))
+                                   (cl (1 3 2 1 2))
+                                   (hn (3 1 1 2 3a))
+                                   (tp (1 3 1 2 2))
+                                   (vn (3 2 2 1 1))
+                                   (vc (1 1 3 2 2)))))))
+         (sc4 (make-slippery-chicken
+               '+mini4+
+               :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                            (hn (french-horn :midi-channel 2))
+                            (vc (cello :midi-channel 3))))
+               :set-palette '((1 ((f3 g3 a3 b3 c4 d4
+                                   e4 f4 g4 a4 b4 c5)))) 
+               :set-map '((1 (1 1 1 1 1 1 1))
+                          (2 (1 1 1 1 1 1 1))
+                          (3 (1 1 1 1 1 1 1)))
+               :title "mini 4"
+               :rthm-seq-palette '((1 ((((3 4) q (q) e (s) s))
+                                       :pitch-seq-palette ((1 2 3))))
+                                   (2 ((((3 4) (q) e (s) s q))
+                                       :pitch-seq-palette ((1 2 3))))
+                                   (3 ((((3 4) e (s) s q (q)))
+                                       :pitch-seq-palette ((2 3 3))))
+                                   (4 ((((3 4) (s) s q (q) e))
+                                       :pitch-seq-palette ((3 1 2)))))
+               :rthm-seq-map '((1 ((cl (1 2 1 2 1 2 1))
+                                   (hn (1 2 1 2 1 2 1))
+                                   (vc (1 2 1 2 1 2 1))))
+                               (2 ((cl (3 4 3 4 3 4 3))
+                                   (hn (3 4 3 4 3 4 3))
+                                   (vc (3 4 3 4 3 4 3))))
+                               (3 ((cl (1 2 1 2 1 2 1))
+                                   (hn (1 2 1 2 1 2 1))
+                                   (vc (1 2 1 2 1 2 1)))))))
+         ;;                         1 and 3 overlapping (bars 25, 27)
+         (sc (sc-combine '((1 10 18 25) (3 2 4 27) (2 11 20 2 two)
+                           ;; to test putting sc4 bars (3/4) into existing 4/4
+                           ;; bars (in order to get an error) try (4 7 19 9)
+                           ;; here:
+                           (4 7 19 40))
+                         ;; (pno vln) (one two) (fl cl hn tp vn vc) (cl hn vc)
+                         (list sc1 sc2 sc3 sc4) )))
+    ;;(print (list (num-bars sc1) (num-bars sc2) (num-bars sc3) (num-bars sc4)))
+    (flet ((compare-first-notes (bar player mini mini-bar)
+             (eq (get-pitch-symbol (get-note sc bar 1 player))
+                 (get-pitch-symbol (get-note mini mini-bar 1 player)))))
+      (sc-test-check        
+        (setf (title sc) "sc-combine test")
+        ;; (cmn-display sc) (cmn-display sc1) (cmn-display sc2)
+        ;; (cmn-display sc3) (cmn-display sc4)
+        (= 52 (num-bars sc))  ; because (4 7 19 40) means 13 bars starting at 40
+        (not (set-difference (players sc)
+                             '(pno vln two fl cl hn tp vn vc cl hn vc)))
+        (compare-first-notes 25 'pno sc1 10)
+        (compare-first-notes 33 'vln sc1 18)
+        (compare-first-notes 27 'vc sc3 2)
+        (compare-first-notes 29 'fl sc3 4)
+        (compare-first-notes 2 'two sc2 11)
+        (compare-first-notes 11 'two sc2 20)
+        (compare-first-notes 40 'hn sc4 7)
+        (compare-first-notes 52 'cl sc4 19)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-map tests
 ;;; SAR Thu Apr 26 18:19:12 BST 2012
 (sc-deftest test-rthm-seq-map-make-rthm-seq-map ()
@@ -13809,8 +13967,26 @@
     (equalp '(-24 -0.8000002 -6 0 1 -15 2 3)
             (centre-list '(-11 12.2 7 13 14 -2 15 16) t))
     (equalp '(-24 -26 -6 0 1 -15 2 3)
-            (centre-list '(-11 -13 7 13 14 -2 15 16) t))
-    ))
+            (centre-list '(-11 -13 7 13 14 -2 15 16) t))))
+
+;;; MDE Thu May 22 19:37:00 2025, Heidhausen 
+(sc-deftest test-utilities-get-2d-array-whatever ()
+  (let ((array (make-array '(100 100) :element-type t :initial-element nil)))
+    (sc-test-check
+      ;; order important here as we're not deleting elements
+      (setf (aref array 1 0) .2323)
+      (= 0 (get-2d-array-last-non-nil-col array))
+      (setf (aref array 0 9) 1)
+      (= 9 (get-2d-array-last-non-nil-col array))
+      (setf (aref array 30 29) 1)
+      (= 29 (get-2d-array-last-non-nil-col array))
+      (setf (aref array 99 98) 'blah)
+      (= 98 (get-2d-array-last-non-nil-col array))
+      (= 1 (get-2d-array-non-nil-at-col array 29))
+      (multiple-value-bind (thing row)
+          (get-2d-array-non-nil-at-col array 98)
+        (and (eq 'blah thing) (= 99 row)))
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 19 19:45:20 2011 -- rthm-chain methods

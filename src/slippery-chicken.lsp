@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:13:05 Wed May 21 2025 CEST
+;;; $$ Last modified:  16:36:47 Thu May 22 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1133,7 +1133,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Called by initialize-instance
+;;;  Called by initialize-instance. This is where the magic happens :-)
 
 ;;; Clone the rthm-seq-map, loop through all the instruments in all the
 ;;; sections of the rsm (get-first then thereafter use the next slot). Get the
@@ -1723,6 +1723,16 @@ rhythms: (
       (get-bar (piece sc) bar-num player)
       (let ((players (players (ensemble sc))))
         (loop for p in players collect (get-bar (piece sc) bar-num p)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod get-bars ((sc slippery-chicken) start-bar end-bar
+                     &optional player (on-fail #'error))
+  (loop for bn from start-bar to end-bar
+        for bar = (get-bar sc bn player)
+        do
+           (when (and (functionp on-fail) (not bar))
+             (funcall on-fail "slippery-chicken::get-bars: no bar ~a" bn))
+        collect bar))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This will only work for single notes, not chords.

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  14:50:11 Fri May 16 2025 CEST
+;;; $$ Last modified:  15:03:37 Thu May 22 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5939,6 +5939,15 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
   (if (event-p (first (rhythms rsb)))
       (setf (tempo-change (first (rhythms rsb))) tempo)
       (error "rthm-seq-bar::add-tempo: no events in bar: ~a" rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod delete-tempi ((rsb rthm-seq-bar) &optional verbose ignore1 ignore2)
+  (declare (ignore ignore1 ignore2))
+  (loop for e in (rhythms rsb) do
+    (when (tempo-change e)
+      (when verbose "rthm-seq-bar::rm-tempi: deleting tempi in bar ~a for ~a"
+            (bar-num rsb) (player rsb))
+      (delete-tempo-change e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq-bar/pad-right

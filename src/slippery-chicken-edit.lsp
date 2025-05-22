@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  20:03:20 Wed May 21 2025 CEST
+;;; $$ Last modified:  19:40:46 Thu May 22 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7970,7 +7970,7 @@ NIL
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; The structure of a slippery-chicken object is as follows:
+;;;  The structure of a slippery-chicken object is as follows:
 ;;; slippery-chicken -> piece -> section (plus subsections where appropriate) ->
 ;;; player-section ->  sequenz -> rthm-seq-bar -> event
 ;;; e.g. (get-bar (get-nth 0 (get-data 'vn (get-data-data 1 (piece +mini+)))) 1)
@@ -8046,7 +8046,7 @@ NIL
     (error "slippery-chicken-edit::bars-to-sc: first argument should be a ~
             list of rthm-seq-bar objects: ~&~a" bars))
   ;; MDE Thu Sep 24 18:51:20 2020, Heidhausen -- attach tempo to first event
-  (setf (tempo-change (get-nth-event 0 (first bars))) tempo)
+  (when tempo (setf (tempo-change (get-nth-event 0 (first bars))) tempo))
   ;; MDE Fri Mar 18 17:18:19 2022, Paris -- if we have a transposing instrument,
   ;; update the written pitches to reflect this as they probably don't have this
   ;; slot yet
@@ -8138,7 +8138,156 @@ NIL
     (check-tuplets sc)
     (check-beams sc)
     sc))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* slippery-chicken/sc-combine
+;;; DATE
+;;; 22nd May 2025
+;;; 
+;;; DESCRIPTION
+;;; Combine an arbitrary number of slippery-chicken objects into a new
+;;; slippery-chicken but referencing the bars and players to copy (clone). This
+;;; takes a map as the first argument and this looks something like :
+;;;
+;;; '((sc-object-num start-bar end-bar result-start-bar player1 player2 ...))
+;;;
+;;; but there can be as many sublists as necessary, with the following
+;;; structure: <sc-object-num> is the 1-based index into the <sc-objects> list
+;;; (2nd argument).  <start-bar> and <end-bar> reference the existing sc object
+;;; and are inclusive.  <result-start-bar> is where things should be written in
+;;; the new slippery-chicken object--this can be anywhere, and even
+;;; overlap/overwrite other copied-in bars, as long as the metric structure
+;;; matches. There can be as many players referenced as you wish but each must
+;;; of course be found in the sc-object. Players can also be omitted from the
+;;; map's sublist whereupon all players in that sc-object will be used.
+;;;
+;;; Note that rest bars will be created for players that have no notes and that
+;;; if there are any bars without notes at all for any player, then rest-bars
+;;; will be created using the :rest-time-sig keyword argument as the meter.
+;;;
+;;; Note also that writing into new bars doesn't have to go in any particular
+;;; order, and neither do the <sc-objects> E.g. we could write bars 50-100 of
+;;; the result first, using bars from sc-object 3, then 10-20 afterwards using
+;;; sc-object 1.
+;;; 
+;;; ARGUMENTS
+;;; - the map: a list as described above
+;;; - a list of slippery-chicken objects
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :max-bars. The maximum number of bars that will be generated. Defaults
+;;;   generously to 1000 but can go as high as you like, memory permitting.
+;;; - :max-players. The maximum number of players we'll use. The same applies
+;;;   here as to :max-bars, as both are used to initialise the array we use as
+;;;   the workhorse in remapping. Default = 50.
+;;; - :new-sc-name. A symbol to be used as the global variable for the resultant
+;;;   slippery-chicken object, as with make-slippery-chicken.
+;;; - :rest-time-sig. The time signature to be used when creating rest bars
+;;;   where no instrument is in play.
+;;; 
+;;; RETURN VALUE
+;;; - a new slippery chicken object
+;;; 
+;;; SYNOPSIS
+(defun sc-combine (map sc-objects &key (max-bars 1000) (max-players 50)
+                                  (new-sc-name '*sc-combine*)
+                                  (rest-time-sig '(2 4)))
 ;;; ****
+  (let* ((bars-array (make-array (list max-players max-bars) ; rows columns
+                                 :initial-element nil :element-type t))
+         ;; just a list of the players, as they occur, in order to access the
+         ;; array row for the player
+         (all-players '()) 
+         (all-instruments '())
+         (player-count 0)
+         (default-rest-bar (make-rest-bar rest-time-sig))
+         (bars '())
+         result)
+    ;; stuff all the bars we need into bars-array
+    (loop for mapping in map
+          for sc = (nth (1- (first mapping)) sc-objects)
+          for start-bar = (second mapping)
+          for end-bar = (third mapping)
+          for result-start-bar = (fourth mapping)
+          for players = (nthcdr 4 mapping)
+          do
+             (unless players (setq players (players sc)))
+             (loop for player in players
+                   for player-pos = (position player all-players)
+                   for ins = (id (get-instrument-for-player-at-bar player 1 sc))
+                   do
+                      (unless ins
+                        (error "sc-combine: couuldn't get instrument for ~
+                                player ~a in ~a" player (id sc)))
+                      (when (player-doubles sc player)
+                        (error "sc-combine: player ~a: doubling players ~
+                                not (yet) handled." player))
+                      (unless player-pos ; got a new player
+                        (setq all-players (econs all-players player)
+                              all-instruments
+                              (econs all-instruments ins)
+                              player-pos player-count)
+                        (incf player-count))
+                      (setq bars (get-bars sc start-bar end-bar player))
+                      (loop for i from (1- result-start-bar)
+                            for bar in bars do
+                              (setf (aref bars-array player-pos i)
+                                    (let ((b (clone bar)))
+                                      ;; delete any ending double bars
+                                      (when (= 2 (bar-line-type b))
+                                        (setf (bar-line-type b) 0))
+                                      b)))))
+    ;; any nil bars need to become rest-bars with time-sig of an existing bar at
+    ;; that position or rest-time-sig if no bars there
+    (let ((new-end-bar-num (get-2d-array-last-non-nil-col bars-array))) ;0-based
+      (loop for bar-n to new-end-bar-num
+            with rest-bar
+            do
+               (multiple-value-bind (existing-bar row)
+                   (get-2d-array-non-nil-at-col bars-array bar-n)
+                 (setq rest-bar (if existing-bar
+                                  (force-rest-bar (clone existing-bar))
+                                  default-rest-bar))
+                 (loop for p below player-count
+                       with here
+                       do
+                          (unless (and row (= p row))
+                            ;; cloned already if there
+                            (setq here (aref bars-array p bar-n))
+                            (if here
+                              (progn 
+                                (unless (time-sig-equal here existing-bar)
+                                  (error "sc-combine: different time ~
+                                          signatures at new bar ~
+                                          number ~a~%~a"
+                                         (1+ bar-n) existing-bar))
+                                ;; brutal deletion of tempo marks so that only
+                                ;; the first player's tempo counts/overwrites
+                                (delete-tempi here))
+                              (setf here (clone rest-bar)
+                                    (aref bars-array p bar-n) here))))))
+      ;; now create our resultant sc object and fill it with bars from
+      ;; bars-array
+      (flet ((get-bars-list (player)    ; row index
+               (loop for bar-num to new-end-bar-num
+                     collect (aref bars-array player bar-num))))
+        (setq result (bars-to-sc (get-bars-list 0)
+                                 :sc nil :sc-name new-sc-name
+                                 :player (first all-players)
+                                 :instrument (first all-instruments)
+                                 :tempo nil :update nil))
+        (loop for player-num from 1
+              for player in (rest all-players)
+              for ins in (rest all-instruments) do
+                (bars-to-sc (get-bars-list player-num)
+                            :sc result :sc-name nil :update nil
+                            :player player :instrument ins :tempo nil))))
+    (update-slots result)
+    ;; otherwise scores are unhappy and don't display meter changes
+    (set-write-time-sig result) 
+    (change-bar-line-type result (num-bars result) 2) ; add the final double bar
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

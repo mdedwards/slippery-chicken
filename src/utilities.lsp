@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  20:41:42 Thu Feb 20 2025 CET
+;;; $$ Last modified:  19:09:10 Thu May 22 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6716,23 +6716,23 @@ yes_foo, 1 2 3 4;
   ;; input should be longer than 1, else return input.
   (when (<= (length path) 1) (return-from os-format-path path))
   (let* ((split-path (uiop:split-string path :separator '(#\/ #\\ #\:)))
-	 (elements (loop for e in split-path when (> (length e) 0) collect e))
-	 (device? (first elements)))
+         (elements (loop for e in split-path when (> (length e) 0) collect e))
+         (device? (first elements)))
     ;; If first directory is definietly not a device name, return path unchanged
     (if (or (not (= (length device?) 1))
-	    (member device? '("." "~") :test #'string=))
-	path
-	;; else modify path accordingly
-	(progn
-	  (unless type
-	    (setf type
-		  #+(or win32 win64) 'windows
-		  #-(or win32 win64) 'unix))
-	  ;; intering the symbol is nicer when calling this from other packages
-	  (case (intern (string type) :sc)
-	    ((windows) (format nil "~a:~{/~a~}" device? (subseq elements 1)))
-	    ;; if type is not windows, unix style formatting
-	    (t (format nil "/~a~{/~a~}" device? (subseq elements 1))))))))
+            (member device? '("." "~") :test #'string=))
+        path
+        ;; else modify path accordingly
+        (progn
+          (unless type
+            (setf type
+                  #+(or win32 win64) 'windows
+                  #-(or win32 win64) 'unix))
+          ;; intering the symbol is nicer when calling this from other packages
+          (case (intern (string type) :sc)
+            ((windows) (format nil "~a:~{/~a~}" device? (subseq elements 1)))
+            ;; if type is not windows, unix style formatting
+            (t (format nil "/~a~{/~a~}" device? (subseq elements 1))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; helper/main worker for smooth-procession
@@ -6900,5 +6900,36 @@ yes_foo, 1 2 3 4;
     ;; 60 48 40 15) so the result is 240*1 == 120*2 == 80*3 ... 15*16 == 240
     (* (first actual) (first cycle-lengths))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 22 19:08:57 2025, Heidhausen -- for use in sc-combine
+;;; in a 2d arraym return the last column number (0-based) that has a non-nil
+;;; value 
+(defun get-2d-array-last-non-nil-col (array)
+  (let* ((dims (array-dimensions array))
+         (num-rows (first dims))
+         (num-cols (second dims))
+         (last 0))
+    (unless (= 2 (length dims))
+      (error "get-2d-array-last-non-nil-pos: only 2d arrays handled: ~a" dims))
+    (loop for row below num-rows do
+      ;; (format t "~&**** ~a" p)
+      (loop for col downfrom (1- num-cols) to 0
+            for thing = (aref array row col)
+            do
+               (when thing
+                 (when (> col last)
+                   (setq last col))
+                 (return))))
+    last))
+
+;;; get the first non-nil element in the column at col. return both the element
+;;; and the row it's in.
+(defun get-2d-array-non-nil-at-col (array col)
+  (let* ((dims (array-dimensions array))
+         (num-rows (first dims)))
+    (loop for row below num-rows
+          for thing = (aref array row col)
+          do (when thing (return (values thing row))))))
+        
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:37:01 Thu May 22 2025 CEST
+;;; $$ Last modified:  13:34:47 Fri May 23 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -20657,6 +20657,9 @@ est)")))
                                    (two ,(fibonacci-transitions
                                           10
                                           '(seq2 seq2)))))))))
+    ;; MDE Fri May 23 13:34:23 2025, Heidhausen -- reset to default otherwise
+    ;; re-running the sc-combine test fails
+    (set-standard-instrument-slot 'chords nil 'computer)
     (sc-test-check
       (equalp
        (let* ((count 0))
@@ -20686,7 +20689,7 @@ est)")))
                                      (incf count))))))
          count))
       (equalp '(0 0) (fast-microtone-to-chromatic mini nil :threshold 10)))))
-    
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Wed 18 Sep 2019 18:35:36 BST
 ;;; test-pitch-or-chord=

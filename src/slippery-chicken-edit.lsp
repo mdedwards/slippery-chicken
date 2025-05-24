@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  13:40:19 Fri May 23 2025 CEST
+;;; $$ Last modified:  09:49:46 Sat May 24 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8154,14 +8154,15 @@ NIL
 ;;;
 ;;; There can be as many sublists as necessary. <sc-object-num> is the 1-based
 ;;; index into the <sc-objects> list (2nd argument). <start-bar> and <end-bar>
-;;; reference the existing sc-object and are inclusive.  <result-start-bar> is
+;;; reference the existing sc-object and are inclusive. If <end-bar> is nil,
+;;; then it will be set to the last bar of the sc-object. <result-start-bar> is
 ;;; where things should be written in the new slippery-chicken object--this can
 ;;; be anywhere, and even overlap/overwrite other copied-in bars, as long as the
 ;;; metric structure matches. There can be as many players referenced as desired
 ;;; but each must of course be found in the referenced sc-object (see also the
 ;;; double-events and delete-events methods for how to move things around
-;;; afterwards, if necessary. Players can also be omitted from the map's
-;;; sublist whereupon all players in that sc-object will be copied.
+;;; afterwards, if necessary. Players can also be omitted from the map's sublist
+;;; whereupon all players in that sc-object will be copied.
 ;;;
 ;;; Note that rest bars will automatically be created for players that have no
 ;;; notes to play and that if there are any bars without notes at all, for any
@@ -8226,7 +8227,9 @@ NIL
           for players = (nthcdr 4 mapping)
           do
              ;; i.e. unless players are listed in this mapping, all wil be used
-             (unless players (setq players (players sc))) 
+             (unless players (setq players (players sc)))
+             ;; allow the use of nil as an end bar (runs to end of piece then)
+             (unless end-bar (setq end-bar (num-bars sc)))
              (loop for player in players
                    for player-pos = (position player all-players)
                    ;; this is only needed for bars-to-sc

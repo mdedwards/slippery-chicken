@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:36:47 Thu May 22 2025 CEST
+;;; $$ Last modified:  09:29:48 Sat May 24 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1600,8 +1600,8 @@ rhythms: (
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
 ;;; - The ID of the section in which the given rthm-seq-bar object is located. 
-;;; - An integer that is the number of the sequence within that section in
-;;;   which the rthm-seq-bar object is located.
+;;; - An integer that is the number of the sequence (starting from 1 not 0)
+;;;   within that section in which the rthm-seq-bar object is located.
 ;;; - The number of the bar within the given rthm-seq-bar object for which the
 ;;;   overall bar number (within the entire piece) is sought.
 ;;; 

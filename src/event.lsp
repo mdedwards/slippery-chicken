@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:53:31 Tue May 20 2025 CEST
+;;; $$ Last modified:  09:47:39 Mon May 26 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4418,6 +4418,19 @@ NIL
     e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat May 24 15:56:20 2025, Heidhausen -- for when recreating a tempo map
+;;; (e.g. in sc-combine)  
+(defmethod get-tempo-for-map ((e event))
+  (when (tempo-change e)
+    (list (bar-num e) (get-list (tempo-change e)))))
+
+(defmethod guess-tempo ((e event))
+  (cond ((tempo-change e) (bpm (tempo-change e)))
+        ((> (duration-in-tempo e) 0)
+         (* 60 (/ (duration e) (duration-in-tempo e))))
+        (t 60.0)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -4660,9 +4673,6 @@ T
       e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
-
 ;;; ****f* event/make-rest
 ;;; DESCRIPTION
 ;;; Create an event object that consists of a rest.
@@ -5317,8 +5327,6 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
                  #'(lambda (x y) (if (listp y)
                                      (eq x (first y))
                                      (eq x y)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/add-salzedo-pedal

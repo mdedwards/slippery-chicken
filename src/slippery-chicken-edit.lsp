@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  09:49:46 Sat May 24 2025 CEST
+;;; $$ Last modified:  10:00:12 Mon May 26 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7966,6 +7966,35 @@ NIL
   sc)
              
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat May 24 16:02:05 2025, Heidhausen -- regenerate a tempo map from the
+;;; tempo-change slots of events, e.g. in sc-combine. Just generates the list
+;;; required to make a tempo-map object, but not the object itself.
+;;; <first> (a BPM) will only be used if no tempo is extracted for bar 1
+(defmethod tempo-map-from-events ((sc slippery-chicken) &optional tempo1)
+  (let ((result '())
+        e1)
+    ;; (print tempo1)
+    ;; all player events should have a tempo-change, not just the top player, so
+    ;; it should be safe to just proccess the first player
+    (map-over-events sc 1 nil (first (players sc))
+                     #'(lambda (e)
+                         (unless e1 (setq e1 e)) ; get the first event
+                         (let ((tc (get-tempo-for-map e)))
+                           (when tc
+                             (unless (and tempo1 (= 1 (first tc)))
+                               (push tc result))))))
+    (setq result (reverse result))
+    ;; (print result)
+    ;; whether we got a tempo in bar 1 or not, if tempo1 is given, we used that
+    ;; and assume it's 1/4 notes unless tempo1 is a tempo object
+    (when (and result tempo1)           ; (/= 1 (first (first result))))
+      (push (list 1 (if (tempo-p tempo1)
+                      (list (beat tempo1) (bpm tempo1))
+                      (list 'q tempo1)))
+              result))
+    result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -8216,6 +8245,7 @@ NIL
          (all-instruments '())
          (player-count 0)
          (default-rest-bar (make-rest-bar rest-time-sig))
+         (result-first-bar-num 999999)
          (bars '())
          result)
     ;; stuff all the bars we need into bars-array
@@ -8230,6 +8260,8 @@ NIL
              (unless players (setq players (players sc)))
              ;; allow the use of nil as an end bar (runs to end of piece then)
              (unless end-bar (setq end-bar (num-bars sc)))
+             (when (< result-start-bar result-first-bar-num)
+               (setq result-first-bar-num result-start-bar))
              (loop for player in players
                    for player-pos = (position player all-players)
                    ;; this is only needed for bars-to-sc
@@ -8278,7 +8310,7 @@ NIL
                             ;; cloned already if there
                             (setq this-bar (aref bars-array p bar-n))
                             (if this-bar
-                              (progn ; a bar was there
+                              (progn    ; a bar was there
                                 (unless (time-sig-equal this-bar existing-bar)
                                   (error "sc-combine: different time ~
                                           signatures at new bar ~
@@ -8292,7 +8324,7 @@ NIL
                               (setf this-bar (clone rest-bar)
                                     (aref bars-array p bar-n) this-bar))))))
       ;; two helper functions to extract bars from the array (as a list) ...
-      (labels ((get-bars-list (player-index)  ; row index
+      (labels ((get-bars-list (player-index) ; row index
                  (loop for bar-num to new-end-bar-num
                        collect (aref bars-array player-index bar-num)))
                ;; ... and to create the new sc object or add a player to it
@@ -8310,7 +8342,20 @@ NIL
               for player in (rest all-players)
               for ins in (rest all-instruments) do
                 (b2sc player-i player ins result))))
+    ;; got to do this here so that tempo-map-from-events can loop through the
+    ;; right bar numbers
     (update-slots result)
+    ;; (print result-first-bar-num)
+    ;; nb guess-tempo uses tempo-change slot if it's there
+    (let* ((tempo1 (guess-tempo
+                    (first (rhythms (aref bars-array (1- result-first-bar-num)
+                                          0)))))
+           (tmes (tempo-map-from-events result tempo1))
+           (tm (when tmes (make-tempo-map 'from-sc-combine tmes))))
+      ;; now add the actual tempo marks and recalculate timings
+      (when tm
+        (setf (tempo-map result) tm)
+        (update-slots result)))
     ;; do this otherwise scores are unhappy and don't display meter changes:
     (set-write-time-sig result) 
     (change-bar-line-type result (num-bars result) 2) ; add the final double bar

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:34:47 Fri May 23 2025 CEST
+;;; $$ Last modified:  15:52:30 Sat May 24 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3209,6 +3209,10 @@
       (= (bpm tt1) 60)
       (= (bpm tt2) 96)
       (= (bpm tt3) 76)
+      ;; MDE Sat May 24 15:48:27 2025, Heidhausen
+      (equalp (get-list tt1) '(4 60))
+      (equalp (get-list tt2) '(q. 96))
+      (equalp (get-list tt3) '(2 76 "Allegretto"))
       ;; MDE Mon May  5 17:25:27 2014 
       (equal-within-tolerance 0.7894737 (beat-dur tt3))
       (equal-within-tolerance 0.39473686 (qtr-dur tt3))

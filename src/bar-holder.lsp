@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  17:46:39 Sat Jan 27 2024 CET
+;;; $$ Last modified:  16:30:17 Sat May 24 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -280,7 +280,7 @@
   (let ((last (if (is-ral bh)
                   (get-last bh)
                   (first (last (data bh))))))
-    ;; (print '---------------------------------)(print (get-last bh)) (print bh)
+    ;; (print '----------------------------)(print (get-last bh)) (print bh)
     (setf (num-bars bh) (- (end-bar last) (1- start-bar))
           (end-bar bh) (end-bar last)
           (end-time bh) (end-time last)
@@ -731,12 +731,12 @@
       (error "there is no such note for this player: ~a" player))
     ;; bar-num could have been a reference, so get the real bar-num now.
     (let* ((real-bar-num (bar-num bar))
-	   (notes (num-score-notes bar))
-	   (end-note (if (= note-num notes)
-			 (get-note bh (1+ real-bar-num) 1 player)
-			 (get-note bh bar-num (1+ note-num) player))))
+           (notes (num-score-notes bar))
+           (end-note (if (= note-num notes)
+                         (get-note bh (1+ real-bar-num) 1 player)
+                         (get-note bh bar-num (1+ note-num) player))))
       (setf (is-tied-from start-note) (if curvature curvature t)
-	    (is-tied-to end-note) t))))
+            (is-tied-to end-note) t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

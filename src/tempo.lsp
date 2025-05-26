@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified:  11:32:35 Sat Aug 24 2024 CEST
+;;; $$ Last modified:  15:51:49 Sat May 24 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -240,6 +240,14 @@
                 ""
                 (format nil "~%            <beat-unit-dot></beat-unit-dot>"))
             (bpm tpo) (bpm tpo))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat May 24 15:48:08 2025, Heidhausen 
+(defmethod get-list ((tpo tempo))
+  (let ((l (list (beat tpo) (bpm tpo))))
+    (if (description tpo)
+      (econs l (description tpo))
+      l)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

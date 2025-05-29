@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:52:30 Sat May 24 2025 CEST
+;;; $$ Last modified:  12:21:56 Thu May 29 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1827,10 +1827,13 @@
 ;;; SAR Fri Dec 23 14:32:37 EST 2011
 (sc-deftest test-event-make-events ()
   (let ((e1 (make-events '((g4 q) e s ((d4 fs4 a4) s))))
-        (e2 (make-events '((g4 q) e s (a4 s) q e (b4 s)) 3)))
+        (e2 (make-events '((g4 q) e s (a4 s) q e (b4 s)) 3))
+        (e3 (make-events '((g4 q x-head) e s (a4 s t3 te) q e (b4 s)) 3)))
     (sc-test-check
       (listp e1)
       (listp e2)
+      (equalp '(x-head) (marks (first e3)))
+      (equalp '(te t3) (marks (fourth e3))) ; reverse order because of push
       (equalp (loop for i in e1
                  when (not (is-rest i))
                  collect (cond

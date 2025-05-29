@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:28:56 Thu May 29 2025 CEST
+;;; $$ Last modified:  17:26:08 Thu May 29 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -536,13 +536,13 @@
 ;;; MDE Sat Jun 25 16:08:06 2022, Karlsruhe -- added this method to handle the
 ;;; case of text marks added to chords (which have to be in marks-before
 (defmethod add-mark ((e event) mark &optional (update-amplitude t)
-                                              warn-again)
+                                    warn-again)
   (declare (ignore warn-again update-amplitude))
   ;; MDE Sat Jun 25 16:02:50 2022, Heidhausen -- text marks added to chords need
   ;; to be before
   (if (and (stringp mark) (is-chord e))
-      (add-mark-before e mark)
-      (call-next-method)))
+    (add-mark-before e mark)
+    (call-next-method)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 5.4.11: remove existing dynamics if we're about to add one
@@ -4842,7 +4842,9 @@ rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q,
 ;;; ****f* event/make-events
 ;;; DESCRIPTION
 ;;; Make a list of events using the specified data, whereby a list indicates a
-;;; note (or chord) and its rhythm and a single datum is the rhythm of a rest.
+;;; note (or chord) and its rhythm and a single datum is the rhythm of a
+;;; rest. The note/rhythm lists can include further symbols which will be
+;;; interprted as marks to be added to the event.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A list of symbols and/or sublists; see below for examples.
@@ -4867,8 +4869,9 @@ rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q,
 G4 Q, rest E, rest S, (D4 FS4 A4) S,
 
 ;; Create a list of events to be played on MIDI-channel 3, then check the MIDI
-;; channels of each sounding note    
-(let ((e (make-events '((g4 q) e s (a4 s) q e (b4 s)) 3)))
+;; channels of each sounding note. Note that in (b4 s s) the first s means
+;; 1/16th note and the second s is staccato.
+(let ((e (make-events '((g4 q) e s (a4 s) q e (b4 s s)) 3)))
   (loop for i in e
      when (not (is-rest i))
      collect (midi-channel (pitch-or-chord i))))
@@ -4877,30 +4880,36 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
 |#
 ;;; SYNOPSIS
 (defun make-events (data-list &optional (midi-channel 1)
-                                (microtones-midi-channel 2))
+                              (microtones-midi-channel 2))
 ;;; ****
   (loop for data in data-list 
-     for event =
-     (if (listp data)
-         (progn
-           (let ((p (first data))
-                 (r (second data)))
-             (unless (= 2 (length data))
-               (error "event::make-events: ~
-                          Only single rhythms (for rests) or ~
-                          (note/chord,rhythm) ~%2-element sublists are ~
-                          acceptable: ~a"
-                      data))
-             (make-event (if (typep p 'named-object)
-                             (clone p)
-                             p)
-                         (if (typep r 'named-object)
-                             (clone r)
-                             r)
-                         :midi-channel midi-channel :microtones-midi-channel
-                         microtones-midi-channel)))
-         (make-rest data))
-     collect event))
+        for event =
+                  (if (listp data)
+                    (let ((len (length data))
+                          (p (first data))  ; pitch
+                          (r (second data)) ; rhythm
+                          (m (nthcdr 2 data))
+                          event)
+                      ;; MDE Thu May 29 11:55:05 2025, Heidhausen -- allow marks
+                      ;; as the third element 
+                      (unless (>= len 2)
+                        (error "event::make-events: data should be ~
+                                (pitch rhythm optional-marks), not ~a"
+                               data))
+                      (setq event (make-event (if (typep p 'named-object)
+                                                (clone p)
+                                                p)
+                                              (if (typep r 'named-object)
+                                                (clone r)
+                                                r)
+                                              :midi-channel midi-channel
+                                              :microtones-midi-channel
+                                              microtones-midi-channel))
+                      ;; MDE Thu May 29 12:15:48 2025, Heidhausen -- new
+                      (when m (add-marks event m))
+                      event)
+                    (make-rest data))
+        collect event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Feb 16 18:03:56 2017 - data list as make-events, tuplets is a
@@ -4990,7 +4999,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;; 
 ;;; DESCRIPTION
 ;;; Make a list of events using various approaches. Either with separate lists
-;;; of pitches and rhythms make-events and make-events2 will be called according
+;;; of pitches and rhythms, make-events and make-events2 will be called according
 ;;; to the type of arguments given. Note that when specifying pitches, octaves
 ;;; don't have to be retyped if they don't change.
 ;;; 

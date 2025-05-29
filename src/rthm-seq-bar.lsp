@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:03:37 Thu May 22 2025 CEST
+;;; $$ Last modified:  15:10:34 Thu May 29 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6030,7 +6030,8 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
 ;;;   may be written as numeric (integer) values or may use the CM/CMN/SCORE 
 ;;;   alphabetic shorthand s=16, e=8, q=4, h=2, w=1. NB: Repeating rhythms can
 ;;;   be indicated using a shorthand notation consisting of a multiplication
-;;;   symbol ('x'), e.g.: (make-rthm-seq-bar '((4 4) s x 16)).
+;;;   symbol ('x'), e.g.: (make-rthm-seq-bar '((4 4) s x 16)). This may also be
+;;;   a list of rhythm or event objects. 
 ;;;
 ;;; make-rthm-seq-bar requires a time signature. If no time signature is
 ;;; provided, the most recently defined time signature will be used. If one is

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  10:00:12 Mon May 26 2025 CEST
+;;; $$ Last modified:  19:51:46 Thu May 29 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7893,7 +7893,8 @@ NIL
 ;;;   end of the piece.
 ;;; - :bar-ok-fun. A function to call in every bar to decide whether to double
 ;;;   events to this bar (e.g. you might want to skip over bars in which other
-;;;   players aren't playing). Default returns T = every bar.
+;;;   players aren't playing). Requires and will be passed two arguments: the
+;;;   rthm-seq-bar and slippery-chicken objects. Default returns T = every bar.
 ;;; 
 ;;; RETURN VALUE
 ;;; the sc object with the new player added
@@ -7905,7 +7906,7 @@ NIL
      &key transposition (new-start-bar 1) new-end-bar (start-bar 1) 
      start-event end-bar end-event pitches (auto-beam t) (midi-channel 1)
      (microtones-midi-channel -1) (update-slots t) verbose
-     (bar-ok-fun #'(lambda (bar) (declare (ignore bar)) t))
+     (bar-ok-fun #'(lambda (bar sc) (declare (ignore bar sc)) t))
      (instrument-palette +slippery-chicken-standard-instrument-palette+))
 ;;; ****
   (when (and transposition pitches)
@@ -7935,7 +7936,7 @@ NIL
     (update-slots sc) ; this one necessary so that at least bar-nums get updated
     (loop for bar-num from new-start-bar to new-end-bar do
       (setq bar (get-bar sc bar-num new-player))
-      (when (funcall bar-ok-fun bar)
+      (when (funcall bar-ok-fun bar sc)
         ;; long rests can mean we never fill another bar
         (loop until (< (duration (first s-events))
                        (bar-duration bar))

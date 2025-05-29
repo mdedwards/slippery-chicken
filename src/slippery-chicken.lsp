@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:29:48 Sat May 24 2025 CEST
+;;; $$ Last modified:  19:57:36 Thu May 29 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -9902,6 +9902,25 @@ data: (11 15)
 ;;; ****
   (apply #'+ (map-over-bars sc start-bar end-bar (first (players sc))
                             #'bar-duration)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; returns a list of numbers which refer to the number of bars in a particular
+;;; meter. The order of the numbers/time-sigs is aligned to the all-time-sigs
+;;; slot of the rthm-seq-bar class.
+(defmethod count-time-sigs ((sc slippery-chicken))
+  (let* (counts)
+    (map-over-bars
+     sc 1 nil (first (players sc))
+     #'(lambda (rsb)
+         (unless counts
+           (setq counts (ml 0 (length (all-time-sigs rsb)))))
+         ;; remember: the time-sig slot is just the index of the time-sig object
+         ;; in the all-time-sigs class slot
+         (incf (nth (time-sig rsb) counts))))
+    (unless (= (num-bars sc) (apply #'+ counts)) ; sanity check
+      (error "slippery-chicken::count-time-sigs returned ~a ~%but there ~
+              are ~a bars" counts (num-bars sc)))
+    counts))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

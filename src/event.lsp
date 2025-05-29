@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:47:39 Mon May 26 2025 CEST
+;;; $$ Last modified:  10:28:56 Thu May 29 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2488,7 +2488,7 @@ NIL
         ;;(directions '(beg-8va end-8va beg-8vb end-8vb beg-15ma beg-15mb
         ;;            end-15ma end15mb cresc-beg cresc-end dim-beg dim-end
         ;;          ped ped^ ped-up uc tc sost^
-        (noteheads '(circled-x x-head triangle wedge square triangle-up
+        (noteheads '(circled-x circled x-head triangle wedge square triangle-up
                      improvOn flag-head)))
     (write-xml-ins-change e stream)     ; if it exists
     (set-last-midi-channel e)

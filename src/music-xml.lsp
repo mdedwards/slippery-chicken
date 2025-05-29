@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  16:34:16 Sun Dec 24 2023 CET
+;;; $$ Last modified:  10:21:18 Thu May 29 2025 CEST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -311,6 +311,8 @@
                   (end-15mb '(dir "octave-shift" "size=\"-15\" type=\"stop\""))
                   ;; noteheads
                   (circled-x '(hd "circle-x"))
+                  ;; MDE Thu May 29 10:20:50 2025, Heidhausen -- e.g. rim shots
+                  (circled '(hd "circled"))
                   (x-head '(hd "x"))
                   (triangle '(hd "triangle"))
                   (triangle-up '(hd "inverted triangle"))
@@ -505,16 +507,16 @@
       (format stream "~&      <attributes>"))
   (format stream "~&        <clef><sign>~a</sign>"
           (case (rm-package clef) (treble 'g) (bass 'f) (tenor 'c) (alto 'c)
-		(treble-8vb 'g) (double-treble 'g) (double-bass 'f)
-		(percussion "percussion")))
+                (treble-8vb 'g) (double-treble 'g) (double-bass 'f)
+                (percussion "percussion")))
   (unless (eq clef 'percussion)
     (format stream "~&          <line>~a</line>"
             (case (rm-package clef) (treble 2) (bass 4) (tenor 4) (alto 3)
-		  (treble-8vb 2) (double-treble 2) (double-bass 4))))
+                  (treble-8vb 2) (double-treble 2) (double-bass 4))))
   (when (member clef '(double-treble double-bass treble-8vb))
     (format stream "~&          <clef-octave-change>~a</clef-octave-change>"
             (case (rm-package clef) (double-treble 8) (double-bass -1)
-		  (treble-8vb -1))))
+                  (treble-8vb -1))))
   (format stream "~&        </clef>")
   (when write-attributes
     (format stream "~&      </attributes>")))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  15:11:39 Sat Mar 16 2024 CET
+;;; $$ Last modified:  10:26:41 Thu May 29 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -174,6 +174,11 @@
            ;; 
            ;; (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
            (circled-x "\\tweak #'style #'xcircle ")
+           ;; MDE Thu May 29 10:25:02 2025, Heidhausen -- I'm surprised that
+           ;; lilypond doesn't have a circled note head (e.g. for rim shots) ---
+           ;; or did I miss something at
+           ;; https://lilypond.org/doc/v2.23/Documentation/notation/note-heads ?
+           (circled (no-lp-mark 'circled))
            ;; (x-head "\\once \\override NoteHead #'style = #'cross ")
            (x-head "\\xNote ")
            ;; (triangle "\\once \\override NoteHead #'style = #'triangle ")

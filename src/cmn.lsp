@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  17:40:01 Wed Dec 27 2023 CET
+;;; $$ Last modified:  10:23:55 Thu May 29 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -278,6 +278,7 @@
              (flag-dots-off (no-cmn-mark 'flag-dots-off))
              (none (list (note-head :none)))
              (circled-x (list (note-head :circled-x)))
+             (circled (no-cmn-mark 'circled))
              ;; (bartok-pizz (list (bartok-pizzicato)))
              (trill-f (list (trill (ornament-sign flat))))
              (trill-n (list (trill (ornament-sign natural))))

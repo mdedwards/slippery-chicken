@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  19:33:32 Wed Apr  9 2025 CEST
+;;; $$ Last modified:  20:13:26 Tue Jun  3 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -136,6 +136,31 @@ NIL
   ;; (set-micro-tone c) <-- now in verify-and-store
   (when (auto-sort c)
     (sort-pitches c)))  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/get-micro-tones
+;;; DATE
+;;; June 3rd 2025
+;;; 
+;;; DESCRIPTION
+;;; Get the microtones from the set (i.e. those that have the micro-tone slot
+;;; set to T, for whatever reason). As a second value get the chromatic pitches.
+;;; 
+;;; ARGUMENTS
+;;; - the chord object
+;;; 
+;;; RETURN VALUE
+;;; two values: a list of microtonal pitch objects and a list of chromatic
+;;; pitch objects. The union of the two will be the whole chord.
+;;; 
+;;; SYNOPSIS
+(defmethod get-micro-tones ((c chord))
+;;; ****
+  (loop for p in (data c)
+        if (micro-tone p) collect p into mts
+          else collect p into cts
+        finally (return (values mts cts))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

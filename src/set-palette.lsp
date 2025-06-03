@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  16:36:58 Wed May 21 2025 CEST
+;;; $$ Last modified:  20:03:24 Tue Jun  3 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1926,8 +1926,8 @@ data: (
                              (list (first rm-bass)
                                    (nth (floor (length rm-bass) 2) rm-bass)
                                    (first (last rm-bass))))
-                   ;; here there's numbers instead of symbols so we can still get
-                   ;; duplicates when making the set :/ 
+                   ;; here there's numbers instead of symbols so we can still
+                   ;; get duplicates when making the set :/
                    set (remove-duplicates (append rm rm-bass))
                    ;; MDE Thu May 3 10:57:21 2012 -- as we removed octaves and
                    ;; duplicates above when looking at freq, when these are

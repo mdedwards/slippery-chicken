@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  21:02:53 Wed Aug 28 2024 CEST
+;;; $$ Last modified:  19:52:34 Wed Jun  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -139,6 +139,8 @@
 ;;; - (fun #'error).  By default an error will be signalled if the requested
 ;;; subseq is out of bounds.  If you prefer, this could be a warning instead by
 ;;; passing #'warn, or nothing at all if NIL.
+;;; - reverse. T or NIL to indicate if the data list should be reversed before
+;;; calling subseq 
 ;;; 
 ;;; RETURN VALUE
 ;;; A list.
@@ -174,16 +176,17 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod sc-subseq ((scl sclist) start finish &optional (fun #'error))
+(defmethod sc-subseq ((scl sclist) start finish &optional (fun #'error) reverse)
 ;;; ****
   (if (and (>= start 0)
-               (<= finish (sclist-length scl))
-               (< start finish))
-      (subseq (data scl) start finish)
-      (when fun ; MDE Mon May 14 16:08:44 2012
-        (funcall fun "~a~%sclist::sc-subseq: Illegal indices for above list: ~
+           (<= finish (sclist-length scl))
+           (< start finish))
+    (subseq (if reverse (reverse (data scl)) (data scl))
+            start finish)
+    (when fun                           ; MDE Mon May 14 16:08:44 2012
+      (funcall fun "~a~%sclist::sc-subseq: Illegal indices for above list: ~
                     ~a ~a (length = ~a)" 
-                 (data scl) start finish (sclist-length scl)))))
+               (data scl) start finish (sclist-length scl)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

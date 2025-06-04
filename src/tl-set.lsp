@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  17:39:50 Wed Feb  7 2024 CET
+;;; $$ Last modified:  19:07:51 Wed Jun  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -240,7 +240,8 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;; DESCRIPTION
 ;;; Remove pitch objects from a given tl-set whose pitch content is higher or
 ;;; lower than the pitches specified. Any pitch objects whose pitch content is
-;;; equal to the limit pitches specified will be retained.
+;;; equal to the limit pitches specified will be retained. This method is
+;;; therefore destructive. 
 ;;;
 ;;; NB: C0 and B10 are the highest and lowest possible pitches of the
 ;;;     quarter-tone scale defined in scale.lsp (16.35 and 31608.55 Hz
@@ -270,7 +271,7 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;;   = transpose. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; A tl-set object.
+;;; the modified tl-set object.
 ;;; 
 ;;; EXAMPLE
 #|

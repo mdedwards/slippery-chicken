@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:51:46 Thu May 29 2025 CEST
+;;; $$ Last modified:  20:25:05 Wed Jun  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7821,6 +7821,8 @@ NIL
 ;;; Set the order of the players in the score. This is basically a convenience
 ;;; function to set the players slot of the piece object slot but also checks
 ;;; that your new players are in the piece already.
+;;;
+;;; NB won't (yet) change order of players in CMN scores.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
@@ -7834,10 +7836,10 @@ NIL
 (defmethod set-score-order ((sc slippery-chicken) players)
 ;;; ****  
   (let ((current-players (players sc)))
-    (unless (every #'(lambda (player) (member player current-players))
-                   players)
-      (error "slippery-chicken-edit::set-score-order: ~a is not in the piece"
-             player))
+    (loop for player in players do
+      (unless (member player current-players)
+        (error "slippery-chicken-edit::set-score-order: ~a is not in the piece"
+               player)))
     (setf (players (piece sc)) players))
   sc)
 

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:26:08 Thu May 29 2025 CEST
+;;; $$ Last modified:  15:46:56 Sat Jun  7 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -848,7 +848,7 @@ data: 132
          ;; integer but just for safety allow more accuracy; however don't allow
          ;; rounding errors to screw up low pitch transpositions in
          ;; :twelfth-tone scale (see test suite)
-         (diff (when wporc (decimal-places (pitch- wporc porc) 4))))
+         (diff (when (and porc wporc) (decimal-places (pitch- wporc porc) 4))))
     ;; (print diff)
     (setf-pitch-aux e value 'pitch-or-chord)
     ;; (print (pitch-or-chord e))
@@ -3598,13 +3598,15 @@ data: C4
 ;;; **** 
   ;; MDE Fri Aug 17 17:20:43 2012 
   (delete-beam e)
-  (setf (pitch-or-chord e) nil
-        (written-pitch-or-chord e) nil
-        ;; 23.7.11 (Pula) remove marks that can only be used on a note
-        (marks e) (remove-if #'mark-for-note-only (marks e))
-        ;; (8va e) 0
-        (marks-before e) (remove-if #'mark-for-note-only
-                                          (marks-before e))))
+  (setf ;; (pitch-or-chord e) nil
+   (slot-value e 'pitch-or-chord) nil
+   ;; (written-pitch-or-chord e) nil
+   (slot-value e 'written-pitch-or-chord) nil
+   ;; 23.7.11 (Pula) remove marks that can only be used on a note
+   (marks e) (remove-if #'mark-for-note-only (marks e))
+   ;; (8va e) 0
+   (marks-before e) (remove-if #'mark-for-note-only
+                               (marks-before e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 22.9.11 

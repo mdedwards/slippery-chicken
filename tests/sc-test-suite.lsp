@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:21:56 Thu May 29 2025 CEST
+;;; $$ Last modified:  20:57:37 Wed Jun  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -4893,6 +4893,19 @@
         (multiple-value-bind (minn maxx) (limits scl)
           (equal-within-tolerance 0 minn)
           (equal-within-tolerance 100 maxx))))))
+
+(sc-deftest test-sclist-remove-elements ()
+  (let ((scl (make-sclist '(1 2 3 4 dog 3.4 5)))
+        tmp)
+    (flet ((doit (fun len list)
+             (setq tmp (sclist-remove-if (clone scl) fun))
+             (equalp (data tmp) list)
+             (= len (sclist-length tmp))))
+    (sc-test-check
+      (doit #'numberp 1 '(dog))
+      (doit #'floatp 6 '(1 2 3 4 dog 5))
+      (doit #'(lambda (x) (and (integerp x) (evenp x))) 5 '(1 3 dog 3.4 5))
+      (doit #'symbolp 6 '(1 2 3 4 3.4 5))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; circular-sclist tests

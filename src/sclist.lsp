@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  19:52:34 Wed Jun  4 2025 CEST
+;;; $$ Last modified:  21:03:27 Wed Jun  4 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -431,7 +431,33 @@ remove-elements: arguments 2 and 3 must be integers < the length of argument 1:
   (setf (slot-value scl 'data) (remove-elements (data scl) start how-many))
   (decf (sclist-length scl) how-many)
   scl)
-                                   
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sclist/sclist-remove-if
+;;; DATE
+;;; 4.6.2025
+;;; 
+;;; DESCRIPTION
+;;; apply the common-lisp remove-if function to the data slot of an sclist,
+;;; updating other slots as needed.
+;;; 
+;;; ARGUMENTS
+;;; - the sclist object
+;;; - the test function that will lead to an element being removed
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; any keyword arguments that can be passed to remove-if, i.e. &key :from-end 
+;;; :start :end :count :key 
+;;; 
+;;; RETURN VALUE
+;;; the modified sclist object
+;;; 
+;;; SYNOPSIS
+(defmethod sclist-remove-if ((scl sclist) test
+                             &rest keyargs &key &allow-other-keys)
+;;; ****
+  (setf (data scl) (apply #'remove-if (cons test (cons (data scl) keyargs))))
+  scl)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sclist/max-items

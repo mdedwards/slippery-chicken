@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  20:13:26 Tue Jun  3 2025 CEST
+;;; $$ Last modified:  14:13:27 Sat Jun  7 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2723,6 +2723,36 @@ data: (
   (when (= (length (data c)) 1)
     (setq c (first (data c))))
   c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/get-nearest
+;;; DATE
+;;; June 7th 2025
+;;; 
+;;; DESCRIPTION
+;;; Return the nearest pitch object in the chord to the given pitch.
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; - a pitch (object or symbol)
+;;; 
+;;; RETURN VALUE
+;;; - a pitch object
+;;; 
+;;; SYNOPSIS
+(defmethod get-nearest ((c chord) pitch &optional ignore1 ignore2)
+;;; ****
+  (declare (ignore ignore1 ignore2))
+  (setq pitch (make-pitch pitch)) ; in case it's just a symbol
+  (let ((distance 9999)
+        diff result)
+    ;; could do this with (sort) but that would need to copy the pitches in
+    ;; data, so this is a little quicker
+    (loop for p in (data c) do
+      (setq diff (abs (pitch- p pitch)))
+      (when (< diff distance)
+        (setq result p distance diff)))
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

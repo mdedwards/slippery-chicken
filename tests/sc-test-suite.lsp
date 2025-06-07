@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  20:57:37 Wed Jun  4 2025 CEST
+;;; $$ Last modified:  14:13:45 Sat Jun  7 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -8024,6 +8024,11 @@
                            :microtones-midi-channel 8
                            :auto-sort t)))
     (sc-test-check
+      ;; MDE Sat Jun  7 13:58:57 2025, Heidhausen -- these three tests are new
+      (eq 'c4 (data (get-nearest chrd1 'cs4)))
+      (eq 'c4 (data (get-nearest chrd1 'd4))) ; equidistant to c and e4
+      (eq 'f5 (data (get-nearest chrd1 'g5)))
+      (eq 'gqs4 (data (get-nearest chrd1 'gs4)))
       (chord-equal chrd1 chrd5)
       (not (chord-equal chrd1 chrd2))
       (chord-equal chrd1 chrd3)

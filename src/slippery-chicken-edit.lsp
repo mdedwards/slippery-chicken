@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  20:25:05 Wed Jun  4 2025 CEST
+;;; $$ Last modified:  14:19:07 Mon Jun  9 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5737,10 +5737,10 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; 19th September 2018, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-;;; Thin out events in a slippery-chicken object using an activity curve. This
-;;; turns existing notes into rests. As this is an expensive method but may be
-;;; called more than once, it is up to the user to call consolidate-rests and/or
-;;; update-slots when ready.
+;;; Thin out events in a slippery-chicken object using an activity curve (which
+;;; is deterministic, not random/stochastic). This turns existing notes into
+;;; rests. As this is an expensive method but may be called more than once, it
+;;; is up to the user to call consolidate-rests and/or update-slots when ready.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the (fully-initialised) slippery-chicken object

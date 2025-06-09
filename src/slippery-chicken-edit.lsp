@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:19:07 Mon Jun  9 2025 CEST
+;;; $$ Last modified:  19:16:39 Mon Jun  9 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8172,6 +8172,18 @@ NIL
     sc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; if you just want an sc-combine map to splice one range of bars after
+;;; another, rather than jumping around in the output, pass a map with 3-element
+;;; lists here to get the output start bars as the 4th element
+(defun map-follow-on (map &optional (start-bar 1))
+  (loop for bars in map
+        ;; bear in mind that players might be listed from the 4th element
+        for first3 = (subseq bars 0 3)
+        for rest = (subseq bars 3)
+        collect (append (econs first3 start-bar) rest)
+        do (incf start-bar (1+ (- (third bars) (second bars))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* slippery-chicken/sc-combine
 ;;; DATE
 ;;; 22nd May 2025
@@ -8205,6 +8217,14 @@ NIL
 ;;; any particular order, and neither do the <sc-objects> E.g. we could write
 ;;; bars 50-100 of the result first, using bars from sc-object 3, then 10-20
 ;;; afterwards using sc-object 1.
+;;;
+;;; The map can also omit the result-start-bar so that bar ranges are just
+;;; appended one after the other in the result. In that case do set :follow-on t
+;;; in order for the result start bars to be automatically calculated. The
+;;; players can also be omitted here. Note however that the order of the map
+;;; will determine the order in the output. E.g. 
+;;; 
+;;; '((sc-object-num start-bar end-bar player1 player2 ...))
 ;;; 
 ;;; ARGUMENTS
 ;;; - the map: a list as described above
@@ -8227,6 +8247,9 @@ NIL
 ;;;   +slippery-chicken-standard-instrument-palette+
 ;;; - :rest-time-sig. The time signature to be used when creating rest bars
 ;;;   where no instrument is in play.
+;;; - :follow-on. T or NIL or a number to indicate that bar ranges should just
+;;;   be appended after each other (see above). If a number is given, this will
+;;;   be the start-bar in the result. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; - a new slippery chicken object
@@ -8235,10 +8258,13 @@ NIL
 (defun sc-combine (map sc-objects
                    &key (max-bars 1000) (max-players 50)
                    (new-sc-name '*sc-combine*)
+                   follow-on
                    (instrument-palette 
                     +slippery-chicken-standard-instrument-palette+)
                    (rest-time-sig '(2 4)))
 ;;; ****
+  (when follow-on
+    (setq map (map-follow-on map (if (numberp follow-on) follow-on 1))))
   (let* ((bars-array (make-array (list max-players max-bars) ; rows columns
                                  :initial-element nil :element-type t))
          ;; just a list of the players, as they occur, in order to access the

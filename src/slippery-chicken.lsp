@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:57:36 Thu May 29 2025 CEST
+;;; $$ Last modified:  15:58:31 Mon Jun  9 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -9921,6 +9921,48 @@ data: (11 15)
       (error "slippery-chicken::count-time-sigs returned ~a ~%but there ~
               are ~a bars" counts (num-bars sc)))
     counts))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/find-gps
+;;; DATE
+;;; June 9th 2025
+;;; 
+;;; DESCRIPTION
+;;; Find all the bar-numbers of the general pauses (hence find-gps: nothing to
+;;; do with map coordinates) across a given bar range. A general pause here is
+;;; defined as is when all the players have a complete rest bar. NB Consecutive
+;;; rest bars count as part of the same general pause.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery- chicken object
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments
+;;; - the start bar. Default = 1.
+;;; - the end bar. Default = NIL = end of piece.
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; a list of bar numbers
+;;; 
+;;; SYNOPSIS
+(defmethod find-gps ((sc slippery-chicken) &key (start-bar 1) end-bar)
+;;; ****
+  (unless end-bar (setq end-bar (num-bars sc)))
+  (let* ((result '())
+         (pushok t))
+    (loop for bar-num from start-bar to end-bar
+          for pbars = (get-bar sc bar-num)
+          do
+             (if (every #'is-rest-bar pbars)
+               (when pushok
+                 ;; don't push consecutive rest bar numbers as all the rest bars
+                 ;; count as a general pause 
+                 (setq pushok nil)
+                 (push (bar-num (first pbars))
+                       result))
+               (setq pushok t)))
+    (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

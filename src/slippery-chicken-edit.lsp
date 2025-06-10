@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:16:39 Mon Jun  9 2025 CEST
+;;; $$ Last modified:  16:55:58 Tue Jun 10 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4626,6 +4626,46 @@ NIL
                  consolidate-rests))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/swap-events
+;;; DATE
+;;; June 10th 2025
+;;; 
+;;; DESCRIPTION
+;;; Move/swap the events from one part to the other and vice-versa.
+;;; 
+;;; NB does not check that pitches are in range! Call force-in-range afterwards
+;;; if necessary/applicable. Also, in case this method is to be called mulitple
+;;; times, it does not call update-slots or update-instrument-slots
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken obje ct
+;;; - the first player to swap from/to (symbol)
+;;; - the second player to swap from/to (symbol)
+;;; - the start bar number (inclusive)
+;;; - the end bar number (inclusive)
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defmethod swap-events ((sc slippery-chicken) player1 player2 start-bar
+                        end-bar)
+;;; ****
+  (loop for bar-num from start-bar to end-bar
+        for p1bar = (get-bar sc bar-num player1)
+        for p2bar = (get-bar sc bar-num player2)
+        for p1bar-clone = (clone p1bar)
+        do
+           ;; (mapcar #'(lambda (b) (setf (player b) player1)) (rhythms p1bar))
+           (setf (rhythms p1bar)        ; (rhythms p2bar)
+                 (mapcar #'(lambda (e) (setf (player e) player1) e)
+                         (rhythms p2bar))
+                 (rhythms p2bar)
+                 (mapcar #'(lambda (e) (setf (player e) player2) e)
+                         (rhythms p1bar-clone))))
+  t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; post-gen-editing method
 
 ;;; SAR Fri Apr 20 13:58:23 BST 2012: Added robodoc entry
@@ -4960,7 +5000,7 @@ NIL
 ;;; ****m* slippery-chicken-edit/sc-force-rest2
 ;;; DESCRIPTION
 ;;; Turn events into rests, doing the same with any following tied events.  
-
+;;; 
 ;;; NB As it is foreseen that this method may be called many times iteratively,
 ;;; there is no call to check-ties, auto-beam, consolidate-rests, or
 ;;; update-instrument-slots (for statistics)--it is advised that these methods

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  16:30:17 Sat May 24 2025 CEST
+;;; $$ Last modified:  16:22:43 Tue Jun 10 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -393,7 +393,7 @@
      ;; MDE Wed Feb  1 12:41:30 2012 
      (unless bhl
        (error "bar-holder::get-bar: couldn't get bar-holder. ~
-                 bar-num = ~a, player = ~a" bar-num player))
+               bar-num = ~a, player = ~a" bar-num player))
      (when (and (>= bar-num (start-bar bhl))
                 (<= bar-num (end-bar bhl)))
        ;;(format t "~a ~a" (start-bar bhl) (end-bar bhl))

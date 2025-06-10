@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:58:31 Mon Jun  9 2025 CEST
+;;; $$ Last modified:  16:21:42 Tue Jun 10 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1189,6 +1189,9 @@
 ;;; Called by initialize-instance and others. Updates timings of events and
 ;;; statistics. Not generally called by the user but can be useful if
 ;;; post-generation editing has changed something fundamental to the structure.
+;;;
+;;; If you want to update the statistics for each instrument in the ensemble,
+;;; use the update-instrument-slots method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object
@@ -1717,8 +1720,6 @@ rhythms: (
 ;;; SYNOPSIS
 (defmethod get-bar ((sc slippery-chicken) bar-num &optional player)
 ;;; ****
-  ;; (unless player
-  ;; (error "bar-holder::get-bar: player argument is required!"))
   (if player
       (get-bar (piece sc) bar-num player)
       (let ((players (players (ensemble sc))))

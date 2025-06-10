@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:13:45 Sat Jun  7 2025 CEST
+;;; $$ Last modified:  16:52:41 Tue Jun 10 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -4182,20 +4182,20 @@
 ;;; specific instruments work?
 (sc-deftest test-instrument-pitch-seq ()
   (let ((mini
-         (make-slippery-chicken
-          '+mini+
-          :ensemble '(((vn (violin :midi-channel 1))
-                       (va (viola :midi-channel 2))
-                       (vc (cello :midi-channel 3))))
-          :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5)))) 
-          :set-map '((1 (1 1 1 1 1)))
-          :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
-                                  :pitch-seq-palette (((1 2 3) violin)
-                                                      (3 1 2)
-                                                      ((3 2 1) viola)))))
-          :rthm-seq-map '((1 ((vn (1 1 1 1 1))
-                              (va (1 1 1 1 1))
-                              (vc (1 1 1 1 1))))))))
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((vn (violin :midi-channel 1))
+                        (va (viola :midi-channel 2))
+                        (vc (cello :midi-channel 3))))
+           :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5)))) 
+           :set-map '((1 (1 1 1 1 1)))
+           :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                   :pitch-seq-palette (((1 2 3) violin)
+                                                       (3 1 2)
+                                                       ((3 2 1) viola)))))
+           :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                               (va (1 1 1 1 1))
+                               (vc (1 1 1 1 1))))))))
     (sc-test-check
       ;; (cmn-display mini)
       ;; violin (instrument, not player!) gets 1 2 3
@@ -4208,7 +4208,15 @@
       ;; 1 2
       (equalp '(as4 NIL fs4 NIL gs4) (get-pitch-symbols (get-bar mini 2 'vc)))
       (equalp '(as4 NIL fs4 NIL gs4) (get-pitch-symbols
-                                      (get-bar mini 3 'vc))))))
+                                      (get-bar mini 3 'vc)))
+      ;; MDE Tue Jun 10 14:52:05 2025, Heidhausen
+      (swap-events mini 'vn 'vc 2 4)
+      (eq 'gs3 (get-pitch-symbol (get-note mini 2 1 'vc)))
+      (eq 'as4 (get-pitch-symbol (get-note mini 4 1 'vn)))
+      (eq 'vc (player (get-note mini 3 1 'vc)))
+      (eq 'vn (player (get-note mini 2 1 'vn)))
+      (equalp '(1 vn) (player-section-ref (get-bar mini 3 'vn)))
+      (setf (title mini) "swap test"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; instrument tests

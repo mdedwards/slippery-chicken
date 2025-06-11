@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:09:10 Thu May 22 2025 CEST
+;;; $$ Last modified:  10:57:05 Wed Jun 11 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4699,7 +4699,9 @@ WARNING:
 ;;; replacing spaces with hyphens etc. 
 (defun filename-from-title (title)
   (string-downcase
-   (remove #\, (remove #\: (remove #\' (substitute #\- #\  title))))))
+   (substitute
+    #\_ #\/
+    (remove #\, (remove #\: (remove #\' (substitute #\- #\  title)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

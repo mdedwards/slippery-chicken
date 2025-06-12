@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  14:56:43 Fri Apr  4 2025 CEST
+;;; $$ Last modified:  21:15:51 Thu Jun 12 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -123,8 +123,13 @@
   (object-is-nil? instrument-change-map "piece::cmn-display"
                   'instrument-change-map)
   (if players
-      (players-exist ensemble players)
-      (setf players (players ensemble)))
+    (players-exist ensemble players)
+    ;; MDE Thu Jun 12 21:12:40 2025, Heidhausen -- the players of the ensemble
+    ;; are in the order given at init but e.g. set-score-order might have
+    ;; changed the order of the players in the piece, so use that
+    ;; (setf players (players ensemble)))
+    (setf players (players p)))
+  (print players)
   (let* ((just-empty (eq empty-staves 'only))
          (cmn-data (get-cmn-data p players empty-staves set-map 
                                  write-section-info process-event-fun in-c
@@ -132,26 +137,28 @@
          (cmn-data-num-bars (length (first cmn-data)))
          (num-bars (num-bars p))
          (starting-ins-objs
-          (loop for player in players collect 
-               (let ((player-obj (get-data player ensemble))
-                     (ins-ref nil))
-                 (when (doubles player-obj)
-                   (setf ins-ref (get-first-for-player
-                                  instrument-change-map 
-                                  player))
-                   (unless ins-ref
-                     (error "piece::cmn-display: ~a doubles, ~
+           (loop for player in players
+                 collect 
+                 (let ((player-obj (get-data player ensemble))
+                       (ins-ref nil))
+                   (when (doubles player-obj)
+                     (setf ins-ref (get-first-for-player
+                                    instrument-change-map 
+                                    player))
+                     (unless ins-ref
+                       (error "piece::cmn-display: ~a doubles, ~
                                             enter data into ~
                                             instrument-change-map"
-                            player)))
-                 (player-get-instrument player-obj
-                                        ins-ref nil))))
-         (starting-clefs (loop for ins in starting-ins-objs collect
-                              (starting-clef ins)))
+                              player)))
+                   (player-get-instrument player-obj
+                                          ins-ref nil))))
+         (starting-clefs (loop for ins in starting-ins-objs
+                               collect (starting-clef ins)))
          (staff-names (loop for ins in starting-ins-objs collect
-                           (staff-name ins)))
-         (cmn-staff-args (loop for player in players collect 
-                              (cmn-staff-args (get-data player ensemble))))
+                                                         (staff-name ins)))
+         (cmn-staff-args (loop for player in players
+                               collect
+                               (cmn-staff-args (get-data player ensemble))))
          (systems nil))
     (unless start-bar
       (setf start-bar 1))
@@ -168,25 +175,25 @@
     ;; have to simply generate the whole piece if we want multi-bar-rests
     ;; because anything else would get pretty messy.
     (unless multi-bar-rests
-      (setf cmn-data (loop for ins in cmn-data collect
-                          (subseq ins (1- start-bar) end-bar))))
+      (setf cmn-data (loop for ins in cmn-data
+                           collect (subseq ins (1- start-bar) end-bar))))
     (unless staff-groupings
       (setf staff-groupings (list (length players))))
     (when (and empty-staves (not just-empty))
       ;; when we want empty staves, then we have to put the starting clefs and
       ;; staff names twice in each system...
       (setf starting-clefs (loop 
-                              for clef in starting-clefs
-                              collect clef 
-                              collect clef)
+                             for clef in starting-clefs
+                             collect clef 
+                             collect clef)
             staff-names (loop 
-                           for staff-name in staff-names 
-                           collect staff-name
-                           collect staff-name)
+                          for staff-name in staff-names 
+                          collect staff-name
+                          collect staff-name)
             cmn-staff-args (loop 
-                              for sa in cmn-staff-args 
-                              collect sa
-                              collect sa)
+                             for sa in cmn-staff-args 
+                             collect sa
+                             collect sa)
             staff-groupings (loop for i in staff-groupings collect (* 2 i))))
     (when set-map
       ;; groupings into bracketed sub-systems doesn't yet work.  take this line
@@ -208,17 +215,17 @@
     ;; of bars for the whole piece.
     (flet ((sys-sep (bar-num)
              (loop for ins in cmn-data do
-                  (setf (nth bar-num ins)
-                        (econs (nth bar-num ins)
-                               system-separation)))))
+               (setf (nth bar-num ins)
+                     (econs (nth bar-num ins)
+                            system-separation)))))
       (loop 
-         with bar-num = -1
-         do (incf bar-num (if (data bars-per-system-map)
-                              (data (scm-get-data (+ 1 start-bar bar-num) 
-                                                  bars-per-system-map))
-                              ;; !!!!!!!! default bars per system is 4 !!!!!!!!!
-                              4))
-         while (< bar-num num-bars) do (sys-sep bar-num))
+        with bar-num = -1
+        do (incf bar-num (if (data bars-per-system-map)
+                           (data (scm-get-data (+ 1 start-bar bar-num) 
+                                               bars-per-system-map))
+                           ;; !!!!!!!! default bars per system is 4 !!!!!!!!!
+                           4))
+        while (< bar-num num-bars) do (sys-sep bar-num))
       (sys-sep (1- num-bars)))
     (format t "~&Creating systems...")
     (setf cmn-data (split-into-sub-groups cmn-data staff-groupings)
@@ -226,17 +233,19 @@
           cmn-staff-args (split-into-sub-groups cmn-staff-args staff-groupings)
           starting-clefs (split-into-sub-groups starting-clefs 
                                                 staff-groupings))
-    (setf cmn-data (loop for group in cmn-data collect
-                        (loop for ins in group collect
-                           ;; get the bars out of their lists
-                             (loop for bar in ins append bar)))
+    (setf cmn-data (loop for group in cmn-data
+                         collect
+                         (loop for ins in group
+                               collect
+                               ;; get the bars out of their lists
+                               (loop for bar in ins append bar)))
           systems (loop 
-                     for group in cmn-data 
-                     for st-name in staff-names
-                     for st-args in cmn-staff-args
-                     for clefs in starting-clefs
-                     collect
-                     (cmn::cmn-system group st-name key-sig clefs st-args)))
+                    for group in cmn-data 
+                    for st-name in staff-names
+                    for st-args in cmn-staff-args
+                    for clefs in starting-clefs
+                    collect
+                    (cmn::cmn-system group st-name key-sig clefs st-args)))
     (format t "~&Calling CMN...")
     (cmn::cmn-display systems 
                       :page-height page-height

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:34:27 Thu Jun 12 2025 CEST
+;;; $$ Last modified:  20:48:56 Thu Jun 12 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4651,19 +4651,26 @@ NIL
 (defmethod swap-events ((sc slippery-chicken) player1 player2 start-bar
                         end-bar)
 ;;; ****
-  (loop for bar-num from start-bar to end-bar
-        for p1bar = (get-bar sc bar-num player1)
-        for p2bar = (get-bar sc bar-num player2)
-        for p1bar-clone = (clone p1bar)
-        do
-           ;; (mapcar #'(lambda (b) (setf (player b) player1)) (rhythms p1bar))
-           (setf (rhythms p1bar)        ; (rhythms p2bar)
-                 (mapcar #'(lambda (e) (setf (player e) player1) e)
-                         (rhythms p2bar))
-                 (rhythms p2bar)
-                 (mapcar #'(lambda (e) (setf (player e) player2) e)
-                         (rhythms p1bar-clone))))
-  t)
+  (let* ((p1 (get-player sc player1))
+         (p2 (get-player sc player2))
+         (mc1 (midi-channel p1))
+         (mc2 (midi-channel p2))
+         (mmc1 (microtones-midi-channel p1))
+         (mmc2 (microtones-midi-channel p2)))
+    (loop for bar-num from start-bar to end-bar
+          for p1bar = (get-bar sc bar-num player1)
+          for p2bar = (get-bar sc bar-num player2)
+          for p1bar-clone = (clone p1bar)
+          do
+             (setf (rhythms p1bar)      ; (rhythms p2bar)
+                   (mapcar #'(lambda (e) (setf (player e) player1) e)
+                           (rhythms p2bar))
+                   (rhythms p2bar)
+                   (mapcar #'(lambda (e) (setf (player e) player2) e)
+                           (rhythms p1bar-clone)))
+             (set-midi-channel p1bar mc1 mmc1)
+             (set-midi-channel p2bar mc2 mmc2))
+    t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; post-gen-editing method

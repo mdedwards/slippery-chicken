@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:21:42 Tue Jun 10 2025 CEST
+;;; $$ Last modified:  21:18:39 Thu Jun 12 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -942,7 +942,13 @@
   (setf players
         (cond ((and players (listp players)) players)
               ((and players (symbolp players)) (list players))
-              (t (players (ensemble sc)))))
+              ;; MDE Thu Jun 12 21:12:40 2025, Heidhausen -- the players of the
+              ;; ensemble are in the order given at init but
+              ;; e.g. set-score-order might have changed the order of the
+              ;; players in the piece, so use that (setf players (players
+              ;; ensemble)))
+              ;; (t (players (ensemble sc)))))
+              (t (players (piece sc)))))
   (when rehearsal-letters-all-players 
     (set-rehearsal-letters sc players))
   (when tempi-all-players 

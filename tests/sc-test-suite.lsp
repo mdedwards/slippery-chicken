@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:52:41 Tue Jun 10 2025 CEST
+;;; $$ Last modified:  14:43:35 Thu Jun 12 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -12987,6 +12987,7 @@
         (= 52 (num-bars sc))  ; because (4 7 19 40) means 13 bars starting at 40
         (not (set-difference (players sc)
                              '(pno vln two fl cl hn tp vn vc cl hn vc)))
+        (equalp '(2 25 27 40) (rehearsal-letters sc))
         (compare-first-notes 25 'pno sc1 10)
         (compare-first-notes 33 'vln sc1 18)
         (compare-first-notes 27 'vc sc3 2)

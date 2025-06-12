@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:55:58 Tue Jun 10 2025 CEST
+;;; $$ Last modified:  14:34:27 Thu Jun 12 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8287,6 +8287,10 @@ NIL
 ;;;   +slippery-chicken-standard-instrument-palette+
 ;;; - :rest-time-sig. The time signature to be used when creating rest bars
 ;;;   where no instrument is in play.
+;;; - :add-rehearsal-letters. T or NIL to indicated whether rehearsal letters
+;;;   should be placed at every point in the map, i.e. for every copy
+;;;   procedure. NB in any case, existing rehearsal-letters will not be copied
+;;;   over from the sc-objects in the 2nd arguments. Default = T.
 ;;; - :follow-on. T or NIL or a number to indicate that bar ranges should just
 ;;;   be appended after each other (see above). If a number is given, this will
 ;;;   be the start-bar in the result. Default = NIL.
@@ -8298,6 +8302,7 @@ NIL
 (defun sc-combine (map sc-objects
                    &key (max-bars 1000) (max-players 50)
                    (new-sc-name '*sc-combine*)
+                   (add-rehearsal-letters t)
                    follow-on
                    (instrument-palette 
                     +slippery-chicken-standard-instrument-palette+)
@@ -8313,6 +8318,8 @@ NIL
          ;; sim. for the instruments (symbols) they play
          (all-instruments '())
          (player-count 0)
+         ;; the start bars in the result i.e. fourth elements in the maps
+         (rsbs '()) 
          (default-rest-bar (make-rest-bar rest-time-sig))
          (result-first-bar-num 999999)
          (bars '())
@@ -8325,6 +8332,7 @@ NIL
           for result-start-bar = (fourth mapping)
           for players = (nthcdr 4 mapping)
           do
+             (unless (= 1 result-start-bar) (push result-start-bar rsbs))
              ;; i.e. unless players are listed in this mapping, all wil be used
              (unless players (setq players (players sc)))
              ;; allow the use of nil as an end bar (runs to end of piece then)
@@ -8426,7 +8434,9 @@ NIL
         (setf (tempo-map result) tm)
         (update-slots result)))
     ;; do this otherwise scores are unhappy and don't display meter changes:
-    (set-write-time-sig result) 
+    (set-write-time-sig result)
+    (when add-rehearsal-letters
+      (setf (rehearsal-letters result) (sort rsbs #'<)))
     (change-bar-line-type result (num-bars result) 2) ; add the final double bar
     result))
 

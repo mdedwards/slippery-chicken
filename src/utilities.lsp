@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:57:05 Wed Jun 11 2025 CEST
+;;; $$ Last modified:  10:59:58 Wed Jun 11 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -4714,7 +4714,7 @@ WARNING:
 ;;; June 1st 2013
 ;;;
 ;;; DESCRIPTION
-;;; TEMPORARILY DISABLED DUE TO SVN SERVER ACCESS RESTRICTIONS.
+;;; DISABLED DUE TO SVN SERVER ACCESS RESTRICTIONS AND SERVER CHANGES.
 ;;; NB This function currently works in SBCL and CCL on UNIX systems only.
 ;;; 
 ;;; For users of the slippery chicken app, this function will update the source

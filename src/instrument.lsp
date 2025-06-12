@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  19:41:42 Tue May 20 2025 CEST
+;;; $$ Last modified:  20:25:11 Thu Jun 12 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -625,8 +625,8 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
     (format stream "lowest-written: ~a, highest-written: ~a~
                     ~%    lowest-sounding: ~a, highest-sounding: ~a~
                     ~%    total-bars: ~a total-notes: ~a~
-                    ~%    total-duration: ~a tessitura: ~a~
-                    ~%    total-degrees: ~a, microtones: ~a~
+                    ~%    total-duration: ~a, tessitura: ~a~
+                    ~%    totalo-degrees: ~a, microtones: ~a~
                     ~%    lowest-played: ~a, highest-played: ~a"
             (pitch-slot (lowest-written ins))
             (pitch-slot (highest-written ins))
@@ -634,8 +634,7 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
             (pitch-slot (highest-sounding ins))
             (total-bars ins) 
             (total-notes ins) (secs-to-mins-secs (total-duration ins))
-            (total-degrees ins) (microtones ins) 
-            (tessitura-note ins)
+            (tessitura-note ins) (total-degrees ins) (microtones ins)
             (when (lowest-played ins) (data (lowest-played ins)))
             (when (highest-played ins) (data (highest-played ins))))))
 

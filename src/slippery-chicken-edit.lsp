@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  20:48:56 Thu Jun 12 2025 CEST
+;;; $$ Last modified:  17:57:07 Sat Jun 14 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8045,6 +8045,29 @@ NIL
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/set-tempo
+;;; DATE
+;;; June 14th 2025
+;;; 
+;;; DESCRIPTION
+;;; Change the tempo at a given bar.
+;;; 
+;;; ARGUMENTS
+;;; - a slippery-chicken object
+;;; - a tempo object or BPM number; if the latter then a beat-value of quarter
+;;;   notes will be assumed.
+;;; - the bar number for the change (on the first event). Mid-bar changes upon
+;;;   request :)
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; SYNOPSIS
+(defmethod set-tempo ((sc slippery-chicken) tempo bar-num)
+  (loop with tpo = (make-tempo tempo)
+        for bar in (get-bar sc bar-num) ; all players of course
+        do (add-tempo bar tempo)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -8217,6 +8240,7 @@ NIL
     (check-tuplets sc)
     (check-beams sc)
     sc))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; if you just want an sc-combine map to splice one range of bars after

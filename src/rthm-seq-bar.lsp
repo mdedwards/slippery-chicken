@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:10:34 Thu May 29 2025 CEST
+;;; $$ Last modified:  17:53:00 Sat Jun 14 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5934,7 +5934,7 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
            (return)))) ; rest or attacked note forces a break
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; tempo can be a tempo-object or a BPM number
 (defmethod add-tempo ((rsb rthm-seq-bar) tempo)
   (if (event-p (first (rhythms rsb)))
       (setf (tempo-change (first (rhythms rsb))) tempo)

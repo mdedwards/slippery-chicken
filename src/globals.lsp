@@ -127,10 +127,10 @@
         "/usr/local/bin/lilypond")
        ;; The full path to the ffprobe cmomand.  We need to set this if we'll
        ;; call ffprobe (in get-sound-info, when clm is not used).
-       ;; The default for Windows works when ffprobe is installed with the
+       ;; The default for Windows should work when ffprobe is installed with the
        ;; choco package manager.
        (ffprobe-command #-(or win32 win64) "/usr/local/bin/ffprobe"
-        #+(or win32 win64) "C:/ProgramData/chocolatey/bin/ffprobe.exe")
+        #+(or win32 win64) "C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe")
        ;; The default amplitude for all events that don't have amplitude/dynamic
        ;; set via some means such as marks.
        (default-amplitude 0.7)

@@ -49,7 +49,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Apr 16 16:22:23 2024
-(eval-when (compile load eval) 
+;;; LMF 2025-06-13, compile load eval are deprecated.
+(eval-when (:compile-toplevel :load-toplevel :execute)
   (when (probe-file (get-sc-config 'ffprobe-command))
     (pushnew :ffprobe *features*)))
 

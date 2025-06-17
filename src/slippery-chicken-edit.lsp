@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:57:07 Sat Jun 14 2025 CEST
+;;; $$ Last modified:  19:32:44 Tue Jun 17 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8050,7 +8050,8 @@ NIL
 ;;; June 14th 2025
 ;;; 
 ;;; DESCRIPTION
-;;; Change the tempo at a given bar.
+;;; Change the tempo at a given bar. If the optional argument is non nil, then
+;;; the 2nd argument is interpreted as a scaler for the existing tempo markings.
 ;;; 
 ;;; ARGUMENTS
 ;;; - a slippery-chicken object
@@ -8058,14 +8059,20 @@ NIL
 ;;;   notes will be assumed.
 ;;; - the bar number for the change (on the first event). Mid-bar changes upon
 ;;;   request :)
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to use the 2nd argument as a scaler instead of a BPM.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; SYNOPSIS
-(defmethod set-tempo ((sc slippery-chicken) tempo bar-num)
+(defmethod set-tempo ((sc slippery-chicken) tempo bar-num &optional scaler warn)
   (loop with tpo = (make-tempo tempo)
         for bar in (get-bar sc bar-num) ; all players of course
-        do (add-tempo bar tempo)))
+        do
+           (if scaler
+             (scale-tempo bar tempo warn)
+             (add-tempo bar tempo))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:53:00 Sat Jun 14 2025 CEST
+;;; $$ Last modified:  19:52:13 Tue Jun 17 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5939,6 +5939,15 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
   (if (event-p (first (rhythms rsb)))
       (setf (tempo-change (first (rhythms rsb))) tempo)
       (error "rthm-seq-bar::add-tempo: no events in bar: ~a" rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod scale-tempo ((rsb rthm-seq-bar) scaler &optional (warn t))
+  (let* ((event1 (first (rhythms rsb)))
+         (tpo (tempo-change event1)))
+    (if (tempo-change event1)
+      (setf (tempo-change event1) (* (bpm tpo) scaler))
+      (when warn (warn "rthm-seq-bar:scale-tempo: no tempo in bar to scale: ~a"
+                       rsb)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod delete-tempi ((rsb rthm-seq-bar) &optional verbose ignore1 ignore2)

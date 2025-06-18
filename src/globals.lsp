@@ -120,17 +120,11 @@
        (default-dir ,tmpdir)
        ;; The full path to the lilypond command.  We need to set this if we'll
        ;; call lp-display, i.e. if we want to automatically call Lilypond and
-       ;; open the resultant PDF directly from Lisp.  The default should work if
-       ;; you have the Lilypond app in your Applications folder on OSX.
-       ;; "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
-       (lilypond-command
-        "/usr/local/bin/lilypond")
+       ;; open the resultant PDF directly from Lisp. 
+       (lilypond-command nil)
        ;; The full path to the ffprobe cmomand.  We need to set this if we'll
        ;; call ffprobe (in get-sound-info, when clm is not used).
-       ;; The default for Windows should work when ffprobe is installed with the
-       ;; choco package manager.
-       (ffprobe-command #-(or win32 win64) "/usr/local/bin/ffprobe"
-        #+(or win32 win64) "C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe")
+       (ffprobe-command nil)
        ;; The default amplitude for all events that don't have amplitude/dynamic
        ;; set via some means such as marks.
        (default-amplitude 0.7)
@@ -219,9 +213,9 @@
        ;; to use csound-display, i.e. automatically call the Csound command to
        ;; render a sound file from a given orchestra and a score generated via
        ;; write-csound-score.
-       (csound-command
-        "/usr/local/bin/csound")
+       (csound-command nil)
        (ignore-force-rest-bar nil)
+       ;; LF 2025-06-18 - can this be removed?
        (path-to-ppcre nil)))))
 ;;; ****
 
@@ -238,10 +232,17 @@
 
 (defun set-sc-config (key value)
   (declare (special +slippery-chicken-config-data+))
-  ;; MDE Fri Mar 12 09:49:15 2021, Heidhausen -- essentially a trigger for
-  ;; reloading our tunings  
-  (when (eq key 'diapason)
-    (set-diapason value))
+  (case key
+    ;; MDE Fri Mar 12 09:49:15 2021, Heidhausen -- essentially a trigger for
+    ;; reloading our tunings  
+    ('diapason (set-diapason value))
+    ;; LF 2025-06-18 - probe these files, else set them to nil. This way we
+    ;; don't have to probe these later
+    ((ffprobe-command csound-command lilypond-command)
+     (unless (probe-file value)
+       (warn "set-sc-config: Could not find ~a at ~a, set to nil"
+	     key value)
+       (setf value nil))))
   ;; just for the warning, if there's been a spelling mistake
   (get-data key +slippery-chicken-config-data+ #'error)
   (data (replace-data key value +slippery-chicken-config-data+)))
@@ -264,6 +265,22 @@
     (butlast (pathname-directory cl-user::+slippery-chicken-src-path+))
     :device (pathname-device cl-user::+slippery-chicken-src-path+))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LF 2025-06-18 - try to init some default value here instead of above, so
+;;; that probe-file is called on them.
+
+;; The default should work if you have the Lilypond app in your Applications
+;; folder on OSX. "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
+(set-sc-config 'lilypond-command "/usr/local/bin/lilypond")
+
+;; The default for Windows should work when ffprobe is installed with the
+;; choco package manager.
+#-(or win32 win64)
+(set-sc-config 'ffprobe-command "/usr/local/bin/ffprobe")
+#+(or win32 win64)
+(set-sc-config 'ffprobe-command "C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe")
+
+(set-sc-config 'csound-command "/usr/local/bin/csound")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

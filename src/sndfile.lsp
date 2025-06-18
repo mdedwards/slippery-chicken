@@ -47,13 +47,6 @@
 
 (in-package :slippery-chicken)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Apr 16 16:22:23 2024
-;;; LMF 2025-06-13, compile load eval are deprecated.
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (when (probe-file (get-sc-config 'ffprobe-command))
-    (pushnew :ffprobe *features*)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; the name (defaults to the given name of the file) is stored in <id>, the
 ;;; given file name (perhaps minus path and extension) in <data>.
@@ -746,32 +739,31 @@ data: /path/to/sndfile-1.aiff
               (clm::sound-duration filename)
               (clm::sound-length filename)
               (clm::sound-framples filename))
-        #+ffprobe
-        (let ((info (parse-ffprobe-string
-                     (shell-to-string
-                      (if (stringp ffprobe)
-                        ffprobe
-                        (get-sc-config 'ffprobe-command))
-                      "-v" "quiet"
-                      "-show_entries" "format=duration,size"
-                      "-show_entries"
-                      "stream=sample_rate,channels,r_frame_rate,width,height"
-                      "-show_entries" "stream=bits_per_sample,codec_name"
-                      "-of" "default=noprint_wrappers=1:nokey=0"
-                      filename))))
-          ;; MDE Mon Jun 24 09:53:45 2024, Heidhausen -- warn if not found or
-          ;; not parsed, e.g. an existing file sometimes results in a list of
-          ;; nils if the path starts with "~" on macos :/
-          (when (or (not info) (every #'not info))
-            (setq info nil)
-            (warn "sndfile::get-sound-info: ~a~%can't be parsed: maybe  ~
+       (if (get-sc-config 'ffprobe-command)
+	   (let ((info (parse-ffprobe-string
+			(shell-to-string
+			 (if (stringp ffprobe)
+                             ffprobe
+                             (get-sc-config 'ffprobe-command))
+			 "-v" "quiet"
+			 "-show_entries" "format=duration,size"
+			 "-show_entries"
+			 "stream=sample_rate,channels,r_frame_rate,width,height"
+			 "-show_entries" "stream=bits_per_sample,codec_name"
+			 "-of" "default=noprint_wrappers=1:nokey=0"
+			 filename))))
+	     ;; MDE Mon Jun 24 09:53:45 2024, Heidhausen -- warn if not found or
+	     ;; not parsed, e.g. an existing file sometimes results in a list of
+	     ;; nils if the path starts with "~" on macos :/
+             (when (or (not info) (every #'not info))
+	       (setq info nil)
+	       (warn "sndfile::get-sound-info: ~a~%can't be parsed: maybe  ~
                    the path isn't working ~%(e.g. begins with \"~~/\" on macos)"
-                  filename))
-          info)
-        #-ffprobe
-        (error "sndfile::get-sound-info: this command needs ffprobe, ~%i.e. ~
-                the ffprobe-command defined in globals.lsp needs to exist ~%~
-                and function properly.")))))
+                     filename))
+             info)
+	   (error "sndfile::get-sound-info: this command needs either clm or ~
+                   ffprobe, ~%i.e. the ffprobe-command defined in globals.lsp
+                   needs to exist ~% and function properly."))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -800,20 +792,17 @@ data: /path/to/sndfile-1.aiff
 ;;; e.g. "video" "audio" (noting that "audio" will also be in video files so be
 ;;; specific if necesssary
 (defun codec-type-p (path type)
-  #+ffprobe
-  (when (and path (probe-file path))
-    (let* ((ffprobe (get-sc-config 'ffprobe-command)))
-      ;; MDE Tue Apr 16 16:30:37 2024, Heidhausen -- no need to check if ffprobe
-      ;; command exists as #+ffprobe will only work if it's been found (see
-      ;; slippery-chiciken.asd) 
-      (let ((ffps (shell-to-string
-                   ffprobe "-loglevel" "error" "-show_entries"
-                   "stream=codec_type" "-of" "default=nw=1" path)))
-        (numberp (search (format nil "codec_type=~a" type) ffps)))))
-  #-ffprobe
-  (error "sndfile::codec-type-p: this command needs ffprobe, i.e. the ~
+  ;; LF 2025-06-18 - restructured this to replace #+ffprobe
+  (let* ((ffprobe (get-sc-config 'ffprobe-command)))
+    (if ffprobe
+	(when (and path (probe-file path))
+	  (let ((ffps (shell-to-string
+		       ffprobe "-loglevel" "error" "-show_entries"
+		       "stream=codec_type" "-of" "default=nw=1" path)))
+	    (numberp (search (format nil "codec_type=~a" type) ffps))))
+	(error "sndfile::codec-type-p: this command needs ffprobe, i.e. the ~
           ffprobe-command defined in globals.lsp needs to exist and function ~
-          properly."))
+          properly."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; note that unlike vidfile we don't test by extension here (but unlike vidfile

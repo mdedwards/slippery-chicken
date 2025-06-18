@@ -11146,6 +11146,9 @@ data: (11 15)
 ;;; SYNOPSIS
 (defun lp-display (&rest args)
 ;;; ****
+  ;; LF 2025-06-18 - added this check
+  (unless (get-sc-config 'lilypond-command)
+    (error "slippery-chicken::lp-display: No lilypond-command found."))
   (let* ((lp-file (apply #'write-lp-data-for-all args))
          (no-ext (path-minus-extension lp-file))
          (pdf-file (concatenate 'string no-ext ".pdf"))
@@ -11937,7 +11940,8 @@ data: (11 15)
          ;; RP  Tue Mar  7 12:59:07 2023
          ;; test if Csound command is available before
          ;; trying to render the piece
-         (success (if (probe-file (get-sc-config 'csound-command))
+	 ;; LF 2025-06-18 - removed probe-file
+         (success (if (get-sc-config 'csound-command)
                       (apply #'shell
                              (append
                               (list (get-sc-config 'csound-command))

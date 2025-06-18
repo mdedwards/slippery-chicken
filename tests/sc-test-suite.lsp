@@ -21522,8 +21522,9 @@ est)")))
               ;; RP  Sun Mar  5 15:08:26 2023
               ;; just test csound-play when Csound is
               ;; available on the system
+	      ;; LF 2025-06-18 - removed probe-file
               (sc-test-check
-                (if (probe-file (get-sc-config 'csound-command))
+                (if (get-sc-config 'csound-command)
                     (csound-play mini
                                  '(pno vln)
                                  '(1 2)

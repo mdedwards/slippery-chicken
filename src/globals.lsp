@@ -275,15 +275,20 @@
 ;; The default should work if you have the Lilypond app in your Applications
 ;; folder on OSX. "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
 (set-sc-config 'lilypond-command "/usr/local/bin/lilypond")
+#+linux
+(set-sc-config 'lilypond-command "/usr/bin/lilypond")
 
 ;; The default for Windows should work when ffprobe is installed with the
 ;; choco package manager.
-#-(or win32 win64)
 (set-sc-config 'ffprobe-command "/usr/local/bin/ffprobe")
+#+linux
+(set-sc-config 'ffprobe-command "/usr/bin/ffprobe")
 #+(or win32 win64)
 (set-sc-config 'ffprobe-command "C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe")
 
 (set-sc-config 'csound-command "/usr/local/bin/csound")
+#+linux
+(set-sc-config 'csound-command "/usr/bin/csound")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

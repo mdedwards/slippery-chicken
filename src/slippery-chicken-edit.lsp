@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:32:44 Tue Jun 17 2025 CEST
+;;; $$ Last modified:  17:07:47 Wed Jun 18 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4663,11 +4663,14 @@ NIL
           for p1bar-clone = (clone p1bar)
           do
              (setf (rhythms p1bar)      ; (rhythms p2bar)
+                   ;; tuplets, beams
                    (mapcar #'(lambda (e) (setf (player e) player1) e)
                            (rhythms p2bar))
                    (rhythms p2bar)
                    (mapcar #'(lambda (e) (setf (player e) player2) e)
-                           (rhythms p1bar-clone)))
+                           (rhythms p1bar-clone))
+                   (tuplets p1bar) (tuplets p2bar)
+                   (tuplets p2bar) (tuplets p1bar-clone))
              (set-midi-channel p1bar mc1 mmc1)
              (set-midi-channel p2bar mc2 mmc2))
     t))
@@ -8002,6 +8005,9 @@ NIL
         (if (and full (> used 0))
           (progn 
             (setq s-events (nthcdr used s-events))
+            ;; we might have used up some events but they might all be rests
+            (when (all-rests? bar)
+              (force-rest-bar bar))
             (when verbose
               (format t "~&Added ~a events to bar ~a" used bar-num)))
           (progn

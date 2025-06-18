@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:52:13 Tue Jun 17 2025 CEST
+;;; $$ Last modified:  17:17:29 Wed Jun 18 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,7 +105,9 @@
    ;; 0-based. 
    ;; (score-tuplets :accessor score-tuplets :type list :initform nil)
    ;; the above is for SCORE (long defunct, sadly), the following for CMN (see
-   ;; parse-rhythms)  
+   ;; parse-rhythms). Each sublist represents a tuplet bracket and has 3
+   ;; elements: the tuplet number, the 0-based index for where it starts, and
+   ;; where it ends 
    (tuplets :accessor tuplets :type list :initform nil)
    ;; In SCORE, how far to extend tuplet brackets when it's over a rest at
    ;; either end.  
@@ -1693,8 +1695,11 @@ data: ((2 4) - S S - S - S S S - S S)
          for tuplet in (tuplets rsb)
          for st = (second tuplet)
          for nd = (third tuplet) do
-           (when (or (< st 0) (< nd 0) (> st max) (> nd max))
-             (damn "tuplets slot contains out-of-bounds indices")))
+           (when (or (< st 0) (< nd 0) (> st max) (> nd max)
+                     ;; MDE Wed Jun 18 16:45:18 2025, Heidhausen
+                     (<= nd st))
+             (damn (format nil "tuplets slot contains bad indices: ~a"
+                           tuplet))))
       ;; now if the above loop didn't fail, check individual rthms
       (when result 
         (loop for r in (rhythms rsb) do
@@ -1756,27 +1761,29 @@ data: ((2 4) - S S - S - S S S - S S)
 (defmethod auto-tuplets ((rsb rthm-seq-bar) &optional (on-fail #'error))
 ;;; ****
   (delete-tuplets rsb)
-  (loop with bag with tuplet with start with dur = 0.0
-     for r in (rhythms rsb) 
-     for count from 0
-     do
-       (unless bag
-         (setf start count))
-       (push r bag)
-       (incf dur (duration r))
-     ;; these tests avoid placing tuplets at arbitrary points in the bar
-     ;; e.g. after an opening 32nd
-       ;; (print dur)
-       (when (or (float-int-p dur 0.00001)
-                 (float-int-p (* 2.0 dur) 0.00001) ; i.e. 0.5
-                 ;; MDE Wed Sep 23 16:37:37 2020, Heidhausen
-                 (float-int-p (* 4.0 dur) 0.00001)) ; i.e. 0.25 or 0.75
-         (when (and (/= 1 (tuplet-scaler (first bag)))
-                    (/= 1 (tuplet-scaler (first (last bag)))))
-           (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
-           (add-tuplet-bracket rsb (list tuplet start count))
-           (setf tuplet nil))
-         (setf bag nil)))
+  (unless (is-rest-bar rsb)          ; MDE Wed Jun 18 16:50:00 2025, Heidhausen
+    (loop with bag with tuplet with start with dur = 0.0
+          for r in (rhythms rsb) 
+          for count from 0
+          do
+             (unless bag
+               (setf start count))
+             (push r bag)
+             (incf dur (duration r))
+             ;; these tests avoid placing tuplets at arbitrary points in the bar
+             ;; e.g. after an opening 32nd (print dur)
+             (when (or (float-int-p dur 0.00001)
+                       (float-int-p (* 2.0 dur) 0.00001) ; i.e. 0.5
+                       ;; MDE Wed Sep 23 16:37:37 2020, Heidhausen
+                       (float-int-p (* 4.0 dur) 0.00001)) ; i.e. 0.25 or 0.75
+               (when (and (/= 1 (tuplet-scaler (first bag)))
+                          (/= 1 (tuplet-scaler (first (last bag))))
+                          ;; MDE Wed Jun 18 17:17:10 2025, Heidhausen
+                          (/= start count))
+                 (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
+                 (add-tuplet-bracket rsb (list tuplet start count))
+                 (setf tuplet nil))
+               (setf bag nil))))
   ;; MDE Wed Sep 23 18:01:59 2020, Heidhausen -- return rsb also
   (values (check-tuplets rsb on-fail) rsb))
          

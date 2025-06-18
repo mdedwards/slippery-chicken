@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  19:41:20 Tue May 20 2025 CEST
+;;; $$ Last modified:  10:10:08 Wed Jun 18 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -235,13 +235,16 @@
   (case key
     ;; MDE Fri Mar 12 09:49:15 2021, Heidhausen -- essentially a trigger for
     ;; reloading our tunings  
-    ('diapason (set-diapason value))
+    (diapason (set-diapason value))
     ;; LF 2025-06-18 - probe these files, else set them to nil. This way we
     ;; don't have to probe these later
     ((ffprobe-command csound-command lilypond-command)
      (unless (probe-file value)
-       (warn "set-sc-config: Could not find ~a at ~a, set to nil"
-	     key value)
+       (warn "set-sc-config: Could not find ~a at \"~a\" so setting to nil. ~
+              ~%This means that the respective functionality will not work. ~
+              ~%Please install the software associated with ~a and use ~
+              ~%set-sc-config again with the correct and full path."
+             key value key)
        (setf value nil))))
   ;; just for the warning, if there's been a spelling mistake
   (get-data key +slippery-chicken-config-data+ #'error)

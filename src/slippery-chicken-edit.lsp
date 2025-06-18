@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:07:47 Wed Jun 18 2025 CEST
+;;; $$ Last modified:  19:39:10 Wed Jun 18 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8038,7 +8038,7 @@ NIL
                          (let ((tc (get-tempo-for-map e)))
                            (when tc
                              (unless (and tempo1 (= 1 (first tc)))
-                               (push tc result))))))
+                               (pushnew tc result :test #'equalp))))))
     (setq result (reverse result))
     ;; (print result)
     ;; whether we got a tempo in bar 1 or not, if tempo1 is given, we used that

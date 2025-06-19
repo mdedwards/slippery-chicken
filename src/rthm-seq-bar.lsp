@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:12:01 Thu Jun 19 2025 CEST
+;;; $$ Last modified:  16:32:44 Thu Jun 19 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5733,12 +5733,15 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; - a list of the new rhythm/event objects
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether the automatic beaming routine should be called
-;;;  after the replacement
+;;; - T or NIL to indicate whether the automatic beaming routine should be
+;;;   called after the replacement
 ;;; - T or nil to indicate whether pitches should be retain if the bar contains
 ;;;   events as opposed to just rhythm objects. If the bar will have more
 ;;;   rhythms after this call (i.e. shorter rhythms passed) then the last pitch
 ;;;   in the original will be used to set the pitch of the remaining new events.
+;;;   Or this can be a list of 1-based indices of the new rhythms: each of these
+;;;   will be set to the pitches of the original bar, starting at its first
+;;;   pitch and moving through from there
 ;;; 
 ;;; RETURN VALUE
 ;;; What the is-full method returns: two values: T or NIL to indicate whether
@@ -5784,18 +5787,32 @@ collect (midi-channel (pitch-or-chord p))))
     (when (and keep-pitches (every #'event-p (rhythms rsb)))
       (setq rthms (mapcar #'(lambda (r) (clone-with-new-class r 'event))
                           rthms))
-      ;; some pitches could be skipped if the new rhythms are longer than the
-      ;; original 
-      (loop with e-last for i from nth repeat replace-num-rhythms
-            for e-old = (nth i (rhythms rsb))
-            for e-new = (nth i rthms)
-            do (if e-old
-                 (setq e-new (copy-event-slots e-old e-new))
-                 ;; we've given more rhythms (shorter) than we had so use the
-                 ;; last pitch we saw
-                 (setf (pitch-or-chord e-new) (pitch-or-chord e-last)))
-               (setf (nth i rthms) e-new)
-               (when e-new (setq e-last e-new))))
+      ;; list of 1-based indices of the new rhythms: each of these will be set
+      ;; to the pitches of the original bar, starting at its first pitch and
+      ;; moving through from there
+      (if (and (consp keep-pitches) (every #'integerp keep-pitches))
+        (loop for n in keep-pitches
+              for event = (nth (1- n) rthms)
+              for i from 0
+              for nrr = (get-nth-non-rest-rhythm i rsb)
+              for poc = (if nrr
+                          (clone (pitch-or-chord nrr))
+                          (error "rthm-seq-bar::replace-rhythms: no note ~
+                                  at position ~a:~%~a" i rsb))
+              do (setf (pitch-or-chord event) poc))
+        ;; just copy over using original order
+        ;; some pitches could be skipped if the new rhythms are longer than the
+        ;; original 
+        (loop with e-last for i from nth repeat replace-num-rhythms
+              for e-old = (nth i (rhythms rsb))
+              for e-new = (nth i rthms)
+              do (if e-old
+                   (setq e-new (copy-event-slots e-old e-new))
+                   ;; we've given more rhythms (shorter) than we had so use the
+                   ;; last pitch we saw
+                   (setf (pitch-or-chord e-new) (pitch-or-chord e-last)))
+                 (setf (nth i rthms) e-new)
+                 (when e-new (setq e-last e-new)))))
     ;; of course, the stats for the sequenz and whole piece are now incorrect,
     ;; but we leave that update to the user, we don't want to always call it
     ;; here.
@@ -6218,7 +6235,6 @@ rsb-rb)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Sort the given rhythms into real rhythms and bracketing information for
 ;;; notation as well as expand repeated rhythms like 'e x 5' which means 5
 ;;; eighth notes.

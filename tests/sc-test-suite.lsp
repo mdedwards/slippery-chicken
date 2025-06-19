@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:12:24 Thu Jun 19 2025 CEST
+;;; $$ Last modified:  16:21:37 Thu Jun 19 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -447,7 +447,25 @@
       ;; last pitch reused:
       (equalp (print (get-pitch-symbols rsb))
               '(gs4 a4 gs4 a4 bf4 gs4 gs4 bf4 bf4 bf4 bf4 bf4))
-      (equalp (get-rhythm-symbols rsb) '(e e e s s s s s s te te te)))))
+      (equalp (get-rhythm-symbols rsb) '(e e e s s s s s s te te te))
+      (setq mini
+            (make-slippery-chicken
+            '+mini+
+            :ensemble '(((vn (violin :midi-channel 1))))
+            :set-palette '((1 ((gs4 a bf))))
+            :set-map '((1 (1 1 1)))
+            :rthm-seq-palette '((1 ((((4 4) - (q.) e - - e e - - e e -))
+                                    :pitch-seq-palette ((1 2 3 1 4)))))
+            :rthm-seq-map '((1 ((vn (1 1 1))))))
+            rsb (get-bar mini 1 'vn))
+      (equalp '(NIL GS4 A4 BF4 GS4 BF4)
+              (print (get-pitch-symbols rsb)))
+      (replace-rhythms rsb 1 2 '(s s e q) nil '(1 3))
+      ;; so the first pitch now becomes gs4 instead of nil
+      (equalp (print (get-pitch-symbols rsb))
+              '(GS4 NIL A4 NIL A4 BF4 GS4 BF4))
+      (equalp (get-rhythm-symbols rsb) '(s s e q e e e e))
+      )))
 
 ;;; 12.12.11 SAR
 (sc-deftest test-rsb-get-nth-non-rest-rhythm ()

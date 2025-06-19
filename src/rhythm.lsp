@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  08:15:19 Tue May 20 2025 CEST
+;;; $$ Last modified:  09:53:12 Thu Jun 19 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1149,7 +1149,7 @@ NI
 (defmethod check-beam-ok ((r rhythm))
   (when (and (zerop (num-flags r))
              (>= (duration r) 1.0))
-    (warn "~&rhythm::check-beam-ok: Placing beam on rhythm with no tails:~%~a"
+    (warn "~&rhythm::check-beam-ok: beam on rhythm with no tails?:~%~a"
           r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

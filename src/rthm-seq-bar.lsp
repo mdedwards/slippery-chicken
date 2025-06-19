@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:17:29 Wed Jun 18 2025 CEST
+;;; $$ Last modified:  15:12:01 Thu Jun 19 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5728,12 +5728,17 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; ARGUMENTS
 ;;; - a rthm-seq-bar object
 ;;; - the index (1-based) of the rhythm/events to start at (integer)
-;;; - the number of rhythms/events to replace (integer)
+;;; - the number of rhythms/events to replace (integer). If NIL this will be set
+;;;   to the length of the new rhythms (next argument)
 ;;; - a list of the new rhythm/event objects
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether the automatic beaming routine should be called
-;;; after the replacement
+;;; - T or NIL to indicate whether the automatic beaming routine should be called
+;;;  after the replacement
+;;; - T or nil to indicate whether pitches should be retain if the bar contains
+;;;   events as opposed to just rhythm objects. If the bar will have more
+;;;   rhythms after this call (i.e. shorter rhythms passed) then the last pitch
+;;;   in the original will be used to set the pitch of the remaining new events.
 ;;; 
 ;;; RETURN VALUE
 ;;; What the is-full method returns: two values: T or NIL to indicate whether
@@ -5742,8 +5747,18 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; 
 ;;; SYNOPSIS
 (defmethod replace-rhythms ((rsb rthm-seq-bar) start-rhythm replace-num-rhythms
-                            new-rhythms &optional auto-beam)
+                            new-rhythms &optional auto-beam keep-pitches)
 ;;; ****
+  (unless replace-num-rhythms (setq replace-num-rhythms (length new-rhythms)))
+  (setq new-rhythms
+        (loop for r in new-rhythms
+              collect
+              (typecase r
+                ((or rhythm event) r)
+                (symbol (make-rhythm r))
+                (t (error "rthm-seq-bar::replace-rhythms: new-rhythms should ~
+                           be a list of ~%rhythm or event objects or rhythm ~
+                           symbols: ~a" r)))))
   (let* ((rthms (my-copy-list (rhythms rsb)))
          (nth (1- start-rhythm)))
     ;; those events that were previously start or end points for brackets may
@@ -5754,12 +5769,33 @@ collect (midi-channel (pitch-or-chord p))))
     (delete-tuplets rsb)
     (delete-beams rsb)
     ;; a rest bar has no rhythms but we may want to fill it with some so fake
-    ;; the rthms here.  
+    ;; the rthms here. In that case though we'd have to
     (unless rthms
+      (unless (= 1 start-rhythm)
+        (error "rthm-seq-bar::replace-rhythms: bar ~a is a rest bar, so all ~
+                rhythms would need to be supplied (i.e. start-rhythm must be ~
+                1" (bar-num rsb)))
       ;; doesn't matter what's in the list as all elements will be replaced.
       (setf rthms (ml nil replace-num-rhythms)))
-    (setf rthms (remove-elements rthms nth replace-num-rhythms)
+    (setf rthms (remove-elements rthms nth (min replace-num-rhythms
+                                                (- (length rthms) nth )))
           rthms (splice new-rhythms rthms nth))
+    ;; MDE Thu Jun 19 14:24:56 2025, Heidhausen -- copy pitches
+    (when (and keep-pitches (every #'event-p (rhythms rsb)))
+      (setq rthms (mapcar #'(lambda (r) (clone-with-new-class r 'event))
+                          rthms))
+      ;; some pitches could be skipped if the new rhythms are longer than the
+      ;; original 
+      (loop with e-last for i from nth repeat replace-num-rhythms
+            for e-old = (nth i (rhythms rsb))
+            for e-new = (nth i rthms)
+            do (if e-old
+                 (setq e-new (copy-event-slots e-old e-new))
+                 ;; we've given more rhythms (shorter) than we had so use the
+                 ;; last pitch we saw
+                 (setf (pitch-or-chord e-new) (pitch-or-chord e-last)))
+               (setf (nth i rthms) e-new)
+               (when e-new (setq e-last e-new))))
     ;; of course, the stats for the sequenz and whole piece are now incorrect,
     ;; but we leave that update to the user, we don't want to always call it
     ;; here.

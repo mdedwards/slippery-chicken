@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:43:35 Thu Jun 12 2025 CEST
+;;; $$ Last modified:  15:12:24 Thu Jun 19 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -425,6 +425,29 @@
       (= 7 (length rr))
       (equalp '(s e s te te te q) (get-rhythm-symbols rsb4))
       )))
+
+;;; MDE Thu Jun 19 14:44:04 2025, Heidhausen 
+(sc-deftest test-rsb-replace-rhythms-with-pitches ()
+  (let* ((mini
+           (make-slippery-chicken
+            '+mini+
+            :ensemble '(((vn (violin :midi-channel 1))))
+            :set-palette '((1 ((gs4 a bf))))
+            :set-map '((1 (1 1 1)))
+            :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e - - e e -))
+                                    :pitch-seq-palette ((1 2 1 2 3 1 1 4)))))
+            :rthm-seq-map '((1 ((vn (1 1 1)))))))
+         (rsb (get-bar mini 1 'vn)))
+    (sc-test-check
+      (print (get-pitch-symbols rsb))
+      (replace-rhythms rsb 4 nil '(s s tq tq tq) nil t)
+      (equalp (print (get-pitch-symbols rsb)) '(gs4 a4 gs4 a4 bf4 gs4 gs4 bf4))
+      (equalp (get-rhythm-symbols rsb) '(e e e s s tq tq tq))
+      (replace-rhythms rsb 6 nil '(s s s s te te te) nil t)
+      ;; last pitch reused:
+      (equalp (print (get-pitch-symbols rsb))
+              '(gs4 a4 gs4 a4 bf4 gs4 gs4 bf4 bf4 bf4 bf4 bf4))
+      (equalp (get-rhythm-symbols rsb) '(e e e s s s s s s te te te)))))
 
 ;;; 12.12.11 SAR
 (sc-deftest test-rsb-get-nth-non-rest-rhythm ()
@@ -16205,7 +16228,7 @@
     ;; (= 61 (print (length (cm::parse-midi-file "/tmp/msp-gmchs.mid"))))))
     (< 100 (length (cm::parse-midi-file "/tmp/msp-gmchs.mid")))))
 
-;;; MDE Thu Nov 10 10:40:05 2016  
+;;; MDE Thu Nov 10 10:40:05 2016 
 (sc-deftest test-midi-file-to-events ()
   (let* ((f1 (concatenate 'string 
                           cl-user::+slippery-chicken-home-dir+
@@ -21522,7 +21545,7 @@ est)")))
               ;; RP  Sun Mar  5 15:08:26 2023
               ;; just test csound-play when Csound is
               ;; available on the system
-	      ;; LF 2025-06-18 - removed probe-file
+              ;; LF 2025-06-18 - removed probe-file
               (sc-test-check
                 (if (get-sc-config 'csound-command)
                     (csound-play mini

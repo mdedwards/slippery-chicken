@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:21:37 Thu Jun 19 2025 CEST
+;;; $$ Last modified:  14:52:24 Tue Jun 24 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1005,7 +1005,8 @@
   (let ((b1 (make-rthm-seq-bar '((4 4) { 3 tq tq 18 18 18 } h )))
         (b2 (make-rthm-seq-bar '((4 4) { 3 ts ts ts } e h.)))
         (b3 (make-rthm-seq-bar '((4 4) { 6 ts x 6 } q { 5 fe x 5 })))
-        (b4 (make-rthm-seq-bar '((4 4) { 5 fe x 5 } { 6 ts x 6 } q))))
+        (b4 (make-rthm-seq-bar '((4 4) { 5 fe x 5 } { 6 ts x 6 } q)))
+        (b5 (make-rthm-seq-bar '((3 4) q te te te s s e))))
     (flet ((recreate-test (rsb)
              (let ((tups (copy-list (tuplets rsb))))
                (equalp tups (recreate-tuplets rsb)))))
@@ -1033,7 +1034,16 @@
         (auto-tuplets b3)
         (equalp '((3 0 2) (3 3 5) (5 7 11)) (tuplets b3))
         (auto-tuplets b4)
-        (equalp '((5 0 4) (3 5 7) (3 8 10)) (tuplets b4))))))
+        (equalp '((5 0 4) (3 5 7) (3 8 10)) (tuplets b4))
+        ;; this has to work even with a bar where no tuplets were indicated via
+        ;; e.g. { 3 }  it now does since 
+        (auto-tuplets b5)
+        (equalp '((3 1 3)) (tuplets b5))
+        (not (bracket (first (rhythms b5))))
+        (equalp '((1 3)) (bracket (second (rhythms b5))))
+        (equalp '(-1) (bracket (third (rhythms b5))))
+        (equalp '(1) (bracket (fourth (rhythms b5))))
+        (every #'not (mapcar #'bracket (nthcdr 4 (rhythms b5))))))))
 
 ;;; SAR Sun May 20 16:02:01 EDT 2012
 (sc-deftest test-rsb-check-tuplets ()

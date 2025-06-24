@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:39:10 Wed Jun 18 2025 CEST
+;;; $$ Last modified:  15:30:00 Tue Jun 24 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5791,6 +5791,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; is deterministic, not random/stochastic). This turns existing notes into
 ;;; rests. As this is an expensive method but may be called more than once, it
 ;;; is up to the user to call consolidate-rests and/or update-slots when ready.
+;;; NB See note to :auto-tuplets below re. potential problems.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the (fully-initialised) slippery-chicken object
@@ -5808,32 +5809,45 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;;   avoided via the next argument. Default = '(0 1 100 10)
 ;;; - :rescale-curve. Whether to process the x-values of :curve to range over 
 ;;;   the number of bars in the piece. Default = T = rescale.
+;;; -:auto-tuplets. T or NIL to indicate whether auto-tuplets should be called
+;;;   when thinning a bar is finished. Bear in mind that tuplet data can become
+;;;   corrupted during this method, as individual events initially reference
+;;;   existing tuplet bracket data, but when these are forced to rests (and
+;;;   especially when they're consolidated into longer rests) these may no
+;;;   longer exist. So if e.g. generated music-xml files have extra beats in
+;;;   bars, try setting :auto-tuplets T and all may be well again. Default =
+;;;   NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; - the processed slippery-chicken object
 ;;; 
 ;;; SYNOPSIS
 (defmethod thin ((sc slippery-chicken) &key start-bar end-bar players
-                                         (curve '(0 1 100 10))
-                                         (rescale-curve t))
+                                       (curve '(0 1 100 10)) auto-tuplets
+                                       (rescale-curve t))
 ;;; **** 
   (let* ((al (make-al))
          (cve (if rescale-curve
-                  (new-lastx curve (1- (num-bars sc)))
-                  curve)))
+                (new-lastx curve (1- (num-bars sc)))
+                curve)))
     (map-over-bars
      sc start-bar end-bar players
      #'(lambda (bar acurve)
-         (loop with anum = (interpolate (1- (bar-num bar)) acurve)
-            for e in (rhythms bar) do
-              (when (and (needs-new-note e)
-                         (not (active al anum))
-                         ;; MDE Wed Jan  1 16:48:57 2020
-                         (not (is-grace-note e)))
-                ;; note that this is a pretty inefficient way of doing things
-                ;; but we need to take care of ties properly so canceling
-                ;; individual events via force-rest won't work
-                (sc-force-rest2 sc (bar-num bar) (1+ (bar-pos e)) (player e)))))
+         (let ((count 0))
+           (loop with anum = (interpolate (1- (bar-num bar)) acurve)
+                 for e in (rhythms bar) do
+                   (when (and (needs-new-note e)
+                              (not (active al anum))
+                              ;; MDE Wed Jan  1 16:48:57 2020
+                              (not (is-grace-note e)))
+                     ;; note that this is a pretty inefficient way of doing
+                     ;; things but we need to take care of ties properly so
+                     ;; canceling individual events via force-rest won't work
+                     (sc-force-rest2 sc (bar-num bar) (1+ (bar-pos e))
+                                     (player e))
+                     (incf count)))
+           (when (and auto-tuplets (> count 0))
+             (auto-tuplets bar))))
      cve))
   sc)
            

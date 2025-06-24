@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:32:44 Thu Jun 19 2025 CEST
+;;; $$ Last modified:  17:48:02 Fri Jun 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5622,10 +5622,9 @@ collect (midi-channel (pitch-or-chord p))))
     (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
+;;;  MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
 ;;; the problem of how many flags we need (and therefore, for Lilypond, what
 ;;; the letter-value slot should be). 
-;; ;(on-fail #'warn))
 (defmethod fix-nested-tuplets ((rsb rthm-seq-bar) &optional on-fail)
   (flet ((compound-tuplet (r)
            ;; we know when we have a triplet that the duration is 2/3 of the
@@ -5633,11 +5632,11 @@ collect (midi-channel (pitch-or-chord p))))
            ;; rhythm is and found what the total duration scaler will be. NB we
            ;; have the tuplet
            (loop with result = 1 with pos = (bar-pos r)
-              for ts in (tuplets rsb) do
-                (when (and (>= pos (second ts))
-                           (<= pos (third ts)))
-                  (setf result (* result (get-tuplet-ratio (first ts)))))
-              finally (return result)))
+                 for ts in (tuplets rsb) do
+                   (when (and (>= pos (second ts))
+                              (<= pos (third ts)))
+                     (setf result (* result (get-tuplet-ratio (first ts)))))
+                 finally (return result)))
          ;; MDE Mon Nov 19 10:56:48 2018 -- this is a very specific situation:
          ;; when we need e.g. an h. under a 6:7 tuplet, the duration becomes 3.5
          ;; (3*7/6) which in handling rqq rhythms can end up being turned into
@@ -5646,37 +5645,42 @@ collect (midi-channel (pitch-or-chord p))))
            (when (and (= 7/6 (tuplet-scaler r))
                       (= 2 (num-dots r)))
              (setf (num-dots r) 1)))
-         (lv (r tup) ; fix letter-value
+         (lv (r tup)                    ; fix letter-value
            (setf (letter-value r) (round (* (undotted-value r) tup))
                  (num-flags r) (rthm-num-flags (letter-value r)))))
     ;;    (format t "~&lv: data ~a lv ~a"  (data r) (letter-value r))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
-         (setf (tuplet-scaler r) ct)
-       ;; MDE Mon Nov 19 11:00:49 2018
-         (too-many-dots r)
-         (lv r ct)
-         ;; (print r)
-         (unless (power-of-2 (letter-value r))
-           ;; dots--esp. those added automatically--might screw things up,
-           ;; e.g. rhythms like 70/3 might result in a letter-value of 24 which
-           ;; is not representable in Lilypond. In that case we probably have
-           ;; added a dot somewhere so remove it.
-           (setf (num-dots r) 0
-                 (undotted-value r) (value r))
-           (lv r ct)
-           ;; still not got it so force it 
-           (unless (power-of-2 (letter-value r))
-             (when on-fail
-               (when (eq on-fail t)
-                 (setq on-fail #'error))
-               (funcall on-fail
-                        "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~
+      ;; (print ct)
+      ;; MDE Fri Jun 20 17:46:04 2025, Heidhausen -- only change when there's no
+      ;; nesting (i.e. ct = 1). We just had setf before, without the unless :/
+      ;; and this was e.g. getting rid of all the nice 2/3 tuplet scalers by
+      ;; simple tripets, and therefore making auto-tuplets useless
+      (unless (= 1 ct) (setf (tuplet-scaler r) ct))
+      ;; MDE Mon Nov 19 11:00:49 2018
+      (too-many-dots r)
+      (lv r ct)
+      ;; (print r)
+      (unless (power-of-2 (letter-value r))
+        ;; dots--esp. those added automatically--might screw things up,
+        ;; e.g. rhythms like 70/3 might result in a letter-value of 24 which
+        ;; is not representable in Lilypond. In that case we probably have
+        ;; added a dot somewhere so remove it.
+        (setf (num-dots r) 0
+              (undotted-value r) (value r))
+        (lv r ct)
+        ;; still not got it so force it 
+        (unless (power-of-2 (letter-value r))
+          (when on-fail
+            (when (eq on-fail t)
+              (setq on-fail #'error))
+            (funcall on-fail
+                     "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~
                          ~%~a Did you forget to add the tuplet number via ~
                          e.g. { 5 ... ?"
-                        rsb r))
-             ;; for the sake of the chop method we'll still have to force
-             ;; something for cases of e.g. 3/16 bars
-             (setf (letter-value r) (nearest-power-of-2 (value r))))))
+                     rsb r))
+          ;; for the sake of the chop method we'll still have to force
+          ;; something for cases of e.g. 3/16 bars
+          (setf (letter-value r) (nearest-power-of-2 (value r))))))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5781,8 +5785,9 @@ collect (midi-channel (pitch-or-chord p))))
       ;; doesn't matter what's in the list as all elements will be replaced.
       (setf rthms (ml nil replace-num-rhythms)))
     (setf rthms (remove-elements rthms nth (min replace-num-rhythms
-                                                (- (length rthms) nth )))
+                                                (- (length rthms) nth)))
           rthms (splice new-rhythms rthms nth))
+    ;; (print rthms)
     ;; MDE Thu Jun 19 14:24:56 2025, Heidhausen -- copy pitches
     (when (and keep-pitches (every #'event-p (rhythms rsb)))
       (setq rthms (mapcar #'(lambda (r) (clone-with-new-class r 'event))
@@ -5888,6 +5893,13 @@ collect (midi-channel (pitch-or-chord p))))
                      smallest diff)
                (return)))
       (values event nth))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod get-pitch-indices ((rsb rthm-seq-bar))
+  (loop for r in (rhythms rsb)
+        for i from 0
+        unless (is-rest r) collect i))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq-bar/invert

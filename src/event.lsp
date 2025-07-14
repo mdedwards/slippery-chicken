@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:46:56 Sat Jun  7 2025 CEST
+;;; $$ Last modified:  14:55:48 Mon Jul 14 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4657,6 +4657,11 @@ T
             (bar-num e) bar-num
             ;; 24.3.11 if we directly setf amp then we add a mark
             (slot-value e 'amplitude) amplitude)
+      ;; MDE Mon Jul 14 14:47:18 2025, Heidhausen -- if we've passed a duration
+      ;; in seconds, use this for the durations in-tempo also: nothing else
+      ;; would really make sense, right?
+      (when duration
+        (setf (duration-in-tempo e) rthm))
       ;; MDE Sat Apr 20 15:16:22 2013
       (when (and written (not transposition))
         (error "~a~&event::make-event: need a :transposition when :written T."

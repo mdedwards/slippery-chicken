@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:13:45 Sat Jun  7 2025 CEST
+;;; $$ Last modified:  14:58:42 Mon Jul 14 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1427,7 +1427,7 @@
 (sc-deftest test-rhythm-make-rhythm ()
   (let ((r1 (make-rhythm 16))
         (r2 (make-rhythm 8 :is-rest t :is-tied-to t))
-        (r3 (make-rhythm .23 :duration t))
+        (r3 (make-event nil .23 :duration t))
         (r4 (make-rhythm 'b)) ; brevis
         (r5 (make-rhythm 'l)) ; longa
         (r6 (make-rhythm 'm))) ; maxima
@@ -1452,6 +1452,12 @@
       (is-rest r2)
       (is-tied-to r2)
       (= (duration r2) .5)
+      ;; MDE Mon Jul 14 14:50:48 2025, Heidhausen
+      ;; (setq r3 (clone-with-new-class r3 'event))
+      (equal-within-tolerance 0.23 (duration r3))
+      (equal-within-tolerance 0.23 (duration-in-tempo r3))
+      (equal-within-tolerance 0.23 (compound-duration-in-tempo r3))
+      (equal-within-tolerance 0.23 (compound-duration r3))
       (rhythm-p r3)
       (= (duration r3) .23))))
 

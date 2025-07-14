@@ -17,7 +17,11 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
+<<<<<<< HEAD
 ;;; $$ Last modified:  14:58:42 Mon Jul 14 2025 CEST
+=======
+;;; $$ Last modified:  14:52:24 Tue Jun 24 2025 CEST
+>>>>>>> 6b43ac797c040cb82792b12689b129e79413b9f2
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -424,6 +428,47 @@
       (setf rr (remove-rhythms rsb4 8 3))
       (= 7 (length rr))
       (equalp '(s e s te te te q) (get-rhythm-symbols rsb4))
+      )))
+
+;;; MDE Thu Jun 19 14:44:04 2025, Heidhausen 
+(sc-deftest test-rsb-replace-rhythms-with-pitches ()
+  (let* ((mini
+           (make-slippery-chicken
+            '+mini+
+            :ensemble '(((vn (violin :midi-channel 1))))
+            :set-palette '((1 ((gs4 a bf))))
+            :set-map '((1 (1 1 1)))
+            :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e - - e e -))
+                                    :pitch-seq-palette ((1 2 1 2 3 1 1 4)))))
+            :rthm-seq-map '((1 ((vn (1 1 1)))))))
+         (rsb (get-bar mini 1 'vn)))
+    (sc-test-check
+      (print (get-pitch-symbols rsb))
+      (replace-rhythms rsb 4 nil '(s s tq tq tq) nil t)
+      (equalp (print (get-pitch-symbols rsb)) '(gs4 a4 gs4 a4 bf4 gs4 gs4 bf4))
+      (equalp (get-rhythm-symbols rsb) '(e e e s s tq tq tq))
+      (replace-rhythms rsb 6 nil '(s s s s te te te) nil t)
+      ;; last pitch reused:
+      (equalp (print (get-pitch-symbols rsb))
+              '(gs4 a4 gs4 a4 bf4 gs4 gs4 bf4 bf4 bf4 bf4 bf4))
+      (equalp (get-rhythm-symbols rsb) '(e e e s s s s s s te te te))
+      (setq mini
+            (make-slippery-chicken
+            '+mini+
+            :ensemble '(((vn (violin :midi-channel 1))))
+            :set-palette '((1 ((gs4 a bf))))
+            :set-map '((1 (1 1 1)))
+            :rthm-seq-palette '((1 ((((4 4) - (q.) e - - e e - - e e -))
+                                    :pitch-seq-palette ((1 2 3 1 4)))))
+            :rthm-seq-map '((1 ((vn (1 1 1))))))
+            rsb (get-bar mini 1 'vn))
+      (equalp '(NIL GS4 A4 BF4 GS4 BF4)
+              (print (get-pitch-symbols rsb)))
+      (replace-rhythms rsb 1 2 '(s s e q) nil '(1 3))
+      ;; so the first pitch now becomes gs4 instead of nil
+      (equalp (print (get-pitch-symbols rsb))
+              '(GS4 NIL A4 NIL A4 BF4 GS4 BF4))
+      (equalp (get-rhythm-symbols rsb) '(s s e q e e e e))
       )))
 
 ;;; 12.12.11 SAR
@@ -964,7 +1009,8 @@
   (let ((b1 (make-rthm-seq-bar '((4 4) { 3 tq tq 18 18 18 } h )))
         (b2 (make-rthm-seq-bar '((4 4) { 3 ts ts ts } e h.)))
         (b3 (make-rthm-seq-bar '((4 4) { 6 ts x 6 } q { 5 fe x 5 })))
-        (b4 (make-rthm-seq-bar '((4 4) { 5 fe x 5 } { 6 ts x 6 } q))))
+        (b4 (make-rthm-seq-bar '((4 4) { 5 fe x 5 } { 6 ts x 6 } q)))
+        (b5 (make-rthm-seq-bar '((3 4) q te te te s s e))))
     (flet ((recreate-test (rsb)
              (let ((tups (copy-list (tuplets rsb))))
                (equalp tups (recreate-tuplets rsb)))))
@@ -992,7 +1038,16 @@
         (auto-tuplets b3)
         (equalp '((3 0 2) (3 3 5) (5 7 11)) (tuplets b3))
         (auto-tuplets b4)
-        (equalp '((5 0 4) (3 5 7) (3 8 10)) (tuplets b4))))))
+        (equalp '((5 0 4) (3 5 7) (3 8 10)) (tuplets b4))
+        ;; this has to work even with a bar where no tuplets were indicated via
+        ;; e.g. { 3 }  it now does since 
+        (auto-tuplets b5)
+        (equalp '((3 1 3)) (tuplets b5))
+        (not (bracket (first (rhythms b5))))
+        (equalp '((1 3)) (bracket (second (rhythms b5))))
+        (equalp '(-1) (bracket (third (rhythms b5))))
+        (equalp '(1) (bracket (fourth (rhythms b5))))
+        (every #'not (mapcar #'bracket (nthcdr 4 (rhythms b5))))))))
 
 ;;; SAR Sun May 20 16:02:01 EDT 2012
 (sc-deftest test-rsb-check-tuplets ()
@@ -4188,20 +4243,20 @@
 ;;; specific instruments work?
 (sc-deftest test-instrument-pitch-seq ()
   (let ((mini
-         (make-slippery-chicken
-          '+mini+
-          :ensemble '(((vn (violin :midi-channel 1))
-                       (va (viola :midi-channel 2))
-                       (vc (cello :midi-channel 3))))
-          :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5)))) 
-          :set-map '((1 (1 1 1 1 1)))
-          :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
-                                  :pitch-seq-palette (((1 2 3) violin)
-                                                      (3 1 2)
-                                                      ((3 2 1) viola)))))
-          :rthm-seq-map '((1 ((vn (1 1 1 1 1))
-                              (va (1 1 1 1 1))
-                              (vc (1 1 1 1 1))))))))
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((vn (violin :midi-channel 1))
+                        (va (viola :midi-channel 2))
+                        (vc (cello :midi-channel 3))))
+           :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5)))) 
+           :set-map '((1 (1 1 1 1 1)))
+           :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                   :pitch-seq-palette (((1 2 3) violin)
+                                                       (3 1 2)
+                                                       ((3 2 1) viola)))))
+           :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                               (va (1 1 1 1 1))
+                               (vc (1 1 1 1 1))))))))
     (sc-test-check
       ;; (cmn-display mini)
       ;; violin (instrument, not player!) gets 1 2 3
@@ -4214,7 +4269,15 @@
       ;; 1 2
       (equalp '(as4 NIL fs4 NIL gs4) (get-pitch-symbols (get-bar mini 2 'vc)))
       (equalp '(as4 NIL fs4 NIL gs4) (get-pitch-symbols
-                                      (get-bar mini 3 'vc))))))
+                                      (get-bar mini 3 'vc)))
+      ;; MDE Tue Jun 10 14:52:05 2025, Heidhausen
+      (swap-events mini 'vn 'vc 2 4)
+      (eq 'gs3 (get-pitch-symbol (get-note mini 2 1 'vc)))
+      (eq 'as4 (get-pitch-symbol (get-note mini 4 1 'vn)))
+      (eq 'vc (player (get-note mini 3 1 'vc)))
+      (eq 'vn (player (get-note mini 2 1 'vn)))
+      (equalp '(1 vn) (player-section-ref (get-bar mini 3 'vn)))
+      (setf (title mini) "swap test"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; instrument tests
@@ -12985,6 +13048,7 @@
         (= 52 (num-bars sc))  ; because (4 7 19 40) means 13 bars starting at 40
         (not (set-difference (players sc)
                              '(pno vln two fl cl hn tp vn vc cl hn vc)))
+        (equalp '(2 25 27 40) (rehearsal-letters sc))
         (compare-first-notes 25 'pno sc1 10)
         (compare-first-notes 33 'vln sc1 18)
         (compare-first-notes 27 'vc sc3 2)
@@ -16202,7 +16266,7 @@
     ;; (= 61 (print (length (cm::parse-midi-file "/tmp/msp-gmchs.mid"))))))
     (< 100 (length (cm::parse-midi-file "/tmp/msp-gmchs.mid")))))
 
-;;; MDE Thu Nov 10 10:40:05 2016  
+;;; MDE Thu Nov 10 10:40:05 2016 
 (sc-deftest test-midi-file-to-events ()
   (let* ((f1 (concatenate 'string 
                           cl-user::+slippery-chicken-home-dir+
@@ -21519,8 +21583,9 @@ est)")))
               ;; RP  Sun Mar  5 15:08:26 2023
               ;; just test csound-play when Csound is
               ;; available on the system
+              ;; LF 2025-06-18 - removed probe-file
               (sc-test-check
-                (if (probe-file (get-sc-config 'csound-command))
+                (if (get-sc-config 'csound-command)
                     (csound-play mini
                                  '(pno vln)
                                  '(1 2)

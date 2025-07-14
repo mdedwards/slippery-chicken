@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:16:39 Mon Jun  9 2025 CEST
+;;; $$ Last modified:  15:30:00 Tue Jun 24 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4626,6 +4626,56 @@ NIL
                  consolidate-rests))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/swap-events
+;;; DATE
+;;; June 10th 2025
+;;; 
+;;; DESCRIPTION
+;;; Move/swap the events from one part to the other and vice-versa.
+;;; 
+;;; NB does not check that pitches are in range! Call force-in-range afterwards
+;;; if necessary/applicable. Also, in case this method is to be called mulitple
+;;; times, it does not call update-slots or update-instrument-slots
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken obje ct
+;;; - the first player to swap from/to (symbol)
+;;; - the second player to swap from/to (symbol)
+;;; - the start bar number (inclusive)
+;;; - the end bar number (inclusive)
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defmethod swap-events ((sc slippery-chicken) player1 player2 start-bar
+                        end-bar)
+;;; ****
+  (let* ((p1 (get-player sc player1))
+         (p2 (get-player sc player2))
+         (mc1 (midi-channel p1))
+         (mc2 (midi-channel p2))
+         (mmc1 (microtones-midi-channel p1))
+         (mmc2 (microtones-midi-channel p2)))
+    (loop for bar-num from start-bar to end-bar
+          for p1bar = (get-bar sc bar-num player1)
+          for p2bar = (get-bar sc bar-num player2)
+          for p1bar-clone = (clone p1bar)
+          do
+             (setf (rhythms p1bar)      ; (rhythms p2bar)
+                   ;; tuplets, beams
+                   (mapcar #'(lambda (e) (setf (player e) player1) e)
+                           (rhythms p2bar))
+                   (rhythms p2bar)
+                   (mapcar #'(lambda (e) (setf (player e) player2) e)
+                           (rhythms p1bar-clone))
+                   (tuplets p1bar) (tuplets p2bar)
+                   (tuplets p2bar) (tuplets p1bar-clone))
+             (set-midi-channel p1bar mc1 mmc1)
+             (set-midi-channel p2bar mc2 mmc2))
+    t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; post-gen-editing method
 
 ;;; SAR Fri Apr 20 13:58:23 BST 2012: Added robodoc entry
@@ -4960,7 +5010,7 @@ NIL
 ;;; ****m* slippery-chicken-edit/sc-force-rest2
 ;;; DESCRIPTION
 ;;; Turn events into rests, doing the same with any following tied events.  
-
+;;; 
 ;;; NB As it is foreseen that this method may be called many times iteratively,
 ;;; there is no call to check-ties, auto-beam, consolidate-rests, or
 ;;; update-instrument-slots (for statistics)--it is advised that these methods
@@ -5741,6 +5791,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; is deterministic, not random/stochastic). This turns existing notes into
 ;;; rests. As this is an expensive method but may be called more than once, it
 ;;; is up to the user to call consolidate-rests and/or update-slots when ready.
+;;; NB See note to :auto-tuplets below re. potential problems.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the (fully-initialised) slippery-chicken object
@@ -5758,32 +5809,45 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;;   avoided via the next argument. Default = '(0 1 100 10)
 ;;; - :rescale-curve. Whether to process the x-values of :curve to range over 
 ;;;   the number of bars in the piece. Default = T = rescale.
+;;; -:auto-tuplets. T or NIL to indicate whether auto-tuplets should be called
+;;;   when thinning a bar is finished. Bear in mind that tuplet data can become
+;;;   corrupted during this method, as individual events initially reference
+;;;   existing tuplet bracket data, but when these are forced to rests (and
+;;;   especially when they're consolidated into longer rests) these may no
+;;;   longer exist. So if e.g. generated music-xml files have extra beats in
+;;;   bars, try setting :auto-tuplets T and all may be well again. Default =
+;;;   NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; - the processed slippery-chicken object
 ;;; 
 ;;; SYNOPSIS
 (defmethod thin ((sc slippery-chicken) &key start-bar end-bar players
-                                         (curve '(0 1 100 10))
-                                         (rescale-curve t))
+                                       (curve '(0 1 100 10)) auto-tuplets
+                                       (rescale-curve t))
 ;;; **** 
   (let* ((al (make-al))
          (cve (if rescale-curve
-                  (new-lastx curve (1- (num-bars sc)))
-                  curve)))
+                (new-lastx curve (1- (num-bars sc)))
+                curve)))
     (map-over-bars
      sc start-bar end-bar players
      #'(lambda (bar acurve)
-         (loop with anum = (interpolate (1- (bar-num bar)) acurve)
-            for e in (rhythms bar) do
-              (when (and (needs-new-note e)
-                         (not (active al anum))
-                         ;; MDE Wed Jan  1 16:48:57 2020
-                         (not (is-grace-note e)))
-                ;; note that this is a pretty inefficient way of doing things
-                ;; but we need to take care of ties properly so canceling
-                ;; individual events via force-rest won't work
-                (sc-force-rest2 sc (bar-num bar) (1+ (bar-pos e)) (player e)))))
+         (let ((count 0))
+           (loop with anum = (interpolate (1- (bar-num bar)) acurve)
+                 for e in (rhythms bar) do
+                   (when (and (needs-new-note e)
+                              (not (active al anum))
+                              ;; MDE Wed Jan  1 16:48:57 2020
+                              (not (is-grace-note e)))
+                     ;; note that this is a pretty inefficient way of doing
+                     ;; things but we need to take care of ties properly so
+                     ;; canceling individual events via force-rest won't work
+                     (sc-force-rest2 sc (bar-num bar) (1+ (bar-pos e))
+                                     (player e))
+                     (incf count)))
+           (when (and auto-tuplets (> count 0))
+             (auto-tuplets bar))))
      cve))
   sc)
            
@@ -7955,6 +8019,9 @@ NIL
         (if (and full (> used 0))
           (progn 
             (setq s-events (nthcdr used s-events))
+            ;; we might have used up some events but they might all be rests
+            (when (all-rests? bar)
+              (force-rest-bar bar))
             (when verbose
               (format t "~&Added ~a events to bar ~a" used bar-num)))
           (progn
@@ -7985,7 +8052,7 @@ NIL
                          (let ((tc (get-tempo-for-map e)))
                            (when tc
                              (unless (and tempo1 (= 1 (first tc)))
-                               (push tc result))))))
+                               (pushnew tc result :test #'equalp))))))
     (setq result (reverse result))
     ;; (print result)
     ;; whether we got a tempo in bar 1 or not, if tempo1 is given, we used that
@@ -7996,6 +8063,36 @@ NIL
                       (list 'q tempo1)))
               result))
     result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/set-tempo
+;;; DATE
+;;; June 14th 2025
+;;; 
+;;; DESCRIPTION
+;;; Change the tempo at a given bar. If the optional argument is non nil, then
+;;; the 2nd argument is interpreted as a scaler for the existing tempo markings.
+;;; 
+;;; ARGUMENTS
+;;; - a slippery-chicken object
+;;; - a tempo object or BPM number; if the latter then a beat-value of quarter
+;;;   notes will be assumed.
+;;; - the bar number for the change (on the first event). Mid-bar changes upon
+;;;   request :)
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to use the 2nd argument as a scaler instead of a BPM.
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; SYNOPSIS
+(defmethod set-tempo ((sc slippery-chicken) tempo bar-num &optional scaler warn)
+  (loop with tpo = (make-tempo tempo)
+        for bar in (get-bar sc bar-num) ; all players of course
+        do
+           (if scaler
+             (scale-tempo bar tempo warn)
+             (add-tempo bar tempo))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -8170,6 +8267,7 @@ NIL
     (check-tuplets sc)
     (check-beams sc)
     sc))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; if you just want an sc-combine map to splice one range of bars after
@@ -8247,6 +8345,10 @@ NIL
 ;;;   +slippery-chicken-standard-instrument-palette+
 ;;; - :rest-time-sig. The time signature to be used when creating rest bars
 ;;;   where no instrument is in play.
+;;; - :add-rehearsal-letters. T or NIL to indicated whether rehearsal letters
+;;;   should be placed at every point in the map, i.e. for every copy
+;;;   procedure. NB in any case, existing rehearsal-letters will not be copied
+;;;   over from the sc-objects in the 2nd arguments. Default = T.
 ;;; - :follow-on. T or NIL or a number to indicate that bar ranges should just
 ;;;   be appended after each other (see above). If a number is given, this will
 ;;;   be the start-bar in the result. Default = NIL.
@@ -8258,6 +8360,7 @@ NIL
 (defun sc-combine (map sc-objects
                    &key (max-bars 1000) (max-players 50)
                    (new-sc-name '*sc-combine*)
+                   (add-rehearsal-letters t)
                    follow-on
                    (instrument-palette 
                     +slippery-chicken-standard-instrument-palette+)
@@ -8273,6 +8376,8 @@ NIL
          ;; sim. for the instruments (symbols) they play
          (all-instruments '())
          (player-count 0)
+         ;; the start bars in the result i.e. fourth elements in the maps
+         (rsbs '()) 
          (default-rest-bar (make-rest-bar rest-time-sig))
          (result-first-bar-num 999999)
          (bars '())
@@ -8285,6 +8390,7 @@ NIL
           for result-start-bar = (fourth mapping)
           for players = (nthcdr 4 mapping)
           do
+             (unless (= 1 result-start-bar) (push result-start-bar rsbs))
              ;; i.e. unless players are listed in this mapping, all wil be used
              (unless players (setq players (players sc)))
              ;; allow the use of nil as an end bar (runs to end of piece then)
@@ -8386,7 +8492,9 @@ NIL
         (setf (tempo-map result) tm)
         (update-slots result)))
     ;; do this otherwise scores are unhappy and don't display meter changes:
-    (set-write-time-sig result) 
+    (set-write-time-sig result)
+    (when add-rehearsal-letters
+      (setf (rehearsal-letters result) (sort rsbs #'<)))
     (change-bar-line-type result (num-bars result) 2) ; add the final double bar
     result))
 

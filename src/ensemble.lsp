@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:28:59 Thu May 15 2025 CEST
+;;; $$ Last modified:  14:21:16 Tue Jun 10 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -587,11 +587,11 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; 
 ;;; SYNOPSIS
 (defmethod balanced-load? ((e ensemble) &key (threshold .8) 
-                                             (stats-fun #'total-duration)
-                                             ignore)
+                                        (stats-fun #'total-duration)
+                                        ignore)
 ;;; ****
   (let ((stats (nth-value 1 (sort-players e :stats-fun stats-fun
-                                          :ignore ignore))))
+                                            :ignore ignore))))
     (>= (first (last stats)) (* threshold (first stats)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

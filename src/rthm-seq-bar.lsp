@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:10:34 Thu May 29 2025 CEST
+;;; $$ Last modified:  17:48:02 Fri Jun 20 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,7 +105,9 @@
    ;; 0-based. 
    ;; (score-tuplets :accessor score-tuplets :type list :initform nil)
    ;; the above is for SCORE (long defunct, sadly), the following for CMN (see
-   ;; parse-rhythms)  
+   ;; parse-rhythms). Each sublist represents a tuplet bracket and has 3
+   ;; elements: the tuplet number, the 0-based index for where it starts, and
+   ;; where it ends 
    (tuplets :accessor tuplets :type list :initform nil)
    ;; In SCORE, how far to extend tuplet brackets when it's over a rest at
    ;; either end.  
@@ -1693,8 +1695,11 @@ data: ((2 4) - S S - S - S S S - S S)
          for tuplet in (tuplets rsb)
          for st = (second tuplet)
          for nd = (third tuplet) do
-           (when (or (< st 0) (< nd 0) (> st max) (> nd max))
-             (damn "tuplets slot contains out-of-bounds indices")))
+           (when (or (< st 0) (< nd 0) (> st max) (> nd max)
+                     ;; MDE Wed Jun 18 16:45:18 2025, Heidhausen
+                     (<= nd st))
+             (damn (format nil "tuplets slot contains bad indices: ~a"
+                           tuplet))))
       ;; now if the above loop didn't fail, check individual rthms
       (when result 
         (loop for r in (rhythms rsb) do
@@ -1756,27 +1761,29 @@ data: ((2 4) - S S - S - S S S - S S)
 (defmethod auto-tuplets ((rsb rthm-seq-bar) &optional (on-fail #'error))
 ;;; ****
   (delete-tuplets rsb)
-  (loop with bag with tuplet with start with dur = 0.0
-     for r in (rhythms rsb) 
-     for count from 0
-     do
-       (unless bag
-         (setf start count))
-       (push r bag)
-       (incf dur (duration r))
-     ;; these tests avoid placing tuplets at arbitrary points in the bar
-     ;; e.g. after an opening 32nd
-       ;; (print dur)
-       (when (or (float-int-p dur 0.00001)
-                 (float-int-p (* 2.0 dur) 0.00001) ; i.e. 0.5
-                 ;; MDE Wed Sep 23 16:37:37 2020, Heidhausen
-                 (float-int-p (* 4.0 dur) 0.00001)) ; i.e. 0.25 or 0.75
-         (when (and (/= 1 (tuplet-scaler (first bag)))
-                    (/= 1 (tuplet-scaler (first (last bag)))))
-           (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
-           (add-tuplet-bracket rsb (list tuplet start count))
-           (setf tuplet nil))
-         (setf bag nil)))
+  (unless (is-rest-bar rsb)          ; MDE Wed Jun 18 16:50:00 2025, Heidhausen
+    (loop with bag with tuplet with start with dur = 0.0
+          for r in (rhythms rsb) 
+          for count from 0
+          do
+             (unless bag
+               (setf start count))
+             (push r bag)
+             (incf dur (duration r))
+             ;; these tests avoid placing tuplets at arbitrary points in the bar
+             ;; e.g. after an opening 32nd (print dur)
+             (when (or (float-int-p dur 0.00001)
+                       (float-int-p (* 2.0 dur) 0.00001) ; i.e. 0.5
+                       ;; MDE Wed Sep 23 16:37:37 2020, Heidhausen
+                       (float-int-p (* 4.0 dur) 0.00001)) ; i.e. 0.25 or 0.75
+               (when (and (/= 1 (tuplet-scaler (first bag)))
+                          (/= 1 (tuplet-scaler (first (last bag))))
+                          ;; MDE Wed Jun 18 17:17:10 2025, Heidhausen
+                          (/= start count))
+                 (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
+                 (add-tuplet-bracket rsb (list tuplet start count))
+                 (setf tuplet nil))
+               (setf bag nil))))
   ;; MDE Wed Sep 23 18:01:59 2020, Heidhausen -- return rsb also
   (values (check-tuplets rsb on-fail) rsb))
          
@@ -5615,10 +5622,9 @@ collect (midi-channel (pitch-or-chord p))))
     (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
+;;;  MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
 ;;; the problem of how many flags we need (and therefore, for Lilypond, what
 ;;; the letter-value slot should be). 
-;; ;(on-fail #'warn))
 (defmethod fix-nested-tuplets ((rsb rthm-seq-bar) &optional on-fail)
   (flet ((compound-tuplet (r)
            ;; we know when we have a triplet that the duration is 2/3 of the
@@ -5626,11 +5632,11 @@ collect (midi-channel (pitch-or-chord p))))
            ;; rhythm is and found what the total duration scaler will be. NB we
            ;; have the tuplet
            (loop with result = 1 with pos = (bar-pos r)
-              for ts in (tuplets rsb) do
-                (when (and (>= pos (second ts))
-                           (<= pos (third ts)))
-                  (setf result (* result (get-tuplet-ratio (first ts)))))
-              finally (return result)))
+                 for ts in (tuplets rsb) do
+                   (when (and (>= pos (second ts))
+                              (<= pos (third ts)))
+                     (setf result (* result (get-tuplet-ratio (first ts)))))
+                 finally (return result)))
          ;; MDE Mon Nov 19 10:56:48 2018 -- this is a very specific situation:
          ;; when we need e.g. an h. under a 6:7 tuplet, the duration becomes 3.5
          ;; (3*7/6) which in handling rqq rhythms can end up being turned into
@@ -5639,37 +5645,42 @@ collect (midi-channel (pitch-or-chord p))))
            (when (and (= 7/6 (tuplet-scaler r))
                       (= 2 (num-dots r)))
              (setf (num-dots r) 1)))
-         (lv (r tup) ; fix letter-value
+         (lv (r tup)                    ; fix letter-value
            (setf (letter-value r) (round (* (undotted-value r) tup))
                  (num-flags r) (rthm-num-flags (letter-value r)))))
     ;;    (format t "~&lv: data ~a lv ~a"  (data r) (letter-value r))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
-         (setf (tuplet-scaler r) ct)
-       ;; MDE Mon Nov 19 11:00:49 2018
-         (too-many-dots r)
-         (lv r ct)
-         ;; (print r)
-         (unless (power-of-2 (letter-value r))
-           ;; dots--esp. those added automatically--might screw things up,
-           ;; e.g. rhythms like 70/3 might result in a letter-value of 24 which
-           ;; is not representable in Lilypond. In that case we probably have
-           ;; added a dot somewhere so remove it.
-           (setf (num-dots r) 0
-                 (undotted-value r) (value r))
-           (lv r ct)
-           ;; still not got it so force it 
-           (unless (power-of-2 (letter-value r))
-             (when on-fail
-               (when (eq on-fail t)
-                 (setq on-fail #'error))
-               (funcall on-fail
-                        "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~
+      ;; (print ct)
+      ;; MDE Fri Jun 20 17:46:04 2025, Heidhausen -- only change when there's no
+      ;; nesting (i.e. ct = 1). We just had setf before, without the unless :/
+      ;; and this was e.g. getting rid of all the nice 2/3 tuplet scalers by
+      ;; simple tripets, and therefore making auto-tuplets useless
+      (unless (= 1 ct) (setf (tuplet-scaler r) ct))
+      ;; MDE Mon Nov 19 11:00:49 2018
+      (too-many-dots r)
+      (lv r ct)
+      ;; (print r)
+      (unless (power-of-2 (letter-value r))
+        ;; dots--esp. those added automatically--might screw things up,
+        ;; e.g. rhythms like 70/3 might result in a letter-value of 24 which
+        ;; is not representable in Lilypond. In that case we probably have
+        ;; added a dot somewhere so remove it.
+        (setf (num-dots r) 0
+              (undotted-value r) (value r))
+        (lv r ct)
+        ;; still not got it so force it 
+        (unless (power-of-2 (letter-value r))
+          (when on-fail
+            (when (eq on-fail t)
+              (setq on-fail #'error))
+            (funcall on-fail
+                     "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~
                          ~%~a Did you forget to add the tuplet number via ~
                          e.g. { 5 ... ?"
-                        rsb r))
-             ;; for the sake of the chop method we'll still have to force
-             ;; something for cases of e.g. 3/16 bars
-             (setf (letter-value r) (nearest-power-of-2 (value r))))))
+                     rsb r))
+          ;; for the sake of the chop method we'll still have to force
+          ;; something for cases of e.g. 3/16 bars
+          (setf (letter-value r) (nearest-power-of-2 (value r))))))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5721,12 +5732,20 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; ARGUMENTS
 ;;; - a rthm-seq-bar object
 ;;; - the index (1-based) of the rhythm/events to start at (integer)
-;;; - the number of rhythms/events to replace (integer)
+;;; - the number of rhythms/events to replace (integer). If NIL this will be set
+;;;   to the length of the new rhythms (next argument)
 ;;; - a list of the new rhythm/event objects
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether the automatic beaming routine should be called
-;;; after the replacement
+;;; - T or NIL to indicate whether the automatic beaming routine should be
+;;;   called after the replacement
+;;; - T or nil to indicate whether pitches should be retain if the bar contains
+;;;   events as opposed to just rhythm objects. If the bar will have more
+;;;   rhythms after this call (i.e. shorter rhythms passed) then the last pitch
+;;;   in the original will be used to set the pitch of the remaining new events.
+;;;   Or this can be a list of 1-based indices of the new rhythms: each of these
+;;;   will be set to the pitches of the original bar, starting at its first
+;;;   pitch and moving through from there
 ;;; 
 ;;; RETURN VALUE
 ;;; What the is-full method returns: two values: T or NIL to indicate whether
@@ -5735,8 +5754,18 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; 
 ;;; SYNOPSIS
 (defmethod replace-rhythms ((rsb rthm-seq-bar) start-rhythm replace-num-rhythms
-                            new-rhythms &optional auto-beam)
+                            new-rhythms &optional auto-beam keep-pitches)
 ;;; ****
+  (unless replace-num-rhythms (setq replace-num-rhythms (length new-rhythms)))
+  (setq new-rhythms
+        (loop for r in new-rhythms
+              collect
+              (typecase r
+                ((or rhythm event) r)
+                (symbol (make-rhythm r))
+                (t (error "rthm-seq-bar::replace-rhythms: new-rhythms should ~
+                           be a list of ~%rhythm or event objects or rhythm ~
+                           symbols: ~a" r)))))
   (let* ((rthms (my-copy-list (rhythms rsb)))
          (nth (1- start-rhythm)))
     ;; those events that were previously start or end points for brackets may
@@ -5747,12 +5776,48 @@ collect (midi-channel (pitch-or-chord p))))
     (delete-tuplets rsb)
     (delete-beams rsb)
     ;; a rest bar has no rhythms but we may want to fill it with some so fake
-    ;; the rthms here.  
+    ;; the rthms here. In that case though we'd have to
     (unless rthms
+      (unless (= 1 start-rhythm)
+        (error "rthm-seq-bar::replace-rhythms: bar ~a is a rest bar, so all ~
+                rhythms would need to be supplied (i.e. start-rhythm must be ~
+                1" (bar-num rsb)))
       ;; doesn't matter what's in the list as all elements will be replaced.
       (setf rthms (ml nil replace-num-rhythms)))
-    (setf rthms (remove-elements rthms nth replace-num-rhythms)
+    (setf rthms (remove-elements rthms nth (min replace-num-rhythms
+                                                (- (length rthms) nth)))
           rthms (splice new-rhythms rthms nth))
+    ;; (print rthms)
+    ;; MDE Thu Jun 19 14:24:56 2025, Heidhausen -- copy pitches
+    (when (and keep-pitches (every #'event-p (rhythms rsb)))
+      (setq rthms (mapcar #'(lambda (r) (clone-with-new-class r 'event))
+                          rthms))
+      ;; list of 1-based indices of the new rhythms: each of these will be set
+      ;; to the pitches of the original bar, starting at its first pitch and
+      ;; moving through from there
+      (if (and (consp keep-pitches) (every #'integerp keep-pitches))
+        (loop for n in keep-pitches
+              for event = (nth (1- n) rthms)
+              for i from 0
+              for nrr = (get-nth-non-rest-rhythm i rsb)
+              for poc = (if nrr
+                          (clone (pitch-or-chord nrr))
+                          (error "rthm-seq-bar::replace-rhythms: no note ~
+                                  at position ~a:~%~a" i rsb))
+              do (setf (pitch-or-chord event) poc))
+        ;; just copy over using original order
+        ;; some pitches could be skipped if the new rhythms are longer than the
+        ;; original 
+        (loop with e-last for i from nth repeat replace-num-rhythms
+              for e-old = (nth i (rhythms rsb))
+              for e-new = (nth i rthms)
+              do (if e-old
+                   (setq e-new (copy-event-slots e-old e-new))
+                   ;; we've given more rhythms (shorter) than we had so use the
+                   ;; last pitch we saw
+                   (setf (pitch-or-chord e-new) (pitch-or-chord e-last)))
+                 (setf (nth i rthms) e-new)
+                 (when e-new (setq e-last e-new)))))
     ;; of course, the stats for the sequenz and whole piece are now incorrect,
     ;; but we leave that update to the user, we don't want to always call it
     ;; here.
@@ -5828,6 +5893,13 @@ collect (midi-channel (pitch-or-chord p))))
                      smallest diff)
                (return)))
       (values event nth))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod get-pitch-indices ((rsb rthm-seq-bar))
+  (loop for r in (rhythms rsb)
+        for i from 0
+        unless (is-rest r) collect i))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq-bar/invert
@@ -5934,11 +6006,20 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
            (return)))) ; rest or attacked note forces a break
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; tempo can be a tempo-object or a BPM number
 (defmethod add-tempo ((rsb rthm-seq-bar) tempo)
   (if (event-p (first (rhythms rsb)))
       (setf (tempo-change (first (rhythms rsb))) tempo)
       (error "rthm-seq-bar::add-tempo: no events in bar: ~a" rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod scale-tempo ((rsb rthm-seq-bar) scaler &optional (warn t))
+  (let* ((event1 (first (rhythms rsb)))
+         (tpo (tempo-change event1)))
+    (if (tempo-change event1)
+      (setf (tempo-change event1) (* (bpm tpo) scaler))
+      (when warn (warn "rthm-seq-bar:scale-tempo: no tempo in bar to scale: ~a"
+                       rsb)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod delete-tempi ((rsb rthm-seq-bar) &optional verbose ignore1 ignore2)
@@ -6166,7 +6247,6 @@ rsb-rb)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Sort the given rhythms into real rhythms and bracketing information for
 ;;; notation as well as expand repeated rhythms like 'e x 5' which means 5
 ;;; eighth notes.

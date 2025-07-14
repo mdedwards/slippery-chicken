@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:58:31 Mon Jun  9 2025 CEST
+;;; $$ Last modified:  21:18:39 Thu Jun 12 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -942,7 +942,13 @@
   (setf players
         (cond ((and players (listp players)) players)
               ((and players (symbolp players)) (list players))
-              (t (players (ensemble sc)))))
+              ;; MDE Thu Jun 12 21:12:40 2025, Heidhausen -- the players of the
+              ;; ensemble are in the order given at init but
+              ;; e.g. set-score-order might have changed the order of the
+              ;; players in the piece, so use that (setf players (players
+              ;; ensemble)))
+              ;; (t (players (ensemble sc)))))
+              (t (players (piece sc)))))
   (when rehearsal-letters-all-players 
     (set-rehearsal-letters sc players))
   (when tempi-all-players 
@@ -1189,6 +1195,9 @@
 ;;; Called by initialize-instance and others. Updates timings of events and
 ;;; statistics. Not generally called by the user but can be useful if
 ;;; post-generation editing has changed something fundamental to the structure.
+;;;
+;;; If you want to update the statistics for each instrument in the ensemble,
+;;; use the update-instrument-slots method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object
@@ -1717,8 +1726,6 @@ rhythms: (
 ;;; SYNOPSIS
 (defmethod get-bar ((sc slippery-chicken) bar-num &optional player)
 ;;; ****
-  ;; (unless player
-  ;; (error "bar-holder::get-bar: player argument is required!"))
   (if player
       (get-bar (piece sc) bar-num player)
       (let ((players (players (ensemble sc))))
@@ -11139,6 +11146,9 @@ data: (11 15)
 ;;; SYNOPSIS
 (defun lp-display (&rest args)
 ;;; ****
+  ;; LF 2025-06-18 - added this check
+  (unless (get-sc-config 'lilypond-command)
+    (error "slippery-chicken::lp-display: No lilypond-command found."))
   (let* ((lp-file (apply #'write-lp-data-for-all args))
          (no-ext (path-minus-extension lp-file))
          (pdf-file (concatenate 'string no-ext ".pdf"))
@@ -11930,7 +11940,8 @@ data: (11 15)
          ;; RP  Tue Mar  7 12:59:07 2023
          ;; test if Csound command is available before
          ;; trying to render the piece
-         (success (if (probe-file (get-sc-config 'csound-command))
+	 ;; LF 2025-06-18 - removed probe-file
+         (success (if (get-sc-config 'csound-command)
                       (apply #'shell
                              (append
                               (list (get-sc-config 'csound-command))

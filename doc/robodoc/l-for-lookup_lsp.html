@@ -34,14 +34,14 @@
 <a name="assoc2dlist2fl2dfor2dlookup"></a>
 <a name="robo43"></a><h2 class=robodoc>assoc-list/l-for-lookup [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./assoc-list_lsp.html#robo113">assoc-list</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./assoc-list_lsp.html#robo115">assoc-list</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>l-for-lookup</strong>
 
  File:             <strong>l-for-lookup</strong>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo113">assoc-list</a> -&gt; <strong>l-for-lookup</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo631">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo311">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo300">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo115">assoc-list</a> -&gt; <strong>l-for-lookup</strong>
 
  Version:          1.1.0
 
@@ -52,7 +52,7 @@
                    Lindenmayer).  This provides an L-System
                    function for generating sequences of numbers
                    from rules and seeds, and then using these
-                   numbers for lookups into the <a href="./assoc-list_lsp.html#robo113">assoc-list</a>.  In the
+                   numbers for lookups into the <a href="./assoc-list_lsp.html#robo115">assoc-list</a>.  In the
                    assoc list are stored groups of numbers, meant
                    to represent in the first place, for example,
                    rhythmic sequences.  The grouping could be as
@@ -64,12 +64,12 @@
                    the second to the third.  When the first group
                    is in use, then we will simple cycle around the
                    given values, similar with the other groups.
-                   The transition is based on a <a href="#robo280">fibonacci</a> algorithm
+                   The transition is based on a <a href="#robo282">fibonacci</a> algorithm
                    (see below).
 
                    The sequences are stored in the data slot. The l-sequence
                    will be a list like (3 1 1 2 1 2 2 3 1 2 2 3 2 3 3 1).
-                   These are the references into the <a href="./assoc-list_lsp.html#robo113">assoc-list</a> (the 1, 2, 3
+                   These are the references into the <a href="./assoc-list_lsp.html#robo115">assoc-list</a> (the 1, 2, 3
                    ids in the list below).
 
                    e.g. ((1 ((2 3 7) (11 16 12)))
@@ -87,7 +87,7 @@
 
 
 <a name="l2dfor2dlookup2fcount2delements"></a>
-<a name="robo276"></a><h2 class=robodoc>l-for-lookup/count-elements [ Functions ]</h2>
+<a name="robo278"></a><h2 class=robodoc>l-for-lookup/count-elements [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -114,7 +114,7 @@
 
 
 <a name="l2dfor2dlookup2fdo2dlookup"></a>
-<a name="robo277"></a><h2 class=robodoc>l-for-lookup/do-lookup [ Methods ]</h2>
+<a name="robo279"></a><h2 class=robodoc>l-for-lookup/do-lookup [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -122,9 +122,9 @@
  and use it to perform the Fibonacci-based transitioning look-up of values in
  the specified sequences.
 
- NB As this accesses the rules as circular lists whose states are not <a href="./circular-sclist_lsp.html#robo122">reset</a>
+ NB As this accesses the rules as circular lists whose states are not <a href="./circular-sclist_lsp.html#robo124">reset</a>
  before starting, you may get (desired) different results if you call the
- routine more than once. In order to avoid that call (<a href="./circular-sclist_lsp.html#robo122">reset</a> lflu) before
+ routine more than once. In order to avoid that call (<a href="./circular-sclist_lsp.html#robo124">reset</a> lflu) before
  <strong>do-lookup</strong>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -138,7 +138,7 @@
    sequence. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A number which is the <a href="./utilities_lsp.html#robo947">factor</a> by which returned numerical values are to be
+<pre> - A number which is the <a href="./utilities_lsp.html#robo956">factor</a> by which returned numerical values are to be
    scaled. If NIL, the method will use the value in the given <a href="#robo43">l-for-lookup</a>
    object's SCALER slot instead. Default = NIL. NB: The value of the given
    <a href="#robo43">l-for-lookup</a> object's OFFSET slot is additionally used to increase
@@ -155,7 +155,7 @@
 ;; the transition takes place over the 3 given lists and from x to y to z, and
 ;; apply the <strong>do-lookup</strong> method to see the results. Each time one of these lists
 ;; is accessed, it will cyclically return the next value. 
-(let ((lfl (<a href="#robo287">make-l-for-lookup</a> 
+(let ((lfl (<a href="#robo289">make-l-for-lookup</a> 
             'lfl-test
             '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
               (2 ((bx1 bx2 bx3) (by1 by2 by3 by4) (bz1 bz2 bz3 bz4 bz5)))
@@ -195,11 +195,11 @@
 
 
 <a name="l2dfor2dlookup2fdo2dlookup2dlinear"></a>
-<a name="robo278"></a><h2 class=robodoc>l-for-lookup/do-lookup-linear [ Methods ]</h2>
+<a name="robo280"></a><h2 class=robodoc>l-for-lookup/do-lookup-linear [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Similar to <a href="#robo277">do-lookup</a> but here we <a href="./wolfram_lsp.html#robo1029">generate</a> a linear sequence (with
+<pre> Similar to <a href="#robo279">do-lookup</a> but here we <a href="./wolfram_lsp.html#robo1038">generate</a> a linear sequence (with
  get-linear-sequence) instead of an L-System.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -210,13 +210,13 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :scaler. A number which is the <a href="./utilities_lsp.html#robo947">factor</a> by which returned numerical values
+ - :scaler. A number which is the <a href="./utilities_lsp.html#robo956">factor</a> by which returned numerical values
    are to be scaled. If NIL, the method will use the value in the given
    <a href="#robo43">l-for-lookup</a> object's SCALER slot instead. Default = NIL. NB: The value
    of the given <a href="#robo43">l-for-lookup</a> object's OFFSET slot is additionally used to
    increase numerical values before they are returned.  Default = NIL.
- - :<a href="./circular-sclist_lsp.html#robo122">reset</a>. T or NIL to indicate whether to <a href="./circular-sclist_lsp.html#robo122">reset</a> the pointers of the given
-   circular lists before proceeding. T = <a href="./circular-sclist_lsp.html#robo122">reset</a>. Default = T. 
+ - :<a href="./circular-sclist_lsp.html#robo124">reset</a>. T or NIL to indicate whether to <a href="./circular-sclist_lsp.html#robo124">reset</a> the pointers of the given
+   circular lists before proceeding. T = <a href="./circular-sclist_lsp.html#robo124">reset</a>. Default = T. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> This method returns three lists:
@@ -227,7 +227,7 @@
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; This will return the result of lookup, the number of repetitions of each
 ;; rule key in the result of lookup, and the linear-sequence itself.
-(let* ((tune (<a href="#robo287">make-l-for-lookup</a>
+(let* ((tune (<a href="#robo289">make-l-for-lookup</a>
               'tune
               '((1 ((2 1 8)))
                 (2 ((3 4)))
@@ -251,18 +251,18 @@
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>do-lookup-linear</strong> ((lflu l-for-lookup) seed stop
-                             &amp;key scaler (<a href="./circular-sclist_lsp.html#robo122">reset</a> t))
+                             &amp;key scaler (<a href="./circular-sclist_lsp.html#robo124">reset</a> t))
 </pre>
 
 
 <a name="l2dfor2dlookup2fdo2dsimple2dlookup"></a>
-<a name="robo279"></a><h2 class=robodoc>l-for-lookup/do-simple-lookup [ Methods ]</h2>
+<a name="robo281"></a><h2 class=robodoc>l-for-lookup/do-simple-lookup [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Performs a simple look-up procedure whereby a given reference key always
  returns a specific and single <a href="./piece_lsp.html#robo58">piece</a> of data. This is different from
- <a href="#robo277">do-lookup</a>, which performs a transitioning <a href="./utilities_lsp.html#robo925">between</a> lists and returns items
+ <a href="#robo279">do-lookup</a>, which performs a transitioning <a href="./utilities_lsp.html#robo934">between</a> lists and returns items
  from those lists in a circular manner. <strong>do-simple-lookup</strong> always returns the
  first element of the sequence list associated with a given key-ID.
 
@@ -280,7 +280,7 @@
 ;; sequences of three lists. Applying <strong>do-simple-lookup</strong> returns the first
 ;; element of each sequence based on the L-sequence of keys created by the
 ;; rules of the give <a href="#robo43">l-for-lookup</a> object.
-(let ((lfl (<a href="#robo287">make-l-for-lookup</a> 
+(let ((lfl (<a href="#robo289">make-l-for-lookup</a> 
             'lfl-test
             '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
               (2 ((bx1 bx2 bx3) (by1 by2 by3 by4) (bz1 bz2 bz3 bz4 bz5)))
@@ -302,7 +302,7 @@
 
 
 <a name="l2dfor2dlookup2ffibonacci"></a>
-<a name="robo280"></a><h2 class=robodoc>l-for-lookup/fibonacci [ Functions ]</h2>
+<a name="robo282"></a><h2 class=robodoc>l-for-lookup/fibonacci [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -351,7 +351,7 @@
 
 
 <a name="l2dfor2dlookup2ffibonacci2ddivide"></a>
-<a name="robo281"></a><h2 class=robodoc>l-for-lookup/fibonacci-divide [ Functions ]</h2>
+<a name="robo283"></a><h2 class=robodoc>l-for-lookup/fibonacci-divide [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
@@ -370,7 +370,7 @@
 <pre> - an integer
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL: whether to <a href="./afu_lsp.html#robo32">scale</a> the Fibonacci numbers to fit the given
+<pre> - T or NIL: whether to <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> the Fibonacci numbers to fit the given
  integer. Default = T.
  - T or NIL: whether to round after scaling
 </pre>
@@ -381,24 +381,24 @@
 <pre class="source">(FIBONACCI-DIVIDE 300)
 --&gt; (116 187 230 258 274 285 291 295 297 299 300)
 
-;;; don't <a href="./afu_lsp.html#robo32">scale</a> to 300 (i.e. only increase by Fibonacci numbers but note that
+;;; don't <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> to 300 (i.e. only increase by Fibonacci numbers but note that
 ;;; the Fibonacci number is added to the current number, which starts at one,
 ;;; hence 1+89, 90+55, 145+34 ...
 (FIBONACCI-DIVIDE 300 nil)
 --&gt; (90 145 179 200 213 221 226 229 231 232 233)
 
-;;; do <a href="./afu_lsp.html#robo32">scale</a> but don't round
+;;; do <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> but don't round
 (FIBONACCI-DIVIDE 300 t nil)
 --&gt; (115.87983 186.69528 230.4721 257.51074 274.24893 284.54935 290.98712
      294.8498 297.4249 298.71246 300.0)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>fibonacci-divide</strong> (num &amp;optional (<a href="./afu_lsp.html#robo32">scale</a> t) (round t))
+<pre class="source">(defun <strong>fibonacci-divide</strong> (num &amp;optional (<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> t) (round t))
 </pre>
 
 
 <a name="l2dfor2dlookup2ffibonacci2dstart2dat2d2"></a>
-<a name="robo282"></a><h2 class=robodoc>l-for-lookup/fibonacci-start-at-2 [ Functions ]</h2>
+<a name="robo284"></a><h2 class=robodoc>l-for-lookup/fibonacci-start-at-2 [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -409,7 +409,7 @@
  The function also returns as a second value the sum of the list.
 
  NB: In addition to excluding 0 and 1, this function also differs from the
-     plain <a href="#robo280">fibonacci</a> function in that the second value returned is the sum
+     plain <a href="#robo282">fibonacci</a> function in that the second value returned is the sum
      of the list rather than the first Fibonacci number greater than that
      sum.  
 </pre>
@@ -433,11 +433,11 @@
 
 =&gt; (8 5 3 2), 18
 
-;; Two examples showing the different results of <a href="#robo280">fibonacci</a>
+;; Two examples showing the different results of <a href="#robo282">fibonacci</a>
 ;; vs. <strong>fibonacci-start-at-2</strong> 
 
 ;; 1
-(<a href="#robo280">fibonacci</a> 18) 
+(<a href="#robo282">fibonacci</a> 18) 
 
 =&gt; (5 3 2 1 1 0), 13
 
@@ -446,7 +446,7 @@
 =&gt; (8 5 3 2), 18
 
 ;; 2
-(<a href="#robo280">fibonacci</a> 20) 
+(<a href="#robo282">fibonacci</a> 20) 
 
 =&gt; (8 5 3 2 1 1 0), 21
 
@@ -460,7 +460,7 @@
 
 
 <a name="l2dfor2dlookup2ffibonacci2dtransition"></a>
-<a name="robo283"></a><h2 class=robodoc>l-for-lookup/fibonacci-transition [ Functions ]</h2>
+<a name="robo285"></a><h2 class=robodoc>l-for-lookup/fibonacci-transition [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -469,7 +469,7 @@
  function gradually increases the frequency of the second repeating state
  until it completely dominates.
 
- NB: The similar but separate function <a href="#robo280">fibonacci</a>-transition-aux1 gradually
+ NB: The similar but separate function <a href="#robo282">fibonacci</a>-transition-aux1 gradually
      decreases state 1 and increases state 2.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -481,11 +481,11 @@
    lists. Default = 0. 
  - Repeating item 2 (target state): This can also be any Lisp type.
    Default = 1.
- - T or NIL to make a <a href="./chord_lsp.html#robo95">morph</a> from item1 to item2. This means morphing items
-   will be a <a href="./chord_lsp.html#robo95">morph</a> structure. See below for an example. Default = NIL. 
- - T or NIL to make the <a href="./chord_lsp.html#robo95">morph</a> first go down from item2 to item1 (mainly used
-   by <a href="#robo280">fibonacci</a>-transitions). This can also be an envelope (see
-   <a href="#robo284">fibonacci-transitions</a> for details). Default = NIL.
+ - T or NIL to make a <a href="./chord_lsp.html#robo97">morph</a> from item1 to item2. This means morphing items
+   will be a <a href="./chord_lsp.html#robo97">morph</a> structure. See below for an example. Default = NIL. 
+ - T or NIL to make the <a href="./chord_lsp.html#robo97">morph</a> first go down from item2 to item1 (mainly used
+   by <a href="#robo282">fibonacci</a>-transitions). This can also be an envelope (see
+   <a href="#robo286">fibonacci-transitions</a> for details). Default = NIL.
 </pre>
 <p class="item_name">TAGS</p>
 <pre> transitions
@@ -505,7 +505,7 @@
 =&gt; ((1 2 3) (1 2 3) (1 2 3) (1 2 3) (5 6 7) (1 2 3) (1 2 3) (5 6 7) (1 2 3)
     (1 2 3) (5 6 7) (1 2 3) (5 6 7) (1 2 3) (5 6 7) (1 2 3) (5 6 7) (5 6 7)
     (1 2 3) (5 6 7) (5 6 7) (1 2 3) (5 6 7) (5 6 7) (5 6 7) (5 6 7) (5 6 7))
-;; with <a href="./chord_lsp.html#robo95">morph</a>: first going up then up/down
+;; with <a href="./chord_lsp.html#robo97">morph</a>: first going up then up/down
 (<strong>fibonacci-transition</strong> 31 0 1 t) -&gt;
 (0 #S(MORPH :I1 0 :I2 1 :PROPORTION 0.14285714285714285d0)
  #S(MORPH :I1 0 :I2 1 :PROPORTION 0.2857142857142857d0)
@@ -520,7 +520,7 @@
  #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1
  #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1
  #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1 1 1 1)
-;; <a href="./chord_lsp.html#robo95">morph</a> goes down then up
+;; <a href="./chord_lsp.html#robo97">morph</a> goes down then up
 (<strong>fibonacci-transition</strong> 31 0 1 t t) --&gt;
 (0 #S(MORPH :I1 0 :I2 1 :PROPORTION 0.6666666666666667d0)
  #S(MORPH :I1 0 :I2 1 :PROPORTION 0.3333333333333334d0)
@@ -537,25 +537,25 @@
  #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1 1 1 1)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>fibonacci-transition</strong> (num-items &amp;optional (item1 0) (item2 1) <a href="./chord_lsp.html#robo95">morph</a>
+<pre class="source">(defun <strong>fibonacci-transition</strong> (num-items &amp;optional (item1 0) (item2 1) <a href="./chord_lsp.html#robo97">morph</a>
                                          first-down)
 </pre>
 
 
 <a name="l2dfor2dlookup2ffibonacci2dtransitions"></a>
-<a name="robo284"></a><h2 class=robodoc>l-for-lookup/fibonacci-transitions [ Functions ]</h2>
+<a name="robo286"></a><h2 class=robodoc>l-for-lookup/fibonacci-transitions [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 18 Feb 2010
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> This function builds on the concept of the function <a href="#robo283">fibonacci-transition</a> by
+<pre> This function builds on the concept of the function <a href="#robo285">fibonacci-transition</a> by
  allowing multiple consecutive transitions over a specified number of
  repetitions. The function either produces sequences consisting of
  transitions from each consecutive increasing number to its upper
  neighbor, starting from 0 and continuing through a specified number of
- integers, or it can be used to produce a sequence by transitioning <a href="./utilities_lsp.html#robo925">between</a>
+ integers, or it can be used to produce a sequence by transitioning <a href="./utilities_lsp.html#robo934">between</a>
  each element of a user-specified list of items.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -569,11 +569,11 @@
      function is to transition.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to make a <a href="./chord_lsp.html#robo95">morph</a> from item1 to item2, 2 to 3, etc.. This means
-   morphing items will be a <a href="./chord_lsp.html#robo95">morph</a> structure. This can also be an envelope
+<pre> - T or NIL to make a <a href="./chord_lsp.html#robo97">morph</a> from item1 to item2, 2 to 3, etc.. This means
+   morphing items will be a <a href="./chord_lsp.html#robo97">morph</a> structure. This can also be an envelope
    which thus allows morphing to be switched on and off over the course of
    the transition. The envelope can have any x range but the y-range should
-   be from 0 to 1. Any value &lt; 1 means the <a href="./chord_lsp.html#robo95">morph</a> object will be ignored and
+   be from 0 to 1. Any value &lt; 1 means the <a href="./chord_lsp.html#robo97">morph</a> object will be ignored and
    either the :i1 or :i2 slot will be used instead, depending on whether the
    :proportion slot is &gt; 0.5
 </pre>
@@ -604,7 +604,7 @@
     (3 2 1) (4 5 4) (3 2 1) (4 5 4) (3 2 1) (4 5 4) (3 2 1) (3 2 1) (3 2 1)
     (4 5 4) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1))
 
-;; using <a href="./chord_lsp.html#robo95">morph</a>
+;; using <a href="./chord_lsp.html#robo97">morph</a>
 (<strong>fibonacci-transitions</strong> 52 '(1 2 3) t)
 =&gt; (1 #S(MORPH :I1 1 :I2 2 :PROPORTION 0.16666666666666666d0)
       #S(MORPH :I1 1 :I2 2 :PROPORTION 0.3333333333333333d0)
@@ -630,7 +630,7 @@
       #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3 3
       #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3 3 3 3 3 3 3 3)
 
-;; using <a href="./chord_lsp.html#robo95">morph</a> and a <a href="./chord_lsp.html#robo95">morph</a> envelope
+;; using <a href="./chord_lsp.html#robo97">morph</a> and a <a href="./chord_lsp.html#robo97">morph</a> envelope
 (<strong>fibonacci-transitions</strong> 52 '(1 2 3 3)  '(0 0 10 1 52 1))
 =&gt; (1 1 1 1 2 2 2 2 1 1 1 2 #S(MORPH :I1 1 :I2 2 :PROPORTION 0.7)
       #S(MORPH :I1 1 :I2 2 :PROPORTION 0.85) 2
@@ -645,12 +645,12 @@
       #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3 3 3 3 3 3 3 3)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>fibonacci-transitions</strong> (total-items levels &amp;optional <a href="./chord_lsp.html#robo95">morph</a>)
+<pre class="source">(defun <strong>fibonacci-transitions</strong> (total-items levels &amp;optional <a href="./chord_lsp.html#robo97">morph</a>)
 </pre>
 
 
 <a name="l2dfor2dlookup2fget2dl2dsequence"></a>
-<a name="robo285"></a><h2 class=robodoc>l-for-lookup/get-l-sequence [ Methods ]</h2>
+<a name="robo287"></a><h2 class=robodoc>l-for-lookup/get-l-sequence [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -680,13 +680,13 @@
  sequence created, in their given order. 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create an <a href="#robo43">l-for-lookup</a> object with three rules and <a href="./wolfram_lsp.html#robo1029">generate</a> a new sequence
+<pre class="source">;; Create an <a href="#robo43">l-for-lookup</a> object with three rules and <a href="./wolfram_lsp.html#robo1038">generate</a> a new sequence
 ;; of 29 rule keys from those rules. The <a href="#robo43">l-for-lookup</a> object here has been
 ;; created with the SEQUENCES argument set to NIL, as the <strong>get-l-sequence</strong>
 ;; method requires no sequences. The second list returned indicates the
 ;; number of times each key appears in the resulting sequence (thus 1 appears 5
 ;; times, 2 appears 12 times etc.)
-(let ((lfl (<a href="#robo287">make-l-for-lookup</a> 'lfl-test
+(let ((lfl (<a href="#robo289">make-l-for-lookup</a> 'lfl-test
                               NIL
                               '((1 (2))
                                 (2 (1 3))
@@ -696,7 +696,7 @@
 =&gt; (2 3 2 3 2 1 3 2 3 2 3 2 1 3 2 3 2 1 3 3 2 1 3 2 3 2 3 2 1), (5 12 12) 
 
 ;; A similar example using symbols rather than numbers as keys and data
-(let ((lfl (<a href="#robo287">make-l-for-lookup</a> 'lfl-test
+(let ((lfl (<a href="#robo289">make-l-for-lookup</a> 'lfl-test
                               NIL
                               '((a (b))
                                 (b (a c))
@@ -711,12 +711,12 @@
 
 
 <a name="l2dfor2dlookup2fget2dlinear2dsequence"></a>
-<a name="robo286"></a><h2 class=robodoc>l-for-lookup/get-linear-sequence [ Methods ]</h2>
+<a name="robo288"></a><h2 class=robodoc>l-for-lookup/get-linear-sequence [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Instead of creating L-sequences with specified rules, use them
- <a href="./wolfram_lsp.html#robo1029">generate</a> a simple sequential list. 
+ <a href="./wolfram_lsp.html#robo1038">generate</a> a simple sequential list. 
 
  The method first returns the first element in the list whose ID matches the 
  SEED argument, then that element is used as the ID for the next
@@ -734,8 +734,8 @@
  - An integer that is the number of elements to be in the resulting list.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether to <a href="./circular-sclist_lsp.html#robo122">reset</a> the pointers of the given circular
-   lists before proceeding. T = <a href="./circular-sclist_lsp.html#robo122">reset</a>. Default = T.
+<pre> - T or NIL to indicate whether to <a href="./circular-sclist_lsp.html#robo124">reset</a> the pointers of the given circular
+   lists before proceeding. T = <a href="./circular-sclist_lsp.html#robo124">reset</a>. Default = T.
  - T or NIL to indicate whether to warn if any of the given keys are not
    used. Default = T.
 </pre>
@@ -744,7 +744,7 @@
  the results.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((lfl (<a href="#robo287">make-l-for-lookup</a> 'lfl-test
+<pre class="source">(let ((lfl (<a href="#robo289">make-l-for-lookup</a> 'lfl-test
                               nil
                               '((1 (2 3))
                                 (2 (3 1 2))
@@ -755,12 +755,12 @@
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>get-linear-sequence</strong> ((lflu l-for-lookup) seed stop-length
-                                &amp;optional (<a href="./circular-sclist_lsp.html#robo122">reset</a> t) (warn t))
+                                &amp;optional (<a href="./circular-sclist_lsp.html#robo124">reset</a> t) (warn t))
 </pre>
 
 
 <a name="l2dfor2dlookup2fmake2dl2dfor2dlookup"></a>
-<a name="robo287"></a><h2 class=robodoc>l-for-lookup/make-l-for-lookup [ Functions ]</h2>
+<a name="robo289"></a><h2 class=robodoc>l-for-lookup/make-l-for-lookup [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -770,8 +770,8 @@
  original, shorter sequences.
 
  NB: This method just stores the data concerning sequences and rules. To
-     manipulate the data and create new sequences, see <a href="#robo277">do-lookup</a> or
-     <a href="#robo285">get-l-sequence</a> etc.
+     manipulate the data and create new sequences, see <a href="#robo279">do-lookup</a> or
+     <a href="#robo287">get-l-sequence</a> etc.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A symbol that will be the object's ID.
@@ -787,9 +787,9 @@
    that return only one result each) will return a result of the same length
    no matter how many results we ask for. This can sometimes be problematic
    so do a check if requested. Default = NIL.
- - :scaler. Factor by which to <a href="./afu_lsp.html#robo32">scale</a> the values returned by
-   <a href="#robo277">do-lookup</a>. Default = 1. Does not modify the original data.
- - :offset. Number to be added to values returned by <a href="#robo277">do-lookup</a> (after they
+ - :scaler. Factor by which to <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> the values returned by
+   <a href="#robo279">do-lookup</a>. Default = 1. Does not modify the original data.
+ - :offset. Number to be added to values returned by <a href="#robo279">do-lookup</a> (after they
    are scaled). Default = NIL. Does not modify the original data.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -815,7 +815,7 @@ L-FOR-LOOKUP:
               auto-check-redundancy: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 2, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 2, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: L-SYS-A, tag: NIL, 
 data: (
@@ -839,11 +839,11 @@ data: (
 
 
 <a name="l2dfor2dlookup2fremix2din"></a>
-<a name="robo288"></a><h2 class=robodoc>l-for-lookup/remix-in [ Functions ]</h2>
+<a name="robo290"></a><h2 class=robodoc>l-for-lookup/remix-in [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Given a list (for example generated by <a href="#robo280">fibonacci</a>-transitions) where we
+<pre> Given a list (for example generated by <a href="#robo282">fibonacci</a>-transitions) where we
  proceed sequentially through adjacent elements, begin occasionally mixing
  earlier elements of the list back into the original list once we've reached
  the third unique element in the original list.
@@ -889,7 +889,7 @@ data: (
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Straightforward usage with default values
-(<strong>remix-in</strong> (<a href="#robo284">fibonacci-transitions</a> 320 '(1 2 3 4 5)))
+(<strong>remix-in</strong> (<a href="#robo286">fibonacci-transitions</a> 320 '(1 2 3 4 5)))
 
 =&gt; (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 2
     1 1 1 1 1 1 1 2 1 1 1 1 2 1 1 2 1 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 2 1 2 2 1
@@ -906,7 +906,7 @@ data: (
 
 ;; A lower :remix-in-fib-seed value causes the list to be mixed back into
 ;; itself at more frequent intervals
-(<strong>remix-in</strong> (<a href="#robo284">fibonacci-transitions</a> 320 '(1 2 3 4 5)) :remix-in-fib-seed 3)
+(<strong>remix-in</strong> (<a href="#robo286">fibonacci-transitions</a> 320 '(1 2 3 4 5)) :remix-in-fib-seed 3)
 
 =&gt; (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 2
     1 1 1 1 1 1 1 2 1 1 1 1 2 1 1 2 1 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 2 1 2 2 1
@@ -924,7 +924,7 @@ data: (
 
 ;; Setting the keyword argument &lt;mirror&gt; to T causes the method to reverse back
 ;; through the original list after the end has been reached
-(<strong>remix-in</strong> (<a href="#robo284">fibonacci-transitions</a> 320 '(1 2 3 4 5)) 
+(<strong>remix-in</strong> (<a href="#robo286">fibonacci-transitions</a> 320 '(1 2 3 4 5)) 
           :remix-in-fib-seed 3
           :mirror t)
 
@@ -963,11 +963,11 @@ data: (
 
 
 <a name="l2dfor2dlookup2freset"></a>
-<a name="robo289"></a><h2 class=robodoc>l-for-lookup/reset [ Methods ]</h2>
+<a name="robo291"></a><h2 class=robodoc>l-for-lookup/reset [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo43">l-for-lookup</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Sets the counters (index pointers) of all <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> objects stored
+<pre> Sets the counters (index pointers) of all <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> objects stored
  within a given <a href="#robo43">l-for-lookup</a> object back to zero.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -985,7 +985,7 @@ data: (
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/l-for-lookup.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-05-10 11:02:11</p>
+<p>Generated from ./../../src/l-for-lookup.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-08-13 11:15:10</p>
 </div> <!-- footer -->
 </body>
 </html>

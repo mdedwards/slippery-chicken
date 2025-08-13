@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  17:04:29 Wed May 21 2025 CEST
+;;; $$ Last modified:  11:15:00 Wed Aug 13 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2076,6 +2076,7 @@ data: (
 |#
 ;;; SYNOPSIS
 (defun parcel-and-combine-all (rals ids &optional new-class)
+;;; ****  
   (unless (= (length rals) (length ids))
     (error "recursive-assoc-list::parcel-and-combine-all: there should be the ~
             same number of rals as ids."))

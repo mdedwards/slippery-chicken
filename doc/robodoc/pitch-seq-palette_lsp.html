@@ -32,17 +32,17 @@
 
 
 <a name="palette2fpitch2dseq2dpalette"></a>
-<a name="robo312"></a><h2 class=robodoc>palette/pitch-seq-palette [ Classes ]</h2>
+<a name="robo314"></a><h2 class=robodoc>palette/pitch-seq-palette [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo424">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo426">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>pitch-seq-palette</strong>
 
  File:             <a href="#robo_top_of_doc">pitch-seq-palette.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo113">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
-                   <a href="./palette_lsp.html#robo424">palette</a> -&gt; <strong>pitch-seq-palette</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo631">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo311">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo300">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo115">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
+                   <a href="./palette_lsp.html#robo426">palette</a> -&gt; <strong>pitch-seq-palette</strong>
 
  Version:          1.1.0
 
@@ -54,32 +54,32 @@
 
  Creation date:    19th February 2001
 
- $$ Last modified:  08:10:53 Thu Feb  1 2024 CET
+ $$ Last modified:  19:22:09 Tue May 20 2025 CEST
 
  SVN ID: $Id$
 </pre>
 
 
 <a name="pitch2dseq2dpalette2fadd2dinversions"></a>
-<a name="robo332"></a><h2 class=robodoc>pitch-seq-palette/add-inversions [ Methods ]</h2>
+<a name="robo334"></a><h2 class=robodoc>pitch-seq-palette/add-inversions [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">pitch-seq-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo314">pitch-seq-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Add inversions of the existing <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> objects in a given
- <a href="#robo312">pitch-seq-palette</a> object to the end of that <a href="#robo312">pitch-seq-palette</a> object. (See
- <a href="./pitch_lsp.html#robo295">pitch</a>-seq::<a href="./pitch-seq_lsp.html#robo336">invert</a> for more details on <a href="./slippery-chicken_lsp.html#robo629">slippery-chicken</a> inversions.)
+<pre> Add inversions of the existing <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> objects in a given
+ <a href="#robo314">pitch-seq-palette</a> object to the end of that <a href="#robo314">pitch-seq-palette</a> object. (See
+ <a href="./pitch_lsp.html#robo297">pitch</a>-seq::<a href="./rthm-seq-palette_lsp.html#robo546">invert</a> for more details on <a href="./slippery-chicken_lsp.html#robo632">slippery-chicken</a> inversions.)
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo312">pitch-seq-palette</a> object.
+<pre> - A <a href="#robo314">pitch-seq-palette</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always returns T.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create a <a href="#robo312">pitch-seq-palette</a> object and print the DATA of the <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a>
+<pre class="source">;; Create a <a href="#robo314">pitch-seq-palette</a> object and print the DATA of the <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a>
 ;; objects it contains; then apply the <strong>add-inversions</strong> method and print the same
 ;; DATA to see the changes
-(let ((mpsp (<a href="#robo334">make-psp</a> 'mpsp 5 '((2 5 3 1 4)
+(let ((mpsp (<a href="#robo336">make-psp</a> 'mpsp 5 '((2 5 3 1 4)
                                 (1 4 2 5 3)
                                 (5 1 3 2 4)
                                 (2 3 4 5 1)
@@ -97,46 +97,46 @@
  (5 2 4 1 3) (1 5 3 4 2) (4 3 2 1 5) (3 4 2 5 1))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>add-inversions</strong> ((psp <a href="./pitch_lsp.html#robo295">pitch</a>-seq-<a href="./palette_lsp.html#robo424">palette</a>))
+<pre class="source">(defmethod <strong>add-inversions</strong> ((psp <a href="./pitch_lsp.html#robo297">pitch</a>-seq-<a href="./palette_lsp.html#robo426">palette</a>))
 </pre>
 
 
 <a name="pitch2dseq2dpalette2fcombine"></a>
-<a name="robo333"></a><h2 class=robodoc>pitch-seq-palette/combine [ Methods ]</h2>
+<a name="robo335"></a><h2 class=robodoc>pitch-seq-palette/combine [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">pitch-seq-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo314">pitch-seq-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a new <a href="#robo312">pitch-seq-palette</a> object by combining the <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> lists from
- one <a href="#robo312">pitch-seq-palette</a> object with those of another.
+<pre> Create a new <a href="#robo314">pitch-seq-palette</a> object by combining the <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> lists from
+ one <a href="#robo314">pitch-seq-palette</a> object with those of another.
 
- The method combines the contents of the two given <a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> objects
- consecutively; i.e., the first <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> object of the first
- <a href="#robo312">pitch-seq-palette</a> is combined with the first <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> object of the other,
+ The method combines the contents of the two given <a href="./rthm-seq-palette_lsp.html#robo315">rthm-seq-palette</a> objects
+ consecutively; i.e., the first <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> object of the first
+ <a href="#robo314">pitch-seq-palette</a> is combined with the first <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> object of the other,
  then the second with the second, the third with the third etc. 
 
- If one <a href="#robo312">pitch-seq-palette</a> object contains more <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> objects than the
+ If one <a href="#robo314">pitch-seq-palette</a> object contains more <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> objects than the
  other, the method cycles through the shorter one until all of the members
- of the longer one have been handled. The new <a href="#robo312">pitch-seq-palette</a> object will
- therefore contain the same number of <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> objects as is in the longest
- of the two starting <a href="#robo312">pitch-seq-palette</a> objects.
+ of the longer one have been handled. The new <a href="#robo314">pitch-seq-palette</a> object will
+ therefore contain the same number of <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> objects as is in the longest
+ of the two starting <a href="#robo314">pitch-seq-palette</a> objects.
 
- It is not necessary for the lengths of the <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> objects in the two
- starting <a href="#robo312">pitch-seq-palette</a> objects to be the same.
+ It is not necessary for the lengths of the <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> objects in the two
+ starting <a href="#robo314">pitch-seq-palette</a> objects to be the same.
 
- NB Both <a href="./pitch_lsp.html#robo295">pitch</a>-seq-palettes are <a href="./circular-sclist_lsp.html#robo122">reset</a> by this method.
+ NB Both <a href="./pitch_lsp.html#robo297">pitch</a>-seq-palettes are <a href="./circular-sclist_lsp.html#robo124">reset</a> by this method.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo312">pitch-seq-palette</a> object.
- - A second <a href="#robo312">pitch-seq-palette</a> object.
+<pre> - A first <a href="#robo314">pitch-seq-palette</a> object.
+ - A second <a href="#robo314">pitch-seq-palette</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo312">pitch-seq-palette</a> object.
+<pre> A <a href="#robo314">pitch-seq-palette</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Combine two <a href="#robo312">pitch-seq-palette</a> objects of the same length, each of whose
-;;; <a href="./pitch_lsp.html#robo295">pitch</a>-seqs are the same length
-(let ((mpsp1 (<a href="#robo334">make-psp</a> 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
-      (mpsp2 (<a href="#robo334">make-psp</a> 'mpsp2 5 '((2 3 4 5 1) (3 2 4 1 5) (3 2 1 5 4)))))
+<pre class="source">;;; Combine two <a href="#robo314">pitch-seq-palette</a> objects of the same length, each of whose
+;;; <a href="./pitch_lsp.html#robo297">pitch</a>-seqs are the same length
+(let ((mpsp1 (<a href="#robo336">make-psp</a> 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
+      (mpsp2 (<a href="#robo336">make-psp</a> 'mpsp2 5 '((2 3 4 5 1) (3 2 4 1 5) (3 2 1 5 4)))))
   (<strong>combine</strong> mpsp1 mpsp2))
 
 =&gt;
@@ -148,7 +148,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: "MPSP1-MPSP2", tag: NIL, 
 data: (
@@ -164,50 +164,50 @@ PITCH-SEQ: notes: NIL
 data: (5 1 3 2 4 3 2 1 5 4)
 )
 
-;; When combining <a href="#robo312">pitch-seq-palette</a> objects of different lengths, the method
+;; When combining <a href="#robo314">pitch-seq-palette</a> objects of different lengths, the method
 ;; cyles through the shorter of the two
-(let ((mpsp1 (<a href="#robo334">make-psp</a> 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
-      (mpsp2 (<a href="#robo334">make-psp</a> 'mpsp2 5 '((2 3 4 5 1) (3 2 4 1 5)))))
+(let ((mpsp1 (<a href="#robo336">make-psp</a> 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
+      (mpsp2 (<a href="#robo336">make-psp</a> 'mpsp2 5 '((2 3 4 5 1) (3 2 4 1 5)))))
   (loop for ps in (data (<strong>combine</strong> mpsp1 mpsp2)) 
        collect (data ps)))
 
 =&gt; ((2 5 3 1 4 2 3 4 5 1) (1 4 2 5 3 3 2 4 1 5) (5 1 3 2 4 2 3 4 5 1))
 
-;; The two starting <a href="#robo312">pitch-seq-palette</a> objects are not required to have
-;; <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> objects of the same length
-(let ((mpsp1 (<a href="#robo334">make-psp</a> 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
-      (mpsp2 (<a href="#robo334">make-psp</a> 'mpsp2 3 '((2 3 4) (3 2 4)))))
+;; The two starting <a href="#robo314">pitch-seq-palette</a> objects are not required to have
+;; <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> objects of the same length
+(let ((mpsp1 (<a href="#robo336">make-psp</a> 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
+      (mpsp2 (<a href="#robo336">make-psp</a> 'mpsp2 3 '((2 3 4) (3 2 4)))))
   (loop for ps in (data (<strong>combine</strong> mpsp1 mpsp2)) 
        collect (data ps)))
 
 =&gt; ((2 5 3 1 4 2 3 4) (1 4 2 5 3 3 2 4) (5 1 3 2 4 2 3 4))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>combine</strong> ((psp1 <a href="./pitch_lsp.html#robo295">pitch</a>-seq-<a href="./palette_lsp.html#robo424">palette</a>) (psp2 <a href="./pitch_lsp.html#robo295">pitch</a>-seq-<a href="./palette_lsp.html#robo424">palette</a>))
+<pre class="source">(defmethod <strong>combine</strong> ((psp1 <a href="./pitch_lsp.html#robo297">pitch</a>-seq-<a href="./palette_lsp.html#robo426">palette</a>) (psp2 <a href="./pitch_lsp.html#robo297">pitch</a>-seq-<a href="./palette_lsp.html#robo426">palette</a>))
 </pre>
 
 
 <a name="pitch2dseq2dpalette2fmake2dpsp"></a>
-<a name="robo334"></a><h2 class=robodoc>pitch-seq-palette/make-psp [ Functions ]</h2>
+<a name="robo336"></a><h2 class=robodoc>pitch-seq-palette/make-psp [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo312">pitch-seq-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo314">pitch-seq-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo312">pitch-seq-palette</a> object from an ID, a specified number of notes,
- and a list of lists of numbers representing the <a href="./pitch_lsp.html#robo295">pitch</a> curve of the intended
- <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> objects.
+<pre> Create a <a href="#robo314">pitch-seq-palette</a> object from an ID, a specified number of notes,
+ and a list of lists of numbers representing the <a href="./pitch_lsp.html#robo297">pitch</a> curve of the intended
+ <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> objects.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A symbol that is to be the ID of the <a href="#robo312">pitch-seq-palette</a> to be created. 
- - An integer that is the number of notes there are to be in each <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a>
+<pre> - A symbol that is to be the ID of the <a href="#robo314">pitch-seq-palette</a> to be created. 
+ - An integer that is the number of notes there are to be in each <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a>
    object created.
  - A list of lists, each of which contained list is a list of numbers
-   representing the <a href="./pitch_lsp.html#robo295">pitch</a> curve of the intended <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> object.
+   representing the <a href="./pitch_lsp.html#robo297">pitch</a> curve of the intended <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo312">pitch-seq-palette</a> object.
+<pre> A <a href="#robo314">pitch-seq-palette</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Returns a <a href="#robo312">pitch-seq-palette</a> object
+<pre class="source">;; Returns a <a href="#robo314">pitch-seq-palette</a> object
 (<strong>make-psp</strong> 'mpsp 5 '((2 5 3 1 4)
                     (1 4 2 5 3)
                     (5 1 3 2 4)
@@ -223,7 +223,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 5, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 5, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: MPSP, tag: NIL, 
 data: (
@@ -244,51 +244,51 @@ PITCH-SEQ: notes: NIL
 data: (3 2 4 1 5)
 )
 
-;; Interrupts with an error if any of the &lt;<a href="./pitch_lsp.html#robo295">pitch</a>-seqs&gt; lists is not of the
+;; Interrupts with an error if any of the &lt;<a href="./pitch_lsp.html#robo297">pitch</a>-seqs&gt; lists is not of the
 ;; length specified by &lt;num-notes&gt;
 (<strong>make-psp</strong> 'mpsp 5 '((1 2 1 1 3)
                     (1 3 2 1 5)
                     (1 3 5 6 7 8)))
 
 =&gt;
-<a href="./pitch_lsp.html#robo295">pitch</a>-seq-<a href="./palette_lsp.html#robo424">palette</a>::verify-and-store: 
-In <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> MPSP-ps-3 from <a href="./palette_lsp.html#robo424">palette</a> MPSP:
-Each <a href="./pitch_lsp.html#robo295">pitch</a> sequence must have 5 notes (you have 6): 
+<a href="./pitch_lsp.html#robo297">pitch</a>-seq-<a href="./palette_lsp.html#robo426">palette</a>::verify-and-store: 
+In <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> MPSP-ps-3 from <a href="./palette_lsp.html#robo426">palette</a> MPSP:
+Each <a href="./pitch_lsp.html#robo297">pitch</a> sequence must have 5 notes (you have 6): 
 [...]
  (1 3 5 6 7 8))
    [Condition of type SIMPLE-ERROR]
 
-;; We can also assign <a href="./instruments_lsp.html#robo12">instruments</a> to specific <a href="./pitch_lsp.html#robo295">pitch</a>-seqs by passing their names
-;; (not <a href="./player_lsp.html#robo296">player</a> names, but <a href="./instrument_lsp.html#robo294">instrument</a> names) e.g.
+;; We can also assign <a href="./instruments_lsp.html#robo12">instruments</a> to specific <a href="./pitch_lsp.html#robo297">pitch</a>-seqs by passing their names
+;; (not <a href="./player_lsp.html#robo298">player</a> names, but <a href="./instrument_lsp.html#robo296">instrument</a> names) e.g.
 (<strong>make-psp</strong> 'mpsp 5 '((1 2 1 1 3)
                     ((1 3 2 1 5) violin flute)
                     (1 3 5 6 7)))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>make-psp</strong> (id <a href="./slippery-chicken_lsp.html#robo840">num-notes</a> <a href="./pitch_lsp.html#robo295">pitch</a>-seqs)
+<pre class="source">(defun <strong>make-psp</strong> (id <a href="./ensemble_lsp.html#robo163">num-notes</a> <a href="./pitch_lsp.html#robo297">pitch</a>-seqs)
 </pre>
 
 
 <a name="rthm2dseq2dpalette2fcreate2dpsps2ddefault"></a>
-<a name="robo541"></a><h2 class=robodoc>rthm-seq-palette/create-psps-default [ Functions ]</h2>
+<a name="robo544"></a><h2 class=robodoc>rthm-seq-palette/create-psps-default [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./rthm-seq-palette_lsp.html#robo313">rthm-seq-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./rthm-seq-palette_lsp.html#robo315">rthm-seq-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An integer that is the number of notes for which a <a href="#robo312">pitch-seq-palette</a>
+<pre> - An integer that is the number of notes for which a <a href="#robo314">pitch-seq-palette</a>
    object is needed.
- - the <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> data (see documentation for create psps method).  Ideally
+ - the <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> data (see documentation for create psps method).  Ideally
    this would only be passed the first time the function is called.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of numbers suitable for use in creating a <a href="./pitch-seq_lsp.html#robo641">pitch-seq</a> object.
+<pre> A list of numbers suitable for use in creating a <a href="./pitch-seq_lsp.html#robo644">pitch-seq</a> object.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">  (defun <strong>create-psps-default</strong> (<a href="./slippery-chicken_lsp.html#robo840">num-notes</a> data-lists)
+<pre class="source">  (defun <strong>create-psps-default</strong> (<a href="./ensemble_lsp.html#robo163">num-notes</a> data-lists)
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/pitch-seq-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-05-10 11:02:11</p>
+<p>Generated from ./../../src/pitch-seq-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-08-13 11:15:10</p>
 </div> <!-- footer -->
 </body>
 </html>

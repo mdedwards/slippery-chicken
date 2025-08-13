@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:30:00 Tue Jun 24 2025 CEST
+;;; $$ Last modified:  11:14:41 Wed Aug 13 2025 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8087,6 +8087,7 @@ NIL
 ;;; 
 ;;; SYNOPSIS
 (defmethod set-tempo ((sc slippery-chicken) tempo bar-num &optional scaler warn)
+;;; ****  
   (loop with tpo = (make-tempo tempo)
         for bar in (get-bar sc bar-num) ; all players of course
         do

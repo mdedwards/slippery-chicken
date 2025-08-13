@@ -32,15 +32,15 @@
 
 
 <a name="linked2dnamed2dobject2frhythm"></a>
-<a name="robo297"></a><h2 class=robodoc>linked-named-object/rhythm [ Classes ]</h2>
+<a name="robo299"></a><h2 class=robodoc>linked-named-object/rhythm [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./linked-named-object_lsp.html#robo311">linked-named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>rhythm</strong>
 
  File:             <a href="#robo_top_of_doc">rhythm.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <strong>rhythm</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo631">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo311">linked-named-object</a> -&gt; <strong>rhythm</strong>
 
  Version:          1.1.0
 
@@ -53,93 +53,93 @@
 
  Creation date:    11th February 2001
 
- $$ Last modified:  16:20:48 Fri Apr  4 2025 CEST
+ $$ Last modified:  09:53:12 Thu Jun 19 2025 CEST
 
  SVN ID: $Id$
 </pre>
 
 
 <a name="rhythm2faccented2dp"></a>
-<a name="robo437"></a><h2 class=robodoc>rhythm/accented-p [ Methods ]</h2>
+<a name="robo439"></a><h2 class=robodoc>rhythm/accented-p [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 05 Apr 2011
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Check the MARKS slot of a given <a href="#robo297">rhythm</a> object to determine if it possesses
- an accent mark. The <a href="#robo297">rhythm</a> object may also possess other marks as well. 
+<pre> Check the MARKS slot of a given <a href="#robo299">rhythm</a> object to determine if it possesses
+ an accent mark. The <a href="#robo299">rhythm</a> object may also possess other marks as well. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> If the accent mark ('a) is indeed found in the MARKS slot of the given
- <a href="#robo297">rhythm</a> object, the tail of the list of marks contained in that slot is
+ <a href="#robo299">rhythm</a> object, the tail of the list of marks contained in that slot is
  returned; otherwise NIL is returned.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Make a <a href="#robo297">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo409">add</a> an accent, and test for the presence of the accent
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="#robo440">add-mark-once</a> r 'a)
+<pre class="source">;; Make a <a href="#robo299">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo411">add</a> an accent, and test for the presence of the accent
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="#robo442">add-mark-once</a> r 'a)
   (<strong>accented-p</strong> r))
 
 =&gt; (A)
 
 ;; Check if an accent mark is among all marks in the MARKS slot
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="#robo440">add-mark-once</a> r 's)
-  (<a href="#robo440">add-mark-once</a> r 'a)
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="#robo442">add-mark-once</a> r 's)
+  (<a href="#robo442">add-mark-once</a> r 'a)
   (<strong>accented-p</strong> r))
 
 =&gt; (A S)
 
 ;; Add an accent and staccato, then remove the accent and test for it
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="#robo440">add-mark-once</a> r 'a)
-  (<a href="#robo440">add-mark-once</a> r 's)
-  (<a href="#robo461">rm-marks</a> r 'a)
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="#robo442">add-mark-once</a> r 'a)
+  (<a href="#robo442">add-mark-once</a> r 's)
+  (<a href="#robo463">rm-marks</a> r 'a)
   (<strong>accented-p</strong> r))
 
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>accented-p</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>accented-p</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fadd"></a>
-<a name="robo438"></a><h2 class=robodoc>rhythm/add [ Methods ]</h2>
+<a name="robo440"></a><h2 class=robodoc>rhythm/add [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a new <a href="#robo297">rhythm</a> object with a duration that is equal to the sum of the
- duration of two other given <a href="#robo297">rhythm</a> objects. 
+<pre> Create a new <a href="#robo299">rhythm</a> object with a duration that is equal to the sum of the
+ duration of two other given <a href="#robo299">rhythm</a> objects. 
 
- NB: This method only returns a single <a href="#robo297">rhythm</a> rather than a list with
+ NB: This method only returns a single <a href="#robo299">rhythm</a> rather than a list with
      ties. Thus q+s, for example, returns TQ... 
 
  If the resulting duration cannot be presented as a single, notatable
- <a href="#robo297">rhythm</a>, the DATA slot of the resulting <a href="#robo297">rhythm</a> object is set to NIL, though
+ <a href="#robo299">rhythm</a>, the DATA slot of the resulting <a href="#robo299">rhythm</a> object is set to NIL, though
  the VALUE and DURATION slots are still set with the corresponding numeric
  values.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo297">rhythm</a> object.
- - A second <a href="#robo297">rhythm</a> object.
+<pre> - A first <a href="#robo299">rhythm</a> object.
+ - A second <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether a warning is printed when a <a href="#robo297">rhythm</a> cannot be
+<pre> - T or NIL to indicate whether a warning is printed when a <a href="#robo299">rhythm</a> cannot be
    made because the resulting value is 0 or a negative duration. Default = 
    NIL (no warning issued).
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo297">rhythm</a> object. Returns NIL when the object cannot be made.
+<pre> A <a href="#robo299">rhythm</a> object. Returns NIL when the object cannot be made.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; A quarter plus an eighth makes a dotted quarter
-(let ((r1 (<a href="#robo455">make-rhythm</a> 'q))
-      (r2 (<a href="#robo455">make-rhythm</a> 'e)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 'q))
+      (r2 (<a href="#robo457">make-rhythm</a> 'e)))
   (<strong>add</strong> r1 r2))
 
 =&gt;
@@ -154,17 +154,17 @@ NAMED-OBJECT: id: Q., tag: NIL,
 data: Q.
 
 ;; A quarter plus a triplet-eighth is presented as a triplet-half
-(let ((r1 (<a href="#robo455">make-rhythm</a> 'q))
-      (r2 (<a href="#robo455">make-rhythm</a> 'te)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 'q))
+      (r2 (<a href="#robo457">make-rhythm</a> 'te)))
   (data (<strong>add</strong> r1 r2)))
 
 =&gt; TH
 
 ;; A quarter plus a septuplet-16th cannot be represented as a single, notatable
-;; <a href="#robo297">rhythm</a> and therefore produces an object with a VALUE and DURATION but no
+;; <a href="#robo299">rhythm</a> and therefore produces an object with a VALUE and DURATION but no
 ;; DATA 
-(let ((r1 (<a href="#robo455">make-rhythm</a> 4))
-      (r2 (<a href="#robo455">make-rhythm</a> 28)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 4))
+      (r2 (<a href="#robo457">make-rhythm</a> 28)))
   (print (value (<strong>add</strong> r1 r2)))
   (print (duration (<strong>add</strong> r1 r2)))
   (print (data (<strong>add</strong> r1 r2))))
@@ -175,55 +175,55 @@ data: Q.
 NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>add</strong> ((r1 <a href="#robo297">rhythm</a>) (r2 <a href="#robo297">rhythm</a>) &amp;optional warn)
+<pre class="source">(defmethod <strong>add</strong> ((r1 <a href="#robo299">rhythm</a>) (r2 <a href="#robo299">rhythm</a>) &amp;optional warn)
 </pre>
 
 
 <a name="rhythm2fadd2dmark"></a>
-<a name="robo439"></a><h2 class=robodoc>rhythm/add-mark [ Methods ]</h2>
+<a name="robo441"></a><h2 class=robodoc>rhythm/add-mark [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Add an articulation, dynamic, slur or any other mark to a <a href="#robo297">rhythm</a> (also
- useful in the <a href="./event_lsp.html#robo447">event</a> subclass for changing note heads etc.) Multiple marks
- can be added separately and consecutively to the same <a href="#robo297">rhythm</a> object. 
+<pre> Add an articulation, dynamic, slur or any other mark to a <a href="#robo299">rhythm</a> (also
+ useful in the <a href="./event_lsp.html#robo449">event</a> subclass for changing note heads etc.) Multiple marks
+ can be added separately and consecutively to the same <a href="#robo299">rhythm</a> object. 
 
- A warning is printed if the same mark is added to the same <a href="#robo297">rhythm</a> object
+ A warning is printed if the same mark is added to the same <a href="#robo299">rhythm</a> object
  more than once. 
 
  NB: This method checks to see if the mark added is a valid mark and will
-     warn if it doesn't exist (but it will still <a href="./recursive-assoc-list_lsp.html#robo409">add</a> it, in case you have 
+     warn if it doesn't exist (but it will still <a href="./recursive-assoc-list_lsp.html#robo411">add</a> it, in case you have 
      your own processing logic for it).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
  - A mark.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicated whether to issue a warning when trying to <a href="./recursive-assoc-list_lsp.html#robo409">add</a> marks
+<pre> - T or NIL to indicated whether to issue a warning when trying to <a href="./recursive-assoc-list_lsp.html#robo411">add</a> marks
    to a rest. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always T.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+<pre class="source">(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (marks r))
 
 =&gt; NIL
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>add-mark</strong> r 'a))
 
 =&gt; T
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>add-mark</strong> r 's)
   (marks r))
 
 =&gt; (S)
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>add-mark</strong> r 'col-legno)
   (<strong>add-mark</strong> r 'as)
   (<strong>add-mark</strong> r 'x-head)
@@ -231,14 +231,14 @@ NIL
 
 =&gt; (X-HEAD AS COL-LEGNO)
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>add-mark</strong> r 's)
   (<strong>add-mark</strong> r 's))
 
 =&gt; T
-WARNING: <a href="#robo297">rhythm</a>::<a href="./recursive-assoc-list_lsp.html#robo409">add</a>-mark: S already present but adding again!: 
+WARNING: <a href="#robo299">rhythm</a>::<a href="./recursive-assoc-list_lsp.html#robo411">add</a>-mark: S already present but adding again!: 
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'e :is-rest t)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'e :is-rest t)))
   (<strong>add-mark</strong> r 'at)
   (print (is-rest r))
   (print (marks r)))
@@ -247,32 +247,32 @@ WARNING: <a href="#robo297">rhythm</a>::<a href="./recursive-assoc-list_lsp.html
 T 
 (AT)
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'e :is-rest t)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'e :is-rest t)))
   (<strong>add-mark</strong> r 'at t))
 
 =&gt; T
 WARNING: 
 [...]
-<a href="#robo297">rhythm</a>::<a href="./recursive-assoc-list_lsp.html#robo409">add</a>-mark: <a href="./recursive-assoc-list_lsp.html#robo409">add</a> AT to rest?
+<a href="#robo299">rhythm</a>::<a href="./recursive-assoc-list_lsp.html#robo411">add</a>-mark: <a href="./recursive-assoc-list_lsp.html#robo411">add</a> AT to rest?
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>add-mark</strong> ((r <a href="#robo297">rhythm</a>) mark &amp;optional warn-rest warn-again)
+<pre class="source">(defmethod <strong>add-mark</strong> ((r <a href="#robo299">rhythm</a>) mark &amp;optional warn-rest warn-again)
 </pre>
 
 
 <a name="rhythm2fadd2dmark2donce"></a>
-<a name="robo440"></a><h2 class=robodoc>rhythm/add-mark-once [ Methods ]</h2>
+<a name="robo442"></a><h2 class=robodoc>rhythm/add-mark-once [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 26 Jul 2011 (Pula)
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Apply the given mark to the given <a href="#robo297">rhythm</a> object, but do so only if the
- given <a href="#robo297">rhythm</a> object does not yet have the mark.
+<pre> Apply the given mark to the given <a href="#robo299">rhythm</a> object, but do so only if the
+ given <a href="#robo299">rhythm</a> object does not yet have the mark.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
  - A mark.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -280,29 +280,29 @@ WARNING:
    apply a mark to a rest.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns T if the mark is successfully applied (if the <a href="#robo297">rhythm</a> object did not
+<pre> Returns T if the mark is successfully applied (if the <a href="#robo299">rhythm</a> object did not
  already possess the mark), otherwise NIL if the mark was not applied
- because the <a href="#robo297">rhythm</a> object already had it.
+ because the <a href="#robo299">rhythm</a> object already had it.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+<pre class="source">(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>add-mark-once</strong> r 'a))
 
 =&gt; T
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>add-mark-once</strong> r 'a)
   (marks r))
 
 =&gt; (A)
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>add-mark-once</strong> r 'a)
   (<strong>add-mark-once</strong> r 'a))
 
 =&gt; NIL
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>add-mark-once</strong> r 'a)
   (<strong>add-mark-once</strong> r 'a)
   (marks r))
@@ -310,125 +310,125 @@ WARNING:
 =&gt; (A)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>add-mark-once</strong> ((r <a href="#robo297">rhythm</a>) mark &amp;optional warn-rest)
+<pre class="source">(defmethod <strong>add-mark-once</strong> ((r <a href="#robo299">rhythm</a>) mark &amp;optional warn-rest)
 </pre>
 
 
 <a name="rhythm2fbegin2dslur2dp"></a>
-<a name="robo441"></a><h2 class=robodoc>rhythm/begin-slur-p [ Methods ]</h2>
+<a name="robo443"></a><h2 class=robodoc>rhythm/begin-slur-p [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Check to see if the MARKS slot of a given <a href="#robo297">rhythm</a> object contains a mark for
- the beginning of a slur ('beg-sl). The <a href="#robo297">rhythm</a> object may also possess other
+<pre> Check to see if the MARKS slot of a given <a href="#robo299">rhythm</a> object contains a mark for
+ the beginning of a slur ('beg-sl). The <a href="#robo299">rhythm</a> object may also possess other
  marks as well. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> If the 'beg-sl mark is indeed found in the MARKS slot of the given <a href="#robo297">rhythm</a>
+<pre> If the 'beg-sl mark is indeed found in the MARKS slot of the given <a href="#robo299">rhythm</a>
  object, the tail of the list of marks contained in that slot is returned;
  otherwise NIL is returned.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create a <a href="#robo297">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo409">add</a> a 'beg-sl mark and check for it
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="#robo440">add-mark-once</a> r 'beg-sl)
+<pre class="source">;; Create a <a href="#robo299">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo411">add</a> a 'beg-sl mark and check for it
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="#robo442">add-mark-once</a> r 'beg-sl)
   (<strong>begin-slur-p</strong> r))
 
 =&gt; (BEG-SL)
 
-;; Add several marks to a <a href="#robo297">rhythm</a> object and check for 'beg-sl
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (loop for m in '(a s beg-sl) do (<a href="#robo440">add-mark-once</a> r m))
+;; Add several marks to a <a href="#robo299">rhythm</a> object and check for 'beg-sl
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (loop for m in '(a s beg-sl) do (<a href="#robo442">add-mark-once</a> r m))
   (<strong>begin-slur-p</strong> r))
 
 =&gt; (BEG-SL S A)
 
-;; Add a 'beg-sl mark to a <a href="#robo297">rhythm</a> object, then delete it and check for it
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="#robo440">add-mark-once</a> r 'beg-sl)
-  (<a href="#robo461">rm-marks</a> r 'beg-sl)
+;; Add a 'beg-sl mark to a <a href="#robo299">rhythm</a> object, then delete it and check for it
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="#robo442">add-mark-once</a> r 'beg-sl)
+  (<a href="#robo463">rm-marks</a> r 'beg-sl)
   (<strong>begin-slur-p</strong> r))
 
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>begin-slur-p</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>begin-slur-p</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fdelete2dbeam"></a>
-<a name="robo442"></a><h2 class=robodoc>rhythm/delete-beam [ Methods ]</h2>
+<a name="robo444"></a><h2 class=robodoc>rhythm/delete-beam [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Removes indication for the start (1) or end (0) of a beam from the BEAM
- slot of a given <a href="#robo297">rhythm</a> object, replacing them with NIL.
+ slot of a given <a href="#robo299">rhythm</a> object, replacing them with NIL.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always returns NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Manually set the beam of a <a href="#robo297">rhythm</a> object and delete it to see result NIL
-(let ((r (<a href="#robo455">make-rhythm</a> 'e)))
+<pre class="source">;; Manually set the beam of a <a href="#robo299">rhythm</a> object and delete it to see result NIL
+(let ((r (<a href="#robo457">make-rhythm</a> 'e)))
   (setf (beam r) 1)
   (<strong>delete-beam</strong> r))
 
 =&gt; NIL
 
-;; Make a <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object with beam indications, then check the BEAM slot
-;; of each <a href="#robo297">rhythm</a> object in the <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object.
-(let ((rsb (<a href="./rthm-seq-bar_lsp.html#robo512">make-rthm-seq-bar</a> '((2 4) - s s e - q))))
+;; Make a <a href="./rthm-seq-bar_lsp.html#robo649">rthm-seq-bar</a> object with beam indications, then check the BEAM slot
+;; of each <a href="#robo299">rhythm</a> object in the <a href="./rthm-seq-bar_lsp.html#robo649">rthm-seq-bar</a> object.
+(let ((rsb (<a href="./rthm-seq-bar_lsp.html#robo514">make-rthm-seq-bar</a> '((2 4) - s s e - q))))
   (loop for r in (rhythms rsb) collect (beam r)))
 
 =&gt; (1 NIL 0 NIL)
 
-;; Make a <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object with beam indications, delete them all, then
-;; check the beam slot of each <a href="#robo297">rhythm</a> object in the <a href="./rthm-seq-bar_lsp.html#robo646">rthm-seq-bar</a> object.
-(let ((rsb (<a href="./rthm-seq-bar_lsp.html#robo512">make-rthm-seq-bar</a> '((2 4) - s s e - q))))
+;; Make a <a href="./rthm-seq-bar_lsp.html#robo649">rthm-seq-bar</a> object with beam indications, delete them all, then
+;; check the beam slot of each <a href="#robo299">rhythm</a> object in the <a href="./rthm-seq-bar_lsp.html#robo649">rthm-seq-bar</a> object.
+(let ((rsb (<a href="./rthm-seq-bar_lsp.html#robo514">make-rthm-seq-bar</a> '((2 4) - s s e - q))))
   (loop for r in (rhythms rsb) do (<strong>delete-beam</strong> r))
   (loop for r in (rhythms rsb) collect (beam r)))
 
 =&gt; (NIL NIL NIL NIL)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>delete-beam</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>delete-beam</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fdelete2dmarks"></a>
-<a name="robo443"></a><h2 class=robodoc>rhythm/delete-marks [ Methods ]</h2>
+<a name="robo445"></a><h2 class=robodoc>rhythm/delete-marks [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Delete any marks in the MARKS slot of an <a href="./event_lsp.html#robo447">event</a> object created within a
- <a href="#robo297">rhythm</a> object, replacing the entire list of the MARKS slot with NIL.
+<pre> Delete any marks in the MARKS slot of an <a href="./event_lsp.html#robo449">event</a> object created within a
+ <a href="#robo299">rhythm</a> object, replacing the entire list of the MARKS slot with NIL.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always returns NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; The method returns NIL
-(let ((r (<a href="#robo455">make-rhythm</a> (<a href="./event_lsp.html#robo203">make-event</a> 'c4 'q))))
-  (loop for m in '(a s pizz) do (<a href="#robo440">add-mark-once</a> r m))
+(let ((r (<a href="#robo457">make-rhythm</a> (<a href="./event_lsp.html#robo205">make-event</a> 'c4 'q))))
+  (loop for m in '(a s pizz) do (<a href="#robo442">add-mark-once</a> r m))
   (<strong>delete-marks</strong> r))
 
 =&gt; NIL
 
-;; Create a <a href="#robo297">rhythm</a> object consisting of an <a href="./event_lsp.html#robo447">event</a> object and print the default
+;; Create a <a href="#robo299">rhythm</a> object consisting of an <a href="./event_lsp.html#robo449">event</a> object and print the default
 ;; contents of the MARKS slot. Set the MARKS slot to contain three marks and
 ;; print the result. Apply the <strong>delete-marks</strong> method and print the result.
-(let ((r (<a href="#robo455">make-rhythm</a> (<a href="./event_lsp.html#robo203">make-event</a> 'c4 'q))))
+(let ((r (<a href="#robo457">make-rhythm</a> (<a href="./event_lsp.html#robo205">make-event</a> 'c4 'q))))
   (print (marks r))
-  (loop for m in '(a s pizz) do (<a href="#robo440">add-mark-once</a> r m))
+  (loop for m in '(a s pizz) do (<a href="#robo442">add-mark-once</a> r m))
   (print (marks r))
   (<strong>delete-marks</strong> r) 
   (print (marks r)))
@@ -439,158 +439,158 @@ NIL
 NI
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>delete-marks</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>delete-marks</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fduration2dsecs"></a>
-<a name="robo444"></a><h2 class=robodoc>rhythm/duration-secs [ Methods ]</h2>
+<a name="robo446"></a><h2 class=robodoc>rhythm/duration-secs [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determine the absolute duration in seconds of a given <a href="#robo297">rhythm</a> object at a
- given quarter-note <a href="./tempo_lsp.html#robo300">tempo</a>. If no <a href="./tempo_lsp.html#robo300">tempo</a> is specified, a <a href="./tempo_lsp.html#robo300">tempo</a> of 60 is
+<pre> Determine the absolute duration in seconds of a given <a href="#robo299">rhythm</a> object at a
+ given quarter-note <a href="./tempo_lsp.html#robo302">tempo</a>. If no <a href="./tempo_lsp.html#robo302">tempo</a> is specified, a <a href="./tempo_lsp.html#robo302">tempo</a> of 60 is
  assumed.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - A numerical <a href="./tempo_lsp.html#robo300">tempo</a> value based on quarter-note beats per minute.
+<pre> - A numerical <a href="./tempo_lsp.html#robo302">tempo</a> value based on quarter-note beats per minute.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A real number (floating point) representing the absolute duration of the
- given <a href="#robo297">rhythm</a> object in seconds.  
+ given <a href="#robo299">rhythm</a> object in seconds.  
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Determine the duration in seconds of a quarter note with a default <a href="./tempo_lsp.html#robo300">tempo</a> of
+<pre class="source">;; Determine the duration in seconds of a quarter note with a default <a href="./tempo_lsp.html#robo302">tempo</a> of
 ;;; quarter = 60
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>duration-secs</strong> r))
 
 =&gt; 1.0
 
-;; Specifying a different <a href="./tempo_lsp.html#robo300">tempo</a> results in a different duration in seconds 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+;; Specifying a different <a href="./tempo_lsp.html#robo302">tempo</a> results in a different duration in seconds 
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>duration-secs</strong> r 96))
 
 =&gt; 0.625
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>duration-secs</strong> ((r <a href="#robo297">rhythm</a>) &amp;optional (<a href="./tempo_lsp.html#robo300">tempo</a> 60))
+<pre class="source">(defmethod <strong>duration-secs</strong> ((r <a href="#robo299">rhythm</a>) &amp;optional (<a href="./tempo_lsp.html#robo302">tempo</a> 60))
 </pre>
 
 
 <a name="rhythm2fend2dslur2dp"></a>
-<a name="robo445"></a><h2 class=robodoc>rhythm/end-slur-p [ Methods ]</h2>
+<a name="robo447"></a><h2 class=robodoc>rhythm/end-slur-p [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Check to see if the MARKS slot of a given <a href="#robo297">rhythm</a> object contains a mark for
- the ending of a slur ('end-sl). The <a href="#robo297">rhythm</a> object may also possess other
+<pre> Check to see if the MARKS slot of a given <a href="#robo299">rhythm</a> object contains a mark for
+ the ending of a slur ('end-sl). The <a href="#robo299">rhythm</a> object may also possess other
  marks as well.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> If the 'end-sl mark is indeed found in the MARKS slot of the given <a href="#robo297">rhythm</a>
+<pre> If the 'end-sl mark is indeed found in the MARKS slot of the given <a href="#robo299">rhythm</a>
  object, the tail of the list of marks contained in that slot is returned;
  otherwise NIL is returned.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create a <a href="#robo297">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo409">add</a> a 'end-sl mark and check for it
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="#robo440">add-mark-once</a> r 'end-sl)
+<pre class="source">;; Create a <a href="#robo299">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo411">add</a> a 'end-sl mark and check for it
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="#robo442">add-mark-once</a> r 'end-sl)
   (<strong>end-slur-p</strong> r))
 
 =&gt; (END-SL)
 
-;; Add several marks to a <a href="#robo297">rhythm</a> object and check for 'end-sl
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (loop for m in '(a s end-sl) do (<a href="#robo440">add-mark-once</a> r m))
+;; Add several marks to a <a href="#robo299">rhythm</a> object and check for 'end-sl
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (loop for m in '(a s end-sl) do (<a href="#robo442">add-mark-once</a> r m))
   (<strong>end-slur-p</strong> r))
 
 =&gt; (END-SL S A)
 
-;; Add an 'end-sl mark to a <a href="#robo297">rhythm</a> object, then delete it and check for it
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="#robo440">add-mark-once</a> r 'end-sl)
-  (<a href="#robo461">rm-marks</a> r 'end-sl)
+;; Add an 'end-sl mark to a <a href="#robo299">rhythm</a> object, then delete it and check for it
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="#robo442">add-mark-once</a> r 'end-sl)
+  (<a href="#robo463">rm-marks</a> r 'end-sl)
   (<strong>end-slur-p</strong> r))
 
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>end-slur-p</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>end-slur-p</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fend2dtie"></a>
-<a name="robo446"></a><h2 class=robodoc>rhythm/end-tie [ Methods ]</h2>
+<a name="robo448"></a><h2 class=robodoc>rhythm/end-tie [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 14th 2018, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> return T or NIL depending on whether the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> is the end of a <a href="./slippery-chicken-edit_lsp.html#robo778">tie</a>
+<pre> return T or NIL depending on whether the <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> is the end of a <a href="./slippery-chicken-edit_lsp.html#robo785">tie</a>
  (tied-to but not tied-from)  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> object
+<pre> the <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T or NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>end-tie</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>end-tie</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fforce2drest"></a>
-<a name="robo448"></a><h2 class=robodoc>rhythm/force-rest [ Methods ]</h2>
+<a name="robo450"></a><h2 class=robodoc>rhythm/force-rest [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Force the given <a href="#robo297">rhythm</a> object to be a rest.
+<pre> Force the given <a href="#robo299">rhythm</a> object to be a rest.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo297">rhythm</a> object.
+<pre> A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((r (<a href="#robo455">make-rhythm</a> 8)))
+<pre class="source">(let ((r (<a href="#robo457">make-rhythm</a> 8)))
   (<strong>force-rest</strong> r)
   (is-rest r))
 
 =&gt; T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>force-rest</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>force-rest</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fget2dproportions"></a>
-<a name="robo449"></a><h2 class=robodoc>rhythm/get-proportions [ Functions ]</h2>
+<a name="robo451"></a><h2 class=robodoc>rhythm/get-proportions [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 15th February 2022, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the normalised proportions of a list of rhythms, i.e. the durational
- relationships of one <a href="#robo297">rhythm</a> to another. By normalised here it is meant that
+ relationships of one <a href="#robo299">rhythm</a> to another. By normalised here it is meant that
  the returned list will sum to 1.0. Implicit there is that proportions are
  expressed as floating-point fractions of 1.0, not as rationals.
 
- NB this works with the <a href="#robo297">rhythm</a>-slot only of <a href="#robo297">rhythm</a> objects, not
+ NB this works with the <a href="#robo299">rhythm</a>-slot only of <a href="#robo299">rhythm</a> objects, not
  compound-duration
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> a list of <a href="#robo297">rhythm</a> objects or symbols/numbers that represent rhythms.
+<pre> a list of <a href="#robo299">rhythm</a> objects or symbols/numbers that represent rhythms.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> a list of floats
@@ -604,122 +604,122 @@ NI
 
 
 <a name="rhythm2fhas2ddynamic"></a>
-<a name="robo450"></a><h2 class=robodoc>rhythm/has-dynamic [ Methods ]</h2>
+<a name="robo452"></a><h2 class=robodoc>rhythm/has-dynamic [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> December 3rd 2023
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determine whether a <a href="#robo297">rhythm</a> object has any dynamics in its marks slot.
+<pre> Determine whether a <a href="#robo299">rhythm</a> object has any dynamics in its marks slot.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo297">rhythm</a> object
+<pre> - a <a href="#robo299">rhythm</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> The dynamic as a symbol (e.g. pp) or NIL if there are none.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>has-dynamic</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>has-dynamic</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fhas2dmark"></a>
-<a name="robo451"></a><h2 class=robodoc>rhythm/has-mark [ Methods ]</h2>
+<a name="robo453"></a><h2 class=robodoc>rhythm/has-mark [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Check to see if a given <a href="#robo297">rhythm</a> object possesses a specified mark.
+<pre> Check to see if a given <a href="#robo299">rhythm</a> object possesses a specified mark.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
  - A mark.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> If the specified mark is indeed found in the MARKS slot of the given <a href="#robo297">rhythm</a>
+<pre> If the specified mark is indeed found in the MARKS slot of the given <a href="#robo299">rhythm</a>
  object, the tail of the list of marks contained in that slot is returned;
  otherwise NIL is returned.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Add a specific mark and check to see if the <a href="#robo297">rhythm</a> object has it.
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="./event_lsp.html#robo169">add-mark</a> r 'a)
+<pre class="source">;; Add a specific mark and check to see if the <a href="#robo299">rhythm</a> object has it.
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="./chord_lsp.html#robo70">add-mark</a> r 'a)
   (<strong>has-mark</strong> r 'a))
 
 =&gt; (A)
 
-;; Check to see if the given <a href="#robo297">rhythm</a> object possess a mark we know it doesn't. 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="./event_lsp.html#robo169">add-mark</a> r 'a)
+;; Check to see if the given <a href="#robo299">rhythm</a> object possess a mark we know it doesn't. 
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="./chord_lsp.html#robo70">add-mark</a> r 'a)
   (<strong>has-mark</strong> r 's))
 
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>has-mark</strong> ((r <a href="#robo297">rhythm</a>) mark &amp;optional (test #'equal))
+<pre class="source">(defmethod <strong>has-mark</strong> ((r <a href="#robo299">rhythm</a>) mark &amp;optional (test #'equal))
 </pre>
 
 
 <a name="rhythm2fin2dtie"></a>
-<a name="robo452"></a><h2 class=robodoc>rhythm/in-tie [ Methods ]</h2>
+<a name="robo454"></a><h2 class=robodoc>rhythm/in-tie [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 14th 2018, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> return T or NIL depending on whether the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> is part of a <a href="./slippery-chicken-edit_lsp.html#robo778">tie</a>
+<pre> return T or NIL depending on whether the <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> is part of a <a href="./slippery-chicken-edit_lsp.html#robo785">tie</a>
  (either tied-from or tied-to)  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> object
+<pre> the <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T or NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>in-tie</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>in-tie</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fis2dmultiple"></a>
-<a name="robo453"></a><h2 class=robodoc>rhythm/is-multiple [ Methods ]</h2>
+<a name="robo455"></a><h2 class=robodoc>rhythm/is-multiple [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determines if the value of one <a href="#robo297">rhythm</a> object is a multiple of the value of
- a second <a href="#robo297">rhythm</a> object. This is established by dividing the one by the
+<pre> Determines if the value of one <a href="#robo299">rhythm</a> object is a multiple of the value of
+ a second <a href="#robo299">rhythm</a> object. This is established by dividing the one by the
  other and checking to see if the quotient is a whole number.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo297">rhythm</a> object.
- - A second <a href="#robo297">rhythm</a> object.
+<pre> - A first <a href="#robo299">rhythm</a> object.
+ - A second <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns T if true and NIL if not. Always also returns the quotient.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((r1 (<a href="#robo455">make-rhythm</a> 'q))
-      (r2 (<a href="#robo455">make-rhythm</a> 'e)))
+<pre class="source">(let ((r1 (<a href="#robo457">make-rhythm</a> 'q))
+      (r2 (<a href="#robo457">make-rhythm</a> 'e)))
   (<strong>is-multiple</strong> r1 r2))
 
 =&gt; T, 2.0
 
-(let ((r1 (<a href="#robo455">make-rhythm</a> 'q))
-      (r2 (<a href="#robo455">make-rhythm</a> 'e.)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 'q))
+      (r2 (<a href="#robo457">make-rhythm</a> 'e.)))
   (<strong>is-multiple</strong> r1 r2))
 
 =&gt; NIL, 1.3333333333333333
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>is-multiple</strong> ((r1 <a href="#robo297">rhythm</a>) (r2 <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>is-multiple</strong> ((r1 <a href="#robo299">rhythm</a>) (r2 <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fjust2dattacks"></a>
-<a name="robo454"></a><h2 class=robodoc>rhythm/just-attacks [ Functions ]</h2>
+<a name="robo456"></a><h2 class=robodoc>rhythm/just-attacks [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> February 9th 2022
 </pre>
@@ -728,7 +728,7 @@ NI
  i.e. remove all rests and those tied-to.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> a list of <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> objects
+<pre> a list of <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> objects
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> the list purged of all rests and those tied-to
@@ -739,14 +739,14 @@ NI
 
 
 <a name="rhythm2fmake2drhythm"></a>
-<a name="robo455"></a><h2 class=robodoc>rhythm/make-rhythm [ Functions ]</h2>
+<a name="robo457"></a><h2 class=robodoc>rhythm/make-rhythm [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo297">rhythm</a> object.
+<pre> Make a <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A duration either as a numeric representation of a <a href="#robo297">rhythm</a> (subdivision of
+<pre> - A duration either as a numeric representation of a <a href="#robo299">rhythm</a> (subdivision of
    a whole note; 2 = half note, 4 = quarter, 8 = eighth etc), a quoted 
    alphabetic shorthand for a duration (ie, 'h, 'q, 'e etc.), or an absolute 
    duration in seconds.     
@@ -756,18 +756,18 @@ NI
  - :is-rest. T or NIL to denote whether the given duration is a rest or
    not. T = rest. Default = NIL.
  - :is-tied-to. T or NIL to denote whether the given duration is tied later
-   to the next duration in a given rthm-seq-bar/<a href="./rthm-seq_lsp.html#robo645">rthm-seq</a> object. T =
+   to the next duration in a given rthm-seq-bar/<a href="./rthm-seq_lsp.html#robo648">rthm-seq</a> object. T =
    tied. Default = NIL.
  - :duration. Indicates whether the duration argument has been given as a
-   duration in seconds, not a known <a href="#robo297">rhythm</a> like 'e or 8. T indicates that
+   duration in seconds, not a known <a href="#robo299">rhythm</a> like 'e or 8. T indicates that
    the duration is a duration in seconds. Default = NIL.
- - :<a href="./tempo_lsp.html#robo300">tempo</a>. Indicates the <a href="./tempo_lsp.html#robo300">tempo</a> for the given <a href="#robo297">rhythm</a> and is used only when
-    :duration is set to figure out the <a href="#robo297">rhythm</a> type (1/8, 1/4 etc.) from the
+ - :<a href="./tempo_lsp.html#robo302">tempo</a>. Indicates the <a href="./tempo_lsp.html#robo302">tempo</a> for the given <a href="#robo299">rhythm</a> and is used only when
+    :duration is set to figure out the <a href="#robo299">rhythm</a> type (1/8, 1/4 etc.) from the
     two values. So this is not related to any tempi applied, rather one that
-    is reflected in the duration-in-<a href="./tempo_lsp.html#robo300">tempo</a> slot of <a href="./event_lsp.html#robo447">event</a>.
+    is reflected in the duration-in-<a href="./tempo_lsp.html#robo302">tempo</a> slot of <a href="./event_lsp.html#robo449">event</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo297">rhythm</a> object.
+<pre> A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>make-rhythm</strong> 16)
@@ -811,42 +811,42 @@ data: NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>make-rhythm</strong> (rthm &amp;key is-rest is-tied-to is-tied-from duration
-                           (<a href="./tempo_lsp.html#robo300">tempo</a> 60.0))
+                           (<a href="./tempo_lsp.html#robo302">tempo</a> 60.0))
 </pre>
 
 
 <a name="rhythm2fmid2dtie"></a>
-<a name="robo456"></a><h2 class=robodoc>rhythm/mid-tie [ Methods ]</h2>
+<a name="robo458"></a><h2 class=robodoc>rhythm/mid-tie [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 14th 2018, Heidhausen
  
- DESCRIPTION return T or NIL depending on whether the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> is in the
- <a href="./utilities_lsp.html#robo967">middle</a> of a <a href="./slippery-chicken-edit_lsp.html#robo778">tie</a> (i.e. both tied-from or tied-to are T)
+ DESCRIPTION return T or NIL depending on whether the <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> is in the
+ <a href="./utilities_lsp.html#robo976">middle</a> of a <a href="./slippery-chicken-edit_lsp.html#robo785">tie</a> (i.e. both tied-from or tied-to are T)
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> object
+<pre> the <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T or NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>mid-tie</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>mid-tie</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2freplace2dmark"></a>
-<a name="robo457"></a><h2 class=robodoc>rhythm/replace-mark [ Methods ]</h2>
+<a name="robo459"></a><h2 class=robodoc>rhythm/replace-mark [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Replace a specified mark of a given <a href="#robo297">rhythm</a> object with a second specified
- mark. If a <a href="#robo297">rhythm</a> object contains more than one mark, individual marks can
+<pre> Replace a specified mark of a given <a href="#robo299">rhythm</a> object with a second specified
+ mark. If a <a href="#robo299">rhythm</a> object contains more than one mark, individual marks can
  be changed without modifying the remaining marks.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
  - The mark to be replaced.
  - The new mark.
 </pre>
@@ -854,95 +854,95 @@ data: NIL
 <pre> Returns the new value of the MARKS slot of the given object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Make a <a href="#robo297">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo409">add</a> the mark 'a, then replace 'a with 's
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="./event_lsp.html#robo169">add-mark</a> r 'a)
+<pre class="source">;; Make a <a href="#robo299">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo411">add</a> the mark 'a, then replace 'a with 's
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="./chord_lsp.html#robo70">add-mark</a> r 'a)
   (<strong>replace-mark</strong> r 'a 's))
 
 =&gt; (S)
 
-;; Make a <a href="#robo297">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo409">add</a> a list of marks, replace just the 'pizz mark with
+;; Make a <a href="#robo299">rhythm</a> object, <a href="./recursive-assoc-list_lsp.html#robo411">add</a> a list of marks, replace just the 'pizz mark with
 ;; a 'batt mark
 
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (loop for m in '(a s pizz col-legno) do (<a href="#robo440">add-mark-once</a> r m))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (loop for m in '(a s pizz col-legno) do (<a href="#robo442">add-mark-once</a> r m))
   (<strong>replace-mark</strong> r 'pizz 'batt))
 
 =&gt; (COL-LEGNO BATT S A)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>replace-mark</strong> ((r <a href="#robo297">rhythm</a>) what with &amp;optional ignore)
+<pre class="source">(defmethod <strong>replace-mark</strong> ((r <a href="#robo299">rhythm</a>) what with &amp;optional ignore)
 </pre>
 
 
 <a name="rhythm2frhythm2dequal"></a>
-<a name="robo458"></a><h2 class=robodoc>rhythm/rhythm-equal [ Methods ]</h2>
+<a name="robo460"></a><h2 class=robodoc>rhythm/rhythm-equal [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Compares the values of two <a href="#robo297">rhythm</a> objects to determine if they are equal. 
+<pre> Compares the values of two <a href="#robo299">rhythm</a> objects to determine if they are equal. 
 
  NB <strong>rhythm-equal</strong> compares the values only, so rhythms with the same values
     will still be considered equal even if their other attributes (such as
     :is-rest and :is-tied-to etc.) are different.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo297">rhythm</a> object.
- - A second <a href="#robo297">rhythm</a> object.
+<pre> - A first <a href="#robo299">rhythm</a> object.
+ - A second <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> T if the values of the given <a href="#robo297">rhythm</a> objects are equal, else NIL.
+<pre> T if the values of the given <a href="#robo299">rhythm</a> objects are equal, else NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((r1 (<a href="#robo455">make-rhythm</a> 4))
-      (r2 (<a href="#robo455">make-rhythm</a> 4)))
+<pre class="source">(let ((r1 (<a href="#robo457">make-rhythm</a> 4))
+      (r2 (<a href="#robo457">make-rhythm</a> 4)))
   (<strong>rhythm-equal</strong> r1 r2))
 
 =&gt; T
 
-(let ((r1 (<a href="#robo455">make-rhythm</a> 4))
-      (r2 (<a href="#robo455">make-rhythm</a> 8)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 4))
+      (r2 (<a href="#robo457">make-rhythm</a> 8)))
   (<strong>rhythm-equal</strong> r1 r2))
 
 =&gt; NIL
 
-(let ((r1 (<a href="#robo455">make-rhythm</a> 4 :is-rest T))
-      (r2 (<a href="#robo455">make-rhythm</a> 4 :is-rest NIL)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 4 :is-rest T))
+      (r2 (<a href="#robo457">make-rhythm</a> 4 :is-rest NIL)))
   (<strong>rhythm-equal</strong> r1 r2))
 
 =&gt; T
 
-(let ((r1 (<a href="#robo455">make-rhythm</a> 4 :is-tied-to T))
-      (r2 (<a href="#robo455">make-rhythm</a> 4 :is-tied-to NIL)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 4 :is-tied-to T))
+      (r2 (<a href="#robo457">make-rhythm</a> 4 :is-tied-to NIL)))
   (<strong>rhythm-equal</strong> r1 r2))
 
 =&gt; T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>rhythm-equal</strong> ((r1 <a href="#robo297">rhythm</a>) (r2 <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>rhythm-equal</strong> ((r1 <a href="#robo299">rhythm</a>) (r2 <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2frhythm2dlist"></a>
-<a name="robo459"></a><h2 class=robodoc>rhythm/rhythm-list [ Functions ]</h2>
+<a name="robo461"></a><h2 class=robodoc>rhythm/rhythm-list [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Create a list of rhythms from symbols, possibly involving ties and not
  needing meters etc. (i.e. not as strict as rthm-seq). 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The list of <a href="#robo297">rhythm</a> symbols.
+<pre> - The list of <a href="#robo299">rhythm</a> symbols.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL indicates whether to create a <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> from the
+<pre> - T or NIL indicates whether to create a <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> from the
    result. If NIL, a simple list will be returned (default = NIL). 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list or <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> of the <a href="#robo297">rhythm</a> objects.
+<pre> A list or <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> of the <a href="#robo299">rhythm</a> objects.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create a list of <a href="#robo297">rhythm</a> objects
+<pre class="source">;; Create a list of <a href="#robo299">rhythm</a> objects
 (<strong>rhythm-list</strong> '(q w+e q. h.+s e.+ts))
 
 =&gt;(
@@ -963,25 +963,25 @@ RHYTHM: value: 5.333333333333333, duration: 0.75
 RHYTHM: value: 24.0f0, duration: 0.16666666666666666
 )
 
-;; Collect the data from each of the individual <a href="#robo297">rhythm</a> objects in the list. 
+;; Collect the data from each of the individual <a href="#robo299">rhythm</a> objects in the list. 
 (let ((rl (<strong>rhythm-list</strong> '(q w+e q. h.+s e.+ts))))
   (print (loop for r in rl collect (data r))))
 
 =&gt; (Q "W" "E" Q. "H." "S" "E." "TS")
 
-;; Set the optional argument to T to create a <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> instead
+;; Set the optional argument to T to create a <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> instead
 (<strong>rhythm-list</strong> '(q w+e q. h.+s e.+ts) t)
 
 =&gt;
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 8, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 8, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (
 [...]
 )
 
-;; Create a <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> and check that it's a <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> using cscl-p 
+;; Create a <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> and check that it's a <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> using cscl-p 
 (let ((rl (<strong>rhythm-list</strong> '(q w+e q. h.+s e.+ts) t)))
   (cscl-p rl))
 
@@ -993,82 +993,82 @@ data: (
 
 
 <a name="rhythm2frhythm2f"></a>
-<a name="robo460"></a><h2 class=robodoc>rhythm/rhythm/ [ Methods ]</h2>
+<a name="robo462"></a><h2 class=robodoc>rhythm/rhythm/ [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Determines the ratio of one <a href="#robo297">rhythm</a> object's duration to that of a second
- <a href="#robo297">rhythm</a> object by use of division. 
+<pre> Determines the ratio of one <a href="#robo299">rhythm</a> object's duration to that of a second
+ <a href="#robo299">rhythm</a> object by use of division. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
- - A second <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
+ - A second <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A number.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((r1 (<a href="#robo455">make-rhythm</a> 'q))
-      (r2 (<a href="#robo455">make-rhythm</a> 'e)))
+<pre class="source">(let ((r1 (<a href="#robo457">make-rhythm</a> 'q))
+      (r2 (<a href="#robo457">make-rhythm</a> 'e)))
   (<strong>rhythm/</strong> r1 r2))
 
 =&gt; 2.0
 
-(let ((r1 (<a href="#robo455">make-rhythm</a> 'q))
-      (r3 (<a href="#robo455">make-rhythm</a> 's.)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 'q))
+      (r3 (<a href="#robo457">make-rhythm</a> 's.)))
   (<strong>rhythm/</strong> r1 r3))
 
 =&gt; 2.6666667
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>rhythm/</strong> ((r1 <a href="#robo297">rhythm</a>) (r2 <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>rhythm/</strong> ((r1 <a href="#robo299">rhythm</a>) (r2 <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2frm2dmarks"></a>
-<a name="robo461"></a><h2 class=robodoc>rhythm/rm-marks [ Methods ]</h2>
+<a name="robo463"></a><h2 class=robodoc>rhythm/rm-marks [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Remove a specified mark (or a list of specified marks) from the MARKS slot
- of a given <a href="#robo297">rhythm</a> object. If the mark specified is not present in the given
- <a href="#robo297">rhythm</a> object's MARKS slot, a warning is printed. If some marks of a list
- of specified marks are present in the <a href="#robo297">rhythm</a> object's MARKS slot and other
+ of a given <a href="#robo299">rhythm</a> object. If the mark specified is not present in the given
+ <a href="#robo299">rhythm</a> object's MARKS slot, a warning is printed. If some marks of a list
+ of specified marks are present in the <a href="#robo299">rhythm</a> object's MARKS slot and other
  aren't, those that are will be removed and a warning will be printed for
  the rest.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
+<pre> - A <a href="#robo299">rhythm</a> object.
  - A mark or list of marks.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether a warning is to be printed if the specified
-   mark is not present in the given <a href="#robo297">rhythm</a> object's MARKS slot.
+   mark is not present in the given <a href="#robo299">rhythm</a> object's MARKS slot.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always returns NIL.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; The method itself returns NIL
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
-  (<a href="#robo440">add-mark-once</a> r 'a)
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
+  (<a href="#robo442">add-mark-once</a> r 'a)
   (<strong>rm-marks</strong> r 'a))
 
 =&gt; NIL
 
 ;; Adding a list of marks to r, then removing only 's
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (loop for m in '(a s pizz col-legno x-head) do 
-       (<a href="#robo440">add-mark-once</a> r m))
+       (<a href="#robo442">add-mark-once</a> r m))
   (<strong>rm-marks</strong> r 's)
   (marks r))
 
 =&gt; (X-HEAD COL-LEGNO PIZZ A)
 
 ;; Removing a list of marks from r
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (loop for m in '(a s pizz col-legno x-head) do 
-       (<a href="#robo440">add-mark-once</a> r m))
+       (<a href="#robo442">add-mark-once</a> r m))
   (<strong>rm-marks</strong> r '(s a))
   (marks r))
 
@@ -1076,153 +1076,153 @@ data: (
 
 ;; Attempting to remove a mark that isn't present results in a warning
 ;; being printed by default
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (loop for m in '(a s pizz col-legno x-head) do 
-       (<a href="#robo440">add-mark-once</a> r m))
+       (<a href="#robo442">add-mark-once</a> r m))
   (<strong>rm-marks</strong> r 'zippy))
 
 =&gt; NIL
-WARNING: <a href="#robo297">rhythm</a>::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A) 
+WARNING: <a href="#robo299">rhythm</a>::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A) 
 
 ;; Suppress printing the warning when the specified mark isn't present
-(let ((r (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r (<a href="#robo457">make-rhythm</a> 'q)))
   (loop for m in '(a s pizz col-legno x-head) do 
-       (<a href="#robo440">add-mark-once</a> r m))
+       (<a href="#robo442">add-mark-once</a> r m))
   (<strong>rm-marks</strong> r 'zippy nil))
 
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>rm-marks</strong> ((r <a href="#robo297">rhythm</a>) marks &amp;optional (warn t))
+<pre class="source">(defmethod <strong>rm-marks</strong> ((r <a href="#robo299">rhythm</a>) marks &amp;optional (warn t))
 </pre>
 
 
 <a name="rhythm2fscale"></a>
-<a name="robo462"></a><h2 class=robodoc>rhythm/scale [ Methods ]</h2>
+<a name="robo464"></a><h2 class=robodoc>rhythm/scale [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Change the value of a <a href="#robo297">rhythm</a> object's duration value by a specified
- scaling <a href="./utilities_lsp.html#robo947">factor</a>. Bear in mind that after scaling, depending on the
- complexity of the <a href="#robo297">rhythm</a>, the data slot may no longer accurately represent
+<pre> Change the value of a <a href="#robo299">rhythm</a> object's duration value by a specified
+ scaling <a href="./utilities_lsp.html#robo956">factor</a>. Bear in mind that after scaling, depending on the
+ complexity of the <a href="#robo299">rhythm</a>, the data slot may no longer accurately represent
  the new rhythmic value (though of course the value, duration, and rq, etc.,
  slots will). 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo297">rhythm</a> object.
- - A scaling <a href="./utilities_lsp.html#robo947">factor</a>.
+<pre> - A <a href="#robo299">rhythm</a> object.
+ - A scaling <a href="./utilities_lsp.html#robo956">factor</a>.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - &lt;<a href="./slippery-chicken_lsp.html#robo793">clone</a>&gt;. This argument determines whether a new <a href="#robo297">rhythm</a> object is made or
+<pre> - &lt;<a href="./slippery-chicken_lsp.html#robo800">clone</a>&gt;. This argument determines whether a new <a href="#robo299">rhythm</a> object is made or
    the duration value of the old object is replaced. When set to T, a new 
    object is made based on the duration value of the original. When set to 
    NIL, the original duration value is replaced (see example). Default = T. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo297">rhythm</a> object.
+<pre> A <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((r (<a href="#robo455">make-rhythm</a> 4)))
+<pre class="source">(let ((r (<a href="#robo457">make-rhythm</a> 4)))
   (data (<strong>scale</strong> r 2)))
 =&gt; H
 
-(let ((r (<a href="#robo455">make-rhythm</a> 4)))
+(let ((r (<a href="#robo457">make-rhythm</a> 4)))
   (data (<strong>scale</strong> r 3)))
 =&gt; H.
 
-(let ((r (<a href="#robo455">make-rhythm</a> 4)))
+(let ((r (<a href="#robo457">make-rhythm</a> 4)))
   (data (<strong>scale</strong> r .5)))
 =&gt; E
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>scale</strong> ((r <a href="#robo297">rhythm</a>) scaler &amp;optional (<a href="./slippery-chicken_lsp.html#robo793">clone</a> t) ignore1 ignore2)
+<pre class="source">(defmethod <strong>scale</strong> ((r <a href="#robo299">rhythm</a>) scaler &amp;optional (<a href="./slippery-chicken_lsp.html#robo800">clone</a> t) ignore1 ignore2)
 </pre>
 
 
 <a name="rhythm2fscale2das2drests"></a>
-<a name="robo463"></a><h2 class=robodoc>rhythm/scale-as-rests [ Methods ]</h2>
+<a name="robo465"></a><h2 class=robodoc>rhythm/scale-as-rests [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 29th 2020, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Sometimes you don't want to actually <a href="./afu_lsp.html#robo32">scale</a> a <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a>'s duration rather
- stretch it out with rests. This method will leave the <a href="#robo297">rhythm</a> object intact
+<pre> Sometimes you don't want to actually <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> a <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a>'s duration rather
+ stretch it out with rests. This method will leave the <a href="#robo299">rhythm</a> object intact
  (or cloned) before then cloning it a given number of times but as a rest.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo297">rhythm</a> object
+<pre> - the <a href="#robo299">rhythm</a> object
  - the scaler (integer)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL: whether to <a href="./slippery-chicken_lsp.html#robo793">clone</a> the first argument
+<pre> - T or NIL: whether to <a href="./slippery-chicken_lsp.html#robo800">clone</a> the first argument
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a list of <a href="#robo297">rhythm</a> objects
+<pre> a list of <a href="#robo299">rhythm</a> objects
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>scale-as-rests</strong> ((r <a href="#robo297">rhythm</a>) scaler &amp;optional (<a href="./slippery-chicken_lsp.html#robo793">clone</a> t))
+<pre class="source">(defmethod <strong>scale-as-rests</strong> ((r <a href="#robo299">rhythm</a>) scaler &amp;optional (<a href="./slippery-chicken_lsp.html#robo800">clone</a> t))
 </pre>
 
 
 <a name="rhythm2fstart2dtie"></a>
-<a name="robo464"></a><h2 class=robodoc>rhythm/start-tie [ Methods ]</h2>
+<a name="robo466"></a><h2 class=robodoc>rhythm/start-tie [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> September 14th 2018, Heidhausen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> return T or NIL depending on whether the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> is the start of a <a href="./slippery-chicken-edit_lsp.html#robo778">tie</a>
+<pre> return T or NIL depending on whether the <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> is the start of a <a href="./slippery-chicken-edit_lsp.html#robo785">tie</a>
  (tied-from but not tied-to)  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> the <a href="#robo297">rhythm</a>/<a href="./event_lsp.html#robo447">event</a> object
+<pre> the <a href="#robo299">rhythm</a>/<a href="./event_lsp.html#robo449">event</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T or NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>start-tie</strong> ((r <a href="#robo297">rhythm</a>))
+<pre class="source">(defmethod <strong>start-tie</strong> ((r <a href="#robo299">rhythm</a>))
 </pre>
 
 
 <a name="rhythm2fsubtract"></a>
-<a name="robo465"></a><h2 class=robodoc>rhythm/subtract [ Methods ]</h2>
+<a name="robo467"></a><h2 class=robodoc>rhythm/subtract [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo297">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo299">rhythm</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a new <a href="#robo297">rhythm</a> object with a duration that is equal to the difference
- <a href="./utilities_lsp.html#robo925">between</a> the duration of two other given <a href="#robo297">rhythm</a> objects.   
+<pre> Create a new <a href="#robo299">rhythm</a> object with a duration that is equal to the difference
+ <a href="./utilities_lsp.html#robo934">between</a> the duration of two other given <a href="#robo299">rhythm</a> objects.   
 
- NB: This method only returns a single <a href="#robo297">rhythm</a> rather than a list with
+ NB: This method only returns a single <a href="#robo299">rhythm</a> rather than a list with
      ties. Thus h - e., for example, returns TQ... 
 
- If the resulting duration cannot be presented as a single <a href="#robo297">rhythm</a>, the DATA
- slot of the resulting <a href="#robo297">rhythm</a> object is set to NIL, though the VALUE and
+ If the resulting duration cannot be presented as a single <a href="#robo299">rhythm</a>, the DATA
+ slot of the resulting <a href="#robo299">rhythm</a> object is set to NIL, though the VALUE and
  DURATION slots are still set with the corresponding numeric values. 
 
  If the resulting duration is equal to or less than 0, NIL is returned and
  an optional warning may be printed.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="#robo297">rhythm</a> object.
- - A second <a href="#robo297">rhythm</a> object.
+<pre> - A first <a href="#robo299">rhythm</a> object.
+ - A second <a href="#robo299">rhythm</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL to indicate whether a warning is to be printed when the
    resulting duration is less than or equal to 0. Default = 0. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo297">rhythm</a> object if the resulting duration is greater than 0, else NIL and
+<pre> A <a href="#robo299">rhythm</a> object if the resulting duration is greater than 0, else NIL and
  the optional warning.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Make a new <a href="#robo297">rhythm</a> object with a duration equal to one quarter minus one
+<pre class="source">;; Make a new <a href="#robo299">rhythm</a> object with a duration equal to one quarter minus one
 ;; eighth. 
-(let ((r1 (<a href="#robo455">make-rhythm</a> 'q))
-      (r2 (<a href="#robo455">make-rhythm</a> 'e)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 'q))
+      (r2 (<a href="#robo457">make-rhythm</a> 'e)))
   (<strong>subtract</strong> r1 r2))
 
 =&gt; 
@@ -1237,34 +1237,34 @@ NAMED-OBJECT: id: E, tag: NIL,
 data: E 
 
 ;; A half minus a dotted eighth is represented as a triplet half
-(let ((r1 (<a href="#robo455">make-rhythm</a> 'h))
-      (r2 (<a href="#robo455">make-rhythm</a> 'e.)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 'h))
+      (r2 (<a href="#robo457">make-rhythm</a> 'e.)))
   (data (<strong>subtract</strong> r1 r2)))
 
 =&gt; TQ...
 
 ;; If the resulting duration is 0 or less, return NIL, with no warning by
 ;; default 
-(let ((r1 (<a href="#robo455">make-rhythm</a> 'e))
-      (r2 (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 'e))
+      (r2 (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>subtract</strong> r1 r2))
 
 =&gt; NIL
 
 ;; Setting the optional argument to t returns a warning when the resulting
 ;; duration is less than 0
-(let ((r1 (<a href="#robo455">make-rhythm</a> 'e))
-      (r2 (<a href="#robo455">make-rhythm</a> 'q)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 'e))
+      (r2 (<a href="#robo457">make-rhythm</a> 'q)))
   (<strong>subtract</strong> r1 r2 t))
 
 =&gt; NIL
-WARNING: <a href="#robo297">rhythm</a>::arithmetic: new duration is -0.5; can't create <a href="#robo297">rhythm</a>
+WARNING: <a href="#robo299">rhythm</a>::arithmetic: new duration is -0.5; can't create <a href="#robo299">rhythm</a>
 
 ;; Subtracting a septuplet-16th from a quarter results in a duration that
-;; cannot be represented as a single <a href="#robo297">rhythm</a>, therefore setting the DATA to NIL
+;; cannot be represented as a single <a href="#robo299">rhythm</a>, therefore setting the DATA to NIL
 ;; while VALUE and DURATION are still set.
-(let ((r1 (<a href="#robo455">make-rhythm</a> 4))
-      (r2 (<a href="#robo455">make-rhythm</a> 28)))
+(let ((r1 (<a href="#robo457">make-rhythm</a> 4))
+      (r2 (<a href="#robo457">make-rhythm</a> 28)))
   (print (value (<strong>subtract</strong> r1 r2)))
   (print (duration (<strong>subtract</strong> r1 r2)))
   (print (data (<strong>subtract</strong> r1 r2))))
@@ -1275,12 +1275,12 @@ WARNING: <a href="#robo297">rhythm</a>::arithmetic: new duration is -0.5; can't 
 NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>subtract</strong> ((r1 <a href="#robo297">rhythm</a>) (r2 <a href="#robo297">rhythm</a>) &amp;optional warn)
+<pre class="source">(defmethod <strong>subtract</strong> ((r1 <a href="#robo299">rhythm</a>) (r2 <a href="#robo299">rhythm</a>) &amp;optional warn)
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/rhythm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-05-10 11:02:11</p>
+<p>Generated from ./../../src/rhythm.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-08-13 11:15:10</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -32,27 +32,27 @@
 
 
 <a name="circular2dsclist2fpopcorn"></a>
-<a name="robo120"></a><h2 class=robodoc>circular-sclist/popcorn [ Classes ]</h2>
+<a name="robo122"></a><h2 class=robodoc>circular-sclist/popcorn [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
-<pre> <a href="./assoc-list_lsp.html#robo113">assoc-list</a>
+<pre> <a href="./assoc-list_lsp.html#robo115">assoc-list</a>
 
  File:             <a href="#robo_top_of_doc">popcorn.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo628">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo309">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo298">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo632">circular-sclist</a> -&gt; <strong>popcorn</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo631">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo311">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo300">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> -&gt; <strong>popcorn</strong>
 
  Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
- Purpose:          Inspired by popping <strong>popcorn</strong>, <a href="./wolfram_lsp.html#robo1029">generate</a> a series of values
-                   ranging <a href="./utilities_lsp.html#robo925">between</a> &gt; 0.0 and &lt;= 1.0 by (optionally fixed)
+ Purpose:          Inspired by popping <strong>popcorn</strong>, <a href="./wolfram_lsp.html#robo1038">generate</a> a series of values
+                   ranging <a href="./utilities_lsp.html#robo934">between</a> &gt; 0.0 and &lt;= 1.0 by (optionally fixed)
                    random selection. Given 1 or more starting values (not
-                   zero) we <a href="./wolfram_lsp.html#robo1029">generate</a> tendentially increasing new values
+                   zero) we <a href="./wolfram_lsp.html#robo1038">generate</a> tendentially increasing new values
                    until we reach 1.0. This is not a linear process,
-                   rather, we get spike values that increase the <a href="./utilities_lsp.html#robo924">average</a>
+                   rather, we get spike values that increase the <a href="./utilities_lsp.html#robo933">average</a>
                    value and thus increase the chance of further spikes.
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -66,86 +66,86 @@
 
 
 <a name="popcorn2ffit2dto2dlength"></a>
-<a name="robo394"></a><h2 class=robodoc>popcorn/fit-to-length [ Methods ]</h2>
+<a name="robo396"></a><h2 class=robodoc>popcorn/fit-to-length [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo120">popcorn</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo122">popcorn</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Change the length of the list of kernels contained in a given <a href="#robo120">popcorn</a>
+<pre> Change the length of the list of kernels contained in a given <a href="#robo122">popcorn</a>
  object by adding or removing items at regular intervals. If adding items,
  linear interpolation will be used.
 
- NB: The new length must be <a href="./utilities_lsp.html#robo925">between</a> 1 and 1 less than <a href="./sc-map_lsp.html#robo589">double</a> the original
+ NB: The new length must be <a href="./utilities_lsp.html#robo934">between</a> 1 and 1 less than <a href="./sc-map_lsp.html#robo592">double</a> the original
      length. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo120">popcorn</a> object.
+<pre> - A <a href="#robo122">popcorn</a> object.
  - An integer that is the new length of the list of the KERNELS slot of the
-   given <a href="#robo120">popcorn</a> object.
+   given <a href="#robo122">popcorn</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns the integer that is the new length of the KERNELS slot.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((ppcn (<a href="#robo397">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
+<pre class="source">(let ((ppcn (<a href="#robo399">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
   (<strong>fit-to-length</strong> ppcn 100))
 
 =&gt; 100
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>fit-to-length</strong> ((pc <a href="#robo120">popcorn</a>) length)
+<pre class="source">(defmethod <strong>fit-to-length</strong> ((pc <a href="#robo122">popcorn</a>) length)
 </pre>
 
 
 <a name="popcorn2fget2dkernel"></a>
-<a name="robo395"></a><h2 class=robodoc>popcorn/get-kernel [ Methods ]</h2>
+<a name="robo397"></a><h2 class=robodoc>popcorn/get-kernel [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo120">popcorn</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo122">popcorn</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Generate the next value for the KERNELS slot of a given <a href="#robo120">popcorn</a> object and
+<pre> Generate the next value for the KERNELS slot of a given <a href="#robo122">popcorn</a> object and
  change the internal state, with the help of the get-kernel-aux method.
 
- This method is called automatically from within the <a href="#robo396">heat</a> method.
+ This method is called automatically from within the <a href="#robo398">heat</a> method.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo120">popcorn</a> object.
+<pre> - A <a href="#robo122">popcorn</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The next value for the given <a href="#robo120">popcorn</a> object's KERNEL slot. 
+<pre> The next value for the given <a href="#robo122">popcorn</a> object's KERNEL slot. 
  Returns NIL when the kernel value is &gt; 1.0.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-kernel</strong> ((pc <a href="#robo120">popcorn</a>))
+<pre class="source">(defmethod <strong>get-kernel</strong> ((pc <a href="#robo122">popcorn</a>))
 </pre>
 
 
 <a name="popcorn2fheat"></a>
-<a name="robo396"></a><h2 class=robodoc>popcorn/heat [ Methods ]</h2>
+<a name="robo398"></a><h2 class=robodoc>popcorn/heat [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo120">popcorn</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo122">popcorn</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Generate a series of values for the KERNELS slot of a <a href="#robo120">popcorn</a> object,
- ranging <a href="./utilities_lsp.html#robo925">between</a> &gt;0.0 and &lt;= 1.0, by (optionally fixed) random selection.
+<pre> Generate a series of values for the KERNELS slot of a <a href="#robo122">popcorn</a> object,
+ ranging <a href="./utilities_lsp.html#robo934">between</a> &gt;0.0 and &lt;= 1.0, by (optionally fixed) random selection.
  If calling <strong>heat</strong> explicitly on a previously heated object, all kernels and
  associated data will be deleted before being regenerated. 
 
- Taking the one or more starting values of the <a href="#robo120">popcorn</a> object, the method
+ Taking the one or more starting values of the <a href="#robo122">popcorn</a> object, the method
  generates tendentially increasing new values until it reaches 1.0. This is
  not a linear process; rather, the method produces spike values based on the
- min-spike and max-spike values of the given <a href="#robo120">popcorn</a> object that increase
- the <a href="./utilities_lsp.html#robo924">average</a> value and thus increase the chance of further spikes.
+ min-spike and max-spike values of the given <a href="#robo122">popcorn</a> object that increase
+ the <a href="./utilities_lsp.html#robo933">average</a> value and thus increase the chance of further spikes.
 
- NB: This method is called within the initialize-instance for the <a href="#robo120">popcorn</a>
+ NB: This method is called within the initialize-instance for the <a href="#robo122">popcorn</a>
      object, and as such is not necessarily needed to be accessed directly
      by the user.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo120">popcorn</a> object.
+<pre> - An <a href="#robo122">popcorn</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns the <a href="#robo120">popcorn</a> object with a newly generated list of 'kernel' values. 
+<pre> Returns the <a href="#robo122">popcorn</a> object with a newly generated list of 'kernel' values. 
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((ppcn (<a href="#robo397">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
+<pre class="source">(let ((ppcn (<a href="#robo399">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
   (print ppcn)
   (setf (min-spike ppcn) 4.0)
   (<strong>heat</strong> ppcn))
@@ -160,23 +160,23 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 [...]
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>heat</strong> ((pc <a href="#robo120">popcorn</a>))
+<pre class="source">(defmethod <strong>heat</strong> ((pc <a href="#robo122">popcorn</a>))
 </pre>
 
 
 <a name="popcorn2fmake2dpopcorn"></a>
-<a name="robo397"></a><h2 class=robodoc>popcorn/make-popcorn [ Functions ]</h2>
+<a name="robo399"></a><h2 class=robodoc>popcorn/make-popcorn [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo120">popcorn</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo122">popcorn</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo120">popcorn</a> object. This method uses the <a href="#robo396">heat</a> method internally to
- <a href="./wolfram_lsp.html#robo1029">generate</a> a series of decimal values ('kernels'), ranging <a href="./utilities_lsp.html#robo925">between</a> &gt; 0.0 and
+<pre> Make a <a href="#robo122">popcorn</a> object. This method uses the <a href="#robo398">heat</a> method internally to
+ <a href="./wolfram_lsp.html#robo1038">generate</a> a series of decimal values ('kernels'), ranging <a href="./utilities_lsp.html#robo934">between</a> &gt; 0.0 and
  &lt;= 1.0, by (optionally fixed) random selection.
 
  Taking the one or more starting values, the method generates tendentially
  increasing new values until it reaches 1.0. This is not a linear process;
  rather, the method produces spike values based on the min-spike and
- max-spike values specified, which increase the <a href="./utilities_lsp.html#robo924">average</a> value of the kernels
+ max-spike values specified, which increase the <a href="./utilities_lsp.html#robo933">average</a> value of the kernels
  generated so far and thus increase the chance of further spikes.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -185,25 +185,25 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :id. An optional ID for the <a href="#robo120">popcorn</a> object to be created. Default = NIL. 
+ - :id. An optional ID for the <a href="#robo122">popcorn</a> object to be created. Default = NIL. 
  - :fixed-random. T or NIL to indicate whether the 'kernel' values generated
-   by the subsequent <a href="#robo396">heat</a> method are to be based on a fixed random seed. 
+   by the subsequent <a href="#robo398">heat</a> method are to be based on a fixed random seed. 
    T = fixed random. Default = T.
- - :max-spike. A decimal number that is the <a href="./event_lsp.html#robo197">highest</a> possible 'spike' value
-   that the <a href="#robo396">heat</a> method may produce when generating the 'kernel'
+ - :max-spike. A decimal number that is the <a href="./event_lsp.html#robo199">highest</a> possible 'spike' value
+   that the <a href="#robo398">heat</a> method may produce when generating the 'kernel'
    values. This is a sudden high value that will itself not be present in
    the final data, but will go towards skewing the mean, thus increasing the
    kernel values more rapidly and increasing the chance of more spikes
    occurring. Default = 4.0.
- - :min-spike. A decimal number that is the <a href="./event_lsp.html#robo202">lowest</a> possible 'spike' value
-   that the <a href="#robo396">heat</a> method may produce when generating the 'kernel'
+ - :min-spike. A decimal number that is the <a href="./chord_lsp.html#robo94">lowest</a> possible 'spike' value
+   that the <a href="#robo398">heat</a> method may produce when generating the 'kernel'
    values. This is a sudden high value that will itself not be present in
    the final data, but will go towards skewing the mean, thus increasing the
    kernel values more rapidly and increasing the chance of more spikes
    occurring. Default = 2.0.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - A <a href="#robo120">popcorn</a> object.
+<pre> - A <a href="#robo122">popcorn</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>make-popcorn</strong> '(0.02 0.03) :max-spike 4.2 :min-spike 3.7)
@@ -249,7 +249,7 @@ POPCORN: kernels: (0.02 0.03 0.025828497 0.02540851 0.02578175 0.026703479
 total: 44.67911, numk: 186, mink: 0.02, maxk: 0.89963627
 min-spike: 3.7, max-spike: 4.2, fixed-random: T, mean: 0.24021028
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo298">sclist</a>-length: 2, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 2, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (0.02 0.03)
@@ -261,30 +261,30 @@ data: (0.02 0.03)
 
 
 <a name="popcorn2fscale"></a>
-<a name="robo398"></a><h2 class=robodoc>popcorn/scale [ Methods ]</h2>
+<a name="robo400"></a><h2 class=robodoc>popcorn/scale [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo120">popcorn</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo122">popcorn</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Scale the list of number values in the KERNEL slot of a given <a href="#robo120">popcorn</a>
+<pre> Scale the list of number values in the KERNEL slot of a given <a href="#robo122">popcorn</a>
  object to a new range using specified maximum value and optional minimum
  value.
 
- NB: This method does not change the internal state of the given <a href="#robo120">popcorn</a>
+ NB: This method does not change the internal state of the given <a href="#robo122">popcorn</a>
      object except for the KERNELS slot.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo120">popcorn</a> object.
+<pre> - A <a href="#robo122">popcorn</a> object.
  - A number that is the new maximum value for the scaled list.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - A number that is the new minimum value for the scaled list.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The new contents of the given <a href="#robo120">popcorn</a> object's KERNELS slot after scaling. 
+<pre> The new contents of the given <a href="#robo122">popcorn</a> object's KERNELS slot after scaling. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Specifying a new maximum value only
-(let ((ppcn (<a href="#robo397">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
+(let ((ppcn (<a href="#robo399">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
   (<strong>scale</strong> ppcn 10.0))
 
 =&gt; (0.0 0.10578585 0.061657257 0.057214428 0.061162785 0.070913345 0.10464539
@@ -326,7 +326,7 @@ data: (0.02 0.03)
 
 
 ;; Using both a new maximum and new minimum value
-(let ((ppcn (<a href="#robo397">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
+(let ((ppcn (<a href="#robo399">make-popcorn</a> '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
   (<strong>scale</strong> ppcn 8.0 5.0))
 
 =&gt; (5.0 5.031736 5.018497 5.017164 5.0183487 5.021274 5.0313935 5.024911
@@ -364,12 +364,12 @@ data: (0.02 0.03)
     7.210328 7.123583 7.5121717 7.763177 7.1218557 5.8312807 7.17017)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>scale</strong> ((pc <a href="#robo120">popcorn</a>) max &amp;optional (min 0.0) ignore1 ignore2)
+<pre class="source">(defmethod <strong>scale</strong> ((pc <a href="#robo122">popcorn</a>) max &amp;optional (min 0.0) ignore1 ignore2)
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/popcorn.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-05-10 11:02:11</p>
+<p>Generated from ./../../src/popcorn.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-08-13 11:15:10</p>
 </div> <!-- footer -->
 </body>
 </html>

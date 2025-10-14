@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    15th December 2011
 ;;;
-;;; $$ Last modified:  15:18:00 Fri Apr  4 2025 CEST
+;;; $$ Last modified:  16:12:55 Wed Aug 13 2025 CEST
 ;;;
 ;;; SVN ID: $Id: rthm-seq-bar.lsp 509 2011-12-14 20:35:27Z reed@seanreed.ie $
 ;;;
@@ -133,23 +133,24 @@
 
 ;;; MDE Sat May 12 16:30:54 2012
 ;;;                                   bytes
-(defun file-write-ok (file &optional (min-size 1) (max-secs-ago 120)) 
-  (let ((age (- (get-universal-time) (file-write-date file)))
-        (size (file-size file))
-        (result nil))
-    (setq result (probe-file file))
+(defun file-write-ok (file &optional (min-size 1) (max-secs-ago 120))
+  (let* ((age (- (get-universal-time) (file-write-date file)))
+         (too-old (> age max-secs-ago))
+         (size (file-size file))
+         (result (probe-file file)))
+    ;; (print age)
     (unless result
       (warn "sc-test-suite-aux::file-write-ok: file ~a doesn't exist" file))
     ;; MDE Wed Feb 27 10:05:15 2019 -- these were updated yesterday to always
     ;; check that result is fine before resetting it, so that 'not fine' state
     ;; is sticky within the function 
-    (when result (setq result (< age max-secs-ago)))
+    (when result (setq result (not too-old)))
     (unless result
       (warn "sc-test-suite-aux::file-write-ok: file ~a is ~a seconds old ~
              ~%(expected maximum ~a)"
             file age max-secs-ago))
     (when result (setq result (when (numberp size) (>= size min-size))))
-    (unless result
+    (when (and (not result) (not too-old)) ; don't rewarn if it was too old
       (warn "sc-test-suite-aux::file-write-ok: file ~a has size ~a ~
              (expected minimum ~a)" file size min-size))
     ;; MDE Fri Jan 10 16:18:08 2020 -- return file size as wel instead of just T

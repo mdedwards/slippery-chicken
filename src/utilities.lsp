@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:59:58 Wed Jun 11 2025 CEST
+;;; $$ Last modified:  16:59:54 Tue Oct 14 2025 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1241,7 +1241,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; N.B. we have to define a combine method for any classes where we need a
 ;;; combine-all call 
-
 (defun combine-all (objects)
   (let ((result (clone (first objects))))
     (loop for rs in (cdr objects) do

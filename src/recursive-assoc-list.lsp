@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:15:00 Wed Aug 13 2025 CEST
+;;; $$ Last modified:  17:00:48 Tue Oct 14 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -403,7 +403,8 @@ data: BEAM
   (link-named-objects ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Jan  3 17:20:53 2013 
+;;; MDE Thu Jan  3 17:20:53 2013
+;;; NB see also the combine-all function (utilities.lsp)
 (defmethod combine :around ((ral1 recursive-assoc-list)
                             (ral2 recursive-assoc-list))
   (declare (ignore ral1 ral2))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  21:03:27 Wed Jun  4 2025 CEST
+;;; $$ Last modified:  17:00:22 Tue Oct 14 2025 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -538,6 +538,8 @@ data: (3 4 5)
 ;;; changes the data list of a clone of the first argument by appending a
 ;;; copy of the data list of the second argument i.e. it creates a wholly new
 ;;; sclist object which it then returns.
+;;;
+;;; NB see also the combine-all function (utilities.lsp)
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first sclist object.

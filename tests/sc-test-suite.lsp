@@ -17,11 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-<<<<<<< HEAD
-;;; $$ Last modified:  14:58:42 Mon Jul 14 2025 CEST
-=======
-;;; $$ Last modified:  14:52:24 Tue Jun 24 2025 CEST
->>>>>>> 6b43ac797c040cb82792b12689b129e79413b9f2
+;;; $$ Last modified:  17:02:11 Fri Oct 10 2025 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -6573,6 +6569,8 @@
             (top ((((4 4) q x 4)))))))
         bar)
     (print rsp)
+    ;; (update-rsp-ids rsp)
+    ;; (verify-and-store rsp)
     ;; (print (bars (get-data '(long 1 a) rsp)))
     (sc-test-check
      ;; MDE Fri Jul  5 15:40:56 2019

@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11th December 2011 (Bangkok)
 ;;;
-;;; $$ Last modified:  16:17:16 Tue Aug 13 2024 CEST
+;;; $$ Last modified:  16:13:21 Wed Aug 13 2025 CEST
 ;;;
 ;;; SVN ID: $Id: bar-holder.lsp 431 2011-12-08 14:44:30Z medward2 $
 ;;;
@@ -216,6 +216,7 @@
                           190 15000 190 18000 190 18000 190 16000 190 15000 190
                           14000 190 13000 190 15000 #+cmn 9000000 58000 #+clm
                           120000000 #+clm 119000000)))
+    ;; (print 'here)
     (probe-delete-multi "/tmp/" o-files)
     (load-from-examples-dir "tempus-perfectum.lsp")
     (sc-test-check

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  17:28:48 Thu May 15 2025 CEST
+;;; $$ Last modified:  16:42:03 Sat Nov  1 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -98,8 +98,8 @@
                      (typep (first (data data)) 'instrument)))
       (when (and ip (not (typep ip 'instrument-palette)))
         (error "player::initialize-instance: ~
-                simple references as instruments must be accompanied ~
-                by instrument-palettes!: data: ~a, instrument-palette: ~a"
+                simple references as instruments must be~%accompanied ~
+                by instrument-palettes!:~%data: ~a, instrument-palette: ~a"
                (data p) ip)))
     ;; MDE Wed May 28 16:43:01 2014 
     (unless (listp (staff-names p))

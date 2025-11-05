@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  21:18:39 Thu Jun 12 2025 CEST
+;;; $$ Last modified:  15:17:25 Sat Nov  1 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -11940,7 +11940,7 @@ data: (11 15)
          ;; RP  Tue Mar  7 12:59:07 2023
          ;; test if Csound command is available before
          ;; trying to render the piece
-	 ;; LF 2025-06-18 - removed probe-file
+         ;; LF 2025-06-18 - removed probe-file
          (success (if (get-sc-config 'csound-command)
                       (apply #'shell
                              (append

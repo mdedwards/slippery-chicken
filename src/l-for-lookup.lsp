@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  13:12:55 Fri May  3 2024 CEST
+;;; $$ Last modified:  17:38:48 Wed Oct 29 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1231,7 +1231,8 @@ data: (
       #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3 3 3 3 3 3 3 3)
 |#
 ;;; SYNOPSIS
-(defun fibonacci-transitions (total-items levels &optional morph)
+(defun fibonacci-transitions (total-items levels
+                              &optional morph (on-fail #'error))
 ;;; ****
   (let ((len (typecase levels 
                (list (length levels))
@@ -1239,10 +1240,11 @@ data: (
                (t (error "l-for-lookup::fibonacci-transitions: ~
                           levels must be a list or an integer: ~a"
                          levels)))))
-    (when (<= (floor total-items len) 2)
-      (error "l-for-lookup::fibonacci-transitions: can't do ~a transitions ~
-              over ~a items." total-items len))
-    (if (= 1 len)
+    (if (<= (floor total-items len) 2)
+      (when (functionp on-fail) ; MDE Wed Oct 29 17:38:34 2025, Heidhausen
+        (funcall on-fail "l-for-lookup::fibonacci-transitions: can't do ~a ~
+                          transitions over ~a items." total-items len))
+      (if (= 1 len)
         (ml 0 total-items)
         (let* ((lop-off (floor total-items len))
                (new-len (- total-items lop-off))
@@ -1255,26 +1257,27 @@ data: (
                (end (ml (1- len) (1- add-end)))
                (transition (progn
                              (push (if morph
-                                       (make-morph :i1 (- len 2) :i2 (- len 1)
-                                                   :proportion 0.75)
-                                       (- len 2))
+                                     (make-morph :i1 (- len 2) :i2 (- len 1)
+                                                 :proportion 0.75)
+                                     (- len 2))
                                    end)
                              (append (if morph (morph-list beg) beg)
                                      result end))))
           ;; convert references to the levels list elements, if given
           (setq transition
                 (if (listp levels)
-                    (loop for el in transition collect
-                         (if (morph-p el) ; morphing so 3 elements in struct
-                             (progn
-                               (setf (morph-i1 el) (nth (morph-i1 el) levels)
-                                     (morph-i2 el) (nth (morph-i2 el) levels))
-                               el)
-                             (nth el levels)))
-                    transition))
+                  (loop for el in transition
+                        collect
+                        (if (morph-p el) ; morphing so 3 elements in struct
+                          (progn
+                            (setf (morph-i1 el) (nth (morph-i1 el) levels)
+                                  (morph-i2 el) (nth (morph-i2 el) levels))
+                            el)
+                          (nth el levels)))
+                  transition))
           (if (and morph (list-of-numbers-p morph))
-              (morph-env transition morph)
-              transition)))))
+            (morph-env transition morph)
+            transition))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 25 19:30:04 2016 -- used by fibonacci-transition and

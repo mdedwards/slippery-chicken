@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  14:21:16 Tue Jun 10 2025 CEST
+;;; $$ Last modified:  12:43:00 Sat Nov  1 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -417,6 +417,7 @@
 (defmethod num-players ((e ensemble))
 ;;; ****
   (num-data e))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* ensemble/players-exist
 ;;; DESCRIPTION

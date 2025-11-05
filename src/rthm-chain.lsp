@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  20:20:50 Thu Jan  9 2025 CET
+;;; $$ Last modified:  19:32:33 Wed Oct 29 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1780,7 +1780,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
            (integer items)
            (t (error "procession: items must be a list or integer")))))
     (when (< num-items 4)
-      (error "~a~%procession: <num-items> must be >= 4" items))
+      (error "procession: <num-items> must be >= 4~%You have ~a" items))
     (let* ((orders-cscl (make-cscl orders))
            ;; make sure we've got access to all items for the last 30% or so
            (num-at-full (round (* num-results peak)))

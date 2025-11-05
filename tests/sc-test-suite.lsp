@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:49:00 Tue Oct 14 2025 CEST
+;;; $$ Last modified:  16:58:18 Sat Nov  1 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -7889,7 +7889,8 @@
                           (va (piano :midi-channel 2))
                           (vc (cello :midi-channel 3))
                           (cb (double-bass :midi-channel 4))))
-             :tempo-map '((1 (q 180)))
+             ;; test rthm-seq references as a side test
+             :tempo-map '(((1 1 1) (q 180)) ((1 3 1) (1 160)))
              :set-palette `((s1 ,s1)
                             (s2 ,s2))
              :rthm-seq-palette '((1 ((((2 4) (s) e (s) - e e -))

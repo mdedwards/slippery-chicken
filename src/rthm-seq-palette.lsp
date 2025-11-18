@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  17:06:16 Fri Oct 10 2025 CEST
+;;; $$ Last modified:  19:40:01 Thu Nov 13 2025 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -612,7 +612,7 @@ rthm-seq SEQ3
     (cmn::cmn-display 
      system
      :file file 
-     ;; :spacing-hook #'cmn::even-spacing
+     ;; :spacing-hook #'cmn::cmn-even-spacing
      :auto-bar-nums nil
      :size size
      :page-nums page-nums

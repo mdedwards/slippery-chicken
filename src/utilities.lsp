@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:59:54 Tue Oct 14 2025 CEST
+;;; $$ Last modified:  16:43:58 Sat Nov 29 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1813,6 +1813,38 @@
                    (x-scaler (min x-max (max x-min (* x x-scaler))))
                    (t x))
      collect (min y-max (max y-min (* y y-scaler)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/reverse-env
+;;; DATE
+;;; 29th November 2025
+;;; 
+;;; DESCRIPTION
+;;; Reverse an envelope. This is lifted directly from CLM's envelope-reverse
+;;; because we might increasingly not have CLM available to call directly.  
+;;; 
+;;; ARGUMENTS
+;;; A list of breakpoint pairs
+;;; 
+;;; RETURN VALUE
+;;; The new breakpoint pairs list
+;;; 
+;;; EXAMPLE
+#|
+(reverse-env '(0 .1 30 .3 100 1)) --> (0 1 70 0.3 100 0.1)
+|#
+;;; SYNOPSIS
+(defun reverse-env (e)
+;;; ****
+  (let ((len (length e)))
+    (if (or (= len 0) (= len 2))
+        e
+      (let ((xmax (nth (- len 2) e))
+            (ne nil))
+        (loop for x in e by #'cddr and y in (cdr e) by #'cddr do
+          (push y ne)
+          (push (- xmax x) ne))
+        ne))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

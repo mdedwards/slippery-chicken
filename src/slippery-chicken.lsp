@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:17:25 Sat Nov  1 2025 CET
+;;; $$ Last modified:  20:11:41 Thu Nov 20 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -672,9 +672,6 @@
   (num-notes (piece sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 13:11:31 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken/cmn-display
 ;;; DESCRIPTION
 ;;; Write the data stored in a given slippery-chicken object to disk as an EPS

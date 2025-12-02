@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    30th June 2015
 ;;;
-;;; $$ Last modified:  19:28:37 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  17:00:41 Sat Nov 29 2025 CET
 ;;;
 ;;; SVN ID: $Id: activity-levels.lsp 5048 2014-10-20 17:10:38Z medward2 $
 ;;;
@@ -162,7 +162,7 @@ current: 0 level: 0.0
 (defmethod active :around ((ale activity-levels-env) &optional print)
 ;;; **** 
   (let ((level (interpolate (current ale) (env ale))))
-    (when print (format t "~&current: ~a level: ~a" (current ale) level))
+    (when print (format t "~&current: ~a, level: ~a" (current ale) level))
     (if (= (current ale) (1- (cycle-length ale)))
         (setf (current ale) 0)
         (incf (current ale)))

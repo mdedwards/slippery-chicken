@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:43:58 Sat Nov 29 2025 CET
+;;; $$ Last modified:  16:20:13 Tue Dec  2 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6964,5 +6964,38 @@ yes_foo, 1 2 3 4;
           for thing = (aref array row col)
           do (when thing (return (values thing row))))))
         
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun min-delta (list min)
+  (unless (every #'numberp list)
+    (error "utilities::min-delta: argument should be a list of numbers: ~a"
+           list))
+  (let ((nth-max (1- (length list)))
+        (result '())        
+        (i 0)
+        n1 not-yet)
+    ;; (loop for n1 in (butlast list) and i from 0 do
+    (loop while (< i nth-max) do
+      ;; (print i)
+      (when not-yet  ; means we didn't trigger the when in the inner loop so the
+                                        ; last subtraction didn't exceed min
+        (return))
+      (setq not-yet t
+            n1 (nth i list))
+      (loop while not-yet
+            for j from (1+ i) to nth-max
+            for n2 = (nth j list)
+            do
+               ;; (print n1) (print n2)
+               ;; nb it is not assumed that list has numbers in ascending order
+               ;; or that they are positive  
+               (when (>= (abs (- n2 n1)) min)
+                 ;; note that this means the first number in the list will not
+                 ;; be included in the results, which is generally as it should
+                 ;; be
+                 (push n2 result)
+                 (setq not-yet nil
+                       i j))))
+    (nreverse result)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

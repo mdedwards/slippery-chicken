@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:58:18 Sat Nov  1 2025 CET
+;;; $$ Last modified:  16:19:41 Tue Dec  2 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -17341,8 +17341,17 @@ est)")))
       (fsanok 0 -1 1 (loop repeat 10000 collect (+ .1 (random .4))))
       (fsanok -1 -2 0 (loop repeat 100000 collect (- (random 1.7) .1)))
       (fsanok 15.1 10.1 20.1 
-              (loop repeat 1000000 collect (- (random 40.0) 50.0)) .001)
-      )))
+              (loop repeat 1000000 collect (- (random 40.0) 50.0)) .001))))
+
+(sc-deftest test-utilities-min-delta ()
+  (sc-test-check
+    (equalp (min-delta '(1 5 7 11 21 24 26 30 50) 3)
+            '(5 11 21 24 30 50))
+    (equalp (min-delta '(1 5 -7 11 21 24 26 30 50) 3)
+            '(5 -7 11 21 24 30 50))
+    (equalp (print (min-delta '(1 5 7 11 21 10 7 24 20 26 30 31) 4))
+            '(5 11 21 10 24 20 26 30))
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May  8 21:14:56 2012 -- other random tests

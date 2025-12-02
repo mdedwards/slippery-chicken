@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:11:41 Thu Nov 20 2025 CET
+;;; $$ Last modified:  19:59:00 Tue Dec  2 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6443,6 +6443,24 @@ seq-num 5, VN, replacing G3 with B6
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod rehearsal-letters-times ((sc slippery-chicken) &optional verbose)
+  (let* ((player1 (first (players sc)))
+         (times (loop for rl in (rehearsal-letters sc)
+                      collect (start-time (get-bar sc rl player1)))))
+    (unless (every #'numberp times)
+      (error "slippery-chicken: rehearsal-letters-times: can't get times of ~
+              ~%all bars: ~a" times))
+    (when verbose
+      (format t "~&Times: ~a ~%Durations: ~a~%Bars: ~a"
+              (mapcar #'secs-to-mins-secs times)
+              (loop with last = 0
+                    for time in (econs times (duration sc))
+                    collect (secs-to-mins-secs (- time last))
+                    do (setq last time))
+              (rehearsal-letters sc)))
+    times))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; update-write-time-sig only looks at the first bar of a seq so if we want to
 ;;; look at all bars and time write-time-sig accordingly call this method.
@@ -8767,40 +8785,66 @@ FS4 G4)
 ;;; - the slippery-chicken object to analyse
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - when looking at groups of bars, how many bars at a time? Default = 3
-;;; - when looking at the sharpness of the envelope, what percentage change in
-;;;   number of events per bar (based in the min/max in the overall envelope)
-;;;   is considered a steep enough change. Default = 50 (%)
+;;; keyword arguments:
+;;; - :sum-bars: when looking at groups of bars, how many bars at a time?
+;;;   Default = 3 
+;;; - :jump-threshold: when looking at the sharpness of the envelope, what
+;;;   percentage change in number of events per bar (based in the min/max in the
+;;;   overall envelope) is considered a steep enough change. Default = 50 (%)
+;;; - :min-length: the minimum length in bars between boundaries. Default = NIL
+;;;   = no minimum.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of bar numbers
 ;;;
 ;;; SYNOPSIS
-(defmethod find-boundaries ((sc slippery-chicken) &optional
-                            (sum-bars 3) (jump-threshold 50))
+(defmethod find-boundaries ((sc slippery-chicken)
+                            &key (sum-bars 3) (jump-threshold 50) min-length
+                            skip-rest-bars)
 ;;; ****
   ;; NB We test this function in sc-test-full.lsp, on slippery when wet
   (labels ((sum-from (envelope nth how-many)
              (loop for i from nth for n = (nth i envelope)
-                repeat how-many while n sum n))
+                   repeat how-many while n sum n))
            (get-sums (envelope skip &optional (multiples-of 1))
              (loop for i below (length envelope) by skip
-                collect (1+ i) 
-                collect (sum-from envelope i multiples-of))))
+                   collect (1+ i) 
+                   collect (sum-from envelope i multiples-of))))
     (let* ((nns (loop for bn from 1 to (num-bars sc)
-                   for bars = (get-bar sc bn)
-                   ;; for each bar number create a list of the number of
-                   ;; events across all instruments
-                   collect (loop for bar in bars sum (notes-needed bar))))
+                      for bars = (get-bar sc bn)
+                      ;; for each bar number create a list of the number of
+                      ;; events across all instruments
+                      collect (loop for bar in bars sum (notes-needed bar))))
            ;; this does nothing more than splice in the bar number...
            (sf (get-sums nns 1))
            ;; ... but this sums on a bar-by-bar basis across the next several
            ;; bars i.e. bar 1-3, 2-4, 3-5...
            (sfm (get-sums nns 1 sum-bars))
            ;; now found boundaries: sharp changes in envelope curve
-           (eb (envelope-boundaries sf jump-threshold)))
-      ;; (print sfm)
-      (decide-boundaries (get-clusters eb) sfm))))
+           (eb (envelope-boundaries sf jump-threshold))
+           ;; (print sfm)
+           (result (decide-boundaries (get-clusters eb) sfm)))
+      ;; MDE Tue Dec  2 15:16:37 2025, Heidhausen -- restrict boundary lengths
+      ;; to a minimum number of bars. got to use last bar here to decide if the
+      ;; last boundary detected allows enough bars until the end. Note also that
+      ;; today I changed the &optional args to &key.
+      (when (numberp min-length)
+        ;; need to have the last bar at the end in order to decide if the last
+        ;; section is long enough, but shouldn't include it in the boundaries
+        (setq result (min-delta (cons 1 (econs result (num-bars sc)))
+                                min-length)))
+      (when (= (num-bars sc) (first (last result)))
+        (setq result (butlast result)))
+      (when skip-rest-bars
+        (setq result (loop for bar-num in result
+                           collect (next-non-rest-bar sc bar-num))))
+      result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod next-non-rest-bar ((sc slippery-chicken) bar-num &optional players)
+  (loop for bn from bar-num to (num-bars sc) do
+    (unless (empty-bars? sc bn bn players t)
+      (return bn))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/get-events-sorted-by-time
@@ -11063,7 +11107,6 @@ data: (11 15)
                                            (pitch-or-chord event))
                                        nil current-clef verbose)))
                             ;; MDE Mon Dec 21 18:44:57 2020, Heidhausen
-                            ;; todo: here
                             (too-high-for-clef (highest event) current-clef)
                             (too-low-for-clef (lowest event) current-clef)
                             (and (not (equal new-current-clef c1))

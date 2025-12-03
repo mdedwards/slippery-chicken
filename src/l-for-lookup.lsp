@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  17:38:48 Wed Oct 29 2025 CET
+;;; $$ Last modified:  17:42:47 Wed Dec  3 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1024,7 +1024,7 @@ data: (
 |#
 ;;; SYNOPSIS
 (defun fibonacci-transition (num-items &optional (item1 0) (item2 1) morph
-                                         first-down)
+                                       first-down)
 ;;; ****
   ;; just some sanity checks
   (unless item1
@@ -1055,8 +1055,47 @@ data: (
     (setq result (append left (nreverse right))
           result (if morph (morph-list result first-down) result))
     (if (and morph (list-of-numbers-p morph))
-        (morph-env result morph)
-        result)))
+      (morph-env result morph)
+      result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* l-for-lookup/fibonacci-partial-transition
+;;; DATE
+;;; December 3rd 2025
+;;; 
+;;; DESCRIPTION
+;;; The same as fibonacci-transition except that it doesn't complete. So we
+;;; generated more results than required, using the <progress>  argument to
+;;; determine how far along the transition we should be at the end.
+;;; 
+;;; EXAMPLE
+#|
+(FIBONACCI-PARTIAL-TRANSITION 100 .7) -->
+(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0
+ 0 0 1 0 0 1 0 1 0 1 0 1 0 1 0 1 1 0 1 1 1 1)
+
+(FIBONACCI-PARTIAL-TRANSITION 100 .5) -->
+(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+ 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0)
+
+(FIBONACCI-TRANSITION 100) -->
+(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0
+ 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 1 0 0 1 0 1 0 1 1 0 1 0 1 0 1 1 0 1 1 0 1 1 1 1
+ 0 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1)
+|#
+;;; SYNOPSIS
+(defun fibonacci-partial-transition (num-items &optional (progress 0.618)
+                                               (item1 0) (item2 1) morph
+                                               first-down)
+;;; ****
+  (unless (number-between progress 0 1)
+    (error "l-for-lookup: fibonacci-partial-transition: 2nd argument should ~
+            ~%be a float between 0.0 and 1.0: ~a" progress))
+  (subseq (fibonacci-transition (round num-items progress) item1 item2 morph
+                                first-down)
+          0 num-items))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Say you want a transition between two repeating states over a period of x

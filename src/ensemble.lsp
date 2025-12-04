@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  12:43:00 Sat Nov  1 2025 CET
+;;; $$ Last modified:  14:57:54 Thu Dec  4 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -797,6 +797,17 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; 
 ;;; EXAMPLE
 #|
+(make-ensemble 'test
+               '((fl ((alto-flute piccolo) ; the flautist doubles
+                       :midi-channel 1 :microtones-midi-channel 2))
+                  ;; e.g. cl is the freely-named player and it plays the two
+                  ;; clarinets that are defined in our instrument palette (so we
+                  ;; have to use their names).
+                  (cl ((b-flat-clarinet bass-clarinet)
+                       :midi-channel 3 :microtones-midi-channel 4))
+                  (hn (french-horn :midi-channel 5 :microtones-midi-channel 6))
+                  (perc (marimba :midi-channel 7))))
+
 (let ((ens (make-ensemble 
               'ens
               '((flt ((flute piccolo) :midi-channel 1))

@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  17:42:47 Wed Dec  3 2025 CET
+;;; $$ Last modified:  19:27:19 Thu Dec  4 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1534,7 +1534,7 @@ data: (
 |#
 ;;; SYNOPSIS
 (defun remix-in (list &key (remix-in-fib-seed 13) (mirror nil) (test #'eql)
-                        (replace nil))
+                      (replace nil))
   ;; ****
   (when (> 4 (length (remove-duplicates list :test test)))
     (error "l-for-lookup::remix-in: you should have at least four different ~

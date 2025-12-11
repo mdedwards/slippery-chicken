@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:20:13 Tue Dec  2 2025 CET
+;;; $$ Last modified:  14:40:37 Thu Dec 11 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1845,6 +1845,82 @@
           (push y ne)
           (push (- xmax x) ne))
         ne))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun envelope-there-and-back-again (env)
+  (let* ((x-max (lastx env))
+         (new-env (reverse env))
+         (rev-env (reverse env)))
+    (loop for x in (cdddr rev-env) by #'cddr and y in (cddr rev-env) by #'cddr do
+      (push (+ x-max (- x-max x)) new-env)
+      (push y new-env))
+    (nreverse new-env)))
+
+(defun x-norm (env xmax)
+  ;; change x axis values so that they run to xmax
+  (let ((scl (/ xmax (lastx env))))
+    (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
+      collect (* x scl) collect y)))
+
+;;; ****f* utilities/repeat-env
+;;; DATE
+;;; 11th December 2025.
+;;; 
+;;; DESCRIPTION
+;;; Repeat an envelope any number of times. Also liften from CLM directly,
+;;; including Bill Schottstaedt's original comment here:
+;;;
+;;; repeat-envelope will repeat an envelope the number of times specified by its
+;;; second argument.  Hence if you specify (repeat-envelope '(0 0 100 1) 2) the
+;;; result will be (0 0 100 1 101 0 201 1). Because the final y value was
+;;; different from the first y value, a quick ramp will be inserted between
+;;; repeats.  You can have every other repeat be a reflection of the given
+;;; envelope by setting the optional second argument to t.  In that case,
+;;; (repeat-envelope '(0 0 100 1) 2 t) the result will be (0 0 100 1 200 0).  If
+;;; you want the original x axis limits respected by the resultant envelope, set
+;;; the third argument ("x-normalized") to t.
+;;; 
+;;; ARGUMENTS
+;;; - the list of x,y breakpoint pairs (the envelope)
+;;; - the number of times to repeat the envelope
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or nil to reflect the envelope (see above)
+;;; - T or nil to use the original x-axis limits (see above also)
+;;; 
+;;; RETURN VALUE
+;;; the new envelope
+;;; 
+;;; SYNOPSIS
+(defun repeat-env (ur-env ur-num-times &optional reflected x-normalized)
+;;; ****
+  (let* ((env (if reflected (envelope-there-and-back-again ur-env) ur-env))
+         (num-times (if reflected (floor ur-num-times 2) ur-num-times))
+         (x-max (lastx env))
+         (first-y (second env))
+         (x (first env))
+         (first-y-is-last-y (= first-y (first (last env))))
+         (offset (/ x-max 100.0))
+         (dxs (loop for x1 in (cddr env) by #'cddr and x0 in env by #'cddr
+                    collect (- x1 x0)))
+         (new-env (list first-y x))
+         (repeating nil))
+    (loop for i from 1 to num-times do
+      (when (and repeating (not first-y-is-last-y))
+        (push (incf x offset) new-env)
+        (push first-y new-env))
+      (loop for dx in dxs and y in (cdddr env) by #'cddr do
+        (push (incf x dx) new-env)
+        (push y new-env))
+      (setf repeating t))
+    (when (and reflected (oddp ur-num-times))
+      (loop for xx in (cddr ur-env) by #'cddr
+            and dx in dxs and y in (cdddr env) by #'cddr do
+              (push (incf x dx) new-env)
+              (push y new-env)))
+    (if x-normalized
+      (x-norm (nreverse new-env) (lastx ur-env))
+      (nreverse new-env))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

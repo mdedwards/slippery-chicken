@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:55:48 Mon Jul 14 2025 CEST
+;;; $$ Last modified:  20:36:06 Mon Dec 15 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -839,7 +839,6 @@ data: 132
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod (setf pitch-or-chord) (value (e event))
   ;;  13.2.11 really have to change the written note too
   (let* ((wporc (written-pitch-or-chord e))
@@ -2484,7 +2483,7 @@ NIL
                      a s ss te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
                      long-pause t3 arp lhp bartok nail flag downbow upbow open
                      ;; harm 0 1 2 3 4 5)) ; fingerings now handled by integerp
-                     harm))
+                     harm stress))
         ;;(directions '(beg-8va end-8va beg-8vb end-8vb beg-15ma beg-15mb
         ;;            end-15ma end15mb cresc-beg cresc-end dim-beg dim-end
         ;;          ped ped^ ped-up uc tc sost^

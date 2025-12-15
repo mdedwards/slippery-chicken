@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  10:19:55 Mon Jan  6 2025 CET
+;;; $$ Last modified:  16:46:25 Thu Dec 11 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2632,7 +2632,9 @@ PITCH: frequency: 1760.000, midi-note: 93, midi-channel: 1
 ;;; - A list of pitch objects or pitch symbols. Note that any NILs in the list
 ;;;   will be collected but obviously not turned into pitches.
 ;;; - A number indicating the number of semitones by which the list is to be
-;;;   transposed. 
+;;;   transposed. Or, if this is a pitch object or symbol, calculate the number
+;;;   of semitones based on the distance from this to the first pitch in the
+;;;   first argument
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments
@@ -2707,6 +2709,10 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
         highest (make-pitch highest))
   (unless lowest (setq lowest (make-pitch 'c-1)))
   (unless highest (setq highest (make-pitch 'b8)))
+  ;; MDE Thu Dec 11 16:45:17 2025, Heidhausen
+  (when (or (pitch-p semitones) (symbolp semitones))
+    (setq semitones (pitch- (make-pitch semitones)
+                            (make-pitch (first pitch-list)))))
   (let* ((pl (loop for p in pitch-list collect (when p (make-pitch p))))
          ;; MDE Wed Aug 22 09:56:03 2018 -- taken from chord and integrated here
          ;; to avoid code duplication

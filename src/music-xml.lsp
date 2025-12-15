@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  10:21:18 Thu May 29 2025 CEST
+;;; $$ Last modified:  12:24:15 Mon Dec 15 2025 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -215,6 +215,9 @@
                   (at '("accent" "tenuto"))
                   (ts "detached-legato")
                   (te "tenuto")
+                  ;; MDE Mon Dec 15 12:21:47 2025, Heidhausen -- like a cmn
+                  ;; wedge (staccatissimo, like above) but at an angle  
+                  (stress "stress")
                   ;; tech means xml-technical will be called; see bottom of
                   ;; this function
                   (lhp '(tech "stopped" a))

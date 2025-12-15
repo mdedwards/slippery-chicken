@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  10:23:55 Thu May 29 2025 CEST
+;;; $$ Last modified:  12:25:03 Mon Dec 15 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -193,8 +193,12 @@
              (a (list (accent (dx dx) (dy dy) the-text)))
              (lhp (list (left-hand-pizzicato (dx dx) (dy dy) the-text)))
              (bartok (list (bartok-pizzicato (dx dx) (dy dy) the-text)))
-             (s (list (staccato (dx dx) (dy dy) the-text)))
+             (s (list (staccato (dx dx) (dy dy) the-text)))          
              ;; MDE Thu Dec  2 15:19:05 2021, Heidhausen
+             (ss (list (wedge (dx dx) (dy dy) the-text)))
+             ;; MDE Mon Dec 15 12:24:28 2025, Heidhausen -- there's nothing like
+             ;; dorico's stress but wedge is close
+             (stress (list (wedge (dx dx) (dy dy) the-text)))
              (ss (list (wedge (dx dx) (dy dy) the-text)))
              (nail (list (fingernail (dx dx) (dy dy) the-text)))
              (stopped (list (stopped-note (dx dx) (dy dy) the-text)))

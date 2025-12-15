@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  10:26:41 Thu May 29 2025 CEST
+;;; $$ Last modified:  12:25:47 Mon Dec 15 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -102,6 +102,9 @@
            (poco-crini "^\"poco crini\" ")
            (s "-. ")
            (ss "-! ") ; MDE Thu Dec 2 15:16:27 2021, Heidhausen
+           ;; MDE Mon Dec 15 12:25:29 2025, Heidhausen -- something close to
+           ;; dorico's 'stress' 
+           (stress "-! ") ; MDE Thu Dec 2 15:16:27 2021, Heidhausen
            (nail (no-lp-mark 'nail))
            (stopped (no-lp-mark 'stopped))
            (as "->-. ")

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:11:36 Sat Jun 14 2025 CEST
+;;; $$ Last modified:  12:53:52 Mon Dec 15 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2909,7 +2909,8 @@ data: F5
 ;;; 
 ;;; DESCRIPTION
 ;;; Make a chord object from a starting pitch and a list of intervals in
-;;; semitones.  
+;;; semitones. NB the intervalls are cumulative i.e. each number represents the
+;;; interval from the last note, not the starting pitch.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the starting pitch: symbol or pitch object

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  12:24:15 Mon Dec 15 2025 CET
+;;; $$ Last modified:  12:59:29 Tue Dec 16 2025 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -400,9 +400,9 @@
                 (progn
                   (when (and (get-sc-config 'warn-fingering)
                              (or (< mark 0) (> mark 5)))
-                    (warning "music-xml::xml-get-mark: adding fingering ~a, ~
-                              hope your musicians have more than 4 fingers ~
-                              and a thumb!."
+                    (warn "music-xml::xml-get-mark: adding fingering ~a, ~
+                           hope your musicians have more than 4 fingers ~
+                           and a thumb!."
                              mark))
                   ;; is there a special mark for an open string? I can't find
                   ;; one in xml 
@@ -442,7 +442,11 @@
                ;; otherwise it might be a mark (e.g. text) already
                ;;; MDE Fri May 7 12:44:47 2021, Heidhausen -- don't warn cmn
                ;;; stuff
-               (t (unless (or silent (typep mark 'cmn::sundry))
+               ;;; MDE Tue Dec 16 12:56:30 2025, Heidhausen -- if cmn-display is
+               ;;; called before write-xml, we might have cmn text attached, so
+               ;;; ignore these too.
+               (t (unless (or silent (typep mark 'cmn::sundry)
+                              (typep mark 'cmn::text))
                     (warn "music-xml::get-xml-mark: unknown mark: ~a"
                           mark)))))))
       (when xml-mark

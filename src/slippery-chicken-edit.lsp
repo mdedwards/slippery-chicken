@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:14:41 Wed Aug 13 2025 CEST
+;;; $$ Last modified:  18:05:22 Tue Dec 16 2025 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4296,6 +4296,7 @@ NIL
 ;;; ****
   (unless players (setq players (players sc)))
   (unless (listp players) (setq players (list players)))
+  (unless end (setq end (num-bars sc)))
   (let* ((stlist (listp start))
          (ndlist (listp end))
          (stbar (if stlist (first start) start))

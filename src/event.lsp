@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:36:06 Mon Dec 15 2025 CET
+;;; $$ Last modified:  09:47:27 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -840,7 +840,7 @@ data: 132
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod (setf pitch-or-chord) (value (e event))
-  ;;  13.2.11 really have to change the written note too
+  ;; 13.2.11 really have to change the written note too
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))
          ;; MDE Tue Nov 20 17:51:34 2018 -- diff should actually always be an
@@ -2490,6 +2490,8 @@ NIL
         (noteheads '(circled-x circled x-head triangle wedge square triangle-up
                      improvOn flag-head)))
     (write-xml-ins-change e stream)     ; if it exists
+    ;; to keep track of the used channels on a player basis so we can write
+    ;; pedal-changes etc. to the right channels when they're attached to rests 
     (set-last-midi-channel e)
     ;; if the <marks> are in <syms> (or an int=fingering) they'll be removed
     ;; from <rest> and pushed into <syms-holder>
@@ -2575,7 +2577,7 @@ NIL
                (when (is-grace-note e)
                  (format stream "~&        <grace />"))
                (format stream "~&        <chord />"))
-           ;;  MDE Sat Oct 13 10:40:09 2018 
+           ;; MDE Sat Oct 13 10:40:09 2018 
              (multiple-value-setq (accidental pitch-notehead)
                (write-xml p :stream stream))
            ;; (setq accidental (write-xml p :stream stream))
@@ -4066,12 +4068,6 @@ NIL
 (defmethod round-to-nearest ((e event) &key (scale cm::*scale*)
                                          (rm-duplicates t))
 ;;; ****
-  #|
-  (when (pitch-or-chord e)
-    (round-to-nearest (pitch-or-chord e) :scale scale))
-  (when (written-pitch-or-chord e)
-    (round-to-nearest (written-pitch-or-chord e) :scale scale))
-  |#
   (unless (is-rest e)
     (let ((rounded (round-to-nearest (clone (pitch-or-chord e)) :scale scale)))
       (when (and (is-chord e) rm-duplicates)

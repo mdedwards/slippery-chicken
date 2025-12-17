@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  16:22:43 Tue Jun 10 2025 CEST
+;;; $$ Last modified:  17:36:20 Tue Dec 16 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -450,26 +450,30 @@
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod get-note ((bh bar-holder) bar-num note-num player &optional written)
+(defmethod get-note ((bh bar-holder) bar-num note-num player
+                     &optional written silent)
 ;;; ****
-  (let* ((bar (get-bar bh bar-num player))
-         (wants-chord (listp note-num))
-         (nth-note (1- (if wants-chord (first note-num) note-num)))
-         (chord-nth (when wants-chord (1- (second note-num))))
-         (event
-          (cond ((not bar)
-                 (warn "bar-holder::get-note: couldn't get bar number ~a ~
-                        for player ~a"
-                       bar-num player))
-                ((>= nth-note (num-score-notes bar))
-                 (warn "bar-holder::get-note: couldn't get note number ~a ~
-                        from bar ~a for ~a: s~%There are ~a score-notes ~
-                        in this bar" 
-                       note-num bar-num player (num-score-notes bar)))
-                (t (get-nth-non-rest-rhythm nth-note bar))))
-         (is-chord (when event (is-chord event))))
-    (when event
-      (if wants-chord
+  (flet ((this-warn (&rest args)
+           (unless silent
+             (apply #'warn args))))
+    (let* ((bar (get-bar bh bar-num player))
+           (wants-chord (listp note-num))
+           (nth-note (1- (if wants-chord (first note-num) note-num)))
+           (chord-nth (when wants-chord (1- (second note-num))))
+           (event
+             (cond ((not bar)
+                    (this-warn "bar-holder::get-note: couldn't get bar ~
+                                number ~a for player ~a"
+                               bar-num player))
+                   ((>= nth-note (num-score-notes bar))
+                    (this-warn "bar-holder::get-note: couldn't get note ~
+                                number ~a from bar ~a for ~a: s~%There are ~
+                                ~a score-notes in this bar" 
+                               note-num bar-num player (num-score-notes bar)))
+                   (t (get-nth-non-rest-rhythm nth-note bar))))
+           (is-chord (when event (is-chord event))))
+      (when event
+        (if wants-chord
           (progn
             (unless is-chord
               (error "bar-holder::get-note: requested bar num ~a note num ~a ~
@@ -477,16 +481,16 @@
                      bar-num note-num player))
             (unless (= 2 (length note-num))
               (error "bar-holder::get-note: when accessing a chord, note-num ~
-                    must be a 2 element list of integers:~%~a"
+                      must be a 2 element list of integers:~%~a"
                      note-num))
             (unless (< chord-nth is-chord)
-              (warn "bar-holder::get-note requested bar num ~a note num ~a ~
-                   for player ~a but chord has only ~a notes"
-                    bar-num note-num player is-chord))
+              (this-warn "bar-holder::get-note requested bar num ~a note ~
+                          num ~a for player ~a but chord has only ~a notes"
+                         bar-num note-num player is-chord))
             (get-nth chord-nth (if written
-                                   (written-pitch-or-chord event)
-                                   (pitch-or-chord event))))
-        event))))
+                                 (written-pitch-or-chord event)
+                                 (pitch-or-chord event))))
+          event)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

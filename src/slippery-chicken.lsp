@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:59:00 Tue Dec  2 2025 CET
+;;; $$ Last modified:  09:53:09 Wed Dec 17 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -2259,9 +2259,9 @@ T
 |#
 ;;; SYNOPSIS
 (defmethod get-note ((sc slippery-chicken) bar-num note-num player 
-                     &optional written)
+                     &optional written silent)
 ;;; ****
-  (get-note (piece sc) bar-num note-num player written))
+  (get-note (piece sc) bar-num note-num player written silent))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2419,7 +2419,6 @@ data: 32
                       &optional (error t))
 ;;; ****
   (get-event (piece sc) bar-num event-num player error))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -6446,17 +6445,20 @@ seq-num 5, VN, replacing G3 with B6
 (defmethod rehearsal-letters-times ((sc slippery-chicken) &optional verbose)
   (let* ((player1 (first (players sc)))
          (times (loop for rl in (rehearsal-letters sc)
-                      collect (start-time (get-bar sc rl player1)))))
+                      collect (start-time (get-bar sc rl player1))))
+         (durations (loop with last = 0
+                          for time in (econs times (duration sc))
+                          collect (- time last)
+                          do (setq last time))))
     (unless (every #'numberp times)
       (error "slippery-chicken: rehearsal-letters-times: can't get times of ~
               ~%all bars: ~a" times))
     (when verbose
-      (format t "~&Times: ~a ~%Durations: ~a~%Bars: ~a"
+      (format t "~&Times: ~a ~%Durations: ~a~%Min dur: ~a, Max: ~a~%Bars: ~a"
               (mapcar #'secs-to-mins-secs times)
-              (loop with last = 0
-                    for time in (econs times (duration sc))
-                    collect (secs-to-mins-secs (- time last))
-                    do (setq last time))
+              (mapcar #'secs-to-mins-secs durations)
+              (apply #'min durations)
+              (apply #'max durations)
               (rehearsal-letters sc)))
     times))
 

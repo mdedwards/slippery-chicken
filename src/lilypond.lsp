@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  12:36:09 Tue Dec 16 2025 CET
+;;; $$ Last modified:  10:10:56 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -69,7 +69,6 @@
                            ;; MDE Thu Sep 15 10:50:47 2016 -- default to the
                            ;; config setting 
                          (silent (not (get-sc-config 'warn-no-lp-mark))))
-  (break)
   (flet ((no-lp-mark (mark)
            (when silent
              (warn "lilypond:lp-get-mark: Sorry but ~a is not yet available ~

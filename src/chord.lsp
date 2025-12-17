@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  12:53:52 Mon Dec 15 2025 CET
+;;; $$ Last modified:  10:10:19 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1480,10 +1480,10 @@ data: (
 ;;; ****
   (labels ((rm-enh-aux (pitches)
              (loop 
-                for p in pitches
-                for p-enh = (enharmonic p :warn nil)
-                for i from 0 
-                do
+               for p in pitches
+               for p-enh = (enharmonic p :warn nil)
+               for i from 0 
+               do
                   (when (and p-enh
                              (pitch-member p-enh pitches nil #'is-octave))
                     (setf (nth i pitches) p-enh)))
@@ -1510,8 +1510,8 @@ data: (
                  (setf result
                        (if (or (not c2)
                                (<= c1acc c2acc))
-                           c1
-                           c2)))
+                         c1
+                         c2)))
                ;; OK we got the best by accidentals but let's just make sure
                ;; there's as few nasty intervals in there as possible too.
                (when (and c1 c2)
@@ -1542,8 +1542,8 @@ data: (
                                   (not (zerop c2acc))))
                      (setf result
                            (if (< c1acc c2acc)
-                               c1
-                               c2)))))
+                             c1
+                             c2)))))
                result))
            (rm-enharmonics (chord)
              (let* ((data (data chord))
@@ -1584,11 +1584,11 @@ data: (
                        others 
                        (when (> len 2)
                          (loop 
-                            with p1 = (second pitch-list)
-                            for p2 in (cddr pitch-list)
-                            for pe1 = (make-event p1 4)
-                            for pe2 = (make-event p2 4)
-                            do
+                           with p1 = (second pitch-list)
+                           for p2 in (cddr pitch-list)
+                           for pe1 = (make-event p1 4)
+                           for pe2 = (make-event p2 4)
+                           do
                               (when verbose
                                 (format t "~&attempt: before ~a ~a -- "
                                         (id (pitch-or-chord pe1))
@@ -1598,13 +1598,13 @@ data: (
                                 (format t "after ~a ~a"
                                         (id (pitch-or-chord pe1))
                                         (id (pitch-or-chord pe2))))
-                            ;; bit counter-intuitive this but works...
-                            do (setf p1 (pitch-or-chord pe2))
-                            collect p1)))
+                              ;; bit counter-intuitive this but works...
+                           do (setf p1 (pitch-or-chord pe2))
+                           collect p1)))
                  (setf result (make-chord
                                (if others
-                                   (append first2 others)
-                                   first2)
+                                 (append first2 others)
+                                 first2)
                                ;; MDE Fri Dec  6 10:41:27 2013
                                :force-midi-channel nil))
                  (when verbose
@@ -1614,30 +1614,36 @@ data: (
                  result))))
     ;; don't try to respell 1/12th tone chords
     (if (micro-but-not-quarter-tone-p c)
-        c
-        (let* ((try1 (attempt (data c)))
-               (try1first (when try1 
-                            (loop for p in (data try1) and i from 0 do
-                                 (when (or (sharp p)
-                                           (flat p))
-                                   (return i)))))
-               (try2 (when try1first
-                       (let ((copy (my-copy-list (data try1))))
-                         (setf (nth try1first copy) (enharmonic
-                                                     (nth try1first copy)))
-                         (attempt copy))))
-               (result (if try2
-                           (choose-chord try1 try2)
-                           try1)))
-          ;; we can't just return try1/2 as we'd lose data in the other slots
-          ;; then  
-          (when result
-            (setf (data c) (data result)))
-          (when verbose
-            (format t "~&try1: ~a" (when try1 (get-pitch-symbols try1)))
-            (format t "~&try2: ~a" (when try2 (get-pitch-symbols try2)))
-            (format t "~&result: ~a" (when c (get-pitch-symbols c))))
-          (rm-enharmonics c)))))
+      c
+      (let* ((midi-channels-orig (mapcar #'midi-channel (data c)))
+             (try1 (attempt (data c)))
+             (try1first (when try1 
+                          (loop for p in (data try1) and i from 0 do
+                            (when (or (sharp p)
+                                      (flat p))
+                              (return i)))))
+             (try2 (when try1first
+                     (let ((copy (my-copy-list (data try1))))
+                       (setf (nth try1first copy) (enharmonic
+                                                   (nth try1first copy)))
+                       (attempt copy))))
+             (result (if try2
+                       (choose-chord try1 try2)
+                       try1)))
+        ;; we can't just return try1/2 as we'd lose data in the other slots
+        ;; then  
+        (when result
+          (setf (data c) (data result)))
+        (when verbose
+          (format t "~&try1: ~a" (when try1 (get-pitch-symbols try1)))
+          (format t "~&try2: ~a" (when try2 (get-pitch-symbols try2)))
+          (format t "~&result: ~a" (when c (get-pitch-symbols c))))
+        (rm-enharmonics c)
+        ;; MDE Wed Dec 17 10:08:15 2025, Heidhausen -- all midi channels were
+        ;; set to 1 due to this method, so reset to original
+        (loop for p in (data c) and ch in midi-channels-orig
+              do (setf (midi-channel p) ch))
+        c))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Jul 16 13:02:05 2019 -- moved over from sc-set class

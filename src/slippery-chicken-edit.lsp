@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:05:22 Tue Dec 16 2025 CET
+;;; $$ Last modified:  12:38:17 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5781,6 +5781,37 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
           for bar = (get-bar sc bnum player)
           collect
             (apply function (cons bar further-args)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/replace-mark
+;;; DATE
+;;; 17th December 2025
+;;; 
+;;; DESCRIPTION
+;;; Replace a mark in all the events of a piece. Applies to both the marks and
+;;; marks-before slots. NB works with marks that are strings, symbols, lists,
+;;; numbers or anything that is #'string= or #'equal
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the mark to replace
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the start- and end-bars, and players. if these are nil they default to 1,
+;;; last bar of piece, and all players
+;;; 
+;;; RETURN VALUE
+;;; - A list of the rthm-seq-bar objects that were modified.
+;;; 
+;;; SYNOPSIS
+(defmethod replace-mark ((sc slippery-chicken) what with &optional
+                         start-bar end-bar players)
+;;; ****
+  (map-over-events sc start-bar end-bar players
+                   #'(lambda (event)
+                       ;; replace in the marks and marks-before slots
+                       (replace-mark event what with nil)
+                       (replace-mark event what with t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/thin

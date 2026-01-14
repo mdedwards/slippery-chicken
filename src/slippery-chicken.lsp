@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:53:09 Wed Dec 17 2025 CET
+;;; $$ Last modified:  10:48:16 Tue Jan 13 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -116,6 +116,7 @@
    ;; see clm-play method for a description of this slot.
    (sndfile-palette :accessor sndfile-palette :initarg :sndfile-palette
                     :initform nil)
+   ;; e.g. '((1 3)) for 3 bars per system from bar 1
    (bars-per-system-map :accessor bars-per-system-map 
                         :initarg :bars-per-system-map :initform nil)
    ;; where the braces and bar lines should be drawn, starting from the top of

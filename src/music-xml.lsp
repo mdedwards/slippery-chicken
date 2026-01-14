@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  12:59:29 Tue Dec 16 2025 CET
+;;; $$ Last modified:  13:59:33 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -239,6 +239,8 @@
                   (st '(wds "sul tasto"))
                   (mv '(wds "molto vib"))
                   (sv '(wds "senza vib"))
+                  (flaut '(wds "flautando"))
+                  (det '(wds "detache"))
                   (poco-crini '(wds "poco crini"))
                   (nail '(tech "fingernails" a))
                   (stopped (no-xml-mark 'stopped))

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:47:27 Wed Dec 17 2025 CET
+;;; $$ Last modified:  12:31:41 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3866,7 +3866,8 @@ data: C4
 ;;; DESCRIPTION
 ;;; Replace a specified mark of a given event object with a second specified
 ;;; mark. If an event object contains more than one mark, individual marks can
-;;; be changed without modifying the remaining marks.
+;;; be changed without modifying the remaining marks. NB works with strings,
+;;; symbols, lists, numbers or anything that is #'string= or #'equal
 ;;; 
 ;;; ARGUMENTS 
 ;;; - An event object.
@@ -3899,14 +3900,15 @@ do (add-mark-before e m))
                      => (COL-LEGNO AT)
 
                      |#
-(defmethod replace-mark ((e event) what with &optional before)
+(defmethod replace-mark ((e event) what with &optional before ignore1 ignore2)
 ;;; ****
-  (let ((new (substitute with what (if before
-                                       (marks-before e)
-                                       (marks e)))))
+  (declare (ignore ignore1 ignore2))
+  (let ((new (sc-substitute with what (if before
+                                        (marks-before e)
+                                        (marks e)))))
     (if before 
-        (setf (marks-before e) new)
-        (setf (marks e) new))))
+      (setf (marks-before e) new)
+      (setf (marks e) new))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Dec 26 14:12:55 2013

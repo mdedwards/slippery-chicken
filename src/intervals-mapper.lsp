@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    August 3rd 2010 Edinburgh
 ;;;
-;;; $$ Last modified:  20:38:22 Mon Aug 19 2024 CEST
+;;; $$ Last modified:  16:31:36 Sat Jan 10 2026 CET
 ;;;
 ;;;
 ;;; SVN ID: $Id$
@@ -164,10 +164,15 @@
 ;;; SYNOPSIS
 (defmethod get-steps ((im intervals-mapper))
 ;;; ****
-  (let* ((oct1 (loop for n in (data im) collect
-                    (read-from-string (format nil "~a~a" n 1))))
+  (let* ((oct1 (loop for n in (data im)
+                     collect
+                     ;; MDE Sat Jan 10 16:31:17 2026, Heidhausen -- will now use
+                     ;; pitch- rather than subtracting midi notes (so as to use
+                     ;; 1/4 tones) 
+                     (make-pitch (read-from-string (format nil "~a~a" n 1)))))
          (steps (loop for n1 in oct1 and n2 in (cdr oct1) 
-                   for diff = (- (note-to-midi n2) (note-to-midi n1))
+                      ;; for diff = (- (note-to-midi n2) (note-to-midi n1))
+                      for diff = (pitch- n2 n1)
                    collect (if (< diff 0) (+ 12 diff) diff))))
     (setf (steps im) steps)))
 

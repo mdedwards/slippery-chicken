@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  10:10:56 Wed Dec 17 2025 CET
+;;; $$ Last modified:  14:00:40 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -100,6 +100,8 @@
            (mv "^\"molto vib.\" ")
            (sv "^\"senza vib.\" ")
            (poco-crini "^\"poco crini\" ")
+           (flaut '(wds "^\"flautando\" "))
+           (det '(wds "^\"detache\" "))
            (s "-. ")
            (ss "-! ") ; MDE Thu Dec 2 15:16:27 2021, Heidhausen
            ;; MDE Mon Dec 15 12:25:29 2025, Heidhausen -- something close to

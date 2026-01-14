@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  19:27:19 Thu Dec  4 2025 CET
+;;; $$ Last modified:  16:48:36 Wed Jan  7 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -481,7 +481,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* l-for-lookup/get-linear-sequence
 ;;; DESCRIPTION
-;;; Instead of creating L-sequences with specified rules, use them
+;;; Instead of creating L-sequences with specified rules, use them to
 ;;; generate a simple sequential list. 
 ;;;
 ;;; The method first returns the first element in the list whose ID matches the 

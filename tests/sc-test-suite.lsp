@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:19:41 Tue Dec  2 2025 CET
+;;; $$ Last modified:  12:31:03 Wed Dec 17 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -2426,16 +2426,26 @@
     (sc-test-check
       (not (marks e1))
       (not (marks-before e2))
-      (not (loop for m in '(a s pizz) 
+      (not (loop for m in '(a s pizz "spe") 
               do (add-mark e1 m)))
-      (equalp (marks e1) '(PIZZ S A))
+      (equalp (marks e1) '("spe" PIZZ S A))
       (replace-mark e1 'a 'batt)
-      (equalp (marks e1) '(PIZZ S BATT))
-      (not (loop for m in '(arco col-legno) 
+      (equalp (marks e1) '("spe" PIZZ S BATT))
+      (not (loop for m in '(arco col-legno "tasto") 
               do (add-mark-before e2 m)))
-      (equalp (marks-before e2) '(COL-LEGNO ARCO))
+      (equalp (marks-before e2) '("tasto" COL-LEGNO ARCO))
       (replace-mark e2 'arco 'at t)
-      (equalp (marks-before e2) '(COL-LEGNO AT)))))
+      (equalp (marks-before e2) '("tasto" COL-LEGNO AT))
+      ;; MDE Wed Dec 17 12:07:13 2025, Heidhausen -- make sure removing strings
+      ;; also works (automaticall)  
+      (replace-mark e2 "tasto" 'tast t)
+      (equalp (marks-before e2) '(tast COL-LEGNO AT))
+      (add-mark e2 '(rgb (1 2 3))) ; list
+      (add-mark e2 4)  ; number (fingering)
+      (replace-mark e2 '(rgb (1 2 3)) 'rgb)
+      (replace-mark e2 4 'four)
+      (equalp (marks e2) '(four rgb))
+      )))
 
 ;;; SAR Tue May 22 11:18:38 EDT 2012
 (sc-deftest test-event-wrap-events-list ()

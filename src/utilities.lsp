@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:40:37 Thu Dec 11 2025 CET
+;;; $$ Last modified:  12:24:42 Wed Dec 17 2025 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -7072,6 +7072,16 @@ yes_foo, 1 2 3 4;
                  (setq not-yet nil
                        i j))))
     (nreverse result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; substitute works with #'eql by default, so we can't replace strings. make
+;;; that possible, lists too, automatically. 
+(defun sc-substitute (new old list)
+  (substitute new old list :test
+              #'(lambda (x y)
+                  (if (stringp old)
+                    (string= x y)
+                    (equal x y)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

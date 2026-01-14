@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  12:38:02 Tue Dec 16 2025 CET
+;;; $$ Last modified:  12:31:53 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -842,7 +842,8 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;; DESCRIPTION
 ;;; Replace a specified mark of a given rhythm object with a second specified
 ;;; mark. If a rhythm object contains more than one mark, individual marks can
-;;; be changed without modifying the remaining marks.
+;;; be changed without modifying the remaining marks. NB works with strings,
+;;; symbols, lists, numbers or anything that is #'string= or #'equal
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rhythm object.
@@ -875,10 +876,10 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 |#
 
 ;;; SYNOPSIS
-(defmethod replace-mark ((r rhythm) what with &optional ignore)
+(defmethod replace-mark ((r rhythm) what with &optional ignore1 ignore2 ignore3)
 ;;; ****
-  (declare (ignore ignore))
-  (setf (marks r) (substitute with what (marks r))))
+  (declare (ignore ignore1 ignore2 ignore3))
+  (setf (marks r) (sc-substitute with what (marks r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

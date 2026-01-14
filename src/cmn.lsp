@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  12:25:03 Mon Dec 15 2025 CET
+;;; $$ Last modified:  14:01:36 Wed Dec 17 2025 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -325,6 +325,8 @@
              (st (list (sc-cmn-text "sul tasto")))
              (sv (list (sc-cmn-text "senza vib")))
              (mv (list (sc-cmn-text "molto vib")))
+             (det (list (sc-cmn-text "detache")))
+             (flaut (list (sc-cmn-text "flautando")))
              (poco-crini (list (sc-cmn-text "poco crini")))
              (harm (list (natural-harmonic)))
              ;; 20.6.11 for the flute: see lilypond.lsp for the actual symbols

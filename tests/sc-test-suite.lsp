@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  12:31:03 Wed Dec 17 2025 CET
+;;; $$ Last modified:  15:28:10 Wed Jan 14 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -6596,7 +6596,10 @@
       (setf bar (get-bar (get-data '(long 3 c) rsp) 1))
       (eq 'q (data (first (rhythms bar))))
       (eq 'te (data (second (rhythms bar))))
-      (is-rest (second (rhythms bar))))))
+      (is-rest (second (rhythms bar)))
+      ;; (print (get-next (get-data-data '(long rsp)))
+      ;; (print rsp)
+      )))
 
 ;;; MDE Thu Dec 15 17:03:38 2022, Heidhausen
 (sc-deftest test-make-rsp-from-fragments ()

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 19:06:49 Sat May  7 2016 WEST
+;;; $$ Last modified:  19:03:26 Tue Jan 13 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,9 +67,9 @@
   (clone-with-new-class p 'palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod reset :after ((p palette) &optional ignore1 ignore2)
-  (declare (ignore ignore1 ignore2))
-  (rmap p #'reset))
+(defmethod reset :after ((p palette) &optional (where 0) ignore)
+  (declare (ignore ignore))
+  (rmap p #'(lambda (rs) (reset rs where))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod get-data :around (ids (p palette) &optional (warn t))

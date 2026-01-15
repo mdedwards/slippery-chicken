@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:48:05 Thu Jan 15 2026 CET
+;;; $$ Last modified:  13:22:47 Thu Jan 15 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -9077,7 +9077,12 @@
       (equalp (loop for r in (rhythms (first (get-bar mini '(2 2 1))))
                  collect (get-pitch-symbol r)
                  collect (data r))
-              '(CS4 E DS4 S C4 H FS4 S GS4 Q)))))
+              '(CS4 E DS4 S C4 H FS4 S GS4 Q))
+      ;; try some grace notes
+      (add-event-to-bar mini (make-events3 'g '(c5 d g)) 2 'vn :position 0)
+      (equalp (loop for r in (rhythms (first (get-bar mini 2)))
+                    collect (get-pitch-symbol r))
+              '(C5 D5 G5 C4 D4 F4 G4 CS4)))))
 
 ;;; SAR Thu Apr 19 13:05:58 BST 2012
 (sc-deftest test-sc-edit-add-mark-all-players ()

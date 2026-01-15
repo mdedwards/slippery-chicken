@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  10:47:31 Thu Jan 15 2026 CET
+;;; $$ Last modified:  13:10:45 Thu Jan 15 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6097,8 +6097,30 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
     (is-full rsb nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Jan 15 10:35:12 2026, Heidhausen
+;;; ****m* rthm-seq-bar/find-repeated-pitches
+;;; DATE
+;;; January 15th 2026
+;;; 
+;;; DESCRIPTION
+;;; find the indices of repeated notes within a bar
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq-bar object
+;;; 
+;;; RETURN VALUE
+;;; a list of indices (integers) to the repeated notes 
+;;; 
+;;; EXAMPLE
+#|
+(let ((rsb (make-rest-bar '(5 8))))
+  (setf (rhythms rsb)
+        (make-events3 's '(c4 d c c f (e f) (e f) fs fs fs)))
+  (find-repeated-pitches rsb))
+--> (3 6 8 9)
+|#
+;;; SYNOPSIS
 (defmethod find-repeated-pitches ((rsb rthm-seq-bar))
+;;; ****
   (when (rhythms rsb)
     (unless (every #'event-p (rhythms rsb))
       (error "rthm-seq-bar::find-repeated-notes: rhythms slot should be a ~

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  12:38:17 Wed Dec 17 2025 CET
+;;; $$ Last modified:  13:13:05 Thu Jan 15 2026 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -107,10 +107,13 @@
 ;;; 
 ;;; It's the user's responsibility to make sure the bar is full and
 ;;; update-slots is called after all post-generation editing such as this.
+;;;
+;;; NB Since January 2026 a list of events can be passed rather than just a
+;;; single object.  
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
-;;; - An event object.
+;;; - An event object or list thereof
 ;;; - An integer that is the bar number or a list that is the reference to the
 ;;;   bar in the form '(section sequence bar), where sequence and bar are
 ;;;   numbers counting from 1)

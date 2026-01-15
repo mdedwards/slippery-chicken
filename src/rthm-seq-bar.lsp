@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  10:17:42 Thu Jan 15 2026 CET
+;;; $$ Last modified:  10:47:31 Thu Jan 15 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6095,6 +6095,18 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
         (when dots (ties-to-dots rsb))))
     ;; call this again as we may very have failed to fill the bar
     (is-full rsb nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan 15 10:35:12 2026, Heidhausen
+(defmethod find-repeated-pitches ((rsb rthm-seq-bar))
+  (when (rhythms rsb)
+    (unless (every #'event-p (rhythms rsb))
+      (error "rthm-seq-bar::find-repeated-notes: rhythms slot should be a ~
+              list of event objects."))
+    (loop for e1 in (rhythms rsb)
+          for e2 in (cdr (rhythms rsb))
+          for i from 1
+          when (porc-equal e1 e2) collect i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

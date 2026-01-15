@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:17:00 Thu Jan 15 2026 CET
+;;; $$ Last modified:  10:48:05 Thu Jan 15 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1476,6 +1476,12 @@
     (equalp '(EF5 G4 AF4 B4) (get-pitch-symbols rsb))
     (add-grace-notes rsb '(e4 gs4 c3) 3)
     (equalp '(EF5 G4 AF4 E4 GS4 C3 B4) (get-pitch-symbols rsb))))
+
+(sc-deftest test-find-repeated-pitches ()
+  (let ((rsb (make-rest-bar '(5 8))))
+    (setf (rhythms rsb)
+          (make-events3 's '(c4 d c c f (e f) (e f) fs fs fs)))
+    (equalp '(3 6 8 9) (find-repeated-pitches rsb))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rhythm tests

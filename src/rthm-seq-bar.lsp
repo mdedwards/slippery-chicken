@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:48:02 Fri Jun 20 2025 CEST
+;;; $$ Last modified:  10:17:42 Thu Jan 15 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -407,12 +407,22 @@ not only event objects but rhythms too lose their marks
     (gen-stats rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; MDE Thu Jan 15 09:58:07 2026, Heidhausen -- event can now also be a list of
+;;; events
 (defmethod add-event ((rsb rthm-seq-bar) event &key (position nil))
   (setf (rhythms rsb)
         (if position
-            (splice (list event) (rhythms rsb) position)
-            (econs (rhythms rsb) event))))
+          (splice (force-list event) (rhythms rsb) position)
+          ;; otherwise add at end
+          (append (rhythms rsb) (force-list event)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan 15 10:17:32 2026, Heidhausen 
+;;; pitches can be a single pitch/symbol or a list thereof
+(defmethod add-grace-notes ((rsb rthm-seq-bar) pitches position)
+  (let ((grace-notes (loop for pitch in (force-list pitches)
+                           collect (make-event pitch 'g))))
+    (add-event rsb grace-notes :position position)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq-bar/fill-with-rhythms

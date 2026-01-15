@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:28:10 Wed Jan 14 2026 CET
+;;; $$ Last modified:  10:17:00 Thu Jan 15 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1467,7 +1467,15 @@
     (pad-right bar)
     (is-full bar nil)))
 
-
+;;; MDE Thu Jan 15 10:05:11 2026, Heidhausen
+(sc-deftest test-add-grace-notes ()
+  (let ((rsb (make-rest-bar '(5 8))))
+    (setf (rhythms rsb) (mapcar #'(lambda (pair) (apply #'make-event pair))
+                                '((g4 q) (af 4) (b e))))
+    (add-grace-notes rsb 'ef5 0)   
+    (equalp '(EF5 G4 AF4 B4) (get-pitch-symbols rsb))
+    (add-grace-notes rsb '(e4 gs4 c3) 3)
+    (equalp '(EF5 G4 AF4 E4 GS4 C3 B4) (get-pitch-symbols rsb))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rhythm tests

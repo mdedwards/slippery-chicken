@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  13:10:45 Thu Jan 15 2026 CET
+;;; $$ Last modified:  14:55:46 Thu Jan 15 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5397,7 +5397,8 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; MDE Mon Jun 18 16:37:04 2012 -- 
 ;;; ****m* rthm-seq-bar/get-pitch-symbols
 ;;; DESCRIPTION
-;;; Return a list of the pitch symbols for the events in the bar.
+;;; Return a list of the pitch symbols for the events in the bar. Note that
+;;; chord pitches will be in a sublist such as ((b4 ds5) eqf5 (e5 g5)).
 ;;; 
 ;;; ARGUMENTS
 ;;; - a rthm-seq-bar object
@@ -5424,6 +5425,17 @@ collect (midi-channel (pitch-or-chord p))))
 (defmethod get-pitch-symbols ((rsb rthm-seq-bar) &optional written)
 ;;; ****
   (loop for e in (rhythms rsb) collect (get-pitch-symbol e written)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod get-pitches ((rsb rthm-seq-bar) &optional written)
+  (loop with result = '()
+        for e in (rhythms rsb)
+        for poc = (if written (written-pitch-or-chord e) (pitch-or-chord e))
+        do (if (chord-p poc)
+             (loop for pitch in (data poc) do (pushnew pitch result
+                                                       :test #'pitch=))
+             (when poc (pushnew poc result :test #'pitch=)))
+        finally (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jul  5 19:07:56 2012 

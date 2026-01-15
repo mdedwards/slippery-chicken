@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  10:10:19 Wed Dec 17 2025 CET
+;;; $$ Last modified:  15:10:13 Thu Jan 15 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1393,9 +1393,7 @@ data: (
     (* 0.5 (+ cscore isscore))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; This doesn't count a natural even if it's been told to display
-
 (defmethod count-accidentals ((c chord) &optional ignore)
   (declare (ignore ignore))
   (loop 
@@ -1790,6 +1788,12 @@ data: (
 ;;; MDE Mon May  5 16:31:06 2014 
 (defmethod midi-note-float ((c chord) &optional in-cents)
   (loop for p in (data c) collect (midi-note-float p in-cents)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; the average of all the midi-notes in the pitch list, not the mid-point
+(defmethod average-midi ((c chord) &optional in-cents)
+  (average (midi-note-float c in-cents)))
+            ;;(mapcar #'(lambda (p) (midi-note-float p)) (data c))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Apr 17 13:15:31 2012 -- mainly for printing in the clm-play method:

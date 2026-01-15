@@ -8131,6 +8131,71 @@ NIL
              (add-tempo bar tempo))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; event-num is 1-based. optional arg is for the number of grace notes
+;;; ****m* slippery-chicken-edit/add-ornament
+;;; DATE
+;;; 
+;;; 
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod add-ornament ((sc slippery-chicken) bar-num event-num player
+                         type &optional (num 1))
+;;; ****
+  (flet ((make-grace (porc) (make-event (clone porc) 'g))
+         (this-pitch= (p1 p2) (pitch= p1 p2 t)))
+    (let* ((this-bar (get-bar sc bar-num player))
+           (previous-bar (when (> bar-num 1) (get-bar sc (1- bar-num) player)))
+           (this-event (get-nth-event (1- event-num) this-bar))
+           (next-event (get-nth-event event-num this-bar nil)) ; no warning
+           (pitches (remove-duplicates
+                     (append (get-pitches this-bar)
+                             (when previous-bar (get-pitches previous-bar)))
+                     :test #'this-pitch=))
+           (poc (pitch-or-chord this-event))
+           (average (if (chord-p poc) (average-midi poc) (midi-note-float poc)))
+           grace-notes)
+      ;; in case we have a gliss from the last note of the bar
+      (unless next-event (setq next-event (get-event sc (1+ bar-num) 1 player)))
+      (setq pitches (set-difference pitches ; rm pitches from the main note
+                                    (if (chord-p poc) (data poc) (list poc))
+                                    :test #'this-pitch=)
+            pitches (sort pitches ; sort in order of increasing distance to main
+                          #'(lambda (p1 p2)
+                              (< (abs (- average (midi-note-float p1)))
+                                 (abs (- average (midi-note-float p2)))))))
+      (case type
+        ;; to nearest pitch, so could be up or down
+        (mordent (setq grace-notes (list (make-grace poc)
+                                         (make-grace (first pitches)))))
+        ;; so starting furthest away but only as far away as necessary to get
+        ;; the required number of grace notes
+        (grace (setq grace-notes
+                     (loop for p in (reverse
+                                     (subseq pitches 0
+                                             (min num (length pitches))))
+                           collect (make-grace p))))
+        (gliss
+         (add-mark this-event 'beg-gliss)
+         (add-mark next-event 'end-gliss)))
+      (when grace-notes
+        (add-event this-bar grace-notes :position (1- event-num))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;

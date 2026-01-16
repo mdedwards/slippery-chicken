@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  14:55:46 Thu Jan 15 2026 CET
+;;; $$ Last modified:  12:08:26 Fri Jan 16 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -414,7 +414,10 @@ not only event objects but rhythms too lose their marks
         (if position
           (splice (force-list event) (rhythms rsb) position)
           ;; otherwise add at end
-          (append (rhythms rsb) (force-list event)))))
+          (append (rhythms rsb) (force-list event))))
+  ;; MDE Fri Jan 16 12:08:07 2026, Heidhausen -- old tuplet positions have to be
+  ;; updated to reflect the added events
+  (recreate-tuplets rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan 15 10:17:32 2026, Heidhausen 

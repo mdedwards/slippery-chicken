@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:22:47 Thu Jan 15 2026 CET
+;;; $$ Last modified:  19:42:54 Fri Jan 16 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -20766,20 +20766,21 @@ est)")))
                :avoid-used-notes t
                :staff-groupings '(2)
                :tempo-map '((1 (q 120)))
+               :bars-per-system-map '((1 2))
                :set-palette '((set1 ((C2 CQS2 D2 DQS2 E2 F2 FQS2 G2 GQS2 A2 AQS2
-                                         B2 C3 CQS3 D3 DQS3 E3 F3 FQS3 G3 GQS3
-                                         A3 AQS3 B3 C4 CQS4 D4 DQS4 E4 F4 FQS4
-                                         G4 GQS4 A4 AQS4 B4 C5))) 
+                                      B2 C3 CQS3 D3 DQS3 E3 F3 FQS3 G3 GQS3
+                                      A3 AQS3 B3 C4 CQS4 D4 DQS4 E4 F4 FQS4
+                                      G4 GQS4 A4 AQS4 B4 C5))) 
                               (set2 ((D2 EF2 E2 F2 GF2 G2 AF2 A2 BF2 B2 C3 CQS3
-                                         D3 EF3 E3 F3 GF3 G3 AF3 A3 BF3 B3 C4
-                                         CQS4 D4 EF4 E4 F4 GF4 G4 AF4 A4 BF4 B4
-                                         C5 CQS5 D5))))  
+                                      D3 EF3 E3 F3 GF3 G3 AF3 A3 BF3 B3 C4
+                                      CQS4 D4 EF4 E4 F4 GF4 G4 AF4 A4 BF4 B4
+                                      C5 CQS5 D5))))  
                :set-map `((1 ,(fibonacci-transitions 10 '(set1 set2))))
                :rthm-seq-palette
                '((seq1 ((((4 4) { 3 - te (te) te - - te te te -
                           - te (te) te - - te te te - })
                          ({ 3 - te te te - - te te te -
-                            - te te te - - te te te - }))
+                          - te te te - - te te te - }))
                         :pitch-seq-palette (((1) 3 (1) 2 3 (1) 2 3 (1) 2 3
                                              (1) 2 3 (1) 2 3 (1) 3 (1) 2 3))))
                  (seq2 ((((4 4) q (q) q q)(e. (s) s s e q. e))
@@ -20799,13 +20800,13 @@ est)")))
          (map-over-notes mini nil nil nil
                          #'(lambda (ev)
                              (if (is-chord ev)
-                                 (loop for p in (data (pitch-or-chord ev))
-                                    do
-                                      (when (micro-tone p)
-                                        (incf count)))
-                                 (progn
-                                   (when (micro-tone (pitch-or-chord ev))
-                                     (incf count))))))
+                               (loop for p in (data (pitch-or-chord ev))
+                                     do
+                                        (when (micro-tone p)
+                                          (incf count)))
+                               (progn
+                                 (when (micro-tone (pitch-or-chord ev))
+                                   (incf count))))))
          count)
        93)
       (equalp '(66 27) (fast-microtone-to-chromatic mini nil :threshold 10))
@@ -20814,14 +20815,24 @@ est)")))
          (map-over-notes mini nil nil nil
                          #'(lambda (ev)
                              (if (is-chord ev)
-                                 (loop for p in (data (pitch-or-chord ev)) do
-                                      (when (micro-tone p)
-                                        (incf count)))
-                                 (progn
-                                   (when (micro-tone (pitch-or-chord ev))
-                                     (incf count))))))
+                               (loop for p in (data (pitch-or-chord ev)) do
+                                 (when (micro-tone p)
+                                   (incf count)))
+                               (progn
+                                 (when (micro-tone (pitch-or-chord ev))
+                                   (incf count))))))
          count))
-      (equalp '(0 0) (fast-microtone-to-chromatic mini nil :threshold 10)))))
+      (equalp '(0 0) (fast-microtone-to-chromatic mini nil :threshold 10))
+      (add-ornament mini 1 7 'one 'trill)
+      (add-ornament mini 2 7 'one 'mordent)
+      (add-ornament mini 4 1 'two 'grace 3)
+      (add-ornament mini 5 1 'two 'grace 5)
+      (add-ornament mini 6 3 'two 'gliss)
+      (add-ornament mini 6 4 'two 'gliss)
+      (add-ornament mini 7 8 'one 'grace '(c4 g3 cs3))
+      (midi-play mini)
+      (cmn-display mini)
+      (write-xml mini))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Wed 18 Sep 2019 18:35:36 BST

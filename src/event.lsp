@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:44:51 Thu Jan 15 2026 CET
+;;; $$ Last modified:  19:27:52 Fri Jan 16 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2481,7 +2481,9 @@ NIL
                      a s ss te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
                      long-pause t3 arp lhp bartok nail flag downbow upbow open
                      ;; harm 0 1 2 3 4 5)) ; fingerings now handled by integerp
-                     harm stress))
+                     ;; MDE Fri Jan 16 19:27:36 2026, Heidhausen -- trill added
+                     ;; here too otherwise music-xml doesn't work 
+                     harm stress beg-trill-a))
         ;;(directions '(beg-8va end-8va beg-8vb end-8vb beg-15ma beg-15mb
         ;;            end-15ma end15mb cresc-beg cresc-end dim-beg dim-end
         ;;          ped ped^ ped-up uc tc sost^

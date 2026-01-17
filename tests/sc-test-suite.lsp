@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:42:54 Fri Jan 16 2026 CET
+;;; $$ Last modified:  14:57:20 Sat Jan 17 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -20830,6 +20830,8 @@ est)")))
       (add-ornament mini 6 3 'two 'gliss)
       (add-ornament mini 6 4 'two 'gliss)
       (add-ornament mini 7 8 'one 'grace '(c4 g3 cs3))
+      ;; pass an event as note
+      (add-ornament mini nil (get-event mini 6 7 'two) nil 'grace 'gs4)
       (midi-play mini)
       (cmn-display mini)
       (write-xml mini))))

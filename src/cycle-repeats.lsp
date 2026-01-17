@@ -12,13 +12,17 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          class used in rthm-chain
+;;; Purpose:          class used originally in rthm-chain to determine cyclic
+;;;                   repeats of data. E.g. passing the data list ((0 5) (1 1)
+;;;                   (0 3) (1 1) (0 2) (2 1)) means we'll have 0 five times,
+;;;                   then 1 once, then 0 three times etc.  This repeats
+;;;                   indefinitely when the get-next method is called.
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 12:16:23 Mon May 23 2016 BST
+;;; $$ Last modified:  11:24:36 Sat Jan 17 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -65,7 +69,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 28 11:49:50 2012 
-
 (defmethod clone-with-new-class :around ((cr cycle-repeats) new-class)
   (declare (ignore new-class))
   (let ((cscl (call-next-method)))
@@ -73,12 +76,10 @@
     cscl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod print-object :before ((cr cycle-repeats) stream)
   (format stream "~&CYCLE-REPEATS: folded: ~a" (folded cr)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod verify-and-store :before ((cr cycle-repeats))
   (let ((unfolded 
          (loop for pair in (data cr) with datum with repeats
@@ -99,6 +100,10 @@
           ;; got to do this or verify-and-store will be called again and signal
           ;; an error.
           (slot-value cr 'data) unfolded)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun make-cycle-repeats (cycles &optional id)
+  (make-instance 'cycle-repeats :data cycles))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF cycle-repeats.lsp

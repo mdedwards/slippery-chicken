@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  08:50:12 Mon Jan 19 2026 CET
+;;; $$ Last modified:  10:41:15 Mon Jan 19 2026 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8253,14 +8253,42 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; the ale-env determines how often a note will get an ornament and the
-;;; cycle-repeats determine which ornament will be added.
-;;; :ale-cycle-length: if nil then it will be set to the number of (attacked)
-;;; notes the player has in the whole piece or in the given bars
-;;; start-bar and end-bar default to 1 and the last bar 
+;;; ****m* slippery-chicken-edit/auto-add-ornaments
+;;; DATE
+;;; 17th January 2026
+;;; 
+;;; DESCRIPTION
+;;; Automatically add ornaments to a piece using a cycle-repeats object and the
+;;; data passed to :cycle-repeats. Ornaments are only added to attacked notes
+;;; with a minimum duration passed as :min-dur. See the add-ornament method (and
+;;; expand where desired) to see the meaning of mordent, grace, etc.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the player to add ornaments to (symbol)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :ale-env. An activity-levels-envlope to determine how often a note will
+;;;   get an ornament. Default will be a constant level of 4 which means c. 40%
+;;;   of notes (deterministically, not randomly).
+;;; - :ale-cycle-length: if nil then it will be set to the number of (attacked)
+;;;   notes of sufficient duration which the player has in the whole piece or in
+;;;   the given bars 
+;;; - :cycle-repeats. Determines which ornaments will be added and their number
+;;; of repetitions. 
+;;; - :start-bar and :end-bar default to 1 and the last bar of the piece unless
+;;;   specific bar numbers are passed.
+;;; - :min-dur. The minimum duration of an event (compound-duration
+;;;   i.e. including ties) 
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
 (defmethod auto-add-ornaments ((sc slippery-chicken) player
                                &key start-bar end-bar
-                                 ale-env ale-cycle-length
+                               (ale-env '(0 4 100 4)) ale-cycle-length
                                  (min-dur 0.250) ; seconds
                                  ;; NB grace is a sublist as it needs an
                                  ;; argument (how many notes or a list of
@@ -8269,7 +8297,7 @@ NIL
                                                 (mordent 3) ((grace 5) 1)
                                                 (mordent 1) (gliss 2)
                                                 ((grace 5) 2))))
-  (unless ale-env (setq ale-env '(0 4 100 4)))
+;;; ****
   (let* ((cr (make-cycle-repeats cycle-repeats))
          (events (remove-if ; tied notes, rests, short notes
                   #'(lambda (event)
@@ -8295,7 +8323,8 @@ NIL
                            (setq ornament (first ornament)))))
             (when ornament
                (add-ornament sc nil event nil ornament data)
-               (setq skip-next (eq ornament 'gliss))))))))
+               (setq skip-next (eq ornament 'gliss)))))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

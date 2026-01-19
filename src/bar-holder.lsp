@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  17:36:20 Tue Dec 16 2025 CET
+;;; $$ Last modified:  08:54:15 Mon Jan 19 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -513,13 +513,13 @@
 ;; bar-num and note-num are 1-based
 
 (defmethod get-event ((bh bar-holder) bar-num event-num player
-                      &optional (error t))
+                      &optional (error t) (warn-no-bar t))
   (let ((bar (get-bar bh bar-num player)))
-    (unless bar
-      (warn "bar-holder::get-event: couldn't get bar number ~a ~
-             for player ~a"
-            bar-num player))
-    (get-nth-event (1- event-num) bar error)))
+    (if bar
+      (get-nth-event (1- event-num) bar error)
+      (when warn-no-bar
+        (warn "bar-holder::get-event: couldn't get bar number ~a for player ~a"
+              bar-num player)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 30.3.11: turn a rest into a note by supplying a pitch or chord (as objects

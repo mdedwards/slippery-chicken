@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:17:27 Sat Jan 17 2026 CET
+;;; $$ Last modified:  08:56:14 Mon Jan 19 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -2417,9 +2417,9 @@ data: 32
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-event ((sc slippery-chicken) bar-num event-num player
-                      &optional (error t))
+                      &optional (error t) (warn-no-bar t))
 ;;; ****
-  (get-event (piece sc) bar-num event-num player error))
+  (get-event (piece sc) bar-num event-num player error warn-no-bar))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

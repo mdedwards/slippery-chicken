@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:13:24 Sat Jan 17 2026 CET
+;;; $$ Last modified:  08:50:12 Mon Jan 19 2026 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8204,7 +8204,10 @@ NIL
            (average (if (chord-p poc) (average-midi poc) (midi-note-float poc)))
            grace-notes)
       ;; in case we have e.g. a gliss from the last note of the bar
-      (unless next-event (setq next-event (get-event sc (1+ bar-num) 1 player)))
+      (unless next-event
+        ;; again no error as we might be in the last bar and we handle that
+        ;; below
+        (setq next-event (get-event sc (1+ bar-num) 1 player nil)))
       ;; get pitches for our grace notes
       (unless data-list ; we weren't passed pitches for our grace notes
         (setq pitches (set-difference pitches ; rm pitch(es) of this-event
@@ -8233,11 +8236,15 @@ NIL
                      (loop for p in (if data-list pitches (reverse pitches))
                            collect (make-grace p))))
         (gliss
-           (if (porc-equal this-event next-event)
-             (warn "slippery-chicken::add-ornament: skipping gliss: same notes")
-             (progn 
-               (add-mark this-event 'beg-gliss)
-               (add-mark next-event 'end-gliss))))
+           (if (and this-event next-event)
+             (if (porc-equal this-event next-event)
+               (warn "slippery-chicken::add-ornament: skipping gliss: same ~
+                      notes")
+               (progn 
+                 (add-mark this-event 'beg-gliss)
+                 (add-mark next-event 'end-gliss)))
+             (warn "slippery-chicken::add-ornament: need current and next ~
+                    events. Probably in the last bar so skipping gliss.")))
         (trill
            (add-mark this-event 'beg-trill-a))
         (t (error "slippery-chicken::add-ornament: ~a is unrecognised." type)))

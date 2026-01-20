@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    23rd November 2011
 ;;;
-;;; $$ Last modified:  15:04:19 Wed Dec 16 2020 CET
+;;; $$ Last modified:  12:06:50 Tue Jan 20 2026 CET
 ;;;
 ;;; SVN ID: $Id: slippery.lsp 5627 2016-03-23 14:37:22Z medward2 $
 ;;;
@@ -376,6 +376,9 @@
                        :all-bar-nums t
                        :barline-thickness 1
                        :in-c nil)
+
+;;; MDE Tue Jan 20 12:00:00 2026, Heidhausen
+(auto-add-ornaments +slippery-when-wet+ nil)
 
 (write-xml +slippery-when-wet+)
 

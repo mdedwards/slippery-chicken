@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  12:08:26 Fri Jan 16 2026 CET
+;;; $$ Last modified:  11:15:06 Tue Jan 20 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4553,6 +4553,11 @@ data: (2 4)
               (setf porc (if written
                              (written-pitch-or-chord event)
                            (pitch-or-chord event)))
+              ;; MDE Tue Jan 20 11:12:49 2026, Heidhausen 
+              (unless porc
+                (error "rthm-seq-bar::enharmonics-exist: no pitch/chord. ~
+                        Could it be that you wanted ~%to process written ~
+                        pitches but these have not been set?"))
               (if (is-single-pitch-object event)
                   (when (or (pitch= enharmonic porc nil)
                             (and octaves-too

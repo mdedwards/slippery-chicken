@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  10:41:15 Mon Jan 19 2026 CET
+;;; $$ Last modified:  12:09:27 Tue Jan 20 2026 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8157,6 +8157,8 @@ NIL
 ;;; (symbols, objects) to add or an integer. In the latter case, the specified
 ;;; number of notes will be taken from the pitches of the current and previous
 ;;; bar and grace notes nearest to the main note will be automatically created.
+;;; - the maximum interval in semitones for a mordent. If no nearer notes are
+;;; available near the note for the ornament, then it will be skipped. 
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -8167,9 +8169,13 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod add-ornament ((sc slippery-chicken) bar-num note player
-                         type &optional (data 1))
+                         type &optional (data 1) (mordent-max 5))
 ;;; ****
-  (flet ((make-grace (porc) (make-event (clone porc) 'g))
+  (flet ((make-grace (porc)
+           (if (named-object-p porc)
+             (make-event (clone porc) 'g)
+             (warn "slippery-chicken::add-ornament: in bar ~a, no pitch/chord ~
+                    to clone. ~%Ornament will probably be skipped." bar-num)))
          (this-pitch= (p1 p2) (pitch= p1 p2 t)))
     (when (event-p note)
         (setq bar-num (bar-num note)
@@ -8196,6 +8202,8 @@ NIL
                       (mapcar #'make-pitch data)
                       ;; get pitches from current and previous bars
                       (remove-duplicates
+                       ;; pitches in chords will be returned in the list as if
+                       ;; the notes had single pitches (which is what we want)
                        (append (get-pitches this-bar)
                                ;; of course not when bar-num=1
                                (when previous-bar (get-pitches previous-bar)))
@@ -8226,8 +8234,15 @@ NIL
       ;; they were passed as data
       (case type
         ;; to nearest pitch, so could be up or down
-        (mordent (setq grace-notes (list (make-grace poc)
-                                         (make-grace (first pitches)))))
+        (mordent
+           (let* ((p2 (first pitches))
+                  (interval (when (pitch-p p2)
+                              (abs (- average (midi-note-float p2))))))
+             (if (and interval (> interval mordent-max))
+               (warn "slippery-chicken::add-ornament: skipping mordent as ~
+                      interval would be ~a" interval)
+               (setq grace-notes (list (make-grace poc)
+                                       (make-grace p2))))))
         ;; so starting furthest away but only as far away as necessary to get
         ;; the required number of grace notes
         (grace (setq grace-notes
@@ -8236,7 +8251,7 @@ NIL
                      (loop for p in (if data-list pitches (reverse pitches))
                            collect (make-grace p))))
         (gliss
-           (if (and this-event next-event)
+           (if (and (needs-new-note this-event) (needs-new-note next-event))
              (if (porc-equal this-event next-event)
                (warn "slippery-chicken::add-ornament: skipping gliss: same ~
                       notes")
@@ -8244,11 +8259,12 @@ NIL
                  (add-mark this-event 'beg-gliss)
                  (add-mark next-event 'end-gliss)))
              (warn "slippery-chicken::add-ornament: need current and next ~
-                    events. Probably in the last bar so skipping gliss.")))
+                    pitched events. Probably in the last bar or on a rest ~
+                    so skipping gliss.")))
         (trill
            (add-mark this-event 'beg-trill-a))
         (t (error "slippery-chicken::add-ornament: ~a is unrecognised." type)))
-      (when grace-notes
+      (when (every #'event-p grace-notes)
         (add-event this-bar grace-notes :position (bar-pos this-event)))))
   t)
 
@@ -8265,7 +8281,8 @@ NIL
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
-;;; - the player to add ornaments to (symbol)
+;;; - the player (or list of players) to add ornaments to (symbol). If nil then
+;;;   all players will be processed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -8286,34 +8303,38 @@ NIL
 ;;; T
 ;;; 
 ;;; SYNOPSIS
-(defmethod auto-add-ornaments ((sc slippery-chicken) player
+(defmethod auto-add-ornaments ((sc slippery-chicken) players
                                &key start-bar end-bar
                                (ale-env '(0 4 100 4)) ale-cycle-length
-                                 (min-dur 0.250) ; seconds
-                                 ;; NB grace is a sublist as it needs an
-                                 ;; argument (how many notes or a list of
-                                 ;; specific pitch symbols)
+                               (min-dur 0.250) ; seconds
+                               (update t)
+                               (mordent-max 5) ; semitones
+                               ;; NB grace is a sublist as it needs an
+                               ;; argument (how many notes or a list of
+                               ;; specific pitch symbols)
                                (cycle-repeats '((mordent 2) ((grace 3) 1)
                                                 (mordent 3) ((grace 5) 1)
                                                 (mordent 1) (gliss 2)
                                                 ((grace 5) 2))))
 ;;; ****
-  (let* ((cr (make-cycle-repeats cycle-repeats))
-         (events (remove-if ; tied notes, rests, short notes
-                  #'(lambda (event)
-                      (or (not (needs-new-note event))
-                          (< (compound-duration-in-tempo event) min-dur)))
-                  (get-events-from-to sc player start-bar 1 end-bar)))
-         (ale
-           (progn
-             (unless ale-cycle-length
-               ;; we still might not hit our target due to skipping gliss target
-               ;; notes, but we'll be near enough
-               (setq ale-cycle-length (length events)))
-             (make-ale ale-env ale-cycle-length)))
-         ornament data skip-next)
-    (loop for event in events do
-      (if skip-next
+  (unless players (setq players (players sc)))
+  (loop for player in (force-list players) do
+    (let* ((cr (make-cycle-repeats cycle-repeats))
+           (events (remove-if           ; tied notes, rests, short notes
+                    #'(lambda (event)
+                        (or (not (needs-new-note event))
+                            (< (compound-duration-in-tempo event) min-dur)))
+                    (get-events-from-to sc player start-bar 1 end-bar)))
+           (ale
+             (progn
+               (unless ale-cycle-length
+                 ;; we still might not hit our target due to skipping gliss
+                 ;; target notes, but we'll be near enough
+                 (setq ale-cycle-length (length events)))
+               (make-ale ale-env ale-cycle-length)))
+           ornament data skip-next)
+      (loop for event in events do
+        (if skip-next
           (setq skip-next nil)
           (progn
             (setq ornament (when (active ale) (get-next cr))
@@ -8322,8 +8343,12 @@ NIL
                              (second ornament)
                            (setq ornament (first ornament)))))
             (when ornament
-               (add-ornament sc nil event nil ornament data)
-               (setq skip-next (eq ornament 'gliss)))))))
+              (add-ornament sc nil event nil ornament data mordent-max)
+              (setq skip-next (eq ornament 'gliss))))))))
+  (auto-set-written sc :start-bar start-bar :end-bar end-bar :players players)
+  (when update
+    (update-slots sc)
+    (update-instrument-slots sc))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

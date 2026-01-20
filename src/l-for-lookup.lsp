@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  16:48:36 Wed Jan  7 2026 CET
+;;; $$ Last modified:  12:41:03 Tue Jan 20 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1317,6 +1317,11 @@ data: (
           (if (and morph (list-of-numbers-p morph))
             (morph-env transition morph)
             transition))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jan 20 12:40:57 2026, Heidhausen -- 
+(defun fibonacci-transitions-possible (total-items levels)
+  (> (floor total-items levels) 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 25 19:30:04 2016 -- used by fibonacci-transition and

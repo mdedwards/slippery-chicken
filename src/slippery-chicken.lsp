@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  08:56:14 Mon Jan 19 2026 CET
+;;; $$ Last modified:  19:15:16 Wed Jan 21 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1136,8 +1136,7 @@
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;  Called by initialize-instance. This is where the magic happens :-)
+;;; Called by initialize-instance. This is where the magic happens :-)
 
 ;;; Clone the rthm-seq-map, loop through all the instruments in all the
 ;;; sections of the rsm (get-first then thereafter use the next slot). Get the
@@ -4174,13 +4173,6 @@ seq-num 5, VN, replacing G3 with B6
          ;; MDE Mon May  7 10:41:07 2012 -- for pieces with subsections
          (secobj (get-section sc start-section))
          (nth-seq-ref (full-ref (get-first-section secobj)))
-         ;; MDE Thu Oct 17 19:10:27 2013 -- the following doesn't work if there
-         ;; are sub-sub-sections!  
-          #|
-  (if (has-subsections secobj)
-         (full-ref (print (data (first (data secobj)))))
-         start-section))
-         |#
          ;; do all the program changes for the beginning irrespective of
          ;; whether the player changes instrument or not. subsequent program
          ;; changes are handled in the event class.
@@ -5605,8 +5597,11 @@ seq-num 5, VN, replacing G3 with B6
         fade-in (/ fade-in 100)
         fade-out (/ fade-out 100))
   (let* ((events (get-events-with-src sc section players 
-                                      ;; these have 0 duration so we must ignore
-                                      ;; them for now 
+                                      ;; these have no relevance (famous last
+                                      ;; words?) or would be merely a
+                                      ;; disturbance in reaper, due to their
+                                      ;; very short duration, so ignore them
+                                      ;; (for now?)
                                       :ignore-grace-notes t
                                       :time-scaler time-scaler
                                       :from-sequence from-sequence
@@ -6136,7 +6131,6 @@ seq-num 5, VN, replacing G3 with B6
   (mapcar #'get-last-event (get-last-bar sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Just calls the -aux method once for each section required. See comments to
 ;;; that method for parameter explanation.
 
@@ -6162,7 +6156,9 @@ seq-num 5, VN, replacing G3 with B6
   ;; MDE Sat Dec 17 10:16:25 2011 -- when running cheat-sheet.lsp I was getting
   ;; some invalid data in duration-in-tempo, compound-duration-in-tempo,
   ;; end-time slots; this fixed it
-  (update-slots sc)
+  ;; MDE Wed Jan 21 15:13:55 2026, Heidhausen -- this breaks midi-play however,
+  ;; after calling make-hammer-friendly on a piece with grace notes. 
+  ;; (update-slots sc)
   (unless num-sections
     (setf num-sections (get-num-sections sc)))
   (let* ((sections (get-section-refs sc start-section num-sections))
@@ -6181,13 +6177,14 @@ seq-num 5, VN, replacing G3 with B6
                        :include-rests include-rests)))
          (voices (loop for i below (length voices) collect
                        (loop for j below num-sections
-                          appending (nth i (nth j all-sections))))))
+                             appending (nth i (nth j all-sections))))))
     (handle-grace-notes voices)
     voices))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; For one section, returns a list of lists, one for each voice,
-;;; containing lists of event objects, one for each rthm-sequence.
+;;; containing lists of event objects, one for each rthm-sequence. Tied notes
+;;; are not included (because of get-timings in rsb class)
 
 (defmethod get-events-start-time-duration-aux
     ((sc slippery-chicken)
@@ -6239,11 +6236,11 @@ seq-num 5, VN, replacing G3 with B6
             collect (get-timings sqc time-scaler ignore-rests
                                  get-time-sig-changes include-rests 
                                  ignore-grace-notes))
-         ;; MDE Mon Apr 21 18:32:16 2014 -- we were checking for (first events)
+       ;; MDE Mon Apr 21 18:32:16 2014 -- we were checking for (first events)
        ;; but that meant a rest sequence at the beginning of a section would
        ;; result in no events being returned for the whole section! Now we just
        ;; make sure we've got a list with an event in it instead of a list of
-       ;; nils. 
+       ;; nils.
        when (not (every #'not events))
        collect events)))
   
@@ -6318,7 +6315,8 @@ seq-num 5, VN, replacing G3 with B6
   (when (and pitch-synchronous (or chords chord-accessor))
     (error "slippery-chicken::get-events-with-src-aux: pitch-synchronous ~
             cannot be used in conjunction with chords or chord-accessor."))
-  (let ((timings (get-events-start-time-duration-aux ; clones the events 
+  ;; clones the events via get-timings (rsb)
+  (let ((timings (get-events-start-time-duration-aux 
                   sc section voices 
                   :ignore-grace-notes ignore-grace-notes
                   :time-scaler time-scaler
@@ -10580,90 +10578,89 @@ data: (11 15)
           font font-size x y text))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Grace notes have a fixed duration as defined by the rhythm class
-;;; member grace-note-duration. We subtract this amount from the
+;;;  Grace notes have a fixed duration as defined by the rhythm class
+;;; slot grace-note-duration. We subtract this amount from the
 ;;; non grace-note rhythm preceding the grace note(s). Of course, if
 ;;; the piece/section/sequence begins with grace notes, we have to add
 ;;; an offset to all the notes to make time for these.
+;;; currently only called in get-events-start-time-duration, so acts on clones
+;;; of events.
 
 (defun handle-grace-notes (voices)
   (let* ((max-beg-grace-notes (grace-notes-at-beg voices))
          ;; just get the standard grace-note duration
-         (grace-note-dur (grace-note-duration (make-rhythm 1)))
-         (offset (* grace-note-dur max-beg-grace-notes)))
+         (grace-note-dur (grace-note-duration (make-rhythm 1))))
     ;; the grace notes at the beginning have to be handled separately because
     ;; they are dependent on the other voices.
     (handle-opening-grace-notes voices max-beg-grace-notes grace-note-dur)
     (loop 
-        for voice in voices
-                     ;; start after the opening grace notes
-        for index = (voice-grace-notes-at-beg (first voice)) ;; first rthm-seq
-                    ;; each voice is a list of rthm-seqs which in turn is a
-                    ;; list of events. we want to process a flat list of events
-                    ;; per voice so need to flatten it first then rebuild the
-                    ;; list afterwards. 
-        for lengths = (get-sublist-lengths voice t)
-        with next-grace-note ;; these are indices only, not the events
-        with next-non-grace-note
-        with num-grace-notes
-        with num-events
-        with decrement
-        with previous
-        do
-          ;; we really don't need separate lists for rthm-seqs...
-          (setf voice (flatten voice)
-                num-events (length voice))
-          ;; (print (last voice))
-          (loop until (>= index num-events) do
-                (setf next-grace-note (find-next-grace-note
-                                       voice index nil nil)) ; no warning
-                (unless next-grace-note
-                  (return))
-                ;; the first normal note after the grace note(s)
-                (setf next-non-grace-note (find-next-non-grace-note
-                                           voice next-grace-note nil))
-                (unless next-non-grace-note
-                  (warn "slippery-chicken::handle-grace-notes: ~
-                         Grace notes seem to end the section...! ~
-                         (index = ~a, num-events = ~a, next-grace-note = ~a)"
-                        index num-events next-grace-note)
-                  (return))
-                (setf num-grace-notes (- next-non-grace-note 
-                                         next-grace-note)
-                      previous (nth (1- next-grace-note) voice)
-                      decrement (* grace-note-dur num-grace-notes))
-                ;; decrease the duration of the note before the grace
-                ;; notes. Perhaps this should only happen if the note
-                ;; holds up to the next note? 
-                (inc-duration previous (- decrement))
-                (loop 
-                    with start = 
-                      (- (start-time (nth next-non-grace-note voice))
-                         (* grace-note-dur num-grace-notes))
-                    for i from next-grace-note 
-                    for grace-note = (nth i voice)
-                    repeat num-grace-notes 
-                    do 
-                      (setf (start-time grace-note) start
-                            (end-time grace-note) (+ start grace-note-dur)
-                            (duration-in-tempo grace-note) grace-note-dur
-                            (compound-duration-in-tempo grace-note)
-                            grace-note-dur)
-                      (incf start grace-note-dur))
-                (setf index next-non-grace-note))
-          ;; put the flattened voice back into rthm-seqs
-          (setf voice (split-into-sub-groups voice lengths)))
-    ;; now we've done the grace notes, we have to offset every event to
-    ;; make room for the opening grace-notes
-    (unless (zerop max-beg-grace-notes)
-      (loop for voice in voices do
-            (loop for rs in voice do
-                  (loop for event in rs do
-                        (incf (duration-in-tempo event) offset)))))))
+      for voice in voices
+      ;; start after the opening grace notes
+      for index = (grace-notes-at-beg-of-events-list (first voice))
+      ;; first rthm-seq each voice is a list of rthm-seqs which in turn is a
+      ;; list of events. we want to process a flat list of events per voice so
+      ;; need to flatten it first then rebuild the list afterwards.
+      for lengths = (get-sublist-lengths voice t)
+      with next-grace-note ;; these are indices only, not the events
+      with next-non-grace-note
+      with num-grace-notes
+      with num-events
+      with decrement
+      with previous
+      do
+         ;; we really don't need separate lists for rthm-seqs...
+         (setf voice (flatten voice)
+               num-events (length voice))
+         ;; (print (last voice))
+         (loop until (>= index num-events) do
+           (setq next-grace-note (find-next-grace-note
+                                  voice index nil nil)) ; no warning
+           (unless next-grace-note
+             (return))
+           ;; the first normal note after the grace note(s)
+           (setq next-non-grace-note (find-next-non-grace-note
+                                      voice next-grace-note nil))
+           (unless next-non-grace-note
+             (warn "slippery-chicken::handle-grace-notes: ~
+                    Grace notes seem to end the section...! ~
+                    (index = ~a, num-events = ~a, next-grace-note = ~a)"
+                   index num-events next-grace-note)
+             (return))
+           (setq num-grace-notes (- next-non-grace-note 
+                                    next-grace-note)
+                 previous (nth (1- next-grace-note) voice)
+                 decrement (* grace-note-dur num-grace-notes))
+           ;; decrease the duration of the note before the grace notes. Perhaps
+           ;; this should only happen if the note holds up to the next note?
+           ;; because we don't have rests in the voices so if previous was
+           ;; before some rests, then this will be decremented. But this is not
+           ;; tragic: humans don't play full durations either ;-)
+           (inc-duration previous (- decrement))
+           (loop  ; the grace notes
+             with diff = (* grace-note-dur num-grace-notes)
+             with non-grace1 = (nth next-non-grace-note voice)
+             with start = (- (start-time non-grace1) diff)
+             ;; so we use 1/20 (by default) of a quarter note for grace notes at
+             ;; any tempo--potentially a problem with fast tempi but fine for
+             ;; now 
+             with start-qtrs = (- (start-time-qtrs non-grace1) diff)
+             for i from next-grace-note 
+             for grace-note = (nth i voice)
+             repeat num-grace-notes 
+             do
+                (setf (start-time grace-note) start
+                      (start-time-qtrs grace-note) start-qtrs
+                      (end-time grace-note) (+ start grace-note-dur)
+                      (duration-in-tempo grace-note) grace-note-dur
+                      (duration grace-note) grace-note-dur)
+                ;; (print 'handle) (print grace-note)
+                (incf start-qtrs grace-note-dur)
+                (incf start grace-note-dur))
+           (setf index next-non-grace-note))
+         ;; put the flattened voice back into rthm-seqs
+         (setf voice (split-into-sub-groups voice lengths)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; This only works for grace notes that open a piece (i.e. not a
 ;;; section or sequence) as it will set start times beginning at 0.
 ;;;
@@ -10671,36 +10668,56 @@ data: (11 15)
 ;;; the voice with the most (at the beginning).
 
 (defun handle-opening-grace-notes (voices max-grace-notes grace-note-dur)
-  (loop 
+  (loop
     ;; with total-offset = (* max-grace-notes grace-note-dur)
-      for voice in voices 
-                   ;; each voice is a list of rthm-seqs so just get the first
-      for rthm-seq1 = (first voice)
-      for opening-grace-notes = (voice-grace-notes-at-beg rthm-seq1)
-      for wait = (- max-grace-notes opening-grace-notes)
-      for offset = (* grace-note-dur wait)
-      do
-        (loop for event in rthm-seq1 repeat opening-grace-notes do
-              (unless (is-grace-note event)
-                (error "~a~%slippery-chicken::handle-opening-grace-notes: ~
-                        Not a grace note!" event))
-              (setf (start-time event) offset)
-              (incf offset grace-note-dur))))
+    for voice in voices 
+    ;; each voice is a list of rthm-seqs so just get the first
+    for rthm-seq1 = (first voice)
+    for opening-grace-notes = (grace-notes-at-beg-of-events-list rthm-seq1)
+    ;; these two are for handling less grace notes in this voice than the max
+    ;; num grace notes. if this voice has max, then they'll be 0
+    for wait = (- max-grace-notes opening-grace-notes)
+    for offset = (* grace-note-dur wait)
+    do
+       ;; MDE Wed Jan 21 09:27:37 2026, Heidhausen
+       (let ((non-grace1 (nth opening-grace-notes rthm-seq1))
+             (lost (* grace-note-dur max-grace-notes)))
+         (when non-grace1
+           (setf (start-time-qtrs non-grace1) lost
+                 (start-time non-grace1) lost)
+           ;; setf method sets compound too
+           (decf (duration non-grace1) lost)
+           (decf (duration-in-tempo non-grace1) lost)))
+       (loop for event in rthm-seq1 repeat opening-grace-notes do
+         (unless (is-grace-note event)
+           (error "~a~%slippery-chicken::handle-opening-grace-notes: ~
+                   Not a grace note!" event))
+         (setf (start-time event) offset
+               (start-time-qtrs event) offset
+               ;; MDE Wed Jan 21 09:14:39 2026, Heidhausen
+               (end-time event) (+ offset grace-note-dur)
+               (duration event) grace-note-dur
+               (duration-in-tempo event) grace-note-dur)
+         (incf offset grace-note-dur))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jan 20 19:23:51 2026, Heidhausen 
+(defmethod leading-grace-notes ((sc slippery-chicken))
+  (let ((bars (get-bar sc 1)))
+    (loop for bar in bars maximize (nth-value 1 (leading-grace-notes bar)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Returns the max number of grace notes that are at the beginning of the
 ;;; voices. voices is one list of rthm-seqs (a list of events) for each voice
 ;;; in the piece.
 
 (defun grace-notes-at-beg (voices)
   (loop for voice in voices maximize
-        (voice-grace-notes-at-beg (first voice))))
+        (grace-notes-at-beg-of-events-list (first voice))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Returns the number of grace notes at the beginning of a list of events.
-(defun voice-grace-notes-at-beg (events)
+(defun grace-notes-at-beg-of-events-list (events)
   (loop 
       with grace-notes = 0
       for event in events do
@@ -11554,27 +11571,27 @@ data: (11 15)
                                players
                                csound-instruments
                                &key
-                                 (start-section 1)
+                               (start-section 1)
                                ;; offset in seconds
-                                 (offset 0)
+                               (offset 0)
                                ;; add something just before .sco?
-                                 (suffix "")
-                                 (csound-file
-                                  (format nil "~a~a~a.sco"
-                                          (get-sc-config 'default-dir)
-                                          (filename-from-title (title sc))
-                                          suffix))
+                               (suffix "")
+                               (csound-file
+                                (format nil "~a~a~a.sco"
+                                        (get-sc-config 'default-dir)
+                                        (filename-from-title (title sc))
+                                        suffix))
                                ;; add a comment sections?
-                                 (comments t)
-                                 (delimiter #\space)
-                                 (from-sequence 1)
-                                 (num-sequences nil)
-                                 (chords t)
+                               (comments t)
+                               (delimiter #\space)
+                               (from-sequence 1)
+                               (num-sequences nil)
+                               (chords t)
                                ;; either NIL, a list of lists, or a function
                                ;; cf. documentation
-                                 (p-fields #'csound-p-fields-simple)
+                               (p-fields #'csound-p-fields-simple)
                                ;; when NIL, all sections are considered
-                                 (num-sections nil))
+                               (num-sections nil))
 ;;; ****
   ;; test if a csound instrument is assigned to every selected player
   (when (/= (length players)
@@ -11666,12 +11683,12 @@ data: (11 15)
                                       ;; set values for p1-p3
                                       ;; i.e. instrument, onset, duration
                                       (p1-value (if (numberp instrument)
-                                                    (format nil
-                                                            "i~a"
-                                                            instrument)
-                                                    (format nil
-                                                            "i \"~a\""
-                                                            instrument)))
+                                                  (format nil
+                                                          "i~a"
+                                                          instrument)
+                                                  (format nil
+                                                          "i \"~a\""
+                                                          instrument)))
                                       (p2-value (+ offset
                                                    (start-time event)))
                                       (p3-value (duration event))
@@ -11709,29 +11726,29 @@ data: (11 15)
                                           (t actual-chord-length))))
                                  ;; process first chords, then pitches
                                  (if (numberp actual-chord-length)
-                                     ;; process the chord note by note
-                                     (loop for i from 0
-                                             to (1- pitches-per-chord)
-                                           collect
-                                           (append
-                                            (list p1-value
-                                                  p2-value
-                                                  p3-value)
-                                            ;; could be a list of lists (when
-                                            ;; data is generated by a function)
-                                            ;; or a one-dimensional list with
-                                            ;; n-values (cf. documentation)
-                                            (if (every #'listp p-field-values)
-                                                (nth i p-field-values)
-                                                p-field-values)))
-                                     ;; process a (single) pitch
-                                     (list (append (list p1-value
-                                                         p2-value
-                                                         p3-value)
-                                                   ;; in this case, the value
-                                                   ;; ought to be a list with
-                                                   ;; n values
-                                                   p-field-values)))))))))))
+                                   ;; process the chord note by note
+                                   (loop for i from 0
+                                           to (1- pitches-per-chord)
+                                         collect
+                                         (append
+                                          (list p1-value
+                                                p2-value
+                                                p3-value)
+                                          ;; could be a list of lists (when
+                                          ;; data is generated by a function)
+                                          ;; or a one-dimensional list with
+                                          ;; n-values (cf. documentation)
+                                          (if (every #'listp p-field-values)
+                                            (nth i p-field-values)
+                                            p-field-values)))
+                                   ;; process a (single) pitch
+                                   (list (append (list p1-value
+                                                       p2-value
+                                                       p3-value)
+                                                 ;; in this case, the value
+                                                 ;; ought to be a list with
+                                                 ;; n values
+                                                 p-field-values)))))))))))
     ;; write to file
     (with-open-file (stream csound-file
                             :direction :output

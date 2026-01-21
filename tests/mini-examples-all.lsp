@@ -51,13 +51,6 @@
   (cmn-display mini)
   (write-lp-data-for-all mini))
 
-(let* ((x 1)
-       (y 2)
-       (z -5))
-  (+ x y z))
-
-
-(transpose (make-pitch 'c4) 1)
 
 (let* ((scale '(c4 d4 e4 f4 g4 a4 b4))
        (length (length scale))
@@ -4192,6 +4185,7 @@ curently creates bad-tie error
     (handle-ties mini)
     ;; Might as well go for -max right away
     (map-over-bars mini nil nil nil #'consolidate-rests-max)
+    (update-slots mini)
     (midi-play mini)
     (write-xml mini)
     (cmn-display mini)))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:57:20 Sat Jan 17 2026 CET
+;;; $$ Last modified:  15:47:08 Wed Jan 21 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1476,6 +1476,68 @@
     (equalp '(EF5 G4 AF4 B4) (get-pitch-symbols rsb))
     (add-grace-notes rsb '(e4 gs4 c3) 3)
     (equalp '(EF5 G4 AF4 E4 GS4 C3 B4) (get-pitch-symbols rsb))))
+
+;;  MDE Wed Jan 21 15:38:32 2026, Heidhausen 
+(sc-deftest test-grace-notes-timings ()
+  (let* ((sc
+           (make-slippery-chicken
+            '+mini+
+            :ensemble '(((vln (violin))
+                         (vc (cello))))
+            :tempo-map '((1 (q 120)))
+            :set-palette '((set1 ((c4 d4 e4 f4 g4 a4))))
+            :set-map '((1 (set1 set1)))
+            :rthm-seq-palette '((seq1 ((((4 4) g g g q q - +e g g e - q))
+                                       :pitch-seq-palette (1 2 3 5 4 5 4 3 2)))
+                                (seq2 ((((4 4) g q q (e) g g e +q))
+                                       :pitch-seq-palette (1 2 3 5 4 2))))
+            :rthm-seq-map '((1 ((vln (seq1 seq2))
+                                (vc (seq2 seq1)))))))
+         (events (get-events-start-time-duration sc 1 '(vln vc)))
+         (vln-events (flatten (my-copy-list (first events))))
+         (vc-events (flatten (my-copy-list (second events))))
+         (gdur (grace-note-duration (make-rest 4)))
+         (3gdur (* 3 gdur)))
+    ;; (print vln-events)
+    (multiple-value-bind (graces num)
+        (leading-grace-notes (get-bar sc 1 'vln))
+      (sc-test-check
+        (= 3 num)
+        (every #'is-grace-note graces)
+        (= 3 (leading-grace-notes sc))
+        (zerop (start-time (first vln-events)))
+        (zerop (start-time-qtrs (first vln-events)))
+        (equal-within-tolerance gdur (start-time-qtrs (second vln-events)))
+        (equal-within-tolerance (* 2 gdur) (start-time (third vln-events)))
+        ;; vc has only 1 grace at beg so coincides with 3rd vln grace
+        (equal-within-tolerance (* 2 gdur) (start-time (first vc-events)))
+        (equal-within-tolerance 3gdur (start-time (second vc-events)))
+        (equal-within-tolerance 3gdur (start-time (fourth vln-events))) 
+        (equal-within-tolerance 3gdur (start-time-qtrs (second vc-events)))
+        (equal-within-tolerance 3gdur (start-time-qtrs (fourth vln-events)))
+        ;; 2nd q
+        (equal-within-tolerance 0.5 (start-time (fifth vln-events)))
+        (equal-within-tolerance 1 (start-time-qtrs (fifth vln-events)))
+        (equal-within-tolerance 1.25 (start-time (nth 7 vln-events)))
+        ;; last q
+        (equal-within-tolerance 1.5 (start-time (nth 8 vln-events)))
+        ;; e after grace pair
+        (equal-within-tolerance 1.25 (start-time (nth 7 vln-events)))
+        ;; test mid-seq grace notes
+        (equal-within-tolerance (- 1.25 gdur) (start-time (nth 6 vln-events)))
+        (equal-within-tolerance (- 2.5 (* 2 gdur))
+                                (start-time-qtrs (nth 5 vln-events)))
+        (equal-within-tolerance 3.5 (start-time (first (last vc-events))))
+        (equal-within-tolerance 7 (start-time-qtrs (first (last vc-events))))
+        (equal-within-tolerance 2 (start-time (nth 10 vln-events)))
+        (equal-within-tolerance 3.25 (start-time (nth 14 vln-events)))
+        (equal-within-tolerance 6.5 (start-time-qtrs (nth 14 vln-events)))
+        (equal-within-tolerance 4 (start-time-qtrs (nth 10 vln-events)))
+        (equal-within-tolerance (- 2 gdur) (start-time (nth 9 vln-events)))
+        ;; 
+        (equal-within-tolerance (- 2 3gdur) (start-time (nth 6 vc-events)))
+        (equal-within-tolerance (- 4 3gdur) (start-time-qtrs (nth 6 vc-events)))
+        ))))
 
 (sc-deftest test-find-repeated-pitches ()
   (let ((rsb (make-rest-bar '(5 8))))

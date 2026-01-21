@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    23rd November 2011
 ;;;
-;;; $$ Last modified:  12:06:50 Tue Jan 20 2026 CET
+;;; $$ Last modified:  19:24:23 Wed Jan 21 2026 CET
 ;;;
 ;;; SVN ID: $Id: slippery.lsp 5627 2016-03-23 14:37:22Z medward2 $
 ;;;
@@ -146,8 +146,8 @@
         ({ 3 - +t32 t32 t32 t32 t32 t32 ts { 3 36 18  - } }
            (e) 32 (s.)))
        :pitch-seq-palette (1 2 5 5 5 5 5 5 5 5 4 5 2 1 5 5 5 4 5 2 1)))
-   (5 ((((2 4) { 3 (t32) - t32 t32 t32 t32 t32 t32 t32 - (te) } (s) e.)
-        (s (e) s (s.) - 32 (s) s -)
+   (5 ((((2 4) { 3 (t32) t32 t32 t32 t32 t32 t32 t32 (te) } (s) e.)
+        (s (e) s (s.) 32 (s) s)
         ({ 3 (te) - t32 t32 t32 t32 (ts) ts - }
            { 3 tq - t32 t32 t32 t32 - }))
        :pitch-seq-palette (2 1 5 1 5 1 6 5 1 5 2 5 1 2 6 5 1 5 2 5 1 2)))
@@ -335,8 +335,7 @@
 ;;; Generate our score with CMN
 #+cmn
 (cmn-display +slippery-when-wet+
-             :write-section-info nil
-             :file "/tmp/slippery.eps")
+             :write-section-info nil :display-time t :file "/tmp/slippery.eps")
 
 ;;; Write a MIDI file of the piece (will probably sound awful but hey...)
 (midi-play +slippery-when-wet+ :midi-file "/tmp/slippery.mid")
@@ -376,9 +375,6 @@
                        :all-bar-nums t
                        :barline-thickness 1
                        :in-c nil)
-
-;;; MDE Tue Jan 20 12:00:00 2026, Heidhausen
-(auto-add-ornaments +slippery-when-wet+ nil)
 
 (write-xml +slippery-when-wet+)
 

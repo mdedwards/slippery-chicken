@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:15:06 Tue Jan 20 2026 CET
+;;; $$ Last modified:  19:07:45 Wed Jan 21 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2143,7 +2143,7 @@ rhythm symbol for clarity:
       (nreverse beats))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; 
 (defmethod gen-stats ((rsb rthm-seq-bar))
   (let ((rhythms (rhythms rsb)))
     (set-sounding-duration rsb nil)
@@ -2324,15 +2324,15 @@ rhythm symbol for clarity:
 ;;; sounding-duration if it's nil or forced
 (defmethod sounding-duration :before ((rsb rthm-seq-bar))
   (if (slot-value rsb 'sounding-duration)
-      (slot-value rsb 'sounding-duration)
-      (setf (slot-value rsb 'sounding-duration)
-            (loop for e in (rhythms rsb) with dur = 0.0 do
-                 (if (event-p e)
-                     (unless (is-rest e)
-                       (incf dur (duration-in-tempo e)))
-                     ;; we hit a rhythm object so just back out
-                     (return nil))
-                 finally (return dur)))))
+    (slot-value rsb 'sounding-duration)
+    (setf (slot-value rsb 'sounding-duration)
+          (loop for e in (rhythms rsb) with dur = 0.0 do
+            (if (event-p e)
+              (unless (is-rest e)
+                (incf dur (duration-in-tempo e)))
+              ;; we hit a rhythm object so just back out
+              (return nil))
+                finally (return dur)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3694,40 +3694,45 @@ data: (2 4)
     (if (and (is-rest-bar rsb) 
              (write-time-sig rsb)
              get-time-sig-changes)
-        (progn
-          (unless (= time-scaler 1.0)
-            (error "rthm-seq-bar::get-timings: can't yet handle scaling ~
+      (progn
+        (unless (= time-scaler 1.0)
+          (error "rthm-seq-bar::get-timings: can't yet handle scaling ~
                     of rest bars"))
-          ;; (print (bar-num rsb))  
-          ;; perhaps setting tempo would force a bar line in the cases 
-          ;; described in NB above    
-          (setf result (my-copy-list (rhythms rsb))))
-        (loop 
-           for event in (rhythms rsb) 
-           for scaled-event = (if (is-grace-note event)
-                                  event
-                                  ;; clones the event
-                                  (scale event time-scaler t t))
-           with rests = '()
-           do
+        ;; (print (bar-num rsb))  
+        ;; perhaps setting tempo would force a bar line in the cases 
+        ;; described in NB above    
+        (setf result (my-copy-list (rhythms rsb))))
+      (loop 
+        for event in (rhythms rsb) 
+        for scaled-event = (if (is-grace-note event)
+                             ;; MDE Wed Jan 21 15:03:44 2026, Heidhausen --
+                             ;; always clone otherwise we get bar not full
+                             ;; errors 
+                             (clone event)
+                             ;; clones the event
+                             (scale event time-scaler t t))
+        with rests = '()
+        do
+           ;; MDE Wed Jan 21 10:55:59 2026, Heidhausen -- tied notes will be
+           ;; ignored in any case 
            (if (needs-new-note scaled-event)
-               (unless (and (is-grace-note event) ignore-grace-notes)
-                 (when include-rests
-                   ;; 25/4/10 sure reverse rests, no?
-                   (loop for r in (nreverse rests) do (push r result))
-                   (setf rests nil))
-                 (push scaled-event result))
-               (progn
-                 (when (and include-rests (is-rest scaled-event))
-                   (push scaled-event rests))
-                 ;; (format t "~%~a ~a ~a"
-                 ;;     ignore-rests  (is-rest scaled-event) (first result))
-                 (when (and ignore-rests result (is-rest scaled-event))
-                   (incf (compound-duration-in-tempo (first result))
-                         (duration-in-tempo scaled-event)))))
+             (unless (and (is-grace-note event) ignore-grace-notes)
+               (when include-rests
+                 ;; 25/4/10 sure reverse rests, no?
+                 (loop for r in (nreverse rests) do (push r result))
+                 (setf rests nil))
+               (push scaled-event result))
+             (progn
+               (when (and include-rests (is-rest scaled-event))
+                 (push scaled-event rests))
+               ;; (format t "~%~a ~a ~a"
+               ;;     ignore-rests  (is-rest scaled-event) (first result))
+               (when (and ignore-rests result (is-rest scaled-event))
+                 (incf (compound-duration-in-tempo (first result))
+                       (duration-in-tempo scaled-event)))))
            ;; 25/4/10: had to add this to make sure we get rests when we have a
            ;; bar of rests only (but is-rest-bar is nil...)
-           finally (loop for r in (nreverse rests) do (push r result))))
+        finally (loop for r in (nreverse rests) do (push r result))))
     (setf result (nreverse result))
     (when (and (first result) (write-time-sig rsb))
       (set-midi-time-sig (first result) (get-time-sig rsb)))
@@ -5652,7 +5657,7 @@ collect (midi-channel (pitch-or-chord p))))
     (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
+;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
 ;;; the problem of how many flags we need (and therefore, for Lilypond, what
 ;;; the letter-value slot should be). 
 (defmethod fix-nested-tuplets ((rsb rthm-seq-bar) &optional on-fail)
@@ -6149,6 +6154,12 @@ PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL
           for e2 in (cdr (rhythms rsb))
           for i from 1
           when (porc-equal e1 e2) collect i)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jan 20 19:19:33 2026, Heidhausen 
+(defmethod leading-grace-notes ((rsb rthm-seq-bar))
+  (let ((gns (loop for r in (rhythms rsb) while (is-grace-note r) collect r)))
+    (values gns (length gns))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -7036,8 +7047,8 @@ rsb-rb)
                   triangle-up open))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Wed Mar 16 10:30:04 2016 -- abstracted out of update-time method so we
-;;; can call on a simple list of events
+;;;  MDE Wed Mar 16 10:30:04 2016 -- abstracted out of update-time method so
+;;; we can call on a simple list of events
 
 ;;; ****f* rthm-seq-bar/events-update-time
 ;;; DATE
@@ -7098,9 +7109,11 @@ rsb-rb)
       (if (or (not max-start-time) (<= time max-start-time))
         (progn
           (setf (start-time event) time
-                (start-time-qtrs event) time-qtrs
+                (start-time-qtrs event) time-qtrs               
                 ;; MDE Fri Apr  4 15:27:02 2025, Heidhausen -- slot-value
-                ;; now because of the setf methods  
+                ;; now because of the setf methods
+                ;; MDE Tue Jan 20 17:00:02 2026, Heidhausen -- it's been a while
+                ;; coming...
                 (slot-value event 'duration-in-tempo)
                 (* (duration event) qtr-dur)
                 (slot-value event 'compound-duration-in-tempo)

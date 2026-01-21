@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11th December 2011 (Bangkok)
 ;;;
-;;; $$ Last modified:  16:13:21 Wed Aug 13 2025 CEST
+;;; $$ Last modified:  19:28:53 Wed Jan 21 2026 CET
 ;;;
 ;;; SVN ID: $Id: bar-holder.lsp 431 2011-12-08 14:44:30Z medward2 $
 ;;;
@@ -236,54 +236,61 @@
 
 (sc-deftest test-slippery ()
   (declare (special +slippery-when-wet+))
-    (let ((mid "/tmp/slippery.mid")
-          (eps "/tmp/slippery.eps")
-          (asco "/tmp/slippery.asco.txt")
-          (player nil)
-          (lp "/tmp/_slippery-when-wet-score.ly"))
-      (when (probe-file mid)
-        (delete-file mid))
-      (when (probe-file eps)
-        (delete-file eps))
-      (when (probe-file lp)
-        (delete-file lp))
-      (load-from-examples-dir "slippery.lsp")
-      ;; MDE Mon Dec 12 10:16:59 2011 -- just to test the bar numbers
-      ;; vs. (section seq bar) references 
-      (setf (tempo-map +slippery-when-wet+)
-            ;; each section is 7 seqs long, each seq is 3 bars long, so (2 2 2)
-            ;; is bar 26
-            '((1 44) (4 66) (7 (h 60)) ((2 2 2) 96))
-            player (get-player +slippery-when-wet+ 'solo))
-      (sc-test-check 
-        ;; MDE Thu Aug 28 20:36:31 2014 
-        (empty-bars? +slippery-when-wet+ 22 24 'fl )
-        (not (empty-bars? +slippery-when-wet+ 22 25 'fl ))
-        ;; MDE Wed Apr 30 17:06:40 2014 
-        (equalp (find-boundaries +slippery-when-wet+)
-                '(3 16 25 46 52 58 67 115 151 169 213 232 245))
-        (= 66 (bpm (get-tempo +slippery-when-wet+ 4)))
-        (= 44 (bpm (get-tempo +slippery-when-wet+ 3)))
-        (= 60 (bpm (get-tempo +slippery-when-wet+ 25)))
-        (= 96 (bpm (get-tempo +slippery-when-wet+ 26)))
-        ;; MDE Thu Jul  5 17:13:44 2012 -- test some stats
-        (= 252 (num-bars (piece +slippery-when-wet+)))
-        (equal-within-tolerance 630.0 (end-time (piece +slippery-when-wet+)))
-        (= 5040 (num-notes (piece +slippery-when-wet+)))
-        (= 5482 (num-score-notes (piece +slippery-when-wet+)))
-        (= 3846 (num-rests (piece +slippery-when-wet+)))
-        (= 215 (total-bars player))
-        (= 949 (total-notes player))
-        ;; MDE Mon May  5 20:48:19 2014 -- Write the antescofo file in the /tmp
-        ;; directory  
-        (> (print (write-antescofo +slippery-when-wet+ 'solo :file asco)) 5500)
-        (file-write-ok asco 240000)
-        (file-write-ok mid 40000)
-        #+cmn (file-write-ok eps 3600000)
-        (file-write-ok lp 150)
-        ;; MDE Mon Jan 12 15:15:04 2015 -- make sure nested tuplets are working
-        (string= (get-lp-data (get-event +slippery-when-wet+ 1 4 'vc) t)
-                 "\\times 2/3 {" :end1 12))))
+  (let ((mid "/tmp/slippery.mid")
+        (eps "/tmp/slippery.eps")
+        (asco "/tmp/slippery.asco.txt")
+        (player nil)
+        (lp "/tmp/_slippery-when-wet-score.ly"))
+    (when (probe-file mid)
+      (delete-file mid))
+    (when (probe-file eps)
+      (delete-file eps))
+    (when (probe-file lp)
+      (delete-file lp))
+    (load-from-examples-dir "slippery.lsp")
+    ;; MDE Mon Dec 12 10:16:59 2011 -- just to test the bar numbers
+    ;; vs. (section seq bar) references 
+    (setf (tempo-map +slippery-when-wet+)
+          ;; each section is 7 seqs long, each seq is 3 bars long, so (2 2 2)
+          ;; is bar 26
+         '((1 44) (4 66) (7 (h 60)) ((2 2 2) 96)))
+    (setq player (get-player +slippery-when-wet+ 'solo))
+    (sc-test-check 
+      ;; MDE Thu Aug 28 20:36:31 2014 
+      (empty-bars? +slippery-when-wet+ 22 24 'fl )
+      (not (empty-bars? +slippery-when-wet+ 22 25 'fl ))
+      ;; MDE Wed Apr 30 17:06:40 2014 
+      (equalp (find-boundaries +slippery-when-wet+)
+              ;; I've tweaked find-boundaries
+               '(3 16 25 46 52 58 67 115 151 169 213 232 245))
+              ;; '(25 37 46 58 100 122 169 213 232 245))
+      (= 66 (bpm (get-tempo +slippery-when-wet+ 4)))
+      (= 44 (bpm (get-tempo +slippery-when-wet+ 3)))
+      (= 60 (bpm (get-tempo +slippery-when-wet+ 25)))
+      (= 96 (bpm (get-tempo +slippery-when-wet+ 26)))
+      ;; MDE Thu Jul  5 17:13:44 2012 -- test some stats
+      (= 252 (num-bars (piece +slippery-when-wet+)))
+      (equal-within-tolerance 630.0 (end-time (piece +slippery-when-wet+)))
+      (update-slots +slippery-when-wet+)
+      (equal-within-tolerance 316.38635 (end-time (piece +slippery-when-wet+)))
+      (= 5040 (num-notes (piece +slippery-when-wet+)))
+      (= 5482 (num-score-notes (piece +slippery-when-wet+)))
+      (= 3846 (num-rests (piece +slippery-when-wet+)))
+      (= 215 (total-bars player))
+      (= 949 (total-notes player))
+      ;; MDE Mon May  5 20:48:19 2014 -- Write the antescofo file in the /tmp
+      ;; directory  
+      (> (print (write-antescofo +slippery-when-wet+ 'solo :file asco)) 5500)
+      (file-write-ok asco 240000)
+      (file-write-ok mid 40000)
+      #+cmn (file-write-ok eps 3600000)
+      (file-write-ok lp 150)
+      ;; MDE Mon Jan 12 15:15:04 2015 -- make sure nested tuplets are working
+      (string= (get-lp-data (get-event +slippery-when-wet+ 1 4 'vc) t)
+               "\\times 2/3 {" :end1 12)
+      ;;; MDE Tue Jan 20 12:00:00 2026, Heidhausen
+      (auto-add-ornaments +slippery-when-wet+ nil)
+      )))
 
 ;;; SAR Thu Aug  9 11:45:24 BST 2012
 ;;; See comment for test-pd-auto-slurs

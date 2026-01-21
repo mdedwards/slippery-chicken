@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:27:52 Fri Jan 16 2026 CET
+;;; $$ Last modified:  16:16:47 Wed Jan 21 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -360,6 +360,9 @@
   (unless (start-time e)
     (error "event::output-midi: start-time nil! Call update-slots perhaps:~%~a"
            e))
+  ;; can confirm that e.g. with cat in black project, all a note is bang on a
+  ;; down beat, reaper will shift things slightly to the right 
+  ;;(format t "~&~a ~a ~a" (bar-num e) (get-pitch-symbol e) (start-time-qtrs e))
   (let ((noc (pitch-or-chord e))
         ;; 4.8.10 if start-time-qtrs hasn't been set, use start-time instead
         (time (+ time-offset 
@@ -1544,6 +1547,8 @@ NIL
            (numberp (end-time e)))
       (progn
         (incf (duration-in-tempo e) inc)
+        ;; MDE Wed Jan 21 13:08:21 2026, Heidhausen
+        (incf (duration e) inc)
         ;; MDE Fri Apr  4 15:43:21 2025, Heidhausen -- handled by new setf
         ;; methods  
         ;; (incf (compound-duration-in-tempo e) inc)
@@ -4749,9 +4754,9 @@ W
               :is-rest t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; list-of-events can be a simple list or an sclist
 ;;; if invert, then find the next non grace note
+;;; returns index 
 
 (defun find-next-grace-note (list-of-events start-index 
                              &optional 

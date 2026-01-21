@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  12:09:27 Tue Jan 20 2026 CET
+;;; $$ Last modified:  15:26:38 Wed Jan 21 2026 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7723,11 +7723,14 @@ NIL
 ;;; This method will go through each event and decrement those events which
 ;;; repeat a note on the same MIDI channel which start < 'min-time' after the
 ;;; end-time of the previous event.
+;;;
+;;; Do not call update-slots after this method as you will get 'bar not full'
+;;; errors (due to hard-changed durations)
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
 ;;; - either a single symbol or a list of symbols for the players to be
-;;;   processed
+;;;   processed. If nil then all players will be processed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments
@@ -7745,11 +7748,11 @@ NIL
 ;;; SYNOPSIS
 (defmethod make-hammer-friendly ((sc slippery-chicken) players
                                  &key
-                                   (warn t)
-                                   (start-bar 1)
-                                   end-bar
-                                   (min-gap 60)
-                                   (min-dur 50))
+                                 (warn t)
+                                 (start-bar 1)
+                                 end-bar
+                                 (min-gap 60)
+                                 (min-dur 50))
 ;;; ****
   (unless players (setf players (players sc)))
   (unless end-bar (setf end-bar (num-bars sc)))
@@ -7759,9 +7762,9 @@ NIL
         (min-dur-secs (/ min-dur 1000.0))
         last)
     (loop for player in players do
-         (next-event sc player t start-bar)
-         (setq last (next-event sc player t nil end-bar))
-         (loop for this = (next-event sc player t nil end-bar)
+      (next-event sc player t start-bar)
+      (setq last (next-event sc player t nil end-bar))
+      (loop for this = (next-event sc player t nil end-bar)
             with count = 0 while this do
               (when (and (> (common-notes last this) 0)
                          (= (get-midi-channel last) (get-midi-channel this))
@@ -7773,17 +7776,17 @@ NIL
                        (inc-for-min (- (compound-duration-in-tempo last)
                                        min-dur-secs))
                        (inc (if (> new-dur min-dur-secs)
-                                ;; if our dur is long enough, just decrement the
-                                ;; miniumum 
-                                (- min-gap-secs)
-                                ;; otherwise decrement just enough to achieve
-                                ;; min-dur, if that's possible...
-                                (if (>= inc-for-min 0)
-                                    (- inc-for-min)
-                                    (when warn
-                                      (warn "make-hammer-friendly: ~
-                                             duration is too short to handle: ~
-                                             ~%~a" last))))))
+                              ;; if our dur is long enough, just decrement the
+                              ;; miniumum 
+                              (- min-gap-secs)
+                              ;; otherwise decrement just enough to achieve
+                              ;; min-dur, if that's possible...
+                              (if (>= inc-for-min 0)
+                                (- inc-for-min)
+                                (when warn
+                                  (warn "make-hammer-friendly: ~
+                                         duration is too short to handle: ~
+                                         ~%~a" last))))))
                   (when inc
                     ;; (print (compound-duration last))
                     ;; use this method as it updates other slots too

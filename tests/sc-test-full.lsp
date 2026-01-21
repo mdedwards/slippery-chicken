@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11th December 2011 (Bangkok)
 ;;;
-;;; $$ Last modified:  19:28:53 Wed Jan 21 2026 CET
+;;; $$ Last modified:  19:39:43 Wed Jan 21 2026 CET
 ;;;
 ;;; SVN ID: $Id: bar-holder.lsp 431 2011-12-08 14:44:30Z medward2 $
 ;;;
@@ -232,7 +232,6 @@
       (write-lp-data-for-all +tempus-perfectum+
                              :players '(ob cl bn hn tp tb pr pl vn va vc))
       (file-write-ok "/tmp/_tempus-perfectum-score.ly" 180))))
-
 
 (sc-deftest test-slippery ()
   (declare (special +slippery-when-wet+))

@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11th December 2011 (Bangkok)
 ;;;
-;;; $$ Last modified:  19:39:43 Wed Jan 21 2026 CET
+;;; $$ Last modified:  10:46:17 Thu Jan 22 2026 CET
 ;;;
 ;;; SVN ID: $Id: bar-holder.lsp 431 2011-12-08 14:44:30Z medward2 $
 ;;;
@@ -237,6 +237,7 @@
   (declare (special +slippery-when-wet+))
   (let ((mid "/tmp/slippery.mid")
         (eps "/tmp/slippery.eps")
+        (xml "/tmp/slippery.xml")
         (asco "/tmp/slippery.asco.txt")
         (player nil)
         (lp "/tmp/_slippery-when-wet-score.ly"))
@@ -288,8 +289,8 @@
       (string= (get-lp-data (get-event +slippery-when-wet+ 1 4 'vc) t)
                "\\times 2/3 {" :end1 12)
       ;;; MDE Tue Jan 20 12:00:00 2026, Heidhausen
-      (auto-add-ornaments +slippery-when-wet+ nil)
-      )))
+      (< 250 (auto-add-ornaments +slippery-when-wet+ nil))
+      (write-xml +slippery-when-wet+ :file xml))))
 
 ;;; SAR Thu Aug  9 11:45:24 BST 2012
 ;;; See comment for test-pd-auto-slurs

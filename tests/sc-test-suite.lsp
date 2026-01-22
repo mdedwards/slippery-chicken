@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:47:08 Wed Jan 21 2026 CET
+;;; $$ Last modified:  10:10:43 Thu Jan 22 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -20885,6 +20885,8 @@ est)")))
                                    (incf count))))))
          count))
       (equalp '(0 0) (fast-microtone-to-chromatic mini nil :threshold 10))
+      ;; MDE Thu Jan 22 10:10:38 2026, Heidhausen -- good place to test these
+      ;; too 
       (add-ornament mini 1 7 'one 'trill)
       (add-ornament mini 2 7 'one 'mordent)
       (add-ornament mini 4 1 'two 'grace 3)

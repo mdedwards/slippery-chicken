@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  12:24:42 Wed Dec 17 2025 CET
+;;; $$ Last modified:  17:04:52 Wed Jan 28 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -1851,7 +1851,8 @@
   (let* ((x-max (lastx env))
          (new-env (reverse env))
          (rev-env (reverse env)))
-    (loop for x in (cdddr rev-env) by #'cddr and y in (cddr rev-env) by #'cddr do
+    (loop for x in (cdddr rev-env) by #'cddr
+          and y in (cddr rev-env) by #'cddr do
       (push (+ x-max (- x-max x)) new-env)
       (push y new-env))
     (nreverse new-env)))

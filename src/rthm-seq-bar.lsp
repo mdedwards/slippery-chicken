@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:07:45 Wed Jan 21 2026 CET
+;;; $$ Last modified:  16:22:50 Sat Jan 31 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3512,7 +3512,11 @@ data: E
                             start-time-qtrs :tempo tempo)
       (setf (rhythms rsb) new-events)
       (unless (is-rest-bar rsb)
-        (unless (equal-within-tolerance bar-dur (- end-time start-time) .003)
+        ;; MDE Sat Jan 31 16:18:38 2026, Heidhausen -- don't hard-code the
+        ;; tolerance, rather put it in the config-data 
+        (unless (equal-within-tolerance
+                 bar-dur (- end-time start-time)
+                 (get-sc-config 'rthm-seq-bar-duration-tolerance))
           (error "~&rthm-seq-bar::update-time: Duration of rhythms don't ~
                   match that of bar: ~%rhythms ~a secs : bar ~a secs:~%~a"
                  (- end-time start-time) bar-dur rsb))))

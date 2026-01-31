@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  10:45:46 Thu Jan 22 2026 CET
+;;; $$ Last modified:  16:38:46 Sat Jan 31 2026 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8256,7 +8256,8 @@ NIL
                      (loop for p in (if data-list pitches (reverse pitches))
                            collect (make-grace p))))
         (gliss
-           (if (and (needs-new-note this-event) (needs-new-note next-event))
+           (if (and this-event next-event
+                    (needs-new-note this-event) (needs-new-note next-event))
              (if (porc-equal this-event next-event)
                (problem nil "skipping gliss: same notes")
                (progn

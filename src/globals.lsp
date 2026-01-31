@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  10:18:24 Thu Jan 22 2026 CET
+;;; $$ Last modified:  16:20:27 Sat Jan 31 2026 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -88,6 +88,9 @@
        ;; get-notes algorithm should select the lowest notes possible for the
        ;; instrument/set.
        (pitch-seq-lowest-equals-prefers-low 1)
+       ;; how many seconds tolerance do we have when checking bar-duration in
+       ;; update-time method of rthm-seq-bar
+       (rthm-seq-bar-duration-tolerance 0.003)
        ;; MDE Wed Oct 10 16:35:10 2018 -- until October 2018 an error was
        ;; signalled if the were no pitches in a set for an instrument which
        ;; should be playing. We can now have a rest-sequence generated instead

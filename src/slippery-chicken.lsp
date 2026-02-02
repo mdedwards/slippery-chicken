@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:15:16 Wed Jan 21 2026 CET
+;;; $$ Last modified:  15:44:36 Mon Feb  2 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -7895,6 +7895,58 @@ data: NIL
 ;;;
 ;;; NB Sibelius 7.5 messes up some transposing instruments, getting octave
 ;;; transpositions wrong and adding generally unwanted key signatures.
+;;; 
+;;; NB Dorico has trouble importing some tuplets. I have some understanding for
+;;; this as the music-xml definition of rhythm is complex and confusing. If you
+;;; generated complex nested tuplets (e.g. via RQQ rhythmic notation) then some
+;;; bars, upon importing into Dorico, will be considered overfull (you'll
+;;; probably see these marked in red, unless you have 'Hide Signposts' on. You
+;;; can click on those marks in dorico and enter the duration of the bar,
+;;; correcting what Dorico thinks is an error, but bear in mind that this arises
+;;; from what I consider to be a false interpretation of the optional
+;;; tuplet-actual xml tag which overrides the more pertinent and non-optional
+;;; duration tag (which is always correct as far as I can tell). 
+;;;
+;;; I prefer to correct such problems (e.g. 3:2 tuplets not spanning the rhythms
+;;; indicated via tuplet start and stop tags) in software
+;;; semi-automatically. For instance the following will examine the tuplets
+;;; slots of rthm-seq-bars and if it identifies problematic values (as
+;;; identified by trial-and-error via Dorico import) you can correct it with the
+;;; replacements given. In the following case this is always a similar case of a
+;;; triplet over e.g. 6 notes being replaced by three triplets over 2-note
+;;; pairs:
+#|
+(defun lu-fix-tuplets (sc)
+  (map-over-bars
+   sc 1 nil nil
+   #'(lambda (bar)
+       (loop for bad-tuplets in '(((11/6 0 20) (5/3 0 3) (3 9 16)) ; vc b99
+                                  ((11/6 0 13) (5/3 0 3) (3 4 9))
+                                  ((11/6 0 15) (5/3 0 3) (3 4 9))
+                                  ((11/6 0 15) (5/3 0 3) (3 6 11))
+                                  ((11/6 0 17) (5/3 0 3) (3 6 11))
+                                  ((11/6 0 17) (5/3 0 3) (3 4 11))
+                                  ((11/6 0 17) (5/3 0 3) (3 4 9))
+                                  )
+             for i from 1 do
+               (when (equalp bad-tuplets (tuplets bar))
+                 (setf (tuplets bar) 
+                       (case i
+                         (1 '((11/6 0 20) (5/3 0 3) (3 9 10) (3 13 14)
+                              (3 15 16)))
+                         (2 '((11/6 0 13) (5/3 0 3) (3 4 5) (3 6 7) (3 8 9)))
+                         (3 '((11/6 0 15) (5/3 0 3) (3 4 5) (3 6 7) (3 8 9)))
+                         (4 '((11/6 0 15) (5/3 0 3) (3 6 7) (3 8 9) (3 10 11)))
+                         (5 '((11/6 0 17) (5/3 0 3) (3 6 7) (3 8 9) (3 10 11)))
+                         (6 '((11/6 0 17) (5/3 0 3) (3 4 5) (3 8 9) (3 10 11)))
+                         (7 '((11/6 0 17) (5/3 0 3) (3 4 5) (3 6 7) (3 8 9)))
+                         ))
+                 (update-rhythms-bracket-info bar)))))
+  (write-xml sc))
+|#
+;;;
+;;; See e.g. the following Dorico form post for more details:
+;;; https://forums.steinberg.net/t/xml-import-nested-tuplets-problem/1022697 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object

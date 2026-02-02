@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:22:50 Sat Jan 31 2026 CET
+;;; $$ Last modified:  23:42:05 Sun Feb  1 2026 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3895,18 +3895,19 @@ data: (2 4)
 ;;; then work out what e.g. 13/12 means in the context, 13 in the time of 12
 ;;; 1/16ths or 1/8ths or what? That's what we do here. 
 (defmethod tuplet-actual-normals ((rsb rthm-seq-bar))
-  ;; MDE Fri Apr 7 10:47:26 2017 -- could be that the rsb's tuplet slot got
+  ;;  MDE Fri Apr 7 10:47:26 2017 -- could be that the rsb's tuplet slot got
   ;; messed up so recreate if nil
   (unless (tuplets rsb)
     (recreate-tuplets rsb))
   (let ((eut (get-events-under-tuplets rsb)))
     (loop for tuplet in (tuplets rsb)
-       for tevents in eut
-       for tdur = (loop for e in tevents sum (duration e))
-       for ratio = (get-tuplet-ratio (first tuplet))
-       collect (jiggle-tuplet-actual-normal
-                tdur (denominator ratio) (numerator ratio)                
-                (* 4 (/ (numerator ratio) tdur))))))
+          for tevents in eut
+          for tdur = (loop for e in tevents sum (duration e))
+          for ratio = (get-tuplet-ratio (first tuplet))
+          ;; do (print (length tevents))
+          collect (jiggle-tuplet-actual-normal
+                   tdur (denominator ratio) (numerator ratio)                
+                   (* 4 (/ (numerator ratio) tdur))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Mar 3 16:13:45 2021, Heidhausen -- for any arbitrary bar, get the
@@ -7051,7 +7052,7 @@ rsb-rb)
                   triangle-up open))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Wed Mar 16 10:30:04 2016 -- abstracted out of update-time method so
+;;; MDE Wed Mar 16 10:30:04 2016 -- abstracted out of update-time method so
 ;;; we can call on a simple list of events
 
 ;;; ****f* rthm-seq-bar/events-update-time
@@ -7137,14 +7138,15 @@ rsb-rb)
 ;;; could be over a whole bar e.g. 3/4. In that case the
 ;;; tuplet-actual-normals method would think 5 qs in the time of 4, which is
 ;;; clearly wrong, so we need to try various multiples and rhythms in order to
-;;; discover that what is in fact meant is e.g. 15 in the time of 12 1/16ths.
+;;;  discover that what is in fact meant is e.g. 15 in the time of 12 1/16ths.
 (defun jiggle-tuplet-actual-normal (duration num time-of rthm
                                     &optional (warn t))
+  ;; (format t "~&~a ~a ~a ~a" duration num time-of rthm)
   (let* ((np2 (nearest-power-of-2 (round rthm)))
          (target (if (and (float-int-p duration)
                           (power-of-2 time-of))
-                     duration
-                     (* duration (/ rthm np2))))
+                   duration
+                   (* duration (/ rthm np2))))
          (count 0)
          (max 10)
          n tof r)
@@ -7153,14 +7155,14 @@ rsb-rb)
                    tof time-of
                    r (make-rhythm (floor np2)))))
       (reset)
-      ;;(format t "~&duration ~a num ~a time-of ~a rthm ~a target ~a"
-      ;;      duration num time-of rthm target)
+      ;;(format t "~&duration ~a num ~a : ~a rthm ~a target ~a"
+      ;;    duration num time-of rthm target)
       (loop until (or (= (incf count) max) ; no floating point errors please
                       (equal-within-tolerance target (* tof (duration r))))
-         do
-           (incf n num)
-           (incf tof time-of)
-           (scale r .5 nil))
+            do
+               (incf n num)
+               (incf tof time-of)
+               (scale r .5 nil))
       (when (= count max)
         (when warn
           (warn "~&rthm-seq-bar::jiggle-tuplet-actual-normal: couldn't find ~
@@ -7232,7 +7234,7 @@ note Q,
 ;;; beats and bracketing those. If you don't want this, then split the RQQ
 ;;; lists into beats.
 (defun rqq-divide (divisions)
-  (let* ((aux (rqq-divide-aux divisions 4))
+  (let* ((aux  (rqq-divide-aux divisions 4))
          (faux (loop for r in (flatten aux) collect
                     (if (typep r 'rqq-divide-rthm)
                         (if (rqq-divide-rthm-rest r)
@@ -7260,100 +7262,100 @@ note Q,
             rest t))
     ;; (print parent-dur)
     (if (integerp divisions)
-        (let* ((v (/ parent-dur divisions))
-               (r (get-rhythm-letter-for-value v nil))
-               ;; in Sebastian Wendt's problem case we have a h. rest but inside
-               ;; a 6:7 tuplet. h. has a duration of 3 (quarters) but 3*7/6=3/5
-               ;; which is h.. :/ that can't work under a tuplet like this.
-               ;; 
-               ;; This would be the bar's rqq data (meter = 4/2):
-               ;; 
-               ;; ((4 2) Q (7 (1 (1) 1 (3))))
-               (result
-                ;; some just always create problems...
-                (if r r v))
-               #|(let ((rr (when r (make-rhythm r))))
-               (if (or (not r)          ;
-               (and rr (> (num-dots rr) 1))) ;
-               v                        ;
-               r)))|#
-               ;; when we have something like 8/3 we can just make it 4\.
-               ;; (a q. is 8/3 or 8/2. or 4.)
-               (dotit (and (numberp result) (or ;(= 3 (numerator result))
-                                             (= 3 (denominator result))))))
-          ;; (format t "~%pd ~a div ~a res ~a" parent-dur divisions result)
-          ;; (format t "~%v ~a r ~a result ~a" v r result)
-          ;; try and set dots if possible
-          (when dotit
-            ;; (print result)
-            (setf result 
-                  (if (evenp (numerator result))
-                      ;; strings work as rthms too
-                      (format nil"~a\." (/ (numerator result) 2))
-                      (format nil"~a/~a\." (numerator result) 2))))
-          ;; (format t "~&result: ~a" result)
-          (make-rqq-divide-rthm :r result :rest rest))
-        ;; divisions is not an integer:
-        (let* ((2divs (second divisions))
-               (rqqnd (rqq-num-divisions 2divs))
-               ;; MDE Sat Feb  8 13:04:05 2020 -- Dan and Jolon discovered that
-               ;; if we try this (make-rthm-seq-bar '((3 8) (1.5 (1 1 1 1 1))))
-               ;; then it doesn't work, but if that 1.5 is expressed as 3/2,
-               ;; then it does (floating-point precision problem perhaps?). So
-               ;; force the duration to be a rational
-               (this-dur (rational (first divisions)))
-               ;; the ratio of the total number of divisions we have to the
-               ;; duration  
-               (ratio (/ this-dur rqqnd))
-               (pd (/ (* parent-dur rqqnd) this-dur))
-               (result
-                (flatten 
-                 (loop for div in 2divs collect
+      (let* ((v (/ parent-dur divisions))
+             (r (get-rhythm-letter-for-value v nil))
+             ;; in Sebastian Wendt's problem case we have a h. rest but inside
+             ;; a 6:7 tuplet. h. has a duration of 3 (quarters) but 3*7/6=3/5
+             ;; which is h.. :/ that can't work under a tuplet like this.
+             ;; 
+             ;; This would be the bar's rqq data (meter = 4/2):
+             ;; 
+             ;; ((4 2) Q (7 (1 (1) 1 (3))))
+             (result
+               ;; some just always create problems...
+               (if r r v))
+             ;; when we have something like 8/3 we can just make it 4\.
+             ;; (a q. is 8/3 or 8/2. or 4.)
+             (dotit (and (numberp result) (or ;(= 3 (numerator result))
+                                           (= 3 (denominator result))))))
+        ;; (format t "~%pd ~a div ~a res ~a" parent-dur divisions result)
+        ;; (format t "~%v ~a r ~a result ~a" v r result)
+        ;; try and set dots if possible
+        (when dotit
+          ;; (print result)
+          (setf result 
+                (if (evenp (numerator result))
+                  ;; strings work as rthms too
+                  (format nil"~a\." (/ (numerator result) 2))
+                  (format nil"~a/~a\." (numerator result) 2))))
+        ;; (format t "~&result: ~a" result)
+        (make-rqq-divide-rthm :r result :rest rest))
+      ;; divisions is not an integer:
+      (let* ((2divs (second divisions))
+             (rqqnd (rqq-num-divisions 2divs))
+             ;; MDE Sat Feb  8 13:04:05 2020 -- Dan and Jolon discovered that
+             ;; if we try this (make-rthm-seq-bar '((3 8) (1.5 (1 1 1 1 1))))
+             ;; then it doesn't work, but if that 1.5 is expressed as 3/2,
+             ;; then it does (floating-point precision problem perhaps?). So
+             ;; force the duration to be a rational
+             (this-dur (rational (first divisions)))
+             ;; the ratio of the total number of divisions we have to the
+             ;; duration  
+             (ratio (/ this-dur rqqnd))
+             (pd (/ (* parent-dur rqqnd) this-dur))
+             (result
+               (flatten 
+                (loop for div in 2divs
+                      collect
                       (rqq-divide-aux (consolidate-rqq-rests-p div) pd))))
-               ;; if we have something like (3 (1 1 1)) then we don't need a
-               ;; tuplet bracket
-               (tuplet (unless (power-of-2 (/ rqqnd this-dur))
-                         (cond ((= ratio 2/3) 3) ; (2 (1 1 1))
-                               ((= ratio 1/3) 3) ; (1 (1 1 1))
-                               ((= ratio 1/6) 3)
-                               ((= ratio 4/6) 3)
-                               ((= ratio 4/3) 3)
-                               ((= ratio 1/10) 5)
-                               ((= ratio 1/5) 5)
-                               ((= ratio 2/5) 5)
-                               ((= ratio 4/5) 5)
-                               (t (calc-tuplet this-dur rqqnd)))))
-               (beam (beamable result)))
-          ;; (format t "~&~a: beamable: ~a" result beam)
-          ;; (format t "~%~a ~a" rqqnd (first divisions))
-          ;; (format t "~%this-dur ~a rqqnd ~a pd ~a" this-dur rqqnd pd)
-          ;; (print result)
-          ;;(format t "~%~a~%ratio ~a tupl ~a this-d ~a"
-          ;;  divisions ratio tuplet this-dur)
-          ;; sometimes we'll be under two tuplet brackets but get something
-          ;; like a simple TS as the rthm but then under a 2:3 bracket, which
-          ;; should be turned into a dotted value
-          ;; (print result)
-          (when (and tuplet (or (= tuplet 4/3) (= tuplet 3/2)))
-            (setf tuplet nil)
-            ;; (print 'here)
-            (loop for r in result with rthm do
-                 ;; MDE Thu Jul  8 19:16:59 2021, Heidhausen -- was getting
-                 ;; some errors with 3/4 meter rqqs but this test fixed it 
-                 (when (rqq-divide-rthm-p r)
-                   (setf rthm (make-rhythm (rqq-divide-rthm-r r))
-                         (rqq-divide-rthm-r r)
-                         (format nil "~a\." (/ 4 2/3 (rq rthm)))))))
-;;; MDE Mon Jun  4 18:17:21 2018 -- this more simple case should start
-;;; with e. or start the triplet on the 2nd note :/
-;;; (rqq-divide '(1 (3 1 1 1)))
-          (if tuplet
-              (progn
-                (setf result (append (list '{ tuplet) result '(})))
-                (if beam 
-                    (beamem result)
-                    result))
-              (if beam (beamem result) result))))))
+             ;; if we have something like (3 (1 1 1)) then we don't need a
+             ;; tuplet bracket
+             (tuplet (unless (power-of-2 (/ rqqnd this-dur))
+                       (cond ((= ratio 2/3) 3)   ; (2 (1 1 1))
+                             ((= ratio 1/3) 3)   ; (1 (1 1 1))
+                             ((= ratio 1/6) 3)
+                             ((= ratio 4/6) 3)
+                             ((= ratio 4/3) 3)
+                             ((= ratio 1/10) 5)
+                             ((= ratio 1/5) 5)
+                             ((= ratio 2/5) 5)
+                             ((= ratio 4/5) 5)
+                             (t (calc-tuplet this-dur rqqnd)))))
+             (beam (beamable result)))
+        ;; (format t "~&~a: beamable: ~a" result beam)
+        ;; (format t "~%~a ~a" rqqnd (first divisions))
+        ;; (format t "~%this-dur ~a rqqnd ~a pd ~a" this-dur rqqnd pd)
+        ;; (print result)
+        ;; (format t "~%~a~%ratio ~a tupl ~a this-d ~a"
+        ;;         divisions ratio tuplet this-dur)
+        ;;  MDE Sun Feb 1 20:27:26 2026, Heidhausen -- add special cases
+        ;; here: if tuplet is 3 but e.g. divisions is (3 (2 1 2 1 1 (2))) then
+        ;; use 9/6 rather than 3
+        
+        ;; sometimes we'll be under two tuplet brackets but get something
+        ;; like a simple TS as the rthm but then under a 2:3 bracket, which
+        ;; should be turned into a dotted value
+        ;; (print result)
+        (when (and tuplet (or (= tuplet 4/3) (= tuplet 3/2)))
+          (setf tuplet nil)
+          ;; (print 'here)
+          (loop for r in result with rthm do
+            ;; MDE Thu Jul  8 19:16:59 2021, Heidhausen -- was getting
+            ;; some errors with 3/4 meter rqqs but this test fixed it 
+            (when (rqq-divide-rthm-p r)
+              (setf rthm (make-rhythm (rqq-divide-rthm-r r))
+                    (rqq-divide-rthm-r r)
+                    (format nil "~a\." (/ 4 2/3 (rq rthm)))))))
+        ;; MDE Mon Jun  4 18:17:21 2018 -- this more simple case should start
+        ;; with e. or start the triplet on the 2nd note :/
+        ;; (rqq-divide '(1 (3 1 1 1)))
+        (if tuplet
+          (progn
+            (setf result (append (list '{ tuplet) result '(})))
+            (if beam 
+              (beamem result)
+              result))
+          (if beam (beamem result) result))))))
 
 ;;; returns a ratio like 3/2 which is triplets: 3 in the time of 2, or 5/4
 ;;; (quintuplets). todo: 4/5 (4 in time of 5) is returning 4/5 just like 5 is!

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:12:12 Mon Feb  2 2026 CET
+;;; $$ Last modified:  11:33:15 Tue Feb  3 2026 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8161,14 +8161,16 @@ NIL
 ;;; number of notes will be taken from the pitches of the current and previous
 ;;; bar and grace notes nearest to the main note will be automatically created.
 ;;; - the maximum interval in semitones for a mordent. If no nearer notes are
-;;; available near the note for the ornament, then it will be skipped. 
+;;; available near the note for the ornament, then it will be skipped.
+;;; - the maximum distance from the main note that a grace note can be
 ;;; 
 ;;; RETURN VALUE
 ;;; T or NIL for whether the ornament was added or not
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-ornament ((sc slippery-chicken) bar-num note player
-                         type &optional (data 1) (mordent-max 5) (warn t))
+                         type &optional (data 1) (mordent-max 5) (warn t)
+                         (grace-max 13))
 ;;; ****
   (labels
       ((problem (error &rest args)
@@ -8254,6 +8256,9 @@ NIL
                      ;; reverse to start furthest away and get nearer to main
                      ;; note 
                      (loop for p in (if data-list pitches (reverse pitches))
+                           ;; not too far from main note
+                           when (> grace-max
+                                   (abs (- average (midi-note-float p))))
                            collect (make-grace p))))
         (gliss
            (if (and this-event next-event

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:38:46 Sat Jan 31 2026 CET
+;;; $$ Last modified:  16:12:12 Mon Feb  2 2026 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8300,8 +8300,8 @@ NIL
 ;;; - :ale-cycle-length: if nil then it will be set to the number of (attacked)
 ;;;   notes of sufficient duration which the player has in the whole piece or in
 ;;;   the given bars 
-;;; - :cycle-repeats. Determines which ornaments will be added and their number
-;;; of repetitions. 
+;;; - :cycle-repeats (object). Determines which ornaments will be added and
+;;;   their number of repetitions. 
 ;;; - :start-bar and :end-bar default to 1 and the last bar of the piece unless
 ;;;   specific bar numbers are passed.
 ;;; - :min-dur. The minimum duration of an event (compound-duration
@@ -8322,9 +8322,9 @@ NIL
                                ;; argument (how many notes or a list of
                                ;; specific pitch symbols)
                                (cycle-repeats '((mordent 2) ((grace 3) 1)
-                                                (mordent 3) ((grace 5) 1)
-                                                (mordent 1) (gliss 2)
-                                                ((grace 5) 2))))
+                                                (mordent 3) ((grace 4) 1)
+                                                (mordent 1) (gliss 5)
+                                                ((grace 3) 2))))
 ;;; ****
   (unless players (setq players (players sc)))
   (let ((count 0))

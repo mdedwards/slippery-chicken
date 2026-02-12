@@ -34,18 +34,18 @@
 <a name="activity2dlevels2factive"></a>
 <a name="robo25"></a><h2 class=robodoc>activity-levels/active [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo306">activity-levels</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo307">activity-levels</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Returns t or nil depending on whether we're <strong>active</strong> at this point.  The
  object remembers where we were last time; this means if we change level
  before getting to the end of a ten-list, we'll pick up where we left off
  next time we return to that level.  &lt;level&gt; can be a floating point number:
- in this case it will be rounded. But &lt;level&gt; must be <a href="./utilities_lsp.html#robo934">between</a> 0 and 10,
+ in this case it will be rounded. But &lt;level&gt; must be <a href="./utilities_lsp.html#robo939">between</a> 0 and 10,
  where 0 is always inactive, 10 is always <strong>active</strong>, and anything inbetween
  will use the data lists circularly.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo306">activity-levels</a> object
+<pre> - the <a href="#robo307">activity-levels</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - the activity-level number we want to test. Although optional, it's
@@ -78,7 +78,7 @@
 <a name="activity2dlevels2fflicker2dround"></a>
 <a name="robo26"></a><h2 class=robodoc>activity-levels/flicker-round [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo306">activity-levels</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo307">activity-levels</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> January 19th 2021
 </pre>
@@ -86,8 +86,8 @@
 <pre> Rounding is a cut-and-dry operation, usually. The part after the floating
  point determines whether we round up or down: 0.5 or above goes up,
  otherwise down. In some circumstances it might be preferable to have an area
- in the <a href="./utilities_lsp.html#robo976">middle</a> that alternates <a href="./utilities_lsp.html#robo934">between</a> up and down. This method uses the
- range <a href="./utilities_lsp.html#robo934">between</a> the two optional threshold arguments to select rounding up or
+ in the <a href="./utilities_lsp.html#robo981">middle</a> that alternates <a href="./utilities_lsp.html#robo939">between</a> up and down. This method uses the
+ range <a href="./utilities_lsp.html#robo939">between</a> the two optional threshold arguments to select rounding up or
  down: closer to the lower threshold will mean rounding down takes place more
  often than up, but up will still happen occasionally. Similarly as we
  approach the high threshold, rounding up will occur more often. All
@@ -97,11 +97,11 @@
  round, call round (!) or set the tresholds to 0.5 and 0.5.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo306">activity-levels</a> object
+<pre> - the <a href="#robo307">activity-levels</a> object
  - the floating point number to 'flicker-round'
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> the low and high threshold values: floating point numbers <a href="./utilities_lsp.html#robo934">between</a> 0.0 and
+<pre> the low and high threshold values: floating point numbers <a href="./utilities_lsp.html#robo939">between</a> 0.0 and
  1.0, where the first optional argument should be less than the second, of
  course. 
 </pre>
@@ -129,7 +129,7 @@
 <a name="activity2dlevels2fmake2dal"></a>
 <a name="robo27"></a><h2 class=robodoc>activity-levels/make-al [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo306">activity-levels</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo307">activity-levels</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Make an activities-level object for determining (deterministically) on a
  call-by-call basis whether a process is <a href="./activity-levels-env_lsp.html#robo22">active</a> or not (boolean).  This is
@@ -145,7 +145,7 @@
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> start-at (default NIL): which of the three 10-element lists to start with
- (<a href="./circular-sclist_lsp.html#robo124">reset</a> to).  Should be 0, 1, or 2 though if NIL will default to 0.
+ (<a href="./sndfile-ext_lsp.html#robo880">reset</a> to).  Should be 0, 1, or 2 though if NIL will default to 0.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> The activities-level object.
@@ -158,16 +158,16 @@
 <a name="activity2dlevels2freset"></a>
 <a name="robo28"></a><h2 class=robodoc>activity-levels/reset [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo306">activity-levels</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo307">activity-levels</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Reset the <a href="#robo306">activity-levels</a> object to restart at the first element of the 1st
+<pre> Reset the <a href="#robo307">activity-levels</a> object to restart at the first element of the 1st
  (or user-specificed) 10-element list. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> The <a href="#robo306">activity-levels</a> object. 
+<pre> The <a href="#robo307">activity-levels</a> object. 
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> start-at: should be <a href="./utilities_lsp.html#robo934">between</a> 0 and 2; it indicates which of the 10-lists
+<pre> start-at: should be <a href="./utilities_lsp.html#robo939">between</a> 0 and 2; it indicates which of the 10-lists
  we're going to start with.  Default = 0.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -179,21 +179,21 @@
 
 
 <a name="named2dobject2factivity2dlevels"></a>
-<a name="robo306"></a><h2 class=robodoc>named-object/activity-levels [ Classes ]</h2>
+<a name="robo307"></a><h2 class=robodoc>named-object/activity-levels [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./named-object_lsp.html#robo631">named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./named-object_lsp.html#robo633">named-object</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>activity-levels</strong>
 
  File:             <a href="#robo_top_of_doc">activity-levels.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo631">named-object</a> -&gt; <strong>activity-levels</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo633">named-object</a> -&gt; <strong>activity-levels</strong>
 
  Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
- Purpose:          Class used in <a href="./rthm-chain_lsp.html#robo539">rthm-chain</a>.  Used on a call-by-call basis
+ Purpose:          Class used in <a href="./rthm-chain_lsp.html#robo541">rthm-chain</a>.  Used on a call-by-call basis
                    to determine (deterministically) whether a process is
                    <a href="./activity-levels-env_lsp.html#robo22">active</a> or not (boolean).
 
@@ -208,7 +208,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/activity-levels.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-11-13 11:26:17</p>
+<p>Generated from ./../../src/activity-levels.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
 </div> <!-- footer -->
 </body>
 </html>

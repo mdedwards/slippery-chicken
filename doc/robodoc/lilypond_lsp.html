@@ -38,7 +38,7 @@
 
 
 <a name="lilypond2flp2dget2dmark"></a>
-<a name="robo292"></a><h2 class=robodoc>lilypond/lp-get-mark [ Functions ]</h2>
+<a name="robo293"></a><h2 class=robodoc>lilypond/lp-get-mark [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo13">lilypond</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
@@ -55,7 +55,7 @@
            (lhp "-+ ")
            ;; see p229 of <a href="#robo13">lilypond</a>.pdf: need to define this command in file
            ;; this is done for us in <a href="#robo13">lilypond</a>.ly, which will be included if we
-           ;; call <a href="./slippery-chicken_lsp.html#robo868">write-lp-data-for-all</a> with :use-custom-markup T 
+           ;; call <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> with :use-custom-markup T 
            (bartok "^\\snappizzicato ") 
            (pizz "^\"pizz.\" ")
            (ord "^\"ord.\" ")
@@ -72,8 +72,13 @@
            (mv "^\"molto vib.\" ")
            (sv "^\"senza vib.\" ")
            (poco-crini "^\"poco crini\" ")
+           (flaut '(wds "^\"flautando\" "))
+           (det '(wds "^\"detache\" "))
            (s "-. ")
            (ss "-! ") ; MDE Thu Dec 2 15:16:27 2021, Heidhausen
+           ;; MDE Mon Dec 15 12:25:29 2025, Heidhausen -- something close to
+           ;; dorico's 'stress' 
+           (stress "-! ") ; MDE Thu Dec 2 15:16:27 2021, Heidhausen
            (nail (no-lp-mark 'nail))
            (stopped (no-lp-mark 'stopped))
            (as "-&gt;-. ")
@@ -139,10 +144,10 @@
            (end-15ma "\\ottava #0 ")
            (beg-15mb "\\ottava #-2 ")
            (end-15mb "\\ottava #0 ")
-           ;; NB note heads used to be added via (<a href="./recursive-assoc-list_lsp.html#robo411">add</a>-mark-before) but can now
+           ;; NB note heads used to be added via (<a href="./rhythm_lsp.html#robo441">add</a>-mark-before) but can now
            ;; be added by <a href="./chord_lsp.html#robo70">add-mark</a> and friends (16.6.20) so if adding new heads
-           ;; , make sure to <a href="./recursive-assoc-list_lsp.html#robo411">add</a> the mark symbol to the <a href="./utilities_lsp.html#robo978">move-elements</a> call in
-           ;; <a href="./event_lsp.html#robo449">event</a>::separate-marks-before
+           ;; , make sure to <a href="./rhythm_lsp.html#robo441">add</a> the mark symbol to the <a href="./utilities_lsp.html#robo983">move-elements</a> call in
+           ;; <a href="./event_lsp.html#robo450">event</a>::separate-marks-before
            ;; 
            ;; (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
            (circled-x "\\tweak #'style #'xcircle ")
@@ -158,7 +163,7 @@
            ;; (triangle-up "\\once \\override NoteHead #'style = #'do ")
            (triangle-up "\\tweak #'style #'do ")
            (airy-head (no-lp-mark 'airy-head)) 
-           ;; this has to be added to the <a href="./event_lsp.html#robo449">event</a> _before_ the one which needs to
+           ;; this has to be added to the <a href="./event_lsp.html#robo450">event</a> _before_ the one which needs to
            ;; start with these noteheads.
            (improvOn "\\improvisationOn ")
            (improvOff "\\improvisationOff ")
@@ -171,22 +176,22 @@
            ;; (mensural "\\once \\override NoteHead #'style = #'slash ")
            ;;(flag-head "\\once \\override NoteHead #'style = #'harmonic-mixed
            ;;")  
-           ;; MDE Mon Apr 30 20:46:06 2012 -- see <a href="./event_lsp.html#robo449">event</a>::get-lp-data for how
+           ;; MDE Mon Apr 30 20:46:06 2012 -- see <a href="./event_lsp.html#robo450">event</a>::get-lp-data for how
            ;; this is handled 
            (flag-head "\\harmonic ") ; diamond
            ;; MDE Mon Apr 30 20:46:31 2012 -- flag-heads by default don't
-           ;; display dots so we need to <a href="./recursive-assoc-list_lsp.html#robo411">add</a>-mark-before to get these to
+           ;; display dots so we need to <a href="./rhythm_lsp.html#robo441">add</a>-mark-before to get these to
            ;; display or turn them off again
            (flag-dots-on "\\set harmonicDots = ##t ")
            (flag-dots-off "\\set harmonicDots = ##f ")
            ;; circle head but stem extends through it like a vertical slash
            (none (no-lp-mark 'none))
-           (<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-f (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-f))
-           (<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-n (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-n))
-           (<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-s (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-s))
-           (beg-<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-a "\\pitchedTrill ") ; must be before note
-           ;; we'll also need e.g. (<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-note g5) to give the note in ()
-           (end-<a href="./slippery-chicken-edit_lsp.html#robo791">trill</a>-a "\\stopTrillSpan ") ; after note
+           (<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-f (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-f))
+           (<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-n (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-n))
+           (<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-s (no-lp-mark '<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-s))
+           (beg-<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-a "\\pitchedTrill ") ; must be before note
+           ;; we'll also need e.g. (<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-note g5) to give the note in ()
+           (end-<a href="./slippery-chicken-edit_lsp.html#robo796">trill</a>-a "\\stopTrillSpan ") ; after note
            ;; (no-lp-mark 'square))
            (slash (no-lp-mark 'slash))
            ;; MDE Sat Dec 28 11:37:22 2013 -- up and down arrows on arpeggio
@@ -204,7 +209,7 @@
            ;; NB this override has to come exactly before the note/dynamic it
            ;; applies to. MDE Tue Jun 16 23:38:57 2020, Heidhausen -- again this
            ;; override should be OK (rather than tweak) as it's below the staff
-           ;; rather than a property of a note (in a <a href="./chord_lsp.html#robo634">chord</a>)
+           ;; rather than a property of a note (in a <a href="./chord_lsp.html#robo636">chord</a>)
            ;; (hairpin0 "\\once \\override Hairpin #'circled-tip = ##t ")
            ;; MDE Thu May 11 15:26:00 2023, Heidhausen -- version 2.21 changes
            (hairpin0 "\\once \\override Hairpin.circled-tip = ##t ")
@@ -234,7 +239,7 @@
            (sing-arr "^\\singArr ")
            (arrow-up-down "^\\arrowUpDown ")
            ;; end <a href="#robo13">lilypond</a>-graphics.zip files
-           ;; these must have been set up with the <a href="./event_lsp.html#robo449">event</a>::<a href="./event_lsp.html#robo169">add-arrow</a> method
+           ;; these must have been set up with the <a href="./event_lsp.html#robo450">event</a>::<a href="./event_lsp.html#robo169">add-arrow</a> method
            (start-arrow "\\startTextSpan ")
            (<a href="./event_lsp.html#robo180">end-arrow</a> "\\stopTextSpan ")
            (harm "^\\flageolet ")
@@ -255,7 +260,7 @@
 
 
 <a name="lilypond2flp2dsalzedo2dmark"></a>
-<a name="robo293"></a><h2 class=robodoc>lilypond/lp-salzedo-mark [ Functions ]</h2>
+<a name="robo294"></a><h2 class=robodoc>lilypond/lp-salzedo-mark [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo13">lilypond</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">AUTHOR</p>
@@ -281,7 +286,7 @@
 
 
 <a name="lilypond2fsalzedo2dto2dly2dstring"></a>
-<a name="robo294"></a><h2 class=robodoc>lilypond/salzedo-to-ly-string [ Functions ]</h2>
+<a name="robo295"></a><h2 class=robodoc>lilypond/salzedo-to-ly-string [ Functions ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo13">lilypond</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">AUTHOR</p>
@@ -315,7 +320,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/lilypond.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-11-13 11:26:17</p>
+<p>Generated from ./../../src/lilypond.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
 </div> <!-- footer -->
 </body>
 </html>

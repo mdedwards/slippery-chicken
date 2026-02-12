@@ -38,13 +38,13 @@
  2023-04-20
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Tests if a given list can be used to instantiate a <a href="../rthm-seq_lsp.html#robo648">rthm-seq</a> object.
- This is done by calling the <a href="../rthm-seq_lsp.html#robo579">make-rthm-seq</a> function and reporting whether
+<pre> Tests if a given list can be used to instantiate a <a href="../rthm-seq_lsp.html#robo650">rthm-seq</a> object.
+ This is done by calling the <a href="../rthm-seq_lsp.html#robo581">make-rthm-seq</a> function and reporting whether
  the instantiation process has been successful or erraneous without actually
  throwing a Common Lisp error.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> The <a href="../rthm-seq_lsp.html#robo648">rthm-seq</a> list as described in the <a href="../slippery-chicken_lsp.html#robo632">slippery-chicken</a> documentation.
+<pre> The <a href="../rthm-seq_lsp.html#robo650">rthm-seq</a> list as described in the <a href="../slippery-chicken_lsp.html#robo634">slippery-chicken</a> documentation.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -52,22 +52,22 @@
    boolean. Default: T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Either T, when the <a href="../rthm-seq_lsp.html#robo648">rthm-seq</a> has been successfully validated, or the values:
+<pre> Either T, when the <a href="../rthm-seq_lsp.html#robo650">rthm-seq</a> has been successfully validated, or the values:
  - NIL
  - The error condition.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>validate-rthm-seq</strong> '((((3 4) q q q))
-                     :<a href="../pitch-seq-palette_lsp.html#robo314">pitch-seq-palette</a> (1 2 3)))
+                     :<a href="../pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (1 2 3)))
 
 ;; =&gt; T
 
 (<strong>validate-rthm-seq</strong> '((((3 4) q (q) q))
-                     :<a href="../pitch-seq-palette_lsp.html#robo314">pitch-seq-palette</a> (1 2 3)))
+                     :<a href="../pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (1 2 3)))
 
-;; =&gt; NIL, #&lt;SIMPLE-ERROR "<a href="../pitch_lsp.html#robo297">pitch</a>-seq-<a href="../palette_lsp.html#robo426">palette</a>::verify-and-store: ~%~
-;;                  In <a href="../pitch-seq_lsp.html#robo644">pitch-seq</a> ~a from <a href="../palette_lsp.html#robo426">palette</a> ~a:~%~
-;;                  Each <a href="../pitch_lsp.html#robo297">pitch</a> sequence must have ~a notes (you have ~a):
+;; =&gt; NIL, #&lt;SIMPLE-ERROR "<a href="../pitch_lsp.html#robo298">pitch</a>-seq-<a href="../palette_lsp.html#robo427">palette</a>::verify-and-store: ~%~
+;;                  In <a href="../pitch-seq_lsp.html#robo646">pitch-seq</a> ~a from <a href="../palette_lsp.html#robo427">palette</a> ~a:~%~
+;;                  Each <a href="../pitch_lsp.html#robo298">pitch</a> sequence must have ~a notes (you have ~a):
 ;;                  ~%~a" {7009EB3043}&gt;
 </pre>
 <p class="item_name">SYNOPSIS</p>
@@ -76,7 +76,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/emacs/utilities.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-11-13 11:26:17</p>
+<p>Generated from ./../../src/emacs/utilities.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
 </div> <!-- footer -->
 </body>
 </html>

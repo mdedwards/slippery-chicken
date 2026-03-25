@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified:  12:45:12 Wed Nov 19 2025 CET
+;;; $$ Last modified:  19:30:44 Wed Mar 25 2026 +07
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -166,10 +166,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(eval-when (:compile-toplevel)
+  #-cmn (warn "slippery-chicken: cmn not found, so cmn-display and ~
+         friends won't work.")
+  #+cmn (pushnew :cmn-display-ok *features*))
+
 (defmethod cmn-display :before ((no named-object) &key ignore1 ignore2 ignore3
                                                        ignore4 ignore5)
   (declare (special cmn::*cmn-grace-notes-for-sc*)
            (ignore ignore1 ignore2 ignore3 ignore4 ignore5))
+  #-cmn-display-ok
+  (error "named-object::cmn-display: CMN wasn't present when slippery-chicken ~
+          ~% was compiled. Please delete the compilation files with ~
+          ~%(asdf:clear-system \"slippery-chicken\") or in the terminal ~
+          ~%rm -rf ~~/.cache/common-lisp, then load CMN and recompile ~
+          ~%slippery-chicken")
   ;; (format t "~&Resetting grace notes...")
   (setf cmn::*cmn-grace-notes-for-sc* nil))
 

@@ -21195,25 +21195,30 @@ est)")))
 
 ;;; LF <2023-12-02 Sa>
 (sc-deftest test-utilities-coordinates ()
+  ;; These compare floating-point results, so test them element-wise with
+  ;; equal-within-tolerance rather than equalp: equalp requires bit-for-bit
+  ;; equality and so fails across Lisp implementations and platforms whose
+  ;; trig functions round differently in the last bits (e.g. near-zero
+  ;; cosine/sine results of ~1e-8 vs ~1e-17, or a final-digit difference).
   (sc-test-check
-    (equalp
-     (polar-to-cartesian 0 45 1)
-     '(0.0 0.70710677 0.70710677))
-    (equalp
-     (cartesian-to-polar 0 0 1)
-     '(0 90 1))
+    (every #'equal-within-tolerance
+           (polar-to-cartesian 0 45 1)
+           '(0.0 0.70710677 0.70710677))
+    (every #'equal-within-tolerance
+           (cartesian-to-polar 0 0 1)
+           '(0 90 1))
     (multiple-value-bind (x y z)
         (convert-polar-envelopes '(0 0  1 180) '(0 30  .5 0  1 45)
                                  :minimum-samples 5)
-      (equalp x
-              '(0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145
-                100.0 8.6595606e-17))
-      (equalp y
-              '(0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75
-                -0.65328145 100.0 -0.70710677))
-      (equalp z
-              '(0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343
-                100.0 0.70710677)))))
+      (every #'equal-within-tolerance x
+             '(0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145
+               100.0 8.6595606e-17))
+      (every #'equal-within-tolerance y
+             '(0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75
+               -0.65328145 100.0 -0.70710677))
+      (every #'equal-within-tolerance z
+             '(0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343
+               100.0 0.70710677)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 20 12:10:05 2021, Heidhausen -- an example from Simon Bahr that

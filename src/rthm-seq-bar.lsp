@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  23:42:05 Sun Feb  1 2026 CET
+;;; $$ Last modified:  12:42:01 Wed Jun 24 2026 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -245,6 +245,8 @@
       (check-beams rsb))
     ;;    MDE Sun Jun 28 13:03:04 2015 -- no, rqq handling now sets its own
     ;;    beams (auto-beam rsb nil 'silent))
+    ;; MDE Wed Jun 24 12:38:56 2026, Heidhausen -- for ECL
+    (mapcar #'handle-massive-rational (rhythms rsb))
     (gen-stats rsb)
     (update-missing-duration rsb)
     (update-rhythms-bracket-info rsb)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:10:13 Thu Jan 15 2026 CET
+;;; $$ Last modified:  14:23:15 Wed Jun 24 2026 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -134,8 +134,7 @@ NIL
   ;; MDE Tue Mar 20 16:11:55 2012 -- remove nils in the pitch list
   (setf (data c) (remove-if #'(lambda (x) (null x)) (data c)))
   ;; (set-micro-tone c) <-- now in verify-and-store
-  (when (auto-sort c)
-    (sort-pitches c)))  
+  (when (auto-sort c) (sort-pitches c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/get-micro-tones
@@ -2543,6 +2542,8 @@ data: (
 (defmethod thin ((c chord) &key (strength 5) remove target invert)
 ;;; ****
   (setf (data c) (thin-aux (data c) strength remove target invert))
+  ;; MDE Wed Jun 24 13:31:17 2026, Heidhausen -- raised by ECL
+  (when (auto-sort c) (sort-pitches c))
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2697,7 +2698,10 @@ data: (
   (let ((cints (mapcar #'(lambda (i) (mod i 12))
                        (get-interval-structure c t))))
     (setq cints (sort (remove-duplicates (remove-if #'zerop cints)) #'<))
-    ;; (print cints)
+    ;; MDE Wed Jun 24 13:51:54 2026, Heidhausen -- all kinds of float rounding
+    ;; problem in ECL :/ 
+    #+ecl (setq cints (mapcar #'round-if-close cints))
+    (print cints)
     (equalp intervals cints)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

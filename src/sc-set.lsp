@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  16:52:04 Wed May 21 2025 CEST
+;;; $$ Last modified:  13:32:57 Wed Jun 24 2026 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -838,9 +838,6 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
   (get-srts-aux (data s) reference-pitch offset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Feb  6 15:29:04 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-set/subset-get-srts
 ;;; DESCRIPTION
 ;;; Get the sampling-rate conversion factors for the specified subset of a

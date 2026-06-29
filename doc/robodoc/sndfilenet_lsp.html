@@ -32,24 +32,24 @@
 
 
 <a name="palette2fsndfilenet"></a>
-<a name="robo318"></a><h2 class=robodoc>palette/sndfilenet [ Classes ]</h2>
+<a name="robo319"></a><h2 class=robodoc>palette/sndfilenet [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo426">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo427">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
-<pre> <a href="./sndfile-palette_lsp.html#robo317">sndfile-palette</a>
+<pre> <a href="./sndfile-palette_lsp.html#robo318">sndfile-palette</a>
 
  File:             <a href="#robo_top_of_doc">sndfilenet.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo631">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo311">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo300">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo115">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
-                   <a href="./palette_lsp.html#robo426">palette</a> -&gt; <a href="./sndfile-palette_lsp.html#robo317">sndfile-palette</a> -&gt; <strong>sndfilenet</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo633">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo312">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo301">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo637">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo115">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
+                   <a href="./palette_lsp.html#robo427">palette</a> -&gt; <a href="./sndfile-palette_lsp.html#robo318">sndfile-palette</a> -&gt; <strong>sndfilenet</strong>
 
  Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
  Purpose:          Implementation of the <strong>sndfilenet</strong> class which extends
-                   <a href="./sndfile-palette_lsp.html#robo317">sndfile-palette</a> to <a href="./recursive-assoc-list_lsp.html#robo411">add</a> functionality for loading and
+                   <a href="./sndfile-palette_lsp.html#robo318">sndfile-palette</a> to <a href="./rhythm_lsp.html#robo441">add</a> functionality for loading and
                    playing sounds within MaxMSP.
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -63,14 +63,14 @@
 
 
 <a name="sndfilenet2f28setf20next2dsfes29"></a>
-<a name="robo897"></a><h2 class=robodoc>sndfilenet/(setf next-sfes) [ Methods ]</h2>
+<a name="robo902"></a><h2 class=robodoc>sndfilenet/(setf next-sfes) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> October 21st 2017, Essen
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> A setf :after method. Set the next-sfes slot to be a <a href="./sndfile-ext_lsp.html#robo894">sndfile-ext</a> object. If
+<pre> A setf :after method. Set the next-sfes slot to be a <a href="./sndfile-ext_lsp.html#robo899">sndfile-ext</a> object. If
  it is already, leave it as is. If it's an integer, assume it's a cue number
  and get the right object, otherwise get the object with this ID.
 
@@ -80,25 +80,25 @@
  will have to be a two-element list.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod (setf next-sfes) :after (value (sfn <a href="#robo318">sndfilenet</a>))
+<pre class="source">(defmethod (setf next-sfes) :after (value (sfn <a href="#robo319">sndfilenet</a>))
 </pre>
 
 
 <a name="sndfilenet2fanalyse2dfollowers"></a>
-<a name="robo898"></a><h2 class=robodoc>sndfilenet/analyse-followers [ Methods ]</h2>
+<a name="robo903"></a><h2 class=robodoc>sndfilenet/analyse-followers [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Using the followers slots of each <a href="./sndfile_lsp.html#robo301">sndfile</a> in the <a href="./palette_lsp.html#robo426">palette</a>, go through each
- <a href="./sndfile_lsp.html#robo301">sndfile</a> in the <a href="./palette_lsp.html#robo426">palette</a> and <a href="./wolfram_lsp.html#robo1038">generate</a> a large number of following sounds,
- i.e. emulate <a href="./sndfile-ext_lsp.html#robo873">max-play</a>. The results of the follow-on process are then
- analysed and a warning will be issued if any <a href="./sndfile_lsp.html#robo301">sndfile</a> seems to dominate
+<pre> Using the followers slots of each <a href="./sndfile_lsp.html#robo302">sndfile</a> in the <a href="./palette_lsp.html#robo427">palette</a>, go through each
+ <a href="./sndfile_lsp.html#robo302">sndfile</a> in the <a href="./palette_lsp.html#robo427">palette</a> and <a href="./wolfram_lsp.html#robo1045">generate</a> a large number of following sounds,
+ i.e. emulate <a href="./sndfile-ext_lsp.html#robo878">max-play</a>. The results of the follow-on process are then
+ analysed and a warning will be issued if any <a href="./sndfile_lsp.html#robo302">sndfile</a> seems to dominate
  (defined as being present at least twice as many times as its 'fair share',
  where 'fair share' would mean an even spread for all the sound files in the
- <a href="./palette_lsp.html#robo426">palette</a>).
+ <a href="./palette_lsp.html#robo427">palette</a>).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo318">sndfilenet</a> object.
+<pre> - The <a href="#robo319">sndfilenet</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - integer: How many times to repeat the generation process.  Default = 1000.
@@ -109,45 +109,45 @@
 <pre> T or NIL depending on whether the analysis detects an even spread or not.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>analyse-followers</strong> ((sfn <a href="#robo318">sndfilenet</a>)
+<pre class="source">(defmethod <strong>analyse-followers</strong> ((sfn <a href="#robo319">sndfilenet</a>)
                               &amp;optional (depth 1000) verbose)
 </pre>
 
 
 <a name="sndfilenet2fauto2dcue2dnums"></a>
-<a name="robo899"></a><h2 class=robodoc>sndfilenet/auto-cue-nums [ Methods ]</h2>
+<a name="robo904"></a><h2 class=robodoc>sndfilenet/auto-cue-nums [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Set the cue-num slot of every <a href="./sndfile-ext_lsp.html#robo894">sndfile-ext</a> object in the <a href="./palette_lsp.html#robo426">palette</a> to be an
- ascending integer starting at 2. NB If a <a href="./sndfile_lsp.html#robo301">sndfile</a> has it's :use slot set to
+<pre> Set the cue-num slot of every <a href="./sndfile-ext_lsp.html#robo899">sndfile-ext</a> object in the <a href="./palette_lsp.html#robo427">palette</a> to be an
+ ascending integer starting at 2. NB If a <a href="./sndfile_lsp.html#robo302">sndfile</a> has it's :use slot set to
  NIL it won't be given a cue number.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo318">sndfilenet</a> object.
+<pre> - a <a href="#robo319">sndfilenet</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The cue number of the last <a href="./sndfile-ext_lsp.html#robo894">sndfile-ext</a> object.
+<pre> The cue number of the last <a href="./sndfile-ext_lsp.html#robo899">sndfile-ext</a> object.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>auto-cue-nums</strong> ((sfn <a href="#robo318">sndfilenet</a>))
+<pre class="source">(defmethod <strong>auto-cue-nums</strong> ((sfn <a href="#robo319">sndfilenet</a>))
 </pre>
 
 
 <a name="sndfilenet2fauto2dfollowers"></a>
-<a name="robo900"></a><h2 class=robodoc>sndfilenet/auto-followers [ Methods ]</h2>
+<a name="robo905"></a><h2 class=robodoc>sndfilenet/auto-followers [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> October 20th 2017
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Automatically <a href="./wolfram_lsp.html#robo1038">generate</a> follower sound files for every sound file in the
- <a href="./palette_lsp.html#robo426">palette</a>. These are a mixture of the other files in the same group plus one
+<pre> Automatically <a href="./wolfram_lsp.html#robo1045">generate</a> follower sound files for every sound file in the
+ <a href="./palette_lsp.html#robo427">palette</a>. These are a mixture of the other files in the same group plus one
  from another group, so that we'll move through.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo318">sndfilenet</a> object
+<pre> - a <a href="#robo319">sndfilenet</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - a list of references for which <strong>auto-followers</strong> should be generated. Default
@@ -157,40 +157,40 @@
 <pre> T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>auto-followers</strong> ((sfn <a href="#robo318">sndfilenet</a>) &amp;optional refs)
+<pre class="source">(defmethod <strong>auto-followers</strong> ((sfn <a href="#robo319">sndfilenet</a>) &amp;optional refs)
 </pre>
 
 
 <a name="sndfilenet2fget2dsnd2dwith2dcue2dnum"></a>
-<a name="robo901"></a><h2 class=robodoc>sndfilenet/get-snd-with-cue-num [ Methods ]</h2>
+<a name="robo906"></a><h2 class=robodoc>sndfilenet/get-snd-with-cue-num [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> December 21st 2012
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the (first, but generally unique) <a href="./sndfile_lsp.html#robo301">sndfile</a> object which has the
+<pre> Return the (first, but generally unique) <a href="./sndfile_lsp.html#robo302">sndfile</a> object which has the
  given cue-num slot.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo318">sndfilenet</a> object.
+<pre> - the <a href="#robo319">sndfilenet</a> object.
  - the cue number (integer).
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="./sndfile_lsp.html#robo301">sndfile</a>/<a href="./sndfile-ext_lsp.html#robo894">sndfile-ext</a> object with the given cue number or NIL if it can't
+<pre> The <a href="./sndfile_lsp.html#robo302">sndfile</a>/<a href="./sndfile-ext_lsp.html#robo899">sndfile-ext</a> object with the given cue number or NIL if it can't
  be found.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>get-snd-with-cue-num</strong> ((sfn <a href="#robo318">sndfilenet</a>) cue-num)
+<pre class="source">(defmethod <strong>get-snd-with-cue-num</strong> ((sfn <a href="#robo319">sndfilenet</a>) cue-num)
 </pre>
 
 
 <a name="sndfilenet2fmake2dsfn"></a>
-<a name="robo902"></a><h2 class=robodoc>sndfilenet/make-sfn [ Functions ]</h2>
+<a name="robo907"></a><h2 class=robodoc>sndfilenet/make-sfn [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Make a <a href="#robo318">sndfilenet</a> object. This object is a simple <a href="./palette_lsp.html#robo426">palette</a> which checks
+<pre> Make a <a href="#robo319">sndfilenet</a> object. This object is a simple <a href="./palette_lsp.html#robo427">palette</a> which checks
  to make sure that all of the sound files in a given list exist for each
  given ID.
 
@@ -198,16 +198,16 @@
  extension. These can be given using the optional keyword arguments &lt;paths&gt;
  and &lt;extensions&gt;.
 
- NB Although this class is a <a href="./palette_lsp.html#robo426">palette</a> and therefore a subclass of
+ NB Although this class is a <a href="./palette_lsp.html#robo427">palette</a> and therefore a subclass of
  <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a>, the sound lists in this case cannot be nested beyond
  a depth of two (as in example below).  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An ID for the <a href="./palette_lsp.html#robo426">palette</a>.
+<pre> - An ID for the <a href="./palette_lsp.html#robo427">palette</a>.
  - A list of lists that contains IDs for the names of one or more groups of
    sound files, each paired with a list of one or more names of existing
    sound files. The sound file names themselves can be paired with keywords
-   from the <a href="./sndfile_lsp.html#robo301">sndfile</a> class, such as :start, :end, and :frequency, to define
+   from the <a href="./sndfile_lsp.html#robo302">sndfile</a> class, such as :start, :end, and :frequency, to define
    and describe segments of a given sound file.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -215,17 +215,17 @@
  - :paths. A list of one or more paths to where the sound files are located.
  - :extensions. A list of one or more sound file extensions for the
    specified sound files. The default initialization for this slot of the
-   <a href="#robo318">sndfilenet</a> already contains ("wav" "aiff" "aif" "snd"), so this
+   <a href="#robo319">sndfilenet</a> already contains ("wav" "aiff" "aif" "snd"), so this
    argument can often be left unspecified.
  - :warn-not-found. T or NIL to indicate whether a warning should be printed
    to the Lisp listener if the specified sound file cannot be found. 
    T = print warning. Default = T.
- - :<a href="#robo900">auto-followers</a>. T or NIL to indicate whether the <a href="#robo900">auto-followers</a> method
+ - :<a href="#robo905">auto-followers</a>. T or NIL to indicate whether the <a href="#robo905">auto-followers</a> method
    should be called once the object is initialised. Note that if this is T,
-   then all the followers slots of the <a href="./sndfile-ext_lsp.html#robo894">sndfile-ext</a> objects will be deleted as
+   then all the followers slots of the <a href="./sndfile-ext_lsp.html#robo899">sndfile-ext</a> objects will be deleted as
    part of the process. Default = NIL.
- - :<a href="#robo898">analyse-followers</a>. T or NIL to indicate whether to call the
-   <a href="#robo898">analyse-followers</a> after initialisation (and possibly <a href="#robo900">auto-followers</a> is
+ - :<a href="#robo903">analyse-followers</a>. T or NIL to indicate whether to call the
+   <a href="#robo903">analyse-followers</a> after initialisation (and possibly <a href="#robo905">auto-followers</a> is
    called). Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -234,90 +234,90 @@
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;;; NB won't work unless you change /path/to/ below
 (let ((msfn (<strong>make-sfn</strong> 'sfn-test 
-                      '((<a href="./sndfile_lsp.html#robo301">sndfile</a>-group-1
-                         (test-<a href="./sndfile_lsp.html#robo301">sndfile</a>-1))
-                        (<a href="./sndfile_lsp.html#robo301">sndfile</a>-group-2
-                         (test-<a href="./sndfile_lsp.html#robo301">sndfile</a>-2 test-<a href="./sndfile_lsp.html#robo301">sndfile</a>-3 
-                          (test-<a href="./sndfile_lsp.html#robo301">sndfile</a>-4 :frequency 261.61)))
-                        (<a href="./sndfile_lsp.html#robo301">sndfile</a>-group-3
-                         ((test-<a href="./sndfile_lsp.html#robo301">sndfile</a>-5 :start 0.006 :end 0.182) 
-                          test-<a href="./sndfile_lsp.html#robo301">sndfile</a>-6)))
+                      '((<a href="./sndfile_lsp.html#robo302">sndfile</a>-group-1
+                         (test-<a href="./sndfile_lsp.html#robo302">sndfile</a>-1))
+                        (<a href="./sndfile_lsp.html#robo302">sndfile</a>-group-2
+                         (test-<a href="./sndfile_lsp.html#robo302">sndfile</a>-2 test-<a href="./sndfile_lsp.html#robo302">sndfile</a>-3 
+                          (test-<a href="./sndfile_lsp.html#robo302">sndfile</a>-4 :frequency 261.61)))
+                        (<a href="./sndfile_lsp.html#robo302">sndfile</a>-group-3
+                         ((test-<a href="./sndfile_lsp.html#robo302">sndfile</a>-5 :start 0.006 :end 0.182) 
+                          test-<a href="./sndfile_lsp.html#robo302">sndfile</a>-6)))
                       :paths '("/path/to/sound-files-dir-1/"
                                "/path/to/sound-files-dir-2/")))))
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>make-sfn</strong> (id sfn &amp;key paths (extensions '("wav" "aiff" "aif" "snd"))
                           auto-freq (warn-not-found t)
-                          <a href="#robo900">auto-followers</a> analyse-followers)
+                          <a href="#robo905">auto-followers</a> analyse-followers)
 </pre>
 
 
 <a name="sndfilenet2fmax2dplay2dfrom2did"></a>
-<a name="robo903"></a><h2 class=robodoc>sndfilenet/max-play-from-id [ Methods ]</h2>
+<a name="robo908"></a><h2 class=robodoc>sndfilenet/max-play-from-id [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> This generates the data necessary to play the next sound in the current
- sound's followers list. See the <a href="./sndfile-ext_lsp.html#robo894">sndfile-ext</a> method for details.
+ sound's followers list. See the <a href="./sndfile-ext_lsp.html#robo899">sndfile-ext</a> method for details.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - The <a href="#robo318">sndfilenet</a> object.
+<pre> - The <a href="#robo319">sndfilenet</a> object.
  - The group ID to play the next sound from, i.e. the topmost ID to group of
    sounds 
  - The fade (in/out) duration in seconds.
  - The maximum loop duration in seconds.
  - The time to trigger the next file, as a percentage of the current
-   <a href="./sndfile_lsp.html#robo301">sndfile</a>-ext's duration.
+   <a href="./sndfile_lsp.html#robo302">sndfile</a>-ext's duration.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - whether to print data to the listener as it is generated. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of values returned by the <a href="./sndfile-ext_lsp.html#robo894">sndfile-ext</a> method.
+<pre> A list of values returned by the <a href="./sndfile-ext_lsp.html#robo899">sndfile-ext</a> method.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>max-play-from-id</strong> ((sfn <a href="#robo318">sndfilenet</a>) id fade-dur max-loop start-next
+<pre class="source">(defmethod <strong>max-play-from-id</strong> ((sfn <a href="#robo319">sndfilenet</a>) id fade-dur max-loop start-next
                              &amp;optional print)
 </pre>
 
 
 <a name="sndfilenet2fpreload2dcues"></a>
-<a name="robo904"></a><h2 class=robodoc>sndfilenet/preload-cues [ Methods ]</h2>
+<a name="robo909"></a><h2 class=robodoc>sndfilenet/preload-cues [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Return a list of preload commands for each sound file in a form that a Max
  sflist~ can process and store (which will include the path and start/stop
- data: see <a href="./sndfile_lsp.html#robo301">sndfile</a>-ext::<a href="./sndfile-ext_lsp.html#robo872">max-cue</a> for details).
+ data: see <a href="./sndfile_lsp.html#robo302">sndfile</a>-ext::<a href="./sndfile-ext_lsp.html#robo877">max-cue</a> for details).
  
  E.g. preload 231 triplet-mphonic-001.wav 0. 3300.612305 0 1. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo318">sndfilenet</a> object.
+<pre> - the <a href="#robo319">sndfilenet</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The list of preload strings that <a href="./osc-sc_lsp.html#robo312">osc-call</a> can then pass on to the sflist~
+<pre> The list of preload strings that <a href="./osc-sc_lsp.html#robo313">osc-call</a> can then pass on to the sflist~
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">#+(and darwin sbcl)
-(defmethod <strong>preload-cues</strong> ((sfn <a href="#robo318">sndfilenet</a>))
+(defmethod <strong>preload-cues</strong> ((sfn <a href="#robo319">sndfilenet</a>))
 </pre>
 
 
 <a name="sndfilenet2freset"></a>
-<a name="robo905"></a><h2 class=robodoc>sndfilenet/reset [ Methods ]</h2>
+<a name="robo910"></a><h2 class=robodoc>sndfilenet/reset [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo318">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo319">sndfilenet</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Reset the followers' slot circular list to the beginning or to &lt;where&gt; and
  the starting sounds for each group also.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo318">sndfilenet</a> object.
+<pre> - the <a href="#robo319">sndfilenet</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - an integer to set the point at which to restart.  This can be higher than
-   the number of followers as it will <a href="./set-palette_lsp.html#robo689">wrap</a>.  Default = nil (which equates to
+   the number of followers as it will <a href="./set-palette_lsp.html#robo691">wrap</a>.  Default = nil (which equates to
    0 lower down in the class hierarchy).
  - whether to issue a warning if &lt;where&gt; is greater than the number of
    followers (i.e. that wrapping will occur).  Default = T.
@@ -326,12 +326,12 @@
 <pre> T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>reset</strong> ((sfn <a href="#robo318">sndfilenet</a>) &amp;optional (where 0) (warn t))
+<pre class="source">(defmethod <strong>reset</strong> ((sfn <a href="#robo319">sndfilenet</a>) &amp;optional (where 0) (warn t))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/sndfilenet.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-11-13 11:26:17</p>
+<p>Generated from ./../../src/sndfilenet.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
 </div> <!-- footer -->
 </body>
 </html>

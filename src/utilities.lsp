@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:04:52 Wed Jan 28 2026 CET
+;;; $$ Last modified:  15:02:35 Wed Jun 24 2026 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -89,11 +89,11 @@
 |#
 ;;; SYNOPSIS
 (defun secs-to-mins-secs (seconds &key
-                                    round
-                                    (post-mins ":")
-                                    (post-secs ".")
-                                    (post-msecs "")
-                                    (same-width nil))
+                                  round
+                                  (post-mins ":")
+                                  (post-secs ".")
+                                  (post-msecs "")
+                                  (same-width nil))
 ;;; ****
   (unless (and (numberp seconds) (>= seconds 0))
     (error "utilities::secs-to-mins-secs: ~a should be a number > 0." seconds))
@@ -112,17 +112,17 @@
     (let* ((secs (floor seconds))
            (ms (floor (* 1000 (decimal-places (- seconds secs) 3))))
            (result
-            (if same-width
-                (format nil "~2,'0d~a~2,'0d~a~3,'0d~a"
-                        minutes post-mins secs post-secs ms post-msecs)
-                (if (> minutes 0)
-                    (format nil "~d~a~2,'0d~a~3,'0d~a" minutes post-mins secs
-                            post-secs ms post-msecs)
-                    (format nil "~d~a~3,'0d~a" secs post-secs ms post-msecs)))))
+             (if same-width
+               (format nil "~2,'0d~a~2,'0d~a~3,'0d~a"
+                       minutes post-mins secs post-secs ms post-msecs)
+               (if (> minutes 0)
+                 (format nil "~d~a~2,'0d~a~3,'0d~a" minutes post-mins secs
+                         post-secs ms post-msecs)
+                 (format nil "~d~a~3,'0d~a" secs post-secs ms post-msecs)))))
       (if round 
-          (subseq result 0 (- (length result) 3 (length post-secs)
-                              (length post-msecs)))
-          result))))
+        (subseq result 0 (- (length result) 3 (length post-secs)
+                            (length post-msecs)))
+        result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/mins-secs-to-secs
@@ -4763,8 +4763,9 @@ WARNING:
   (nth-value 1
              (cl-user::external-process-status
               (cl-user::run-program command arguments :output t)))
-  #-(or sbcl ccl)
-  (warning "utilities::shell: Can't execute ~a on your system. Sorry."
+  #+ecl (ext::system (list-to-string (push command arguments)))
+  #-(or sbcl ccl ecl)
+  (warn "utilities::shell: Can't execute ~a on your system. Sorry."
            command))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4774,7 +4775,7 @@ WARNING:
   (when (get-sc-config 'system-open-file-escape-spaces)
     (setq file (escape-spaces file)))
   #-(or darwin linux)
-  (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
+  (warn "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file)
   #+(or darwin linux)
   ;; MDE Wed Jun 30 16:08:47 2021, Heidhausen -- Following conversion code

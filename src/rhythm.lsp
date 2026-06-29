@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  13:06:14 Wed Jan 21 2026 CET
+;;; $$ Last modified:  12:39:16 Wed Jun 24 2026 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1741,6 +1741,16 @@ NIL
   (first (some #'is-dynamic (marks r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jun 24 10:24:37 2026, Heidhausen -- ECL raised some interesting
+;;; stuff e.g. rqs like 4194304/11184811. calling float on that gives 0.375
+;;; which is 3/8, so handle stuff like that here (not just for ECL)
+(defmethod handle-massive-rational ((r rhythm))
+  (with-slots ((rorq rq)) r
+    (when (< 1000000 (numerator rorq))
+      ;; just give it one go
+      (setf rorq (rationalize (float rorq))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -2371,108 +2381,109 @@ data: (
          (rq nil)
          (first-char nil))
     (if (numberp rthm)
-        (setf letter-value rthm)
-        (progn
-          (when (char= #\. (aref string (1- (length string))))
-            (let ((dots (dots string)))
-              (setq num-dots (second dots)
-                    dots-scaler (/ (first dots))))
-            ;; backslashes protect the dot in eg 14\.
-            (setq string (string-right-trim "\." string)))
-          (setf tuplet-scaler (case (aref string 0) 
-                                (#\T 3/2)
-                                (#\F 5/4)
-                                (t 1))
-                scaler (* dots-scaler tuplet-scaler)
-                len (progn (when (and (/= dots-scaler scaler)
-                                      ;; MDE Tue Jul 24 20:57:00 2012 
-                                      (> (length string) 1))
-                             (setq string (subseq string 1)))
-                           (length string))
-                first-char (aref string 0)
-                letter-value 
-                (if (> len 0) ;; i.e. if rthm was a valid argument!
-                    (if (digit-char-p first-char)
-                        (read-from-string string)
-                        ;; string should now only contain one letter
-                        (if (= len 1)  
-                            (case first-char
-                              ;; as a side effect the is-grace-note slot of the
-                              ;; rhythm object is set here and a duration of 0
-                              ;; is given.
-                              (#\G (when rhythm-object
-                                     (setf (is-grace-note rhythm-object) t))
-                                   0)
-                              ;; MDE Wed Dec 4 14:44:03 2019 -- added double
-                              ;; whole etc.
-                              (#\M 0.125) ; maxima
-                              (#\L 0.25) ; longa                      
-                              (#\B 0.5) ; brevis
-                              (#\W 1)
-                              (#\H 2)
-                              (#\Q 4)
-                              (#\E 8)
-                              (#\S 16))))))))
+      (setf letter-value rthm)
+      (progn
+        (when (char= #\. (aref string (1- (length string))))
+          (let ((dots (dots string)))
+            (setq num-dots (second dots)
+                  dots-scaler (/ (first dots))))
+          ;; backslashes protect the dot in eg 14\.
+          (setq string (string-right-trim "\." string)))
+        (setf tuplet-scaler (case (aref string 0) 
+                              (#\T 3/2)
+                              (#\F 5/4)
+                              (t 1))
+              scaler (* dots-scaler tuplet-scaler)
+              len (progn (when (and (/= dots-scaler scaler)
+                                    ;; MDE Tue Jul 24 20:57:00 2012 
+                                    (> (length string) 1))
+                           (setq string (subseq string 1)))
+                         (length string))
+              first-char (aref string 0)
+              letter-value 
+              (if (> len 0) ;; i.e. if rthm was a valid argument!
+                (if (digit-char-p first-char)
+                  (read-from-string string)
+                  ;; string should now only contain one letter
+                  (if (= len 1)  
+                    (case first-char
+                      ;; as a side effect the is-grace-note slot of the
+                      ;; rhythm object is set here and a duration of 0
+                      ;; is given.
+                      (#\G (when rhythm-object
+                             (setf (is-grace-note rhythm-object) t))
+                         0)
+                      ;; MDE Wed Dec 4 14:44:03 2019 -- added double
+                      ;; whole etc.
+                      (#\M 0.125)       ; maxima
+                      (#\L 0.25)        ; longa                      
+                      (#\B 0.5)         ; brevis
+                      (#\W 1)
+                      (#\H 2)
+                      (#\Q 4)
+                      (#\E 8)
+                      (#\S 16))))))))
     ;; MDE Sat Jun  8 18:20:53 2013 -- only signal an error if we really want
     ;; one
     (if letter-value
-        (progn
-          (setf value (float (* letter-value scaler))
-                undotted-value (* letter-value tuplet-scaler))
-          (when rhythm-object
-            (setf (undotted-value rhythm-object) undotted-value
-                  ;; get the rq for cmn
-                  rq (if (is-grace-note rhythm-object)
-                         0
-                         (* (/ 4 letter-value) (/ tuplet-scaler)
-                            (/ (rationalize dots-scaler))))
-                  ;; MDE Sat Sep 19 13:19:32 2015 -- allow things like 3.0 to
-                  ;; work as rqs (it's not rationalp but 3 is) 
-                  (rq rhythm-object) (if (and (floatp rq)
-                                              (float-int-p rq))
-                                         (floor rq)
-                                         rq) ;; (cmn::rq rq)
-                  (value rhythm-object) value
-                  ;; set duration to be the duration in seconds when qtr = 60
-                  ;; MDE Fri Apr  4 13:11:02 2025, Heidhausen -- use slot-value
-                  ;; to avoid setf methods
-                  (slot-value rhythm-object 'duration) (if (zerop value) 
-                                                         0.0 
-                                                         (/ 4.0 value))
-                  (slot-value rhythm-object 'compound-duration)
-                  (duration rhythm-object)
-                  (num-dots rhythm-object) num-dots
-                  ;; 30.1.11 next two for lilypond
-                  ;; MDE Wed Jun 24 17:25:41 2015 -- this used to just be
-                  ;; letter-value but as we now want to use the slot for
-                  ;; Lilypond rhythmic values we need powers of 2.
-                  (letter-value rhythm-object) 
-                  (if (zerop letter-value) 0 (nearest-power-of-2 letter-value))
-                  ;; invert it now
-                  (tuplet-scaler rhythm-object) (/ tuplet-scaler) 
-                  (num-flags rhythm-object) (rthm-num-flags undotted-value)
-                  (score-rthm rhythm-object) 
-                  (format nil "~a~a" 
-                          (float (* letter-value tuplet-scaler))
-                          (make-string num-dots 
-                                       :initial-element #\.)))
-            ;; MDE Sat Mar 10 17:37:51 2012 -- for lilypond: if we have a plain
-            ;; 12 as a rhythm, tuplet-scaler would be 1, because there's no F or
-            ;; T in front of a letter value, but we need it to be 3/2 as 12 is a
-            ;; te so try and figure it out mathematically
-            (when (and (= 1 (tuplet-scaler rhythm-object))
-                       ;; MDE Sat Jun 27 16:02:07 2015 -- should be an int not
-                       ;; just a number as 70/3 is a number... 
-                       (numberp (data rhythm-object)))
-                       ;; (integerp (data rhythm-object)))
-              (setf (tuplet-scaler rhythm-object) (rationalize
-                                                   (/ (nearest-power-of-2
-                                                       (value rhythm-object))
-                                                      (value rhythm-object))))))
-          value)
-        (when error
-          (error "rhythm::parse-rhythm: ~a is not a valid argument."
-                 rthm)))))
+      (progn
+        (setf value (float (* letter-value scaler))
+              undotted-value (* letter-value tuplet-scaler))
+        (when rhythm-object
+          (setf (undotted-value rhythm-object) undotted-value
+                ;; get the rq for cmn
+                rq (if (is-grace-note rhythm-object)
+                     0
+                     (* (/ 4 letter-value) (/ tuplet-scaler)
+                        (/ (rationalize dots-scaler))))
+                ;; MDE Sat Sep 19 13:19:32 2015 -- allow things like 3.0 to
+                ;; work as rqs (it's not rationalp but 3 is) 
+                (rq rhythm-object) (if (and (floatp rq)
+                                            (float-int-p rq))
+                                     (floor rq)
+                                     rq) ;; (cmn::rq rq)
+                (value rhythm-object) value
+                ;; set duration to be the duration in seconds when qtr = 60
+                ;; MDE Fri Apr  4 13:11:02 2025, Heidhausen -- use slot-value
+                ;; to avoid setf methods
+                (slot-value rhythm-object 'duration) (if (zerop value) 
+                                                       0.0 
+                                                       (/ 4.0 value))
+                (slot-value rhythm-object 'compound-duration)
+                (duration rhythm-object)
+                (num-dots rhythm-object) num-dots
+                ;; 30.1.11 next two for lilypond
+                ;; MDE Wed Jun 24 17:25:41 2015 -- this used to just be
+                ;; letter-value but as we now want to use the slot for
+                ;; Lilypond rhythmic values we need powers of 2.
+                (letter-value rhythm-object) 
+                (if (zerop letter-value) 0 (nearest-power-of-2 letter-value))
+                ;; invert it now
+                (tuplet-scaler rhythm-object) (/ tuplet-scaler) 
+                (num-flags rhythm-object) (rthm-num-flags undotted-value)
+                (score-rthm rhythm-object) 
+                (format nil "~a~a" 
+                        (float (* letter-value tuplet-scaler))
+                        (make-string num-dots 
+                                     :initial-element #\.)))
+          (handle-massive-rational rhythm-object)
+          ;; MDE Sat Mar 10 17:37:51 2012 -- for lilypond: if we have a plain
+          ;; 12 as a rhythm, tuplet-scaler would be 1, because there's no F or
+          ;; T in front of a letter value, but we need it to be 3/2 as 12 is a
+          ;; te so try and figure it out mathematically
+          (when (and (= 1 (tuplet-scaler rhythm-object))
+                     ;; MDE Sat Jun 27 16:02:07 2015 -- should be an int not
+                     ;; just a number as 70/3 is a number... 
+                     (numberp (data rhythm-object)))
+            ;; (integerp (data rhythm-object)))
+            (setf (tuplet-scaler rhythm-object) (rationalize
+                                                 (/ (nearest-power-of-2
+                                                     (value rhythm-object))
+                                                    (value rhythm-object))))))
+        value)
+      (when error
+        (error "rhythm::parse-rhythm: ~a is not a valid argument."
+               rthm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun rm-marks-aux (object marks warn)

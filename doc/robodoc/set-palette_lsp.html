@@ -32,34 +32,34 @@
 
 
 <a name="palette2fset2dpalette"></a>
-<a name="robo316"></a><h2 class=robodoc>palette/set-palette [ Classes ]</h2>
+<a name="robo317"></a><h2 class=robodoc>palette/set-palette [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo426">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./palette_lsp.html#robo427">palette</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>set-palette</strong>
  
  File:             <a href="#robo_top_of_doc">set-palette.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo631">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo311">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo300">sclist</a> -&gt; 
-                   <a href="./circular-sclist_lsp.html#robo635">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo115">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
-                   <a href="./palette_lsp.html#robo426">palette</a> -&gt; <strong>set-palette</strong>
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo633">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo312">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo301">sclist</a> -&gt; 
+                   <a href="./circular-sclist_lsp.html#robo637">circular-sclist</a> -&gt; <a href="./assoc-list_lsp.html#robo115">assoc-list</a> -&gt; <a href="./recursive-assoc-list_lsp.html#robo47">recursive-assoc-list</a> -&gt;
+                   <a href="./palette_lsp.html#robo427">palette</a> -&gt; <strong>set-palette</strong>
 
  Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
  Purpose:          Implementation of the <strong>set-palette</strong> class which extends the
-                   <a href="./palette_lsp.html#robo426">palette</a> class by simply instantiating the sets given in
-                   the <a href="./palette_lsp.html#robo426">palette</a>.  
+                   <a href="./palette_lsp.html#robo427">palette</a> class by simply instantiating the sets given in
+                   the <a href="./palette_lsp.html#robo427">palette</a>.  
 
-                   Note that the sets in this <a href="./palette_lsp.html#robo426">palette</a> may refer to
+                   Note that the sets in this <a href="./palette_lsp.html#robo427">palette</a> may refer to
                    previously defined sets in order to obviate retyping note
                    lists.  Hence the reference to bcl-chord2 in the
                    bcl-chord3 set of the example below will instantiate a
-                   set based on a transposed <a href="./slippery-chicken_lsp.html#robo800">clone</a> of that set previously
+                   set based on a transposed <a href="./slippery-chicken_lsp.html#robo805">clone</a> of that set previously
                    stored as bcl-chord2.  
 
-                     (<a href="#robo676">make-set-palette</a> 
+                     (<a href="#robo678">make-set-palette</a> 
                       'test
                       '((bcl-chord1
                          ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5
@@ -98,60 +98,60 @@
 
 
 <a name="set2dpalette2fadd2dharmonics"></a>
-<a name="robo666"></a><h2 class=robodoc>set-palette/add-harmonics [ Methods ]</h2>
+<a name="robo668"></a><h2 class=robodoc>set-palette/add-harmonics [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Add harmonically-related pitches to each set in the <a href="./palette_lsp.html#robo426">palette</a>. See the <a href="./sc-set_lsp.html#robo651">sc-set</a>
- class method for details and the <a href="./utilities_lsp.html#robo962">get-harmonics</a> function (<a href="./utilities_lsp.html#robo_top_of_doc">utilities.lsp</a>) for
+<pre> Add harmonically-related pitches to each set in the <a href="./palette_lsp.html#robo427">palette</a>. See the <a href="./sc-set_lsp.html#robo653">sc-set</a>
+ class method for details and the <a href="./utilities_lsp.html#robo967">get-harmonics</a> function (<a href="./utilities_lsp.html#robo_top_of_doc">utilities.lsp</a>) for
  keyword arguments.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>add-harmonics</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;rest keywords)
+<pre class="source">(defmethod <strong>add-harmonics</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;rest keywords)
 </pre>
 
 
 <a name="set2dpalette2fauto2dsequence"></a>
-<a name="robo667"></a><h2 class=robodoc>set-palette/auto-sequence [ Methods ]</h2>
+<a name="robo669"></a><h2 class=robodoc>set-palette/auto-sequence [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> July 30th 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Automatically create an ordering for the sets in a <a href="#robo316">set-palette</a> based on a
- dissonance envelope and a spectral <a href="./sndfile_lsp.html#robo889">centroid</a> envelope. For a description of
- a set or <a href="./chord_lsp.html#robo634">chord</a>'s dissonance or spectral <a href="./sndfile_lsp.html#robo889">centroid</a> see the
- <a href="./chord_lsp.html#robo75">calculate-spectral-centroid</a> and <a href="./chord_lsp.html#robo74">calculate-dissonance</a> methods in the <a href="./chord_lsp.html#robo634">chord</a>
+<pre> Automatically create an ordering for the sets in a <a href="#robo317">set-palette</a> based on a
+ dissonance envelope and a spectral <a href="./sndfile_lsp.html#robo894">centroid</a> envelope. For a description of
+ a set or <a href="./chord_lsp.html#robo636">chord</a>'s dissonance or spectral <a href="./sndfile_lsp.html#robo894">centroid</a> see the
+ <a href="./chord_lsp.html#robo75">calculate-spectral-centroid</a> and <a href="./chord_lsp.html#robo74">calculate-dissonance</a> methods in the <a href="./chord_lsp.html#robo636">chord</a>
  class.
 
  The envelopes describe a desired general tendency to, for example, proceed
  from less dissonant to more dissonant sets as the ordering (sequence) of
  sets proceeds. Such an envelope would move from lower to higher
- values. Similarly with the spectral <a href="./sndfile_lsp.html#robo889">centroid</a> envelope: moving from a lower
- to a higher value implies moving from chords with an overall lower <a href="./pitch_lsp.html#robo297">pitch</a>
- height to chords with a higher <a href="./pitch_lsp.html#robo297">pitch</a> height.
+ values. Similarly with the spectral <a href="./sndfile_lsp.html#robo894">centroid</a> envelope: moving from a lower
+ to a higher value implies moving from chords with an overall lower <a href="./pitch_lsp.html#robo298">pitch</a>
+ height to chords with a higher <a href="./pitch_lsp.html#robo298">pitch</a> height.
 
  The envelopes should be expressed over any X axis range but with a Y axis
  range of 0.0 to 1.0 only. The x-axes will be stretched to fit over the
- number of sets in the <a href="./palette_lsp.html#robo426">palette</a>. The Y axes will be stretched to fit the
- range of dissonance and <a href="./sndfile_lsp.html#robo889">centroid</a> values to be found in the sets in the
- <a href="./palette_lsp.html#robo426">palette</a> (see the <a href="#robo678">quality-extremes</a> method).
+ number of sets in the <a href="./palette_lsp.html#robo427">palette</a>. The Y axes will be stretched to fit the
+ range of dissonance and <a href="./sndfile_lsp.html#robo894">centroid</a> values to be found in the sets in the
+ <a href="./palette_lsp.html#robo427">palette</a> (see the <a href="#robo680">quality-extremes</a> method).
 
  The default method is successive. It selects sets one-by-one via a sort
  function which compares the sets' characteristics to those of the current
  envelope values. Essentially, when we are comparing two sets via the sort
- function, we look at the deviation <a href="./utilities_lsp.html#robo934">between</a> the sets' dissonance values and
+ function, we look at the deviation <a href="./utilities_lsp.html#robo939">between</a> the sets' dissonance values and
  the current desired dissonance value from the envelope, similarly with the
- spectral <a href="./sndfile_lsp.html#robo889">centroid</a>.  The <a href="./chord_lsp.html#robo634">chord</a> with the smallest combined deviation will be
+ spectral <a href="./sndfile_lsp.html#robo894">centroid</a>.  The <a href="./chord_lsp.html#robo636">chord</a> with the smallest combined deviation will be
  chosen first. If either envelope is nil, then the sorting is based on the
  other envelope only. Similarly, weighting factors of any arbitrary positive
- number can be passed via :dissonance-weight and :<a href="./sndfile_lsp.html#robo889">centroid</a>-weight to
+ number can be passed via :dissonance-weight and :<a href="./sndfile_lsp.html#robo894">centroid</a>-weight to
  emphasise or deemphasise these properties when sorting. Higher values will
  mean that that property will take precedence over the other property.
  
- An alternative method, indicated by :<a href="./permutations_lsp.html#robo325">permutate</a> T, is to get all (or at
- least a lot of) <a href="./permutations_lsp.html#robo16">permutations</a> of the sets in the <a href="./palette_lsp.html#robo426">palette</a> and then score each
+ An alternative method, indicated by :<a href="./permutations_lsp.html#robo326">permutate</a> T, is to get all (or at
+ least a lot of) <a href="./permutations_lsp.html#robo327">permutations</a> of the sets in the <a href="./palette_lsp.html#robo427">palette</a> and then score each
  ordering against the curves, as a form of fitness test. The advantage of
  this approach is that the best solution overall can be found. The
  successive approach, on the other hand will find the best fit at the
@@ -161,57 +161,57 @@
  In any case there is no guarantee that the desired curves will be expressed
  exactly in the returned ordering. The function tries to find the best fit
  but success depends very much on the number and variety of sets in the
- <a href="./palette_lsp.html#robo426">palette</a>. 
+ <a href="./palette_lsp.html#robo427">palette</a>. 
 
- Also taken into account when in both methods is the <a href="./chord_lsp.html#robo94">lowest</a> note of the
+ Also taken into account when in both methods is the <a href="./event_lsp.html#robo204">lowest</a> note of the
  set. If :repeating-bass is NIL (the default) then the function tries to
- avoid repeating bass notes in two consecutive sets. Repeating <a href="./event_lsp.html#robo199">highest</a> notes
+ avoid repeating bass notes in two consecutive sets. Repeating <a href="./chord_lsp.html#robo92">highest</a> notes
  are allowed.
  
- NB Unlike the <a href="./chord_lsp.html#robo634">chord</a> methods which calculate dissonance and spectral
- <a href="./sndfile_lsp.html#robo889">centroid</a>, there is no way to pass spectral data here. If you want to
+ NB Unlike the <a href="./chord_lsp.html#robo636">chord</a> methods which calculate dissonance and spectral
+ <a href="./sndfile_lsp.html#robo894">centroid</a>, there is no way to pass spectral data here. If you want to
  override the default spectral data then use (set-sc-config 'default-<a href="./spectra_lsp.html#robo20">spectra</a>
  ...). See <a href="./globals_lsp.html#robo11">globals.lsp</a> for more details.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo316">set-palette</a> object
+<pre> - the <a href="#robo317">set-palette</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - dissonance-env: The desired dissonance envelope. Y values: 0.0 to 1.0
    Default '(0 .1 62 1 100 .3)
- - <a href="./sndfile_lsp.html#robo889">centroid</a>-env:  The desired spectral <a href="./sndfile_lsp.html#robo889">centroid</a> envelope.Y values: 0.0 to 1.0
+ - <a href="./sndfile_lsp.html#robo894">centroid</a>-env:  The desired spectral <a href="./sndfile_lsp.html#robo894">centroid</a> envelope.Y values: 0.0 to 1.0
    Default '(0 .4 62 1 100 .2) 
- - dissonance-weight: A weighting <a href="./utilities_lsp.html#robo956">factor</a> (scaler) applied to
+ - dissonance-weight: A weighting <a href="./utilities_lsp.html#robo961">factor</a> (scaler) applied to
    dissonance. Higher values result in dissonance playing a larger role in
    the decision process. Default 1.0
- - <a href="./sndfile_lsp.html#robo889">centroid</a>-weight: a similar <a href="./utilities_lsp.html#robo956">factor</a> for spectral <a href="./sndfile_lsp.html#robo889">centroid</a>. Default 1.0
+ - <a href="./sndfile_lsp.html#robo894">centroid</a>-weight: a similar <a href="./utilities_lsp.html#robo961">factor</a> for spectral <a href="./sndfile_lsp.html#robo894">centroid</a>. Default 1.0
  - verbose:  Whether to print data as the decision process proceeds.
    Default NIL 
- - repeating-bass: Whether to allow bass notes to repeat <a href="./utilities_lsp.html#robo934">between</a> two
+ - repeating-bass: Whether to allow bass notes to repeat <a href="./utilities_lsp.html#robo939">between</a> two
    consecutive chords. Default NIL
  - silent: Whether to print warnings or not. Default NIL
  - map-<a href="./section_lsp.html#robo60">section</a>: if you want a list of references suitable to be passed
-   as a <a href="./set-map_lsp.html#robo601">set-map</a>, set this keyword to the integer ID of the <a href="./section_lsp.html#robo60">section</a> the map
+   as a <a href="./set-map_lsp.html#robo603">set-map</a>, set this keyword to the integer ID of the <a href="./section_lsp.html#robo60">section</a> the map
    will be used for. Default = NIL.
- - <a href="./permutations_lsp.html#robo325">permutate</a>: use the permutation rather than the successive approach. This
-   can either be T (which will <a href="./tl-set_lsp.html#robo919">limit</a> to 2000), 'all (get all
-   <a href="./permutations_lsp.html#robo16">permutations</a>--could take a very long time), or an integer to represent
-   the maximum number of <a href="./permutations_lsp.html#robo16">permutations</a> we'll try. Default = NIL.
+ - <a href="./permutations_lsp.html#robo326">permutate</a>: use the permutation rather than the successive approach. This
+   can either be T (which will <a href="./tl-set_lsp.html#robo924">limit</a> to 2000), 'all (get all
+   <a href="./permutations_lsp.html#robo327">permutations</a>--could take a very long time), or an integer to represent
+   the maximum number of <a href="./permutations_lsp.html#robo327">permutations</a> we'll try. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> If we're using the <a href="./permutations_lsp.html#robo325">permutate</a> method then a single list of the sets'
- <a href="#robo316">set-palette</a> references is returned. If we're using the successive method we
+<pre> If we're using the <a href="./permutations_lsp.html#robo326">permutate</a> method then a single list of the sets'
+ <a href="#robo317">set-palette</a> references is returned. If we're using the successive method we
  return two values: A list of the full references of the sets in the set
- <a href="./palette_lsp.html#robo426">palette</a> in the automatically determined order, along with a list of the
+ <a href="./palette_lsp.html#robo427">palette</a> in the automatically determined order, along with a list of the
  deviations from the ideal this order represents. Either method might return
- a list suitable for passing to a <a href="./set-map_lsp.html#robo601">set-map</a> (see example below).
+ a list suitable for passing to a <a href="./set-map_lsp.html#robo603">set-map</a> (see example below).
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(<strong>auto-sequence</strong>
- (<a href="#robo679">recursive-set-palette-from-ring-mod</a> '(a4 b4) 'spfrm-test
+ (<a href="#robo681">recursive-set-palette-from-ring-mod</a> '(a4 b4) 'spfrm-test
                                       :warn-no-bass nil)
- :verbose nil :<a href="./sndfile_lsp.html#robo889">centroid</a>-weight 2 :silent t)
+ :verbose nil :<a href="./sndfile_lsp.html#robo894">centroid</a>-weight 2 :silent t)
 =&gt;
 ((A4 15) (A4 13) (A4 4) (A4 7) (B4 4) (A4 14) (A4 2) (A4 20) (B4 2) (B4 17)
  (B4 14) (B4 11) (B4 9) (A4 12) (B4 21) (B4 6) (A4 6) (B4 5) (B4 7) (B4 12)
@@ -223,9 +223,9 @@
 ...
 
 (<strong>auto-sequence</strong>
- (<a href="#robo679">recursive-set-palette-from-ring-mod</a> '(a4 b4) 'spfrm-test
+ (<a href="#robo681">recursive-set-palette-from-ring-mod</a> '(a4 b4) 'spfrm-test
                                       :warn-no-bass nil)
- :verbose nil :<a href="./sndfile_lsp.html#robo889">centroid</a>-weight 2 :silent t :<a href="./permutations_lsp.html#robo325">permutate</a> t :map-<a href="./section_lsp.html#robo60">section</a> 1)
+ :verbose nil :<a href="./sndfile_lsp.html#robo894">centroid</a>-weight 2 :silent t :<a href="./permutations_lsp.html#robo326">permutate</a> t :map-<a href="./section_lsp.html#robo60">section</a> 1)
 =&gt;
 ((1
   ((B4 1) (B4 3) (B4 15) (B4 5) (B4 10) (A4 3) (A4 17) (A4 1) (A4 14) (A4 15)
@@ -235,63 +235,63 @@
    (A4 21) (B4 14))))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>auto-sequence</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>)
+<pre class="source">(defmethod <strong>auto-sequence</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>)
                           &amp;key
                             (dissonance-env '(0 .1 62 1 100 .3))
-                            (<a href="./sndfile_lsp.html#robo889">centroid</a>-env '(0 .4 62 1 100 .2))
+                            (<a href="./sndfile_lsp.html#robo894">centroid</a>-env '(0 .4 62 1 100 .2))
                             (dissonance-weight 1.0)
-                            (<a href="./sndfile_lsp.html#robo889">centroid</a>-weight 1.0)
-                            map-<a href="./section_lsp.html#robo60">section</a> <a href="./permutations_lsp.html#robo325">permutate</a> verbose repeating-bass silent)
+                            (<a href="./sndfile_lsp.html#robo894">centroid</a>-weight 1.0)
+                            map-<a href="./section_lsp.html#robo60">section</a> <a href="./permutations_lsp.html#robo326">permutate</a> verbose repeating-bass silent)
 </pre>
 
 
 <a name="set2dpalette2fcalculate2dspectral2dcentroid"></a>
-<a name="robo668"></a><h2 class=robodoc>set-palette/calculate-spectral-centroid [ Methods ]</h2>
+<a name="robo670"></a><h2 class=robodoc>set-palette/calculate-spectral-centroid [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> January 30th 2016
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Calculate the spectral <a href="./sndfile_lsp.html#robo889">centroid</a> values for each set in a <a href="#robo316">set-palette</a>. This
- will set the <a href="./sndfile_lsp.html#robo889">centroid</a> slot of each set. 
+<pre> Calculate the spectral <a href="./sndfile_lsp.html#robo894">centroid</a> values for each set in a <a href="#robo317">set-palette</a>. This
+ will set the <a href="./sndfile_lsp.html#robo894">centroid</a> slot of each set. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo316">set-palette</a> object
+<pre> - a <a href="#robo317">set-palette</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - sort: If T, sorts the list values from high to low, otherwise the list
-   will be returned with the order of the sets in the <a href="./palette_lsp.html#robo426">palette</a>. Default =
+   will be returned with the order of the sets in the <a href="./palette_lsp.html#robo427">palette</a>. Default =
    NIL. 
- see this method in the <a href="./chord_lsp.html#robo634">chord</a> class for a description of further keywords
+ see this method in the <a href="./chord_lsp.html#robo636">chord</a> class for a description of further keywords
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a list of two-element lists: the reference to the set within the <a href="./palette_lsp.html#robo426">palette</a>
- and the <a href="./sndfile_lsp.html#robo889">centroid</a> value.
+<pre> a list of two-element lists: the reference to the set within the <a href="./palette_lsp.html#robo427">palette</a>
+ and the <a href="./sndfile_lsp.html#robo894">centroid</a> value.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>calculate-spectral-centroid</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>)
+<pre class="source">(defmethod <strong>calculate-spectral-centroid</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>)
                                         &amp;rest keyargs &amp;key &amp;allow-other-keys)
 </pre>
 
 
 <a name="set2dpalette2fcmn2ddisplay"></a>
-<a name="robo669"></a><h2 class=robodoc>set-palette/cmn-display [ Methods ]</h2>
+<a name="robo671"></a><h2 class=robodoc>set-palette/cmn-display [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Generate printable music notation output (.EPS) of the given <a href="#robo316">set-palette</a>
+<pre> Generate printable music notation output (.EPS) of the given <a href="#robo317">set-palette</a>
  object, including separate notation of the SUBSETS and RELATED-SETS slots,
  using the Common Music Notation (CMN) interface. The method requires at
- least the name of the given <a href="#robo316">set-palette</a> object, but has several additional
+ least the name of the given <a href="#robo317">set-palette</a> object, but has several additional
  optional arguments for customizing output.
 
  NB: Some of the keyword arguments are CMN attributes and share the same
      name as the CMN feature they effect.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo316">set-palette</a> object.
+<pre> - A <a href="#robo317">set-palette</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
@@ -309,36 +309,36 @@
    output. This affects text only and not the music (see :size below for
    changing the size of the music). If 0 then no text will be
    displayed. Default = 10.0.
- - :break-line-each-set. T or NIL to indicate whether each <a href="#robo316">set-palette</a>
+ - :break-line-each-set. T or NIL to indicate whether each <a href="#robo317">set-palette</a>
    object should be printed on a separate staff or consecutively on the same
-   staff. T = one staff per <a href="#robo316">set-palette</a> object. Default = T.
- - :line-separation. A number to indicate the amount of white space <a href="./utilities_lsp.html#robo934">between</a>
-   lines of music (systems), measured as a <a href="./utilities_lsp.html#robo956">factor</a> of the staff
+   staff. T = one staff per <a href="#robo317">set-palette</a> object. Default = T.
+ - :line-separation. A number to indicate the amount of white space <a href="./utilities_lsp.html#robo939">between</a>
+   lines of music (systems), measured as a <a href="./utilities_lsp.html#robo961">factor</a> of the staff
    height. Default = 3. This is a direct CMN attribute.
- - :staff-separation. A number to indicate the amount of white space <a href="./utilities_lsp.html#robo934">between</a>
-   staves belong to the same system, measured as a <a href="./utilities_lsp.html#robo956">factor</a> of the staff
+ - :staff-separation. A number to indicate the amount of white space <a href="./utilities_lsp.html#robo939">between</a>
+   staves belong to the same system, measured as a <a href="./utilities_lsp.html#robo961">factor</a> of the staff
    height. Default = 3. This is a direct CMN attribute.
  - :transposition. Nil or a number (positive or negative) to indicate the
-   number of <a href="./utilities_lsp.html#robo1019">semitones</a> by which the pitches of the given <a href="#robo316">set-palette</a> object
+   number of <a href="./utilities_lsp.html#robo1026">semitones</a> by which the pitches of the given <a href="#robo317">set-palette</a> object
    should be transposed before generating the CMN output. Default = NIL (0).
  - :size. A number to indicate the size of the music-font in the CMN
    output. This affects music only, not text.
  - :use-octave-signs. T or NIL to indicate whether to automatically insert
-   ottava spanners. Automatic placement depends on the overall <a href="./pitch_lsp.html#robo297">pitch</a>
-   content. This is a <a href="./slippery-chicken_lsp.html#robo632">slippery-chicken</a> process and may produce different
+   ottava spanners. Automatic placement depends on the overall <a href="./pitch_lsp.html#robo298">pitch</a>
+   content. This is a <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> process and may produce different
    results than :automatic-octave-signs, which is a direct CMN process. 
    T = insert octave signs. Default = NIL.
  - :automatic-octave-signs. T or NIL to indicate whether to automatically
-   insert ottava spanners. Automatic placement depends on the overall <a href="./pitch_lsp.html#robo297">pitch</a>
+   insert ottava spanners. Automatic placement depends on the overall <a href="./pitch_lsp.html#robo298">pitch</a>
    content. This is a direct CMN process and may produce different results
-   than :use-octave-signs, which is a <a href="./slippery-chicken_lsp.html#robo632">slippery-chicken</a> process. T = insert
+   than :use-octave-signs, which is a <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> process. T = insert
    octave signs. Default = NIL.
  - :include-missing-chromatic. T or NIL to indicate whether to also print
-   any chromatic pitches from the <a href="./complete-set_lsp.html#robo917">complete-set</a> that are not present in the
-   given <a href="#robo316">set-palette</a> object. T = print. Default = T.
+   any chromatic pitches from the <a href="./complete-set_lsp.html#robo922">complete-set</a> that are not present in the
+   given <a href="#robo317">set-palette</a> object. T = print. Default = T.
  - :include-missing-non-chromatic. T or NIL to indicate whether to also
-   print any <a href="./event_lsp.html#robo211">microtonal</a> pitches from the <a href="./complete-set_lsp.html#robo917">complete-set</a> that are not
-   present in the given <a href="#robo316">set-palette</a> object. T = print.  Default = T.
+   print any <a href="./event_lsp.html#robo211">microtonal</a> pitches from the <a href="./complete-set_lsp.html#robo922">complete-set</a> that are not
+   present in the given <a href="#robo317">set-palette</a> object. T = print.  Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T
@@ -347,7 +347,7 @@
 <pre class="source">;; A typical example with some specified keyword values for file, font-size,
 ;; break-line-each-set, size, include-missing-chromatic and
 ;; include-missing-non-chromatic 
-(let ((msp (<a href="#robo676">make-set-palette</a> 
+(let ((msp (<a href="#robo678">make-set-palette</a> 
             'test
          p   '((1 ((1
                    ((c3 g3 cs4 e4 fs4 a4 bf4 c5 d5 f5 gf5 af5 ef6)))
@@ -370,34 +370,34 @@
                :include-missing-non-chromatic nil))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>cmn-display</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;rest keyargs &amp;key &amp;allow-other-keys)
+<pre class="source">(defmethod <strong>cmn-display</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;rest keyargs &amp;key &amp;allow-other-keys)
 </pre>
 
 
 <a name="set2dpalette2ffind2dsets2dwith2dpitches"></a>
-<a name="robo670"></a><h2 class=robodoc>set-palette/find-sets-with-pitches [ Methods ]</h2>
+<a name="robo672"></a><h2 class=robodoc>set-palette/find-sets-with-pitches [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return a list of sets (as <a href="./complete-set_lsp.html#robo917">complete-set</a> objects) from a given <a href="#robo316">set-palette</a>
+<pre> Return a list of sets (as <a href="./complete-set_lsp.html#robo922">complete-set</a> objects) from a given <a href="#robo317">set-palette</a>
  object based on whether they contain specified pitches.
 
  NB: Only sets which contain all of the specified pitches will be returned. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo316">set-palette</a> object.
- - A list of pitches, either as <a href="./pitch_lsp.html#robo297">pitch</a> objects or note-name symbols.
+<pre> - A <a href="#robo317">set-palette</a> object.
+ - A list of pitches, either as <a href="./pitch_lsp.html#robo298">pitch</a> objects or note-name symbols.
 
  OPTION ARGUMENTS
  - T or NIL to indicate whether to print the notes of each successful set as
    they are being examined.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of <a href="./complete-set_lsp.html#robo917">complete-set</a> objects.
+<pre> A list of <a href="./complete-set_lsp.html#robo922">complete-set</a> objects.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Find sets that contain a single <a href="./pitch_lsp.html#robo297">pitch</a>
-(let ((msp (<a href="#robo676">make-set-palette</a> 
+<pre class="source">;; Find sets that contain a single <a href="./pitch_lsp.html#robo298">pitch</a>
+(let ((msp (<a href="#robo678">make-set-palette</a> 
             'test
             '((1 ((1
                    ((g3 c4 e4 g4)))
@@ -429,7 +429,7 @@ data: (G3 C4 E4 G4)
 )
 
 ;; Search for a set of two pitches, printing the successfully matched sets
-(let ((msp (<a href="#robo676">make-set-palette</a> 
+(let ((msp (<a href="#robo678">make-set-palette</a> 
             'test
             '((1 ((1
                    ((g3 c4 e4 g4)))
@@ -454,38 +454,38 @@ data: (C4 F4 A4 C5)
 )
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>find-sets-with-pitches</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) pitches &amp;optional print)
+<pre class="source">(defmethod <strong>find-sets-with-pitches</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) pitches &amp;optional print)
 </pre>
 
 
 <a name="set2dpalette2fforce2dmicro2dtone"></a>
-<a name="robo671"></a><h2 class=robodoc>set-palette/force-micro-tone [ Methods ]</h2>
+<a name="robo673"></a><h2 class=robodoc>set-palette/force-micro-tone [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Change the value of the MICRO-TONE slot of all <a href="./pitch_lsp.html#robo297">pitch</a> objects in a given
- <a href="#robo316">set-palette</a> object to the specified &lt;value&gt;. NB If the pitches are
- <a href="./event_lsp.html#robo211">microtonal</a> and thus have associated <a href="./pitch_lsp.html#robo297">pitch</a>-bends and <a href="./event_lsp.html#robo211">microtonal</a> frequencies,
+<pre> Change the value of the MICRO-TONE slot of all <a href="./pitch_lsp.html#robo298">pitch</a> objects in a given
+ <a href="#robo317">set-palette</a> object to the specified &lt;value&gt;. NB If the pitches are
+ <a href="./event_lsp.html#robo211">microtonal</a> and thus have associated <a href="./pitch_lsp.html#robo298">pitch</a>-bends and <a href="./event_lsp.html#robo211">microtonal</a> frequencies,
  these will not be changed, i.e. only the micro-tone slot is changed. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo316">set-palette</a> object.
+<pre> - A <a href="#robo317">set-palette</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - An item of any type that is to be the new value of the MICRO-TONE slot of
-   all <a href="./pitch_lsp.html#robo297">pitch</a> objects in the given <a href="./sc-set_lsp.html#robo651">sc-set</a> object (generally T or
+   all <a href="./pitch_lsp.html#robo298">pitch</a> objects in the given <a href="./sc-set_lsp.html#robo653">sc-set</a> object (generally T or
    NIL). Default = NIL. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Always returns T.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Create a <a href="#robo316">set-palette</a> object whose individual sets contain some micro-tones
+<pre class="source">;; Create a <a href="#robo317">set-palette</a> object whose individual sets contain some micro-tones
 ;; and print the contents of all the MICRO-TONE slots to see the values. Then
 ;; apply the <strong>force-micro-tone</strong> method and print the slots again to see the
 ;; changes. 
 
-(let ((msp (<a href="#robo676">make-set-palette</a> 
+(let ((msp (<a href="#robo678">make-set-palette</a> 
             'test
             '((1 ((1
                    ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 
@@ -523,45 +523,45 @@ data: (C4 F4 A4 C5)
  ((T T T T T T T T T T T T T T T) (T T T T T T T T T T T T T T T)))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>force-micro-tone</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;optional value)
+<pre class="source">(defmethod <strong>force-micro-tone</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;optional value)
 </pre>
 
 
 <a name="set2dpalette2fgen2dmax2dcoll2dfile"></a>
-<a name="robo672"></a><h2 class=robodoc>set-palette/gen-max-coll-file [ Methods ]</h2>
+<a name="robo674"></a><h2 class=robodoc>set-palette/gen-max-coll-file [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 26-Dec-2009
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Write a text file from a given <a href="#robo316">set-palette</a> object suitable for reading into
+<pre> Write a text file from a given <a href="#robo317">set-palette</a> object suitable for reading into
  Max/MSP's coll object. The resulting text file has one line for each set in
- the <a href="./palette_lsp.html#robo426">palette</a>, with the coll index being the ID of the set. The rest of the
+ the <a href="./palette_lsp.html#robo427">palette</a>, with the coll index being the ID of the set. The rest of the
  line is a list of frequency/amplitude pairs (or MIDI note number/velocity if
  required). 0.1 is the default amplitude for frequencies; 80 the default
  velocity for MIDI; if 'transp is the format argument then no amplitude or
  velocity data is written.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo316">set-palette</a> object.
+<pre> - A <a href="#robo317">set-palette</a> object.
  - The name (and path) of the .txt file to write.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - 'freq, 'freq-only (no amplitudes), 'midi', or 'transp to indicate whether
    frequencies in Hertz, MIDI note numbers, or semitone transposition factors
-   should be generated. If the latter then the <a href="./utilities_lsp.html#robo976">middle</a> note will be
+   should be generated. If the latter then the <a href="./utilities_lsp.html#robo981">middle</a> note will be
    represented by 0 transposition.  Default = 'freq (frequencies).
- - a list of references into the <a href="./palette_lsp.html#robo426">palette</a> to define the order in which the
+ - a list of references into the <a href="./palette_lsp.html#robo427">palette</a> to define the order in which the
    sets are written. Default = NIL = sets will be written in the order in
-   which they appear in the <a href="./palette_lsp.html#robo426">palette</a>.
+   which they appear in the <a href="./palette_lsp.html#robo427">palette</a>.
  - T or NIL to indicate whether successive integers should be used as indices
-   in the coll. Default = NIL = use combined <a href="#robo316">set-palette</a> and set IDs.
+   in the coll. Default = NIL = use combined <a href="#robo317">set-palette</a> and set IDs.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Generates frequencies by default
-(let ((msp (<a href="#robo676">make-set-palette</a> 
+(let ((msp (<a href="#robo678">make-set-palette</a> 
             'test
             '((1 ((1
                    ((g3 c4 e4 g4)))
@@ -573,8 +573,8 @@ data: (C4 F4 A4 C5)
                   (2 ((1 2) :transposition -2))))))))
   (<strong>gen-max-coll-file</strong> msp "/tmp/msp-mcf.txt"))
 
-;; Set the optional argument to 'midi to <a href="./wolfram_lsp.html#robo1038">generate</a> MIDI note numbers instead
-(let ((msp (<a href="#robo676">make-set-palette</a> 
+;; Set the optional argument to 'midi to <a href="./wolfram_lsp.html#robo1045">generate</a> MIDI note numbers instead
+(let ((msp (<a href="#robo678">make-set-palette</a> 
             'test
             '((1 ((1
                    ((g3 c4 e4 g4)))
@@ -587,27 +587,27 @@ data: (C4 F4 A4 C5)
   (<strong>gen-max-coll-file</strong> msp "/tmp/msp-mcf.txt" 'midi))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>gen-max-coll-file</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) file &amp;optional
+<pre class="source">(defmethod <strong>gen-max-coll-file</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) file &amp;optional
                                                       (format 'freq)
                                                       refs ints)
 </pre>
 
 
 <a name="set2dpalette2fgen2dmidi2dchord2dseq"></a>
-<a name="robo673"></a><h2 class=robodoc>set-palette/gen-midi-chord-seq [ Methods ]</h2>
+<a name="robo675"></a><h2 class=robodoc>set-palette/gen-midi-chord-seq [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Generate a MIDI file in which each set of the given <a href="#robo316">set-palette</a> object is
+<pre> Generate a MIDI file in which each set of the given <a href="#robo317">set-palette</a> object is
  played at 1 second intervals.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A <a href="#robo316">set-palette</a> object.
+<pre> - A <a href="#robo317">set-palette</a> object.
  - The name and path for the MIDI file to be generated.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - the <a href="./tempo_lsp.html#robo302">tempo</a> in beats per minute. Default = 60.
- - subsets-id, related-sets-id. If you want to <a href="./wolfram_lsp.html#robo1038">generate</a> a MIDI file of just
+<pre> - the <a href="./tempo_lsp.html#robo303">tempo</a> in beats per minute. Default = 60.
+ - subsets-id, related-sets-id. If you want to <a href="./wolfram_lsp.html#robo1045">generate</a> a MIDI file of just
    a named subset or related-set, pass the ID here. NB this ID will have to
    exist for all sets.
 </pre>
@@ -615,7 +615,7 @@ data: (C4 F4 A4 C5)
 <pre> Always returns T
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((msp (<a href="#robo676">make-set-palette</a> 
+<pre class="source">(let ((msp (<a href="#robo678">make-set-palette</a> 
             'test
             '((1 ((1
                    ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5
@@ -633,70 +633,70 @@ data: (C4 F4 A4 C5)
   (<strong>gen-midi-chord-seq</strong> msp "/tmp/msp-gmchs.mid"))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>gen-midi-chord-seq</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) midi-file
-                               &amp;optional (<a href="./tempo_lsp.html#robo302">tempo</a> 60.0)
+<pre class="source">(defmethod <strong>gen-midi-chord-seq</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) midi-file
+                               &amp;optional (<a href="./tempo_lsp.html#robo303">tempo</a> 60.0)
                                  subsets-id related-sets-id)
 </pre>
 
 
 <a name="set2dpalette2flimit"></a>
-<a name="robo674"></a><h2 class=robodoc>set-palette/limit [ Methods ]</h2>
+<a name="robo676"></a><h2 class=robodoc>set-palette/limit [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Limit all the sets in a <a href="./palette_lsp.html#robo426">palette</a> to a specified range. See the <a href="./tl-set_lsp.html#robo630">tl-set</a> class
+<pre> Limit all the sets in a <a href="./palette_lsp.html#robo427">palette</a> to a specified range. See the <a href="./tl-set_lsp.html#robo632">tl-set</a> class
  <strong>limit</strong> method for details of the this method and its arguments.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo316">set-palette</a> object.
+<pre> The <a href="#robo317">set-palette</a> object.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>limit</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;key upper lower do-related-sets)
+<pre class="source">(defmethod <strong>limit</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;key upper lower do-related-sets)
 </pre>
 
 
 <a name="set2dpalette2flimit2dshift2doctave"></a>
-<a name="robo675"></a><h2 class=robodoc>set-palette/limit-shift-octave [ Methods ]</h2>
+<a name="robo677"></a><h2 class=robodoc>set-palette/limit-shift-octave [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 19th August 2015, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Apply the <a href="./tl-set_lsp.html#robo630">tl-set</a> method of the same name to each set in the <a href="./palette_lsp.html#robo426">palette</a>. See
+<pre> Apply the <a href="./tl-set_lsp.html#robo632">tl-set</a> method of the same name to each set in the <a href="./palette_lsp.html#robo427">palette</a>. See
  that class method description for details. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo316">set-palette</a> object
+<pre> - the <a href="#robo317">set-palette</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> See descriptions in <a href="./tl-set_lsp.html#robo630">tl-set</a> limiti-shift-octave method noting that here the
- :upper and :lower arguments can be a single note symbol or <a href="./pitch_lsp.html#robo297">pitch</a> object, as
- in <a href="./tl-set_lsp.html#robo630">tl-set</a>, or an envelope. In the latter case, the x axis can be over any
- arbitrary <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> and the y values can either be note symbols or midi note
+<pre> See descriptions in <a href="./tl-set_lsp.html#robo632">tl-set</a> limiti-shift-octave method noting that here the
+ :upper and :lower arguments can be a single note symbol or <a href="./pitch_lsp.html#robo298">pitch</a> object, as
+ in <a href="./tl-set_lsp.html#robo632">tl-set</a>, or an envelope. In the latter case, the x axis can be over any
+ arbitrary <a href="./rhythm_lsp.html#robo465">scale</a> and the y values can either be note symbols or midi note
  numbers. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo316">set-palette</a> object (modified).
+<pre> The <a href="#robo317">set-palette</a> object (modified).
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>limit-shift-octave</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;key upper lower
+<pre class="source">(defmethod <strong>limit-shift-octave</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;key upper lower
                                                   do-related-sets)
 </pre>
 
 
 <a name="set2dpalette2fmake2dset2dpalette"></a>
-<a name="robo676"></a><h2 class=robodoc>set-palette/make-set-palette [ Functions ]</h2>
+<a name="robo678"></a><h2 class=robodoc>set-palette/make-set-palette [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo316">set-palette</a> object.
+<pre> Create a <a href="#robo317">set-palette</a> object.
 
- Note that the sets in this <a href="./palette_lsp.html#robo426">palette</a> may refer to previously defined sets in
+ Note that the sets in this <a href="./palette_lsp.html#robo427">palette</a> may refer to previously defined sets in
  order to avoid retyping note lists (see example below).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A symbol that is to be the ID of the resulting <a href="#robo316">set-palette</a> object.
+<pre> - A symbol that is to be the ID of the resulting <a href="#robo317">set-palette</a> object.
  - A recursive list of key/data pairs, of which the deepest level of data
    will be a list of note-name symbols.
 </pre>
@@ -705,13 +705,13 @@ data: (C4 F4 A4 C5)
  - :recurse-simple-data. T or NIL to indicate whether to interpret
    two-element data lists as recursive palettes. Default = T.
  - :warn-note-found. T or NIL to indicate whether to print warnings when
-   specified data is not found with subsequent calls to the <a href="./assoc-list_lsp.html#robo37">get-data</a> method.
+   specified data is not found with subsequent calls to the <a href="./recursive-assoc-list_lsp.html#robo417">get-data</a> method.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo316">set-palette</a> object.
+<pre> A <a href="#robo317">set-palette</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Create a <a href="#robo316">set-palette</a> object
+<pre class="source">;;; Create a <a href="#robo317">set-palette</a> object
 (<strong>make-set-palette</strong> 
  'test
  '((1 ((1
@@ -748,7 +748,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo301">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: TEST, tag: NIL, 
 data: (
@@ -756,8 +756,8 @@ data: (
 
 ;;; NB A simple list of sets (with unique id slots) can also be passed.
 
-;;; Create a <a href="#robo316">set-palette</a> object by referencing a set-<a href="./palette_lsp.html#robo426">palette</a>-object already
-;;; defined (sp1) and transposing a <a href="./slippery-chicken_lsp.html#robo800">clone</a> of that object.
+;;; Create a <a href="#robo317">set-palette</a> object by referencing a set-<a href="./palette_lsp.html#robo427">palette</a>-object already
+;;; defined (sp1) and transposing a <a href="./slippery-chicken_lsp.html#robo805">clone</a> of that object.
 (<strong>make-set-palette</strong> 
  'test
  '((sp1
@@ -783,7 +783,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 2, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo301">sclist</a>-length: 2, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: TEST, tag: NIL, 
 data: (
@@ -800,7 +800,7 @@ QC1: (AQF2 E3 A4 DQF5 B5)
 QC2: (BF1 C3 GQS3 CS4 CQS5)
     related-sets: 
 MISSING: (BQS0 EQS1 F5 AQS5 EQF6 FQS6 BQF6 DQS7 FS7)
-SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 15, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo301">sclist</a>-length: 15, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: SP1, tag: NIL, 
 data: (BF1 EF2 AQF2 C3 E3 GQF3 GQS3 CS4 D4 G4 A4 CQS5 DQF5 GS5 B5)
@@ -811,8 +811,8 @@ COMPLETE-SET: complete: NIL
               missing-non-chromatic: (BQS BQF AQS FQS EQS EQF DQS)
               missing-chromatic: (FS F)
 TL-SET: transposition: 13
-        <a href="./tl-set_lsp.html#robo919">limit</a>-upper: NIL
-        <a href="./tl-set_lsp.html#robo919">limit</a>-lower: NIL
+        <a href="./tl-set_lsp.html#robo924">limit</a>-upper: NIL
+        <a href="./tl-set_lsp.html#robo924">limit</a>-lower: NIL
 [...]
     subsets: 
 TC1: (E3 F4 BF5)
@@ -821,7 +821,7 @@ QC1: (AQS3 F4 BF5 DQS6 C7)
 QC2: (B2 CS4 AQF4 D5 DQF6)
     related-sets: 
 MISSING: (BQS0 EQS1 F5 AQS5 EQF6 FQS6 BQF6 DQS7 FS7)
-SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 15, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo301">sclist</a>-length: 15, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: SP2, tag: NIL, 
 data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
@@ -829,34 +829,34 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
 )
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>make-set-palette</strong> (id <a href="./palette_lsp.html#robo426">palette</a> 
+<pre class="source">(defun <strong>make-set-palette</strong> (id <a href="./palette_lsp.html#robo427">palette</a> 
                          &amp;key (recurse-simple-data t) (warn-not-found t))
 </pre>
 
 
 <a name="set2dpalette2fmidi2dplay"></a>
-<a name="robo677"></a><h2 class=robodoc>set-palette/midi-play [ Methods ]</h2>
+<a name="robo679"></a><h2 class=robodoc>set-palette/midi-play [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 25th May 2017, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Write a MIDI file containing the sets in the <a href="#robo316">set-palette</a>
+<pre> Write a MIDI file containing the sets in the <a href="#robo317">set-palette</a>
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo316">set-palette</a> object
+<pre> - the <a href="#robo317">set-palette</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :midi-file. The path (string) of the midi file to write. Default is to
-   use the ID of the <a href="#robo316">set-palette</a> and write it into the default directory.
- - :<a href="./tempo_lsp.html#robo302">tempo</a>. The <a href="./tempo_lsp.html#robo302">tempo</a> of the MIDI file in beats per minute. Default = 60.
+   use the ID of the <a href="#robo317">set-palette</a> and write it into the default directory.
+ - :<a href="./tempo_lsp.html#robo303">tempo</a>. The <a href="./tempo_lsp.html#robo303">tempo</a> of the MIDI file in beats per minute. Default = 60.
  - :auto-open. Whether to open the midi file after generating (not available
    on all operating systems). Default is (get-sc-config
    'midi-play-auto-open) which itself defaults to sc-auto-open in the
    *features* list.
- - :related-sets-id :subsets-id. If you want to <a href="./wolfram_lsp.html#robo1038">generate</a> a MIDI file of just
+ - :related-sets-id :subsets-id. If you want to <a href="./wolfram_lsp.html#robo1045">generate</a> a MIDI file of just
    a named subset or related-set, pass the ID here. NB this ID will have to
    exist for all sets.
 </pre>
@@ -864,9 +864,9 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
 <pre> T
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>midi-play</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>)
+<pre class="source">(defmethod <strong>midi-play</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>)
                       &amp;key
-                        (<a href="./tempo_lsp.html#robo302">tempo</a> 60.0)
+                        (<a href="./tempo_lsp.html#robo303">tempo</a> 60.0)
                         (auto-open (get-sc-config 'midi-play-auto-open))
                         ;; MDE Sat Mar 20 12:05:17 2021, Heidhausen
                         related-sets-id subsets-id
@@ -878,71 +878,71 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
 
 
 <a name="set2dpalette2fquality2dextremes"></a>
-<a name="robo678"></a><h2 class=robodoc>set-palette/quality-extremes [ Methods ]</h2>
+<a name="robo680"></a><h2 class=robodoc>set-palette/quality-extremes [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Get the extremes (as four values) of the dissonance (min max) and spectral
- <a href="./sndfile_lsp.html#robo889">centroid</a> (min max) of a whole set <a href="./palette_lsp.html#robo426">palette</a>.
+ <a href="./sndfile_lsp.html#robo894">centroid</a> (min max) of a whole set <a href="./palette_lsp.html#robo427">palette</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo316">set-palette</a> object
+<pre> - a <a href="#robo317">set-palette</a> object
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Four values (i.e. to be used by multiple-value-bind and friends):
- dissonance min, dissonance max, <a href="./sndfile_lsp.html#robo889">centroid</a> min, <a href="./sndfile_lsp.html#robo889">centroid</a> max. 
+ dissonance min, dissonance max, <a href="./sndfile_lsp.html#robo894">centroid</a> min, <a href="./sndfile_lsp.html#robo894">centroid</a> max. 
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>quality-extremes</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>))
+<pre class="source">(defmethod <strong>quality-extremes</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>))
 </pre>
 
 
 <a name="set2dpalette2frecursive2dset2dpalette2dfrom2dring2dmod"></a>
-<a name="robo679"></a><h2 class=robodoc>set-palette/recursive-set-palette-from-ring-mod [ Functions ]</h2>
+<a name="robo681"></a><h2 class=robodoc>set-palette/recursive-set-palette-from-ring-mod [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo316">set-palette</a> object consisting of sub <a href="./palette_lsp.html#robo426">palette</a>-objects whose <a href="./pitch_lsp.html#robo297">pitch</a>
+<pre> Create a <a href="#robo317">set-palette</a> object consisting of sub <a href="./palette_lsp.html#robo427">palette</a>-objects whose <a href="./pitch_lsp.html#robo298">pitch</a>
  content is generated based on ring modulation routines applied to the
  specified pitches.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A list of note-name symbols, each of which will serve as the reference
-   <a href="./pitch_lsp.html#robo297">pitch</a> from which a new <a href="#robo316">set-palette</a> object is made using the
-   <a href="#robo684">set-palette-from-ring-mod</a> method.
- - A symbol that will be the ID for the top-level <a href="#robo316">set-palette</a> object. The
-   IDs of the new <a href="#robo316">set-palette</a> objects contained in the top-level object are
+   <a href="./pitch_lsp.html#robo298">pitch</a> from which a new <a href="#robo317">set-palette</a> object is made using the
+   <a href="#robo686">set-palette-from-ring-mod</a> method.
+ - A symbol that will be the ID for the top-level <a href="#robo317">set-palette</a> object. The
+   IDs of the new <a href="#robo317">set-palette</a> objects contained in the top-level object are
    generated from the note-name symbols of the reference-pitches, with the
-   IDs of the <a href="./pitch_lsp.html#robo297">pitch</a> sets contained with them then generated by sequential
+   IDs of the <a href="./pitch_lsp.html#robo298">pitch</a> sets contained with them then generated by sequential
    numbers.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :partials. A list of integers that are the partials which the method is
    to ring modulate, with 1 being either the reference-note or the bass note
-   that would have the reference-note as the <a href="./event_lsp.html#robo199">highest</a> partial in the given
+   that would have the reference-note as the <a href="./chord_lsp.html#robo92">highest</a> partial in the given
    list. Default = '(1 3 5 7).
  - :warn-no-bass. T or NIL to indicate whether to issue a warning when
-   <a href="#robo682">ring-mod-bass</a> fails to find suitable bass notes for the generated sets. T
+   <a href="#robo684">ring-mod-bass</a> fails to find suitable bass notes for the generated sets. T
    = warn. Default = T.
- - :do-bass. T or NIL to indicate whether to <a href="./recursive-assoc-list_lsp.html#robo411">add</a> notes created by the
-   <a href="#robo682">ring-mod-bass</a> function to the resulting <a href="#robo316">set-palette</a> object. T = create and
-   <a href="./recursive-assoc-list_lsp.html#robo411">add</a> bass notes. Default = T.
- - :<a href="./pitch_lsp.html#robo375">remove-octaves</a>. T or NIL to indicate whether to remove the upper
-   instances of any octave-equivalent pitches from the resulting <a href="#robo316">set-palette</a>
+ - :do-bass. T or NIL to indicate whether to <a href="./rhythm_lsp.html#robo441">add</a> notes created by the
+   <a href="#robo684">ring-mod-bass</a> function to the resulting <a href="#robo317">set-palette</a> object. T = create and
+   <a href="./rhythm_lsp.html#robo441">add</a> bass notes. Default = T.
+ - :<a href="./pitch_lsp.html#robo376">remove-octaves</a>. T or NIL to indicate whether to remove the upper
+   instances of any octave-equivalent pitches from the resulting <a href="#robo317">set-palette</a>
    object. T = remove. Default = NIL.
  - :min-bass-notes. An integer that is the minimum number of bass notes to
-   be generated and added to the resulting <a href="#robo316">set-palette</a> object. Default = 1.
+   be generated and added to the resulting <a href="#robo317">set-palette</a> object. Default = 1.
  - :ring-mod-bass-octave. An integer that is the MIDI octave reference
    number (such as the 4 in 'C4), indicating the octave from which the bass
    note(s) are to be taken.
- - :force-chromatic. T or NIL. If T, force all micro-tone slots of <a href="./pitch_lsp.html#robo297">pitch</a>
+ - :force-chromatic. T or NIL. If T, force all micro-tone slots of <a href="./pitch_lsp.html#robo298">pitch</a>
    objects to be NIL so that they won't be filtered out when a set is to be
-   used by a chromatic <a href="./instrument_lsp.html#robo296">instrument</a>. See <a href="./sc-set_lsp.html#robo651">sc-set</a> class <a href="./sc-set_lsp.html#robo608">force-micro-tone</a> for more
+   used by a chromatic <a href="./instrument_lsp.html#robo297">instrument</a>. See <a href="./sc-set_lsp.html#robo653">sc-set</a> class <a href="./sc-set_lsp.html#robo610">force-micro-tone</a> for more
    details. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - A <a href="#robo316">set-palette</a> object (recursive)
+<pre> - A <a href="#robo317">set-palette</a> object (recursive)
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Simple useage with default keyword argument values
@@ -957,7 +957,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 3, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo301">sclist</a>-length: 3, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: RSPFRM-TEST, tag: NIL, 
 data: (
@@ -971,7 +971,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 21, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo301">sclist</a>-length: 21, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: A4, tag: NIL, 
 data: (
@@ -984,7 +984,7 @@ COMPLETE-SET: complete: NIL
                                               (warn-no-bass t)
                                               (ring-mod-bass-octave 0)
                                               (do-bass t)
-                                              <a href="./pitch_lsp.html#robo375">remove-octaves</a>
+                                              <a href="./pitch_lsp.html#robo376">remove-octaves</a>
                                               force-chromatic
                                               (min-bass-notes 1)
                                               (partials '(1 3 5 7)))
@@ -992,55 +992,55 @@ COMPLETE-SET: complete: NIL
 
 
 <a name="set2dpalette2fremove2dsimilar"></a>
-<a name="robo680"></a><h2 class=robodoc>set-palette/remove-similar [ Methods ]</h2>
+<a name="robo682"></a><h2 class=robodoc>set-palette/remove-similar [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 12th August 2015, Wals, Austria
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Remove similar sets from a <a href="./palette_lsp.html#robo426">palette</a> when two sets are deemed
+<pre> Remove similar sets from a <a href="./palette_lsp.html#robo427">palette</a> when two sets are deemed
  similar. The set furthest down the data list will remain, whatever the
  ID. Note that this is a destructive operation.
 
- We use the <a href="./chord_lsp.html#robo107">similarity</a> <a href="./chord_lsp.html#robo634">chord</a> method to remove sets from the <a href="./palette_lsp.html#robo426">palette</a>, so see
+ We use the <a href="./chord_lsp.html#robo107">similarity</a> <a href="./chord_lsp.html#robo636">chord</a> method to remove sets from the <a href="./palette_lsp.html#robo427">palette</a>, so see
  that method for further information and for more keyword argument
  descriptions.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="#robo316">set-palette</a> object
+<pre> - the <a href="#robo317">set-palette</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :threshold. The <a href="./chord_lsp.html#robo94">lowest</a> value that the <a href="./chord_lsp.html#robo634">chord</a> class's <a href="./chord_lsp.html#robo107">similarity</a> method may
+ - :threshold. The <a href="./event_lsp.html#robo204">lowest</a> value that the <a href="./chord_lsp.html#robo636">chord</a> class's <a href="./chord_lsp.html#robo107">similarity</a> method may
     return in order to trigger removal. Default = 0.8
- - :<a href="./slippery-chicken_lsp.html#robo800">clone</a>. Whether to <a href="./slippery-chicken_lsp.html#robo800">clone</a> the <a href="#robo316">set-palette</a> object before removing sets.
- - :<a href="./slippery-chicken-edit_lsp.html#robo729">enharmonics</a>-are-equal. See <a href="./chord_lsp.html#robo107">similarity</a> method. Default = T.
+ - :<a href="./slippery-chicken_lsp.html#robo805">clone</a>. Whether to <a href="./slippery-chicken_lsp.html#robo805">clone</a> the <a href="#robo317">set-palette</a> object before removing sets.
+ - :<a href="./slippery-chicken-edit_lsp.html#robo733">enharmonics</a>-are-equal. See <a href="./chord_lsp.html#robo107">similarity</a> method. Default = T.
  - :octaves-are-true. See <a href="./chord_lsp.html#robo107">similarity</a> method. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the pared-down <a href="#robo316">set-palette</a> object
+<pre> the pared-down <a href="#robo317">set-palette</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>remove-similar</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;key (threshold 0.8)
-                                              (<a href="./slippery-chicken_lsp.html#robo800">clone</a> nil)
-                                              (<a href="./slippery-chicken-edit_lsp.html#robo729">enharmonics</a>-are-equal t)
+<pre class="source">(defmethod <strong>remove-similar</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;key (threshold 0.8)
+                                              (<a href="./slippery-chicken_lsp.html#robo805">clone</a> nil)
+                                              (<a href="./slippery-chicken-edit_lsp.html#robo733">enharmonics</a>-are-equal t)
                                               (octaves-are-true nil))
 </pre>
 
 
 <a name="set2dpalette2fring2dmod"></a>
-<a name="robo681"></a><h2 class=robodoc>set-palette/ring-mod [ Functions ]</h2>
+<a name="robo683"></a><h2 class=robodoc>set-palette/ring-mod [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Ring modulate (sum and difference tones) two pitches and return the
- resulting <a href="./pitch_lsp.html#robo297">pitch</a> and harmonic partials thereof.
+ resulting <a href="./pitch_lsp.html#robo298">pitch</a> and harmonic partials thereof.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A first <a href="./pitch_lsp.html#robo297">pitch</a>, either as a numeric hertz frequencey or a note-name
+<pre> - A first <a href="./pitch_lsp.html#robo298">pitch</a>, either as a numeric hertz frequencey or a note-name
    symbol.  
- - A second <a href="./pitch_lsp.html#robo297">pitch</a>, either as a numeric hertz frequencey or a note-name
+ - A second <a href="./pitch_lsp.html#robo298">pitch</a>, either as a numeric hertz frequencey or a note-name
    symbol. The second value needn't be higher than first.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
@@ -1049,39 +1049,39 @@ COMPLETE-SET: complete: NIL
    note-name symbols or frequency numbers. T = note-name symbols. 
    Default = NIL.
  - :pitch1-partials. An integer that indicates how many harmonic partials of
-   the first <a href="./pitch_lsp.html#robo297">pitch</a> are to be included in the modulation. Default = 3.
+   the first <a href="./pitch_lsp.html#robo298">pitch</a> are to be included in the modulation. Default = 3.
  - :pitch2-partials. An integer that indicates how many harmonic partials of
-   the second <a href="./pitch_lsp.html#robo297">pitch</a> are to be included in the modulation. Default = 2.
+   the second <a href="./pitch_lsp.html#robo298">pitch</a> are to be included in the modulation. Default = 2.
  - :min-freq. A number that is the the minimum frequency (hertz) that may be
    returned. Default = 20.
  - :max-freq. A number that is the the maximum frequency (hertz) that may be
    returned. Default = 20000.
  - :round. T or NIL to indicate whether frequency values returned are first
-   rounded to the <a href="./utilities_lsp.html#robo981">nearest</a> hertz. T = round. Default = T
+   rounded to the <a href="./utilities_lsp.html#robo986">nearest</a> hertz. T = round. Default = T
  - :remove-duplicates. T or NIL to indicate whether any duplicate
    frequencies are to be removed from the resulting list before returning
    it. T = remove. Default = T.
  - :print. T or NIL to indicate whether resulting data is to be printed as
    it is being generated. T = print. Default = NIL.
- - :<a href="./pitch_lsp.html#robo375">remove-octaves</a>. T or NIL to indicate whether octave repetitions of
+ - :<a href="./pitch_lsp.html#robo376">remove-octaves</a>. T or NIL to indicate whether octave repetitions of
    pitches will be removed from the resulting list before returning it,
-   keeping only the <a href="./chord_lsp.html#robo94">lowest</a> instance of each <a href="./pitch_lsp.html#robo297">pitch</a>. This argument can also be
+   keeping only the <a href="./event_lsp.html#robo204">lowest</a> instance of each <a href="./pitch_lsp.html#robo298">pitch</a>. This argument can also be
    set as a number or a list of numbers that indicates which octave
    repetitions will be allowed, the rest being removed. For example,
-   :<a href="./pitch_lsp.html#robo375">remove-octaves</a> '(1 2) will remove all octave repetitions of a given
-   <a href="./pitch_lsp.html#robo297">pitch</a> except for those that are 1 octave and 2 octaves above the given
-   <a href="./pitch_lsp.html#robo297">pitch</a>; thus '(c1 c2 c3 c4 c5) would return '(c1 c2 c3), removing c4 and
+   :<a href="./pitch_lsp.html#robo376">remove-octaves</a> '(1 2) will remove all octave repetitions of a given
+   <a href="./pitch_lsp.html#robo298">pitch</a> except for those that are 1 octave and 2 octaves above the given
+   <a href="./pitch_lsp.html#robo298">pitch</a>; thus '(c1 c2 c3 c4 c5) would return '(c1 c2 c3), removing c4 and
    c5. Default = NIL.
- - :<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>. A variable that indicates which <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> to use when converting
-   frequencies to note-names. Default = <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>* i.e. the value to which
-   the Common Music <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> is set, which in slippery chicken is
+ - :<a href="./rhythm_lsp.html#robo465">scale</a>. A variable that indicates which <a href="./rhythm_lsp.html#robo465">scale</a> to use when converting
+   frequencies to note-names. Default = <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rhythm_lsp.html#robo465">scale</a>* i.e. the value to which
+   the Common Music <a href="./rhythm_lsp.html#robo465">scale</a> is set, which in slippery chicken is
    *quarter-tone* by default.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A list of note-name symbols or frequencies.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;; Apply ring modulation to 'C4 and 'D4, using 5 partials of the first <a href="./pitch_lsp.html#robo297">pitch</a>
+<pre class="source">;; Apply ring modulation to 'C4 and 'D4, using 5 partials of the first <a href="./pitch_lsp.html#robo298">pitch</a>
 ;; and 3 partials of the second, removing octave repetitions, and returning the
 ;; results as rounded hertz-frequencies
 (<strong>ring-mod</strong> 'c4 'd4
@@ -1089,17 +1089,17 @@ COMPLETE-SET: complete: NIL
           :pitch2-partials 3
           :min-freq 60
           :max-freq 2000
-          :<a href="./pitch_lsp.html#robo375">remove-octaves</a> t)
+          :<a href="./pitch_lsp.html#robo376">remove-octaves</a> t)
 
 =&gt; (64.0 96.0 166.0 198.0 230.0 358.0 427.0 459.0 491.0 555.0 619.0 817.0
     1079.0 1143.0 1340.0 1372.0 1404.0 1666.0 1895.0 1927.0)
 
 ;; Applying ring modulation to two frequencies, returning the results as
-;; note-name symbols within the chromatic <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>.
+;; note-name symbols within the chromatic <a href="./rhythm_lsp.html#robo465">scale</a>.
 (<strong>ring-mod</strong> '261.63 '293.66 
           :return-notes t
           :remove-duplicates nil
-          :<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*)
+          :<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>*)
 
 =&gt; (C1 C2 G3 BF3 E4 B4 CS5 AF5 AF5 CS6 CS6 F6)
 </pre>
@@ -1107,14 +1107,14 @@ COMPLETE-SET: complete: NIL
 <pre class="source">(defun <strong>ring-mod</strong> (pitch1 pitch2 ;; hertz or notes
                  &amp;key (return-notes nil) (pitch1-partials 3) (pitch2-partials 2)
                  (min-freq 20) (max-freq 20000) (round t) (remove-duplicates t)
-                 (print nil) <a href="./pitch_lsp.html#robo375">remove-octaves</a> (<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*))
+                 (print nil) <a href="./pitch_lsp.html#robo376">remove-octaves</a> (<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rhythm_lsp.html#robo465">scale</a>*))
 </pre>
 
 
 <a name="set2dpalette2fring2dmod2dbass"></a>
-<a name="robo682"></a><h2 class=robodoc>set-palette/ring-mod-bass [ Functions ]</h2>
+<a name="robo684"></a><h2 class=robodoc>set-palette/ring-mod-bass [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Using ring-modulation techniques, invent (sensible) bass note(s) from a
  list of frequencies.  
@@ -1128,11 +1128,11 @@ COMPLETE-SET: complete: NIL
  - :bass-octave. An integer that is an octave indicator (e.g. the 4 in
    'C4). The method will only return any frequencies/note-names generated
    that fall in this octave. Default = 0.
- - :low. A note-name symbol that is the <a href="./chord_lsp.html#robo94">lowest</a> possible <a href="./pitch_lsp.html#robo297">pitch</a> of those
+ - :low. A note-name symbol that is the <a href="./event_lsp.html#robo204">lowest</a> possible <a href="./pitch_lsp.html#robo298">pitch</a> of those
    returned. This argument further restricts the :bass-octave argument. Thus
    a :bass-octave value of 1 could be further limited to no pitches below
    :low 'DS1. Default = 'A0.
- - :high. A note-name symbol that is the <a href="./event_lsp.html#robo199">highest</a> possible <a href="./pitch_lsp.html#robo297">pitch</a> of those
+ - :high. A note-name symbol that is the <a href="./chord_lsp.html#robo92">highest</a> possible <a href="./pitch_lsp.html#robo298">pitch</a> of those
    returned. This argument further restricts the :bass-octave argument. Thus
    a :bass-octave value of 1 could be further limted to no pitches above
    :high 'FS1. Default = 'G3.
@@ -1143,11 +1143,11 @@ COMPLETE-SET: complete: NIL
  - :return-notes. T or NIL to indicate whether the resulting pitches should
    be returned as note-names instead of frequencies. T = return as
    note-names. Default = NIL.
- - :<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>. A variable pointing to the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> to which any translation of
+ - :<a href="./rhythm_lsp.html#robo465">scale</a>. A variable pointing to the <a href="./rhythm_lsp.html#robo465">scale</a> to which any translation of
    frequencies into note-names symbols should take place. By default this
-   value is set to <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*, which is automatically set by slippery
+   value is set to <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rhythm_lsp.html#robo465">scale</a>*, which is automatically set by slippery
    chicken to 'quarter-tone at initialisation. To return e.g. pitches rounded
-   to chromatic note-names set this argument to <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*.
+   to chromatic note-names set this argument to <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>*.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns a list of frequencies by default.
@@ -1161,32 +1161,32 @@ COMPLETE-SET: complete: NIL
 
 =&gt; (28 29 32)
 
-;; Return as note-names instead, in quarter-tone <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> by default
+;; Return as note-names instead, in quarter-tone <a href="./rhythm_lsp.html#robo465">scale</a> by default
 (<strong>ring-mod-bass</strong> '(261.63 293.66 329.63 349.23)
                :return-notes t)
 
 =&gt; (A0 BF0 BQS0) 
 
-;; Set the :<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> argument to <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>* to return equal-tempered
+;; Set the :<a href="./rhythm_lsp.html#robo465">scale</a> argument to <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>* to return equal-tempered
 ;; note-name symbols instead
 (<strong>ring-mod-bass</strong> '(261.63 293.66 329.63 349.23)
                :return-notes t
-               :<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*)
+               :<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>*)
 
 =&gt; (A0 BF0 C1)
 
 ;; Return pitches from bass octave 1 rather than default 0
 (<strong>ring-mod-bass</strong> '(261.63 293.66 329.63 349.23 392.00)
                :return-notes t
-               :<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*
+               :<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>*
                :bass-octave 1)
 
 =&gt; (CS1 D1 F1 G1 A1 B1)
 
-;; Further <a href="./tl-set_lsp.html#robo919">limit</a> the notes returned by setting :low and :high values
+;; Further <a href="./tl-set_lsp.html#robo924">limit</a> the notes returned by setting :low and :high values
 (<strong>ring-mod-bass</strong> '(261.63 293.66 329.63 349.23 392.00)
                :return-notes t
-               :<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*
+               :<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>*
                :bass-octave 1
                :low 'e1
                :high 'a1)
@@ -1207,7 +1207,7 @@ COMPLETE-SET: complete: NIL
 
 =&gt;
 NIL
-WARNING: set-<a href="./palette_lsp.html#robo426">palette</a>::ring-mod-bass: can't get bass from (261.63)!
+WARNING: set-<a href="./palette_lsp.html#robo427">palette</a>::ring-mod-bass: can't get bass from (261.63)!
 
 ;; This warning can be suppressed by setting the :warn argument to NIL
 (<strong>ring-mod-bass</strong> '(261.63) :warn nil)
@@ -1216,86 +1216,86 @@ WARNING: set-<a href="./palette_lsp.html#robo426">palette</a>::ring-mod-bass: ca
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>ring-mod-bass</strong> (freqs &amp;key (bass-octave 0) (low 'a0) (high 'g3) (round t)
-                      (warn t) (return-notes nil) (<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*))
+                      (warn t) (return-notes nil) (<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rhythm_lsp.html#robo465">scale</a>*))
 </pre>
 
 
 <a name="set2dpalette2fround2dto2dnearest"></a>
-<a name="robo683"></a><h2 class=robodoc>set-palette/round-to-nearest [ Methods ]</h2>
+<a name="robo685"></a><h2 class=robodoc>set-palette/round-to-nearest [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> January 30th 2017
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Rounds all <a href="./pitch_lsp.html#robo297">pitch</a> objects to the <a href="./utilities_lsp.html#robo981">nearest</a> <a href="./pitch_lsp.html#robo297">pitch</a> in the current or given
- <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>. See also <a href="./sc-set_lsp.html#robo651">sc-set</a>, <a href="./chord_lsp.html#robo634">chord</a>, <a href="./slippery-chicken_lsp.html#robo632">slippery-chicken</a>, <a href="./event_lsp.html#robo449">event</a>, and <a href="./pitch_lsp.html#robo297">pitch</a> class
+<pre> Rounds all <a href="./pitch_lsp.html#robo298">pitch</a> objects to the <a href="./utilities_lsp.html#robo986">nearest</a> <a href="./pitch_lsp.html#robo298">pitch</a> in the current or given
+ <a href="./rhythm_lsp.html#robo465">scale</a>. See also <a href="./sc-set_lsp.html#robo653">sc-set</a>, <a href="./chord_lsp.html#robo636">chord</a>, <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a>, <a href="./event_lsp.html#robo450">event</a>, and <a href="./pitch_lsp.html#robo298">pitch</a> class
  methods.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - a <a href="#robo316">set-palette</a> object
+<pre> - a <a href="#robo317">set-palette</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword argument:
- :<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>. The <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> to use when rounding. (Common Music tuning object or
- symbol). If a symbol, then 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>, 'twelfth-tone, or 'quarter-tone
- only at present. Default is the current <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> as set by (<a href="./cm_lsp.html#robo138">in-scale</a> :...).
+ :<a href="./rhythm_lsp.html#robo465">scale</a>. The <a href="./rhythm_lsp.html#robo465">scale</a> to use when rounding. (Common Music tuning object or
+ symbol). If a symbol, then 'chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>, 'twelfth-tone, or 'quarter-tone
+ only at present. Default is the current <a href="./rhythm_lsp.html#robo465">scale</a> as set by (<a href="./cm_lsp.html#robo138">in-scale</a> :...).
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> the modified <a href="#robo316">set-palette</a>
+<pre> the modified <a href="#robo317">set-palette</a>
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>round-to-nearest</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;key (<a href="./rthm-seq-palette_lsp.html#robo553">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>*))
+<pre class="source">(defmethod <strong>round-to-nearest</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;key (<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rhythm_lsp.html#robo465">scale</a>*))
 </pre>
 
 
 <a name="set2dpalette2fset2dpalette2dfrom2dring2dmod"></a>
-<a name="robo684"></a><h2 class=robodoc>set-palette/set-palette-from-ring-mod [ Functions ]</h2>
+<a name="robo686"></a><h2 class=robodoc>set-palette/set-palette-from-ring-mod [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a new <a href="#robo316">set-palette</a> object from the pitches returned by applying ring 
+<pre> Create a new <a href="#robo317">set-palette</a> object from the pitches returned by applying ring 
  modulation procedures (difference and sum tones of partials).
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A note-name symbol that is the central <a href="./pitch_lsp.html#robo297">pitch</a> from which we perform the
+<pre> - A note-name symbol that is the central <a href="./pitch_lsp.html#robo298">pitch</a> from which we perform the
    ring-modulation.  See :partials below.
- - A symbol that is to be the ID for the new <a href="#robo316">set-palette</a> object.
+ - A symbol that is to be the ID for the new <a href="#robo317">set-palette</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments
  - :partials. A list of integers that are the partials which the method uses
    to ring modulate. We create partials ascending from the reference-note
    but also ascending from a fundamental calculated so that reference-note
-   would be the <a href="./event_lsp.html#robo199">highest</a> partial in the partials list.  E.g. if
+   would be the <a href="./chord_lsp.html#robo92">highest</a> partial in the partials list.  E.g. if
    reference-note were 'a4 (440Hz) and :partials was '(1 2) we'd have
    partial frequencies of 440 and 880, as these are the ascending partials 1
    and 2 from 440, but also have 220, as that is the fundamental for which
-   440 would be the <a href="./event_lsp.html#robo199">highest</a> partial out of (1 2).  Default = '(1 3 5 7).
+   440 would be the <a href="./chord_lsp.html#robo92">highest</a> partial out of (1 2).  Default = '(1 3 5 7).
  - :warn-no-bass. T or NIL to indicate whether to issue a warning when
-   <a href="#robo682">ring-mod-bass</a> fails to find suitable bass notes for the generated sets. 
+   <a href="#robo684">ring-mod-bass</a> fails to find suitable bass notes for the generated sets. 
    T = warn. Default = T.
- - :do-bass. T or NIL to indicate whether to <a href="./recursive-assoc-list_lsp.html#robo411">add</a> notes created by the
-   <a href="#robo682">ring-mod-bass</a> function to the resulting <a href="#robo316">set-palette</a> object. T = create and
-   <a href="./recursive-assoc-list_lsp.html#robo411">add</a> bass notes. Default = T.
- - :<a href="./pitch_lsp.html#robo375">remove-octaves</a>. T or NIL to indicate whether to remove the upper
-   instances of any octave-equivalent pitches from the resulting <a href="#robo316">set-palette</a>
+ - :do-bass. T or NIL to indicate whether to <a href="./rhythm_lsp.html#robo441">add</a> notes created by the
+   <a href="#robo684">ring-mod-bass</a> function to the resulting <a href="#robo317">set-palette</a> object. T = create and
+   <a href="./rhythm_lsp.html#robo441">add</a> bass notes. Default = T.
+ - :<a href="./pitch_lsp.html#robo376">remove-octaves</a>. T or NIL to indicate whether to remove the upper
+   instances of any octave-equivalent pitches from the resulting <a href="#robo317">set-palette</a>
    object. T = remove. Default = NIL.
  - :min-bass-notes. An integer that is the minimum number of bass notes to
-   be generated and added to the resulting <a href="#robo316">set-palette</a> object. Default = 1.
+   be generated and added to the resulting <a href="#robo317">set-palette</a> object. Default = 1.
  - :ring-mod-bass-octave. An integer that is the MIDI octave reference
    number (such as the 4 in 'C4), indicating the octave from which the bass
    note(s) are to be taken.
- - :force-chromatic. T or NIL. If T, force all micro-tone slots of <a href="./pitch_lsp.html#robo297">pitch</a>
+ - :force-chromatic. T or NIL. If T, force all micro-tone slots of <a href="./pitch_lsp.html#robo298">pitch</a>
    objects to be NIL so that they won't be filtered out when a set is to be
-   used by a chromatic <a href="./instrument_lsp.html#robo296">instrument</a>. See <a href="./sc-set_lsp.html#robo651">sc-set</a> class <a href="./sc-set_lsp.html#robo608">force-micro-tone</a> for
+   used by a chromatic <a href="./instrument_lsp.html#robo297">instrument</a>. See <a href="./sc-set_lsp.html#robo653">sc-set</a> class <a href="./sc-set_lsp.html#robo610">force-micro-tone</a> for
    more details. If you want truly chromatic sets make sure to be (<a href="./cm_lsp.html#robo138">in-scale</a>
    :chromatic)  
  - :start-id. An integer which represents the ID number for the first
    set. This will be incremented for each subsequent set generated.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="#robo316">set-palette</a> object.
+<pre> A <a href="#robo317">set-palette</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Simple usage with default keyword argument values
@@ -1310,7 +1310,7 @@ RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       full-ref: NIL
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0
-SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: 21, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo301">sclist</a>-length: 21, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: SPFRM-TEST, tag: NIL, 
 data: (
@@ -1319,7 +1319,7 @@ data: (
 ;;; Use with the :partials argument
 (let ((spfrm2 (<strong>set-palette-from-ring-mod</strong> 'a4 'spfrm-test
                                            :partials '(2 4 6 8))))
-  (loop for cs in (data spfrm2) collect (<a href="./sc-set_lsp.html#robo621">pitch-symbols</a> cs)))
+  (loop for cs in (data spfrm2) collect (<a href="./sc-set_lsp.html#robo623">pitch-symbols</a> cs)))
 
 =&gt; ((BQS0 CS5 E5 GQF5 B5 CS6 DQS6 FQS6 GQF6 AF6 BF6 B6 C7)
     (BQF0 B0 A2 A3 E4 A4 CS5 E5 GQF5)
@@ -1340,11 +1340,11 @@ data: (
     (BQS0 EQF7 FQS7 GQS7 BQF7 C8) (BQS0 A6 CS7 GQF7 A7) (B0 A5 A6)
     (BQS0 CS7 E7 GQF7 B7))
 
-;;; Use with the :do-bass and :<a href="./pitch_lsp.html#robo375">remove-octaves</a> arguments
+;;; Use with the :do-bass and :<a href="./pitch_lsp.html#robo376">remove-octaves</a> arguments
 (let ((spfrm3 (<strong>set-palette-from-ring-mod</strong> 'a4 'spfrm-test
                                          :do-bass nil
-                                         :<a href="./pitch_lsp.html#robo375">remove-octaves</a> t)))
-  (loop for cs in (data spfrm3) collect (<a href="./sc-set_lsp.html#robo621">pitch-symbols</a> cs)))
+                                         :<a href="./pitch_lsp.html#robo376">remove-octaves</a> t)))
+  (loop for cs in (data spfrm3) collect (<a href="./sc-set_lsp.html#robo623">pitch-symbols</a> cs)))
 =&gt; ((BQS1 GQF3 EF4 A4 DQF5) (DQF6 DQS6 EF6 F6 FQS6 GQF6 EQF7 EQS7)
     (BQS2 GQF3 A4 DQF5 F5 GQS5) (BQS6 C7 CQS7 DQF7 D7 DQS7)
     (BQS3 EF4 GQF4 DQF5 F5 GQS5 BF5 CQS6) (FQS7 FS7 GQF7 G7 GQS7)
@@ -1363,7 +1363,7 @@ data: (
                                   ;; the start id for the sets; will be
                                   ;; incremented  
                                   (start-id 1)
-                                  <a href="./pitch_lsp.html#robo375">remove-octaves</a>
+                                  <a href="./pitch_lsp.html#robo376">remove-octaves</a>
                                   force-chromatic
                                   (min-bass-notes 1)
                                   (ring-mod-bass-octave 0)
@@ -1372,25 +1372,25 @@ data: (
 
 
 <a name="set2dpalette2fset2dpalette2dfrom2dspectra"></a>
-<a name="robo685"></a><h2 class=robodoc>set-palette/set-palette-from-spectra [ Functions ]</h2>
+<a name="robo687"></a><h2 class=robodoc>set-palette/set-palette-from-spectra [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> August 24th 2018
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="#robo316">set-palette</a> by analysing a sound file at regular intervals and
+<pre> Create a <a href="#robo317">set-palette</a> by analysing a sound file at regular intervals and
  using the detected frequency components as pitches in a set.
 
  NB CLM is needed for this method.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - the <a href="./sndfile_lsp.html#robo301">sndfile</a> to analyse
+<pre> - the <a href="./sndfile_lsp.html#robo302">sndfile</a> to analyse
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments
- - :id. The ID for the <a href="#robo316">set-palette</a> object to return. If NIL a suitable symbol
-   will be created from the <a href="./sndfile_lsp.html#robo301">sndfile</a> path. Default = NIL.
+ - :id. The ID for the <a href="#robo317">set-palette</a> object to return. If NIL a suitable symbol
+   will be created from the <a href="./sndfile_lsp.html#robo302">sndfile</a> path. Default = NIL.
  - :start. The time in seconds to start the analysis. Default = 0
  - :stop. The time in seconds to stop the analysis. If nil then analysis will
    continue until one millisecond before the end of the sound file. Default =
@@ -1400,30 +1400,30 @@ data: (
  - :min-pitches. The minimum number of pitches a set may contain. Analyses
    returning less than this number of frequencies will be skipped. Default
    = 5.
- - :<a href="./pitch_lsp.html#robo366">pitch-min</a>. The <a href="./chord_lsp.html#robo94">lowest</a> <a href="./pitch_lsp.html#robo297">pitch</a> of any set. Pitch object or symbol. Default
+ - :<a href="./pitch_lsp.html#robo367">pitch-min</a>. The <a href="./event_lsp.html#robo204">lowest</a> <a href="./pitch_lsp.html#robo298">pitch</a> of any set. Pitch object or symbol. Default
    = c1. 
- - :<a href="./pitch_lsp.html#robo364">pitch-max</a>. The <a href="./event_lsp.html#robo199">highest</a> <a href="./pitch_lsp.html#robo297">pitch</a> of any set. Pitch object or symbol. Default
+ - :<a href="./pitch_lsp.html#robo365">pitch-max</a>. The <a href="./chord_lsp.html#robo92">highest</a> <a href="./pitch_lsp.html#robo298">pitch</a> of any set. Pitch object or symbol. Default
    = g7.
- - :round. Round the generated pitches to the <a href="./utilities_lsp.html#robo981">nearest</a> in the current <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>?
+ - :round. Round the generated pitches to the <a href="./utilities_lsp.html#robo986">nearest</a> in the current <a href="./rhythm_lsp.html#robo465">scale</a>?
    Default = NIL.
  - :reject-fun. A function that takes a set as an argument and returns T if
    it should be rejected, or NIL if not. Default = NIL.
  - :warn-dups. T or NIL to warn if duplicate pitches are found when calling
    <a href="./complete-set_lsp.html#robo151">make-complete-set</a>. Default = T. 
  - :gs-keys. Any other keyword arguments to be passed to the <a href="./get-spectrum_lsp.html#robo10">get-spectrum</a>
-   call (get-<a href="./sndfile_lsp.html#robo895">spectrum</a>.lsp). In particular :fftsize will be useful here as
+   call (get-<a href="./sndfile_lsp.html#robo900">spectrum</a>.lsp). In particular :fftsize will be useful here as
    larger windows will result in lower pitches being detected. In any case
    it's worth experimenting with :fftsize. Default: various but :fftsize of
    1024 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> a <a href="#robo316">set-palette</a> object. Each set in the <a href="./palette_lsp.html#robo426">palette</a> has a numerically ascending
+<pre> a <a href="#robo317">set-palette</a> object. Each set in the <a href="./palette_lsp.html#robo427">palette</a> has a numerically ascending
  integer ID, starting from 1.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((sp (<strong>set-palette-from-spectra</strong> 
            (concatenate 'string cl-user::+slippery-chicken-home-dir+ 
-                        "test-suite/test-sndfiles-dir-1/test-<a href="./sndfile_lsp.html#robo301">sndfile</a>-3.aiff"))))
+                        "test-suite/test-sndfiles-dir-1/test-<a href="./sndfile_lsp.html#robo302">sndfile</a>-3.aiff"))))
   (print-simple sp))
 =&gt;
 1: DQS2 E5 DQS6 AQF6 AQS6 B6 CQS7 DQF7 
@@ -1437,15 +1437,15 @@ NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">#+clm 
-(defun <strong>set-palette-from-spectra</strong> (<a href="./sndfile_lsp.html#robo301">sndfile</a>
+(defun <strong>set-palette-from-spectra</strong> (<a href="./sndfile_lsp.html#robo302">sndfile</a>
                                  &amp;key
                                    id
                                    (start 0)
                                    stop
                                    (interval 0.1)
                                    (min-pitches 5)
-                                   (<a href="./pitch_lsp.html#robo366">pitch-min</a> 'c1)
-                                   (<a href="./pitch_lsp.html#robo364">pitch-max</a> 'g7)
+                                   (<a href="./pitch_lsp.html#robo367">pitch-min</a> 'c1)
+                                   (<a href="./pitch_lsp.html#robo365">pitch-max</a> 'g7)
                                    (round t)
                                    reject-fun
                                    (warn-dups t)
@@ -1458,17 +1458,17 @@ NIL
 
 
 <a name="set2dpalette2fset2dpalette2dp"></a>
-<a name="robo686"></a><h2 class=robodoc>set-palette/set-palette-p [ Functions ]</h2>
+<a name="robo688"></a><h2 class=robodoc>set-palette/set-palette-p [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Test whether a given object is a <a href="#robo316">set-palette</a> object.
+<pre> Test whether a given object is a <a href="#robo317">set-palette</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A lisp object
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">(let ((msp (<a href="#robo676">make-set-palette</a> 
+<pre class="source">(let ((msp (<a href="#robo678">make-set-palette</a> 
             'test
             '((1 ((1
                    ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 
@@ -1496,58 +1496,58 @@ NIL
 
 
 <a name="set2dpalette2fstack"></a>
-<a name="robo687"></a><h2 class=robodoc>set-palette/stack [ Methods ]</h2>
+<a name="robo689"></a><h2 class=robodoc>set-palette/stack [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 30th June 2019, Corfu 
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Call the <strong>stack</strong> method for each set in the <a href="./palette_lsp.html#robo426">palette</a>. See the method
- description in the <a href="./sc-set_lsp.html#robo651">sc-set</a> class for details of arguments etc. 
+<pre> Call the <strong>stack</strong> method for each set in the <a href="./palette_lsp.html#robo427">palette</a>. See the method
+ description in the <a href="./sc-set_lsp.html#robo653">sc-set</a> class for details of arguments etc. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> - the <a href="#robo316">set-palette</a> with new stacked sets (<a href="./slippery-chicken_lsp.html#robo800">clone</a> before calling if necessary)
+<pre> - the <a href="#robo317">set-palette</a> with new stacked sets (<a href="./slippery-chicken_lsp.html#robo805">clone</a> before calling if necessary)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>stack</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) num-stacks &amp;key id by-freq (up t) (down t))
+<pre class="source">(defmethod <strong>stack</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) num-stacks &amp;key id by-freq (up t) (down t))
 </pre>
 
 
 <a name="set2dpalette2fthin"></a>
-<a name="robo688"></a><h2 class=robodoc>set-palette/thin [ Methods ]</h2>
+<a name="robo690"></a><h2 class=robodoc>set-palette/thin [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Apply the <strong>thin</strong> method to each set in the <a href="./palette_lsp.html#robo426">palette</a>. See the <a href="./sc-set_lsp.html#robo651">sc-set</a> class
+<pre> Apply the <strong>thin</strong> method to each set in the <a href="./palette_lsp.html#robo427">palette</a>. See the <a href="./sc-set_lsp.html#robo653">sc-set</a> class
  method for details, including keyword arguments.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>thin</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;rest keywords &amp;key &amp;allow-other-keys)
+<pre class="source">(defmethod <strong>thin</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;rest keywords &amp;key &amp;allow-other-keys)
 </pre>
 
 
 <a name="set2dpalette2fwrap"></a>
-<a name="robo689"></a><h2 class=robodoc>set-palette/wrap [ Methods ]</h2>
+<a name="robo691"></a><h2 class=robodoc>set-palette/wrap [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo317">set-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> March 5th 2016, Edinburgh
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Applies the <strong>wrap</strong> method from the <a href="./chord_lsp.html#robo634">chord</a> class to each set in the
- <a href="./palette_lsp.html#robo426">palette</a>. See the <a href="./chord_lsp.html#robo634">chord</a> class method for details.
+<pre> Applies the <strong>wrap</strong> method from the <a href="./chord_lsp.html#robo636">chord</a> class to each set in the
+ <a href="./palette_lsp.html#robo427">palette</a>. See the <a href="./chord_lsp.html#robo636">chord</a> class method for details.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> The <a href="#robo316">set-palette</a> object, wrapped.
+<pre> The <a href="#robo317">set-palette</a> object, wrapped.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>wrap</strong> ((sp set-<a href="./palette_lsp.html#robo426">palette</a>) &amp;optional (num-times 1) (<a href="./rthm-seq-bar_lsp.html#robo530">transpose</a> t))
+<pre class="source">(defmethod <strong>wrap</strong> ((sp set-<a href="./palette_lsp.html#robo427">palette</a>) &amp;optional (num-times 1) (<a href="./chord_lsp.html#robo112">transpose</a> t))
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/set-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-11-13 11:26:17</p>
+<p>Generated from ./../../src/set-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
 </div> <!-- footer -->
 </body>
 </html>

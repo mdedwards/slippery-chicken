@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  23:42:53 Mon Feb  2 2026 CET
+;;; $$ Last modified:  09:43:01 Wed Jun 24 2026 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -428,7 +428,6 @@ results so they are being written to the file
            (loop for e in p collect (nth e list))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Returns a random number below <below> using a fixed seed (so you
 ;;; always get the same result for the same arguments), which is reset if the
 ;;; second arg is t
@@ -602,6 +601,8 @@ results so they are being written to the file
          #+clisp
          #S(RANDOM-STATE
             #*0110011101100001010001011000101100100110001110110111010111110001)
+         ;; MDE Wed Jun 24 09:36:10 2026, Heidhausen 
+         #+ecl #x10efb5000
          #+sbcl
          #S(RANDOM-STATE 
             :STATE #.(MAKE-ARRAY 

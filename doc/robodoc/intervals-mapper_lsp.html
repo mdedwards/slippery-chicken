@@ -34,16 +34,16 @@
 <a name="intervals2dmapper2fget2dpitch2dsymbols"></a>
 <a name="robo272"></a><h2 class=robodoc>intervals-mapper/get-pitch-symbols [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo639">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the pitches contained in a given <a href="#robo639">intervals-mapper</a> object returned as a
+<pre> Get the pitches contained in a given <a href="#robo641">intervals-mapper</a> object returned as a
  list of note-name symbols.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo639">intervals-mapper</a> object.
+<pre> - An <a href="#robo641">intervals-mapper</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of note-name <a href="./pitch_lsp.html#robo297">pitch</a> symbols.
+<pre> A list of note-name <a href="./pitch_lsp.html#robo298">pitch</a> symbols.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((im (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a bf cs d ef gf))))
@@ -61,29 +61,29 @@
 <a name="intervals2dmapper2fget2dscale"></a>
 <a name="robo273"></a><h2 class=robodoc>intervals-mapper/get-scale [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo639">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Create a <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> (sequence of pitches) beginning with the specified starting
- note and extending up to MIDI note 119 (by default: settable in the <a href="./event_lsp.html#robo199">highest</a>
+<pre> Create a <a href="./rhythm_lsp.html#robo465">scale</a> (sequence of pitches) beginning with the specified starting
+ note and extending up to MIDI note 119 (by default: settable in the <a href="./chord_lsp.html#robo92">highest</a>
  slot) by cycling through the interval structure of the STEPS slot.
 
- The <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> will only repeat at octaves if the interval structure of the list
+ The <a href="./rhythm_lsp.html#robo465">scale</a> will only repeat at octaves if the interval structure of the list
  of pitches passed at initialisation creates that result. 
 
  NB: This method is usually only called automatically at initialisation.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - An intervals mapper object.
- - A note-name <a href="./pitch_lsp.html#robo297">pitch</a> symbol (e.g. 'c0) that is the <a href="./pitch_lsp.html#robo297">pitch</a> on which to begin
-   the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>, and which is to be stored in the TONIC slot.
+ - A note-name <a href="./pitch_lsp.html#robo298">pitch</a> symbol (e.g. 'c0) that is the <a href="./pitch_lsp.html#robo298">pitch</a> on which to begin
+   the <a href="./rhythm_lsp.html#robo465">scale</a>, and which is to be stored in the TONIC slot.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of the <a href="./pitch_lsp.html#robo297">pitch</a> objects in the new <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>. These are also stored in the
+<pre> A list of the <a href="./pitch_lsp.html#robo298">pitch</a> objects in the new <a href="./rhythm_lsp.html#robo465">scale</a>. These are also stored in the
  SCALE-PITCHES slot. 
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((im (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a bf cs d ef gf))))
-  (<a href="./pitch_lsp.html#robo362">pitch-list-to-symbols</a> (<strong>get-scale</strong> im 'd4)))
+  (<a href="./pitch_lsp.html#robo363">pitch-list-to-symbols</a> (<strong>get-scale</strong> im 'd4)))
 
 =&gt; (D4 E4 AF4 BF4 D5 EF5 G5 A5 BF5 CS6 D6 EF6 FS6 AF6 C7 D7 FS7 G7 B7 CS8 D8 F8
     FS8 G8 BF8 C9 E9 FS9)
@@ -96,19 +96,19 @@
 <a name="intervals2dmapper2fget2dsteps"></a>
 <a name="robo274"></a><h2 class=robodoc>intervals-mapper/get-steps [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo639">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Extract the interval structure of the list of note-name <a href="./pitch_lsp.html#robo297">pitch</a> symbols
- passed as the data to the instance of the <a href="#robo639">intervals-mapper</a> object upon
+<pre> Extract the interval structure of the list of note-name <a href="./pitch_lsp.html#robo298">pitch</a> symbols
+ passed as the data to the instance of the <a href="#robo641">intervals-mapper</a> object upon
  initialization. The interval structure is returned as a list of semitone
  values. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo639">intervals-mapper</a> object.
+<pre> - An <a href="#robo641">intervals-mapper</a> object.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A list of integers that are the numbers of <a href="./utilities_lsp.html#robo1019">semitones</a> <a href="./utilities_lsp.html#robo934">between</a> each
- consecutive <a href="./pitch_lsp.html#robo297">pitch</a> in the original data list.
+<pre> A list of integers that are the numbers of <a href="./utilities_lsp.html#robo1026">semitones</a> <a href="./utilities_lsp.html#robo939">between</a> each
+ consecutive <a href="./pitch_lsp.html#robo298">pitch</a> in the original data list.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">(let ((im (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a bf cs d ef gf))))
@@ -124,75 +124,75 @@
 <a name="intervals2dmapper2fintervals2dmapper2ddegree"></a>
 <a name="robo275"></a><h2 class=robodoc>intervals-mapper/intervals-mapper-degree [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo639">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DATE</p>
 <pre> 14-Aug-2010
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Return the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> degree number of a specified <a href="./pitch_lsp.html#robo297">pitch</a> class in relation to a
- specified octave within the given <a href="#robo639">intervals-mapper</a> object.
+<pre> Return the <a href="./rhythm_lsp.html#robo465">scale</a> degree number of a specified <a href="./pitch_lsp.html#robo298">pitch</a> class in relation to a
+ specified octave within the given <a href="#robo641">intervals-mapper</a> object.
 
- To determine the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> degree number, this method begins at the first <a href="./pitch_lsp.html#robo297">pitch</a>
+ To determine the <a href="./rhythm_lsp.html#robo465">scale</a> degree number, this method begins at the first <a href="./pitch_lsp.html#robo298">pitch</a>
  &gt;= C in the specified octave and passes consecutively through each
- subsequent <a href="./pitch_lsp.html#robo297">pitch</a> in the interval-mapper object's full <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>, counting each
- step until it first encounters the <a href="./pitch_lsp.html#robo297">pitch</a> class of the specified <a href="./pitch_lsp.html#robo297">pitch</a>.
+ subsequent <a href="./pitch_lsp.html#robo298">pitch</a> in the interval-mapper object's full <a href="./rhythm_lsp.html#robo465">scale</a>, counting each
+ step until it first encounters the <a href="./pitch_lsp.html#robo298">pitch</a> class of the specified <a href="./pitch_lsp.html#robo298">pitch</a>.
 
- If there are no more instances of the specified <a href="./pitch_lsp.html#robo297">pitch</a> class, the method
+ If there are no more instances of the specified <a href="./pitch_lsp.html#robo298">pitch</a> class, the method
  returns NIL.
 
- The method takes as its <a href="./pitch_lsp.html#robo297">pitch</a> class a <a href="./pitch_lsp.html#robo297">pitch</a> object, which includes an
- octave indicator. For the purposes of this method, solely the <a href="./pitch_lsp.html#robo297">pitch</a>-class
- name is extracted from the <a href="./pitch_lsp.html#robo297">pitch</a> object.
+ The method takes as its <a href="./pitch_lsp.html#robo298">pitch</a> class a <a href="./pitch_lsp.html#robo298">pitch</a> object, which includes an
+ octave indicator. For the purposes of this method, solely the <a href="./pitch_lsp.html#robo298">pitch</a>-class
+ name is extracted from the <a href="./pitch_lsp.html#robo298">pitch</a> object.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo639">intervals-mapper</a> object.
- - An instance of a <a href="./pitch_lsp.html#robo297">pitch</a> object whose <a href="./pitch_lsp.html#robo297">pitch</a> class is being sought.
- - An integer that is the octave in relationship to which the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> degree
+<pre> - An <a href="#robo641">intervals-mapper</a> object.
+ - An instance of a <a href="./pitch_lsp.html#robo298">pitch</a> object whose <a href="./pitch_lsp.html#robo298">pitch</a> class is being sought.
+ - An integer that is the octave in relationship to which the <a href="./rhythm_lsp.html#robo465">scale</a> degree
    is sought.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indication whether to return the position of the found <a href="./pitch_lsp.html#robo297">pitch</a>
-   object within the complete <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> list of the given <a href="#robo639">intervals-mapper</a>
-   object rather than the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> degree. T = return the position. 
+<pre> - T or NIL to indication whether to return the position of the found <a href="./pitch_lsp.html#robo298">pitch</a>
+   object within the complete <a href="./rhythm_lsp.html#robo465">scale</a> list of the given <a href="#robo641">intervals-mapper</a>
+   object rather than the <a href="./rhythm_lsp.html#robo465">scale</a> degree. T = return the position. 
    Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> Returns an integer that is either the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> degree of the specified <a href="./pitch_lsp.html#robo297">pitch</a>
+<pre> Returns an integer that is either the <a href="./rhythm_lsp.html#robo465">scale</a> degree of the specified <a href="./pitch_lsp.html#robo298">pitch</a>
  class in relation to the specified octave, counting from 1, or the position
- of the found <a href="./pitch_lsp.html#robo297">pitch</a> object within the interval-mapper object's complete
- <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>. 
+ of the found <a href="./pitch_lsp.html#robo298">pitch</a> object within the interval-mapper object's complete
+ <a href="./rhythm_lsp.html#robo465">scale</a>. 
 
- Returns NIL if no instances of the specified <a href="./pitch_lsp.html#robo297">pitch</a> class are found.
+ Returns NIL if no instances of the specified <a href="./pitch_lsp.html#robo298">pitch</a> class are found.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; The desired <a href="./pitch_lsp.html#robo297">pitch</a> class BF is found within the specified octave
+<pre class="source">;;; The desired <a href="./pitch_lsp.html#robo298">pitch</a> class BF is found within the specified octave
 (let ((im (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a bf cs d ef gf))))
-  (<strong>intervals-mapper-degree</strong> im (<a href="./pitch_lsp.html#robo350">make-pitch</a> 'bf4) 4))
+  (<strong>intervals-mapper-degree</strong> im (<a href="./pitch_lsp.html#robo351">make-pitch</a> 'bf4) 4))
 
 =&gt; 6
 
-;;; The desired <a href="./pitch_lsp.html#robo297">pitch</a> class B is found outside of the specified octave
+;;; The desired <a href="./pitch_lsp.html#robo298">pitch</a> class B is found outside of the specified octave
 (let ((im (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a bf cs d ef gf))))
-  (<strong>intervals-mapper-degree</strong> im (<a href="./pitch_lsp.html#robo350">make-pitch</a> 'b4) 5))
+  (<strong>intervals-mapper-degree</strong> im (<a href="./pitch_lsp.html#robo351">make-pitch</a> 'b4) 5))
 
 =&gt; 20
 
 ;;; Return the position instead
 (let ((im (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a bf cs d ef gf))))
-  (<strong>intervals-mapper-degree</strong> im (<a href="./pitch_lsp.html#robo350">make-pitch</a> 'b4) 5 t))
+  (<strong>intervals-mapper-degree</strong> im (<a href="./pitch_lsp.html#robo351">make-pitch</a> 'b4) 5 t))
 
 =&gt; 45
 
-;;; The desired <a href="./pitch_lsp.html#robo297">pitch</a> class BF is not present in any of the octaves beginning
+;;; The desired <a href="./pitch_lsp.html#robo298">pitch</a> class BF is not present in any of the octaves beginning
 ;;; including and above the specified octave
 
 (let ((im (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a bf cs d ef gf))))
-  (<strong>intervals-mapper-degree</strong> im (<a href="./pitch_lsp.html#robo350">make-pitch</a> 'bf4) 5))
+  (<strong>intervals-mapper-degree</strong> im (<a href="./pitch_lsp.html#robo351">make-pitch</a> 'bf4) 5))
 
 =&gt; NIL
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>intervals-mapper-degree</strong> ((im intervals-mapper) <a href="./pitch_lsp.html#robo297">pitch</a> octave
+<pre class="source">(defmethod <strong>intervals-mapper-degree</strong> ((im intervals-mapper) <a href="./pitch_lsp.html#robo298">pitch</a> octave
                                     &amp;optional return-nth)
 </pre>
 
@@ -200,60 +200,60 @@
 <a name="intervals2dmapper2fintervals2dmapper2dnote"></a>
 <a name="robo276"></a><h2 class=robodoc>intervals-mapper/intervals-mapper-note [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo639">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">intervals-mapper</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the <a href="./pitch_lsp.html#robo297">pitch</a> object that constitutes the specified <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> degree of the
- specified octave within an <a href="#robo639">intervals-mapper</a> object; or, if keyword argument
- &lt;nth&gt; is set to T, get the position of this <a href="./pitch_lsp.html#robo297">pitch</a> object within the full
- range of the <a href="#robo639">intervals-mapper</a> object's complete <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>.
+<pre> Get the <a href="./pitch_lsp.html#robo298">pitch</a> object that constitutes the specified <a href="./rhythm_lsp.html#robo465">scale</a> degree of the
+ specified octave within an <a href="#robo641">intervals-mapper</a> object; or, if keyword argument
+ &lt;nth&gt; is set to T, get the position of this <a href="./pitch_lsp.html#robo298">pitch</a> object within the full
+ range of the <a href="#robo641">intervals-mapper</a> object's complete <a href="./rhythm_lsp.html#robo465">scale</a>.
 
  As there is no concept of a tonic that repeats at octaves, degree 1 in any
  given octave is simply the first note &gt;= the C in that octave.  
 
- If a note-name <a href="./pitch_lsp.html#robo297">pitch</a> symbol is given for the keyword argument &lt;tonic&gt;, the
- given <a href="#robo639">intervals-mapper</a> object's TONIC slot will be changed, and its
- <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>-pitches will be recalculated accordingly before getting the <a href="./pitch_lsp.html#robo297">pitch</a>.
+ If a note-name <a href="./pitch_lsp.html#robo298">pitch</a> symbol is given for the keyword argument &lt;tonic&gt;, the
+ given <a href="#robo641">intervals-mapper</a> object's TONIC slot will be changed, and its
+ <a href="./rhythm_lsp.html#robo465">scale</a>-pitches will be recalculated accordingly before getting the <a href="./pitch_lsp.html#robo298">pitch</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - An <a href="#robo639">intervals-mapper</a> object.
- - An integer that is the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> degree (1-based) of the desired <a href="./pitch_lsp.html#robo297">pitch</a> within
-   the specified octave, counting from the first note of the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> above or
+<pre> - An <a href="#robo641">intervals-mapper</a> object.
+ - An integer that is the <a href="./rhythm_lsp.html#robo465">scale</a> degree (1-based) of the desired <a href="./pitch_lsp.html#robo298">pitch</a> within
+   the specified octave, counting from the first note of the <a href="./rhythm_lsp.html#robo465">scale</a> above or
    on the C in that octave. If this number is higher than the number of
-   pitches in the span of an octave, a <a href="./pitch_lsp.html#robo297">pitch</a> from a higher octave will
+   pitches in the span of an octave, a <a href="./pitch_lsp.html#robo298">pitch</a> from a higher octave will
    accordingly be returned. Similarly, a negative number can also be given
-   here to indicate that the <a href="./pitch_lsp.html#robo297">pitch</a> is to be collected from that many degrees
+   here to indicate that the <a href="./pitch_lsp.html#robo298">pitch</a> is to be collected from that many degrees
    below the specified octave.
- - An integer that indicates the octave from which the <a href="./pitch_lsp.html#robo297">pitch</a> is to be
-   returned (e.g. 4 for the octave starting on <a href="./utilities_lsp.html#robo976">middle</a> C, 5 for the octave
+ - An integer that indicates the octave from which the <a href="./pitch_lsp.html#robo298">pitch</a> is to be
+   returned (e.g. 4 for the octave starting on <a href="./utilities_lsp.html#robo981">middle</a> C, 5 for the octave
    starting on the C above that etc.)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments
- - :tonic. NIL or a note-name <a href="./pitch_lsp.html#robo297">pitch</a> symbol that is the new starting note for
-   above which the <a href="#robo639">intervals-mapper</a> <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> is to be re-mapped before the
-   <a href="./pitch_lsp.html#robo297">pitch</a> is returned. This will usually be the <a href="./chord_lsp.html#robo94">lowest</a> <a href="./pitch_lsp.html#robo297">pitch</a> on which the
-   <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> should start. If NIL, no changes will be made to the object's
-   existing <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> pitches before returning the desired <a href="./pitch_lsp.html#robo297">pitch</a>. Default = NIL.
- - :nth. T or NIL to indicate whether instead of returning the <a href="./pitch_lsp.html#robo297">pitch</a> object
+ - :tonic. NIL or a note-name <a href="./pitch_lsp.html#robo298">pitch</a> symbol that is the new starting note for
+   above which the <a href="#robo641">intervals-mapper</a> <a href="./rhythm_lsp.html#robo465">scale</a> is to be re-mapped before the
+   <a href="./pitch_lsp.html#robo298">pitch</a> is returned. This will usually be the <a href="./event_lsp.html#robo204">lowest</a> <a href="./pitch_lsp.html#robo298">pitch</a> on which the
+   <a href="./rhythm_lsp.html#robo465">scale</a> should start. If NIL, no changes will be made to the object's
+   existing <a href="./rhythm_lsp.html#robo465">scale</a> pitches before returning the desired <a href="./pitch_lsp.html#robo298">pitch</a>. Default = NIL.
+ - :nth. T or NIL to indicate whether instead of returning the <a href="./pitch_lsp.html#robo298">pitch</a> object
    itself, the method should return an integer that is the position of that
-   <a href="./pitch_lsp.html#robo297">pitch</a> within the full span of the interval-mapper object's complete
-   <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>. T = return the position. Default = NIL.
+   <a href="./pitch_lsp.html#robo298">pitch</a> within the full span of the interval-mapper object's complete
+   <a href="./rhythm_lsp.html#robo465">scale</a>. T = return the position. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> A <a href="./pitch_lsp.html#robo297">pitch</a> object by default, or its position in the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> list if the :nth
+<pre> A <a href="./pitch_lsp.html#robo298">pitch</a> object by default, or its position in the <a href="./rhythm_lsp.html#robo465">scale</a> list if the :nth
  argument is set to T.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Returns a <a href="./pitch_lsp.html#robo297">pitch</a> object by default
+<pre class="source">;;; Returns a <a href="./pitch_lsp.html#robo298">pitch</a> object by default
 (let ((im (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a bf cs d ef gf))))
   (<strong>intervals-mapper-note</strong> im 3 4))
 
 =&gt; 
 PITCH: frequency: 329.628, midi-note: 64, midi-channel: 0 
-       <a href="./pitch_lsp.html#robo297">pitch</a>-bend: 0.0 
+       <a href="./pitch_lsp.html#robo298">pitch</a>-bend: 0.0 
        degree: 128, data-consistent: T, white-note: E4
-       <a href="./utilities_lsp.html#robo981">nearest</a>-chromatic: E4
-       src: 1.2599211, src-ref-<a href="./pitch_lsp.html#robo297">pitch</a>: C4, score-note: E4 
+       <a href="./utilities_lsp.html#robo986">nearest</a>-chromatic: E4
+       src: 1.2599211, src-ref-<a href="./pitch_lsp.html#robo298">pitch</a>: C4, score-note: E4 
        qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
        micro-tone: NIL, 
        sharp: NIL, flat: NIL, natural: T, 
@@ -286,70 +286,70 @@ data: E4
 <a name="intervals2dmapper2fmake2dintervals2dmapper"></a>
 <a name="robo277"></a><h2 class=robodoc>intervals-mapper/make-intervals-mapper [ Functions ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo639">intervals-mapper</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo641">intervals-mapper</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Returns an <a href="#robo639">intervals-mapper</a> object starting with the specified <a href="./pitch_lsp.html#robo297">pitch</a>
+<pre> Returns an <a href="#robo641">intervals-mapper</a> object starting with the specified <a href="./pitch_lsp.html#robo298">pitch</a>
  ('tonic') and using the interval structure of the specified list of
- pitches, creating a complete <a href="./pitch_lsp.html#robo297">pitch</a> list from the interval structure of list
+ pitches, creating a complete <a href="./pitch_lsp.html#robo298">pitch</a> list from the interval structure of list
  of pitches.
 
  NB The pitches specified aren't necessarily used in the resulting complete
-    <a href="./pitch_lsp.html#robo297">pitch</a> list; rather, their interval structure is mapped above the
-    specified starting <a href="./pitch_lsp.html#robo297">pitch</a> and repeated upwards until the method reaches
+    <a href="./pitch_lsp.html#robo298">pitch</a> list; rather, their interval structure is mapped above the
+    specified starting <a href="./pitch_lsp.html#robo298">pitch</a> and repeated upwards until the method reaches
     MIDI note 127. 
 
- NB The <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> will only repeat at octaves if that is the interval structure
+ NB The <a href="./rhythm_lsp.html#robo465">scale</a> will only repeat at octaves if that is the interval structure
     of the list of pitches it is passed.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre> - A note-name <a href="./pitch_lsp.html#robo297">pitch</a> symbol that is the starting <a href="./pitch_lsp.html#robo297">pitch</a>, (e.g. 'c0).
- - A list of note-name <a href="./pitch_lsp.html#robo297">pitch</a> symbols that provides the interval structure
-   for the resulting <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>.
+<pre> - A note-name <a href="./pitch_lsp.html#robo298">pitch</a> symbol that is the starting <a href="./pitch_lsp.html#robo298">pitch</a>, (e.g. 'c0).
+ - A list of note-name <a href="./pitch_lsp.html#robo298">pitch</a> symbols that provides the interval structure
+   for the resulting <a href="./rhythm_lsp.html#robo465">scale</a>.
 </pre>
 <p class="item_name">RETURN VALUE</p>
-<pre> An <a href="#robo639">intervals-mapper</a> object.
+<pre> An <a href="#robo641">intervals-mapper</a> object.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; A <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> without repeating octaves:
+<pre class="source">;;; A <a href="./rhythm_lsp.html#robo465">scale</a> without repeating octaves:
 (<strong>make-intervals-mapper</strong> 'c0 '(d e gs as d ef g a bf cs d ef gf))
 
 =&gt; 
 INTERVALS-MAPPER: steps: (2 4 2 4 1 4 2 1 3 1 1 3), 
-<a href="./rthm-seq-palette_lsp.html#robo553">scale</a>-pitches (<a href="./pitch_lsp.html#robo297">pitch</a> objects): (C0 D0 FS0 AF0 C1 CS1 F1 G1 AF1 B1 C2 CS2 E2 FS2
+<a href="./rhythm_lsp.html#robo465">scale</a>-pitches (<a href="./pitch_lsp.html#robo298">pitch</a> objects): (C0 D0 FS0 AF0 C1 CS1 F1 G1 AF1 B1 C2 CS2 E2 FS2
                                 BF2 C3 E3 F3 A3 B3 C4 EF4 E4 F4 AF4 BF4 D5 E5
                                 AF5 A5 CS6 EF6 E6 G6 AF6 A6 C7 D7 FS7 AF7 C8
                                 CS8 F8 G8 AF8 B8 C9 CS9 E9 FS9)
 tonic: C0
-SCLIST: <a href="./sclist_lsp.html#robo300">sclist</a>-length: -1, bounds-alert: T, copy: T
+SCLIST: <a href="./sclist_lsp.html#robo301">sclist</a>-length: -1, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (D E GS AS D EF G A BF CS D EF GF)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defun <strong>make-intervals-mapper</strong> (tonic notes &amp;optional (<a href="./event_lsp.html#robo199">highest</a> 119))
+<pre class="source">(defun <strong>make-intervals-mapper</strong> (tonic notes &amp;optional (<a href="./chord_lsp.html#robo92">highest</a> 119))
 </pre>
 
 
 <a name="sclist2fintervals2dmapper"></a>
-<a name="robo639"></a><h2 class=robodoc>sclist/intervals-mapper [ Classes ]</h2>
+<a name="robo641"></a><h2 class=robodoc>sclist/intervals-mapper [ Classes ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo300">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./sclist_lsp.html#robo301">sclist</a> ] [ <a href="./robo_classes.html#robo_top_of_doc">Classes</a> ]</p>
 <p class="item_name">NAME</p>
 <pre> <strong>intervals-mapper</strong>
 
  File:             <a href="#robo_top_of_doc">intervals-mapper.lsp</a>
 
- Class Hierarchy:  <a href="./named-object_lsp.html#robo631">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo311">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo300">sclist</a> -&gt;
+ Class Hierarchy:  <a href="./named-object_lsp.html#robo633">named-object</a> -&gt; <a href="./linked-named-object_lsp.html#robo312">linked-named-object</a> -&gt; <a href="./sclist_lsp.html#robo301">sclist</a> -&gt;
                    <strong>intervals-mapper</strong>  
 
  Version:          1.1.0
 
  Project:          slippery chicken (algorithmic composition)
 
- Purpose:          Implementation of a <a href="./rthm-seq-palette_lsp.html#robo553">scale</a> object that can initialize its
-                   complete <a href="./pitch_lsp.html#robo297">pitch</a> list from the interval structure of a
-                   given list of notes.  Given the <a href="./rthm-seq-palette_lsp.html#robo553">scale</a>, it's a cinch to
-                   <a href="./wolfram_lsp.html#robo1038">generate</a> note sequences based on note offset patterns
+ Purpose:          Implementation of a <a href="./rhythm_lsp.html#robo465">scale</a> object that can initialize its
+                   complete <a href="./pitch_lsp.html#robo298">pitch</a> list from the interval structure of a
+                   given list of notes.  Given the <a href="./rhythm_lsp.html#robo465">scale</a>, it's a cinch to
+                   <a href="./wolfram_lsp.html#robo1045">generate</a> note sequences based on note offset patterns
                    e.g.
                    (let ((s (<a href="#robo277">make-intervals-mapper</a> 'c0 '(d e gs as d ef g a 
                                            bf cs d ef gf)))
@@ -362,7 +362,7 @@ data: (D E GS AS D EF G A BF CS D EF GF)
 
  Creation date:    August 3rd 2010 Edinburgh
 
- $$ Last modified:  20:38:22 Mon Aug 19 2024 CEST
+ $$ Last modified:  16:31:36 Sat Jan 10 2026 CET
 
 
  SVN ID: $Id$
@@ -370,7 +370,7 @@ data: (D E GS AS D EF G A BF CS D EF GF)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/intervals-mapper.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2025-11-13 11:26:17</p>
+<p>Generated from ./../../src/intervals-mapper.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
 </div> <!-- footer -->
 </body>
 </html>

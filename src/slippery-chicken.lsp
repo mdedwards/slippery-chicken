@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:44:36 Mon Feb  2 2026 CET
+;;; $$ Last modified:  19:53:04 Wed Feb  4 2026 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -600,8 +600,8 @@
           (slot-value no 'pitch-seq-map) (clone (pitch-seq-map sc))
           (slot-value no 'set-palette) (clone (set-palette sc))
           (slot-value no 'set-map) (clone (set-map sc))
-          (slot-value no 'set-map-replacements)
           (slot-value no 'fast-leap-threshold) (fast-leap-threshold sc)
+          (slot-value no 'set-map-replacements)
           (my-copy-list (set-map-replacements sc))
           (slot-value no 'hint-pitches) (clone (hint-pitches sc))
           (slot-value no 'instrument-palette) (clone (instrument-palette sc))

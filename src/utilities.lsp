@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:02:35 Wed Jun 24 2026 CEST
+;;; $$ Last modified:  13:38:46 Fri Jul 10 2026 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -745,11 +745,56 @@
 (defun prime (val)
   ;;; ****
   (or (= val 2)
-      (and (oddp val)
+      (and (> val 1)
+           (oddp val)
            (do ((i 3 (+ i 2))
                 (lim (sqrt val)))
                ((or (= 0 (mod val i)) (> i lim))
                 (> i lim))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/nearest-prime
+;;; DATE
+;;; 10th July 2026
+;;; 
+;;; DESCRIPTION
+;;; Return the prime number nearest to the first argument.
+;;; 
+;;; ARGUMENTS
+;;; - the integer (> 1) from which to start searching
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - whether to return prime numbers > the first argument. Default = T.
+;;; - whether to return prime numbers < the first argument. Default = T.
+;;; 
+;;; RETURN VALUE
+;;; the prime number nearest (ingeger > 1) to the first argument. If by default
+;;; the two optional arguments are T, then the nearest > and < the first argument
+;;; will be compared to return the closest. Otherwise if one or the other is T,
+;;; then only prime numbers > or < the first argument will be returned. It is an
+;;; error to pass NIL and arguments 2 and 3
+;;; 
+;;; SYNOPSIS
+(defun nearest-prime (near &optional (above t) (below t))
+;;; ****
+  (flet ((do-it (inc)
+           (loop with i = near repeat 1000 do
+             (when (prime i)
+               (return i))
+             (incf i inc))))
+    (unless (or above below)
+      (error "utilities::nearest-prime: one of the 2nd or 3rd arguments ~
+              should be T"))
+    (let ((up (when above (do-it 1)))
+          (down (when below (do-it -1))))
+      (cond 
+        ((and up down) (if (> (- near down)
+                              (- up near))
+                         up down))
+        ((and up above) up)
+        ((and down below) down)
+        (t (error "utilities::nearest-prime: can't get the nearest prime ~
+                   number to ~a" near))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/get-primes
@@ -777,7 +822,10 @@
 |#
 ;;; SYNOPSIS
 (defun get-primes (min max &optional num)
-;;; ****  
+;;; ****
+  (when (or (< min 0) (< max 0))
+    (error "utilities::get-primes: this function doesn't handle negative ~
+            prime numbers, ~%rather only the standard primes > 1"))
   (let ((result '()))
     (loop with count = 0 for i from min to max
           do

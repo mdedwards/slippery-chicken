@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:38:46 Fri Jul 10 2026 CEST
+;;; $$ Last modified:  17:30:39 Fri Jul 10 2026 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -7061,7 +7061,7 @@ yes_foo, 1 2 3 4;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 22 19:08:57 2025, Heidhausen -- for use in sc-combine
-;;; in a 2d arraym return the last column number (0-based) that has a non-nil
+;;; in a 2d array return the last column number (0-based) that has a non-nil
 ;;; value 
 (defun get-2d-array-last-non-nil-col (array)
   (let* ((dims (array-dimensions array))
@@ -7132,6 +7132,56 @@ yes_foo, 1 2 3 4;
                   (if (stringp old)
                     (string= x y)
                     (equal x y)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/wide-steps
+;;; DATE
+;;; 10th July 2026
+;;; 
+;;; DESCRIPTION
+;;; Sample elements of a list at wide intervals, rotating as necessary.
+;;; 
+;;; ARGUMENTS
+;;; - The list to sample
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - The number of steps in a rotation cycle i.e. the number of points in the
+;;; list we'll sample in each rotation.
+;;; 
+;;; RETURN VALUE
+;;; A new list.
+;;; 
+;;; EXAMPLE
+#|
+(wide-steps (loop for i from 1 to 32 collect i) 6) -->
+(1 5 11 17 23 29 2 6 12 18 24 30 3 7 13 19 25 31 4 8 14 20 26 32 9 15 21 27 10
+ 16 22 28)
+
+(wide-steps (loop for i from 1 to 7 collect i)) --> (1 3 2 4 5 6 7)
+|#
+;;; SYNOPSIS
+(defun wide-steps (list &optional (num-steps 2))
+;;; ****
+  (let* ((len (length list))
+         (step (floor len num-steps))
+         (positions (cons 0 (loop for s from step
+                                  for p = (nearest-prime (1+ s))
+                                  repeat (1- num-steps)
+                                  collect (1- p)
+                                  do (incf s step))))
+         (result '())
+         diff)
+    (setq positions (remove-duplicates positions))
+    (flet ((do-it (pos)
+             (pushnew (nth (mod pos len) list) result)))
+      (loop while (< (length result) len) do
+        (loop for pos in positions and i from 0 do
+          (do-it pos)
+          (incf (nth i positions))))
+      (when (setq diff (set-difference list result))
+        (error "utilities::wide-steps: set-difference is ~a instead of NIL"
+               diff))
+      (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:38:18 Mon Jun 29 2026 CEST
+;;; $$ Last modified:  17:26:44 Fri Jul 10 2026 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -17470,6 +17470,17 @@ est)")))
     (equalp (print (min-delta '(1 5 7 11 21 10 7 24 20 26 30 31) 4))
             '(5 11 21 10 24 20 26 30))
     ))
+
+;;; MDE Fri Jul 10 17:26:42 2026, Heidhausen
+(sc-deftest test-utilities-wide-steps ()
+  (let ((l1 (loop for i from 1 to 32 collect i))
+        (l2 (loop for i from 1 to 7 collect i)))
+    (sc-test-check
+      (equalp (wide-steps l1 6)
+              '(1 5 11 17 23 29 2 6 12 18 24 30 3 7 13 19 25 31 4 8 14 20 26 32
+                9 15 21 27 10 16 22 28))
+      (equalp (wide-steps l2)
+              '(1 3 2 4 5 6 7)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May  8 21:14:56 2012 -- other random tests

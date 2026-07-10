@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:55:21 Wed Jun 24 2026 CEST
+;;; $$ Last modified:  19:38:18 Mon Jun 29 2026 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -21237,13 +21237,13 @@ est)")))
       ;; Check variables bound in multiple-value-bind
       (every #'equal-within-tolerance x
              '(0.0 0.0 25 0.68301266 50.0 1.0 75 0.65328145
-	       100.0 8.6595606e-17))
+               100.0 8.6595606e-17))
       (every #'equal-within-tolerance y
              '(0.0 0.8660254 25 0.68301266 50.0 6.123234e-17 75
-	       -0.65328145 100.0 -0.70710677))
+               -0.65328145 100.0 -0.70710677))
       (every #'equal-within-tolerance z
              '(0.0 0.5 25 0.25881904 50.0 0.0 75 0.38268343
-	       100.0 0.70710677)))))
+               100.0 0.70710677)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 20 12:10:05 2021, Heidhausen -- an example from Simon Bahr that

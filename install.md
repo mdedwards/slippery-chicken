@@ -7,7 +7,7 @@ Quicklisp local-projects directory, then:
 
 ```shell
 # in your Quicklisp standard directory
-git clone https://github.com/ormf/cm.git
+git clone https://codeberg.org/ormf/cm.git
 git clone https://github.com/mdedwards/slippery-chicken.git
 ```
 
@@ -88,12 +88,12 @@ Let's begin:
 #### Common Music (required)
 
 Download the CM-sources from
-[https://github.com/ormf/cm](https://github.com/ormf/cm) and put them in your
+[https://codeberg.org/ormf/cm](https://codeberg.org/ormf/cm) and put them in your
 ASDF/Quicklisp directory, or if you're comfortable working with a (UNIX) terminal:
 
 ```shell
 # in your ASDF/Quicklisp standard directory
-git clone https://github.com/ormf/cm.git
+git clone https://codeberg.org/ormf/cm.git
 ```
 
 
@@ -297,12 +297,12 @@ slippery chicken to work. As slippery chicken is written in Common Lisp (CL), we
 need a CL version of CM, which is provided by Orm Finnendahl. 
 
 Download the CM-sources from
-[https://github.com/ormf/cm](https://github.com/ormf/cm) and put them in your
+[https://codeberg.org/ormf/cm](https://codeberg.org/ormf/cm) and put them in your
 ASDF/Quicklisp directory, or use the terminal:
 
 ```shell
 # in your ASDF/Quicklisp standard directory
-git clone https://github.com/ormf/cm.git
+git clone https://codeberg.org/ormf/cm.git
 ```
 
 

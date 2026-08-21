@@ -323,7 +323,7 @@
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((sax (1 1 1 1 1))))
                         (2 ((sax (1 1 1 1 1))))
                         (3 ((sax (1 1 1 1 1))))))))
-  (<strong>check-beams</strong> (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 1 'sax)))
+  (<strong>check-beams</strong> (<a href="./section_lsp.html#robo660">get-bar</a> mini 1 'sax)))
 
 =&gt; T
 
@@ -343,8 +343,8 @@
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((sax (1 1 1 1 1))))
                         (2 ((sax (1 1 1 1 1))))
                         (3 ((sax (1 1 1 1 1))))))))
-  (setf (beam (nth 1 (rhythms (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 1 'sax)))) 1)
-  (<strong>check-beams</strong> (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 1 'sax)))
+  (setf (beam (nth 1 (rhythms (<a href="./section_lsp.html#robo660">get-bar</a> mini 1 'sax)))) 1)
+  (<strong>check-beams</strong> (<a href="./section_lsp.html#robo660">get-bar</a> mini 1 'sax)))
 
 =&gt; NIL
 </pre>
@@ -632,9 +632,9 @@
         :<a href="./rthm-seq-palette_lsp.html#robo316">rthm-seq-palette</a> '((1 ((((4 4) e +e +e +e e +s +s +s e.))
                                 :<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> ((1 2 3)))))
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((vn (1 1 1))))))))
-  (print-simple (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2 'vn))
-  (<strong>consolidate-notes</strong> (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2 'vn))
-  (print-simple (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2 'vn)))
+  (print-simple (<a href="./section_lsp.html#robo660">get-bar</a> mini 2 'vn))
+  (<strong>consolidate-notes</strong> (<a href="./section_lsp.html#robo660">get-bar</a> mini 2 'vn))
+  (print-simple (<a href="./section_lsp.html#robo660">get-bar</a> mini 2 'vn)))
 
 =&gt;
 (4 4): GS4 E+, +GS4 E+, +GS4 E+, +GS4 E, AF4 E+, +AF4 S+, +AF4 S+, +AF4 S,
@@ -677,7 +677,7 @@ BF4 E.,
    the Lisp listener if it is mathematically unable to consolidate the
    rests. T = print warning. Default = NIL.
  - :<a href="#robo482">auto-tuplets</a>. Whether to force a call to the <a href="#robo482">auto-tuplets</a> method before
-   returning. This will happen by default anyway if <a href="#robo484">check-tuplets</a> fails, but
+   returning. This will happen by default anyway if <a href="./slippery-chicken_lsp.html#robo803">check-tuplets</a> fails, but
    sometimes that doesn't fail, exactly, but <a href="#robo482">auto-tuplets</a> still makes
    sense. If, for example, Lilypond fails with strange error messages,
    setting this to T might help. Default = NIL. 
@@ -881,7 +881,7 @@ data: ((2 4) - S S - S - S S S - S S)
 <pre class="source">;; Create a <a href="#robo651">rthm-seq-bar</a> object and print the contents of the MARKS slots of
 ;; the contained <a href="./event_lsp.html#robo450">event</a> objects to see they're set to NIL by default. Fill them
 ;; each with a 's (staccato) mark and print the results. Apply the <strong>delete-marks</strong>
-;; method and print the results again to see that the values have been <a href="./sndfile-ext_lsp.html#robo880">reset</a> to
+;; method and print the results again to see that the values have been <a href="./activity-levels_lsp.html#robo28">reset</a> to
 ;; NIL. 
 (let ((rsb (<a href="#robo516">make-rthm-seq-bar</a> 
             (list
@@ -961,7 +961,7 @@ data: ((2 4) - S S - S - S S S - S S)
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo651">rthm-seq-bar</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Delete the contents of the WRITTEN-PITCH-OR-CHORD slot of a <a href="./pitch_lsp.html#robo298">pitch</a> object
- within a given <a href="./event_lsp.html#robo450">event</a> object and <a href="./sndfile-ext_lsp.html#robo880">reset</a> to NIL.
+ within a given <a href="./event_lsp.html#robo450">event</a> object and <a href="./activity-levels_lsp.html#robo28">reset</a> to NIL.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo651">rthm-seq-bar</a> object.
@@ -1193,7 +1193,7 @@ collect (<a href="./event_lsp.html#robo196">get-pitch-symbol</a> p))))
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :transposition. An integer or NIL to indicate the transposition in
-   <a href="./utilities_lsp.html#robo1026">semitones</a> for written pitches of any <a href="./event_lsp.html#robo450">event</a> objects passed. If NIL, no
+   <a href="./utilities_lsp.html#robo1027">semitones</a> for written pitches of any <a href="./event_lsp.html#robo450">event</a> objects passed. If NIL, no
    written-pitches will be created. Default = NIL.
  - :midi-channel. An integer that will be used to set the MIDI-CHANNEL slot
    of any <a href="./event_lsp.html#robo450">event</a> objects passed. Default = 0.
@@ -1464,7 +1464,7 @@ data: ((2 4) Q E S S)
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - T or NIL indicating whether to print a warning message if the given index
    (minus one) is greater than the number of attacks in the RHYTHMS list 
-   (default = T). This is a carry-over argument from the <a href="#robo504">get-nth-attack</a>
+   (default = T). This is a carry-over argument from the <a href="./rthm-seq_lsp.html#robo571">get-nth-attack</a>
    method called within the <strong>get-last-attack</strong> method and not likely to be
    needed for use with <strong>get-last-attack</strong>.
 </pre>
@@ -1655,7 +1655,7 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) &lt; 0 or &gt;= notes-needed (
 <pre> July 24th 2015, Glenferness
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Same as <a href="#robo504">get-nth-attack</a> method but will always return a list of the attacked
+<pre> Same as <a href="./rthm-seq_lsp.html#robo571">get-nth-attack</a> method but will always return a list of the attacked
  <a href="./event_lsp.html#robo450">event</a> plus any following events this is tied to.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -1895,7 +1895,7 @@ rthm-seq-bar::get-nth-rest: Couldn't get rest with index 3
         :<a href="./rthm-seq-palette_lsp.html#robo316">rthm-seq-palette</a> '((1 ((((4 4) e e e e e e e e))
                                 :<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> ((1 2 1 2 1 1 3 1)))))
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((vn (1 1 1))))))))
-  (<strong>get-pitch-symbols</strong> (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 1 'vn)))
+  (<strong>get-pitch-symbols</strong> (<a href="./section_lsp.html#robo660">get-bar</a> mini 1 'vn)))
   =&gt;
   (C4 GS4 C4 GS4 C4 C4 BF4 C4)
 </pre>
@@ -2361,7 +2361,7 @@ note Q,
 <pre class="source">;; Create a <a href="#robo651">rthm-seq-bar</a> object consisting of <a href="./event_lsp.html#robo450">event</a> objects, print the default ; ; ; ; ; ;
 ;; value of the 8VA slots for those events. Set the 8VA slots to 1 and print ; ; ; ; ; ;
 ;; the value of those slots to see the change. Apply the <strong>reset-8va</strong> method to ; ; ; ; ; ;
-;; remove any values and <a href="./sndfile-ext_lsp.html#robo880">reset</a> the slots to NIL, and print the results. ; ; ; ; ; ;
+;; remove any values and <a href="./activity-levels_lsp.html#robo28">reset</a> the slots to NIL, and print the results. ; ; ; ; ; ;
 
   (let ((rsb (<a href="#robo516">make-rthm-seq-bar</a> 
 (list
@@ -2437,10 +2437,10 @@ note Q,
 :<a href="./rthm-seq-palette_lsp.html#robo316">rthm-seq-palette</a> '((1 ((((4 4) e e e e e e e e))
 :<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> ((1 2 1 1 1 1 1 1)))))
 :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((vn (1 1 1))))))))
-(print (loop for r in (rhythms (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2 'vn))
+(print (loop for r in (rhythms (<a href="./section_lsp.html#robo660">get-bar</a> mini 2 'vn))
 collect (<a href="./event_lsp.html#robo196">get-pitch-symbol</a> r)))
-(<strong>respell-bar</strong> (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2 'vn) mini 'vn)
-(print (loop for r in (rhythms (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2 'vn))
+(<strong>respell-bar</strong> (<a href="./section_lsp.html#robo660">get-bar</a> mini 2 'vn) mini 'vn)
+(print (loop for r in (rhythms (<a href="./section_lsp.html#robo660">get-bar</a> mini 2 'vn))
 collect (<a href="./event_lsp.html#robo196">get-pitch-symbol</a> r))))
   =&gt;
   (GS4 AF4 GS4 GS4 GS4 GS4 GS4 GS4) 
@@ -2601,8 +2601,8 @@ data: E
 :<a href="./rthm-seq-palette_lsp.html#robo316">rthm-seq-palette</a> '((1 ((((4 4) e (e) e (e) (e) e e e))
 :<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> ((1 2 3 4 5)))))
 :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((va (1 1 1))))))))
-(<strong>set-amplitudes</strong> (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2 'va) 0.9)
-(<a href="./set-palette_lsp.html#robo671">cmn-display</a> mini))
+(<strong>set-amplitudes</strong> (<a href="./section_lsp.html#robo660">get-bar</a> mini 2 'va) 0.9)
+(<a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> mini))
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>set-amplitudes</strong> ((rsb rthm-seq-bar) amp)
@@ -2639,7 +2639,7 @@ data: E
 :<a href="./rthm-seq-palette_lsp.html#robo316">rthm-seq-palette</a> '((1 ((((4 4) e (e) e (e) (e) e e e))
 :<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> ((1 2 3 4 5)))))
 :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((va (1 1 1))))))))
-(<strong>set-dynamics</strong> (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2 'va) 'ppp))
+(<strong>set-dynamics</strong> (<a href="./section_lsp.html#robo660">get-bar</a> mini 2 'va) 'ppp))
 
   =&gt; PPP
 </pre>
@@ -2784,7 +2784,7 @@ rthm-seq-bar::set-nth-attack: index (3) &lt; 0 or &gt;= notes-needed (3)
 <p class="item_name">ARGUMENTS</p>
 <pre> - A rthm-seq-bar-object
  - A number (positive or negative) indicating the transposition by
-   <a href="./utilities_lsp.html#robo1026">semitones</a>.  See this method in the <a href="./event_lsp.html#robo450">event</a> class for more information and
+   <a href="./utilities_lsp.html#robo1027">semitones</a>.  See this method in the <a href="./event_lsp.html#robo450">event</a> class for more information and
    examples.  
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2802,7 +2802,7 @@ rthm-seq-bar::set-nth-attack: index (3) &lt; 0 or &gt;= notes-needed (3)
 
   =&gt; T
 
-;; Set the written <a href="./pitch_lsp.html#robo298">pitch</a> transposition to 2 <a href="./utilities_lsp.html#robo1026">semitones</a> lower, then check the ; ; ; ; ;
+;; Set the written <a href="./pitch_lsp.html#robo298">pitch</a> transposition to 2 <a href="./utilities_lsp.html#robo1027">semitones</a> lower, then check the ; ; ; ; ;
 ;; data of the WRITTEN-PITCH-OR-CHORD slot of each <a href="./event_lsp.html#robo450">event</a> to see the ; ; ; ; ;
 ;; corresponding pitches                ; ; ; ; ;
   (let ((rsb (<a href="#robo516">make-rthm-seq-bar</a> 
@@ -2943,7 +2943,7 @@ collect (<a href="./event_lsp.html#robo196">get-pitch-symbol</a> p)))
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo651">rthm-seq-bar</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Transpose the pitches of <a href="./event_lsp.html#robo450">event</a> objects stored in a <a href="#robo651">rthm-seq-bar</a> object by a
- specified number of <a href="./utilities_lsp.html#robo1026">semitones</a> (positive for up, negative for down).
+ specified number of <a href="./utilities_lsp.html#robo1027">semitones</a> (positive for up, negative for down).
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo651">rthm-seq-bar</a> object.
@@ -2996,7 +2996,7 @@ collect (<a href="./event_lsp.html#robo196">get-pitch-symbol</a> p)))
 =&gt; (CS4 CS4 CS4)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>transpose</strong> ((rsb rthm-seq-bar) <a href="./utilities_lsp.html#robo1026">semitones</a>
+<pre class="source">(defmethod <strong>transpose</strong> ((rsb rthm-seq-bar) <a href="./utilities_lsp.html#robo1027">semitones</a>
                       &amp;key
                       ;; when t, then the events will be replaced by the
                       ;; transposition.  
@@ -3035,14 +3035,14 @@ collect (<a href="./event_lsp.html#robo196">get-pitch-symbol</a> p)))
 
  Creation date:    13th February 2001
 
- $$ Last modified:  23:42:05 Sun Feb  1 2026 CET
+ $$ Last modified:  12:42:01 Wed Jun 24 2026 CEST
 
  SVN ID: $Id$
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/rthm-seq-bar.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
+<p>Generated from ./../../src/rthm-seq-bar.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-08-13 09:35:06</p>
 </div> <!-- footer -->
 </body>
 </html>

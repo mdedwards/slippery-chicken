@@ -284,7 +284,7 @@
  the given <a href="#robo316">rthm-seq-palette</a> object. 
 
  The selection function given as an optional keyword argument should be able
- to <a href="./wolfram_lsp.html#robo1045">generate</a> a list of numbers (relative note levels) for a <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> of any
+ to <a href="./wolfram_lsp.html#robo1047">generate</a> a list of numbers (relative note levels) for a <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> of any
  length; it takes two arguments only: the number of notes needed and the
  <a href="./pitch-seq_lsp.html#robo646">pitch-seq</a> data lists (see below).  
 
@@ -306,7 +306,7 @@
  - :selection-fun. This is a function that will return the <a href="./pitch-seq_lsp.html#robo646">pitch-seq</a>
    numbers. It takes two arguments only: 1) the number of notes needed, and
    2) the <a href="./pitch-seq_lsp.html#robo646">pitch-seq</a> data lists. The function also needs to be able to handle
-   being passed NIL NIL as arguments. In this case it should <a href="./sndfile-ext_lsp.html#robo880">reset</a>, if needs
+   being passed NIL NIL as arguments. In this case it should <a href="./activity-levels_lsp.html#robo28">reset</a>, if needs
    be; i.e. it's just a call to init and should return nothing. Default =
    #'<a href="./pitch-seq-palette_lsp.html#robo546">create-psps-default</a>.
  - :<a href="./pitch_lsp.html#robo298">pitch</a>-seqs-per-<a href="./rthm-seq_lsp.html#robo650">rthm-seq</a>. This is an integer that is the number of
@@ -421,9 +421,9 @@
   (<strong>create-psps</strong> 
    mrsp 
    :selection-fun #'(lambda
-                        (<a href="./ensemble_lsp.html#robo163">num-notes</a> data-lists)
+                        (<a href="./slippery-chicken_lsp.html#robo853">num-notes</a> data-lists)
                       ;; NB we're not doing anything with data-lists here
-                      (loop repeat <a href="./ensemble_lsp.html#robo163">num-notes</a> collect (random 10))))
+                      (loop repeat <a href="./slippery-chicken_lsp.html#robo853">num-notes</a> collect (random 10))))
    (loop for rs in (data mrsp)
       collect 
         (loop for ps in (data (<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> rs))
@@ -609,9 +609,9 @@ rthm-seq-<a href="./palette_lsp.html#robo427">palette</a>::get-multipliers: thir
    <a href="./rthm-seq_lsp.html#robo581">make-rthm-seq</a> function.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> T or NIL to indicate whether to automatically <a href="./wolfram_lsp.html#robo1045">generate</a> and store inversions
+<pre> T or NIL to indicate whether to automatically <a href="./wolfram_lsp.html#robo1047">generate</a> and store inversions
  of the <a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> passed to the <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> objects in the
- <a href="#robo316">rthm-seq-palette</a> object created. T = <a href="./wolfram_lsp.html#robo1045">generate</a> and store. Default = NIL.
+ <a href="#robo316">rthm-seq-palette</a> object created. T = <a href="./wolfram_lsp.html#robo1047">generate</a> and store. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> A <a href="#robo316">rthm-seq-palette</a> object.
@@ -797,14 +797,14 @@ T
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo316">rthm-seq-palette</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Call the <a href="./sndfile-ext_lsp.html#robo880">reset</a> method (inherited from circular-<a href="./sclist_lsp.html#robo301">sclist</a>) for all
+<pre> Call the <a href="./activity-levels_lsp.html#robo28">reset</a> method (inherited from circular-<a href="./sclist_lsp.html#robo301">sclist</a>) for all
  <a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> objects of all <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> objects in the given
  <a href="#robo316">rthm-seq-palette</a> object, resetting their pointers to the head of the
  sequence. This ensures that each <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> starts over again at the first
  note of the first given <a href="./pitch-seq_lsp.html#robo646">pitch-seq</a>.
 
- NB Since 28/10/13 there's also a <a href="./sndfile-ext_lsp.html#robo880">reset</a> method for the <a href="./palette_lsp.html#robo427">palette</a> class which
- will mean we call the <a href="./sndfile-ext_lsp.html#robo880">reset</a> method of all <a href="./pitch_lsp.html#robo298">pitch</a>-seqs here.  So this method
+ NB Since 28/10/13 there's also a <a href="./activity-levels_lsp.html#robo28">reset</a> method for the <a href="./palette_lsp.html#robo427">palette</a> class which
+ will mean we call the <a href="./activity-levels_lsp.html#robo28">reset</a> method of all <a href="./pitch_lsp.html#robo298">pitch</a>-seqs here.  So this method
  is now partially obsolete (but still perhaps useful in that in only resets
  the psps, not the whole <a href="./palette_lsp.html#robo427">palette</a>).
 </pre>
@@ -816,7 +816,7 @@ T
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre class="source">;; Create a <a href="#robo316">rthm-seq-palette</a> object whose first <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> has three <a href="./pitch-seq_lsp.html#robo646">pitch-seq</a>
-;; objects in its <a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a>. Apply the <a href="./circular-sclist_lsp.html#robo120">get-next</a> method to the
+;; objects in its <a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a>. Apply the <a href="./sndfile-ext_lsp.html#robo875">get-next</a> method to the
 ;; <a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> object of the first <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> object twice, then print the
 ;; data of the next <a href="./pitch-seq_lsp.html#robo646">pitch-seq</a> object to show where we are. Apply the <strong>reset-psps</strong>
 ;; method and print the data of the next <a href="./pitch-seq_lsp.html#robo646">pitch-seq</a> object to show that we've
@@ -838,10 +838,10 @@ T
                            ((5 8) (e) e e e s s))
                           :<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (3 4 5 6 7 8 9 10 1 2)))))))
   (loop repeat 2
-       do (<a href="./circular-sclist_lsp.html#robo120">get-next</a> (<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (first (data mrsp)))))
-  (print (data (<a href="./circular-sclist_lsp.html#robo120">get-next</a> (<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (first (data mrsp))))))
+       do (<a href="./sndfile-ext_lsp.html#robo875">get-next</a> (<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (first (data mrsp)))))
+  (print (data (<a href="./sndfile-ext_lsp.html#robo875">get-next</a> (<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (first (data mrsp))))))
   (<strong>reset-psps</strong> mrsp)
-  (print (data (<a href="./circular-sclist_lsp.html#robo120">get-next</a> (<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (first (data mrsp)))))))
+  (print (data (<a href="./sndfile-ext_lsp.html#robo875">get-next</a> (<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> (first (data mrsp)))))))
 
 =&gt;
 (1 4 2 6 3 7 5) 
@@ -1030,7 +1030,7 @@ RTHM-SEQ: num-bars: 3
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/rthm-seq-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
+<p>Generated from ./../../src/rthm-seq-palette.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-08-13 09:35:06</p>
 </div> <!-- footer -->
 </body>
 </html>

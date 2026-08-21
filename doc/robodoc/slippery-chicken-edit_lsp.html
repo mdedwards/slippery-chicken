@@ -278,13 +278,13 @@ data: Q
    in that class's <a href="./activity-levels-env_lsp.html#robo22">active</a> method. Default = 5 = 50% of the notes will be
    changed. NB The <a href="./activity-levels_lsp.html#robo307">activity-levels</a> object will be reinitialised for each
    phrase so the 50/50 spread might not be obvious.
- - :<a href="./ensemble_lsp.html#robo163">num-notes</a>. The number of notes to process per phrase. We calculate the
+ - :<a href="./slippery-chicken_lsp.html#robo853">num-notes</a>. The number of notes to process per phrase. We calculate the
    most used pitches in every phrase then use this number of pitches to <a href="./rhythm_lsp.html#robo441">add</a>
    auxiliaries to. Default = 3.
  - :intervals. The intervals that the original pitches will be transposed by
-   to create the auxiliary notes. This can be a single value in <a href="./utilities_lsp.html#robo1026">semitones</a> or
+   to create the auxiliary notes. This can be a single value in <a href="./utilities_lsp.html#robo1027">semitones</a> or
    a list of values. The list does not have to have the same length as
-   :<a href="./ensemble_lsp.html#robo163">num-notes</a> as it will be cycled through when necessary. Default = 1.
+   :<a href="./slippery-chicken_lsp.html#robo853">num-notes</a> as it will be cycled through when necessary. Default = 1.
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> T
@@ -293,7 +293,7 @@ data: Q
 <pre class="source">(defmethod <strong>add-auxiliary-notes</strong> ((sc slippery-chicken)
                                 &amp;key <a href="./slippery-chicken_lsp.html#robo858">players</a> start-bar end-bar
                                   verbose ignore (activity-level 5)
-                                  (<a href="./ensemble_lsp.html#robo163">num-notes</a> 3) (intervals 1))
+                                  (<a href="./slippery-chicken_lsp.html#robo853">num-notes</a> 3) (intervals 1))
 </pre>
 
 
@@ -398,9 +398,9 @@ data: Q
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1 1))))
                         (2 ((vn (2 2 2 2 2 2))))))))
   (<strong>add-event-to-bar</strong> mini (<a href="./event_lsp.html#robo205">make-event</a> 'cs4 'e) 2 'vn)
-  (print-simple (first (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini 2)))
+  (print-simple (first (<a href="./section_lsp.html#robo660">get-bar</a> mini 2)))
   (<strong>add-event-to-bar</strong> mini (<a href="./event_lsp.html#robo205">make-event</a> 'c4 'q) '(2 2 1) 'vn :position 2)
-  (print-simple (first (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini '(2 2 1)))))
+  (print-simple (first (<a href="./section_lsp.html#robo660">get-bar</a> mini '(2 2 1)))))
 
 =&gt; 
 (2 4): C4 Q, D4 E, F4 S, G4 S, CS4 E
@@ -845,7 +845,7 @@ NIL
  (symbols, objects) to <a href="./rhythm_lsp.html#robo441">add</a> or an integer. In the latter case, the specified
  number of notes will be taken from the pitches of the current and previous
  bar and grace notes <a href="./utilities_lsp.html#robo986">nearest</a> to the main note will be automatically created.
- - the maximum interval in <a href="./utilities_lsp.html#robo1026">semitones</a> for a mordent. If no nearer notes are
+ - the maximum interval in <a href="./utilities_lsp.html#robo1027">semitones</a> for a mordent. If no nearer notes are
  available near the note for the ornament, then it will be skipped.
  - the maximum distance from the main note that a grace note can be
 </pre>
@@ -1070,7 +1070,7 @@ NIL
  appeared in the bar. The first optional argument to the method allows the
  user to specify how many notes back to look.
 
- NB: As both <a href="./set-palette_lsp.html#robo671">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> call <a href="#robo763">respell-notes</a> by
+ NB: As both <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> call <a href="#robo763">respell-notes</a> by
      default, that option must be set to NIL for this method to be
      effective (see below).
 </pre>
@@ -1097,7 +1097,7 @@ NIL
                                 :<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> ((1 2 3 2 1 2 3 2)))))
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((vn (1 1 1 1))))))))
   (<strong>auto-accidentals</strong> mini 4)
-  (<a href="./set-palette_lsp.html#robo671">cmn-display</a> mini :<a href="#robo763">respell-notes</a> nil))
+  (<a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> mini :<a href="#robo763">respell-notes</a> nil))
 
 =&gt; NIL
 </pre>
@@ -1151,7 +1151,7 @@ NIL
                                (min-dur 0.250) ; seconds
                                (update t)
                                (warn t)
-                               (mordent-max 5) ; <a href="./utilities_lsp.html#robo1026">semitones</a>
+                               (mordent-max 5) ; <a href="./utilities_lsp.html#robo1027">semitones</a>
                                ;; NB grace is a sublist as it needs an
                                ;; argument (how many notes or a list of
                                ;; specific <a href="./pitch_lsp.html#robo298">pitch</a> symbols)
@@ -1226,7 +1226,7 @@ NIL
  This routine will only place clef symbols that are present in the given
  <a href="./instrument_lsp.html#robo297">instrument</a> object's CLEFS slot.
 
- This method is called automatically by <a href="./set-palette_lsp.html#robo671">cmn-display</a> and
+ This method is called automatically by <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> and
  <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a>, with the <a href="#robo724">delete-clefs</a> option set to T.
 
  NB: While this routine generally does a good job of putting the proper
@@ -1376,7 +1376,7 @@ NIL
  In the third case, you can <a href="./rhythm_lsp.html#robo441">add</a> a new <a href="./section_lsp.html#robo60">section</a> to an exisitng part, but you
  cannot <a href="./rhythm_lsp.html#robo441">add</a> a new <a href="./section_lsp.html#robo60">section</a> to a part that does not exist.
 
- NB Bear in mind that if you want to use <a href="./set-palette_lsp.html#robo679">midi-play</a>, then the events in the
+ NB Bear in mind that if you want to use <a href="./set-map_lsp.html#robo667">midi-play</a>, then the events in the
     bars will need to have their midi-channel set (e.g. via make-<a href="./event_lsp.html#robo450">event</a>).
     It's also the caller's responsibility to ensure that the parts added have
     the same time-signature structure as any existing part.
@@ -1429,7 +1429,7 @@ NIL
  optional argument is set to T.
 
  NB In the case of ties, this doesn't update the following 'tied-to' notes
- but see the documentation for the <a href="./bar-holder_lsp.html#robo55">change-pitches</a> method below (or call
+ but see the documentation for the <a href="./rthm-seq_lsp.html#robo558">change-pitches</a> method below (or call
  <a href="./slippery-chicken_lsp.html#robo801">check-ties</a>, which fixes them too).
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -1498,7 +1498,7 @@ NIL
  classes (<a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a>, <a href="./bar-holder_lsp.html#robo296">bar-holder</a>, <a href="./rthm-seq-bar_lsp.html#robo651">rthm-seq-bar</a>, rthm-seq) may change
  <a href="./pitch_lsp.html#robo298">pitch</a> information and midi-channels stored in events, chords, pitches,
  etc. it is recommended to call the <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> <a href="#robo761">reset-midi-channels</a>
- method before calling <a href="./set-palette_lsp.html#robo679">midi-play</a>, if any of those methods have been
+ method before calling <a href="./set-map_lsp.html#robo667">midi-play</a>, if any of those methods have been
  used. This way midi channels for pitches belonging to particular <a href="./slippery-chicken_lsp.html#robo858">players</a>
  will use channels originally allocated in the <a href="./ensemble_lsp.html#robo415">ensemble</a> for chromatic and
  <a href="./event_lsp.html#robo211">microtonal</a> pitches, no matter where they originated or how they were
@@ -1978,7 +1978,7 @@ NIL
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :transposition. A positive or negative number that is the number of
-   <a href="./utilities_lsp.html#robo1026">semitones</a> by which the copied material is to be first transposed. This
+   <a href="./utilities_lsp.html#robo1027">semitones</a> by which the copied material is to be first transposed. This
    number can be a decimal number, in which case the resulting pitches will
    be rounded to the <a href="./utilities_lsp.html#robo986">nearest</a> microtone (if the current tuning environment is
    capable of microtones).
@@ -2033,7 +2033,7 @@ NIL
 <pre> 15.5.25
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre> Double the events of one <a href="#robo235">player</a> and then rhythmically <a href="./rhythm_lsp.html#robo465">scale</a> (augment or
+<pre> Double the events of one <a href="#robo235">player</a> and then rhythmically <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> (augment or
  diminute) them. Add them to a new part, where time signature and rhythmic
  properties allow. Note that
 </pre>
@@ -2051,7 +2051,7 @@ NIL
  - :pitches. A list of <a href="./pitch_lsp.html#robo298">pitch</a>/<a href="./chord_lsp.html#robo636">chord</a> objects or symbols/symbols lists (chords)
    that will be used to replace the pitches/chords of the events of the 
    master <a href="#robo235">player</a>. If this is shorter than the number of events that we 
-   <a href="./wolfram_lsp.html#robo1045">generate</a>, then they will be reused circularly. If this is not passed, then
+   <a href="./wolfram_lsp.html#robo1047">generate</a>, then they will be reused circularly. If this is not passed, then
    the pitches of the master-<a href="#robo235">player</a> will be used, optionally transposed (see
    above).
  - :<a href="#robo714">auto-beam</a>. Whether to call <a href="#robo714">auto-beam</a> on the <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> object after
@@ -2106,9 +2106,9 @@ NIL
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> Add a new <a href="#robo235">player</a> to the <a href="./ensemble_lsp.html#robo415">ensemble</a>/<a href="./piece_lsp.html#robo58">piece</a>, <a href="./sc-map_lsp.html#robo594">double</a> the events of an existing
- <a href="#robo235">player</a>, then use the <a href="./pitch-seq_lsp.html#robo339">invert</a> method for each bars within the given range to
+ <a href="#robo235">player</a>, then use the <a href="./rthm-seq_lsp.html#robo579">invert</a> method for each bars within the given range to
  turn rests into notes and vice-versa. To choose new notes we use curves to
- <a href="./tl-set_lsp.html#robo924">limit</a> high and low, using the sets (from the map) used to <a href="./wolfram_lsp.html#robo1045">generate</a> the
+ <a href="./set-palette_lsp.html#robo676">limit</a> high and low, using the sets (from the map) used to <a href="./wolfram_lsp.html#robo1047">generate</a> the
  existing voices.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -2133,7 +2133,7 @@ NIL
  :start-bar :start-<a href="./event_lsp.html#robo450">event</a> :end-bar :end-<a href="./event_lsp.html#robo450">event</a>. These are passed to
  <a href="#robo729">double-events</a>. See that method for details but note that the defaults for
  the end-* arguments are NIL which in turn default to the last bar/<a href="./event_lsp.html#robo450">event</a>.
- :<a href="#robo761">reset-midi-channels</a>. T or NIL to <a href="./sndfile-ext_lsp.html#robo880">reset</a> all events in the <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a>
+ :<a href="#robo761">reset-midi-channels</a>. T or NIL to <a href="./activity-levels_lsp.html#robo28">reset</a> all events in the <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a>
  object to the original midi channels of the parent <a href="#robo235">player</a>. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2156,26 +2156,26 @@ NIL
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo19">slippery-chicken-edit</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Change the <a href="./pitch_lsp.html#robo298">pitch</a> of specified <a href="./event_lsp.html#robo450">event</a> objects to their <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a>
+<pre> Change the <a href="./pitch_lsp.html#robo298">pitch</a> of specified <a href="./event_lsp.html#robo450">event</a> objects to their <a href="./pitch_lsp.html#robo346">enharmonic</a>
  equivalents. 
 
  This takes as its second argument a list of lists, each of which consists
  of the ID of the <a href="#robo235">player</a> whose part is to be altered and a series of
  bar-number/<a href="./event_lsp.html#robo450">event</a>-number pairs, where (2 3) indicates that the <a href="./pitch_lsp.html#robo298">pitch</a> of the
- third <a href="./event_lsp.html#robo450">event</a> of the second bar is to be changed to its <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a>
+ third <a href="./event_lsp.html#robo450">event</a> of the second bar is to be changed to its <a href="./pitch_lsp.html#robo346">enharmonic</a>
  equivalent. 
 
  Pitches within chords are specified by following the bar number with a
  2-item list consisting of the <a href="./event_lsp.html#robo450">event</a> number and the number of the <a href="./pitch_lsp.html#robo298">pitch</a>
  within the <a href="./chord_lsp.html#robo636">chord</a>, counting from low to high, where (2 (2 4)) indicates that
  the fourth <a href="./pitch_lsp.html#robo298">pitch</a> from the bottom of the <a href="./chord_lsp.html#robo636">chord</a> located in the second <a href="./event_lsp.html#robo450">event</a>
- object of bar 2 should be changed to its <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a> equivalent.
+ object of bar 2 should be changed to its <a href="./pitch_lsp.html#robo346">enharmonic</a> equivalent.
 
  An optional T can be included to indicate that the written <a href="./pitch_lsp.html#robo298">pitch</a> is to be
  changed, but not the sounding <a href="./pitch_lsp.html#robo298">pitch</a>, as in (cl (3 4 t)).
 
  NB: In order for this method to work, the :<a href="#robo763">respell-notes</a> option of
-     <a href="./set-palette_lsp.html#robo671">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> must be set to NIL.
+     <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> must be set to NIL.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> object.
@@ -2201,13 +2201,13 @@ NIL
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo19">slippery-chicken-edit</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Change the sharp/flat pitches of a specified region of a specified <a href="#robo235">player</a>'s
- part to their <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a> equivalent.
+ part to their <a href="./pitch_lsp.html#robo346">enharmonic</a> equivalent.
 
  NB: This method only affects pitches that already have sharp/flat
      accidentals. It does not affect "white-key" notes (e.g. C-natural =
      B-sharp etc.)
 
- NB: As the <a href="./set-palette_lsp.html#robo671">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> methods call
+ NB: As the <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> methods call
     :<a href="#robo763">respell-notes</a> by default, this option must be explicitly set to NIL for
     this method to be effective.
 </pre>
@@ -2231,11 +2231,11 @@ NIL
  - :written. T or NIL to indicate whether to change written-only pitches or
    sounding-only pitches. T = written-only. Default = T.
  - :pitches. NIL or a list of note-name symbols. If NIL, all sharp/flat
-   pitches in the specified region will be changed to their <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a>
+   pitches in the specified region will be changed to their <a href="./pitch_lsp.html#robo346">enharmonic</a>
    equivalents. If a list of one or more note-name symbols, only those
    pitches will be affected.
  - :force-naturals. T or NIL to indicate whether to force "natural" note
-   names that contain no F or S in their name to convert to their <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a>
+   names that contain no F or S in their name to convert to their <a href="./pitch_lsp.html#robo346">enharmonic</a>
    equivalent (ie, B3 = CF4).  NB <a href="./sc-map_lsp.html#robo594">double</a>-flats/sharps are not implemented so
    this will only work on F/E  B/C. 
 </pre>
@@ -2315,7 +2315,7 @@ NIL
                  :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a>
                  '((1 ((flt (seq1 seq1 seq1 seq1 seq1 seq1))))))))
       (<strong>fast-microtone-to-chromatic</strong> mini nil :threshold 10)
-      (<a href="./set-palette_lsp.html#robo671">cmn-display</a> mini))
+      (<a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> mini))
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>fast-microtone-to-chromatic</strong> ((sc slippery-chicken) <a href="./slippery-chicken_lsp.html#robo858">players</a>
@@ -2582,7 +2582,7 @@ NIL
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - Any additional argument values the specified method/function may
-   take or require. See the <a href="./set-palette_lsp.html#robo690">thin</a> method below for an example that uses
+   take or require. See the <a href="./chord_lsp.html#robo110">thin</a> method below for an example that uses
    additional arguments. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2657,7 +2657,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - Any additional argument values the specified method/function may
-   take or require. See the <a href="./set-palette_lsp.html#robo690">thin</a> method below for an example that uses
+   take or require. See the <a href="./chord_lsp.html#robo110">thin</a> method below for an example that uses
    additional arguments. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2726,7 +2726,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> - Any additional argument values the specified method/function may
-   take or require. See the <a href="./set-palette_lsp.html#robo690">thin</a> method below for an example that uses
+   take or require. See the <a href="./chord_lsp.html#robo110">thin</a> method below for an example that uses
    additional arguments. 
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2843,10 +2843,10 @@ T
 <p class="item_name">DESCRIPTION</p>
 <pre> Move a specified clef from a specified <a href="./event_lsp.html#robo450">event</a> object to another.
 
- NB: As the :<a href="#robo715">auto-clefs</a> option of <a href="./set-palette_lsp.html#robo671">cmn-display</a> and write-lp-data-for all
+ NB: As the :<a href="#robo715">auto-clefs</a> option of <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> and write-lp-data-for all
      first deletes all clefs before automatically placing them, this
      argument must be set to NIL. The <a href="#robo715">auto-clefs</a> method can be called
-     outside of the <a href="./set-palette_lsp.html#robo671">cmn-display</a> or <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> methods instead.  
+     outside of the <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> or <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> methods instead.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> object.
@@ -2877,7 +2877,7 @@ T
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((vc (1 1 1 1))))))))
   (<a href="#robo715">auto-clefs</a> mini)
   (<strong>move-clef</strong> mini 1 6 1 8 'vc)
-  (<a href="./set-palette_lsp.html#robo671">cmn-display</a> mini :<a href="#robo715">auto-clefs</a> nil))
+  (<a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> mini :<a href="#robo715">auto-clefs</a> nil))
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>move-clef</strong> ((sc slippery-chicken) from-bar from-<a href="./event_lsp.html#robo450">event</a>
@@ -2916,7 +2916,7 @@ T
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
  - :transposition. A positive or negative number that is the number of
-   <a href="./utilities_lsp.html#robo1026">semitones</a> by which the copied material is to be first transposed. This
+   <a href="./utilities_lsp.html#robo1027">semitones</a> by which the copied material is to be first transposed. This
    number can be a decimal number, in which case the resulting pitches will
    be rounded to the <a href="./utilities_lsp.html#robo986">nearest</a> microtone (if the current tuning environment is
    capable of microtones).
@@ -3072,16 +3072,16 @@ T
  - :start-bar. The bar to start processing at (integer). Default = 1.
  - :end-bar. The bar to stop processing at (inclusive). Default = NIL = last
    bar of the <a href="./piece_lsp.html#robo58">piece</a>.
- - :intervals. A list of semitone intervals. Default = '(12) = only <a href="./chord_lsp.html#robo112">transpose</a>
+ - :intervals. A list of semitone intervals. Default = '(12) = only <a href="./event_lsp.html#robo232">transpose</a>
    up one octave. A list of any length may be used for variation; it will be
    used cyclically.
  - :threshold. The maximum time difference in seconds <a href="./utilities_lsp.html#robo939">between</a> events that
    will result in the 'octavisation'. Default = the <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a>
    object's fast-leap-threshold (0.125 seconds by default).
  - :verbose. Print bar numbers where processing takes place. Default = NIL.
- - :whole-chords. T or NIL to <a href="./chord_lsp.html#robo112">transpose</a> whole chords or just the repeated
+ - :whole-chords. T or NIL to <a href="./event_lsp.html#robo232">transpose</a> whole chords or just the repeated
    notes in chords (could result in unplayable chords if NIL). Default = T =
-   <a href="./chord_lsp.html#robo112">transpose</a> whole <a href="./chord_lsp.html#robo636">chord</a>.
+   <a href="./event_lsp.html#robo232">transpose</a> whole <a href="./chord_lsp.html#robo636">chord</a>.
  - :<a href="./slippery-chicken_lsp.html#robo801">check-ties</a>. Whether to call the <a href="./slippery-chicken_lsp.html#robo801">check-ties</a> method, which as a side-effect
    makes sure tied notes are of the same <a href="./pitch_lsp.html#robo298">pitch</a>. Default = T.
 </pre>
@@ -3172,14 +3172,14 @@ T
 <pre> keyword arguments:
  - :combos. A list of lists indicating the <a href="#robo235">player</a> groupings to be used to
    <strong>orchestrate</strong> the events. Default = NIL whereupon the &lt;new-<a href="./ensemble_lsp.html#robo415">ensemble</a>&gt; will be
-   used to <a href="./wolfram_lsp.html#robo1045">generate</a> groupings via the 'lotsa-combos' <a href="./ensemble_lsp.html#robo415">ensemble</a> class method.
+   used to <a href="./wolfram_lsp.html#robo1047">generate</a> groupings via the 'lotsa-combos' <a href="./ensemble_lsp.html#robo415">ensemble</a> class method.
  - :<a href="./rhythm_lsp.html#robo441">add</a>-more-combos. T or NIL to indicate whether the :combos slot should be
    expanded via the 'lotsa-combos' method. If T then whatever is passed to
    :combos will nevertheless be retained after the expansion. Default = NIL.
  - :sub-combos. T or NIL to indicate whether the :combos slot should be
    expanded via the sub-groups function. This is quite different to
-   :<a href="./rhythm_lsp.html#robo441">add</a>-more-combos as that approach uses <a href="./permutations_lsp.html#robo327">permutations</a> of all the <a href="./instruments_lsp.html#robo12">instruments</a>
-   in the <a href="./ensemble_lsp.html#robo415">ensemble</a> whereas this approach uses <a href="./permutations_lsp.html#robo327">permutations</a> of sub-sets of the
+   :<a href="./rhythm_lsp.html#robo441">add</a>-more-combos as that approach uses <a href="./permutations_lsp.html#robo16">permutations</a> of all the <a href="./instruments_lsp.html#robo12">instruments</a>
+   in the <a href="./ensemble_lsp.html#robo415">ensemble</a> whereas this approach uses <a href="./permutations_lsp.html#robo16">permutations</a> of sub-sets of the
    given :combos (only) instead.
  - :start-bar. The bar number to start orchestrating. Default = NIL which
    will in turn default to 1
@@ -3197,7 +3197,7 @@ T
    arguments (the combo as a list of <a href="#robo235">player</a> IDs and an <a href="./assoc-list_lsp.html#robo115">assoc-list</a> of all
    possible combos (as created by the organise-combos method using the
    &lt;combos&gt; argument given here) plus two further optional arguments which
-   are free to define. The function should also provide "<a href="./sndfile-ext_lsp.html#robo880">reset</a>" functionality
+   are free to define. The function should also provide "<a href="./activity-levels_lsp.html#robo28">reset</a>" functionality
    or do nothing if one of the two required arguments is NIL. Default =
    combo-change? (defined in <a href="./event_lsp.html#robo_top_of_doc">event.lsp</a>).
  - :verbose. T or NIL to turn on the printing of orchestration decisions as
@@ -3205,8 +3205,8 @@ T
  - :artificial-harmonics. T or NIL to allow the selection of string
    artificial harmonics in order to reach high notes outwith normal ranges.
  - :sticky-stats. T or NIL to indicate whether the <a href="./slippery-chicken_lsp.html#robo867">statistics</a> collected and
-   returned by the method should be <a href="./sndfile-ext_lsp.html#robo880">reset</a> or retained <a href="./utilities_lsp.html#robo939">between</a> calls. Default
-   = NIL = <a href="./sndfile-ext_lsp.html#robo880">reset</a>.
+   returned by the method should be <a href="./activity-levels_lsp.html#robo28">reset</a> or retained <a href="./utilities_lsp.html#robo939">between</a> calls. Default
+   = NIL = <a href="./activity-levels_lsp.html#robo28">reset</a>.
  - :relax. An integer <a href="./utilities_lsp.html#robo939">between</a> 0 and 3 inclusive to indicate how strict the
    algorithm should when allocating <a href="./chord_lsp.html#robo636">chord</a> pitches to <a href="./instruments_lsp.html#robo12">instruments</a>. The values
    have the following meanings with degrees of relaxedness ascending:
@@ -3243,7 +3243,7 @@ T
                                '((vln (violin :midi-channel 2))
                                  (clr (b-flat-clarinet :midi-channel 3))))))
   (<strong>orchestrate</strong> mini new-ens 'flt)
-  (<a href="./set-palette_lsp.html#robo671">cmn-display</a> mini))
+  (<a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> mini))
 
 =&gt; T
 </pre>
@@ -3352,7 +3352,7 @@ T
 <pre class="source">(let ((marks (<a href="./circular-sclist_lsp.html#robo121">make-cscl</a> '(a s as te ts at))))
   (defun <a href="./rhythm_lsp.html#robo441">add</a>-random-marks (<a href="./event_lsp.html#robo450">event</a>)
     (unless (is-rest <a href="./event_lsp.html#robo450">event</a>) 
-      (setf (marks <a href="./event_lsp.html#robo450">event</a>) (list (<a href="./circular-sclist_lsp.html#robo120">get-next</a> marks))))))
+      (setf (marks <a href="./event_lsp.html#robo450">event</a>) (list (<a href="./sndfile-ext_lsp.html#robo875">get-next</a> marks))))))
 
 (let ((mini
        (<a href="./slippery-chicken_lsp.html#robo848">make-slippery-chicken</a>
@@ -3392,7 +3392,7 @@ T
  close as possible to the desired length.
 
  This method will only <a href="./pitch-seq-palette_lsp.html#robo336">combine</a> existing short bars into longer ones; it
- won't <a href="./rthm-chain_lsp.html#robo477">split</a> up longer bars and recombine them.
+ won't <a href="./rthm-seq_lsp.html#robo589">split</a> up longer bars and recombine them.
 
  NB: This method should not be confused with the <a href="./piece_lsp.html#robo334">rebar</a> method (which is used
  internally, not directly by the user).
@@ -3853,16 +3853,16 @@ T
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo19">slippery-chicken-edit</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Pass through the entire given <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> object and change some of
- the <a href="./pitch_lsp.html#robo298">pitch</a> objects to their <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a> equivalents to produce more sensible
+ the <a href="./pitch_lsp.html#robo298">pitch</a> objects to their <a href="./pitch_lsp.html#robo346">enharmonic</a> equivalents to produce more sensible
  spellings of consecutive pitches in the score.
 
  An optional argument takes a list specifying which pitches to change in the
- same format found in the method <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a>-spellings; i.e.
+ same format found in the method <a href="./pitch_lsp.html#robo346">enharmonic</a>-spellings; i.e.
  '((<a href="#robo235">player</a> (bar note-num))). These notes are changed after the respelling
  routine has run.  
 
  NB: If a list of corrections is specified, the :<strong>respell-notes</strong> argument of
-     any subsequent call to <a href="./set-palette_lsp.html#robo671">cmn-display</a> or <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> must be set
+     any subsequent call to <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> or <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> must be set
      NIL, otherwise the modified pitches may be overwritten.  Also, although
      this algorithm corrects tied notes when respelling, notes referenced in
      the corrections list will not be followed through to any subsequent
@@ -3904,7 +3904,7 @@ T
                                 :<a href="./pitch-seq-palette_lsp.html#robo315">pitch-seq-palette</a> ((1 2 3 4)))))
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((vn (1 1 1 1 1))))))))
   (<strong>respell-notes</strong> mini '((vn (1 1) (1 4))))
-  (<a href="./set-palette_lsp.html#robo671">cmn-display</a> mini :<strong>respell-notes</strong> nil))
+  (<a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> mini :<strong>respell-notes</strong> nil))
 
 =&gt; T
 </pre>
@@ -3919,7 +3919,7 @@ T
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo19">slippery-chicken-edit</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Pass through the pitches of a specified <a href="#robo235">player</a>'s part and change some of
- the pitches to their <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a> equivalents in order to produce more
+ the pitches to their <a href="./pitch_lsp.html#robo346">enharmonic</a> equivalents in order to produce more
  sensible spellings of consecutive notes.
 
  This is just a very simple attempt to better spell notes by comparing each
@@ -3929,7 +3929,7 @@ T
  If the optional argument is set to T, then look at the written notes
  instead of the sounding notes.
 
- NB: Since both the <a href="./set-palette_lsp.html#robo671">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> methods
+ NB: Since both the <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> methods
      automatically call <a href="#robo763">respell-notes</a> for all <a href="./slippery-chicken_lsp.html#robo858">players</a> of an entire
      sc-object, their :<a href="#robo763">respell-notes</a> argument may need to be set to NIL for
      this method to produce the desired results.
@@ -3959,7 +3959,7 @@ T
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((cl (1 1 1 1 1))
                             (vn (1 1 1 1 1))))))))
   (<strong>respell-notes-for-player</strong> mini 'cl t)
-  (<a href="./set-palette_lsp.html#robo671">cmn-display</a> mini :<a href="#robo763">respell-notes</a> nil :in-c nil))
+  (<a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> mini :<a href="#robo763">respell-notes</a> nil :in-c nil))
 
 =&gt; T
 </pre>
@@ -4299,9 +4299,9 @@ data: (
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre> For the given bars and <a href="./slippery-chicken_lsp.html#robo858">players</a>, round the events' <a href="./pitch_lsp.html#robo298">pitch</a> data to the <a href="./utilities_lsp.html#robo986">nearest</a>
- in the current or given <a href="./rhythm_lsp.html#robo465">scale</a>. For example, a <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> object could
- be generated in the :quarter-tone <a href="./rhythm_lsp.html#robo465">scale</a>, then the <a href="./rhythm_lsp.html#robo465">scale</a> changed to
- :chromatic (or the keyword argument :<a href="./rhythm_lsp.html#robo465">scale</a> 'chromatic-<a href="./rhythm_lsp.html#robo465">scale</a> given), this
+ in the current or given <a href="./rthm-seq-palette_lsp.html#robo555">scale</a>. For example, a <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> object could
+ be generated in the :quarter-tone <a href="./rthm-seq-palette_lsp.html#robo555">scale</a>, then the <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> changed to
+ :chromatic (or the keyword argument :<a href="./rthm-seq-palette_lsp.html#robo555">scale</a> 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo555">scale</a> given), this
  method then called, and all pitches would be rounded to the <a href="./utilities_lsp.html#robo986">nearest</a>
  chromatic <a href="./pitch_lsp.html#robo298">pitch</a>. See the <a href="./pitch_lsp.html#robo298">pitch</a> class method for more details.
 </pre>
@@ -4317,9 +4317,9 @@ data: (
  - :<a href="./slippery-chicken_lsp.html#robo858">players</a>. A list of the IDs of the <a href="./slippery-chicken_lsp.html#robo858">players</a> to whose parts the function
    should be applied. Can also be a single symbol. If NIL then all <a href="./slippery-chicken_lsp.html#robo858">players</a>
    will be processed.  
- - :<a href="./rhythm_lsp.html#robo465">scale</a>. The <a href="./rhythm_lsp.html#robo465">scale</a> to use when rounding. (Common Music tuning object or
-   symbol). If a symbol, then 'chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>, 'twelfth-tone, or
-   'quarter-tone only at present. Default is the current <a href="./rhythm_lsp.html#robo465">scale</a> as set by
+ - :<a href="./rthm-seq-palette_lsp.html#robo555">scale</a>. The <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> to use when rounding. (Common Music tuning object or
+   symbol). If a symbol, then 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo555">scale</a>, 'twelfth-tone, or
+   'quarter-tone only at present. Default is the current <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> as set by
    (<a href="./cm_lsp.html#robo138">in-scale</a> :...). 
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -4327,7 +4327,7 @@ data: (
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>round-to-nearest</strong> ((sc slippery-chicken)
-                             &amp;key start-bar end-bar <a href="./slippery-chicken_lsp.html#robo858">players</a> (<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rhythm_lsp.html#robo465">scale</a>*))
+                             &amp;key start-bar end-bar <a href="./slippery-chicken_lsp.html#robo858">players</a> (<a href="./rthm-seq-palette_lsp.html#robo555">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo555">scale</a>*))
 </pre>
 
 
@@ -4628,7 +4628,7 @@ data: (
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>sc-force-rest2</strong> ((sc slippery-chicken) bar-num <a href="./event_lsp.html#robo450">event</a>-num <a href="#robo235">player</a>
-                           &amp;optional <a href="./rthm-seq-bar_lsp.html#robo490">delete-marks</a> (on-error #'error))
+                           &amp;optional <a href="./pitch_lsp.html#robo345">delete-marks</a> (on-error #'error))
 </pre>
 
 
@@ -4803,7 +4803,7 @@ data: (
      only possible in LilyPond output. Adding cautionary accidentals to
      single pitches is possible in both CMN and LilyPond.
 
- NB: Since the <a href="./set-palette_lsp.html#robo671">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> methods call
+ NB: Since the <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> and <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a> methods call
      <a href="#robo763">respell-notes</a> by default, that option must be explicitly set to NIL
      within the calls to those methods in order for this method to be
      effective. 
@@ -4909,10 +4909,10 @@ data: (
   (flet ((print-em ()
                    ;;                first bars of sections 1, 2, 3
                    (loop for bar in '(1 6 11) do
-                         (print (<a href="./chord_lsp.html#robo90">get-pitch-symbols</a> (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> mini bar 'vc))))))
+                         (print (<a href="./chord_lsp.html#robo90">get-pitch-symbols</a> (<a href="./section_lsp.html#robo660">get-bar</a> mini bar 'vc))))))
     (print-em)
     ;; replace existing curve. NB The y values are degrees which if default is
-    ;; quarter-tone <a href="./rhythm_lsp.html#robo465">scale</a> might be the <a href="./sc-map_lsp.html#robo594">double</a> of what is perhaps  expected
+    ;; quarter-tone <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> might be the <a href="./sc-map_lsp.html#robo594">double</a> of what is perhaps  expected
     ;; (i.e. (<a href="./cm_lsp.html#robo146">note-to-degree</a> 'c4) -&gt; 120)
     (print (<strong>set-limits-by-section</strong> mini '(g3 a3 c4) 'set-<a href="./sclist_lsp.html#robo642">limits</a>-high 'vc))
     (<a href="./slippery-chicken_lsp.html#robo864">sc-init</a> mini)
@@ -5117,7 +5117,7 @@ NIL
 <p class="item_name">DESCRIPTION</p>
 <pre> Move/swap the events from one part to the other and vice-versa.
  
- NB does not check that pitches are in range! Call <a href="#robo737">force-in-range</a> afterwards
+ NB does not check that pitches are in range! Call <a href="./instrument_lsp.html#robo245">force-in-range</a> afterwards
  if necessary/applicable. Also, in case this method is to be called mulitple
  times, it does not call <a href="./slippery-chicken_lsp.html#robo870">update-slots</a> or <a href="./slippery-chicken_lsp.html#robo869">update-instrument-slots</a>
 </pre>
@@ -5221,12 +5221,12 @@ NIL
  - :<a href="./slippery-chicken_lsp.html#robo858">players</a>. A symbol or list of symbols for the <a href="./slippery-chicken_lsp.html#robo858">players</a> to be processed.
  - :curve. A list of breakpoints representing the level of activity. Y-values
    should range over 0 (all events forced to rests) to 10 (no rests
-   created). X-values may range over any arbitrary <a href="./rhythm_lsp.html#robo465">scale</a> but NB that this
+   created). X-values may range over any arbitrary <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> but NB that this
    will be rescaled to map over the number of bars in the whole <a href="./piece_lsp.html#robo58">piece</a>,
    despite the start-bar/end-bar arguments. However this rescaling can be
    avoided via the next argument. Default = '(0 1 100 10)
- - :<a href="./utilities_lsp.html#robo1021">rescale</a>-curve. Whether to process the x-values of :curve to range over 
-   the number of bars in the <a href="./piece_lsp.html#robo58">piece</a>. Default = T = <a href="./utilities_lsp.html#robo1021">rescale</a>.
+ - :<a href="./utilities_lsp.html#robo1022">rescale</a>-curve. Whether to process the x-values of :curve to range over 
+   the number of bars in the <a href="./piece_lsp.html#robo58">piece</a>. Default = T = <a href="./utilities_lsp.html#robo1022">rescale</a>.
  -:<a href="./rthm-seq-bar_lsp.html#robo482">auto-tuplets</a>. T or NIL to indicate whether <a href="./rthm-seq-bar_lsp.html#robo482">auto-tuplets</a> should be called
    when thinning a bar is finished. Bear in mind that tuplet data can become
    corrupted during this method, as individual events initially reference
@@ -5242,7 +5242,7 @@ NIL
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>thin</strong> ((sc slippery-chicken) &amp;key start-bar end-bar <a href="./slippery-chicken_lsp.html#robo858">players</a>
                                        (curve '(0 1 100 10)) <a href="./rthm-seq-bar_lsp.html#robo482">auto-tuplets</a>
-                                       (<a href="./utilities_lsp.html#robo1021">rescale</a>-curve t))
+                                       (<a href="./utilities_lsp.html#robo1022">rescale</a>-curve t))
 </pre>
 
 
@@ -5730,7 +5730,7 @@ NIL
  accidental (leaving the accidental itself) by setting the
  ACCIDENTAL-IN-PARENTHESES slot of the contained <a href="./pitch_lsp.html#robo298">pitch</a> object to NIL.
 
- NB: Since <a href="#robo763">respell-notes</a> is called by default within <a href="./set-palette_lsp.html#robo671">cmn-display</a> and
+ NB: Since <a href="#robo763">respell-notes</a> is called by default within <a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> and
      <a href="./slippery-chicken_lsp.html#robo873">write-lp-data-for-all</a>, that option must be explicitly set to NIL for
      this method to be effective.
 </pre>
@@ -5765,7 +5765,7 @@ NIL
   (<a href="#robo763">respell-notes</a> mini)
   (<strong>unset-cautionary-accidental</strong> mini 2 5 'vn)
   (<strong>unset-cautionary-accidental</strong> mini 2 7 'cl t)
-  (<a href="./set-palette_lsp.html#robo671">cmn-display</a> mini :<a href="#robo763">respell-notes</a> nil))
+  (<a href="./rthm-seq-palette_lsp.html#robo544">cmn-display</a> mini :<a href="#robo763">respell-notes</a> nil))
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defmethod <strong>unset-cautionary-accidental</strong> ((sc slippery-chicken) bar-num note-num
@@ -5805,9 +5805,9 @@ NIL
         :<a href="./rthm-seq-palette_lsp.html#robo316">rthm-seq-palette</a> '((1 ((((4 4) - e e e e - - e e e e -)))))
         :<a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> '((1 ((fl (1))))))))
 ;; this <a href="./piece_lsp.html#robo58">piece</a> only has one bar so the bar line will be 2 by default ;
-  (print (bar-line-type (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> min 1 'fl)))
+  (print (bar-line-type (<a href="./section_lsp.html#robo660">get-bar</a> min 1 'fl)))
   (<strong>change-bar-line-type</strong> min 1 '<a href="./sc-map_lsp.html#robo594">double</a>-bar)
-  (bar-line-type (<a href="./rthm-seq_lsp.html#robo564">get-bar</a> min 1 'fl)))
+  (bar-line-type (<a href="./section_lsp.html#robo660">get-bar</a> min 1 'fl)))
 =&gt; 
 ...
 2
@@ -5969,7 +5969,7 @@ NIL
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/slippery-chicken-edit.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
+<p>Generated from ./../../src/slippery-chicken-edit.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-08-13 09:35:06</p>
 </div> <!-- footer -->
 </body>
 </html>

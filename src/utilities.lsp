@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:30:39 Fri Jul 10 2026 CEST
+;;; $$ Last modified:  12:18:40 Fri Aug 21 2026 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -3029,7 +3029,9 @@ WARNING:
 ;;; -stop. Default = T
 ;;;
 ;;; RETURN VALUE
-;;; Returns a list of lists which are the grouped time points. 
+;;; Returns a list of lists which are the grouped time points. NB if you want to
+;;; calle clm-loops (as opposed to clm-loops-all) then you should pass the first
+;;; element of the returned list.
 ;;; 
 ;;; SYNOPSIS
 (defun parse-reaper-file-for-loops (reaper-file &optional (warn t))

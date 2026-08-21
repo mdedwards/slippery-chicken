@@ -257,21 +257,21 @@
  - :transposition. Note-name symbol. This is the key of the given <a href="#robo297">instrument</a>
    (such as the "B-flat" of the "B-flat clarinet"), given as a note-name
    symbol (such as 'BF for B-flat). If a value is only given for the
-   :transposition argument but not for the :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a>
+   :transposition argument but not for the :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a>
    argument, and there are multiple semitone transposition options for the
    key specified, the method will choose the most common semitone
    transposition for that given key. NB: When using keyword argument
-   :transposition rather than :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a>, sc will have a
+   :transposition rather than :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a>, sc will have a
    warning printed by <a href="./cm_lsp.html#robo4">cm</a> with indications as to which direction the
    transposition has been undertaken.
- - :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a>. Integer (positive or negative). The number of
-   <a href="./utilities_lsp.html#robo1026">semitones</a> lower that a given <a href="#robo297">instrument</a> sounds than written, e.g. -2 for
+ - :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a>. Integer (positive or negative). The number of
+   <a href="./utilities_lsp.html#robo1027">semitones</a> lower that a given <a href="#robo297">instrument</a> sounds than written, e.g. -2 for
    B-flat Clarinet. If a value is only given for the
-   :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a> argument but not for the :transposition
+   :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a> argument but not for the :transposition
    argument, the method will automatically determine the key for the
    :transposition argument. The listener will drop into the debugger with an
    error if a key is given for the :transposition argument and the number
-   specified for the :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a> does not correspond with that
+   specified for the :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a> does not correspond with that
    key.
  - :starting-clef. Symbol. This value determines the first clef that a given
    <a href="#robo297">instrument</a> is to use if that <a href="#robo297">instrument</a> can use different clefs. For a
@@ -291,7 +291,7 @@
    notated in treble clef for written pitches. For a list of clefs available
    see the :clefs argument above.
  - :largest-fast-leap. Number. This value indicates the largest interval, in
-   <a href="./utilities_lsp.html#robo1026">semitones</a>, that a <a href="./slippery-chicken-edit_lsp.html#robo235">player</a> can feasibly perform at a fast <a href="./tempo_lsp.html#robo303">tempo</a> on the
+   <a href="./utilities_lsp.html#robo1027">semitones</a>, that a <a href="./slippery-chicken-edit_lsp.html#robo235">player</a> can feasibly perform at a fast <a href="./tempo_lsp.html#robo303">tempo</a> on the
    given <a href="#robo297">instrument</a>. Default = 999. "Fast" here is determined for the whole
    <a href="./piece_lsp.html#robo58">piece</a> by the <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a> class's fast-leap-threshold slot.
  - :score-write-in-c. T or NIL. Determines whether the musical material for
@@ -362,7 +362,7 @@
   PITCH: frequency: 2349.318, midi-note: 98, midi-channel: 0 
   starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
   prefers-notes: NIL, midi-program: 74
-  transposition: C, transposition-<a href="./utilities_lsp.html#robo1026">semitones</a>: 0
+  transposition: C, transposition-<a href="./utilities_lsp.html#robo1027">semitones</a>: 0
   score-write-in-c: NIL, score-write-bar-line: 1
   chords: NIL, <a href="./chord_lsp.html#robo636">chord</a>-function: NIL, 
   total-bars: 0 total-notes: 0, total-duration: 0.0
@@ -382,7 +382,7 @@
 :missing-notes '(aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3
 dqs3 dqf3 cqs3)
 :clefs '(treble) :clefs-in-c '(treble bass)
-:transposition-<a href="./utilities_lsp.html#robo1026">semitones</a> -14)
+:transposition-<a href="./utilities_lsp.html#robo1027">semitones</a> -14)
 
   =&gt; 
   INSTRUMENT: <a href="./event_lsp.html#robo204">lowest</a>-written: 
@@ -409,7 +409,7 @@ dqs3 dqf3 cqs3)
                              <a href="./event_lsp.html#robo204">lowest</a>-sounding
                              <a href="./chord_lsp.html#robo92">highest</a>-sounding
                              transposition
-                             transposition-<a href="./utilities_lsp.html#robo1026">semitones</a>
+                             transposition-<a href="./utilities_lsp.html#robo1027">semitones</a>
                              (starting-clef 'treble)
                              clefs
                              (largest-fast-leap 999)
@@ -443,7 +443,7 @@ dqs3 dqf3 cqs3)
  In order for this to work, the :harmonics slot of the <a href="#robo297">instrument</a>
  will need to be T and the open-strings, nodes, and open-string-marks slots
  must be set appropriately. The default nodes are ((12 2) (7 3) (5 4) (4 5)
- (3 6)) where the first of each pair is the nodal point in <a href="./utilities_lsp.html#robo1026">semitones</a> above
+ (3 6)) where the first of each pair is the nodal point in <a href="./utilities_lsp.html#robo1027">semitones</a> above
  the open string <a href="./pitch_lsp.html#robo298">pitch</a> and the second is the partial number produced. The
  open-strings slot should be a list of descending pitches (symbols or
  objects) and the open-strings-marks is something like (i ii iii iv) for
@@ -502,7 +502,7 @@ PITCH: frequency: 987.767, midi-note: 83, midi-channel: 1
   (setf (open-strings vln) '(eqs5 a4 d4 g3))
   (prog1 
       (<strong>natural-harmonic?</strong> vln 'eqs6)
-    (setf (open-strings vln) '(e5 a4 d4 g3)))) ; <a href="./sndfile-ext_lsp.html#robo880">reset</a>
+    (setf (open-strings vln) '(e5 a4 d4 g3)))) ; <a href="./activity-levels_lsp.html#robo28">reset</a>
 --&gt;
 PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1 
        <a href="./pitch_lsp.html#robo298">pitch</a>-bend: 0.5 
@@ -719,9 +719,9 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 <pre> - An <a href="#robo297">instrument</a> object.
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - ignore-octaves. T or NIL to indicate whether <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./chord_lsp.html#robo112">transpose</a>
+<pre> - ignore-octaves. T or NIL to indicate whether <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./event_lsp.html#robo232">transpose</a>
    at the octave are to be considered transposing <a href="./instruments_lsp.html#robo12">instruments</a>. 
-   T = <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./chord_lsp.html#robo112">transpose</a> at the octave are not considered
+   T = <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./event_lsp.html#robo232">transpose</a> at the octave are not considered
    transposing <a href="./instruments_lsp.html#robo12">instruments</a>. Default = T.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -743,20 +743,20 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
   =&gt; T
 
 ;; Returns T if the <a href="#robo297">instrument</a> object has been defined using a non-0 value for ;
-;; :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a>             ;
-  (let ((i3 (<a href="#robo247">make-instrument</a> '<a href="#robo297">instrument</a>-two :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a> -3)))
+;; :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a>             ;
+  (let ((i3 (<a href="#robo247">make-instrument</a> '<a href="#robo297">instrument</a>-two :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a> -3)))
 (<strong>transposing-instrument-p</strong> i3))
 
   =&gt; T
 
-;; Setting the optional argument to NIL causes <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./chord_lsp.html#robo112">transpose</a> at ;
+;; Setting the optional argument to NIL causes <a href="./instruments_lsp.html#robo12">instruments</a> that <a href="./event_lsp.html#robo232">transpose</a> at ;
 ;; the octave to return T.              ;
-  (let ((i3 (<a href="#robo247">make-instrument</a> '<a href="#robo297">instrument</a>-two :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a> -12)))
+  (let ((i3 (<a href="#robo247">make-instrument</a> '<a href="#robo297">instrument</a>-two :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a> -12)))
 (<strong>transposing-instrument-p</strong> i3))
 
   =&gt; NIL
 
-  (let ((i3 (<a href="#robo247">make-instrument</a> '<a href="#robo297">instrument</a>-two :transposition-<a href="./utilities_lsp.html#robo1026">semitones</a> -12)))
+  (let ((i3 (<a href="#robo247">make-instrument</a> '<a href="#robo297">instrument</a>-two :transposition-<a href="./utilities_lsp.html#robo1027">semitones</a> -12)))
 (<strong>transposing-instrument-p</strong> i3 nil))
 
   =&gt; T
@@ -798,7 +798,7 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/instrument.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
+<p>Generated from ./../../src/instrument.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-08-13 09:35:06</p>
 </div> <!-- footer -->
 </body>
 </html>

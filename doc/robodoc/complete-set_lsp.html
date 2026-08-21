@@ -37,7 +37,7 @@
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo922">complete-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Create a <a href="#robo922">complete-set</a> object, which as an extension of the <a href="./tl-set_lsp.html#robo632">tl-set</a> class
- allows checking for full sets: ones in which every note of *standard-<a href="./rhythm_lsp.html#robo465">scale</a>*
+ allows checking for full sets: ones in which every note of *standard-<a href="./rthm-seq-palette_lsp.html#robo555">scale</a>*
  is present.  
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -63,13 +63,13 @@
  - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
    symbols) are to be automatically sorted from <a href="./event_lsp.html#robo204">lowest</a> to <a href="./chord_lsp.html#robo92">highest</a>. 
   T = sort. Default = T. (see doc for sc-set)
- - :transposition. A number that is the number of <a href="./utilities_lsp.html#robo1026">semitones</a> by which the
+ - :transposition. A number that is the number of <a href="./utilities_lsp.html#robo1027">semitones</a> by which the
    pitches of the new <a href="#robo922">complete-set</a> are to be transposed when the object is
    created. Default = 0.  (see doc for tl-set)
- - :<a href="./tl-set_lsp.html#robo924">limit</a>-upper. A note-name symbol or a <a href="./pitch_lsp.html#robo298">pitch</a> object to indicate the
+ - :<a href="./set-palette_lsp.html#robo676">limit</a>-upper. A note-name symbol or a <a href="./pitch_lsp.html#robo298">pitch</a> object to indicate the
    <a href="./chord_lsp.html#robo92">highest</a> possible <a href="./pitch_lsp.html#robo298">pitch</a> in the given <a href="#robo922">complete-set</a> object to be
    created. (see doc for tl-set)
- - :<a href="./tl-set_lsp.html#robo924">limit</a>-lower.  A note-name symbol or a <a href="./pitch_lsp.html#robo298">pitch</a> object to indicate the
+ - :<a href="./set-palette_lsp.html#robo676">limit</a>-lower.  A note-name symbol or a <a href="./pitch_lsp.html#robo298">pitch</a> object to indicate the
    <a href="./event_lsp.html#robo204">lowest</a> possible <a href="./pitch_lsp.html#robo298">pitch</a> in the <a href="#robo922">complete-set</a> object to be created. (see doc
    for tl-set)
  - :complete. T, NIL, or 'CHROMATIC. This argument can be given at init, and
@@ -115,8 +115,8 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
                         (mid (b3 d4)))
              :related-sets '((not-playable (dqs2 eqf3)))
              :transposition 3
-             :<a href="./tl-set_lsp.html#robo924">limit</a>-upper 'g5
-             :<a href="./tl-set_lsp.html#robo924">limit</a>-lower 'e2)
+             :<a href="./set-palette_lsp.html#robo676">limit</a>-upper 'g5
+             :<a href="./set-palette_lsp.html#robo676">limit</a>-lower 'e2)
 
 =&gt; 
 COMPLETE-SET: complete: NIL
@@ -127,7 +127,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 <pre class="source">(defun <strong>make-complete-set</strong> (set &amp;rest keys
                           &amp;key id tag subsets related-sets 
                             (transposition 0) (auto-sort t) (warn-dups t)
-                            (rm-dups t) <a href="./tl-set_lsp.html#robo924">limit</a>-upper <a href="./tl-set_lsp.html#robo924">limit</a>-lower complete
+                            (rm-dups t) <a href="./set-palette_lsp.html#robo676">limit</a>-upper <a href="./set-palette_lsp.html#robo676">limit</a>-lower complete
                             ;; MDE Fri Aug 24 14:56:50 2018 
                             (midi-channel 1) (microtones-midi-channel 2))
 </pre>
@@ -139,7 +139,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo922">complete-set</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Make a <a href="#robo922">complete-set</a> containing stacks based on the given notes.  See
- documentation for the <a href="./set-palette_lsp.html#robo689">stack</a> method in the <a href="./sc-set_lsp.html#robo653">sc-set</a> class for details of
+ documentation for the <a href="./tl-set_lsp.html#robo928">stack</a> method in the <a href="./sc-set_lsp.html#robo653">sc-set</a> class for details of
  what this algorithm does.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -149,7 +149,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword arguments:
- - :by-freq. Use the frequencies of the pitches to create the <a href="./set-palette_lsp.html#robo689">stack</a> instead
+ - :by-freq. Use the frequencies of the pitches to create the <a href="./tl-set_lsp.html#robo928">stack</a> instead
    of the interval structure. Default = NIL.  
  - :up. Apply the process upwards in <a href="./pitch_lsp.html#robo298">pitch</a> space. Default = T.
  - :down. Apply the process downwards in <a href="./pitch_lsp.html#robo298">pitch</a> space. Default = T.
@@ -182,7 +182,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 
  Purpose:          Implementation of the <strong>complete-set</strong> class which as an
                    extension of the <a href="./tl-set_lsp.html#robo632">tl-set</a> class allows checking for full
-                   sets: ones in which every note of the current <a href="./rhythm_lsp.html#robo465">scale</a> is
+                   sets: ones in which every note of the current <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> is
                    present. 
 
  Author:           Michael Edwards: m@michael-edwards.org
@@ -196,7 +196,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/complete-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
+<p>Generated from ./../../src/complete-set.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-08-13 09:35:06</p>
 </div> <!-- footer -->
 </body>
 </html>

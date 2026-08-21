@@ -40,7 +40,7 @@
  material and slot values already contained in that object.
 
  The main <a href="#robo541">rthm-chain</a> algorithm generates only two voices. Rather than
- <a href="./wolfram_lsp.html#robo1045">generate</a> further voices in the same fashion by which the first two were
+ <a href="./wolfram_lsp.html#robo1047">generate</a> further voices in the same fashion by which the first two were
  created, this method uses the already created rthm-seqs in the given
  <a href="#robo541">rthm-chain</a> object to create a new voice. 
 
@@ -130,7 +130,7 @@
  - :auto-inc. T or NIL to determine whether the function will automatically
    increment the count of the returned key. T = automatically increment. 
    Default = T.
- - :<a href="./pitch-seq_lsp.html#robo339">invert</a>. T or NIL to <a href="./pitch-seq_lsp.html#robo339">invert</a> the functionality i.e. to return the most
+ - :<a href="./rthm-seq_lsp.html#robo579">invert</a>. T or NIL to <a href="./rthm-seq_lsp.html#robo579">invert</a> the functionality i.e. to return the most
    used rather than the least. Default = NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -164,7 +164,7 @@
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>hash-least-used</strong> (hash &amp;key (start 0) end ignore (auto-inc t)
-                               <a href="./pitch-seq_lsp.html#robo339">invert</a>)
+                               <a href="./rthm-seq_lsp.html#robo579">invert</a>)
 </pre>
 
 
@@ -181,7 +181,7 @@
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre class="source">(defun <strong>hash-least-useds</strong> (hash &amp;key (start 0) end ignore (auto-inc t)
-                                <a href="./pitch-seq_lsp.html#robo339">invert</a> (num 3))
+                                <a href="./rthm-seq_lsp.html#robo579">invert</a> (num 3))
 </pre>
 
 
@@ -344,15 +344,15 @@
    slower-rthms will be combined into one <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> (each <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a> has a
    single harmony). The default is 2 bars (slower-rthms) per <a href="./rthm-seq_lsp.html#robo650">rthm-seq</a>,
    i.e. '(0 2 100 2).
- - :<a href="#robo477">split</a>-data. NIL or a two-item list of integers that are the minimum and
+ - :<a href="./rthm-seq_lsp.html#robo589">split</a>-data. NIL or a two-item list of integers that are the minimum and
    maximum beat duration of bars generated. If NIL, the bars will not be
-   <a href="#robo477">split</a>. These values are targets only; the method may create bars of
-   different lengths if the data generated cannot be otherwise <a href="#robo477">split</a>.
+   <a href="./rthm-seq_lsp.html#robo589">split</a>. These values are targets only; the method may create bars of
+   different lengths if the data generated cannot be otherwise <a href="./rthm-seq_lsp.html#robo589">split</a>.
    NB: The values given here will apply to a different beat basis depending
    on time signature of each individual bar, rather than on a consistent
    beat basis, such as quarters or eighths. Since this method produces bars
    of different lengths with time signatures of differing beat bases
-   (e.g. 16, 8, 4 etc.) before it applies the <a href="#robo477">split</a> algorithm, a minimum
+   (e.g. 16, 8, 4 etc.) before it applies the <a href="./rthm-seq_lsp.html#robo589">split</a> algorithm, a minimum
    value of 4, for example, can result in bars of 4/16, 4/8, 4/4 etc.
    Default = '(2 5)
  - :1-beat-<a href="./l-for-lookup_lsp.html#robo282">fibonacci</a>. T or NIL to indicate whether the sequence of 1-beat
@@ -409,7 +409,7 @@
  :sticking-curve '(0 0 100 10)
  :sticking-repeats '(3 5 7 11 2 7 5 3 13)
  :sticking-rthms '(e s. 32 e.)
- :<a href="#robo477">split</a>-data '(4 7))
+ :<a href="./rthm-seq_lsp.html#robo589">split</a>-data '(4 7))
 
 =&gt;
 RTHM-CHAIN: 1-beat-rthms: (((E E) (S S S S) (TE TE TE) (E. S))
@@ -451,7 +451,7 @@ RTHM-CHAIN: 1-beat-rthms: (((E E) (S S S S) (TE TE TE) (E. S))
             rest-cycle: ((0 3) (1 1) (0 2) (2 1) (1 1) (3 1))
             num-rthm-seqs: 19
             <a href="./section_lsp.html#robo60">section</a>-id: 1
-            <a href="#robo477">split</a>-data: (4 7)
+            <a href="./rthm-seq_lsp.html#robo589">split</a>-data: (4 7)
 RTHM-SEQ-MAP: num-<a href="./slippery-chicken_lsp.html#robo858">players</a>: 2 
               <a href="./slippery-chicken_lsp.html#robo858">players</a>: (FL CL)
 SC-MAP: <a href="./palette_lsp.html#robo427">palette</a> id: RTHM-CHAIN-RSP
@@ -475,7 +475,7 @@ SC-MAP: <a href="./palette_lsp.html#robo427">palette</a> id: RTHM-CHAIN-RSP
                         (do-sticking-curve nil)
                         (sticking-repeats '(3 5 3 5 8 13 21))
                         (sticking-rthms '(e e e. q e s))
-                        (<a href="#robo477">split</a>-data '(2 5)))
+                        (<a href="./rthm-seq_lsp.html#robo589">split</a>-data '(2 5)))
 </pre>
 
 
@@ -634,9 +634,9 @@ SC-MAP: <a href="./palette_lsp.html#robo427">palette</a> id: RTHM-CHAIN-RSP
 <pre> Returns T.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; Print the results of applying <a href="./circular-sclist_lsp.html#robo120">get-next</a> to the STICKING-RTHMS slot of the
+<pre class="source">;;; Print the results of applying <a href="./sndfile-ext_lsp.html#robo875">get-next</a> to the STICKING-RTHMS slot of the
 ;;; given <a href="#robo541">rthm-chain</a> object, repeat, <strong>reset</strong>, and print again to see that the
-;;; <a href="./circular-sclist_lsp.html#robo120">get-next</a> now begins at the beginning of the slot again.
+;;; <a href="./sndfile-ext_lsp.html#robo875">get-next</a> now begins at the beginning of the slot again.
 
 (let ((rch
        (<a href="#robo472">make-rthm-chain</a>
@@ -669,14 +669,14 @@ SC-MAP: <a href="./palette_lsp.html#robo427">palette</a> id: RTHM-CHAIN-RSP
             ({ 3 - te te te - } (e) e { 3 (te) (te) te })))))))
   (print 
    (loop repeat 19
-      collect (data (<a href="./circular-sclist_lsp.html#robo120">get-next</a> (sticking-rthms rch)))))
+      collect (data (<a href="./sndfile-ext_lsp.html#robo875">get-next</a> (sticking-rthms rch)))))
   (print 
    (loop repeat 19
-      collect (data (<a href="./circular-sclist_lsp.html#robo120">get-next</a> (sticking-rthms rch)))))
+      collect (data (<a href="./sndfile-ext_lsp.html#robo875">get-next</a> (sticking-rthms rch)))))
   (<strong>reset</strong> rch)
   (print 
    (loop repeat 19
-      collect (data (<a href="./circular-sclist_lsp.html#robo120">get-next</a> (sticking-rthms rch))))))
+      collect (data (<a href="./sndfile-ext_lsp.html#robo875">get-next</a> (sticking-rthms rch))))))
 
 =&gt;
 (E E E E E. E E. E E Q E E. E Q E. Q E. Q E) 
@@ -721,10 +721,10 @@ SC-MAP: <a href="./palette_lsp.html#robo427">palette</a> id: RTHM-CHAIN-RSP
 <pre> keyword arguments:
  - :rests. T or NIL to indicate whether rests are to be automatically
    inserted. T = automatically insert. Default = T.
- - :stick. T or NIL to indicate whether to <a href="./wolfram_lsp.html#robo1045">generate</a> the sticking points. T =
-   <a href="./wolfram_lsp.html#robo1045">generate</a> sticking points. Default = T.
+ - :stick. T or NIL to indicate whether to <a href="./wolfram_lsp.html#robo1047">generate</a> the sticking points. T =
+   <a href="./wolfram_lsp.html#robo1047">generate</a> sticking points. Default = T.
  - :num-beats. NIL or an integer to indicate how many beats are to be used
-   for the algorithm. NB: The method will <a href="./wolfram_lsp.html#robo1045">generate</a> considerably more beats
+   for the algorithm. NB: The method will <a href="./wolfram_lsp.html#robo1047">generate</a> considerably more beats
    if also generating sticking points and inserting rests; this number
    merely refers to the number of standard 1-beat rhythms to be generated.
    If NIL, the method will obtain the number of beats from the NUM-BEATS
@@ -743,7 +743,7 @@ SC-MAP: <a href="./palette_lsp.html#robo427">palette</a> id: RTHM-CHAIN-RSP
  - :<a href="./set-palette_lsp.html#robo691">wrap</a>. An integer or NIL to determine the position within the list of
    1-beat rhythms and slow rhythms from which the generated <a href="./rhythm_lsp.html#robo300">rhythm</a> chain
    will begin. NIL = begin at the beginning. Default = NIL.
- - :<a href="#robo477">split</a>. T or NIL to indicate whether to <a href="#robo477">split</a> up longer generated bars
+ - :<a href="./rthm-seq_lsp.html#robo589">split</a>. T or NIL to indicate whether to <a href="./rthm-seq_lsp.html#robo589">split</a> up longer generated bars
    (e.g. 7/4) into smaller bars. If this is a two-element list it represents
    the min/max number of beats in a bar (where a 6/8 bar is two compound
    beats). Default = '(2 5).
@@ -870,12 +870,12 @@ SC-MAP: <a href="./palette_lsp.html#robo427">palette</a> id: RTHM-CHAIN-RSP
 
  Purpose:          Algorithmic generation of rthm-seqs that include
                    slower-moving counterpoint and a means to control
-                   activity development through curves.  Here we <a href="./wolfram_lsp.html#robo1045">generate</a> a
+                   activity development through curves.  Here we <a href="./wolfram_lsp.html#robo1047">generate</a> a
                    <a href="./rthm-seq-map_lsp.html#robo602">rthm-seq-map</a> and its associated <a href="./palette_lsp.html#robo427">palette</a> algorithmically.
 
                    Say we have 9 irregular 1 beat duration patterns; these
                    would enter in the sequence defined by (<a href="#robo473">procession</a> x 9)
-                   where x would be the number of patterns to <a href="./wolfram_lsp.html#robo1045">generate</a>. 
+                   where x would be the number of patterns to <a href="./wolfram_lsp.html#robo1047">generate</a>. 
  
                    Rests are inserted at regular but changing intervals e.g
  
@@ -931,7 +931,7 @@ SC-MAP: <a href="./palette_lsp.html#robo427">palette</a> id: RTHM-CHAIN-RSP
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/rthm-chain.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
+<p>Generated from ./../../src/rthm-chain.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-08-13 09:35:06</p>
 </div> <!-- footer -->
 </body>
 </html>

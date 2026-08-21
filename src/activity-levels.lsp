@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  10:55:22 Fri Mar  1 2024 CET
+;;; $$ Last modified:  16:40:54 Thu Aug 13 2026 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,7 +120,9 @@
 ;;; ****m* activity-levels/reset
 ;;; DESCRIPTION
 ;;; Reset the activity-levels object to restart at the first element of the 1st
-;;; (or user-specificed) 10-element list. 
+;;; (or user-specificed) 10-element list. Bear in mind that whatever we pass
+;;; here, we always cycle through all three 10-element lists for each level
+;;; before starting over at the beginning. 
 ;;; 
 ;;; ARGUMENTS
 ;;; The activity-levels object. 

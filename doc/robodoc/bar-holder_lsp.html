@@ -200,12 +200,12 @@
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo296">bar-holder</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Transpose the pitches of the specified bars in a given <a href="./slippery-chicken-edit_lsp.html#robo235">player</a>'s part by a
- specified number of <a href="./utilities_lsp.html#robo1026">semitones</a>.
+ specified number of <a href="./utilities_lsp.html#robo1027">semitones</a>.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - A <a href="#robo296">bar-holder</a> object (such as the PIECE slot of a <a href="./slippery-chicken_lsp.html#robo634">slippery-chicken</a>
    object). 
- - A positive or negative integer that is the number of <a href="./utilities_lsp.html#robo1026">semitones</a> by which
+ - A positive or negative integer that is the number of <a href="./utilities_lsp.html#robo1027">semitones</a> by which
    the pitches of the specified bars are to be transposed. 
  - An integer that is the number of the first bar in which the pitches are
    to be transposed. 
@@ -225,9 +225,9 @@
    feedback about which bars have been transposed to the listener. 
    T = print feedback. Default = NIL.
  - :<a href="./chord_lsp.html#robo636">chord</a>-function. The function that is to be used for transposition of
-   chords objects. Default = #'<a href="./chord_lsp.html#robo112">transpose</a> (of the <a href="./chord_lsp.html#robo636">chord</a> class).
+   chords objects. Default = #'<a href="./event_lsp.html#robo232">transpose</a> (of the <a href="./chord_lsp.html#robo636">chord</a> class).
  - :<a href="./chord_lsp.html#robo636">chord</a>-function. The function that is to be used for transposition of
-   <a href="./pitch_lsp.html#robo298">pitch</a> objects. Default = #'<a href="./chord_lsp.html#robo112">transpose</a> (of the <a href="./pitch_lsp.html#robo298">pitch</a> class).
+   <a href="./pitch_lsp.html#robo298">pitch</a> objects. Default = #'<a href="./event_lsp.html#robo232">transpose</a> (of the <a href="./pitch_lsp.html#robo298">pitch</a> class).
 </pre>
 <p class="item_name">RETURN VALUE</p>
 <pre> Returns a list of the <a href="./rthm-seq-bar_lsp.html#robo651">rthm-seq-bar</a> objects that have been transposed. 
@@ -251,14 +251,14 @@
                   :print-bar-nums t))
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>transpose-bars</strong> ((bh bar-holder) <a href="./utilities_lsp.html#robo1026">semitones</a> start-bar <a href="./slippery-chicken_lsp.html#robo852">num-bars</a> <a href="./slippery-chicken-edit_lsp.html#robo235">player</a>
+<pre class="source">(defmethod <strong>transpose-bars</strong> ((bh bar-holder) <a href="./utilities_lsp.html#robo1027">semitones</a> start-bar <a href="./slippery-chicken_lsp.html#robo852">num-bars</a> <a href="./slippery-chicken-edit_lsp.html#robo235">player</a>
                            &amp;key
                            (destructively nil)
                            (print-bar-nums nil)
                            ;; the default functions are the class methods for
                            ;; <a href="./pitch_lsp.html#robo298">pitch</a> or <a href="./chord_lsp.html#robo636">chord</a>.
-                           (<a href="./chord_lsp.html#robo636">chord</a>-function #'<a href="./chord_lsp.html#robo112">transpose</a>)
-                           (<a href="./pitch_lsp.html#robo298">pitch</a>-function #'<a href="./chord_lsp.html#robo112">transpose</a>))
+                           (<a href="./chord_lsp.html#robo636">chord</a>-function #'<a href="./event_lsp.html#robo232">transpose</a>)
+                           (<a href="./pitch_lsp.html#robo298">pitch</a>-function #'<a href="./event_lsp.html#robo232">transpose</a>))
 </pre>
 
 
@@ -293,7 +293,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/bar-holder.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
+<p>Generated from ./../../src/bar-holder.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-08-13 09:35:06</p>
 </div> <!-- footer -->
 </body>
 </html>

@@ -423,7 +423,7 @@ WARNING:
  - second <a href="#robo450">event</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to treat <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a> equivalents as equal
+<pre> - T or NIL to treat <a href="./pitch_lsp.html#robo346">enharmonic</a> equivalents as equal
  - T or NIL to treat the same pitches in different octaves as equal
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -504,7 +504,7 @@ NIL
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo450">event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Delete the contents of the WRITTEN-PITCH-OR-CHORD slot of a given <a href="#robo450">event</a>
- object and <a href="./sndfile-ext_lsp.html#robo880">reset</a> to NIL.
+ object and <a href="./activity-levels_lsp.html#robo28">reset</a> to NIL.
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - An <a href="#robo450">event</a> object.
@@ -688,7 +688,7 @@ EVENT: start-time: NIL, end-time: NIL,
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo450">event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
-<pre> Get the distance (interval) in <a href="./utilities_lsp.html#robo1026">semitones</a> <a href="./utilities_lsp.html#robo939">between</a> the <a href="./pitch_lsp.html#robo298">pitch</a> level of one
+<pre> Get the distance (interval) in <a href="./utilities_lsp.html#robo1027">semitones</a> <a href="./utilities_lsp.html#robo939">between</a> the <a href="./pitch_lsp.html#robo298">pitch</a> level of one
  <a href="#robo450">event</a> object and a second. Negative numbers indicate direction interval
  directionality. An optional argument allows distances to be always printed
  as absolute values (positive).
@@ -1077,8 +1077,8 @@ NIL
  A rest would return '(0) or 0.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre class="source">;;; NB This uses the quarter-tone <a href="./rhythm_lsp.html#robo465">scale</a> so degrees are <a href="./sc-map_lsp.html#robo594">double</a> what they would ;
-;;;    be in the chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>.       ;
+<pre class="source">;;; NB This uses the quarter-tone <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> so degrees are <a href="./sc-map_lsp.html#robo594">double</a> what they would ;
+;;;    be in the chromatic-<a href="./rthm-seq-palette_lsp.html#robo555">scale</a>.       ;
 (let ((<a href="#robo450">event</a> (<a href="#robo205">make-event</a> '(cs4 d4) 'e))
       (rest (<a href="#robo210">make-rest</a> 'e)))
   (print (<strong>get-degree</strong> <a href="#robo450">event</a>))
@@ -1660,7 +1660,7 @@ data: C4
    indicates the MIDI-channel to be used for the playback of the <a href="#robo211">microtonal</a>
    notes. Default = NIL. NB: See <a href="./player_lsp.html#robo_top_of_doc">player.lsp</a>/<a href="./player_lsp.html#robo386">make-player</a> for details on
    microtones in MIDI output. 
- - :transposition. A number in <a href="./utilities_lsp.html#robo1026">semitones</a> that indicates the transposition of
+ - :transposition. A number in <a href="./utilities_lsp.html#robo1027">semitones</a> that indicates the transposition of
    the <a href="./instrument_lsp.html#robo297">instrument</a> that this <a href="#robo450">event</a> is being created for.  E.g. -2 would be
    for a B-flat clarinet.
  - :written.  The given <a href="./pitch_lsp.html#robo298">pitch</a> or <a href="./chord_lsp.html#robo636">chord</a> is the written value.  In this case
@@ -2339,8 +2339,8 @@ NIL
  - a <a href="./pitch_lsp.html#robo298">pitch</a> or <a href="./chord_lsp.html#robo636">chord</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
-<pre> - T or NIL to indicate whether or not <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a> pitches are considered 
-   equal. T = <a href="./rthm-seq-bar_lsp.html#robo493">enharmonic</a> pitches are considered equal. Default = NIL. 
+<pre> - T or NIL to indicate whether or not <a href="./pitch_lsp.html#robo346">enharmonic</a> pitches are considered 
+   equal. T = <a href="./pitch_lsp.html#robo346">enharmonic</a> pitches are considered equal. Default = NIL. 
  - a number to indicate the frequency deviation allowed before returning NIL.
 </pre>
 <p class="item_name">RETURN VALUE</p>
@@ -2494,16 +2494,16 @@ do (<a href="./rhythm_lsp.html#robo441">add</a>-mark-before e m))
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo450">event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Round the written and sounding <a href="./pitch_lsp.html#robo298">pitch</a>/<a href="./chord_lsp.html#robo636">chord</a> objects to the <a href="./utilities_lsp.html#robo986">nearest</a> in the
- current or given <a href="./rhythm_lsp.html#robo465">scale</a>. 
+ current or given <a href="./rthm-seq-palette_lsp.html#robo555">scale</a>. 
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> the <a href="#robo450">event</a> object
 </pre>
 <p class="item_name">OPTIONAL ARGUMENTS</p>
 <pre> keyword argument:
- :<a href="./rhythm_lsp.html#robo465">scale</a>. The <a href="./rhythm_lsp.html#robo465">scale</a> to use when rounding. (Common Music tuning object or
- symbol). If a symbol, then 'chromatic-<a href="./rhythm_lsp.html#robo465">scale</a>, 'twelfth-tone, or 'quarter-tone
- only at present. Default is the current <a href="./rhythm_lsp.html#robo465">scale</a> as set by (<a href="./cm_lsp.html#robo138">in-scale</a> :...).
+ :<a href="./rthm-seq-palette_lsp.html#robo555">scale</a>. The <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> to use when rounding. (Common Music tuning object or
+ symbol). If a symbol, then 'chromatic-<a href="./rthm-seq-palette_lsp.html#robo555">scale</a>, 'twelfth-tone, or 'quarter-tone
+ only at present. Default is the current <a href="./rthm-seq-palette_lsp.html#robo555">scale</a> as set by (<a href="./cm_lsp.html#robo138">in-scale</a> :...).
  :rm-duplicates. T or NIL to remove duplicate pitches, should the <a href="#robo450">event</a>
  contain a <a href="./chord_lsp.html#robo636">chord</a> and rounding created duplicate pitches.
 </pre>
@@ -2511,7 +2511,7 @@ do (<a href="./rhythm_lsp.html#robo441">add</a>-mark-before e m))
 <pre> the modified <a href="#robo450">event</a> object
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>round-to-nearest</strong> ((e <a href="#robo450">event</a>) &amp;key (<a href="./rhythm_lsp.html#robo465">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rhythm_lsp.html#robo465">scale</a>*)
+<pre class="source">(defmethod <strong>round-to-nearest</strong> ((e <a href="#robo450">event</a>) &amp;key (<a href="./rthm-seq-palette_lsp.html#robo555">scale</a> <a href="./cm_lsp.html#robo4">cm</a>::*<a href="./rthm-seq-palette_lsp.html#robo555">scale</a>*)
                                          (rm-duplicates t))
 </pre>
 
@@ -2613,7 +2613,7 @@ data: (3 4)
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre> - An <a href="#robo450">event</a> object.
- - A number indicating the difference in <a href="./utilities_lsp.html#robo1026">semitones</a> (positive or
+ - A number indicating the difference in <a href="./utilities_lsp.html#robo1027">semitones</a> (positive or
    negative) <a href="./utilities_lsp.html#robo939">between</a> the written and sounding pitches.  E.g. to set the
    written-note for a B-flat Clarinet, this would be 2, for an E-flat
    Clarinet, it would be -3.
@@ -2974,10 +2974,10 @@ NIL
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo450">event</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">DESCRIPTION</p>
 <pre> Transpose the <a href="./pitch_lsp.html#robo298">pitch</a> content of a given <a href="#robo450">event</a> object by a specified number
- of <a href="./utilities_lsp.html#robo1026">semitones</a>. This method can be applied to chords or single-pitches.
+ of <a href="./utilities_lsp.html#robo1027">semitones</a>. This method can be applied to chords or single-pitches.
 
  If functions are given, these will be used for the note or <a href="./chord_lsp.html#robo636">chord</a> in the
- <a href="#robo450">event</a>, whereby <a href="./utilities_lsp.html#robo1026">semitones</a> may or may not be NIL in that case (transposition
+ <a href="#robo450">event</a>, whereby <a href="./utilities_lsp.html#robo1027">semitones</a> may or may not be NIL in that case (transposition
  could be dependent on the note or <a href="./chord_lsp.html#robo636">chord</a> rather than being a fixed shift).
 
  NB: By default this method returns a modified <a href="./slippery-chicken_lsp.html#robo805">clone</a> of the original rather
@@ -3052,7 +3052,7 @@ C4
 =&gt; (A3 CS4 E4)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre class="source">(defmethod <strong>transpose</strong> ((e <a href="#robo450">event</a>) <a href="./utilities_lsp.html#robo1026">semitones</a>
+<pre class="source">(defmethod <strong>transpose</strong> ((e <a href="#robo450">event</a>) <a href="./utilities_lsp.html#robo1027">semitones</a>
                       &amp;key
                       destructively
                       ;; the default functions are the class methods for <a href="./pitch_lsp.html#robo298">pitch</a>
@@ -3193,7 +3193,7 @@ C4
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./../../src/event.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-02-12 14:06:45</p>
+<p>Generated from ./../../src/event.lsp with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.44 on 2026-08-13 09:35:06</p>
 </div> <!-- footer -->
 </body>
 </html>

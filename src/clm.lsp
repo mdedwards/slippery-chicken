@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified:  15:52:00 Wed Nov  6 2024 CET
+;;; $$ Last modified:  09:29:50 Mon Aug 24 2026 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -315,6 +315,7 @@
                   (pan t)
                   (src-width 5))
 ;;; ****
+  (get-clm-ins 'clm::samp5 "samp5.lsp" cl-user::+slippery-chicken-src-path+)
   (format t "~&num-shuffles: ~a" num-shuffles)
   ;; MDE Fri May 11 15:34:36 2012 
   (unless sndfile-extension

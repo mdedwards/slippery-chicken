@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:53:04 Wed Feb  4 2026 CET
+;;; $$ Last modified:  09:26:59 Mon Aug 24 2026 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards

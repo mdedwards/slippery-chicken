@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    March 15th 2024
 ;;;
-;;; $$ Last modified:  12:23:33 Fri Aug 21 2026 CEST
+;;; $$ Last modified:  09:31:02 Mon Aug 24 2026 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -94,7 +94,12 @@
                (:file "globals")
                (:file "clm-defaults" :if-feature :clm)
                (:file "clm" :if-feature :clm)
-               (:file "samp5" :if-feature :clm)
+               ;; NB samp5 shouldn't be loaded (always) by asdf, rather any
+               ;; function that needs it should call this first
+               ;; (get-clm-ins 'clm::samp5 "samp5.lsp"
+               ;;               cl-user::+slippery-chicken-src-path+)
+               ;; see e.g. clm-loops or clm-play for examples
+               ;; (:file "samp5" :if-feature :clm)
                (:file "sc-map")
                (:file "set-map")
                (:file "tempo")

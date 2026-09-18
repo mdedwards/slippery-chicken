@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  10:56:40 Sat Aug 24 2024 CEST
+;;; $$ Last modified:  18:20:27 Fri Sep 18 2026 CEST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -119,7 +119,7 @@
 ;;; the list and make a triplet out of the element to the left of the current
 ;;; element (or <initial-state> when we begin the loop), the current element,
 ;;; and the element to the right of current (or, again, <initial-state> if we're
-;;; at the last element of the row). The we loop through the <rules> and when
+;;; at the last element of the row). Then we loop through the <rules> and when
 ;;; the current triplet matches the rule we return the 0 or 1 associated with
 ;;; the triplet in the rule (i.e. the second element of the matching rule).
 ;;; 

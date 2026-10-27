@@ -119,8 +119,13 @@ and unpack them to your ASDF/Quicklisp directory, or:
 ```shell
 # in your ASDF/Quicklisp standard directory
 curl https://ccrma.stanford.edu/software/clm/clm-5.tar.gz -o clm.tar.gz
-tar xf clm.tar.gz
+mkdir clm ; tar xf clm.tar.gz -C clm
 ```
+NB if you download clm.tar.gz via your web browser and double click it in your file 
+browser, it will most probably extract the files to a new clm directory. However 
+this is not the case if you use `curl` and then `tar xf` hence we use mkdir and the 
+-C flag in the line above. This is different to the behaviour and installation 
+procedure of CMN.
 
 > [!IMPORTANT]
 > CLM requires a C compiler to be present on your system. If you don't have a

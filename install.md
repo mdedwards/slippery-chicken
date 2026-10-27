@@ -118,6 +118,8 @@ and unpack them to your ASDF/Quicklisp directory, or:
 
 ```shell
 # in your ASDF/Quicklisp standard directory
+# create a dedicated directory for CLM, since unpacking the tarball will mess up your local-projects dir
+mkdir clm && cd clm
 curl https://ccrma.stanford.edu/software/clm/clm-5.tar.gz -o clm.tar.gz
 mkdir clm ; tar xf clm.tar.gz -C clm
 ```

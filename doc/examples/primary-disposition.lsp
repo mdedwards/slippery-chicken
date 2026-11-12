@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    23rd November 2011
 ;;;
-;;; $$ Last modified:  15:17:45 Wed Jan 12 2022 CET
+;;; $$ Last modified:  19:30:14 Thu Nov 12 2026 CET
 ;;;
 ;;; SVN ID: $Id: primary-disposition.lsp 5531 2016-01-28 15:25:28Z medward2 $
 ;;;
@@ -121,7 +121,7 @@
 (cmn-display +primary-disposition+ :file "/tmp/primary-disposition.eps")
 
 ;; (write-lp-data-for-all +primary-disposition+ :base-path "/tmp/")
-(lp-display +primary-disposition+ :base-path "/tmp/")
+#+sc-auto-open (lp-display +primary-disposition+ :base-path "/tmp/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  20:43:31 Tue Nov 12 2024 CET
+;;; $$ Last modified:  17:14:14 Thu Nov 12 2026 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 2976 2012-07-24 10:06:19Z sreed23 $
 ;;;

@@ -83,7 +83,7 @@
   ;; render a score via lilypond or if your system can't handle calls to the
   ;; shell, just write the lilypond formatted text files and render in lilypond
   ;; separately (for that use write-lp-data-for-all)
-  (lp-display hello)
+  #+sc-auto-open (lp-display hello)
   ;; write a music-xml file for import into Dorico, Musescore, Sibelius etc.
   (write-xml hello)
   ;; write a midi file. All of these files can be specified with a path or, as

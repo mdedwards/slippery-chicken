@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11th December 2011 (Bangkok)
 ;;;
-;;; $$ Last modified:  10:46:17 Thu Jan 22 2026 CET
+;;; $$ Last modified:  19:45:49 Thu Nov 12 2026 CET
 ;;;
 ;;; SVN ID: $Id: bar-holder.lsp 431 2011-12-08 14:44:30Z medward2 $
 ;;;
@@ -301,8 +301,8 @@
       (auto-slur +slippery-when-wet+ '(solo vln vla vc fl cl hn perc))
       ;; MDE Thu Jun 25 10:53:24 2015 -- see if generating this score actually
       ;; works, rather than just the writing of the data files 
-      ;; (write-lp-data-for-all +slippery-when-wet+)
-      (lp-display +slippery-when-wet+)
+      #-sc-auto-open (write-lp-data-for-all +slippery-when-wet+)
+      #+sc-auto-open (lp-display +slippery-when-wet+)
       (file-write-ok "/tmp/_slippery-when-wet-score.ly" 190))))
 
 (sc-deftest test-coming ()
